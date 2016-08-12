@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -145,6 +146,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * @see				#getDescriptions()
 	 */
 	public String getDescription(Language language){
+	   Hibernate.initialize(description);
 		LanguageString languageString = description.get(language);
 		if (languageString == null){
 			return null;

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifResponse;
 import eu.etaxonomy.cdm.io.specimen.SpecimenDataHolder;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206DataHolder;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -34,6 +35,7 @@ public class GbifDataHolder extends SpecimenDataHolder{
     protected HashMap<String,String> allGbifElements = new HashMap<String,String>();
     public List<String> gatheringAgentList;
     protected List<String> gatheringTeamList;
+    private GbifResponse response;
 
     /*per unit
     protected List<Identification> identificationList;
@@ -102,8 +104,8 @@ public class GbifDataHolder extends SpecimenDataHolder{
     protected String specificEpithet;
     protected String taxonRank;
     protected String dateIdentified;
-    protected String decimalLongitude;
-    protected String decimalLatitude;
+    protected Double decimalLongitude;
+    protected Double decimalLatitude;
     protected String elevation;
     protected String continent;
     protected String stateProvince;
@@ -143,6 +145,8 @@ public class GbifDataHolder extends SpecimenDataHolder{
     protected String collectionID;
 
 
+
+    @Override
     public void reset() {
 
         key = null;
@@ -220,6 +224,7 @@ public class GbifDataHolder extends SpecimenDataHolder{
     /**
      * @return the nomenclatureCode
      */
+    @Override
     public String getNomenclatureCode() {
         return nomenclaturalCode;
     }
@@ -229,9 +234,11 @@ public class GbifDataHolder extends SpecimenDataHolder{
     /**
      * @param nomenclatureCode the nomenclatureCode to set
      */
+    @Override
     public void setNomenclatureCode(String nomenclatureCode) {
         this.nomenclaturalCode = nomenclatureCode;
     }
+
 
 
 

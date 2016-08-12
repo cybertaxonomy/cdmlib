@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -63,11 +64,11 @@ public class SpecimenImportReport {
         createdTaxonNodes.add(taxonNode);
     }
 
-    public void addDerivate(DerivedUnit parent, Abcd206ImportConfigurator config){
+    public void addDerivate(DerivedUnit parent, SpecimenImportConfiguratorBase config){
         addDerivate(parent, null, config);
     }
 
-    public void addDerivate(DerivedUnit parent, DerivedUnit child, Abcd206ImportConfigurator config){
+    public void addDerivate(DerivedUnit parent, DerivedUnit child, SpecimenImportConfiguratorBase config){
         UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(SpecimenImportUtility.getUnitID(parent, config), parent);
         List<UnitIdSpecimen> children = derivateMap.get(parentUnitIdSpecimen);
         if(children==null){
@@ -142,7 +143,7 @@ public class SpecimenImportReport {
             out.println(type+": "+entry.getValue());
         }
         out.println("\n");
-        
+
         out.println("Imported unit ids");
         for (UnitIdSpecimen unitIdSpecimen : allSpecimens) {
 			out.print(unitIdSpecimen.unitId+", ");

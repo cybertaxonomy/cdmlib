@@ -92,6 +92,7 @@ public class BioCaseQueryGenerator {
     private static final String COLLECTOR_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/CollectorsFieldNumber";
     private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgentsText";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
+    private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -133,15 +134,16 @@ public class BioCaseQueryGenerator {
         elFilter.addContent(elAnd);
 
         if(query.tripleIds!=null ){
-            Element elOr = new Element(OR);;
-
-            for (String[] unitId: query.tripleIds){
-                addEqualsFilter(elOr, unitId[0], UNIT_ID_PATH_ABCD_2_0);
-
+            if (query.tripleIds.size() == 1){
+                String unitId[] = query.tripleIds.iterator().next();
+                addEqualsFilter(elAnd, unitId[0], UNIT_ID_PATH_ABCD_2_0);
+            }else{
+                Element elOr = new Element(OR);
+                for (String[] unitId: query.tripleIds){
+                    addEqualsFilter(elOr, unitId[0], UNIT_ID_PATH_ABCD_2_0);
+                }
+                elAnd.addContent(elOr);
             }
-
-            elAnd.addContent(elOr);
-
         }
         if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
             addLikeFilter(elAnd, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);

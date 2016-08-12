@@ -55,7 +55,7 @@ public class Abcd206XMLFieldGetter {
                                             if(DEBUG) {
                                                 logger.info("ADD "+type);
                                             }
-                                            dataHolder.statusList.add(getSpecimenTypeDesignationStatusByKey(type));
+                                            dataHolder.getStatusList().add(getSpecimenTypeDesignationStatusByKey(type));
                                             typeFound=true;
                                             path = ntd.item(l).getNodeName();
                                             getHierarchie(ntd.item(l));
@@ -69,11 +69,11 @@ public class Abcd206XMLFieldGetter {
                     }
                 }
                 if (!typeFound) {
-                    dataHolder.statusList.add(null);
+                    dataHolder.getStatusList().add(null);
                 }
             }
         } catch (NullPointerException e) {
-            dataHolder.statusList = new ArrayList<SpecimenTypeDesignationStatus>();
+            dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
         }
     }
 
@@ -102,9 +102,9 @@ public class Abcd206XMLFieldGetter {
                         if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "") {
                             // logger.info("TMP NAME P" + tmpName);
 
-                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.getNomenclatureCode()));
+                            dataHolder.getIdentificationList().add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.getNomenclatureCode(), null));
                         } else {
-                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent()));
+                            dataHolder.getIdentificationList().add(new Identification(tmpName, identifications.item(m).getTextContent()));
                         }
                         path = identifications.item(m).getNodeName();
                         // getHierarchie(identifications.item(m));
@@ -138,9 +138,9 @@ public class Abcd206XMLFieldGetter {
                 if (!hasPref && tmpName != null) {
                     if (dataHolder.getNomenclatureCode() != null
                             && dataHolder.getNomenclatureCode() != "") {
-                        dataHolder.identificationList.add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode()));
+                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode(), null));
                     } else {
-                        dataHolder.identificationList.add(new Identification(tmpName, "0"));
+                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0"));
                     }
                 }
             }
@@ -242,7 +242,7 @@ public class Abcd206XMLFieldGetter {
                             refDetails[i]="";
                         }
                     }
-                    dataHolder.referenceList.add(refDetails);
+                    dataHolder.getReferenceList().add(refDetails);
                     refDetails =new String[3];
                 }
             }
@@ -384,9 +384,9 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.unitID = group.item(0).getTextContent();
+            dataHolder.setUnitID(group.item(0).getTextContent());
         } catch (NullPointerException e) {
-            dataHolder.unitID = "";
+            dataHolder.setUnitID("");
         }
     }
 
@@ -402,9 +402,9 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.recordBasis = group.item(0).getTextContent();
+            dataHolder.setRecordBasis(group.item(0).getTextContent()) ;
         } catch (NullPointerException e) {
-            dataHolder.recordBasis = "";
+            dataHolder.setRecordBasis("") ;
         }
     }
 
@@ -416,9 +416,9 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.kindOfUnit = group.item(0).getTextContent();
+            dataHolder.setKindOfUnit(group.item(0).getTextContent());
         } catch (NullPointerException e) {
-            dataHolder.kindOfUnit = "";
+            dataHolder.setKindOfUnit("");
         }
     }
 
@@ -444,9 +444,9 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.fieldNumber = group.item(0).getTextContent();
+            dataHolder.setFieldNumber(group.item(0).getTextContent());
         } catch (NullPointerException e) {
-            dataHolder.fieldNumber = "";
+            dataHolder.setFieldNumber("");
         }
 
         //try {
@@ -564,7 +564,7 @@ public class Abcd206XMLFieldGetter {
 
         try {
             group = root.getElementsByTagName(prefix + "NamedArea");
-            dataHolder.namedAreaList = new HashMap<String, String>();
+            dataHolder.setNamedAreaList(new HashMap<String, String>());
             for (int i = 0; i < group.getLength(); i++) {
                 childs = group.item(i).getChildNodes();
                 String currentArea = null;
@@ -575,7 +575,7 @@ public class Abcd206XMLFieldGetter {
                         dataHolder.knownABCDelements.add(path);
                         path = "";
                         currentArea = childs.item(j).getTextContent();
-                        dataHolder.namedAreaList.put(currentArea, null);
+                        dataHolder.getNamedAreaList().put(currentArea, null);
                     }
                 }
                 if(currentArea!=null){
@@ -585,20 +585,20 @@ public class Abcd206XMLFieldGetter {
                             getHierarchie(childs.item(j));
                             dataHolder.knownABCDelements.add(path);
                             path = "";
-                            dataHolder.namedAreaList.put(currentArea, childs.item(j).getTextContent());
+                            dataHolder.getNamedAreaList().put(currentArea, childs.item(j).getTextContent());
                         }
                     }
                 }
             }
         } catch (NullPointerException e) {
-            dataHolder.namedAreaList = new HashMap<String, String>();
+            dataHolder.setNamedAreaList(new HashMap<String, String>());
         }
 
         if(state.getConfig().isRemoveCountryFromLocalityText()){
             if(dataHolder.locality.startsWith(dataHolder.country)){
                 dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
             }
-            for (String namedArea : ((HashMap<String, String>) dataHolder.namedAreaList).keySet()) {
+            for (String namedArea : ((HashMap<String, String>) dataHolder.getNamedAreaList()).keySet()) {
                 if(dataHolder.locality.startsWith(namedArea)){
                     dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[\\W]", "");
                 }
@@ -621,7 +621,7 @@ public class Abcd206XMLFieldGetter {
                         multimedia = multimedias.item(j).getChildNodes();
                         for (int k = 0; k < multimedia.getLength(); k++) {
                             if (multimedia.item(k).getNodeName().equals(prefix + "FileURI")) {
-                                dataHolder.multimediaObjects.add(multimedia.item(k).getTextContent());
+                                dataHolder.getMultimediaObjects().add(multimedia.item(k).getTextContent());
                                 path = multimedia.item(k).getNodeName();
                                 getHierarchie(multimedia.item(k));
                                 dataHolder.knownABCDelements.add(path);
@@ -666,7 +666,7 @@ public class Abcd206XMLFieldGetter {
         NodeList childNodes = root.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             if(childNodes.item(i).getNodeName().equals(prefix + "Notes")){
-                dataHolder.unitNotes = childNodes.item(i).getTextContent();
+                dataHolder.setUnitNotes(childNodes.item(i).getTextContent());
                 path = childNodes.item(i).getNodeName();
                 getHierarchie(childNodes.item(i));
                 dataHolder.knownABCDelements.add(path);
@@ -680,11 +680,11 @@ public class Abcd206XMLFieldGetter {
         NodeList group = root.getElementsByTagName(prefix + "Gathering");
         for (int i = 0; i < group.getLength(); i++) {
             NodeList spatialDatum = ((Element) group.item(i)).getElementsByTagName(prefix + "SpatialDatum");
-            dataHolder.gatheringSpatialDatum = AbcdParseUtility.parseFirstTextContent(spatialDatum);
+            dataHolder.setGatheringSpatialDatum(AbcdParseUtility.parseFirstTextContent(spatialDatum));
         }
         for (int i = 0; i < group.getLength(); i++) {
             NodeList coordinateMethod = ((Element) group.item(i)).getElementsByTagName(prefix + "CoordinateErrorMethod");
-            dataHolder.gatheringCoordinateErrorMethod = AbcdParseUtility.parseFirstTextContent(coordinateMethod);
+            dataHolder.setGatheringCoordinateErrorMethod(AbcdParseUtility.parseFirstTextContent(coordinateMethod));
         }
     }
 
@@ -703,7 +703,7 @@ public class Abcd206XMLFieldGetter {
                                 getHierarchie(altitudes.item(k));
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
-                                dataHolder.gatheringElevationText = altitudes.item(k).getTextContent();
+                                dataHolder.setGatheringElevationText(altitudes.item(k).getTextContent());
                             }
                         }
                     }
@@ -712,12 +712,12 @@ public class Abcd206XMLFieldGetter {
             }
 
         } catch (NullPointerException e) {
-            dataHolder.gatheringElevationText = null;
+            dataHolder.setGatheringElevationText(null);
         }
 
         try{
             //check for atomised elevation
-            if(dataHolder.gatheringElevationText==null){
+            if(dataHolder.getGatheringElevationText()==null){
                 NodeList group = root.getElementsByTagName(prefix + "Gathering");
                 for (int i = 0; i < group.getLength(); i++) {
                     NodeList children = group.item(i).getChildNodes();
@@ -733,21 +733,21 @@ public class Abcd206XMLFieldGetter {
                                             getHierarchie(facts.item(l));
                                             dataHolder.knownABCDelements.add(path);
                                             path = "";
-                                            dataHolder.gatheringElevationMin = facts.item(l).getTextContent();
+                                            dataHolder.setGatheringElevationMin(facts.item(l).getTextContent());
                                         }
                                         else if (facts.item(l).getNodeName().equals(prefix + "UpperValue")) {
                                             path = facts.item(l).getNodeName();
                                             getHierarchie(facts.item(l));
                                             dataHolder.knownABCDelements.add(path);
                                             path = "";
-                                            dataHolder.gatheringElevationMax = facts.item(l).getTextContent();
+                                            dataHolder.setGatheringElevationMax(facts.item(l).getTextContent());
                                         }
                                         else if (facts.item(l).getNodeName().equals(prefix + "UnitOfMeasurement")) {
                                             path = facts.item(l).getNodeName();
                                             getHierarchie(facts.item(l));
                                             dataHolder.knownABCDelements.add(path);
                                             path = "";
-                                            dataHolder.gatheringElevationUnit = facts.item(l).getTextContent();
+                                            dataHolder.setGatheringElevationUnit(facts.item(l).getTextContent());
                                         }
                                     }
                                 }
@@ -757,7 +757,7 @@ public class Abcd206XMLFieldGetter {
                 }
             }
         } catch (NullPointerException e) {
-            dataHolder.gatheringElevationText = null;
+            dataHolder.setGatheringElevationText(null);
         }
     }
 
@@ -772,14 +772,14 @@ public class Abcd206XMLFieldGetter {
                         getHierarchie(children.item(j));
                         dataHolder.knownABCDelements.add(path);
                         path = "";
-                        dataHolder.gatheringNotes = children.item(j).getTextContent();
+                        dataHolder.setGatheringNotes(children.item(j).getTextContent());
                     }
                 }
             }
 
 
         } catch (NullPointerException e) {
-            dataHolder.gatheringElevationText = null;
+            dataHolder.setGatheringElevationText(null);
         }
 
     }
@@ -798,7 +798,7 @@ public class Abcd206XMLFieldGetter {
                                 getHierarchie(dateTimes.item(k));
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
-                                dataHolder.gatheringDateText = dateTimes.item(k).getTextContent();
+                                dataHolder.setGatheringDateText(dateTimes.item(k).getTextContent());
                             }
                         }
                     }
@@ -807,7 +807,7 @@ public class Abcd206XMLFieldGetter {
             }
 
         } catch (NullPointerException e) {
-            dataHolder.gatheringDateText = null;
+            dataHolder.setGatheringDateText(null);
         }
     }
 

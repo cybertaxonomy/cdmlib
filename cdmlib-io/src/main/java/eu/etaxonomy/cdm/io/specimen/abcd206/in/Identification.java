@@ -17,18 +17,24 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 public class Identification {
 
     private final String scientificName;
+    private final String identifier;
     private final String preferred;
     private final String code;
 
     public Identification(String taxonName, String preferred) {
-        this(taxonName, preferred, null);
+        this(taxonName, preferred, null, null);
     }
 
-    public Identification(String scientificName, String preferred, String code) {
+    public Identification(String scientificName, String preferred, String code, String identifier) {
         super();
         this.scientificName = scientificName.trim();
         this.preferred = preferred.trim();
-        this.code = code.trim();
+        this.code = code;
+        if (identifier != null){
+            this.identifier = identifier.trim();
+        } else{
+            this.identifier = null;
+        }
     }
 
     /**
@@ -58,6 +64,13 @@ public class Identification {
     @Override
     public String toString() {
         return "Identification [taxonName=" + scientificName + ", preferred=" + preferred + ", code=" + code + "]";
+    }
+
+    /**
+     * @return the identifier
+     */
+    public String getIdentifier() {
+        return identifier;
     }
 
 }

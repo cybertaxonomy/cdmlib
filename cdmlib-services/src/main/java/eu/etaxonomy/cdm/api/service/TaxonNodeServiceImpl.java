@@ -635,10 +635,36 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref){
         UpdateResult result = new UpdateResult();
+        newTaxon = (Taxon) taxonService.save(newTaxon);
+
         TaxonNode parent = dao.load(parentNodeUuid);
         TaxonNode child = null;
         try{
             child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
+        }catch(Exception e){
+            result.addException(e);
+            result.setError();
+            return result;
+        }
+//        child = dao.save(child);
+
+        dao.saveOrUpdate(parent);
+        result.addUpdatedObject(parent);
+        if (child != null){
+            result.setCdmEntity(child);
+        }
+        return result;
+
+    }
+    @Override
+    @Transactional
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref){
+        UpdateResult result = new UpdateResult();
+        TaxonNode parent = dao.load(parentNodeUuid);
+        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+        TaxonNode child = null;
+        try{
+            child = parent.addChildTaxon(taxon, parent.getReference(), parent.getMicroReference());
         }catch(Exception e){
             result.addException(e);
             result.setError();

@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -16,6 +17,8 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
 /**
  * @author cmathew
@@ -57,5 +60,18 @@ public interface IIOService {
      */
     public ImportResult importDataFromInputStream(IImportConfigurator configurator, byte[] importData);
 
+
+    /**
+     * @param configurator
+     * @return
+     */
+    ImportResult importDataFromStream(SpecimenImportConfiguratorBase configurator);
+
+
+    /**
+     * @param configurators
+     * @return
+     */
+    ImportResult importDataFromStream(List<Abcd206ImportConfigurator> configurators);
 
 }
