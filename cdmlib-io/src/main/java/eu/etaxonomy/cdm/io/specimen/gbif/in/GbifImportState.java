@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.specimen.gbif.in;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @date 15.07.2016
  *
  */
-public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigurator, GbifImportState> {
+public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigurator<GbifImportState, InputStream>, GbifImportState> {
 
     private TransactionStatus tx;
 
@@ -59,16 +60,26 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
     private TaxonDescription descriptionGroup = null;
 
 
-    /**
-     * @param config
-     */
-    protected GbifImportState(GbifImportConfigurator config) {
-        super(config);
-        report = new GbifImportReport();
-        setTransformer(new AbcdTransformer());
+
+
+    public GbifImportState newInstance(GbifImportConfigurator config){
+        GbifImportState result = new GbifImportState(config);
+        return result;
+
     }
 
+
     /* ------Getter/Setter -----*/
+
+    /**
+     * @param config
+     * @return
+     */
+    private GbifImportState(GbifImportConfigurator config) {
+        super(config);
+        setReport(new SpecimenImportReport());
+        setTransformer(new AbcdTransformer());
+    }
 
     @Override
     public TransactionStatus getTx() {
@@ -255,13 +266,6 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
         this.descriptionGroup = descriptionGroup;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase#reset()
-     */
-    @Override
-    public void reset() {
-        // TODO Auto-generated method stub
 
-    }
 
 }

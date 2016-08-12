@@ -9,9 +9,10 @@
 */
 package eu.etaxonomy.cdm.io.specimen.gbif.in;
 
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -19,7 +20,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 15.07.2016
  *
  */
-public class GbifImportConfigurator<GbifImportState> extends SpecimenImportConfiguratorBase{
+public class GbifImportConfigurator<GbifImportState, InputStream> extends SpecimenImportConfiguratorBase {
+
+    private static IInputTransformer defaultTransformer = null;
 
     /**
      * @param transformer
@@ -27,6 +30,12 @@ public class GbifImportConfigurator<GbifImportState> extends SpecimenImportConfi
     public GbifImportConfigurator(IInputTransformer transformer) {
         super(transformer);
         // TODO Auto-generated constructor stub
+    }
+
+    public static GbifImportConfigurator newInstance(OccurenceQuery query){
+        GbifImportConfigurator newInstance = new GbifImportConfigurator<>(defaultTransformer);
+        newInstance.setOccurenceQuery(query);
+        return newInstance;
     }
 
     /**
@@ -56,13 +65,15 @@ public class GbifImportConfigurator<GbifImportState> extends SpecimenImportConfi
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-     */
+
+
     @Override
-    public <STATE extends ImportStateBase> STATE getNewState() {
-        // TODO Auto-generated method stub
-        return null;
+    public SpecimenImportStateBase getNewState() {
+        SpecimenImportStateBase state = new SpecimenImportStateBase(this);
+
+        return state;
     }
+
+
 
 }

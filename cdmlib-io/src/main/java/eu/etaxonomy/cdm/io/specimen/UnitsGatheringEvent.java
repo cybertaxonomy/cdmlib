@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
@@ -129,6 +130,13 @@ public class UnitsGatheringEvent {
             //                logger.info("unknown iso used for the locality: "+languageIso);
             //            }
             for (LanguageString ls:languages){
+                if (ls == null) {
+                    continue;
+                }
+                ls = HibernateProxyHelper.deproxy(ls, LanguageString.class);
+                if (ls.getText() == null){
+                    continue;
+                }
                 if (ls.getText().equalsIgnoreCase(locality)){
                     loc=ls;
                     locFound=true;

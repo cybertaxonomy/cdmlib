@@ -28,13 +28,23 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.name.BacterialName;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ViralName;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -140,6 +150,14 @@ public class GbifJsonOccurrenceParser {
     protected static final String IDENTIFIED_BY = "identifiedBy";
     protected static final String COLLECTION_ID = "collectionID";
 
+    private static final String PLANTAE = "Plantae";
+
+    private static final String ANIMALIA = "Animalia";
+
+    private static final String FUNGI = "Fungi";
+
+    private static final String BACTERIA = "Bacteria";
+
 
 
 
@@ -183,13 +201,15 @@ public class GbifJsonOccurrenceParser {
     private static Collection<GbifResponse> parseJsonRecords(JSONArray jsonArray) {
         Collection<GbifResponse> results = new ArrayList<GbifResponse>();
         String[] tripleId = new String[3];
+        String string;
         for(Object o:jsonArray){
             //parse every record
+            tripleId = new String[3];
             if(o instanceof JSONObject){
                 String dataSetKey = null;
                 GbifDataSetProtocol dataSetProtocol = null;
                 DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-                NonViralName<NonViralName> name = null;
+                TaxonNameBase name = null;
                 JSONObject record = (JSONObject)o;
 
                 if(record.has(DATASET_PROTOCOL)){
@@ -199,20 +219,20 @@ public class GbifJsonOccurrenceParser {
                     dataSetKey = record.getString(DATASET_KEY);
                 }
                 if(record.has(COUNTRY_CODE)){
-                    String string = record.getString(COUNTRY_CODE);
+                    string = record.getString(COUNTRY_CODE);
                     Country country = Country.getCountryByIso3166A2(string);
                     if(country!=null){
                         derivedUnitFacade.setCountry(country);
                     }
                 }
                 if(record.has(LOCALITY)){
-                    String string = record.getString(LOCALITY);
+                    string = record.getString(LOCALITY);
                     derivedUnitFacade.setLocality(string);
                 }
 
                 if (record.has("species")){
                     Rank rank = null;
-                    String string;
+
                     if (record.has(TAXON_RANK)){
                         string= record.getString(TAXON_RANK);
                         try {
@@ -223,17 +243,64 @@ public class GbifJsonOccurrenceParser {
                         }
                     }
                     if (rank != null){
-                        name = NonViralName.NewInstance(rank);
+                        if (record.has(NOMENCLATURALCODE)){
+                            string = record.getString(NOMENCLATURALCODE);
+
+                            if (string.equals(NomenclaturalCode.ICZN.getTitleCache())){
+                                name = ZoologicalName.NewInstance(rank);
+                            } else if (string.equals(NomenclaturalCode.ICNAFP.getTitleCache())) {
+                                name = BotanicalName.NewInstance(rank);
+                            } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
+                                name = BacterialName.NewInstance(rank);
+                            } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
+                                name = CultivarPlantName.NewInstance(rank);
+                            } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
+                                name = ViralName.NewInstance(rank);
+                            } else {
+                                name = NonViralName.NewInstance(rank);
+                            }
+                        }else {
+                            if (record.has(KINGDOM)){
+                                if (record.getString(KINGDOM).equals(PLANTAE)){
+                                    name = BotanicalName.NewInstance(rank);
+                                } else if (record.getString(KINGDOM).equals(ANIMALIA)){
+                                    name = ZoologicalName.NewInstance(rank);
+                                } else if (record.getString(KINGDOM).equals(FUNGI)){
+                                    name = NonViralName.NewInstance(rank);
+                                } else if (record.getString(KINGDOM).equals(BACTERIA)){
+                                    name = BacterialName.NewInstance(rank);
+                                } else{
+                                    name = NonViralName.NewInstance(rank);
+                                }
+                            } else{
+                                name = NonViralName.NewInstance(rank);
+                            }
+                        }
                         if (record.has(GENUS)){
-                            name.setGenusOrUninomial(record.getString(GENUS));
+                            ((NonViralName)name).setGenusOrUninomial(record.getString(GENUS));
                         }
                         if (record.has(SPECIFIC_EPITHET)){
-                            name.setSpecificEpithet(record.getString(SPECIFIC_EPITHET));
+                            ((NonViralName)name).setSpecificEpithet(record.getString(SPECIFIC_EPITHET));
                         }
                         if (record.has(INFRASPECIFIC_EPITHET)){
-                            name.setSpecificEpithet(record.getString(INFRASPECIFIC_EPITHET));
+                            ((NonViralName)name).setInfraSpecificEpithet(record.getString(INFRASPECIFIC_EPITHET));
                         }
+                        if (record.has(SCIENTIFIC_NAME)){
+                            name.setTitleCache(record.getString(SCIENTIFIC_NAME), true);
+                        }
+
                     }
+                    DeterminationEvent detEvent = DeterminationEvent.NewInstance();
+
+                    if (record.has(IDENTIFIED_BY)){
+                        Person determiner = Person.NewTitledInstance(record.getString(IDENTIFIED_BY));
+                        detEvent.setDeterminer(determiner);
+
+                    }
+                    detEvent.setTaxonName(name);
+                    detEvent.setPreferredFlag(true);
+                    derivedUnitFacade.addDetermination(detEvent);
+
                 }
 
 
@@ -273,7 +340,7 @@ public class GbifJsonOccurrenceParser {
                 if(record.has(ELEVATION)){
                     try {
                         //parse integer and strip of unit
-                        String string = record.getString(ELEVATION);
+                        string = record.getString(ELEVATION);
                         int length = string.length();
                         StringBuilder builder = new StringBuilder();
                         for(int i=0;i<length;i++){
@@ -330,15 +397,26 @@ public class GbifJsonOccurrenceParser {
                     //FIXME: check data base for existing collections
                     eu.etaxonomy.cdm.model.occurrence.Collection collection = eu.etaxonomy.cdm.model.occurrence.Collection.NewInstance();
                     collection.setCode(collectionCode);
+                    if(record.has(INSTITUTION_CODE)){
+                        Institution institution = Institution.NewNamedInstance(record.getString(INSTITUTION_CODE));
+                        institution.setCode(record.getString(INSTITUTION_CODE));
+                        collection.setInstitute(institution);
+                    }
                     derivedUnitFacade.setCollection(collection);
                 }
                 if(record.has(CATALOG_NUMBER)){
+                    derivedUnitFacade.setCatalogNumber(record.getString(CATALOG_NUMBER));
                     derivedUnitFacade.setAccessionNumber(record.getString(CATALOG_NUMBER));
                     tripleId[0]= record.getString(CATALOG_NUMBER);
                 }
                 if(record.has(INSTITUTION_CODE)){
                     derivedUnitFacade.setAccessionNumber(record.getString(INSTITUTION_CODE));
                     tripleId[1]= record.getString(INSTITUTION_CODE);
+                }
+
+                if (record.has(OCCURENCE_ID)){
+                    IdentifiableSource source = IdentifiableSource.NewDataImportInstance((record.getString(OCCURENCE_ID)));
+                    derivedUnitFacade.addSource(source);
                 }
 
                 // create dataset URL

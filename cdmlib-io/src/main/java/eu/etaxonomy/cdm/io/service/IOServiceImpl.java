@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -34,6 +36,8 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
 /**
  * @author cmathew
@@ -140,5 +144,30 @@ public class IOServiceImpl implements IIOService {
         }
         return result;
     }
+
+
+    @Override
+    public ImportResult importDataFromStream(SpecimenImportConfiguratorBase configurator) {
+        ImportResult result = new ImportResult();
+
+            OccurenceQuery query;
+            result = cdmImport.execute(configurator);
+            return result;
+    }
+
+    @Override
+    public ImportResult importDataFromStream(List<Abcd206ImportConfigurator> configurators) {
+        ImportResult result = new ImportResult();
+
+            OccurenceQuery query;
+            for (SpecimenImportConfiguratorBase configurator:configurators){
+                result = cdmImport.execute(configurator);
+            }
+            return result;
+    }
+
+
+
+
 
 }

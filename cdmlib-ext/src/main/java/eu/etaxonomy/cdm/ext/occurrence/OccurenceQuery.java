@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
@@ -19,7 +20,7 @@ import java.util.Set;
  * @date 17.09.2013
  *
  */
-public class OccurenceQuery {
+public class OccurenceQuery implements Serializable{
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     public final Set<String[]> tripleIds;

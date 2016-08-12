@@ -188,5 +188,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 
+    /**
+     * @param parentNodeUuid
+     * @param taxonUuid
+     * @param ref
+     * @param microref
+     * @return
+     */
+    UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref);
+
 
 }

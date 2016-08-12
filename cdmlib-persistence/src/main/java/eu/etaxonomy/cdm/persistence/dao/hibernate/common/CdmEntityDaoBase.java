@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -372,10 +373,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         crit.addOrder(Order.desc("created"));
         @SuppressWarnings("unchecked")
 		List<T> results = crit.list();
-        if (results.isEmpty()){
+       Set<T> resultSet = new HashSet<>();
+       resultSet.addAll(results);
+        if (resultSet.isEmpty()){
             return null;
         }else{
-            if(results.size() > 1){
+            if(resultSet.size() > 1){
                 logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
             }
             return results.get(0);

@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -427,7 +428,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
             Assert.fail();
         }
         assertNotNull("Configurator could not be created", importConfigurator);
-
+        importConfigurator.setIgnoreImportOfExistingSpecimen(true);
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
@@ -648,6 +649,11 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
             }
         }
         assertNotNull(defaultClassification);
+        Set<TaxonNode> allNodes = defaultClassification.getAllNodes();
+        for (TaxonNode node:allNodes){
+            System.out.println(node.getTaxon().getTitleCache());
+        }
+
         assertEquals(3, defaultClassification.getAllNodes().size());
 
 	}

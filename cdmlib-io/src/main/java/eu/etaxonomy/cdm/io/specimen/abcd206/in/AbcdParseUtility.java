@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -85,7 +86,9 @@ public class AbcdParseUtility {
             textContent = textContent.replace(".","");
             //convert commmas
             textContent = textContent.replace(",",".");
-            doubleValue = Double.parseDouble(textContent);
+            if (!CdmUtils.isBlank(textContent)){
+                doubleValue = Double.parseDouble(textContent);
+            }
         } catch (NullPointerException npe){
             logger.error(message, npe);
             if(report!=null){
