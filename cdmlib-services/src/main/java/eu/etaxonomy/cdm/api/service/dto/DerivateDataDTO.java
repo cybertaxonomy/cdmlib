@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.envers.tools.Pair;
-
 /**
  * @author pplitzner
  * @date Mar 26, 2015
@@ -23,9 +21,9 @@ import org.hibernate.envers.tools.Pair;
  */
 public class DerivateDataDTO {
 
-    private List<Pair<String, String>> specimenScans;
+    private List<Link> specimenScans;
     private List<MolecularData> molecularDataList;
-    private List<Pair<String, String>> detailImages;
+    private List<Link> detailImages;
     private List<UUID> specimenScanUuids;
     private List<UUID> detailImageUuids;
 
@@ -48,29 +46,29 @@ public class DerivateDataDTO {
     /**
      * @return the specimenScans
      */
-    public List<Pair<String, String>> getSpecimenScans() {
+    public List<Link> getSpecimenScans() {
         return specimenScans;
     }
 
-    public void addSpecimenScan(String uri, String herbarium){
+    public void addSpecimenScan(URI uri, String linkText){
         if(specimenScans==null){
-            specimenScans = new ArrayList<Pair<String,String>>();
+            specimenScans = new ArrayList<Link>();
         }
-        specimenScans.add(new Pair<String, String>(uri, herbarium));
+        specimenScans.add(new Link(uri, linkText));
     }
 
     /**
      * @return the detailImages
      */
-    public List<Pair<String, String>> getDetailImages() {
+    public List<Link> getDetailImages() {
         return detailImages;
     }
 
-    public void addDetailImage(String uri, String motif){
+    public void addDetailImage(URI uri, String motif){
         if(detailImages==null){
-            detailImages = new ArrayList<Pair<String,String>>();
+            detailImages = new ArrayList<Link>();
         }
-        detailImages.add(new Pair<String, String>(uri, motif));
+        detailImages.add(new Link(uri, motif));
     }
 
     /**
