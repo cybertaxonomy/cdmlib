@@ -524,6 +524,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         if(CdmUtils.isBlank(identifier)){
         	identifier = derivedUnit.getTitleCache();
+        	if(CdmUtils.isBlank(identifier) && !derivedUnit.isProtectedTitleCache()){
+        		//regenerate title cache if it is empty
+        		derivedUnit.setTitleCache(null);
+        		identifier = derivedUnit.getTitleCache();
+        	}
+        }
+        if(CdmUtils.isBlank(identifier)){
+        	//default fallback UUID
+        	identifier = derivedUnit.getUuid().toString();
         }
         preservedSpecimenDTO.setAccessionNumber(identifier);
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
@@ -653,7 +662,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             else if (childDerivate.isInstanceOf(MediaSpecimen.class)) {
                 MediaSpecimen media = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
 
-                String mediaUriString = getMediaUriString(media);
+                URI mediaUri = getMediaUri(media);
                 if (media.getKindOfUnit() != null) {
                     // specimen scan
                     if (media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))) {
@@ -663,17 +672,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         if (derivateDTO instanceof PreservedSpecimenDTO && ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber() != null) {
                             imageLinkText = ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber();
                         }
-                        derivateDataDTO.addSpecimenScan(mediaUriString == null ? "" : mediaUriString, imageLinkText);
+                        derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText);
                     }
                     // detail image
                     else if (media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))) {
                         derivateDataDTO.addDetailImageUuid(media.getMediaSpecimen().getUuid());
                         derivateDTO.setHasDetailImage(true);
-                        String motif = "";
-                        if (media.getMediaSpecimen() != null && media.getMediaSpecimen().getTitle() != null) {
-                            motif = media.getMediaSpecimen().getTitle().getText();
+                        String motif = "detail image";
+                        if (media.getMediaSpecimen()!=null){
+                        	if(CdmUtils.isNotBlank(media.getMediaSpecimen().getTitleCache())) {
+                        		motif = media.getMediaSpecimen().getTitleCache();
+                        	}
                         }
-                        derivateDataDTO.addDetailImage(mediaUriString == null ? "" : mediaUriString, motif != null ? motif : "[no motif]");
+                        derivateDataDTO.addDetailImage(mediaUri, motif != null ? motif : "[no motif]");
                     }
                 }
             }
@@ -688,15 +699,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return string;
     }
 
-    private String getMediaUriString(MediaSpecimen mediaSpecimen) {
-        String mediaUri = null;
+    private URI getMediaUri(MediaSpecimen mediaSpecimen) {
+        URI mediaUri = null;
         Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
         if (mediaRepresentations != null && !mediaRepresentations.isEmpty()) {
             Collection<MediaRepresentationPart> mediaRepresentationParts = mediaRepresentations.iterator().next().getParts();
             if (mediaRepresentationParts != null && !mediaRepresentationParts.isEmpty()) {
                 MediaRepresentationPart part = mediaRepresentationParts.iterator().next();
                 if (part.getUri() != null) {
-                    mediaUri = part.getUri().toASCIIString();
+                    mediaUri = part.getUri();
                 }
             }
         }
