@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
@@ -1308,40 +1309,32 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        return true;
 	    }
 
-	    /**
-	     * @param specimen
-	     * @param source
-	     * @return
-	     */
-	    private boolean sourceNotLinkedToElement(SpecimenOrObservationBase<?> specimen, OriginalSourceBase<?> source) {
-	        Set<IdentifiableSource> linkedSources = specimen.getSources();
-	        for (IdentifiableSource is:linkedSources){
-	            Reference a = is.getCitation();
-	            Reference b = source.getCitation();
-	            String c = is.getCitationMicroReference();
-	            String d = source.getCitationMicroReference();
+	    private <T extends OriginalSourceBase<?>> boolean  sourceNotLinkedToElement(ISourceable<T> sourcable, Reference reference, String microReference) {
+	        Set<T> linkedSources = sourcable.getSources();
+	        for (T is:linkedSources){
+	            Reference unitReference = is.getCitation();
+	            String unitMicroReference = is.getCitationMicroReference();
 
 	            boolean refMatch=false;
 	            boolean microMatch=false;
 
 	            try{
-	                if (a==null && b==null) {
+	                if (unitReference==null && reference==null) {
 	                    refMatch=true;
 	                }
-	                if (a!=null && b!=null) {
-	                    if (a.getTitleCache().equalsIgnoreCase(b.getTitleCache())) {
+	                if (unitReference!=null && reference!=null) {
+	                    if (unitReference.getTitleCache().equalsIgnoreCase(reference.getTitleCache())) {
 	                        refMatch=true;
 	                    }
 	                }
 	            }catch(Exception e){}
 
-
 	            try{
-	                if (c==null && d==null) {
+	                if (unitMicroReference==null && microReference==null) {
 	                    microMatch=true;
 	                }
-	                if(c!=null && d!=null) {
-	                    if(c.equalsIgnoreCase(d)) {
+	                if(unitMicroReference!=null && microReference!=null) {
+	                    if(unitMicroReference.equalsIgnoreCase(microReference)) {
 	                        microMatch=true;
 	                    }
 	                }
@@ -1351,196 +1344,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            if (microMatch && refMatch) {
 	                return false;
 	            }
-
-
-	        }
-	        return true;
-	    }
-
-	    /**
-	     * @param indAssociation
-	     * @param ref2
-	     * @param object
-	     * @return
-	     */
-	    private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, Reference a, String d) {
-	        Set<DescriptionElementSource> linkedSources = indAssociation.getSources();
-	        for (DescriptionElementSource is:linkedSources){
-	            Reference b = is.getCitation();
-	            String c = is.getCitationMicroReference();
-
-	            boolean refMatch=false;
-	            boolean microMatch=false;
-
-	            try{
-	                if (a==null && b==null) {
-	                    refMatch=true;
-	                }
-	                if (a!=null && b!=null) {
-	                    if (a.getTitleCache().equalsIgnoreCase(b.getTitleCache())) {
-	                        refMatch=true;
-	                    }
-	                }
-	            }catch(Exception e){}
-
-
-	            try{
-	                if (c==null && d==null) {
-	                    microMatch=true;
-	                }
-	                if(c!=null && d!=null) {
-	                    if(c.equalsIgnoreCase(d)) {
-	                        microMatch=true;
-	                    }
-	                }
-	            }
-	            catch(Exception e){}
-
-	            if (microMatch && refMatch) {
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
-
-	    /**
-	     * @param taxonDescription
-	     * @param ref2
-	     * @param object
-	     * @return
-	     */
-	    private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, Reference a, String d) {
-	        Set<IdentifiableSource> linkedSources = taxonDescription.getSources();
-	        for (IdentifiableSource is:linkedSources){
-	            Reference b = is.getCitation();
-	            String c = is.getCitationMicroReference();
-
-	            boolean refMatch=false;
-	            boolean microMatch=false;
-
-	            try{
-	                if (a==null && b==null) {
-	                    refMatch=true;
-	                }
-	                if (a!=null && b!=null) {
-	                    if (a.getTitleCache().equalsIgnoreCase(b.getTitleCache())) {
-	                        refMatch=true;
-	                    }
-	                }
-	            }catch(Exception e){}
-
-
-	            try{
-	                if (c==null && d==null) {
-	                    microMatch=true;
-	                }
-	                if(c!=null && d!=null) {
-	                    if(c.equalsIgnoreCase(d)) {
-	                        microMatch=true;
-	                    }
-	                }
-	            }
-	            catch(Exception e){}
-
-	            if (microMatch && refMatch) {
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
-
-	    /**
-	     * @param indAssociation
-	     * @param source
-	     * @return
-	     */
-	    private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, OriginalSourceBase<?> source) {
-	        Set<DescriptionElementSource> linkedSources = indAssociation.getSources();
-	        for (DescriptionElementSource is:linkedSources){
-	            Reference a = is.getCitation();
-	            Reference b = source.getCitation();
-	            String c = is.getCitationMicroReference();
-	            String d = source.getCitationMicroReference();
-
-	            boolean refMatch=false;
-	            boolean microMatch=false;
-
-	            try{
-	                if (a==null && b==null) {
-	                    refMatch=true;
-	                }
-	                if (a!=null && b!=null) {
-	                    if (a.getTitleCache().equalsIgnoreCase(b.getTitleCache())) {
-	                        refMatch=true;
-	                    }
-	                }
-	            }catch(Exception e){}
-
-
-	            try{
-	                if (c==null && d==null) {
-	                    microMatch=true;
-	                }
-	                if(c!=null && d!=null) {
-	                    if(c.equalsIgnoreCase(d)) {
-	                        microMatch=true;
-	                    }
-	                }
-	            }
-	            catch(Exception e){}
-
-	            if (microMatch && refMatch) {
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
-
-	    /**
-	     * @param taxonDescription
-	     * @param sour
-	     * @return
-	     */
-	    private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, OriginalSourceBase<?> sour) {
-	        Set<IdentifiableSource> linkedSources = taxonDescription.getSources();
-	        for (IdentifiableSource is:linkedSources){
-	            Reference a = is.getCitation();
-	            Reference b = sour.getCitation();
-	            String c = is.getCitationMicroReference();
-	            String d = sour.getCitationMicroReference();
-
-	            boolean refMatch=false;
-	            boolean microMatch=false;
-
-	            try{
-	                if (a==null && b==null) {
-	                    refMatch=true;
-	                }
-	                if (a!=null && b!=null) {
-	                    if (a.getTitleCache().equalsIgnoreCase(b.getTitleCache())) {
-	                        refMatch=true;
-	                    }
-	                }
-	            }catch(Exception e){}
-
-
-	            try{
-	                if (c==null && d==null) {
-	                    microMatch=true;
-	                }
-	                if(c!=null && d!=null) {
-	                    if(c.equalsIgnoreCase(d)) {
-	                        microMatch=true;
-	                    }
-	                }
-	            }
-	            catch(Exception e){}
-
-	            if (microMatch && refMatch) {
-	                return false;
-	            }
-
-
 	        }
 	        return true;
 	    }
