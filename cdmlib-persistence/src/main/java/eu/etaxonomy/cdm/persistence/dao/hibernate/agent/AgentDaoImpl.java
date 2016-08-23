@@ -181,23 +181,23 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern" + clazzString);
+            query = session.createQuery("select uuid, id, nomenclaturalTitle, titlecache from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern" + clazzString);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
             if (clazzString != ""){
-                query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() + " where " + clazzString);
+                query = session.createQuery("select uuid, id, nomenclaturalTitle, titleCache from " + type.getSimpleName() + " where " + clazzString);
             } else{
-                query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName());
+                query = session.createQuery("select uuid, id, nomenclaturalTitle, titleCache from " + type.getSimpleName());
             }
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
 
-        return getUuidAndTitleCache(query);
+        return getUuidAndAbbrevTitleCache(query);
     }
 
 
