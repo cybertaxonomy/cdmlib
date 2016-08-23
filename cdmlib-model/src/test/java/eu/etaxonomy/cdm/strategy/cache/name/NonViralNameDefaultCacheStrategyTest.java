@@ -172,7 +172,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         unrankedName.setSpecificEpithet("species");
         unrankedCache = strategy.getNameCache(unrankedName);
 
-        Assert.assertEquals("Correct unranked cache expected", "Genus species [unranked] infraspecific", unrankedCache);
+        Assert.assertEquals("Correct unranked cache expected", "Genus species [infraspec.] infraspecific", unrankedCache);
 
             //infrageneric
         unrankedName.setRank(Rank.INFRAGENERICTAXON());
