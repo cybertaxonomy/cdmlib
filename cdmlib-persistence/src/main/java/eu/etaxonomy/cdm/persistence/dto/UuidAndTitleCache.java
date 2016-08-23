@@ -37,22 +37,35 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	private UUID uuid;
 	private Integer id;
 	private String titleCache;
+	private String abbrevTitleCache;
 	private boolean isOrphaned;
 
+    public UuidAndTitleCache(UUID uuid, Integer id, String titleCache, String abbrevTitleCache) {
+        this.uuid = uuid;
+        this.titleCache = titleCache;
+        this.id = id;
+        this.abbrevTitleCache = abbrevTitleCache;
+    }
     public UuidAndTitleCache(UUID uuid, Integer id, String titleCache) {
         this.uuid = uuid;
         this.titleCache = titleCache;
         this.id = id;
+        this.abbrevTitleCache = null;
     }
 
+    public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache, String abbrevTitleCache) {
+        this(uuid, id, titleCache, abbrevTitleCache);
+        this.type = type;
+        this.isOrphaned = false;
+    }
     public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache) {
-        this(uuid, id, titleCache);
+        this(uuid, id, titleCache, null);
         this.type = type;
         this.isOrphaned = false;
     }
 
-	public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache, Boolean isOrphaned) {
-		this(type, uuid, id, titleCache);
+	public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache, Boolean isOrphaned, String abbrevTitleCache) {
+		this(type, uuid, id, titleCache, abbrevTitleCache);
 		this.isOrphaned = isOrphaned;
 	}
 
@@ -63,6 +76,15 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	public String getTitleCache() {
 		return titleCache;
 	}
+
+
+    /**
+     * @return the titleCache
+     */
+    public String getAbbrevTitleCache() {
+        return abbrevTitleCache;
+    }
+
 
 	/**
 	 * @return the uuid
@@ -87,8 +109,8 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 
     @Override
     public String toString() {
-        return "UuidAndTitleCache [type=" + type + ", uuid=" + uuid + ", id=" + id + ", titleCache=" + titleCache
-                + ", isOrphaned=" + isOrphaned + "]";
+        return "UuidAndTitleCache [type= " + type + ", uuid= " + uuid + ", id=" + id + ", titleCache= " + titleCache
+                + ", isOrphaned=" + isOrphaned + ", abbrevTitleCache= " + abbrevTitleCache +"]";
     }
 
 

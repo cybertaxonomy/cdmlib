@@ -306,6 +306,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return getUuidAndTitleCache(null, null);
     }
 
+    protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
+        List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2]));
+        }
+        return list;
+    }
+
     protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
         List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
 
