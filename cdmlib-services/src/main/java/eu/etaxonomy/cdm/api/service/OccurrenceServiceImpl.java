@@ -462,6 +462,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         // assemble citation
         String citation = fieldUnit.getTitleCache();
+        if((CdmUtils.isBlank(citation) || citation.contains("title cache generation not implemented"))
+                && !fieldUnit.isProtectedTitleCache()){
+            fieldUnit.setTitleCache(null);
+            citation = fieldUnit.getTitleCache();
+        }
         if (!preservedSpecimenAccessionNumbers.isEmpty()) {
             citation += " (";
             for (String accessionNumber : preservedSpecimenAccessionNumbers) {
