@@ -108,4 +108,13 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
     public DeleteResult delete(UUID referenceUuid) {
         return delete(dao.load(referenceUuid));
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IReferenceService#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern) {
+        return dao.getUuidAndAbbrevTitleCache(limit, pattern);
+    }
+
 }

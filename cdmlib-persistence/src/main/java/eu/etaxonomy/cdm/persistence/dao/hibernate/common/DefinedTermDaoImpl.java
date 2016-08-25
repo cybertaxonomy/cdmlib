@@ -213,7 +213,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 		criteria.setProjection(Projections.rowCount());
 
-        return ((Number)criteria.uniqueResult()).intValue();
+		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	@Override
