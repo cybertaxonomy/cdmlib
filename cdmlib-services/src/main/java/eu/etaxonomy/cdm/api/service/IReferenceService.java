@@ -82,4 +82,9 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
 	 * @return
 	 */
 	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths);
+
+
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern);
+
+
 }

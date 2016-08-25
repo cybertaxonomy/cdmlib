@@ -68,4 +68,10 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
 	 */
 	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<OrderHint> orderHints, List<String> propertyPaths);
 
+	/**
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern);
 }
