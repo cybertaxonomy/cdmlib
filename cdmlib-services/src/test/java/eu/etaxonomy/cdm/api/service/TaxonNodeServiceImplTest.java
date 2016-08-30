@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -529,6 +531,43 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	    System.out.println(nodes.size());
 
 	}
+	
+    @Test
+    public void testCompareNaturalOrder() {
+    	/*
+    	 * Classification
+    	 *  * Abies
+    	 *  `- Abies alba
+    	 *  * Pinus
+    	 *  `- Pinus pampa
+    	 */
+    	Classification classification = Classification.NewInstance("Classification");
+    	BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+    	abiesName.setGenusOrUninomial("Abies");
+    	Taxon abies = Taxon.NewInstance(abiesName, null);
+    	BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+    	abiesAlbaName.setGenusOrUninomial("Abies");
+    	abiesAlbaName.setSpecificEpithet("alba");
+    	Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+    	BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+    	pinusName.setGenusOrUninomial("Pinus");
+    	Taxon pinus = Taxon.NewInstance(pinusName, null);
+    	BotanicalName pinusPampaName = BotanicalName.NewInstance(Rank.SPECIES());
+    	pinusPampaName.setGenusOrUninomial("Pinus");
+    	pinusPampaName.setSpecificEpithet("pampa");
+    	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
+    	
+    	classification.addChildTaxon(abies, null, null);
+    	classification.addParentChild(abies, abiesAlba, null, null);
+    	classification.addChildTaxon(pinus, null, null);
+    	classification.addParentChild(pinus, pinusPampa, null, null);
+    	classificationService.save(classification);
+    	
+    	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
+    	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
+    	Collections.sort(allNodes, comparator);
+    	//TODO implement assertion for correct order
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()

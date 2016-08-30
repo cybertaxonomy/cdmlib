@@ -717,22 +717,26 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     }
 
     /**
-     * Returns a
+     * Returns all ancestor nodes of this node
      *
-     * @return
+     * @return a set of all parent nodes
      */
     protected Set<TaxonNode> getAncestors(){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
-       // nodeSet.add(this);
         if(this.getParent() != null){
         	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+        	nodeSet.add(parent);
             nodeSet.addAll(parent.getAncestors());
         }
         return nodeSet;
     }
+    
+    /**
+     * Retrieves the first ancestor of the given rank
+     * @param rank the rank the ancestor should have
+     * @return the first found instance of a parent taxon node with the given rank
+     */
     public TaxonNode getAncestorOfRank(Rank rank){
-        Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
-       // nodeSet.add(this);
         TaxonBase taxon = HibernateProxyHelper.deproxy(this.getTaxon(), Taxon.class);
         if (taxon == null){
             return null;
