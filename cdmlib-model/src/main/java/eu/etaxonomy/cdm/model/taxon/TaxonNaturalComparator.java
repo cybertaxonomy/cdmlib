@@ -24,24 +24,6 @@ public class TaxonNaturalComparator implements Comparator<TaxonNode> {
 
 	@Override
 	public int compare(TaxonNode node1, TaxonNode node2) {
-//		TaxonNode node1 = null;
-//		TaxonNode node2 = null;
-//		if (taxon1.getTaxonNodes().size()>0 && taxon2.getTaxonNodes().size()>0){
-//			for (TaxonNode node: taxon1.getTaxonNodes()){
-//				if (node.getClassification().equals(classification)){
-//					node1= node;
-//					break;
-//				}
-//			}
-//			for (TaxonNode node: taxon2.getTaxonNodes()){
-//				if (node.getClassification().equals(classification)){
-//					node2= node;
-//					break;
-//				}
-//			}
-//		}else{
-//			return 0;
-//		}
 		if (node1.isAncestor(node2)) {
             return 1;
         }
@@ -75,24 +57,23 @@ public class TaxonNaturalComparator implements Comparator<TaxonNode> {
 					TaxonNode lastEqualTreeIndexAncestorNode2 = null;
 					while (ancestorsNode1.hasNext()){
 						TaxonNode next1 = ancestorsNode1.next();
-						if (next1.treeIndex().equals(lastEqualAncestorTreeIndex)){
+						String[] split = next1.treeIndex().split("#");
+						if (split[split.length-1].equals(lastEqualAncestorTreeIndex)){
 							lastEqualTreeIndexAncestorNode1 = next1;
 						}
 					}
 					while (ancestorsNode2.hasNext()){
 						TaxonNode next2 = ancestorsNode2.next();
-						if (next2.treeIndex().equals(lastEqualAncestorTreeIndex)){
+						String[] split = next2.treeIndex().split("#");
+						if (split[split.length-1].equals(lastEqualAncestorTreeIndex)){
 							lastEqualTreeIndexAncestorNode2 = next2;
 						}
 					}
 					return lastEqualTreeIndexAncestorNode1.getSortIndex().compareTo(lastEqualTreeIndexAncestorNode2.getSortIndex());
-
 				}
 			}
 			lastEqualAncestorTreeIndex = splitNode1[i];
 		}
-
 		return 0;
 	}
-
 }
