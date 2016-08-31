@@ -531,7 +531,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	    System.out.println(nodes.size());
 
 	}
-	
+
     @Test
     public void testCompareNaturalOrder() {
     	/*
@@ -556,17 +556,43 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	pinusPampaName.setGenusOrUninomial("Pinus");
     	pinusPampaName.setSpecificEpithet("pampa");
     	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
-    	
+
+        BotanicalName abiesBalsameaName = BotanicalName.NewInstance(Rank.SPECIES());
+        abiesBalsameaName.setGenusOrUninomial("Abies");
+        abiesBalsameaName.setSpecificEpithet("balsamea");
+        Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);
+
+
     	classification.addChildTaxon(abies, null, null);
-    	classification.addParentChild(abies, abiesAlba, null, null);
+    	TaxonNode abiesAlbaNode = classification.addParentChild(abies, abiesAlba, null, null);
     	classification.addChildTaxon(pinus, null, null);
     	classification.addParentChild(pinus, pinusPampa, null, null);
+    	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
     	classificationService.save(classification);
-    	
+
     	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
-    	//TODO implement assertion for correct order
+    	for (TaxonNode node: allNodes){
+    	    System.out.println(node.getTaxon().getTitleCache());
+    	}
+    	Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
+    	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
+    	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
+
+    	taxonNodeService.moveTaxonNode(balsameaNode, abiesAlbaNode,1);
+    	classification = classificationService.load(classification.getUuid());
+
+       allNodes = new ArrayList<>(classification.getAllNodes());
+        Collections.sort(allNodes, comparator);
+        for (TaxonNode node: allNodes){
+            System.out.println(node.getTaxon().getTitleCache());
+        }
+        Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
+        Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
+        Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
+
+
     }
 
     /* (non-Javadoc)
