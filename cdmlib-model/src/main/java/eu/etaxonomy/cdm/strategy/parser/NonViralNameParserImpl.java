@@ -1058,7 +1058,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		        .replaceAll(oWs + "[xX]" + oWs + "(?=[A-Z])", " " + hybridSign + " ")
 		        .replaceAll(hybridFull, " " + hybridSign).trim();
 		if (result.contains(hybridSign + " ") &&
-		        result.matches("^" + capitalEpiWord + oWs + hybridSign + oWs + ".*")){
+		        result.matches("^" + capitalEpiWord + oWs + hybridSign + oWs + nonCapitalEpiWord + ".*")){
 		    result = result.replaceFirst(hybridSign + oWs, hybridSign);
 		}
 		return result;
