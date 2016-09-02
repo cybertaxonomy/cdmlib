@@ -635,7 +635,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref){
         UpdateResult result = new UpdateResult();
-        newTaxon = (Taxon) taxonService.save(newTaxon);
+
+        UUID taxonUUID = taxonService.saveOrUpdate(newTaxon);
+        newTaxon = (Taxon) taxonService.load(taxonUUID);
 
         TaxonNode parent = dao.load(parentNodeUuid);
         TaxonNode child = null;

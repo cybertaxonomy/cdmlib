@@ -431,6 +431,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
             tags.addAll(handleTaggedAutonym(nonViralName));
         }else{ //not Autonym
 //			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
+
             List<TaggedText> nameTags = getTaggedName(nonViralName);
             tags.addAll(nameTags);
             String authorCache = getAuthorshipCache(nonViralName);
@@ -835,6 +836,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
 
     private String getOriginalNameString(NonViralName<?> currentName, List<TaggedText> originalNameTaggs) {
 		List<String> originalNameStrings = new ArrayList<String>(1);
+		currentName = HibernateProxyHelper.deproxy(currentName, NonViralName.class);
+		//Hibernate.initialize(currentName.getRelationsToThisName());
     	for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
 			NameRelationshipType type = nameRel.getType();
     		if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
