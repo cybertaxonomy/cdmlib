@@ -647,6 +647,9 @@ public class NonViralNameParserImplTest {
         assertEquals("Name must have Platanthera as second hybrid parent", "Platanthera", secondParent.getTitleCache());
         assertEquals("Hybrid name must have genus as rank", Rank.GENUS(), name1.getRank());
 
+        name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+
         //Subspecies first hybrid
         name1 = parser.parseFullName("Abies alba subsp. beta "+UTF8.HYBRID+" Pinus bus", botanicCode, null);
         assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
