@@ -37,6 +37,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
+
 	ArrayList<HashMap<String, String>> recordList = null;
 
 	private final CdmApplicationController appCtr = null;

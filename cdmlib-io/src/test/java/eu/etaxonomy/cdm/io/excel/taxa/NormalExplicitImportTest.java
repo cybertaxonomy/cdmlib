@@ -85,6 +85,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;
 	private IImportConfigurator configuratorXslx;
+	private IImportConfigurator configuratorTropicos;
 
 	@Before
 	public void setUp() throws URISyntaxException {
@@ -106,7 +107,11 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		configuratorXslx = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configuratorXslx);
 
-
+		String inputFileTropicos = "/eu/etaxonomy/cdm/io/excel/taxa/ExcelTropicosImportExampleTest-input.xlsx";
+        url = this.getClass().getResource(inputFileTropicos);
+        assertNotNull("URL for the test file '" + inputFileTropicos + "' does not exist", url);
+        configuratorTropicos = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+        assertNotNull("Configurator could not be created", configuratorTropicos);
 	}
 
 	@Test
@@ -116,7 +121,11 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-	@DataSet
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="NormalExplicitImportTest.xml")
+    })
 	public void testDoInvoke() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator).isSuccess();
@@ -173,7 +182,11 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-	@DataSet
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="NormalExplicitImportTest.xml")
+    })
 	public void testDoInvokeXslx() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configuratorXslx).isSuccess();
@@ -335,6 +348,23 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
 
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="NormalExplicitImportTest.xml")
+    })
+    public void testDoInvokeTropicos() {
+        //printDataSet(System.out);
+        boolean result = defaultImport.invoke(configuratorTropicos).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+        int count = nameService.count(null);
+
+        assertEquals("Number of TaxonNames should be 19", 19, count);
+        int countTaxa = taxonService.count(Taxon.class);
+        assertEquals("Number of Taxa should be 18", 18, countTaxa);
     }
 
 }

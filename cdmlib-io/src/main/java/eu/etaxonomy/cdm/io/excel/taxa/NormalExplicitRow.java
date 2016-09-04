@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 
 /**
@@ -20,7 +21,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
  * @version 1.0
  */
 public class NormalExplicitRow extends ExcelRowBase {
-	
+
 	private int id;
 	private int parentId;
 	private String rank;
@@ -30,14 +31,16 @@ public class NormalExplicitRow extends ExcelRowBase {
 	private String commonName;
 	private String language;
 	private String reference;
-	
+	private String date;
+	private String family;
+
 	//Sets
 	private TreeMap<Integer, String> distributions = new TreeMap<Integer, String>();
-	
+
 	private TreeMap<Integer, String> protologues = new TreeMap<Integer, String>();
-	
+
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
-	
+
 	public NormalExplicitRow() {
 		this.id = 0;
 		this.parentId = 0;
@@ -48,20 +51,22 @@ public class NormalExplicitRow extends ExcelRowBase {
 		this.commonName =  "";
 		this.language =  "";
 		this.reference =  "";
+		this.setDate("");
+		this.setFamily("");
 	}
-	
+
 	public NormalExplicitRow(String name, int parentId) {
 		this(name, parentId, null);
 	}
-	
+
 	public NormalExplicitRow(String scientificName, int parentId, String reference) {
 		this.parentId = parentId;
 		this.scientificName = scientificName;
 		this.reference = reference;
 	}
-	
-// **************************** GETTER / SETTER *********************************/	
-	
+
+// **************************** GETTER / SETTER *********************************/
+
 	/**
 	 * @return the parentId
 	 */
@@ -186,7 +191,7 @@ public class NormalExplicitRow extends ExcelRowBase {
 	public void putDistribution(int key, String distribution){
 		this.distributions.put(key, distribution);
 	}
-	
+
 	public List<String> getDistributions() {
 		return getOrdered(distributions);
 	}
@@ -194,7 +199,7 @@ public class NormalExplicitRow extends ExcelRowBase {
 	public void putProtologue(int key, String protologue){
 		this.protologues.put(key, protologue);
 	}
-	
+
 	public List<String> getProtologues() {
 		return getOrdered(protologues);
 	}
@@ -202,11 +207,11 @@ public class NormalExplicitRow extends ExcelRowBase {
 	public void putImage(int key, String image){
 		this.images.put(key, image);
 	}
-	
+
 	public List<String> getImages() {
 		return getOrdered(images);
 	}
-	
+
 
 	private List<String> getOrdered(TreeMap<Integer, String> tree) {
 		List<String> result = new ArrayList<String>();
@@ -216,7 +221,35 @@ public class NormalExplicitRow extends ExcelRowBase {
 		return result;
 	}
 
+    /**
+     * @return the date
+     */
+    public String getDate() {
+        return date;
+    }
+
+    /**
+     * @param date the date to set
+     */
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    /**
+     * @return the family
+     */
+    public String getFamily() {
+        return family;
+    }
+
+    /**
+     * @param family the family to set
+     */
+    public void setFamily(String family) {
+        this.family = family;
+    }
 
 
-	
+
+
 }

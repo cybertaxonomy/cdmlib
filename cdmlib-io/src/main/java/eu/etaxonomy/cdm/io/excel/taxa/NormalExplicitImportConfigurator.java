@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -25,23 +26,26 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
 	private static final Logger logger = Logger.getLogger(NormalExplicitImportConfigurator.class);
-	
+
 	private boolean isDoMatchTaxa = true;
+
+	private UUID parentUUID;
 
 
 	//	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
+	@Override
+    protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				NormalExplicitImport.class
 		};
 	};
-	
-	public static NormalExplicitImportConfigurator NewInstance(URI uri, ICdmDataSource destination, 
+
+	public static NormalExplicitImportConfigurator NewInstance(URI uri, ICdmDataSource destination,
 						NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){
 		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
-	
-	
+
+
 	/**
 	 * @param url
 	 * @param destination
@@ -56,14 +60,15 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		setDbSchemaValidation(dbSchemaValidation);
 		setNomenclaturalCode(nomenclaturalCode);
 	}
-	
-	
-	
+
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public TaxonExcelImportState getNewState() {
+	@Override
+    public TaxonExcelImportState getNewState() {
 		return new TaxonExcelImportState(this);
 	}
 
@@ -81,14 +86,28 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		}
 		return sourceReference;
 	}
-	
-	
-	public boolean isReuseExistingTaxaWhenPossible() {
+
+
+	@Override
+    public boolean isReuseExistingTaxaWhenPossible() {
 		return isDoMatchTaxa;
 	}
 
-	public void setReuseExistingTaxaWhenPossible(boolean isDoMatchTaxa) {
+	@Override
+    public void setReuseExistingTaxaWhenPossible(boolean isDoMatchTaxa) {
 		this.isDoMatchTaxa = isDoMatchTaxa;
 	}
-	
+
+
+       public UUID getParentUUID(){
+        return parentUUID;
+    }
+
+
+    public void setParentUUID(UUID parentUUID) {
+        this.parentUUID = parentUUID;
+    }
+
+
+
 }
