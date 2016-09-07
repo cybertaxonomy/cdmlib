@@ -538,6 +538,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	 * Classification
     	 *  * Abies
     	 *  `- Abies alba
+    	 *   - Abies balsamea
     	 *  * Pinus
     	 *  `- Pinus pampa
     	 */
@@ -565,14 +566,15 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     	classification.addChildTaxon(abies, null, null);
     	TaxonNode abiesAlbaNode = classification.addParentChild(abies, abiesAlba, null, null);
+    	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
     	classification.addChildTaxon(pinus, null, null);
     	classification.addParentChild(pinus, pinusPampa, null, null);
-    	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
     	classificationService.save(classification);
 
     	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
+    	System.out.println("---Before sorting---");
     	for (TaxonNode node: allNodes){
     	    System.out.println(node.getTaxon().getTitleCache());
     	}
@@ -585,6 +587,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
        allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
+        System.out.println("\n---After sorting---");
         for (TaxonNode node: allNodes){
             System.out.println(node.getTaxon().getTitleCache());
         }
