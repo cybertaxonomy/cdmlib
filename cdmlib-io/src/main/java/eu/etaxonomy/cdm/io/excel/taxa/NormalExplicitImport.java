@@ -327,8 +327,11 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 								String message = "Accepted/valid taxon could not be found. Please check referential integrity.";
 								fireWarningEvent(message, state, 8);
 							}else{
-								acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
-								getTaxonService().saveOrUpdate(acceptedTaxon);
+							    if (parentId != 0){
+							        //if no relation was defined in file skip relationship creation
+							        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+							        getTaxonService().saveOrUpdate(acceptedTaxon);
+							    }
 							}
 						} catch (Exception e) {
 							String message = "Unhandled exception (%s) occurred during synonym import/update";
