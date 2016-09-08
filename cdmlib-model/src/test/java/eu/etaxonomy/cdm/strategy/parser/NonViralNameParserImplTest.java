@@ -2025,6 +2025,12 @@ public class NonViralNameParserImplTest {
         assertEquals("109", name.getNomenclaturalMicroReference());
         assertEquals("1893", nomRef.getYear());
 
+        //Accent graph in author name #6057
+        name = parser.parseReferencedName("Sedum plicatum O`Brian");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "O`Brian", name.getCombinationAuthorship().getNomenclaturalTitle());
+
+
  }
 
 }
