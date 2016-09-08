@@ -143,4 +143,20 @@ public class GbifQueryServiceWrapperTest {
 
     }
 
+    @Test
+    public void testGbifWebServiceNoParameters() {
+    	OccurenceQuery query = new OccurenceQuery(null, null, null, null, null, null, null, null, null);
+    	GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
+    	try {
+    		Collection<GbifResponse> gbifResponse = service.query(query);
+    	} catch (ClientProtocolException e) {
+    		Assert.fail(e.getMessage());
+    	} catch (IOException e) {
+    		Assert.fail(e.getMessage());
+    	} catch (URISyntaxException e) {
+    		Assert.fail(e.getMessage());
+    	}
+    	
+    }
+
 }
