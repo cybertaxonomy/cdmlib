@@ -2030,6 +2030,11 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "O`Brian", name.getCombinationAuthorship().getNomenclaturalTitle());
 
+        //-e-  #6060
+        name = parser.parseReferencedName("Thamniopsis stenodictyon (Sehnem) Oliveira-e-Silva & O.Yano");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Team team = (Team)name.getCombinationAuthorship();
+        assertEquals( "Oliveira-e-Silva", team.getTeamMembers().get(0).getNomenclaturalTitle());
 
  }
 
