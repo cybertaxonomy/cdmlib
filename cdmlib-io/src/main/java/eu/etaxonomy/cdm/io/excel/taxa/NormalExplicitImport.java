@@ -631,7 +631,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 			if (StringUtils.isNotBlank(reference)) {
 
-			    INomenclaturalReference ref = parser.parseReferenceTitle(reference, date, false);
+			    INomenclaturalReference ref = parser.parseReferenceTitle(reference, date, true);
 			    if (ref.getAuthorship() == null){
 			        ref.setAuthorship(taxonNameBase.getCombinationAuthorship());
 			    }
