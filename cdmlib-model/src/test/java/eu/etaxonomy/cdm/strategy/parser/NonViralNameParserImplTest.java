@@ -2036,6 +2036,11 @@ public class NonViralNameParserImplTest {
         Team team = (Team)name.getCombinationAuthorship();
         assertEquals( "Oliveira-e-Silva", team.getTeamMembers().get(0).getNomenclaturalTitle());
 
+        //Vorabdr.
+        name = parser.parseReferencedName("Ophrys hystera  Kreutz & Ruedi Peter in J. Eur. Orchideen 30(Vorabdr.): 128. 1997");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
+
  }
 
 }
