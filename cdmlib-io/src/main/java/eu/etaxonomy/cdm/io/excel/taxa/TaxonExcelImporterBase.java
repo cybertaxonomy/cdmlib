@@ -56,6 +56,7 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 
 	protected static final String SYNONYM_COLUMN = "Synonym";
 	protected static final String DATE_COLUMN = "Date";
+	protected static final String YEAR_COLUMN = "Year";
 	protected static final String FAMILY_COLUMN = "Family";
 
 }
