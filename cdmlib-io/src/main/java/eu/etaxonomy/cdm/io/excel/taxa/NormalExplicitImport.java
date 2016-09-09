@@ -635,9 +635,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			    if (ref.getAuthorship() == null){
 			        ref.setAuthorship(taxonNameBase.getCombinationAuthorship());
 			    }
-			    if (ref.getAbbrevTitle() == null){
-			        ref.setAbbrevTitle(reference);
-			    }
+
 			    ref.setProtectedAbbrevTitleCache(false);
 			    ref.setProtectedTitleCache(false);
 
