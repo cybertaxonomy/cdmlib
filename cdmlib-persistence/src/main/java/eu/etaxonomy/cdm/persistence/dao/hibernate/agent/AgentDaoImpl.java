@@ -181,16 +181,22 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, nomenclaturalTitle, titlecache from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern" + clazzString);
+            if (clazzString != ""){
+                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() +" WHERE (nomenclaturalTitle LIKE :pattern OR (nomenclaturalTitle IS NULL AND titleCache LIKE :pattern) AND " + clazzString);
+
+            } else{
+                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() +" WHERE nomenclaturalTitle LIKE :pattern");
+
+            }
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
             if (clazzString != ""){
-                query = session.createQuery("select uuid, id, nomenclaturalTitle, titleCache from " + type.getSimpleName() + " where " + clazzString);
+                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() + " WHERE " + clazzString);
             } else{
-                query = session.createQuery("select uuid, id, nomenclaturalTitle, titleCache from " + type.getSimpleName());
+                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName());
             }
         }
         if (limit != null){
