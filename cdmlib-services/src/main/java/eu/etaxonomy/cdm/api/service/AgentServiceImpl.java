@@ -246,7 +246,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
      */
     @Override
     public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, Class clazz) {
-        return dao.getUuidAndAbbrevTitleCache(null, null, clazz);
+        return dao.getUuidAndAbbrevTitleCache(null, pattern, clazz);
     }
 
 }
