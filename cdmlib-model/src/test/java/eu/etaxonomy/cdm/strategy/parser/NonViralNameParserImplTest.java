@@ -670,18 +670,6 @@ public class NonViralNameParserImplTest {
         assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus var. beta", name1.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
 
-        //Defined rank for infraspecific taxa #6032
-        name1 = parser.parseFullName("Berberis wilsoniae aggregata", botanicCode, Rank.VARIETY());
-        Rank rank = name1.getRank();
-        System.out.println(name1.getTitleCache());
-        System.out.println(rank.getTitleCache());
-
-//        name1 = parser.parseFullName("Berberis aggregata aggregata × Berberis wilsoniae aggregata", botanicCode, Rank.VARIETY());
-//        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
-//        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
-//        assertEquals("Title cache must be correct", name1, name1.getTitleCache());
-//        assertEquals("Hybrid name must have the defined rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
-
         //hybrids with authors
         name1 = parser.parseFullName("Abies alba L. \u00D7 Pinus bus Mill.", botanicCode, null);
         assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
