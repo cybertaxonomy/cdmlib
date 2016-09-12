@@ -2029,6 +2029,6 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
 
- }
+    }
 
 }
