@@ -625,7 +625,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         //get treeindex for each taxonUUID
         Map<UUID, String> taxonIdTreeIndexMap = dao.treeIndexForTaxonUuids(classificationUuid, originalTaxonUuids);
 
-        //build treeindex tree or list
+        //build treeindex list (or tree)
         List<String> treeIndexClosure = new ArrayList<>();
         for (String treeIndex : taxonIdTreeIndexMap.values()){
             String[] splits = treeIndex.substring(1).split(ITreeNode.separator);

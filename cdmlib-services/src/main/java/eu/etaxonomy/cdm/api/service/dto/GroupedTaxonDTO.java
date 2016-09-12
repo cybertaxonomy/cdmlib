@@ -65,4 +65,15 @@ public class GroupedTaxonDTO {
     public void setGroupTaxonName(String groupTaxonName) {
         this.groupTaxonName = groupTaxonName;
     }
+
+//*********************** toString() ***************************/
+    @Override
+    public String toString() {
+        String result = "taxon:" + (taxonUuid == null? "-":taxonUuid.toString())
+                + "; group:" + (groupTaxonUuid == null? "-":groupTaxonUuid.toString())
+                + "; group name:" + (groupTaxonName == null? "-":groupTaxonName.toString());
+        return result;
+    }
+
+
 }
