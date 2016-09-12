@@ -144,7 +144,9 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         if(totalWork == 0 ){
             return null;
         }
+
         double result = this.workDone * 100 / this.totalWork ;
+        result = Math.ceil((result * 100.0)) / 100.0;
         return result;
     }
 

@@ -9,7 +9,9 @@ public interface IRestServiceProgressMonitor extends IProgressMonitor{
     public String getSubTask();
 
     /**
-     * @return the percentage of the work done, or <code>null</code> in case the <code>totalWork</code> was <code>0</code>.
+     * @return the percentage with an accuracy of two decimal digits
+     * of the work done, or <code>null</code>
+     * in case the <code>totalWork</code> was <code>0</code>.
      */
     public Double getPercentage();
 
