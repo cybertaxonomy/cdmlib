@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -45,7 +48,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -68,17 +70,17 @@ public class Datasource {
 		dataSource = lsDataSources.get(1);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		String server = "localhost";
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
-		database = "cdm36";
-//		database = "350_editor_test";
-		String username = "edit";
-		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-//		String server = "160.45.63.171";
-//		String database = "cdm_production_algaterra";
+//		String server = "localhost";
+//		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
+//		database = "cdm36";
+////		database = "cdm_production_edaphobase";
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+		String server = "160.45.63.171";
+		String database = "cdm_production_edaphobase";
+		String username = "edit";
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
 //		String server = "test.e-taxonomy.eu";
@@ -99,12 +101,12 @@ public class Datasource {
 //		username = "pesiexport";
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
-		//H2
-        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
-//		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
-//      String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-		username = "sa";
-    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", path,   NomenclaturalCode.ICNAFP);
+//		//H2
+//        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
+////		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
+////      String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+//		username = "sa";
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", path,   NomenclaturalCode.ICNAFP);
 
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
@@ -127,12 +129,14 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
-		Classification classification = appCtr.getClassificationService().list(null, null, null, null, null).get(0);
+//		Classification classification = appCtr.getClassificationService().list(null, null, null, null, null).get(0);
 //		logger.warn(classification.getMicroReference());
 //        logger.warn(classification.getName());
 
 //		TransactionStatus tx = appCtr.startTransaction();
-		appCtr.getCommonService().getReferencingObjects(classification);
+
+		testGroupedTaxa(appCtr);
+
 
 //		int n = appCtr.getAgentService().count(null);
 //		logger.warn("End adding " + n + " persons");
@@ -160,6 +164,21 @@ public class Datasource {
 		appCtr.close();
 		System.exit(0);
 	}
+
+
+    /**
+     * @param appCtr
+     */
+    private void testGroupedTaxa(CdmApplicationController appCtr) {
+        UUID classificationUuid = UUID.fromString("91231ebf-1c7a-47b9-a56c-b45b33137244");
+		UUID taxonUuid1 = UUID.fromString("3bae1c86-1235-4e2e-be63-c7f8c4410527");
+		UUID taxonUuid2 = UUID.fromString("235d3872-defe-4b92-bf2f-75a7c91510de");
+		List<UUID> taxonUuids = Arrays.asList(new UUID[]{taxonUuid1, taxonUuid2});
+		Rank maxRank = DefinedTermBase.getTermByClassAndUUID(Rank.class, UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6"));
+		Rank minRank = DefinedTermBase.getTermByClassAndUUID(Rank.class, UUID.fromString("78786e16-2a70-48af-a608-494023b91904"));
+        List<GroupedTaxonDTO> groupedTaxa = appCtr.getClassificationService().groupTaxaByHigherTaxon(taxonUuids, classificationUuid, minRank, maxRank);
+        System.out.println(groupedTaxa);
+    }
 
 
     private void addPerson(CdmApplicationController appCtr) {
