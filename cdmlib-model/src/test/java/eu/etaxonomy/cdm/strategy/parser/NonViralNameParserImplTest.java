@@ -2029,6 +2029,11 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
 
+        // Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij
+        name = parser.parseReferencedName("Ophrys hystera  Kreutz & Ruedi Peter in J. Eur. Orchideen 30(Vorabdr.): 128. 1997");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
+
     }
 
 }
