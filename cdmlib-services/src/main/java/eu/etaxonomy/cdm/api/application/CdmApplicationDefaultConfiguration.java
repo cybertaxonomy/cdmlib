@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -167,6 +168,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IProgressMonitorService progressMonitorService;
 	@Autowired
 	private IEntityValidationService entityValidationService;
+	@Autowired
+    private IPreferenceService preferenceService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
@@ -362,6 +365,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	public IFeatureNodeService getFeatureNodeService(){
 		return featureNodeService;
 	}
+
+	@Override
+    public IPreferenceService getPreferenceService(){
+        return preferenceService;
+    }
 
 	@Override
 	public IVocabularyService getVocabularyService(){
