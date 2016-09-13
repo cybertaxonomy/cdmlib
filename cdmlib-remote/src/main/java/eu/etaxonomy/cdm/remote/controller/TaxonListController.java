@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,8 +67,8 @@ import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
-import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -117,6 +119,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
         binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
+        binder.registerCustomEditor(PresenceAbsenceTerm.class, new TermBasePropertyEditor<PresenceAbsenceTerm>(termService));
 
     }
 
@@ -160,7 +163,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "classificationUuid", required = false) UUID classificationUuid,
             @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
-            @RequestParam(value = "status", required = false) Set<PresenceAbsenceTerm> status,
+            @RequestParam(value = "status", required = false) PresenceAbsenceTerm[] status,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
@@ -202,8 +205,13 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         Classification classification = classificationService.load(classificationUuid);
 
+        Set<PresenceAbsenceTerm> statusSet = null;
+        if(status != null) {
+                statusSet = new HashSet<PresenceAbsenceTerm>(Arrays.asList(status));
+        }
+
         return service.findTaxaAndNamesByFullText(searchModes, query,
-                classification, areaSet, status, null,
+                classification, areaSet, statusSet, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 OrderHint.NOMENCLATURAL_SORT_ORDER.asList(), getSimpleTaxonInitStrategy());
     }
