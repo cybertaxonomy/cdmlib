@@ -60,7 +60,9 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return find(key);
     }
 
+
 	@Override
+    @Transactional(readOnly = false)
 	public void set(CdmPreference preference) {
 		dao.set(preference);
 	}

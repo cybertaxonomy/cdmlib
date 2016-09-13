@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -554,6 +555,11 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	@Override
 	public final IFeatureTreeService getFeatureTreeService(){
 		return configuration.getFeatureTreeService();
+	}
+
+	@Override
+	public final IPreferenceService getPreferenceService(){
+	    return configuration.getPreferenceService();
 	}
 
 
