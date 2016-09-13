@@ -283,7 +283,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             //check if unit already exists
             DerivedUnitFacade derivedUnitFacade = null;
-            if(((Abcd206ImportConfigurator)state.getConfig()).isIgnoreImportOfExistingSpecimens()){
+            if(((Abcd206ImportConfigurator)state.getConfig()).isIgnoreImportOfExistingSpecimen()){
                 SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(state.getDataHolder().getUnitID(), state);
                 if(existingSpecimen!=null && existingSpecimen.isInstanceOf(DerivedUnit.class)){
                     DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);

@@ -317,10 +317,6 @@ public abstract class SpecimenImportConfiguratorBase<STATE extends SpecimenImpor
         return removeCountryFromLocalityText;
     }
 
-    public boolean isIgnoreImportOfExistingSpecimens(){
-        return ignoreImportOfExistingSpecimen;
-    }
-
     public OccurenceQuery getOccurenceQuery(){
         return query;
     }
