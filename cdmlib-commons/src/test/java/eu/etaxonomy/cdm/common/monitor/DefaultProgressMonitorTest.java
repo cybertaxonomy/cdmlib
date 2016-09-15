@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -23,9 +24,6 @@ public class DefaultProgressMonitorTest {
     @Test
     public void testRoundingWithoutSubProgressMonitor() {
         DefaultProgressMonitor monitor = new DefaultProgressMonitor();
-        int subTaskTicks = 3273;
-
-        int subTasks = 130;
         monitor.beginTask("Hallo", steps);
         for (int i = 0; i<steps; i++){
             monitor.worked(1);
@@ -63,6 +61,14 @@ public class DefaultProgressMonitorTest {
         monitor.done();
         System.out.println(monitor.getPercentage());
         System.out.println(monitor.getPercentageRounded(3));
+    }
+
+    @Test
+    public void testPercentage() {
+        DefaultProgressMonitor monitor = DefaultProgressMonitor.NewInstance();
+        monitor.beginTask("test", 33);
+        monitor.worked(5);
+        Assert.assertEquals(Double.valueOf(15.15152), Double.valueOf(monitor.getPercentage()));
     }
 
 
