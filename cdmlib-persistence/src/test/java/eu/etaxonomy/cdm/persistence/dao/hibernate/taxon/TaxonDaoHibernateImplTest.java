@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -64,7 +62,6 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -160,63 +157,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         logger.warn("testInit()");
         assertNotNull("Instance of ITaxonDao expected",taxonDao);
         assertNotNull("Instance of IReferenceDao expected",referenceDao);
-    }
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)}
-     * .
-     */
-    @Test
-    @DataSet
-    public void testGetRootTaxa() {
-        Reference sec1 = referenceDao.findById(1);
-        assert sec1 != null : "sec1 must exist";
-        Reference sec2 = referenceDao.findById(2);
-        assert sec2 != null : "sec2 must exist";
-
-        List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        assertEquals("There should be one root taxon", 1, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(sec1, CdmFetch.FETCH_CHILDTAXA(), true, false);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        assertEquals("There should be one root taxon", 1, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec1, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        assertEquals("There should be one root taxon", 1, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(Rank.FAMILY(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Root taxa rank Family (" + rootTaxa.size() + "):");
-            for (Taxon taxon : rootTaxa) {
-                logger.debug(taxon.getTitleCache());
-            }
-        }
-        assertEquals("There should be one root taxon rank Family", 1, rootTaxa.size());
-        rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        if (logger.isDebugEnabled()) {
-            logger.debug("Root taxa rank Genus (" + rootTaxa.size() + "):");
-            for (Taxon taxon : rootTaxa) {
-                logger.debug(taxon.getTitleCache());
-            }
-        }
-        assertEquals("There should be 22 root taxa rank Genus", 22, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(Rank.SPECIES(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Root taxa rank Species (" + rootTaxa.size() + "):");
-            for (Taxon taxon : rootTaxa) {
-                logger.debug(taxon.getTitleCache());
-            }
-        }
-        assertEquals("There should be 4 root taxa rank Species", 3, rootTaxa.size());
     }
 
     /**
@@ -791,19 +731,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    public void testDeleteWithChildren() {
-        Taxon taxonWithChildren = (Taxon)taxonDao.findByUuid(mimas);
-        assert taxonWithChildren != null : "taxon must exist";
-        assertEquals(taxonWithChildren.getTaxonomicChildrenCount(), 2);
-        Taxon parent = (Taxon)taxonDao.findByUuid(sphingidae);
-        assertSame(taxonWithChildren.getTaxonomicParent(), parent);
-        assertEquals(parent.getTaxonomicChildrenCount(), 204);
-        taxonDao.delete(taxonWithChildren);
-        assertEquals(parent.getTaxonomicChildrenCount(), 203);
-    }
-
-    @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testFindDeleted() {
         TaxonBase<?> taxon = taxonDao.findByUuid(acherontia);
@@ -929,8 +856,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
 
-        assertEquals("getTaxonomicChildrenCount should return 1 in this view",1,taxon.getTaxonomicChildrenCount());
-        assertEquals("getRelationsToThisTaxon should contain 1 TaxonRelationship in this view",1,taxon.getRelationsToThisTaxon().size());
+       assertEquals("getRelationsToThisTaxon should contain 1 TaxonRelationship in this view",1,taxon.getRelationsToThisTaxon().size());
     }
 
     @Test
@@ -940,7 +866,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
 
-        assertEquals("getTaxonomicChildrenCount should return 0 in this view",0,taxon.getTaxonomicChildrenCount());
         assertTrue("getRelationsToThisTaxon should contain 0 TaxonRelationship in this view",taxon.getRelationsToThisTaxon().isEmpty());
     }
 

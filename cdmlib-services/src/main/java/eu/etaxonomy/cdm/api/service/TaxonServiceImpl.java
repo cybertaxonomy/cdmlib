@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -123,7 +122,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -198,43 +196,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return dao.getTaxaByName(name, sec);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * merge with getRootTaxa(Reference sec, ..., ...)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean)
-     */
-    @Override
-    public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren) {
-        if (cdmFetch == null){
-            cdmFetch = CdmFetch.NO_FETCH();
-        }
-        return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
-    }
-
-    @Override
-    public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,boolean withMisapplications, List<String> propertyPaths) {
-        return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
-    }
-
     @Override
     public List<RelationshipBase> getAllRelationships(int limit, int start){
         return dao.getAllRelationships(limit, start);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.TaxonRelationshipType) ?
-     */
-    @Override
-    @Deprecated
-    public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary() {
-
-        String taxonRelTypeVocabularyId = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
-        UUID uuid = UUID.fromString(taxonRelTypeVocabularyId);
-        OrderedTermVocabulary<TaxonRelationshipType> taxonRelTypeVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return taxonRelTypeVocabulary;
     }
 
     @Override
@@ -1349,11 +1313,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public String getPhylumName(TaxonNameBase name){
         return this.dao.getPhylumName(name);
-    }
-
-    @Override
-    public long deleteSynonymRelationships(Synonym syn, Taxon taxon) {
-        return dao.deleteSynonymRelationships(syn, taxon);
     }
 
     @Override

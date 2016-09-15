@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -59,41 +58,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
-
-    /**
-     * Computes all Taxon instances that do not have a taxonomic parent.
-     * @param sec The concept reference that the taxon belongs to
-     *
-     * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren);
-
-    /**
-     * Computes all Taxon instances which name is of a certain Rank.
-     * @param rank The rank of the taxon name
-     * @param sec The concept reference that the taxon belongs to
-     * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-     * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
-     * the misapplied name are not returned.<Br>Default: true.
-     * @param propertyPaths
-     *            properties to be initialized, For detailed description and
-     *            examples <b>please refer to:</b>
-     *            {@link IBeanInitializer#initialize(Object, List)}. <Br>
-     *            Default: true.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 
     /**
      * Computes all relationships.
@@ -103,14 +72,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * FIXME candidate for harmonization - rename to listRelationships
      */
     public List<RelationshipBase> getAllRelationships(int limit, int start);
-
-    /**
-     * Returns TaxonRelationshipType vocabulary
-     * @return
-     * @deprecated use TermService#getVocabulary(VocabularyType) instead
-     */
-    @Deprecated
-    public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary();
 
     /**
      * Returns a list of taxa that matches the name string and the sec reference
@@ -215,25 +176,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
   public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
              TaxonRelationshipType oldRelationshipType,
             SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
-    /**
-     * Deletes all synonym relationships of a given synonym. If taxon is given
-     * only those relationships to the taxon are deleted.
-     *
-     * @param syn
-     *            the synonym
-     * @param taxon
-     * @return
-     * @deprecated This method must no longer being used since the
-     *             SynonymRelationship is annotated at the {@link Taxon} and at
-     *             the {@link Synonym} with <code>orphanDelete=true</code>. Just
-     *             remove the from and to entities from the relationship and
-     *             hibernate will care for the deletion. Using this method can cause
-     *             <code>StaleStateException</code> (see http://dev.e-taxonomy.eu/trac/ticket/3797)
-     *
-     */
-    @Deprecated
-    public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
-
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.

@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -40,7 +39,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
 
@@ -82,7 +80,7 @@ public class TestService {
 
  		Taxon parentTaxon = Taxon.NewInstance(zn, sec);
 		parentTaxon.setUuid(TEST_TAXON_UUID);
-		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
+//		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
 
 
 		// test
@@ -103,43 +101,6 @@ public class TestService {
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
-	}
-
-	public void testRootTaxa(){
-		// load Name list
-		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().list(null,1000, 0,null,null);
-		for (TaxonNameBase tn2: tnList){
-			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
-		}
-
-		// load Root taxa
-		logger.info("Load taxon from db...");
-		List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
-		for (Taxon rt: taxa){
-			logger.info("Root taxon: "+ rt.toString());
-			for (Taxon child: rt.getTaxonomicChildren()){
-				logger.info("Child: "+ child.toString());
-				logger.info("  Child.higherTaxon: "+ child.getTaxonomicParent().toString());
-				for (Synonym synonym: child.getSynonyms()){
-					logger.info("  Child synonyms: "+ synonym.toString());
-				}
-			}
-		}
-	}
-
-	public void testTermApi(){
-		ITermService ts = appCtr.getTermService();
-		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		//logger.warn(dt.toString());
-		//TODO: fix ts.listTerms(0,100)
-//		List<DefinedTermBase> dts = ts.listTerms(0,100);
-//		int i = 0;
-//		for (DefinedTermBase d: dts){
-//			i++;
-//			if (i > 10) break;
-//			logger.info(d.toString());
-//		}
 	}
 
 	public void testDeleteTaxa(){
@@ -192,7 +153,7 @@ public class TestService {
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
-		parent.addTaxonomicChild(child, null, null);
+//		parent.addTaxonomicChild(child, null, null);
 
 		logger.info("Save taxon ...");
 		UUID uuidTaxon1 = taxonService.save(parent).getUuid();

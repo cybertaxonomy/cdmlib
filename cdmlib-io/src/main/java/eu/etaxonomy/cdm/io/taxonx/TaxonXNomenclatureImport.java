@@ -50,7 +50,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
-	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
+    private static final long serialVersionUID = 796115831082828758L;
+
+    private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;
@@ -320,29 +322,29 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	}
 
 
-	private TaxonNameBase getChildrenNameType(TaxonNameBase name, String typeStr, String authorStr){
-		TaxonNameBase result = null;
-		Set<TaxonBase> list = name.getTaxonBases();
-		for (TaxonBase taxonBase : list){
-			Taxon taxon;
-			if (taxonBase.isInstanceOf(Taxon.class)){
-				taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-			}else{
-				Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
-				taxon = syn.getAcceptedTaxa().iterator().next();
-			}
-			Set<Taxon> children = taxon.getTaxonomicChildren();
-			for (Taxon child: children){
-				NonViralName childName = (CdmBase.deproxy(child.getName(), NonViralName.class));
-				if (childName.getNameCache().equals(typeStr)){
-					if (compareAuthorship(childName, authorStr)){
-						return childName;
-					}
-				}
-			}
-		}
-		return result;
-	}
+//	private TaxonNameBase getChildrenNameType(TaxonNameBase name, String typeStr, String authorStr){
+//		TaxonNameBase result = null;
+//		Set<TaxonBase> list = name.getTaxonBases();
+//		for (TaxonBase taxonBase : list){
+//			Taxon taxon;
+//			if (taxonBase.isInstanceOf(Taxon.class)){
+//				taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+//			}else{
+//				Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
+//				taxon = syn.getAcceptedTaxa().iterator().next();
+//			}
+//			Set<Taxon> children = taxon.getTaxonomicChildren();
+//			for (Taxon child: children){
+//				NonViralName childName = (CdmBase.deproxy(child.getName(), NonViralName.class));
+//				if (childName.getNameCache().equals(typeStr)){
+//					if (compareAuthorship(childName, authorStr)){
+//						return childName;
+//					}
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
 	private boolean compareAuthorship(NonViralName typeName, String authorStr){
 		 boolean result = false;
