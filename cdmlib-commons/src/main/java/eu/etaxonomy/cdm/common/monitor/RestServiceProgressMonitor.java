@@ -59,9 +59,6 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
         this.isFailed = isStopped;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#worked(int)
-     */
     @Override
     public void worked(int work) {
         if(work == -1){
@@ -69,7 +66,6 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
         }
         super.worked(work);
     }
-
 
     @Override
     public void internalWorked(double work) {
@@ -94,17 +90,11 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
         super.done();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor#setDownloadPath(java.lang.String)
-     */
     @Override
     public void setOrigin(String origin) {
         this.origin = origin;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor#getDownloadPath()
-     */
     @Override
     public String getOrigin() {
         return this.origin;
