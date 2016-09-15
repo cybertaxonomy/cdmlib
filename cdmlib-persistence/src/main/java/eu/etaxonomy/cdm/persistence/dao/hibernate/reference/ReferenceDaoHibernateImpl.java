@@ -270,13 +270,13 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, abbrevTitle, titleCache from " + type.getSimpleName() +" where (abbrevTitle like :pattern OR (abbrevTitle IS NULL AND titleCache like :pattern)) ");
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern  ");
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitle, titleCache from " + type.getSimpleName() );
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);
