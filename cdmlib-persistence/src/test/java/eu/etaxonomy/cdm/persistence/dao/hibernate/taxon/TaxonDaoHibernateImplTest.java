@@ -33,7 +33,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -834,20 +833,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         AuditEventRecord<TaxonBase> auditEvent = taxonDao.getNextAuditEvent(taxon);
         assertNull("getNextAuditEvent should return null as there no more audit events after the current one",auditEvent);
-    }
-
-    @Test
-    @DataSet
-    @ExpectedDataSet
-    public void testAddChild() throws Exception {
-        Taxon parent = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
-        assert parent != null : "taxon cannot be null";
-        Taxon child = Taxon.NewInstance(null, null);
-        child.setTitleCache("Acherontia lachesis diehli Eitschberger, 2003", true);
-        child.addTaxonRelation(parent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),null, null);
-        taxonDao.save(child);
-        setComplete();
-        endTransaction();
     }
 
     @Test
