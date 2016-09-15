@@ -730,7 +730,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         }
         return nodeSet;
     }
-    
+
     /**
      * Retrieves the first ancestor of the given rank
      * @param rank the rank the ancestor should have
