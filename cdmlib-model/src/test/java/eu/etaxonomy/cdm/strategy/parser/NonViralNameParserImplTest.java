@@ -2029,11 +2029,11 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
 
-        /* test case disabled, would fail! This is not due to the '´t' it rather might be caused by the & in the basionym authors
-        // Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij
-        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
-        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        */
+        //test case disabled, would fail! Is due to '´t'
+        // ´t
+//        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+
 
     }
 
