@@ -615,14 +615,7 @@ public class Taxon
         this.relationsFromThisTaxon.remove(rel);
         Taxon fromTaxon = rel.getFromTaxon();
         Taxon toTaxon = rel.getToTaxon();
-        // check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
-        if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) ){
-            if (fromTaxon != null && fromTaxon.equals(this)){
-                this.taxonomicParentCache = null;
-            }else if (toTaxon != null && toTaxon.equals(this)){
-                this.setTaxonomicChildrenCount(computeTaxonomicChildrenCount());
-            }
-        }
+
         //delete Relationship from other related Taxon
         if (fromTaxon != this){
             rel.setToTaxon(null);  //remove this Taxon from relationship
@@ -672,20 +665,12 @@ public class Taxon
                     if (toTaxon!=null){
                         toTaxon.addTaxonRelation(rel);
                     }
-                    // check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
-                    if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
-                        this.taxonomicParentCache = toTaxon;
-                    }
                 }else if (this.equals(toTaxon)){
                     relationsToThisTaxon.add(rel);
                     // also add relation to other taxon object
                     if (fromTaxon!=null){
                         fromTaxon.addTaxonRelation(rel);
                     }
-                    if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && fromTaxon!=null ){
-                        this.taxonomicChildrenCount++;
-                    }
-
                 }
             }else if (toTaxon == null || fromTaxon == null){
                 if (toTaxon == null){
@@ -694,26 +679,16 @@ public class Taxon
                     if (fromTaxon!= null){
                         fromTaxon.addTaxonRelation(rel);
                     }
-                    if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && fromTaxon!=null ){
-                        this.taxonomicChildrenCount++;
-                    }
                 }else if (fromTaxon == null && toTaxon != null){
                     fromTaxon = this;
                     relationsFromThisTaxon.add(rel);
-                    if (toTaxon!=null){
-                        toTaxon.addTaxonRelation(rel);
-                    }
-                    if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
-                        this.taxonomicParentCache = toTaxon;
-                    }
+                    toTaxon.addTaxonRelation(rel);
                 }
             }
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
-     */
+
     @Override
     @Deprecated //for inner use by RelationshipBase only
     public void addRelationship(RelationshipBase rel){
@@ -805,225 +780,6 @@ public class Taxon
             }
         }
     }
-
-    /**
-     * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
-     * "taxonomically included in") instance where <i>this</i> taxon plays the target
-     * role (parent) and adds it to the set of
-     * {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging to <i>this</i> taxon.
-     * The taxon relationship will also be added to the set of
-     * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to the second taxon
-     * (child) involved in the created relationship.<P>
-     * Since the taxon relationship concerns the modifications
-     * of the number of {@link #getTaxonomicChildrenCount() childrens} for <i>this</i> taxon and
-     * of the {@link #getTaxonomicParent() parent taxon} for the child taxon will be stored.
-     * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
-     * than the rank of the taxon name used as a child taxon.
-     *
-     * @param child			the taxon which plays the source role (child) in the new taxon relationship
-     * @param citation		the reference source for the new taxon relationship
-     * @param microcitation	the string with the details describing the exact localisation within the reference
-     * @see    	   			#setTaxonomicParent(Taxon, Reference, String)
-     * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
-     * @see    	   			#addTaxonRelation(TaxonRelationship)
-     * @see    	   			#getTaxonRelations()
-     * @see    	   			#getRelationsFromThisTaxon()
-     * @see    	   			#getRelationsToThisTaxon()
-     * @see    	   			#getTaxonomicParent()
-     * @see    	   			#getTaxonomicChildrenCount()
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public void addTaxonomicChild(Taxon child, Reference citation, String microcitation){
-        if (child == null){
-            throw new NullPointerException("Child Taxon is 'null'");
-        }else{
-            child.setTaxonomicParent(this, citation, microcitation);
-        }
-    }
-
-    /**
-     * Removes one {@link TaxonRelationship taxon relationship} with {@link TaxonRelationshipType taxon relationship type}
-     * "taxonomically included in" and with the given child taxon playing the
-     * source role from the set of {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging
-     * to <i>this</i> taxon. The taxon relationship will also be removed from the set
-     * of {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to the child taxon.
-     * Furthermore the inherited RelatedFrom and RelatedTo attributes of the
-     * taxon relationship will be nullified.<P>
-     * Since the taxon relationship concerns the classification modifications
-     * of the number of {@link #getTaxonomicChildrenCount() childrens} for <i>this</i> taxon and
-     * of the {@link #getTaxonomicParent() parent taxon} for the child taxon will be stored.
-     *
-     * @param  child	the taxon playing the source role in the relationship to be removed
-     * @see    	    	#removeTaxonRelation(TaxonRelationship)
-     * @see    			#getRelationsToThisTaxon()
-     * @see    			#getRelationsFromThisTaxon()
-     * @see    	    	#getTaxonomicParent()
-     * @see    	    	#getTaxonomicChildrenCount()
-     * @see    			eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
-     * @see    			eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
-     *
-     */
-    @Deprecated //will be removed in future versions. Use classification/TaxonNode instead
-    public void removeTaxonomicChild(Taxon child){
-        Set<TaxonRelationship> taxRels = this.getTaxonRelations();
-        for (TaxonRelationship taxRel : taxRels ){
-            if (taxRel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())
-                && taxRel.getFromTaxon().equals(child)){
-                this.removeTaxonRelation(taxRel);
-            }
-        }
-    }
-
-    /**
-     * Returns the taxon which is the next higher taxon (parent) of <i>this</i> taxon
-     * within the classification and which is stored in the
-     * TaxonomicParentCache attribute. Each taxon can have only one parent taxon.
-     * The child taxon and the parent taxon play the source respectively the
-     * target role in one {@link TaxonRelationship taxon relationship} with
-     * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
-     * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
-     * than the rank of the taxon name used as a child taxon.
-     *
-     * @see  #setTaxonomicParent(Taxon, Reference, String)
-     * @see  #getTaxonomicChildren()
-     * @see  #getTaxonomicChildrenCount()
-     * @see  #getRelationsFromThisTaxon()
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public Taxon getTaxonomicParent() {
-        return this.taxonomicParentCache;
-    }
-
-    /**
-     * Sets the taxononomic parent of <i>this</i> taxon to null.
-     * Note that this method does not handle taxonomic relationships.
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public void nullifyTaxonomicParent() {
-        this.taxonomicParentCache = null;
-    }
-
-    /**
-     * Replaces both the taxonomic parent cache with the given new parent taxon
-     * and the corresponding taxon relationship with a new {@link TaxonRelationship taxon relationship}
-     * (with {@link TaxonRelationshipType taxon relationship type} "taxonomically included in") instance.
-     * In the new taxon relationship <i>this</i> taxon plays the source role (child).
-     * This method creates and adds the new taxon relationship to the set of
-     * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to <i>this</i> taxon.
-     * The taxon relationship will also be added to the set of
-     * {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging to the second taxon
-     * (parent) involved in the new relationship.<P>
-     * Since the taxon relationship concerns the classification modifications
-     * of the {@link #getTaxonomicParent() parent taxon} for <i>this</i> taxon and of the number of
-     * {@link #getTaxonomicChildrenCount() childrens} for the child taxon will be stored.
-     *
-     * @param newParent		the taxon which plays the target role (parent) in the new taxon relationship
-     * @param citation		the reference source for the new taxon relationship
-     * @param microcitation	the string with the details describing the exact localisation within the reference
-     * @see    	   			#removeTaxonRelation(TaxonRelationship)
-     * @see    	   			#getTaxonomicParent()
-     * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
-     * @see    	   			#addTaxonRelation(TaxonRelationship)
-     * @see    	   			#getTaxonRelations()
-     * @see    	   			#getRelationsFromThisTaxon()
-     * @see    	   			#getRelationsToThisTaxon()
-     * @see    	   			#getTaxonomicChildrenCount()
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public void setTaxonomicParent(Taxon newParent, Reference citation, String microcitation){
-        //remove previously existing parent relationship!!!
-        Taxon oldParent = this.getTaxonomicParent();
-        Set<TaxonRelationship> taxRels = this.getTaxonRelations();
-        for (TaxonRelationship taxRel : taxRels ){
-            if (taxRel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && taxRel.getToTaxon().equals(oldParent)){
-                this.removeTaxonRelation(taxRel);
-            }
-        }
-        //add new parent
-        if (newParent != null){
-            addTaxonRelation(newParent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
-        }
-    }
-
-    /**
-     * Returns the set of taxa which have <i>this</i> taxon as next higher taxon
-     * (parent) within the classification. Each taxon can have several child
-     * taxa. The child taxon and the parent taxon play the source respectively
-     * the target role in one {@link TaxonRelationship taxon relationship} with
-     * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
-     * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
-     * than the rank of the taxon name used as a child taxon.
-     *
-     * @see  #getTaxonomicParent()
-     * @see  #addTaxonomicChild(Taxon, Reference, String)
-     * @see  #getTaxonomicChildrenCount()
-     * @see  #getRelationsToThisTaxon()
-     */
-    @Transient
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public Set<Taxon> getTaxonomicChildren() {
-        Set<Taxon> taxa = new HashSet<Taxon>();
-        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
-        for (TaxonRelationship rel: rels){
-            TaxonRelationshipType tt = rel.getType();
-            TaxonRelationshipType incl = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
-            if (tt.equals(incl)){
-                taxa.add(rel.getFromTaxon());
-            }
-        }
-        return taxa;
-    }
-
-    /**
-     * Returns the number of taxa which have <i>this</i> taxon as next higher taxon
-     * (parent) within the classification and the number of which is stored in
-     * the TaxonomicChildrenCount attribute. Each taxon can have several child
-     * taxa. The child taxon and the parent taxon play the source respectively
-     * the target role in one {@link TaxonRelationship taxon relationship} with
-     * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
-     * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
-     * than the rank of the taxon name used as a child taxon.
-     *
-     * @see  #getTaxonomicChildren()
-     * @see  #getRelationsToThisTaxon()
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public int getTaxonomicChildrenCount(){
-        return taxonomicChildrenCount;
-    }
-
-    /**
-     * @see  #getTaxonomicChildrenCount()
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    public void setTaxonomicChildrenCount(int taxonomicChildrenCount) {
-        this.taxonomicChildrenCount = taxonomicChildrenCount;
-    }
-
-    /**
-     * Returns the boolean value indicating whether <i>this</i> taxon has at least one
-     * taxonomic child taxon within the classification (true) or not (false).
-     *
-     * @see  #getTaxonomicChildrenCount()
-     * @see  #getTaxonomicChildren()
-     */
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    @Transient
-    public boolean hasTaxonomicChildren(){
-        return this.taxonomicChildrenCount > 0;
-    }
-
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    private int computeTaxonomicChildrenCount(){
-        int count = 0;
-        for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
-                count++;
-            }
-        }
-        return count;
-    }
-
 
     /**
      * Returns the boolean value indicating whether <i>this</i> taxon is a misaplication

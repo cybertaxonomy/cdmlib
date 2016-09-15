@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.datagenerator;
 
-import java.util.Random;
-
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -19,8 +17,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -37,8 +33,6 @@ public class TaxonGenerator {
 	private static String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
 	private static String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
 	private static String[] ranks = {"subsp", "var", "f"};
-
-	private Random rnd = new Random();
 
 	public static Taxon getTestTaxon(){
 		Person deCandolle = Person.NewInstance();
@@ -71,7 +65,7 @@ public class TaxonGenerator {
         botSpecies.setCombinationAuthorship(Person.NewInstance());
         botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
-        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
+//        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
 
         //homotypic synonym of childTaxon1
         BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
@@ -91,7 +85,7 @@ public class TaxonGenerator {
         botSpecies2.setCombinationAuthorship(Person.NewInstance());
         botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
-        childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
+//        childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
 
         //heterotypic synonym of childTaxon2
         BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());

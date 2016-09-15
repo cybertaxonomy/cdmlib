@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -225,58 +224,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
     Integer pageNumber, List<String> propertyPaths);
 
-
     /**
-     * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon> getRootTaxa(Reference sec);
-
-
-    /**
-     * Computes all Taxon instances that do not have a taxonomic parent.
-     * @param sec The concept reference that the taxon belongs to
-     * @param cdmFetch not used yet !! TODO
-     * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-     * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship.
-     * <Br>Default: true.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
-
-
-    /**
-     * Computes all Taxon instances which name is of a certain Rank.
-     *
-     * @param rank
-     *            The rank of the taxon name
-     * @param sec
-     *            The concept reference that the taxon belongs to
-     * @param cdmFetch
-     *            not used yet !! TODO
-     * @param onlyWithChildren
-     *            if true only taxa are returned that have taxonomic children. <Br>
-     *            Default: true.
-     * @param withMisaplications
-     *            if false only taxa are returned that have no
-     *            isMisappliedNameFor relationship.
-     * @param propertyPaths
-     *            properties to be initialized, For detailed description and
-     *            examples <b>please refer to:</b>
-     *            {@link IBeanInitializer#initialize(Object, List)}. <Br>
-     *            Default: true.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon>
-    getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
-
-        /**
      * TODO necessary?
      * @param pagesize max maximum number of returned taxa
      * @param page page to start, with 0 being first page
