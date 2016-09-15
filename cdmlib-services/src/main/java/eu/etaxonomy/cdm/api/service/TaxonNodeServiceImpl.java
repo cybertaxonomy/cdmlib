@@ -35,12 +35,14 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -107,27 +109,47 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, NodeSortMode sortMode,
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,
+            boolean doSynonyms, NodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 
+        TaxonNode parentNode = dao.load(taxonNodeUuid);
 
-        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(dao.load(taxonNodeUuid), null, recursive, sortMode);
+        List<CdmBase> allRecords = new ArrayList<>();
 
-        if (sortMode != null){
-            Comparator<TaxonNode> comparator = sortMode.newComparator();
-            Collections.sort(childNodes, comparator);
-        }
+        //acceptedTaxa
+        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(parentNode, null, recursive, sortMode);
+        allRecords.addAll(childNodes);
+
+        //add synonyms if pager is not yet full synonyms
+        List<Synonym> synList = new ArrayList<>(parentNode.getTaxon().getSynonyms());
+        Collections.sort(synList, new HomotypicGroupTaxonComparator(null));
+        //TODO: test sorting
+
+        allRecords.addAll(synList);
+
 
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize);
         int start = PagerUtils.startFor(pageSize, pageIndex);
         int limit = PagerUtils.limitFor(pageSize);
-        Long totalCount = Long.valueOf(childNodes.size());
+        Long totalCount = Long.valueOf(allRecords.size());
+
         if(PagerUtils.hasResultsInRange(totalCount, pageIndex, pageSize)) {
+            TaxonNameBase<?,?> parentName = null;
+
             for(int i = start; i < start + limit; i++) {
-                dtos.add(new TaxonNodeDto(childNodes.get(i)));
+                CdmBase record = allRecords.get(i);
+
+                if (record.isInstanceOf(TaxonNode.class)){
+                    dtos.add(new TaxonNodeDto(CdmBase.deproxy(record, TaxonNode.class)));
+                }else if (record.isInstanceOf(Synonym.class)){
+                    Synonym synonym = CdmBase.deproxy(record, Synonym.class);
+                    parentName = parentName == null? parentNode.getTaxon().getName(): parentName;
+                    boolean isHomotypic = synonym.getName().isHomotypic(parentName);
+                    dtos.add(new TaxonNodeDto(synonym, isHomotypic));
+                }
             }
         }
-
 
         return new DefaultPagerImpl<TaxonNodeDto>(pageIndex, totalCount, pageSize , dtos);
     }

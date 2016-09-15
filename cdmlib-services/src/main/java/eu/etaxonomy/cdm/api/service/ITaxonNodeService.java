@@ -49,13 +49,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      *
      * @param taxonNode
      * @param recursive
+     * @param doSynonyms if true also synonyms are returned as children
      * @param sortMode
      * @param pageSize
      * @param pageIndex
      *
      * @return List<TaxonNodeDto>
      */
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, NodeSortMode sortMode, Integer pageSize, Integer pageIndex);
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,
+            boolean doSynonyms, NodeSortMode sortMode,
+            Integer pageSize, Integer pageIndex);
 
     public TaxonNodeDto parentDto(UUID taxonNodeUuid);
 

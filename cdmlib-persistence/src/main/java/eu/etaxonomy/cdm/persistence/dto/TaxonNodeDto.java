@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -22,6 +24,11 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonNodeDto {
 
+    private enum TaxonStatus{
+        Accepted,
+        SynonymObjective,
+        Synonym; //All others including undefined and explicitly subjective /heterotypic synonyms
+    }
 
     /**
      * The TaxonNode uuid
@@ -69,19 +76,39 @@ public class TaxonNodeDto {
      */
     private final String rankLabel;
 
+    private final TaxonStatus status;
+
     /**
      * @param taxonNode
      */
     public TaxonNodeDto(TaxonNode taxonNode) {
         uuid = taxonNode.getUuid();
         taxonomicChildrenCount = taxonNode.getCountChildren();
-        secUuid = taxonNode.getTaxon().getSec().getUuid();
-        taxonUuid = taxonNode.getTaxon().getUuid();
-        titleCache = taxonNode.getTaxon().getName().getTitleCache();
-        taggedTitle = taxonNode.getTaxon().getName().getTaggedName();
-        unplaced = taxonNode.getTaxon().isUnplaced();
-        excluded = taxonNode.getTaxon().isExcluded();
-        rankLabel = taxonNode.getTaxon().getName().getRank().getLabel();
+        Taxon taxon = taxonNode.getTaxon();
+        secUuid = taxon.getSec().getUuid();
+        taxonUuid = taxon.getUuid();
+        titleCache = taxon.getName().getTitleCache();
+        taggedTitle = taxon.getName().getTaggedName();
+        unplaced = taxon.isUnplaced();
+        excluded = taxon.isExcluded();
+        rankLabel = taxon.getName().getRank().getLabel();
+        status = TaxonStatus.Accepted;
+    }
+
+    /**
+     * @param taxonNode
+     */
+    public TaxonNodeDto(Synonym synonym, boolean isHomotypic) {
+        uuid = null;
+        taxonomicChildrenCount = 0;
+        secUuid = synonym.getSec().getUuid();
+        taxonUuid = synonym.getUuid();
+        titleCache = synonym.getName().getTitleCache();
+        taggedTitle = synonym.getName().getTaggedName();
+        unplaced = false;
+        excluded = false;
+        rankLabel = synonym.getName().getRank().getLabel();
+        status = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
     }
 
     /**
@@ -145,6 +172,13 @@ public class TaxonNodeDto {
      */
     public String getRankLabel() {
         return rankLabel;
+    }
+
+    /**
+     * @return the status
+     */
+    public TaxonStatus getStatus() {
+        return status;
     }
 
 
