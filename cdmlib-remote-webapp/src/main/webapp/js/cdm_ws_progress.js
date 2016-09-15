@@ -101,7 +101,7 @@
 
     var showProgress = function(monitor){
       $progress_titel.text(monitor.taskName);
-      var percentTwoDecimalDigits = Math.floor(monitor.percentage * 100) / 100;
+      var percentTwoDecimalDigits = Math.round(monitor.percentage * 100) / 100;
       $progress_bar_value.text(percentTwoDecimalDigits + "%");
       $progress_bar_indicator.css('width', percentTwoDecimalDigits + "%");
       if(monitor.failed){
@@ -110,7 +110,7 @@
         $progress_status.text("Done");
         isRunning = false;
       } else {
-        $progress_status.text(monitor.subTask + " [chunk " + monitor.workDone + "/" + monitor.totalWork + "]");
+        $progress_status.text(monitor.subTask + " [work ticks: " + (Math.round(monitor.workDone * 100) / 100) + "/" + monitor.totalWork + "]");
       }
       window.setTimeout(monitorProgess, pollInterval_ms);
     };
