@@ -20,6 +20,7 @@ import java.util.List;
  *
  */
 public class RemotingProgressMonitor extends RestServiceProgressMonitor implements IRemotingProgressMonitor {
+    private static final long serialVersionUID = -3173248814638886884L;
 
     private Serializable result;
     private List<String> reports = new ArrayList<String>();
