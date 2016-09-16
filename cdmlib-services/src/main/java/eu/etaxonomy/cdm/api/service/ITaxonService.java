@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -894,11 +896,43 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 
 
+    /**
+     * @param clazz the optional {@link TaxonBase} subclass
+     * @param identifier the identifier string
+     * @param identifierType the identifier type
+     * @param subtreeFilter filter on a classification subtree (TaxonNode)
+     * @param matchmode the match mode for the identifier string
+     * @param includeEntity should the taxon as an object be included in the result
+     * @param pageSize page size
+     * @param pageNumber page number
+     * @param propertyPaths property path for initializing the returned taxon object (requires includeEntity=true)
+     * @return the resulting {@link FindByIdentifierDTO} pager
+     * @see IIdentifiableEntityService#findByIdentifier(Class, String, DefinedTerm, MatchMode, boolean, Integer, Integer, List)
+     */
     public <S extends TaxonBase> Pager<FindByIdentifierDTO<S>> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths);
 
+    /**
+     * Returns a pager for {@link FindByMarkerDTO DTOs} that hold the marker including type, title and uuid
+     * and the according {@link TaxonBase} information (uuid, title and the taxon object itself (optional)).
+     *
+     * @param clazz The optional {@link TaxonBase} subclass
+     * @param markerType the obligatory marker type, if not given, the results will always be empty
+     * @param markerValue the optional
+     * @param subtreeFilter filter on a classification subtree (TaxonNode)
+     * @param includeEntity should the taxon as an object be included in the result
+     * @param pageSize page size
+     * @param pageNumber page number
+     * @param propertyPaths property path for initializing the returned taxon object (requires includeEntity=true)
+     * @return the resulting {@link FindByMarkerDTO} pager
+     * @see IIdentifiableEntityService#findByMarker(Class, MarkerType, Boolean, boolean, Integer, Integer, List)
+     */
+    public <S extends TaxonBase> Pager<FindByMarkerDTO<S>> findByMarker(
+            Class<S> clazz, MarkerType markerType, Boolean markerValue,
+            TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param synonymUuid

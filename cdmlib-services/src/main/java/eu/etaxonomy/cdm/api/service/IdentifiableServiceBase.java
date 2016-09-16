@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -603,6 +605,29 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
+    @Override
+    @Transactional(readOnly = true)
+    public <S extends T> Pager<FindByMarkerDTO<S>> findByMarker(
+            Class<S> clazz, MarkerType markerType, Boolean markerValue,
+            boolean includeEntity, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
 
+        Long numberOfResults = dao.countByMarker(clazz, markerType, markerValue);
+        List<Object[]> daoResults = new ArrayList<>();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.findByMarker(clazz, markerType, markerValue, includeEntity,
+                    pageSize, pageNumber, propertyPaths);
+        }
+
+        List<FindByMarkerDTO<S>> result = new ArrayList<>();
+        for (Object[] daoObj : daoResults){
+            if (includeEntity){
+                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
+            }else{
+                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+            }
+        }
+        return new DefaultPagerImpl<FindByMarkerDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+    }
 }
 

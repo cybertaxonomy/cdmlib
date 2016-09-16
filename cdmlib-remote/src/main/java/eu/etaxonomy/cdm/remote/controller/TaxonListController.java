@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -50,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -502,6 +503,59 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+    }
+
+    /**
+     * List taxa by markers using a subtree filter
+     *
+     * @param type
+     * @param markerType
+     * @param value
+     * @param pageNumber
+     * @param pageSize
+     * @param request
+     * @param response
+     * @return
+     * @see IdentifiableListController#doFindByMarker(Class, UUID, Boolean, Integer, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see TaxonListController#doFindByIdentifier(Class, UUID, String, Integer, Integer, MatchMode, Boolean, UUID, HttpServletRequest, HttpServletResponse)
+     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"findByMarker"}, params={"subtree"})
+    public <T extends TaxonBase>  Pager<FindByMarkerDTO<T>> doFindByMarker(
+            @RequestParam(value = "class", required = false) Class<T> type,
+            @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
+            @RequestParam(value = "value", required = false) Boolean value,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "includeEntity", required = false, defaultValue="true") Boolean includeEntity, //TODO true only for debuging
+            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+            throws IOException {
+
+        MarkerType markerType = null;
+        if(markerTypeUuid != null){
+            DefinedTermBase<?> term = CdmBase.deproxy(termService.find(markerTypeUuid), MarkerType.class);
+            if (term != null && term.isInstanceOf(MarkerType.class)){
+                markerType = CdmBase.deproxy(term, MarkerType.class);
+            }
+        }
+
+        TaxonNode subTree;
+        Classification cl = classificationService.load(subtreeUuid);
+        if (cl != null){
+            subTree = cl.getRootNode();
+        }else{
+            subTree = taxonNodeService.find(subtreeUuid);
+        }
+
+        if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
+
+        return service.findByMarker(type, markerType, value, subTree, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
     @RequestMapping(value = "doFindByNameParts", method = RequestMethod.GET)
