@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @date 2016-09-16
  *
  */
-public class FindByMarkerDTO<T extends IdentifiableEntity<?>> {
+public class FindByMarkerDTO<T extends IdentifiableEntity> {
 
 	public class Marker{
 		UUID typeUuid;
