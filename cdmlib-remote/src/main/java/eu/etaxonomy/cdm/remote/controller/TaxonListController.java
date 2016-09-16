@@ -476,7 +476,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
-            @RequestParam(value = "includeEntity", required = false, defaultValue="true") Boolean includeEntity, //TODO true only for debuging
+            @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
@@ -528,7 +528,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             @RequestParam(value = "value", required = false) Boolean value,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "includeEntity", required = false, defaultValue="true") Boolean includeEntity, //TODO true only for debuging
+            @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
@@ -554,7 +554,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
-
+        includeEntity  = true;
         return service.findByMarker(type, markerType, value, subTree, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
