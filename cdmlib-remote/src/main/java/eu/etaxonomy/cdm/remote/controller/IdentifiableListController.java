@@ -158,10 +158,10 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findByMarker"}, params={"subtree"})
+    @RequestMapping(method = RequestMethod.GET, value={"findByMarker"})
     public Pager<FindByMarkerDTO<T>> doFindByMarker(
             @RequestParam(value = "class", required = false) Class<T> type,
-            @RequestParam(value = "markerType", required = true) String markerTypeUuidStr,
+            @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
             @RequestParam(value = "value", required = false) Boolean value,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -172,10 +172,8 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
             throws IOException {
 
         MarkerType markerType = null;
-        if(StringUtils.isNotBlank(markerTypeUuidStr)){
-            markerTypeUuidStr = StringUtils.trim(markerTypeUuidStr);
-            UUID markerTypeUUID = UUID.fromString(markerTypeUuidStr);
-            DefinedTermBase<?> term = CdmBase.deproxy(termService.find(markerTypeUUID), MarkerType.class);
+        if(markerTypeUuid != null){
+            DefinedTermBase<?> term = CdmBase.deproxy(termService.find(markerTypeUuid), MarkerType.class);
             if (term != null && term.isInstanceOf(MarkerType.class)){
                 markerType = CdmBase.deproxy(term, MarkerType.class);
             }
