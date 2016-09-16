@@ -93,7 +93,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private UUID uuid;
     private UUID sphingidae;
     private UUID acherontia;
-    private UUID mimas;
     private UUID rethera;
     private UUID retheraSecCdmtest;
     private UUID atroposAgassiz; // a Synonym
@@ -125,7 +124,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
         rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-        mimas = UUID.fromString("900052b7-b69c-4e26-a8f0-01c215214c40");
 
         previousAuditEvent = new AuditEvent();
         previousAuditEvent.setRevisionNumber(1025);
