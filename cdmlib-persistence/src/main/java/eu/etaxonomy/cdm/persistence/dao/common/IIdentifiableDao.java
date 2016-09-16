@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -212,5 +213,30 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      * @return
      */
     public <S extends T> List<Object[]> findByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, boolean includeCdmEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * @param clazz
+     * @param markerType
+     * @param markerValue
+     * @param includeEntity
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends T> long countByMarker(Class<S> clazz, MarkerType markerType, Boolean markerValue);
+
+    /**
+     * @param clazz
+     * @param markerType
+     * @param markerValue
+     * @param includeEntity
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends T> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType, Boolean markerValue, boolean includeEntity,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 }

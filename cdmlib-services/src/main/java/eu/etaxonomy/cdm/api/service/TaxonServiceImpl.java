@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -75,6 +76,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -3225,6 +3227,34 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 
 	@Override
+    @Transactional(readOnly = true)
+    public <S extends TaxonBase> Pager<FindByMarkerDTO<S>> findByMarker(
+            Class<S> clazz, MarkerType markerType, Boolean markerValue,
+            TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+        if (subtreeFilter == null){
+            return super.findByMarker (clazz, markerType, markerValue, includeEntity, pageSize, pageNumber, propertyPaths);
+        }
+
+        Long numberOfResults = dao.countByMarker(clazz, markerType, markerValue, subtreeFilter);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.findByMarker(clazz, markerType, markerValue, subtreeFilter,
+                    includeEntity, pageSize, pageNumber, propertyPaths);
+        }
+
+        List<FindByMarkerDTO<S>> result = new ArrayList<>();
+        for (Object[] daoObj : daoResults){
+            if (includeEntity){
+                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
+            }else{
+                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+            }
+        }
+        return new DefaultPagerImpl<FindByMarkerDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+    }
+
+    @Override
 	@Transactional(readOnly = false)
 	public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, UUID newTaxonUUID, boolean moveHomotypicGroup,
             SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {

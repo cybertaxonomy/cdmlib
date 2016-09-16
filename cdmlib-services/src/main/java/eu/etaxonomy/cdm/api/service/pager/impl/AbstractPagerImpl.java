@@ -23,7 +23,9 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 
 public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
-	protected static Integer MAX_PAGE_LABELS = 3;
+    private static final long serialVersionUID = -1869488482336439083L;
+
+    protected static Integer MAX_PAGE_LABELS = 3;
 	protected static String LABEL_DIVIDER = " - ";
 	private static Log log = LogFactory.getLog(DefaultPagerImpl.class);
 	protected Integer pagesAvailable;

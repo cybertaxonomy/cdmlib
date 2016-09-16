@@ -17,6 +17,7 @@ import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -439,8 +440,47 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode,
 			boolean includeEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+	/**
+	 * Counts all taxa which match the given identifier (identifier type, identifier string and match mode).
+	 * Optionally a subtreefilter can be defined.
+	 *
+	 * @param clazz optional, the TaxonBase subclass
+	 * @param identifier the identifier string
+	 * @param identifierType the identifier type
+     * @param matchmode the match mode for the identifier string
+	 * @param subtreeFilter the subtree filter as taxon node
+	 * @return
+	 */
 	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
+
+	/**
+     * Counts all taxa which have the given marker of type markerType and with value markerValue.
+     * Additionally an optional subtreefilter can be defined.
+     *
+     * @param clazz
+     * @param markerType
+     * @param markerValue
+     * @param subtreeFilter
+     * @return
+     */
+    public <S extends TaxonBase> long countByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter);
+
+    /**
+     * @param clazz
+     * @param markerType
+     * @param markerValue
+     * @param subtreeFilter
+     * @param includeEntity
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param classification

@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -2083,7 +2084,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
-		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
+		checkNotInPriorView("TaxonDaoHibernateImpl.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
 
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
@@ -2129,7 +2130,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			MatchMode matchmode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+		checkNotInPriorView("TaxonDaoHibernateImpl.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 		Class<?> clazzParam = clazz == null ? type : clazz;
 
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
@@ -2185,5 +2186,123 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         return results;
 	}
+
+    /**
+     * {@inheritDoc}
+     * @see #countByIdentifier(Class, String, DefinedTerm, TaxonNode, MatchMode)
+     */
+    @Override
+    public <S extends TaxonBase> long countByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter) {
+        if (markerType == null){
+            return 0;
+        }
+
+        if (subtreeFilter == null){
+            return countByMarker(clazz, markerType, markerValue);
+        }
+
+        Class<?> clazzParam = clazz == null ? type : clazz;
+        checkNotInPriorView("TaxonDaoHibernateImpl.countByMarker(Class<S> clazz, DefinedTerm markerType, boolean markerValue, TaxonNode subtreeFilter)");
+
+        boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
+        boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
+
+        getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+        String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
+        String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
+        String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+        String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
+        String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+
+        String queryString = "SELECT count(*)  FROM %s as c " +
+                " INNER JOIN c.markers as mks " +
+                accTreeJoin +
+                synTreeJoin +
+                " WHERE (1=1) " +
+                    "  AND ( " + accWhere + " OR " + synWhere + ")";
+        queryString = String.format(queryString, clazzParam.getSimpleName());
+
+        if (markerValue != null){
+            queryString += " AND mks.flag = :flag";
+        }
+        if (markerType != null){
+            queryString += " AND mks.markerType = :type";
+        }
+
+        Query query = getSession().createQuery(queryString);
+        if (markerType != null){
+            query.setEntity("type", markerType);
+        }
+        if (markerValue != null){
+            query.setBoolean("flag", markerValue);
+        }
+
+        Long c = (Long)query.uniqueResult();
+        return c;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.findByMarker(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        if (markerType == null){
+            return new ArrayList<Object[]>();
+        }
+
+        Class<?> clazzParam = clazz == null ? type : clazz;
+
+        boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
+        boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
+        getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+        String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
+        String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
+        String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+        String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
+        String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+
+        String queryString = "SELECT mks.markerType, mks.flag, %s " +
+                " FROM %s as c " +
+                " INNER JOIN c.markers as mks " +
+                accTreeJoin +
+                synTreeJoin +
+                " WHERE (1=1) " +
+                    " AND ( " + accWhere + " OR " + synWhere + ")";
+        queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
+
+        //type and value
+        if (markerValue != null){
+            queryString += " AND mks.flag = :flag";
+        }
+        queryString += " AND mks.markerType = :type";
+        //order
+        queryString +=" ORDER BY mks.markerType.uuid, mks.flag, c.uuid ";
+
+        Query query = getSession().createQuery(queryString);
+
+        //parameters
+        query.setEntity("type", markerType);
+        if (markerValue != null){
+            query.setBoolean("flag", markerValue);
+        }
+
+        //paging
+        setPagingParameter(query, pageSize, pageNumber);
+
+        List<Object[]> results = query.list();
+        //initialize
+        if (includeEntity){
+            List<S> entities = new ArrayList<S>();
+            for (Object[] result : results){
+                entities.add((S)result[2]);
+            }
+            defaultBeanInitializer.initializeAll(entities, propertyPaths);
+        }
+        return results;
+    }
 
 }
