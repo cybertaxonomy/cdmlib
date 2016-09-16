@@ -67,4 +67,25 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
     protected String createLabel(String s1, String s2) {
         return s1 + DefaultPagerImpl.LABEL_DIVIDER + s2;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        String result = "DefaultPagerImpl[";
+        result += "count: " + count;
+        result += "; pageSize: " + pageSize;
+        result += "; pageNumbers: " + pageNumbers;
+        result += "; pagesAvailable: " + pagesAvailable;
+        result += "; firstRecord: " + firstRecord;
+        result += "; lastRecord: " + lastRecord;
+        result += "; suggestion: " + suggestion;
+        result += "; pagesAvailable: " + pagesAvailable;
+        result += "\nrecords: " + records;
+        result += "]";
+        return result;
+    }
+
+
 }

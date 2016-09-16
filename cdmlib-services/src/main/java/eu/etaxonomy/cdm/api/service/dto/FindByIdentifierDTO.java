@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  *
  */
 public class FindByIdentifierDTO<T extends IdentifiableEntity> {
-	
+
 	public class AlternativeIdentifier{
 		UUID typeUuid;
 		String typeLabel;
@@ -33,13 +33,11 @@ public class FindByIdentifierDTO<T extends IdentifiableEntity> {
 		public UUID getTypeUuid() {return typeUuid;}
 		public String getTypeLabel() {return typeLabel;}
 		public String getIdentifier() {return identifier;}
-		
-		
 	}
-	
+
 	public class CdmEntity{
 		UUID cdmUuid;
-		String titleCache; 
+		String titleCache;
 		T entity;
 		public CdmEntity(UUID cdmUuid, String titleCache, T entity) {
 			this.cdmUuid = cdmUuid;
@@ -49,21 +47,21 @@ public class FindByIdentifierDTO<T extends IdentifiableEntity> {
 		public UUID getCdmUuid() {return cdmUuid;}
 		public String getTitleCache() {return titleCache;}
 		public T getEntity() {return entity;}
-		
+
 	}
-	
+
 	private AlternativeIdentifier identifier;
-	
+
 	private CdmEntity cdmEntity;
-	
-	
+
+
 //	public class IdentifierMapping{
 //		DefinedTerm identifierType;
 //		String Identifier;
 ////		AlternativeIdentifier identifier;
 //		UUID cdmUuid;
 //		T entity;
-//		
+//
 //		public IdentifierMapping(DefinedTerm identifierType, String identifier,
 //						UUID cdmUuid, T entity) {
 //			this.identifierType = identifierType;
@@ -72,14 +70,14 @@ public class FindByIdentifierDTO<T extends IdentifiableEntity> {
 //			this.entity = entity;
 //		}
 //	}
-	
+
 //	private List<IdentifierMapping> identifierMappings = new ArrayList<IdentifierMapping>();
-	
+
 	public FindByIdentifierDTO(DefinedTerm identifierType, String identifier, T entity){
 		this.identifier = new AlternativeIdentifier(identifierType, identifier);
 		this.cdmEntity = new CdmEntity(entity.getUuid(), entity.getTitleCache(), entity);
 	}
-	
+
 	public FindByIdentifierDTO(DefinedTerm identifierType, String identifier, UUID entityUuid, String titleCache){
 		this.identifier = new AlternativeIdentifier(identifierType, identifier);
 		this.cdmEntity = new CdmEntity(entityUuid, null, null);
@@ -93,5 +91,5 @@ public class FindByIdentifierDTO<T extends IdentifiableEntity> {
 		return cdmEntity;
 	}
 
-	
+
 }
