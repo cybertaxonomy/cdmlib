@@ -40,15 +40,15 @@ public class FindByMarkerDTO<T extends IdentifiableEntity> {
 	public class CdmEntity{
 		UUID cdmUuid;
 		String titleCache;
-		T entity;
+		T entitys;
 		public CdmEntity(UUID cdmUuid, String titleCache, T entity) {
 			this.cdmUuid = cdmUuid;
 			this.titleCache = titleCache;
-			this.entity = entity;
+			this.entitys = entity;
 		}
 		public UUID getCdmUuid() {return cdmUuid;}
 		public String getTitleCache() {return titleCache;}
-		public T getEntity() {return entity;}
+		public T getEntityX() {return entitys;}
 
 	}
 
