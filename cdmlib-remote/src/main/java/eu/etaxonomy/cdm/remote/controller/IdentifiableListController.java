@@ -165,7 +165,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
             @RequestParam(value = "value", required = false) Boolean value,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "includeEntity", required = false, defaultValue="true") Boolean includeEntity, //TODO true only for debuging
+            @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             HttpServletRequest request,
             HttpServletResponse response
             )
