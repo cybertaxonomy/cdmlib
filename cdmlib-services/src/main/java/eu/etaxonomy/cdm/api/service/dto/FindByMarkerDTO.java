@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * DTO for IdentifiableEntities matching a certain marker.
@@ -45,7 +44,7 @@ public class FindByMarkerDTO<T extends IdentifiableEntity> {
 		public CdmEntity(UUID cdmUuid, String titleCache, T entity) {
 			this.cdmUuid = cdmUuid;
 			this.titleCache = titleCache;
-			this.entity = (T)new Taxon();
+			this.entity = entity;
 
 		}
 		public UUID getCdmUuid() {return cdmUuid;}

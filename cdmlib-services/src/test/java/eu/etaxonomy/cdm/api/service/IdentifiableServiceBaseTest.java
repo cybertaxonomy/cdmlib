@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
@@ -196,7 +195,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 
 	}
 
-    @Ignore
 	@Test
     @DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
     public final void testFindByMarker(){
