@@ -220,8 +220,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         FindByMarkerDTO<Taxon>.Marker marker = dto.getMarker();
         Assert.assertTrue("Flag must be true", marker.getFlag());
         Assert.assertEquals("Flag must be true", uuidMarkerTypeCompleted, marker.getTypeUuid());
-        Assert.assertNotNull("the CDM entity in the dto must not be empty if includeEntity=true", dto.getCdmEntity().getEntityX());
-        Assert.assertEquals(5000, dto.getCdmEntity().getEntityX().getId());
+        Assert.assertNotNull("the CDM entity in the dto must not be empty if includeEntity=true", dto.getCdmEntity().getEntity());
+        Assert.assertEquals(5000, dto.getCdmEntity().getEntity().getId());
 
         markerValue = false;
         taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
