@@ -180,14 +180,20 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         }
 
         Query query = null;
+        String whereClause = " WHERE ";
         if (pattern != null){
-            if (clazzString != ""){
-                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() +" WHERE (nomenclaturalTitle LIKE :pattern OR (nomenclaturalTitle IS NULL AND titleCache LIKE :pattern) AND " + clazzString);
-
-            } else{
-                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() +" WHERE nomenclaturalTitle LIKE :pattern");
-
+            whereClause += "nomenclaturalTitle LIKE :pattern";
+            if (pattern.startsWith("*")){
+                whereClause += " OR titleCache LIKE :pattern";
             }
+            if (clazzString != ""){
+                whereClause += " AND " + clazzString;
+            }
+
+
+            query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName()  + whereClause);
+
+
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
