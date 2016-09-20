@@ -137,7 +137,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if(PagerUtils.hasResultsInRange(totalCount, pageIndex, pageSize)) {
             TaxonNameBase<?,?> parentName = null;
 
-            for(int i = start; i < start + limit; i++) {
+            for(int i = start; i < Math.min(totalCount, start + limit); i++) {
                 CdmBase record = allRecords.get(i);
 
                 if (record.isInstanceOf(TaxonNode.class)){
