@@ -39,13 +39,13 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 
 
 	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier, T entity){
-		this.identifier = new AlternativeIdentifier(identifierType, identifier);
-		this.cdmEntity = new CdmEntity(entity.getUuid(), entity.getTitleCache(), entity);
+	    super(entity);
+	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}
 
 	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier, UUID entityUuid, String titleCache){
-		this.identifier = new AlternativeIdentifier(identifierType, identifier);
-		this.cdmEntity = new CdmEntity(entityUuid, null, null);
+	    super(entityUuid, titleCache);
+	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}
 
 	public AlternativeIdentifier getIdentifier() {

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 
 /**
@@ -37,6 +38,14 @@ public abstract class EntityDTOBase<T extends CdmBase> {
     }
 
     protected CdmEntity cdmEntity;
+
+    public EntityDTOBase(IdentifiableEntity entity){
+        this.cdmEntity = new CdmEntity(entity.getUuid(), entity.getTitleCache(), (T)entity);
+    }
+
+    public EntityDTOBase(UUID entityUuid, String label){
+        this.cdmEntity = new CdmEntity(entityUuid, label, null);
+    }
 
     public CdmEntity getCdmEntity() {
         return cdmEntity;
