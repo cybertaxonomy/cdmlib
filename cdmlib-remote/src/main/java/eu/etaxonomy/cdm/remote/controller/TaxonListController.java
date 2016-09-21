@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
-import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -469,7 +469,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"}, params={"subtree"})
-    public <T extends TaxonBase>  Pager<FindByIdentifierDTO<T>> doFindByIdentifier(
+    public <T extends TaxonBase>  Pager<IdentifiedEntityDTO<T>> doFindByIdentifier(
             @RequestParam(value = "class", required = false) Class<T> type,
             @RequestParam(value = "identifierType", required = false) UUID identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
@@ -522,7 +522,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByMarker"}, params={"subtree"})
-    public <T extends TaxonBase>  Pager<FindByMarkerDTO<T>> doFindByMarker(
+    public <T extends TaxonBase>  Pager<MarkedEntityDTO<T>> doFindByMarker(
             @RequestParam(value = "class", required = false) Class<T> type,
             @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
             @RequestParam(value = "value", required = false) Boolean value,

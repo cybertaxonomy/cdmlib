@@ -21,7 +21,8 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @date 2016-09-16
  *
  */
-public class FindByMarkerDTO<T extends IdentifiableEntity> {
+//might extend AnnotatableEntity in future
+public class MarkedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> {
 
 	public class Marker{
 		UUID typeUuid;
@@ -37,32 +38,14 @@ public class FindByMarkerDTO<T extends IdentifiableEntity> {
 		public Boolean getFlag() {return flag;}
 	}
 
-	public class CdmEntity{
-		UUID cdmUuid;
-		String titleCache;
-		T entity;
-		public CdmEntity(UUID cdmUuid, String titleCache, T entity) {
-			this.cdmUuid = cdmUuid;
-			this.titleCache = titleCache;
-			this.entity = entity;
-
-		}
-		public UUID getCdmUuid() {return cdmUuid;}
-		public String getTitleCache() {return titleCache;}
-		public T getEntity() {return entity;}
-
-	}
-
 	private Marker marker;
 
-	private CdmEntity cdmEntity;
-
-	public FindByMarkerDTO(MarkerType markerType, Boolean flag, T entity){
+	public MarkedEntityDTO(MarkerType markerType, Boolean flag, T entity){
 		this.marker = new Marker(markerType, flag);
 		this.cdmEntity = new CdmEntity(entity.getUuid(), entity.getTitleCache(), entity);
 	}
 
-	public FindByMarkerDTO(MarkerType markerType, Boolean flag, UUID entityUuid, String titleCache){
+	public MarkedEntityDTO(MarkerType markerType, Boolean flag, UUID entityUuid, String titleCache){
 		this.marker = new Marker(markerType, flag);
 		this.cdmEntity = new CdmEntity(entityUuid, titleCache, null);
 	}
@@ -71,9 +54,6 @@ public class FindByMarkerDTO<T extends IdentifiableEntity> {
 		return marker;
 	}
 
-	public CdmEntity getCdmEntity() {
-		return cdmEntity;
-	}
 
     /**
      * {@inheritDoc}
