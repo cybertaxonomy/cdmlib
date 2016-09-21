@@ -319,4 +319,30 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<UUID, UUID> getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, List<UUID> taxonUuids) {
+        String hql = " SELECT t.uuid, tn.uuid "
+                + " FROM Taxon t JOIN t.taxonNodes tn "
+                + " WHERE (1=1)"
+                + "     AND tn.classification.uuid = :classificationUuid "
+                + "     AND t.uuid IN (:taxonUuids) "
+                ;
+        Query query =  getSession().createQuery(hql);
+        query.setParameter("classificationUuid", classificationUuid);
+        query.setParameterList("taxonUuids", taxonUuids);
+
+        Map<UUID, UUID> result = new HashMap<>();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        for (Object[] o : list){
+            result.put((UUID)o[0], (UUID)o[1]);
+        }
+        return result;
+    }
+
+
+
 }

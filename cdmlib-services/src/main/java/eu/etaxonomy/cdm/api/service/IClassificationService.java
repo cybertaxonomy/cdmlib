@@ -58,6 +58,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public TaxonNode getRootNode(UUID classificationUuid);
 
+    public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid);
+
     /**
      *
      * @param limit

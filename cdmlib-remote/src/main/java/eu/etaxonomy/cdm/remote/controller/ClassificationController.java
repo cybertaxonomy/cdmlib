@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -29,15 +27,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.NodeSortMode;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -51,6 +55,7 @@ public class ClassificationController extends BaseController<Classification,ICla
 
 
     private ITermService termService;
+    private ITaxonNodeService taxonNodeService;
 
     @Override
     @Autowired
@@ -61,6 +66,11 @@ public class ClassificationController extends BaseController<Classification,ICla
     @Autowired
     public void setTermService(ITermService termService) {
         this.termService = termService;
+    }
+
+    @Autowired
+    public void setTaxonNodeService(ITaxonNodeService taxonNodeService) {
+        this.taxonNodeService = taxonNodeService;
     }
 
 
@@ -122,6 +132,41 @@ public class ClassificationController extends BaseController<Classification,ICla
 
         return rootNodes;
     }
+
+    /**
+    *
+    * @param uuid
+    * @param pageIndex
+    * @param pageSize
+    * @param sortMode
+    * @param response
+    * @return
+    * @throws IOException
+    */
+   @RequestMapping(
+           value = {"childNodes"},
+           method = RequestMethod.GET)
+   public Pager<TaxonNodeDto> doPageChildNodes(
+           @PathVariable("uuid") UUID classificationUuid,
+           @RequestParam(value = "taxonUuid", required = true) UUID taxonUuid,
+           @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+           @RequestParam(value="sortMode", defaultValue="AlphabeticalOrder") NodeSortMode sortMode,
+           @RequestParam(value="doSynonyms", defaultValue="false") Boolean doSynonyms,
+           HttpServletResponse response
+           ) throws IOException {
+
+       PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
+       pagerParameters.normalizeAndValidate(response);
+
+//       service.startTransaction();
+       boolean recursive = false;
+       UUID taxonNodeUuid = service.getTaxonNodeUuidByTaxonUuid(classificationUuid, taxonUuid) ;
+       Pager<TaxonNodeDto> pager = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
+//       service.commitTransaction()
+
+       return pager;
+   }
 
 
     /**

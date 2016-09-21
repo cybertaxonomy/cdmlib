@@ -97,5 +97,10 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      */
     Map<UUID, String> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
 
+    /**
+     * Returns a map of taxon uuids mapping to taxon node uuids in the given classification
+     */
+    public Map<UUID, UUID> getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, List<UUID> taxonUuids);
+
 
 }
