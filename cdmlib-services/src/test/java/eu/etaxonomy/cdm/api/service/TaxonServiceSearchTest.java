@@ -1268,7 +1268,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 
-        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl<>();
         configurator.setTitleSearchString("Wei"+UTF8.SHARP_S+"%");
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(false);
