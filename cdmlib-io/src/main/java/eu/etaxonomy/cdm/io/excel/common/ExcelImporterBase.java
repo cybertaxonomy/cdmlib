@@ -110,7 +110,6 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 				}finally{
 					state.incCurrentLine();
 				}
-    			txStatus = perBatchCommit(state, txStatus, i);
     		}
     		//second pass
     		state.setCurrentLine(startingLine);
@@ -120,7 +119,6 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     			state.setOriginalRecord(record);
                 secondPass(state);
     			state.incCurrentLine();
-    			txStatus = perBatchCommit(state, txStatus, i);
     	   	}
 
     		commitTransaction(txStatus);
@@ -129,20 +127,6 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     	}
 		return;
 	}
-
-    /**
-     * @param state
-     * @param txStatus
-     * @param i
-     * @return
-     */
-    protected TransactionStatus perBatchCommit(STATE state, TransactionStatus txStatus, int i) {
-        if(state.getConfig().getBatchSize() > 0 &&  (i % state.getConfig().getBatchSize() == 0)) {
-            commitTransaction(txStatus);
-            txStatus = startTransaction();
-        }
-        return txStatus;
-    }
 
 	/**
 	 * To define a worksheet name override this method. Otherwise the first worksheet is taken.
