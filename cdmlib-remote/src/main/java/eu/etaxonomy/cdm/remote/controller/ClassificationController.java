@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.NodeSortMode;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -219,4 +220,25 @@ public class ClassificationController extends BaseController<Classification,ICla
         }
         return rank;
     }
+
+
+   @RequestMapping(
+           value = {"taxonInContext"},
+           method = RequestMethod.GET)
+   public TaxonInContextDTO getTaxonInContext(
+           @PathVariable("uuid") UUID classificationUuid,
+           @PathVariable("taxonUuid") UUID taxonUuid,
+           @RequestParam(value = "doChildren", defaultValue = "false") Boolean doChildren,
+           @RequestParam(value = "doSynonyms", defaultValue = "false") Boolean doSynonyms,
+           @RequestParam(value = "sortMode", defaultValue="AlphabeticalOrder") NodeSortMode sortMode,
+           @RequestParam(value = "ancestorMarker", required = false) List<UUID> ancestorMarkers,
+           HttpServletResponse response
+           ) throws IOException {
+
+       TaxonInContextDTO taxonInContextDTO = service.getTaxonInContext(classificationUuid, taxonUuid, doChildren, doSynonyms, ancestorMarkers, sortMode) ;
+
+       return taxonInContextDTO;
+   }
+
+
 }

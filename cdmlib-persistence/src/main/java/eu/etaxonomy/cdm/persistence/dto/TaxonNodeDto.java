@@ -24,10 +24,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonNodeDto {
 
-    private enum TaxonStatus{
+    public enum TaxonStatus{
         Accepted,
         SynonymObjective,
         Synonym; //All others including undefined and explicitly subjective /heterotypic synonyms
+
+        public boolean isSynonym(){
+           return this == SynonymObjective || this == Synonym;
+        }
     }
 
     /**
