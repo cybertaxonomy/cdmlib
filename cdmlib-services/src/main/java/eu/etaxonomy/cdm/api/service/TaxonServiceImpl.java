@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
-import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -3200,7 +3200,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	@Override
 	@Transactional(readOnly = true)
-	public <S extends TaxonBase> Pager<FindByIdentifierDTO<S>> findByIdentifier(
+	public <S extends TaxonBase> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths) {
@@ -3215,20 +3215,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
 
-        List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
         	}
         }
-		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+		return new DefaultPagerImpl<IdentifiedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
 	@Override
     @Transactional(readOnly = true)
-    public <S extends TaxonBase> Pager<FindByMarkerDTO<S>> findByMarker(
+    public <S extends TaxonBase> Pager<MarkedEntityDTO<S>> findByMarker(
             Class<S> clazz, MarkerType markerType, Boolean markerValue,
             TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
@@ -3243,15 +3243,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     includeEntity, pageSize, pageNumber, propertyPaths);
         }
 
-        List<FindByMarkerDTO<S>> result = new ArrayList<>();
+        List<MarkedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             if (includeEntity){
-                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
+                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
             }else{
-                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
             }
         }
-        return new DefaultPagerImpl<FindByMarkerDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+        return new DefaultPagerImpl<MarkedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
     }
 
     @Override

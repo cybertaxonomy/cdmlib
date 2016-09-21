@@ -15,8 +15,8 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
-import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -261,7 +261,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
     public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
     /**
-     * Returns a Pager for {@link FindByIdentifierDTO DTOs} that hold the identifier including type, title and uuid
+     * Returns a Pager for {@link IdentifiedEntityDTO DTOs} that hold the identifier including type, title and uuid
      * and the according CDM Object information (uuid, title and the object itself (optional)).
      *
      * @param clazz the identifiable entity subclass, may be null
@@ -275,13 +275,13 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return all {@link IdentifiableEntity identifiable entities} which have the according
      * identifier attached
      */
-    public <S extends T> Pager<FindByIdentifierDTO<S>> findByIdentifier(
+    public <S extends T> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
             Class<S> clazz, String identifier, DefinedTerm identifierType,
             MatchMode matchmode, boolean includeCdmEntity,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
-     * Returns a Pager for {@link FindByMarkerDTO DTOs} that hold the marker including type, title and uuid
+     * Returns a Pager for {@link MarkedEntityDTO DTOs} that hold the marker including type, title and uuid
      * and the according CDM object information (uuid, title and the object itself (optional)).
      *
      * @param clazz
@@ -294,7 +294,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return all {@link IdentifiableEntity identifiable entities} which have the according
      * marker with the given flag value attached
      */
-    public <S extends T> Pager<FindByMarkerDTO<S>> findByMarker(
+    public <S extends T> Pager<MarkedEntityDTO<S>> findByMarker(
             Class<S> clazz, MarkerType markerType, Boolean markerValue,
             boolean includeEntity, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);

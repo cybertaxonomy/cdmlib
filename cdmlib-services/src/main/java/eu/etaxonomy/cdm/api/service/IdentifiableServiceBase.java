@@ -24,8 +24,8 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
-import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -582,7 +582,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Override
 	@Transactional(readOnly = true)
-	public <S extends T> Pager<FindByIdentifierDTO<S>> findByIdentifier(
+	public <S extends T> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode,
 			boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths) {
@@ -594,20 +594,20 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
 
-        List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
         	}
         }
-		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+		return new DefaultPagerImpl<IdentifiedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
     @Override
     @Transactional(readOnly = true)
-    public <S extends T> Pager<FindByMarkerDTO<S>> findByMarker(
+    public <S extends T> Pager<MarkedEntityDTO<S>> findByMarker(
             Class<S> clazz, MarkerType markerType, Boolean markerValue,
             boolean includeEntity, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
@@ -619,15 +619,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
                     pageSize, pageNumber, propertyPaths);
         }
 
-        List<FindByMarkerDTO<S>> result = new ArrayList<>();
+        List<MarkedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             if (includeEntity){
-                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
+                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
             }else{
-                result.add(new FindByMarkerDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
             }
         }
-        return new DefaultPagerImpl<FindByMarkerDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+        return new DefaultPagerImpl<MarkedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
     }
 }
 

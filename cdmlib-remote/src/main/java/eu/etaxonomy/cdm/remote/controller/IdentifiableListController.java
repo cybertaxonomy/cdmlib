@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
-import eu.etaxonomy.cdm.api.service.dto.FindByMarkerDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -115,7 +115,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
-    public  Pager<FindByIdentifierDTO<T>> doFindByIdentifier(
+    public  Pager<IdentifiedEntityDTO<T>> doFindByIdentifier(
     		@RequestParam(value = "class", required = false) Class type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
@@ -159,7 +159,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByMarker"})
-    public Pager<FindByMarkerDTO<T>> doFindByMarker(
+    public Pager<MarkedEntityDTO<T>> doFindByMarker(
             @RequestParam(value = "class", required = false) Class<T> type,
             @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
             @RequestParam(value = "value", required = false) Boolean value,
