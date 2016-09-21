@@ -30,7 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.EntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
@@ -49,13 +51,17 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto.TaxonStatus;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -76,6 +82,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     @Autowired
     private ITaxonDao taxonDao;
+
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
 
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
@@ -693,6 +702,60 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         Map<UUID, UUID> map = dao.getTaxonNodeUuidByTaxonUuid(classificationUuid, Arrays.asList(taxonUuid));
         UUID taxonNodeUuid = map.get(taxonUuid);
         return taxonNodeUuid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
+            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            NodeSortMode sortMode) {
+        TaxonInContextDTO result = new TaxonInContextDTO();
+        TaxonBase<?> taxonBase = taxonDao.load(taxonUuid);
+
+        TaxonNameBase<?,?> name = taxonBase.getName();
+        result.setNameUuid(name.getUuid());
+        result.setNameLabel(name.getTitleCache());
+        if (name.isInstanceOf(NonViralName.class)){
+            NonViralName<?> nvn = CdmBase.deproxy(name, NonViralName.class);
+
+            result.setNameWithoutAuthor(nvn.getNameCache());
+            result.setGenusOrUninomial(nvn.getGenusOrUninomial());
+            result.setInfraGenericEpithet(nvn.getInfraGenericEpithet());
+            result.setSpeciesEpithet(nvn.getSpecificEpithet());
+            result.setInfraSpecificEpithet(nvn.getInfraSpecificEpithet());
+
+            result.setAuthorship(nvn.getAuthorshipCache());
+
+            Rank rank = name.getRank();
+            if (rank != null){
+                result.setRankUuid(rank.getUuid());
+                result.setRankLabel(rank.getTitleCache());
+            }
+        }
+
+        UUID taxonNodeUuid = getTaxonNodeUuidByTaxonUuid(classificationUuid, taxonUuid);
+        result.setTaxonNodeUuid(taxonNodeUuid);
+
+        boolean recursive = false;
+        int pageSize = Integer.MAX_VALUE;
+        int pageIndex = 0;
+        Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
+
+        //children
+        for (TaxonNodeDto childDto : children.getRecords()){
+            if (doChildren && childDto.getStatus().equals(TaxonStatus.Accepted)){
+                EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                result.addChild(child);
+            }else if (doSynonyms && childDto.getStatus().isSynonym()){
+                EntityDTO<Synonym> child = new EntityDTO<Synonym>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                result.addSynonym(child);
+            }
+        }
+
+        //marked ancestors
+        return result;
     }
 
 }

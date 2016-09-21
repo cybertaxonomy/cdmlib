@@ -18,6 +18,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -335,6 +336,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
+
+    /**
+     * Returns the most relevant data of a taxon/taxon node, including children, synonyms
+     * and certain ancestors if required.
+     * @param classificationUuid
+     * @param taxonUuid
+     * @param doSynonyms
+     * @param ancestorMarkers
+     * @return
+     */
+    public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
+            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            NodeSortMode sortMode);
 
 
 }
