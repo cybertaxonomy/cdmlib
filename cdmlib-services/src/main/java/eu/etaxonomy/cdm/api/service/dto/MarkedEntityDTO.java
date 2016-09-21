@@ -41,13 +41,13 @@ public class MarkedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase
 	private Marker marker;
 
 	public MarkedEntityDTO(MarkerType markerType, Boolean flag, T entity){
+	    super(entity);
 		this.marker = new Marker(markerType, flag);
-		this.cdmEntity = new CdmEntity(entity.getUuid(), entity.getTitleCache(), entity);
 	}
 
 	public MarkedEntityDTO(MarkerType markerType, Boolean flag, UUID entityUuid, String titleCache){
-		this.marker = new Marker(markerType, flag);
-		this.cdmEntity = new CdmEntity(entityUuid, titleCache, null);
+	    super(entityUuid, titleCache);
+	    this.marker = new Marker(markerType, flag);
 	}
 
 	public Marker getMarker() {
