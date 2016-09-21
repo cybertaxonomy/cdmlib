@@ -49,9 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -69,19 +67,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
 
-    private final Comparator<? super TaxonNode> taxonNodeComparator = new TaxonNodeByNameComparator();
-
     @Autowired
     private ITaxonService taxonService;
 
     @Autowired
     private IAgentService agentService;
-
-    @Autowired
-    private IClassificationService classService;
-
-    @Autowired
-    private IDefinedTermDao termDao;
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,

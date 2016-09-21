@@ -47,8 +47,8 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
-import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
