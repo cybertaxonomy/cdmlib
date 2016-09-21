@@ -144,15 +144,15 @@ public class ClassificationController extends BaseController<Classification,ICla
     * @throws IOException
     */
    @RequestMapping(
-           value = {"childNodes"},
+           value = {"childNodesByTaxon"},
            method = RequestMethod.GET)
    public Pager<TaxonNodeDto> doPageChildNodes(
            @PathVariable("uuid") UUID classificationUuid,
-           @RequestParam(value = "taxonUuid", required = true) UUID taxonUuid,
+           @PathVariable("taxonUuid") UUID taxonUuid,
            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-           @RequestParam(value="sortMode", defaultValue="AlphabeticalOrder") NodeSortMode sortMode,
-           @RequestParam(value="doSynonyms", defaultValue="false") Boolean doSynonyms,
+           @RequestParam(value = "sortMode", defaultValue="AlphabeticalOrder") NodeSortMode sortMode,
+           @RequestParam(value = "doSynonyms", defaultValue="false") Boolean doSynonyms,
            HttpServletResponse response
            ) throws IOException {
 
