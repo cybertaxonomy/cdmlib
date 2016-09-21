@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -682,6 +683,16 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid) {
+        Map<UUID, UUID> map = dao.getTaxonNodeUuidByTaxonUuid(classificationUuid, Arrays.asList(taxonUuid));
+        UUID taxonNodeUuid = map.get(taxonUuid);
+        return taxonNodeUuid;
     }
 
 }
