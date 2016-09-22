@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.EntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
@@ -39,7 +40,9 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -55,6 +58,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -85,6 +89,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     @Autowired
     private ITaxonNodeService taxonNodeService;
+
+    @Autowired
+    private IDefinedTermDao termDao;
 
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
@@ -739,8 +746,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         result.setTaxonNodeUuid(taxonNodeUuid);
 
         boolean recursive = false;
-        int pageSize = Integer.MAX_VALUE;
-        int pageIndex = 0;
+        Integer pageSize = null;
+        Integer pageIndex = null;
         Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
 
         //children
@@ -755,7 +762,40 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         //marked ancestors
+        if (!ancestorMarkers.isEmpty()){
+            List<DefinedTermBase> markerTypesTerms = termDao.list(ancestorMarkers, pageSize, null, null, null);
+            List<MarkerType> markerTypes = new ArrayList<>();
+            for (DefinedTermBase<?> term : markerTypesTerms){
+                if (term.isInstanceOf(MarkerType.class)){
+                    markerTypes.add(CdmBase.deproxy(term, MarkerType.class));
+                }
+            }
+            if (! markerTypes.isEmpty()){
+                TaxonNode node = taxonNodeDao.findByUuid(taxonNodeUuid);
+                handleAncestorsForMarkersRecursive(result, markerTypes, node);
+            }
+        }
+
         return result;
+    }
+
+    /**
+     * @param result
+     * @param markerTypes
+     * @param node
+     */
+    private void handleAncestorsForMarkersRecursive(TaxonInContextDTO result, List<MarkerType> markerTypes, TaxonNode node) {
+       for (MarkerType type : markerTypes){
+            Taxon taxon = node.getTaxon();
+            if (taxon != null && taxon.hasMarker(type, true)){
+                MarkedEntityDTO<Taxon> dto = new MarkedEntityDTO<>(type, true, taxon.getUuid(), taxon.getTitleCache());
+                result.addMarkedAncestor(dto);
+            }
+        }
+        TaxonNode parentNode = node.getParent();
+        if (parentNode != null){
+            handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
+        }
     }
 
 }
