@@ -720,6 +720,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             NodeSortMode sortMode) {
         TaxonInContextDTO result = new TaxonInContextDTO();
         TaxonBase<?> taxonBase = taxonDao.load(taxonUuid);
+        if (taxonBase == null){
+            return result;  //TODO
+        }
 
         TaxonNameBase<?,?> name = taxonBase.getName();
         result.setNameUuid(name.getUuid());
@@ -762,7 +765,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         //marked ancestors
-        if (!ancestorMarkers.isEmpty()){
+        if (ancestorMarkers != null && !ancestorMarkers.isEmpty()){
             List<DefinedTermBase> markerTypesTerms = termDao.list(ancestorMarkers, pageSize, null, null, null);
             List<MarkerType> markerTypes = new ArrayList<>();
             for (DefinedTermBase<?> term : markerTypesTerms){
