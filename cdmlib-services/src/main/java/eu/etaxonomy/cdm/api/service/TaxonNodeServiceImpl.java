@@ -119,7 +119,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         allRecords.addAll(synList);
 
 
-        List<TaxonNodeDto> dtos = new ArrayList<>(pageSize);
+        List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
         int start = PagerUtils.startFor(pageSize, pageIndex);
         int limit = PagerUtils.limitFor(pageSize);
         Long totalCount = Long.valueOf(allRecords.size());
