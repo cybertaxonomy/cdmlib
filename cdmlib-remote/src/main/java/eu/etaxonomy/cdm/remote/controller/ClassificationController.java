@@ -145,7 +145,7 @@ public class ClassificationController extends BaseController<Classification,ICla
     * @throws IOException
     */
    @RequestMapping(
-           value = {"childNodesByTaxon"},
+           value = {"childNodesByTaxon/{taxonUuid}"},
            method = RequestMethod.GET)
    public Pager<TaxonNodeDto> doPageChildNodes(
            @PathVariable("uuid") UUID classificationUuid,
@@ -223,7 +223,7 @@ public class ClassificationController extends BaseController<Classification,ICla
 
 
    @RequestMapping(
-           value = {"taxonInContext"},
+           value = {"taxonInContext/{taxonUuid}"},
            method = RequestMethod.GET)
    public TaxonInContextDTO getTaxonInContext(
            @PathVariable("uuid") UUID classificationUuid,
