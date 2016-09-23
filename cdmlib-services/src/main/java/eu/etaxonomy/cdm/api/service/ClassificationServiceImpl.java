@@ -18,10 +18,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,7 +69,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto.TaxonStatus;
+import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -715,14 +719,52 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * {@inheritDoc}
      */
     @Override
-    public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
+    public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
             Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
             NodeSortMode sortMode) {
         TaxonInContextDTO result = new TaxonInContextDTO();
-        TaxonBase<?> taxonBase = taxonDao.load(taxonUuid);
+
+        TaxonBase<?> taxonBase = taxonDao.load(taxonBaseUuid);
         if (taxonBase == null){
-            return result;  //TODO
+            throw new EntityNotFoundException("Taxon with uuid " + taxonBaseUuid + " not found in datasource");
         }
+        boolean isSynonym = false;
+        Taxon acceptedTaxon;
+        if (taxonBase.isInstanceOf(Synonym.class)){
+            isSynonym = true;
+            Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+            Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
+            //we expect every synonym to have only 1 accepted taxon as this is how
+            //CDM will be modelled soon
+            acceptedTaxon = acceptedTaxa.isEmpty()? null : acceptedTaxa.iterator().next();
+            if (acceptedTaxon == null) {
+                throw new EntityNotFoundException("Accepted taxon not found for synonym"  );
+            }
+            TaxonStatus taxonStatus = TaxonStatus.Synonym;
+            if (synonym.getName()!= null && acceptedTaxon.getName() != null
+                    && synonym.getName().getHomotypicalGroup().equals(acceptedTaxon.getName().getHomotypicalGroup())){
+                taxonStatus = TaxonStatus.SynonymObjective;
+            }
+            result.setTaxonStatus(taxonStatus);
+
+        }else{
+            acceptedTaxon = CdmBase.deproxy(taxonBase, Taxon.class);
+            result.setTaxonStatus(TaxonStatus.Accepted);
+        }
+        UUID acceptedTaxonUuid = acceptedTaxon.getUuid();
+
+        UUID taxonNodeUuid = getTaxonNodeUuidByTaxonUuid(classificationUuid, acceptedTaxonUuid);
+        if (taxonNodeUuid == null) {
+            throw new EntityNotFoundException("Taxon not found in classficiation with uuid " + classificationUuid + ". Either classification does not exist or does not contain taxon/synonym with uuid " + taxonBaseUuid );
+        }
+        result.setTaxonNodeUuid(taxonNodeUuid);
+        result.setTaxonUuid(taxonBaseUuid);
+        result.setClassificationUuid(classificationUuid);
+        if (taxonBase.getSec() != null){
+            result.setSecundumUuid(taxonBase.getSec().getUuid());
+            result.setSecundumLabel(taxonBase.getSec().getTitleCache());
+        }
+        result.setTaxonLabel(taxonBase.getTitleCache());
 
         TaxonNameBase<?,?> name = taxonBase.getName();
         result.setNameUuid(name.getUuid());
@@ -741,12 +783,13 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             Rank rank = name.getRank();
             if (rank != null){
                 result.setRankUuid(rank.getUuid());
-                result.setRankLabel(rank.getTitleCache());
+                String rankLabel = rank.getAbbreviation();
+                if (StringUtils.isBlank(rankLabel)){
+                    rankLabel = rank.getLabel();
+                }
+                result.setRankLabel(rankLabel);
             }
         }
-
-        UUID taxonNodeUuid = getTaxonNodeUuidByTaxonUuid(classificationUuid, taxonUuid);
-        result.setTaxonNodeUuid(taxonNodeUuid);
 
         boolean recursive = false;
         Integer pageSize = null;
@@ -754,14 +797,21 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
 
         //children
-        for (TaxonNodeDto childDto : children.getRecords()){
-            if (doChildren && childDto.getStatus().equals(TaxonStatus.Accepted)){
-                EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
-                result.addChild(child);
-            }else if (doSynonyms && childDto.getStatus().isSynonym()){
-                EntityDTO<Synonym> child = new EntityDTO<Synonym>(childDto.getTaxonUuid(), childDto.getTitleCache());
-                result.addSynonym(child);
+        if(! isSynonym) {
+            for (TaxonNodeDto childDto : children.getRecords()){
+                if (doChildren && childDto.getStatus().equals(TaxonStatus.Accepted)){
+                    EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                    result.addChild(child);
+                }else if (doSynonyms && childDto.getStatus().isSynonym()){
+                    EntityDTO<Synonym> child = new EntityDTO<Synonym>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                    result.addSynonym(child);
+                }
             }
+        }else{
+            result.setAcceptedTaxonUuid(acceptedTaxonUuid);
+            String nameTitel = acceptedTaxon.getName() == null ? null : acceptedTaxon.getName().getTitleCache();
+            result.setAcceptedTaxonLabel(acceptedTaxon.getTitleCache());
+            result.setAcceptedNameLabel(nameTitel);
         }
 
         //marked ancestors
@@ -791,7 +841,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
        for (MarkerType type : markerTypes){
             Taxon taxon = node.getTaxon();
             if (taxon != null && taxon.hasMarker(type, true)){
-                MarkedEntityDTO<Taxon> dto = new MarkedEntityDTO<>(type, true, taxon.getUuid(), taxon.getTitleCache());
+                String label =  taxon.getName() == null? taxon.getTitleCache() : taxon.getName().getTitleCache();
+                MarkedEntityDTO<Taxon> dto = new MarkedEntityDTO<>(type, true, taxon.getUuid(), label);
                 result.addMarkedAncestor(dto);
             }
         }

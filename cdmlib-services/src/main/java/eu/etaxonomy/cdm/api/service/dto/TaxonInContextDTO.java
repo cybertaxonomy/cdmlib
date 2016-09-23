@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 
 /**
  * @author a.mueller
@@ -26,10 +27,12 @@ public class TaxonInContextDTO {
     private UUID taxonNodeUuid;
     private UUID taxonUuid;
     private String taxonLabel;
+    private TaxonStatus taxonStatus;
 
     //name
     private UUID nameUuid;
     private String nameLabel;
+
     private String nameWithoutAuthor;
     private UUID rankUuid;
     private String rankLabel;
@@ -42,6 +45,28 @@ public class TaxonInContextDTO {
     //sec
     private UUID secundumUuid;
     private String secundumLabel;
+
+    //accepted taxon
+    private UUID acceptedTaxonUuid;
+    private String acceptedNameLabel;
+
+
+    private String acceptedTaxonLabel;
+
+
+    /**
+     * @return the acceptedTaxonLabel
+     */
+    public String getAcceptedTaxonLabel() {
+        return acceptedTaxonLabel;
+    }
+
+    /**
+     * @param acceptedTaxonLabel the acceptedTaxonLabel to set
+     */
+    public void setAcceptedTaxonLabel(String acceptedTaxonLabel) {
+        this.acceptedTaxonLabel = acceptedTaxonLabel;
+    }
 
     private List<EntityDTO<Taxon>> children = new ArrayList<>();
 
@@ -319,6 +344,49 @@ public class TaxonInContextDTO {
      */
     public List<MarkedEntityDTO<Taxon>> getMarkedAncestors() {
         return markedAncestors;
+    }
+
+
+    /**
+     * @return the acceptedTaxonUuid
+     */
+    public UUID getAcceptedTaxonUuid() {
+        return acceptedTaxonUuid;
+    }
+
+    /**
+     * @param acceptedTaxonUuid the acceptedTaxonUuid to set
+     */
+    public void setAcceptedTaxonUuid(UUID acceptedTaxonUuid) {
+        this.acceptedTaxonUuid = acceptedTaxonUuid;
+    }
+
+    /**
+     * @return the acceptedNameLabel
+     */
+    public String getAcceptedNameLabel() {
+        return acceptedNameLabel;
+    }
+
+    /**
+     * @param acceptedNameLabel the acceptedNameLabel to set
+     */
+    public void setAcceptedNameLabel(String acceptedNameLabel) {
+        this.acceptedNameLabel = acceptedNameLabel;
+    }
+
+    /**
+     * @return the taxonStatus
+     */
+    public TaxonStatus getTaxonStatus() {
+        return taxonStatus;
+    }
+
+    /**
+     * @param taxonStatus the taxonStatus to set
+     */
+    public void setTaxonStatus(TaxonStatus taxonStatus) {
+        this.taxonStatus = taxonStatus;
     }
 
 // *************************** ADDER *******************************/
