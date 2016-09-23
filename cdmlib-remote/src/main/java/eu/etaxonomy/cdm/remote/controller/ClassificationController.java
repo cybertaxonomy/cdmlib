@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -163,6 +164,10 @@ public class ClassificationController extends BaseController<Classification,ICla
 //       service.startTransaction();
        boolean recursive = false;
        UUID taxonNodeUuid = service.getTaxonNodeUuidByTaxonUuid(classificationUuid, taxonUuid) ;
+       if (taxonNodeUuid == null){
+           HttpStatusMessage.UUID_NOT_FOUND.send(response);
+           return null;
+       }
        Pager<TaxonNodeDto> pager = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
 //       service.commitTransaction()
 
@@ -235,9 +240,13 @@ public class ClassificationController extends BaseController<Classification,ICla
            HttpServletResponse response
            ) throws IOException {
 
-       TaxonInContextDTO taxonInContextDTO = service.getTaxonInContext(classificationUuid, taxonUuid, doChildren, doSynonyms, ancestorMarkers, sortMode) ;
-
-       return taxonInContextDTO;
+       try {
+           TaxonInContextDTO taxonInContextDTO = service.getTaxonInContext(classificationUuid, taxonUuid, doChildren, doSynonyms, ancestorMarkers, sortMode);
+           return taxonInContextDTO;
+       } catch (EntityNotFoundException e) {
+           HttpStatusMessage.UUID_NOT_FOUND.send(response);
+           return null;
+       }
    }
 
 
