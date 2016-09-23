@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.IReport;
 import eu.etaxonomy.cdm.model.reference.IThesis;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -258,4 +259,34 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 		return taxonBaseList;
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern) {
+        Session session = getSession();
+        Reference ref = ReferenceFactory.newArticle();
+
+        Query query = null;
+        if (pattern != null){
+            if (pattern.startsWith("*")){
+                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern OR titleCache like :pattern ");
+            }else{
+                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern  ");
+            }
+            pattern = pattern + "%";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+
+        return getUuidAndAbbrevTitleCache(query);
+
+    }
 }

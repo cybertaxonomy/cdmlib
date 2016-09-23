@@ -42,8 +42,9 @@ package eu.etaxonomy.cdm.common.monitor;
  * @see SubMonitor
  */
 public class SubProgressMonitor extends ProgressMonitorWrapper {
+    private static final long serialVersionUID = 3258788051657003998L;
 
-    /**
+   /**
      * Style constant indicating that calls to <code>subTask</code>
      * should not have any effect.
      *
@@ -130,9 +131,6 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         }
     }
 
-    /* (Intentionally not javadoc'd)
-     * Implements the method <code>IProgressMonitor.done</code>.
-     */
     @Override
     public void done() {
         // Ignore if more done calls than beginTask calls or if we are still
@@ -153,10 +151,6 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         sentToParent = 0;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.monitor.ProgressMonitorWrapper#internalWorked(double)
-     */
     @Override
     public void internalWorked(double work) {
         if (usedUp || nestedBeginTasks != 1) {
@@ -171,9 +165,6 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         }
     }
 
-    /* (Intentionally not javadoc'd)
-     * Implements the method <code>IProgressMonitor.subTask</code>.
-     */
     @Override
     public void subTask(String name) {
         if ((style & SUPPRESS_SUBTASK_LABEL) != 0) {
@@ -188,9 +179,6 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         super.subTask(label);
     }
 
-    /* (Intentionally not javadoc'd)
-     * Implements the method <code>IProgressMonitor.worked</code>.
-     */
     @Override
     public void worked(int work) {
         internalWorked(work);
@@ -199,13 +187,11 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
 	@Override
 	public void warning(String message) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void warning(String message, Throwable throwable) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

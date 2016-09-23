@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -25,7 +25,7 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 	/*
 	 * Supported Columns:
 	 * ------------------
-	 * Id           
+	 * Id
 	 * ParentId
 	 * Rank
 	 * ScientificName
@@ -53,8 +53,11 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 	protected static final String IMAGE_COLUMN = "Image";
 	protected static final String TDWG_COLUMN = "TDWG";
 	protected static final String COUNTRY_COLUMN = "Country";
-	
+
 	protected static final String SYNONYM_COLUMN = "Synonym";
+	protected static final String DATE_COLUMN = "Date";
+	protected static final String YEAR_COLUMN = "Year";
+	protected static final String FAMILY_COLUMN = "Family";
 
 }
 

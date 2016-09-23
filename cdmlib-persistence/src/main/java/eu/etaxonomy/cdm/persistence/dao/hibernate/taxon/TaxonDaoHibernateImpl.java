@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -66,7 +67,6 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -98,76 +98,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //        this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
 //    }
 
-    @Override
-    public List<Taxon> getRootTaxa(Reference sec) {
-        return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true, false);
-    }
-
-    @Override
-    public List<Taxon> getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
-        if (onlyWithChildren == null){
-            onlyWithChildren = true;
-        }
-        if (withMisapplications == null){
-            withMisapplications = true;
-        }
-        if (cdmFetch == null){
-            cdmFetch = CdmFetch.NO_FETCH();
-        }
-
-        Criteria crit = getSession().createCriteria(Taxon.class);
-
-        crit.setFetchMode("name", FetchMode.JOIN);
-        crit.createAlias("name", "name");
-
-        if (rank != null) {
-            crit.add(Restrictions.eq("name.rank", rank));
-        }else{
-            crit.add(Restrictions.isNull("taxonomicParentCache"));
-        }
-
-        if (sec != null){
-            crit.add(Restrictions.eq("sec", sec) );
-        }
-
-        if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
-            logger.info("Not fetching child taxa");
-            //TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
-            crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
-        }
-
-        List<Taxon> results = new ArrayList<Taxon>();
-        @SuppressWarnings("unchecked")
-        List<Taxon> taxa = crit.list();
-        for(Taxon taxon : taxa){
-
-
-            //childTaxa
-            //TODO create restriction instead
-            // (a) not using cache fields
-            /*Hibernate.initialize(taxon.getRelationsFromThisTaxon());
-            if (onlyWithChildren == false || taxon.getRelationsFromThisTaxon().size() > 0){
-                if (withMisapplications == true || ! taxon.isMisappliedName()){
-                    defaultBeanInitializer.initialize(taxon, propertyPaths);
-                    results.add(taxon);
-                }
-            }*/
-            // (b) using cache fields
-            if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
-                if (withMisapplications == true || ! taxon.isMisapplication()){
-                    defaultBeanInitializer.initialize(taxon, propertyPaths);
-                    results.add(taxon);
-                }
-            }
-        }
-        return results;
-    }
-
-    @Override
-    public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
-        return getRootTaxa(null, sec, cdmFetch, onlyWithChildren, withMisapplications, null);
-    }
 
     @Override
     public List<TaxonBase> getTaxaByName(String queryString, Reference sec) {
@@ -282,15 +212,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa && doSynonyms){
                     if (result[3].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
                 }else if (doTaxa){
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
+                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                 }
             }
 
@@ -979,13 +909,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             for (Iterator<TaxonRelationship> iterator = ((Taxon)taxonBase).getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
                 TaxonRelationship relationFromThisTaxon = iterator.next();
 
-                // decrease children count of taxonomic parent by one
-                if (relationFromThisTaxon.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
-                    Taxon toTaxon = relationFromThisTaxon.getToTaxon(); // parent
-                    if (toTaxon != null) {
-                        toTaxon.setTaxonomicChildrenCount(toTaxon.getTaxonomicChildrenCount() - 1);
-                    }
-                }
             }
         }
 
@@ -1562,14 +1485,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return hql;
     }
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid, Integer limit, String pattern) {
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern) {
         int classificationId = classification.getId();
         // StringBuffer excludeUuids = new StringBuffer();
 
          String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
-         if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
-             queryString = queryString + " AND taxon.uuid NOT IN (:excludeUuid)" ;
-         }
+
          if (pattern != null){
              pattern = pattern.replace("*", "%");
              queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
@@ -1581,9 +1502,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
          if (limit != null){
              query.setMaxResults(limit);
          }
-         if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
-             query.setParameterList("excludeUuid", excludeUuid);
-         }
+
          if (pattern != null){
              query.setParameter("pattern", pattern);
          }
@@ -2144,7 +2063,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString())));
+            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
         }
@@ -2165,7 +2084,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
-		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
+		checkNotInPriorView("TaxonDaoHibernateImpl.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
 
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
@@ -2211,7 +2130,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			MatchMode matchmode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+		checkNotInPriorView("TaxonDaoHibernateImpl.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 		Class<?> clazzParam = clazz == null ? type : clazz;
 
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
@@ -2267,5 +2186,123 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         return results;
 	}
+
+    /**
+     * {@inheritDoc}
+     * @see #countByIdentifier(Class, String, DefinedTerm, TaxonNode, MatchMode)
+     */
+    @Override
+    public <S extends TaxonBase> long countByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter) {
+        if (markerType == null){
+            return 0;
+        }
+
+        if (subtreeFilter == null){
+            return countByMarker(clazz, markerType, markerValue);
+        }
+
+        Class<?> clazzParam = clazz == null ? type : clazz;
+        checkNotInPriorView("TaxonDaoHibernateImpl.countByMarker(Class<S> clazz, DefinedTerm markerType, boolean markerValue, TaxonNode subtreeFilter)");
+
+        boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
+        boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
+
+        getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+        String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
+        String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
+        String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+        String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
+        String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+
+        String queryString = "SELECT count(*)  FROM %s as c " +
+                " INNER JOIN c.markers as mks " +
+                accTreeJoin +
+                synTreeJoin +
+                " WHERE (1=1) " +
+                    "  AND ( " + accWhere + " OR " + synWhere + ")";
+        queryString = String.format(queryString, clazzParam.getSimpleName());
+
+        if (markerValue != null){
+            queryString += " AND mks.flag = :flag";
+        }
+        if (markerType != null){
+            queryString += " AND mks.markerType = :type";
+        }
+
+        Query query = getSession().createQuery(queryString);
+        if (markerType != null){
+            query.setEntity("type", markerType);
+        }
+        if (markerValue != null){
+            query.setBoolean("flag", markerValue);
+        }
+
+        Long c = (Long)query.uniqueResult();
+        return c;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.findByMarker(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        if (markerType == null){
+            return new ArrayList<Object[]>();
+        }
+
+        Class<?> clazzParam = clazz == null ? type : clazz;
+
+        boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
+        boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
+        getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+        String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
+        String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
+        String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+        String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
+        String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+
+        String queryString = "SELECT mks.markerType, mks.flag, %s " +
+                " FROM %s as c " +
+                " INNER JOIN c.markers as mks " +
+                accTreeJoin +
+                synTreeJoin +
+                " WHERE (1=1) " +
+                    " AND ( " + accWhere + " OR " + synWhere + ")";
+        queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
+
+        //type and value
+        if (markerValue != null){
+            queryString += " AND mks.flag = :flag";
+        }
+        queryString += " AND mks.markerType = :type";
+        //order
+        queryString +=" ORDER BY mks.markerType.uuid, mks.flag, c.uuid ";
+
+        Query query = getSession().createQuery(queryString);
+
+        //parameters
+        query.setEntity("type", markerType);
+        if (markerValue != null){
+            query.setBoolean("flag", markerValue);
+        }
+
+        //paging
+        setPagingParameter(query, pageSize, pageNumber);
+
+        List<Object[]> results = query.list();
+        //initialize
+        if (includeEntity){
+            List<S> entities = new ArrayList<S>();
+            for (Object[] result : results){
+                entities.add((S)result[2]);
+            }
+            defaultBeanInitializer.initializeAll(entities, propertyPaths);
+        }
+        return results;
+    }
 
 }

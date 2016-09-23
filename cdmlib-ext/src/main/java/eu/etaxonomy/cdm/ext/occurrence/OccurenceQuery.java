@@ -9,8 +9,10 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 
 /**
  * Holds query parameters for a query to an occurrence provider.
@@ -18,10 +20,10 @@ import java.util.Calendar;
  * @date 17.09.2013
  *
  */
-public class OccurenceQuery {
+public class OccurenceQuery implements Serializable{
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public final String unitId;
+    public final Set<String[]> tripleIds;
 
     public final String taxonName;
     public final String collector;
@@ -35,8 +37,9 @@ public class OccurenceQuery {
 
 
 
-    public OccurenceQuery(String unitId) {
-        this(unitId, null, null, null, null, null, null, null, null, null);
+    public OccurenceQuery(Set<String[]> tripleIds) {
+
+        this(tripleIds, null, null, null, null, null, null, null, null, null);
     }
 
     /**
@@ -58,8 +61,8 @@ public class OccurenceQuery {
     /**
      * Constructor to initially set the parameters
      */
-    private OccurenceQuery(String unitId, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
-        this.unitId = unitId;
+    private OccurenceQuery(Set<String[]> tripleIds, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+        this.tripleIds = tripleIds;
         this.taxonName = taxonName;
         this.collector = collector;
         this.collectorsNumber = collectorsNumber;
@@ -87,7 +90,7 @@ public class OccurenceQuery {
         result = prime * result + ((herbarium == null) ? 0 : herbarium.hashCode());
         result = prime * result + ((locality == null) ? 0 : locality.hashCode());
         result = prime * result + ((taxonName == null) ? 0 : taxonName.hashCode());
-        result = prime * result + ((unitId == null) ? 0 : unitId.hashCode());
+        result = prime * result + ((tripleIds == null) ? 0 : tripleIds.hashCode());
         return result;
     }
 
@@ -172,11 +175,11 @@ public class OccurenceQuery {
         } else if (!taxonName.equals(other.taxonName)) {
             return false;
         }
-        if (unitId == null) {
-            if (other.unitId != null) {
+        if (tripleIds == null) {
+            if (other.tripleIds != null) {
                 return false;
             }
-        } else if (!unitId.equals(other.unitId)) {
+        } else if (!tripleIds.equals(other.tripleIds)) {
             return false;
         }
         return true;
@@ -191,8 +194,11 @@ public class OccurenceQuery {
     @Override
     public String toString() {
         String string = "";
-        if(unitId!=null && !unitId.trim().isEmpty()){
-            string += " unitId=" + unitId;
+        if(tripleIds!=null ){
+            string += " unitId=" ;
+            for (String[] unitId: tripleIds){
+                string += unitId + ", ";
+            }
         }
         if(taxonName!=null && !taxonName.trim().isEmpty()){
             string += " taxonName=" + taxonName;

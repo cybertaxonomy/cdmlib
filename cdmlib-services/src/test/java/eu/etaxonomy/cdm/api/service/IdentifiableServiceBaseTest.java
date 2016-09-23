@@ -21,11 +21,13 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -87,8 +89,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 
 
 	@Test
-	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifier.xml")
-	public final void testListByIdentifier(){
+	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+	public final void testFindByIdentifier(){
 		UUID uuidIdentifierType1 = UUID.fromString("02bb62db-a229-4eeb-83e6-a9a093943d5e");
 		UUID uuidIdentifierType2 = UUID.fromString("ef6e960f-5289-456c-b25c-cff7f4de2f63");
 
@@ -97,9 +99,9 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertNotNull("identifier type must not be null", it1);
 
 		boolean includeEntity = true;
-		Pager<FindByIdentifierDTO<Taxon>> taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
+		Pager<IdentifiedEntityDTO<Taxon>> taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
 		Assert.assertTrue("Result should not be empty", taxonPager.getCount() == 1);
-		FindByIdentifierDTO<Taxon>.CdmEntity entity = taxonPager.getRecords().get(0).getCdmEntity();
+		IdentifiedEntityDTO<Taxon>.CdmEntity entity = taxonPager.getRecords().get(0).getCdmEntity();
 		Taxon taxon = entity.getEntity();
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), taxon.getUuid());
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getCdmUuid());
@@ -108,7 +110,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		DefinedTerm type = CdmBase.deproxy(identifier.getType(), DefinedTerm.class);
 		Assert.assertEquals(uuidIdentifierType1, type.getUuid());
 
-		Pager<FindByIdentifierDTO<TaxonNameBase>> names = nameService.findByIdentifier(
+		Pager<IdentifiedEntityDTO<TaxonNameBase>> names = nameService.findByIdentifier(
 				TaxonNameBase.class, "ext-1234", null, null, includeEntity, null, null, null);
 		Assert.assertTrue("Identifier does not exist for TaxonName", names.getCount() == 0);
 
@@ -158,16 +160,16 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifier.xml")
-	public final void testListByIdentifierClassification(){
+	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+	public final void testFindByIdentifierClassification(){
 		//classification Filter
 		Classification classification = classificationService.find(5000);
 		TaxonNode rootNode = classification.getRootNode();
-		Pager<FindByIdentifierDTO<Taxon>> taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Pager<IdentifiedEntityDTO<Taxon>> taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null, null);
 		Assert.assertEquals("Result size for 'ext' should be 1", Long.valueOf(1), taxonPager.getCount());
 		Assert.assertEquals("Result size for 'ext' should be 1", 1, taxonPager.getRecords().size());
 
-		Pager<FindByIdentifierDTO<Taxon>> taxPager = taxonService.findByIdentifier(Taxon.class, "ext-cache1", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Pager<IdentifiedEntityDTO<Taxon>> taxPager = taxonService.findByIdentifier(Taxon.class, "ext-cache1", null, rootNode, MatchMode.EXACT, false, null, null, null);
 		Assert.assertEquals("Result size for 'ext' should be 0", Long.valueOf(0), taxPager.getCount());
 		Assert.assertEquals("Result size for 'ext' should be 0", 0, taxPager.getRecords().size());
 
@@ -178,7 +180,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 
 		//TaxonBase
 		rootNode = classification.getRootNode();
-		Pager<FindByIdentifierDTO<TaxonBase>> tbPager = taxonService.findByIdentifier(TaxonBase.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Pager<IdentifiedEntityDTO<TaxonBase>> tbPager = taxonService.findByIdentifier(TaxonBase.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null, null);
 		Assert.assertEquals("Result size for 'ext' should be 1", Long.valueOf(1), tbPager.getCount());
 		Assert.assertEquals("Result size for 'ext' should be 1", 1, tbPager.getRecords().size());
 
@@ -187,17 +189,73 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertEquals("Result size for 'ext' should be 0", 0, tbPager.getRecords().size());
 
 		//Synonym
-		Pager<FindByIdentifierDTO<Synonym>> synPager = taxonService.findByIdentifier(Synonym.class, "ext-syn", null, rootNode, MatchMode.BEGINNING, false, null, null, null);
+		Pager<IdentifiedEntityDTO<Synonym>> synPager = taxonService.findByIdentifier(Synonym.class, "ext-syn", null, rootNode, MatchMode.BEGINNING, false, null, null, null);
 		Assert.assertEquals("1 Synonym should be linked to the according classification", Long.valueOf(1), synPager.getCount());
 		Assert.assertEquals("1 Synonym should be linked to the according classification", 1, synPager.getRecords().size());
 
 	}
 
+	@Test
+    @DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+    public final void testFindByMarker(){
+        //classification Filter
+        Classification classification = classificationService.find(5000);
+        TaxonNode rootNode = classification.getRootNode();
+        Boolean markerValue = true;
+
+        UUID uuidMarkerTypeCompleted = MarkerType.uuidComplete;
+        UUID uuidMarkerTypeDoubtful = UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e");
+
+        MarkerType markerType1 = (MarkerType)termService.find(uuidMarkerTypeCompleted);
+        MarkerType noMarkerType = null;
+        MarkerType markerType2 = (MarkerType)termService.find(uuidMarkerTypeDoubtful);
+        Assert.assertNotNull(markerType2);
+
+        MarkerType markerType = markerType1;
+        Pager<MarkedEntityDTO<Taxon>> taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue,
+                rootNode, true, null, null, null);
+        Assert.assertEquals("Result size for 'marker1=true' should be 1", Long.valueOf(1), taxonPager.getCount());
+        Assert.assertEquals("Result size for 'marker1=true' should be 1", 1, taxonPager.getRecords().size());
+        MarkedEntityDTO<Taxon> dto = taxonPager.getRecords().get(0);
+        MarkedEntityDTO<Taxon>.Marker marker = dto.getMarker();
+        Assert.assertTrue("Flag must be true", marker.getFlag());
+        Assert.assertEquals("Flag must be true", uuidMarkerTypeCompleted, marker.getTypeUuid());
+        Assert.assertNotNull("the CDM entity in the dto must not be empty if includeEntity=true", dto.getCdmEntity().getEntity());
+        Assert.assertEquals(5000, dto.getCdmEntity().getEntity().getId());
+
+        markerValue = false;
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        Assert.assertEquals("Result size for 'marker1=false' should be 0", Long.valueOf(0), taxonPager.getCount());
+
+        markerValue = true;
+        markerType = noMarkerType;
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        Assert.assertEquals("Result size for not existing marker type should be 0", Long.valueOf(0), taxonPager.getCount());
+
+        markerType = markerType2;
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        Assert.assertEquals("Result size for markerType2 should be 0", Long.valueOf(0), taxonPager.getCount());
+
+        rootNode = null;
+        markerType = markerType1;
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        Assert.assertEquals("Result size for no subtree should be 2", Long.valueOf(2), taxonPager.getCount());
+
+        Pager<MarkedEntityDTO<TaxonBase>> taxonBasePager = taxonService.findByMarker(TaxonBase.class, markerType, markerValue, rootNode, false, null, null, null);
+        Assert.assertEquals("Result size for taxa and synonyms without subtree filter with flag = true should be 3", Long.valueOf(3), taxonBasePager.getCount());
+
+        markerValue = null;
+        taxonBasePager = taxonService.findByMarker(TaxonBase.class, markerType, markerValue, rootNode, false, null, null, null);
+        Assert.assertEquals("Result size for taxa and synonyms without subtree filter with any flag value should be 4", Long.valueOf(4), taxonBasePager.getCount());
+
+        markerValue = true;
+        Pager<MarkedEntityDTO<TaxonNameBase>> namePager = nameService.findByMarker(TaxonNameBase.class, markerType, markerValue, false, null, null, null);
+        Assert.assertEquals("Result size for names with flag = true should be 1", Long.valueOf(1), namePager.getCount());
+
+    }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+
 //	@Test
     @Override
     public void createTestDataSet() throws FileNotFoundException {

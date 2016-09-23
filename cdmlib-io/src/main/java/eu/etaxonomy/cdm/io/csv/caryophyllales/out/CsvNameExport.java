@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroupComparator;
@@ -97,6 +98,9 @@ public class CsvNameExport extends CsvNameExportBase {
             }
 
             List<HashMap<String, String>> result;
+            if (config.getRank() == null){
+                config.setRank(Rank.GENUS());
+            }
             if (config.isNamesOnly()){
                 txStatus = startTransaction();
                 result = getNameService().getNameRecords();
@@ -201,7 +205,7 @@ public class CsvNameExport extends CsvNameExportBase {
             for (TaxonNode child: familyNode.getChildNodes()){
                 child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
                 name = HibernateProxyHelper.deproxy(child.getTaxon().getName(), TaxonNameBase.class);
-                if (child.getTaxon().getName().getRank().isLower(Rank.GENUS()) || child.getTaxon().getName().isGenus()) {
+                if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
                     childrenUuids.add(child.getUuid());
                     if (child.hasChildNodes()){
                         parentsNodesUUID.add(child.getUuid());
@@ -377,7 +381,7 @@ public class CsvNameExport extends CsvNameExportBase {
 
         Rank nodeRank = node.getTaxon().getName().getRank();
         if (nodeRank.isKindOf(rank)){
-            return node;
+            return null;
 
         }else if (nodeRank.isHigher(rank)){
             return null;
@@ -395,22 +399,23 @@ public class CsvNameExport extends CsvNameExportBase {
                 return;
         }
         for (DescriptionBase<?> descriptionBase: taxon.getDescriptions()){
+            if (!descriptionBase.isImageGallery()){
+                Set<DescriptionElementBase> elements = descriptionBase.getElements();
+                for (DescriptionElementBase element: elements){
+                    if (element.getFeature().equals(feature)){
+                        if (element instanceof TextData){
+                            textElement = HibernateProxyHelper.deproxy(element, TextData.class);
+                            descriptionsString.append(textElement.getText(Language.ENGLISH()));
 
-            Set<DescriptionElementBase> elements = descriptionBase.getElements();
-            for (DescriptionElementBase element: elements){
-                if (element.getFeature().equals(feature)){
-                    if (element instanceof TextData){
-                        textElement = HibernateProxyHelper.deproxy(element, TextData.class);
-                        descriptionsString.append(textElement.getText(Language.ENGLISH()));
+                        }else if (element instanceof Distribution ){
 
-                    }else if (element instanceof Distribution ){
+                            Distribution distribution = HibernateProxyHelper.deproxy(element, Distribution.class);
+                            distributions.add(distribution);
 
-                        Distribution distribution = HibernateProxyHelper.deproxy(element, Distribution.class);
-                        distributions.add(distribution);
 
+                        }
 
                     }
-
                 }
             }
 
@@ -427,12 +432,20 @@ public class CsvNameExport extends CsvNameExportBase {
             nameRecord.put(columnName, conDis.toString());
 
         } else{
+            NamedArea area ;
             for (Distribution distribution:distributions){
 
                 if (descriptionsString.length()> 0 ){
                     descriptionsString.append(", ");
                 }
-                descriptionsString.append(distribution.getArea().getIdInVocabulary());
+                area = HibernateProxyHelper.deproxy(distribution.getArea(), NamedArea.class);
+                if (area.getIdInVocabulary() != null){
+                    descriptionsString.append(area.getIdInVocabulary());
+                }else if (area.getSymbol() != null){
+                    descriptionsString.append(area.getSymbol());
+                }else{
+                    descriptionsString.append(area.getLabel());
+                }
 
             }
             nameRecord.put(columnName, descriptionsString.toString());
@@ -508,6 +521,7 @@ public class CsvNameExport extends CsvNameExportBase {
             nameRecord.put("genusName", null);
             nameRecord.put("descriptionsGen", null);
         }
+
         taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         //  if (taxon.isPublish()){
@@ -541,19 +555,22 @@ public class CsvNameExport extends CsvNameExportBase {
         String typeNameString = NOT_DESIGNATED;
         String statusString = null;
         if (it.hasNext()){
-            NameTypeDesignation typeDes = HibernateProxyHelper.deproxy(it.next(), NameTypeDesignation.class);
 
+            TypeDesignationBase typeDes = HibernateProxyHelper.deproxy(it.next(), TypeDesignationBase.class);
 
-            BotanicalName typeName =  HibernateProxyHelper.deproxy(typeDes.getTypeName(), BotanicalName.class);
-            if (typeName != null){
+            if (typeDes instanceof NameTypeDesignation){
+                NameTypeDesignation nameTypeDes = HibernateProxyHelper.deproxy(typeDes, NameTypeDesignation.class);
 
-                typeNameString = "<i>" + typeName.getNameCache() +"</i> "  + typeName.getAuthorshipCache();
-                if (typeDes.getTypeStatus() != null){
-                    NameTypeDesignationStatus status = HibernateProxyHelper.deproxy(typeDes.getTypeStatus(), NameTypeDesignationStatus.class);
-                    statusString = status.getTitleCache();
+                BotanicalName typeName =  HibernateProxyHelper.deproxy(nameTypeDes.getTypeName(), BotanicalName.class);
+                if (typeName != null){
+
+                    typeNameString = "<i>" + typeName.getNameCache() +"</i> "  + typeName.getAuthorshipCache();
+                    if (nameTypeDes.getTypeStatus() != null){
+                        NameTypeDesignationStatus status = HibernateProxyHelper.deproxy(nameTypeDes.getTypeStatus(), NameTypeDesignationStatus.class);
+                        statusString = status.getTitleCache();
+                    }
                 }
             }
-
         }
         nameRecord.put("typeName", typeNameString);
         StringBuffer homotypicalSynonyms = new StringBuffer();

@@ -11,16 +11,21 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,14 +34,19 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.EntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -48,13 +58,18 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -75,6 +90,12 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     @Autowired
     private ITaxonDao taxonDao;
+
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
+
+    @Autowired
+    private IDefinedTermDao termDao;
 
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
@@ -283,6 +304,11 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
+    public TaxonNode getRootNode(UUID classificationUuid){
+        return dao.getRootNode(classificationUuid);
+    }
+
+    @Override
     public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(limit, start, orderHints, propertyPaths);
     }
@@ -327,23 +353,23 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa, limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa, limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification,  Integer limit, String pattern) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa, null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid ) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), null, null);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa, null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification ) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null);
     }
 
     @Override
@@ -620,7 +646,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         //get treeindex for each taxonUUID
         Map<UUID, String> taxonIdTreeIndexMap = dao.treeIndexForTaxonUuids(classificationUuid, originalTaxonUuids);
 
-        //build treeindex tree or list
+        //build treeindex list (or tree)
         List<String> treeIndexClosure = new ArrayList<>();
         for (String treeIndex : taxonIdTreeIndexMap.values()){
             String[] splits = treeIndex.substring(1).split(ITreeNode.separator);
@@ -677,6 +703,153 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid) {
+        Map<UUID, UUID> map = dao.getTaxonNodeUuidByTaxonUuid(classificationUuid, Arrays.asList(taxonUuid));
+        UUID taxonNodeUuid = map.get(taxonUuid);
+        return taxonNodeUuid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
+            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            NodeSortMode sortMode) {
+        TaxonInContextDTO result = new TaxonInContextDTO();
+
+        TaxonBase<?> taxonBase = taxonDao.load(taxonBaseUuid);
+        if (taxonBase == null){
+            throw new EntityNotFoundException("Taxon with uuid " + taxonBaseUuid + " not found in datasource");
+        }
+        boolean isSynonym = false;
+        Taxon acceptedTaxon;
+        if (taxonBase.isInstanceOf(Synonym.class)){
+            isSynonym = true;
+            Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+            Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
+            //we expect every synonym to have only 1 accepted taxon as this is how
+            //CDM will be modelled soon
+            acceptedTaxon = acceptedTaxa.isEmpty()? null : acceptedTaxa.iterator().next();
+            if (acceptedTaxon == null) {
+                throw new EntityNotFoundException("Accepted taxon not found for synonym"  );
+            }
+            TaxonStatus taxonStatus = TaxonStatus.Synonym;
+            if (synonym.getName()!= null && acceptedTaxon.getName() != null
+                    && synonym.getName().getHomotypicalGroup().equals(acceptedTaxon.getName().getHomotypicalGroup())){
+                taxonStatus = TaxonStatus.SynonymObjective;
+            }
+            result.setTaxonStatus(taxonStatus);
+
+        }else{
+            acceptedTaxon = CdmBase.deproxy(taxonBase, Taxon.class);
+            result.setTaxonStatus(TaxonStatus.Accepted);
+        }
+        UUID acceptedTaxonUuid = acceptedTaxon.getUuid();
+
+        UUID taxonNodeUuid = getTaxonNodeUuidByTaxonUuid(classificationUuid, acceptedTaxonUuid);
+        if (taxonNodeUuid == null) {
+            throw new EntityNotFoundException("Taxon not found in classficiation with uuid " + classificationUuid + ". Either classification does not exist or does not contain taxon/synonym with uuid " + taxonBaseUuid );
+        }
+        result.setTaxonNodeUuid(taxonNodeUuid);
+        result.setTaxonUuid(taxonBaseUuid);
+        result.setClassificationUuid(classificationUuid);
+        if (taxonBase.getSec() != null){
+            result.setSecundumUuid(taxonBase.getSec().getUuid());
+            result.setSecundumLabel(taxonBase.getSec().getTitleCache());
+        }
+        result.setTaxonLabel(taxonBase.getTitleCache());
+
+        TaxonNameBase<?,?> name = taxonBase.getName();
+        result.setNameUuid(name.getUuid());
+        result.setNameLabel(name.getTitleCache());
+        if (name.isInstanceOf(NonViralName.class)){
+            NonViralName<?> nvn = CdmBase.deproxy(name, NonViralName.class);
+
+            result.setNameWithoutAuthor(nvn.getNameCache());
+            result.setGenusOrUninomial(nvn.getGenusOrUninomial());
+            result.setInfraGenericEpithet(nvn.getInfraGenericEpithet());
+            result.setSpeciesEpithet(nvn.getSpecificEpithet());
+            result.setInfraSpecificEpithet(nvn.getInfraSpecificEpithet());
+
+            result.setAuthorship(nvn.getAuthorshipCache());
+
+            Rank rank = name.getRank();
+            if (rank != null){
+                result.setRankUuid(rank.getUuid());
+                String rankLabel = rank.getAbbreviation();
+                if (StringUtils.isBlank(rankLabel)){
+                    rankLabel = rank.getLabel();
+                }
+                result.setRankLabel(rankLabel);
+            }
+        }
+
+        boolean recursive = false;
+        Integer pageSize = null;
+        Integer pageIndex = null;
+        Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
+
+        //children
+        if(! isSynonym) {
+            for (TaxonNodeDto childDto : children.getRecords()){
+                if (doChildren && childDto.getStatus().equals(TaxonStatus.Accepted)){
+                    EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                    result.addChild(child);
+                }else if (doSynonyms && childDto.getStatus().isSynonym()){
+                    EntityDTO<Synonym> child = new EntityDTO<Synonym>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                    result.addSynonym(child);
+                }
+            }
+        }else{
+            result.setAcceptedTaxonUuid(acceptedTaxonUuid);
+            String nameTitel = acceptedTaxon.getName() == null ? null : acceptedTaxon.getName().getTitleCache();
+            result.setAcceptedTaxonLabel(acceptedTaxon.getTitleCache());
+            result.setAcceptedNameLabel(nameTitel);
+        }
+
+        //marked ancestors
+        if (ancestorMarkers != null && !ancestorMarkers.isEmpty()){
+            List<DefinedTermBase> markerTypesTerms = termDao.list(ancestorMarkers, pageSize, null, null, null);
+            List<MarkerType> markerTypes = new ArrayList<>();
+            for (DefinedTermBase<?> term : markerTypesTerms){
+                if (term.isInstanceOf(MarkerType.class)){
+                    markerTypes.add(CdmBase.deproxy(term, MarkerType.class));
+                }
+            }
+            if (! markerTypes.isEmpty()){
+                TaxonNode node = taxonNodeDao.findByUuid(taxonNodeUuid);
+                handleAncestorsForMarkersRecursive(result, markerTypes, node);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @param result
+     * @param markerTypes
+     * @param node
+     */
+    private void handleAncestorsForMarkersRecursive(TaxonInContextDTO result, List<MarkerType> markerTypes, TaxonNode node) {
+       for (MarkerType type : markerTypes){
+            Taxon taxon = node.getTaxon();
+            if (taxon != null && taxon.hasMarker(type, true)){
+                String label =  taxon.getName() == null? taxon.getTitleCache() : taxon.getName().getTitleCache();
+                MarkedEntityDTO<Taxon> dto = new MarkedEntityDTO<>(type, true, taxon.getUuid(), label);
+                result.addMarkedAncestor(dto);
+            }
+        }
+        TaxonNode parentNode = node.getParent();
+        if (parentNode != null){
+            handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
+        }
     }
 
 }

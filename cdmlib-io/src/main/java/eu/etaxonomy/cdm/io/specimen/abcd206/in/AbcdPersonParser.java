@@ -28,12 +28,12 @@ public class AbcdPersonParser {
 
     private final String prefix;
 
-    private final Abcd206ImportReport report;
+    private final SpecimenImportReport report;
 
     private final ICdmApplicationConfiguration cdmAppController;
 
 
-    public AbcdPersonParser(String prefix, Abcd206ImportReport report, ICdmApplicationConfiguration cdmAppController) {
+    public AbcdPersonParser(String prefix, SpecimenImportReport report, ICdmApplicationConfiguration cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;

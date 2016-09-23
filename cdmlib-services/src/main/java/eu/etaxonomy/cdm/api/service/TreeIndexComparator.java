@@ -17,6 +17,9 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  * @author a.mueller
  * @date 05.07.2016
  *
+ * Comparator for treeindexes.
+ * Compares the tree indexes node by node, sorted by node number.
+ * If one index is shorter than the other one but
  */
 public class TreeIndexComparator implements Comparator<String>{
 
@@ -29,12 +32,16 @@ public class TreeIndexComparator implements Comparator<String>{
         }else if (treeIndex2 == null){
             return 1;
         }
+        if (treeIndex1.equals(treeIndex2)){
+            return 0;
+        }
+
         String[] splits1 = treeIndex1.split(ITreeNode.separator);
         String[] splits2 = treeIndex2.split(ITreeNode.separator);
 
 
-        for (int i=0; i<splits1.length; i++){
-            if (splits2.length < i){
+        for (int i=0; i < splits1.length; i++){
+            if (splits2.length <= i){
                 return 1;
             }
             int c = splits1[i].compareTo(splits2[i]);

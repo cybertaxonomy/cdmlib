@@ -17,10 +17,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportReport;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdPersonParser;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -39,11 +39,11 @@ public class AbcdDnaParser {
 
     private final String prefix;
 
-    private final Abcd206ImportReport report;
+    private final SpecimenImportReport report;
 
     private final ICdmApplicationConfiguration cdmAppController;
 
-    public AbcdDnaParser(String prefix, Abcd206ImportReport report, ICdmApplicationConfiguration cdmAppController) {
+    public AbcdDnaParser(String prefix, SpecimenImportReport report, ICdmApplicationConfiguration cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;

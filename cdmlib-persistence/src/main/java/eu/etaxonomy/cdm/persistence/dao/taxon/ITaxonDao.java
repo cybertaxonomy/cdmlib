@@ -17,6 +17,7 @@ import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -36,7 +37,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -225,58 +225,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
     Integer pageNumber, List<String> propertyPaths);
 
-
     /**
-     * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon> getRootTaxa(Reference sec);
-
-
-    /**
-     * Computes all Taxon instances that do not have a taxonomic parent.
-     * @param sec The concept reference that the taxon belongs to
-     * @param cdmFetch not used yet !! TODO
-     * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-     * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship.
-     * <Br>Default: true.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
-
-
-    /**
-     * Computes all Taxon instances which name is of a certain Rank.
-     *
-     * @param rank
-     *            The rank of the taxon name
-     * @param sec
-     *            The concept reference that the taxon belongs to
-     * @param cdmFetch
-     *            not used yet !! TODO
-     * @param onlyWithChildren
-     *            if true only taxa are returned that have taxonomic children. <Br>
-     *            Default: true.
-     * @param withMisaplications
-     *            if false only taxa are returned that have no
-     *            isMisappliedNameFor relationship.
-     * @param propertyPaths
-     *            properties to be initialized, For detailed description and
-     *            examples <b>please refer to:</b>
-     *            {@link IBeanInitializer#initialize(Object, List)}. <Br>
-     *            Default: true.
-     * @return The List<Taxon> of root taxa.
-     * @deprecated obsolete when using classification
-     */
-    @Deprecated
-    public List<Taxon>
-    getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
-
-        /**
      * TODO necessary?
      * @param pagesize max maximum number of returned taxa
      * @param page page to start, with 0 being first page
@@ -491,8 +440,47 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode,
 			boolean includeEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+	/**
+	 * Counts all taxa which match the given identifier (identifier type, identifier string and match mode).
+	 * Optionally a subtreefilter can be defined.
+	 *
+	 * @param clazz optional, the TaxonBase subclass
+	 * @param identifier the identifier string
+	 * @param identifierType the identifier type
+     * @param matchmode the match mode for the identifier string
+	 * @param subtreeFilter the subtree filter as taxon node
+	 * @return
+	 */
 	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
+
+	/**
+     * Counts all taxa which have the given marker of type markerType and with value markerValue.
+     * Additionally an optional subtreefilter can be defined.
+     *
+     * @param clazz
+     * @param markerType
+     * @param markerValue
+     * @param subtreeFilter
+     * @return
+     */
+    public <S extends TaxonBase> long countByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter);
+
+    /**
+     * @param clazz
+     * @param markerType
+     * @param markerValue
+     * @param subtreeFilter
+     * @param includeEntity
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param classification
@@ -501,7 +489,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param pattern
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, List<UUID> excludeUuid, Integer limit, String pattern);
+	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, Integer limit, String pattern);
 
 }

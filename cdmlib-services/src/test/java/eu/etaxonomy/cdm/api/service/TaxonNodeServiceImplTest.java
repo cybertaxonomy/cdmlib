@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -530,14 +532,74 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+    @Test
+    public void testCompareNaturalOrder() {
+    	/*
+    	 * Classification
+    	 *  * Abies
+    	 *  `- Abies alba
+    	 *   - Abies balsamea
+    	 *  * Pinus
+    	 *  `- Pinus pampa
+    	 */
+    	Classification classification = Classification.NewInstance("Classification");
+    	BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+    	abiesName.setGenusOrUninomial("Abies");
+    	Taxon abies = Taxon.NewInstance(abiesName, null);
+    	BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+    	abiesAlbaName.setGenusOrUninomial("Abies");
+    	abiesAlbaName.setSpecificEpithet("alba");
+    	Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+    	BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+    	pinusName.setGenusOrUninomial("Pinus");
+    	Taxon pinus = Taxon.NewInstance(pinusName, null);
+    	BotanicalName pinusPampaName = BotanicalName.NewInstance(Rank.SPECIES());
+    	pinusPampaName.setGenusOrUninomial("Pinus");
+    	pinusPampaName.setSpecificEpithet("pampa");
+    	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
+
+        BotanicalName abiesBalsameaName = BotanicalName.NewInstance(Rank.SPECIES());
+        abiesBalsameaName.setGenusOrUninomial("Abies");
+        abiesBalsameaName.setSpecificEpithet("balsamea");
+        Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);
+
+
+    	classification.addChildTaxon(abies, null, null);
+    	TaxonNode abiesAlbaNode = classification.addParentChild(abies, abiesAlba, null, null);
+    	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
+    	classification.addChildTaxon(pinus, null, null);
+    	classification.addParentChild(pinus, pinusPampa, null, null);
+    	classificationService.save(classification);
+
+    	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
+    	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
+    	Collections.sort(allNodes, comparator);
+    	System.out.println("---Before sorting---");
+    	for (TaxonNode node: allNodes){
+    	    System.out.println(node.getTaxon().getTitleCache());
+    	}
+    	Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
+    	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
+    	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
+
+    	taxonNodeService.moveTaxonNode(balsameaNode, abiesAlbaNode,1);
+    	classification = classificationService.load(classification.getUuid());
+
+       allNodes = new ArrayList<>(classification.getAllNodes());
+        Collections.sort(allNodes, comparator);
+        System.out.println("\n---After sorting---");
+        for (TaxonNode node: allNodes){
+            System.out.println(node.getTaxon().getTitleCache());
+        }
+        Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
+        Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
+        Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
 
     }
+
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 
 }

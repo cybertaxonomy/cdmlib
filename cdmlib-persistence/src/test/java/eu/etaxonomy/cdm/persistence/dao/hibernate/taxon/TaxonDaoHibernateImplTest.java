@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -34,7 +33,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -43,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -64,7 +61,6 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -97,7 +93,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private UUID uuid;
     private UUID sphingidae;
     private UUID acherontia;
-    private UUID mimas;
     private UUID rethera;
     private UUID retheraSecCdmtest;
     private UUID atroposAgassiz; // a Synonym
@@ -129,7 +124,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
         rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-        mimas = UUID.fromString("900052b7-b69c-4e26-a8f0-01c215214c40");
 
         previousAuditEvent = new AuditEvent();
         previousAuditEvent.setRevisionNumber(1025);
@@ -160,63 +154,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         logger.warn("testInit()");
         assertNotNull("Instance of ITaxonDao expected",taxonDao);
         assertNotNull("Instance of IReferenceDao expected",referenceDao);
-    }
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)}
-     * .
-     */
-    @Test
-    @DataSet
-    public void testGetRootTaxa() {
-        Reference sec1 = referenceDao.findById(1);
-        assert sec1 != null : "sec1 must exist";
-        Reference sec2 = referenceDao.findById(2);
-        assert sec2 != null : "sec2 must exist";
-
-        List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        assertEquals("There should be one root taxon", 1, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(sec1, CdmFetch.FETCH_CHILDTAXA(), true, false);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        assertEquals("There should be one root taxon", 1, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec1, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        assertEquals("There should be one root taxon", 1, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(Rank.FAMILY(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Root taxa rank Family (" + rootTaxa.size() + "):");
-            for (Taxon taxon : rootTaxa) {
-                logger.debug(taxon.getTitleCache());
-            }
-        }
-        assertEquals("There should be one root taxon rank Family", 1, rootTaxa.size());
-        rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        assertNotNull("getRootTaxa should return a List", rootTaxa);
-        assertFalse("The list should not be empty", rootTaxa.isEmpty());
-        if (logger.isDebugEnabled()) {
-            logger.debug("Root taxa rank Genus (" + rootTaxa.size() + "):");
-            for (Taxon taxon : rootTaxa) {
-                logger.debug(taxon.getTitleCache());
-            }
-        }
-        assertEquals("There should be 22 root taxa rank Genus", 22, rootTaxa.size());
-
-        rootTaxa = taxonDao.getRootTaxa(Rank.SPECIES(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Root taxa rank Species (" + rootTaxa.size() + "):");
-            for (Taxon taxon : rootTaxa) {
-                logger.debug(taxon.getTitleCache());
-            }
-        }
-        assertEquals("There should be 4 root taxa rank Species", 3, rootTaxa.size());
     }
 
     /**
@@ -791,19 +728,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    public void testDeleteWithChildren() {
-        Taxon taxonWithChildren = (Taxon)taxonDao.findByUuid(mimas);
-        assert taxonWithChildren != null : "taxon must exist";
-        assertEquals(taxonWithChildren.getTaxonomicChildrenCount(), 2);
-        Taxon parent = (Taxon)taxonDao.findByUuid(sphingidae);
-        assertSame(taxonWithChildren.getTaxonomicParent(), parent);
-        assertEquals(parent.getTaxonomicChildrenCount(), 204);
-        taxonDao.delete(taxonWithChildren);
-        assertEquals(parent.getTaxonomicChildrenCount(), 203);
-    }
-
-    @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testFindDeleted() {
         TaxonBase<?> taxon = taxonDao.findByUuid(acherontia);
@@ -910,27 +834,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    @ExpectedDataSet
-    public void testAddChild() throws Exception {
-        Taxon parent = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
-        assert parent != null : "taxon cannot be null";
-        Taxon child = Taxon.NewInstance(null, null);
-        child.setTitleCache("Acherontia lachesis diehli Eitschberger, 2003", true);
-        child.addTaxonRelation(parent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),null, null);
-        taxonDao.save(child);
-        setComplete();
-        endTransaction();
-    }
-
-    @Test
     @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testFind() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
 
-        assertEquals("getTaxonomicChildrenCount should return 1 in this view",1,taxon.getTaxonomicChildrenCount());
-        assertEquals("getRelationsToThisTaxon should contain 1 TaxonRelationship in this view",1,taxon.getRelationsToThisTaxon().size());
+       assertEquals("getRelationsToThisTaxon should contain 1 TaxonRelationship in this view",1,taxon.getRelationsToThisTaxon().size());
     }
 
     @Test
@@ -940,7 +849,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
 
-        assertEquals("getTaxonomicChildrenCount should return 0 in this view",0,taxon.getTaxonomicChildrenCount());
         assertTrue("getRelationsToThisTaxon should contain 0 TaxonRelationship in this view",taxon.getRelationsToThisTaxon().isEmpty());
     }
 
@@ -1056,7 +964,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
         Classification classification = classificationDao.findByUuid(classificationUuid);
-        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null, null);
+        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null);
         assertNotNull(result);
         assertEquals(5, result.size());
 
@@ -1064,17 +972,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         List<UUID> excludeUUids = new ArrayList<UUID>();
         excludeUUids.add(excludeUUID);
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUUids, null, null);
-        assertEquals(4, result.size());
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null);
+        assertEquals(5, result.size());
 
         //test limit
         int limit = 2;
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, limit, null);
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, null);
         assertEquals(2, result.size());
 
         //test pattern
         String pattern = "*Rothschi*";
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, 2, pattern);
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, 2, pattern);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());

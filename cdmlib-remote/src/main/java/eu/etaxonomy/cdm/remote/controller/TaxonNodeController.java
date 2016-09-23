@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -30,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import io.swagger.annotations.Api;
 
 /**
  *
@@ -42,10 +41,6 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @RequestMapping(value = {"/taxonNode/{uuid}"})
 public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNodeService> {
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(ITaxonNodeService service) {
@@ -89,12 +84,13 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value="sortMode", defaultValue="AlphabeticalOrder") NodeSortMode sortMode,
+            @RequestParam(value="doSynonyms", defaultValue="false") Boolean doSynonyms,
             HttpServletResponse response
             ) throws IOException {
 
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.pageChildNodesDTOs(uuid, false, sortMode, pagerParameters.getPageSize(), pagerParameters.getPageIndex());
+        return service.pageChildNodesDTOs(uuid, false, doSynonyms, sortMode, pagerParameters.getPageSize(), pagerParameters.getPageIndex());
     }
 }

@@ -61,16 +61,20 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
             //TODO date is not supported by GBIF
         }
         List<NameValuePair> queryParamsGET = new GbifQueryGenerator().generateQueryParams(query);
-        URI uri = createUri(SUB_PATH, queryParamsGET);
+        if (queryParamsGET != null){
+            URI uri = createUri(SUB_PATH, queryParamsGET);
+            URIBuilder builder = new URIBuilder(uri.toString()+yearUri);
 
-        URIBuilder builder = new URIBuilder(uri.toString()+yearUri);
-
-        if(UriUtils.isServiceAvailable(uri, 10000)){
-            logger.info("Querying GBIF service with " + builder.build());
-            return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
-        }
-        else{
-            logger.error("Querying " + uri + " got a timeout!");
+            if(UriUtils.isServiceAvailable(uri, 10000)){
+                logger.info("Querying GBIF service with " + builder.build());
+                return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
+            }
+            else{
+                logger.error("Querying " + uri + " got a timeout!");
+                return null;
+            }
+        } else{
+            logger.info("Querying GBIF service was skipped because of missing get parameters.");
             return null;
         }
     }
@@ -90,8 +94,13 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
             //the unitID is delivered in the "catalogNumber" parameter which is set as the accessionNumber of the facade
             response.setUnitId(gbifResponse.getDerivedUnitFacade().getAccessionNumber());
             return response;
+        }else{
+            DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(executeHttpGet(gbifResponse.getDataSetUri(), null));
+            //the unitID is delivered in the "catalogNumber" parameter which is set as the accessionNumber of the facade
+            response.setUnitId(gbifResponse.getDerivedUnitFacade().getAccessionNumber());
+            return response;
         }
-        return null;
+
     }
 
 }

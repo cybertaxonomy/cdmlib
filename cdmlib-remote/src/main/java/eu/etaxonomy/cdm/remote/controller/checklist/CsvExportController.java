@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -35,14 +35,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -65,6 +72,15 @@ public class CsvExportController extends AbstractController{
 	
 	@Autowired 
 	private ITermService termService;
+
+	@Autowired 
+	private IClassificationService classificationService;
+
+	@Autowired 
+	private ITaxonNodeService taxonNodeService;
+
+	@Autowired 
+	private ITaxonService taxonService;
 	
 	@Autowired
 	public ProgressMonitorController progressMonitorController;
@@ -87,19 +103,43 @@ public class CsvExportController extends AbstractController{
      * Fetches data from the application context and forwards the stream to the HttpServletResponse, which offers a file download.
      *
      * @param featureUuids List of uuids to download/select {@link Feature feature}features
-     * @param classificationUUID Selected {@link Classification classification} to iterate the {@link Taxon}
+     * @param taxonName the selected taxon name
+     * @param classificationUuid the uuid of the selected classification
      * @param response HttpServletResponse which returns the ByteArrayOutputStream
      */
 	@RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
 	public void doExportRedlist(
 			@RequestParam(value = "features", required = false) UuidList featureUuids,
-			@RequestParam(value = "classification", required = false) String classificationUUID,
+			@RequestParam(value = "classificationUuid", required = false) String classificationUuid,
+			@RequestParam(value = "taxonName", required = false) String taxonName,
             @RequestParam(value = "area", required = false) UuidList areas,
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
 			HttpServletRequest request) {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
+		UUID taxonNodeUuid = null;
+		Classification classification = classificationService.load(UUID.fromString(classificationUuid));
+		if(CdmUtils.isNotBlank(taxonName)){
+			MatchingTaxonConfigurator config = new MatchingTaxonConfigurator();
+			config.setClassificationUuid(UUID.fromString(classificationUuid));
+			config.setTaxonNameTitle(taxonName);
+			List<TaxonBase> taxaByName = taxonService.findTaxaByName(config);
+			if(taxaByName.isEmpty()){
+				logger.warn("No taxon found with name: "+taxonName+". Using only classification.");
+			}
+			else if(taxaByName.size()>1){
+				logger.warn("More than one taxon found for name: "+taxonName+". Using the first insance.");
+			}
+			else{
+				UUID uuid = taxaByName.iterator().next().getUuid();
+				Taxon taxon = HibernateProxyHelper.deproxy(taxonService.load(uuid, Arrays.asList(new String[]{"taxonNodes.classification"})), Taxon.class);
+				taxonNodeUuid = classification.getNode(taxon).getUuid();
+			}
+		}
+		else{
+			taxonNodeUuid = classification.getRootNode().getUuid();
+		}
+		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(taxonNodeUuid, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
 		logger.info("doExportRedlist()" + requestPathAndQuery(request));
@@ -139,17 +179,16 @@ public class CsvExportController extends AbstractController{
 	/**
 	 * Cofiguration method to set the configuration details for the defaultExport in the application context.
 	 * 
-	 * @param classificationUUID pass-through the selected {@link Classification classification}
+	 * @param taxonNodeUuid pass-through the selected {@link Classification classification}
 	 * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
 	 * @param areas 
 	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
 	 * @return the CsvTaxExportConfiguratorRedlist config
 	 */
-	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
+	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(UUID taxonNodeUuid, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Set<UUID> classificationUUIDS = new HashSet
-		(Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
+		Set<UUID> taxonNodeUuids = Collections.singleton(taxonNodeUuid); 
 		String destination = System.getProperty("java.io.tmpdir");
 		List<Feature> features = new ArrayList<Feature>();
 		if(featureUuids != null){
@@ -168,7 +207,7 @@ public class CsvExportController extends AbstractController{
 		CsvTaxExportConfiguratorRedlist config = CsvTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
 		config.setHasHeaderLines(true);
 		config.setFieldsTerminatedBy("\t");
-		config.setClassificationUuids(classificationUUIDS);
+		config.setTaxonNodeUuids(taxonNodeUuids);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
 		if(features != null)config.setFeatures(features);
         config.setNamedAreas(selectedAreas);

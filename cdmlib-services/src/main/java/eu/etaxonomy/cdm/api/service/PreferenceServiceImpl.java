@@ -60,7 +60,9 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return find(key);
     }
 
+
 	@Override
+    @Transactional(readOnly = false)
 	public void set(CdmPreference preference) {
 		dao.set(preference);
 	}
@@ -89,51 +91,39 @@ public class PreferenceServiceImpl implements IPreferenceService {
 // ********************** NOT YET HANDLED *******************/
 
 
-//    /* (non-Javadoc)
-//     * @see eu.etaxonomy.cdm.api.service.IPreferenceService#find(java.lang.String, java.lang.String)
-//     */
+    @Override
+    public List<CdmPreference> list(String subject, String predicate) {
+        //FIXME
+        throw new RuntimeException("list(String, String) not yet implemented" );
+    }
+
+    @Override
+    //this method is only partly implemented
+    public CdmPreference find(CdmBase taxonNodeRelatedCdmBase, String predicate) {
+        TaxonNode taxonNode = mapToTaxonNode(taxonNodeRelatedCdmBase);
+        return dao.find(taxonNode, predicate);
+    }
+
+    /**
+     * @param taxonNodeRelatedCdmBase
+     * @return
+     */
+    private TaxonNode mapToTaxonNode(CdmBase taxonNodeRelatedCdmBase) {
+        if (taxonNodeRelatedCdmBase == null){
+            return null;
+        }else if (taxonNodeRelatedCdmBase.isInstanceOf(TaxonNode.class)){
+            return CdmBase.deproxy(taxonNodeRelatedCdmBase, TaxonNode.class);
+        }else{
+            throw new RuntimeException("mapToTaxonNode not yet implemented for " + taxonNodeRelatedCdmBase.getClass().getSimpleName());
+        }
+    }
+
+
 //    @Override
-//    public Object find(String subject, String predicate) {
+//    public String setCdmPrefs(CdmBase cdmBase, String predicate, String value) {
 //        // TODO Auto-generated method stub
 //        return null;
 //    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IPreferenceService#findAll(java.lang.String, java.lang.String)
-     */
-    @Override
-    public List<Object> findAll(String subject, String predicate) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IPreferenceService#find(eu.etaxonomy.cdm.model.common.CdmBase, java.lang.String)
-     */
-    @Override
-    public Object find(CdmBase taxonNode, String predicate) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IPreferenceService#findAll()
-     */
-    @Override
-    public List<Object> findAll() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IPreferenceService#setCdmPrefs(eu.etaxonomy.cdm.model.common.CdmBase, java.lang.String, java.lang.String)
-     */
-    @Override
-    public String setCdmPrefs(CdmBase cdmBase, String predicate, String value) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 
 }

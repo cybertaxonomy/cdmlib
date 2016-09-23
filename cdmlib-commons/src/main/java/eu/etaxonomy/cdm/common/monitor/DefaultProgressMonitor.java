@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.common.monitor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -50,10 +51,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#beginTask(java.lang.String, int)
-     */
     @Override
     public void beginTask(String taskName, int totalWork) {
         logger.info("Start " + taskName);
@@ -61,50 +58,32 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         this.totalWork = totalWork;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#done()
-     */
     @Override
     public void done() {
         logger.info(taskName + "...Done");
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#isCanceled()
-     */
     @Override
     public boolean isCanceled() {
         return isCanceled;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#setCanceled(boolean)
-     */
     @Override
     public void setCanceled(boolean isCanceled) {
         this.isCanceled = isCanceled;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#setTaskName(java.lang.String)
-     */
     @Override
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#subTask(java.lang.String)
-     */
     @Override
     public void subTask(String subTask) {
         this.subTask = subTask;
         logger.info(/*getPercentage() + "% done." + */  " Next Task: " + subTask);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#worked(int)
-     */
     @Override
     public void worked(int work) {
         computeWorked(work);
@@ -120,31 +99,44 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 
     private void computeWorked(double work){
         this.workDone = this.workDone +  work;
-        logger.info(getPercentage() + "% done (Completed Task: " + subTask + ")");
+        if (logger.isInfoEnabled()){ logger.info(getPercentage() + "% done (Completed Task: " + subTask + ")");}
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#warning(java.lang.String)
-     */
     @Override
     public void warning(String warning) {
         logger.warn(warning);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.common.IProgressMonitor#warning(java.lang.String, java.lang.Exception)
-     */
     @Override
     public void warning(String warning, Throwable exception) {
         logger.warn(warning);
         exception.printStackTrace();
     }
 
+    /**
+     * Percentage of work done. With all work done = 100.0d.
+     * As rounding errors may occur especially when using
+     * {@link SubProgressMonitor} the result is rounded to 5 digits.
+     * So do not use the result for additive percentages.
+     */
     public Double getPercentage(){
         if(totalWork == 0 ){
             return null;
         }
+
         double result = this.workDone * 100 / this.totalWork ;
+        //as double may have rounding errors especially when using subprogressmonitors
+        //we do round the result slightly
+        result = Math.round((result * 100000.0)) / 100000.0;
+        return result;
+    }
+
+    public BigDecimal getPercentageRounded(int scale){
+        if(totalWork == 0 ){
+            return null;
+        }
+        double percentage = this.workDone * 100 / this.totalWork ;
+        BigDecimal result = new BigDecimal(percentage).setScale( scale, BigDecimal.ROUND_HALF_UP );
         return result;
     }
 

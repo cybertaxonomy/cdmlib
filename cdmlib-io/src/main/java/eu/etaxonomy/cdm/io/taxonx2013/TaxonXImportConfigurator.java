@@ -16,8 +16,8 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 29.07.2008
  * @version 1.0
  */
-public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
+public class TaxonXImportConfigurator extends SpecimenImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
     //	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 
     private String defaultImportClassification = null;

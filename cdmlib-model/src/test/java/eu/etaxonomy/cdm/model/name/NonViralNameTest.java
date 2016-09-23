@@ -196,7 +196,7 @@ public class NonViralNameTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getInfraGenericEpithet()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getInfragenericEpithet()}.
 	 */
 	@Test
 	public final void testGetSetInfraGenericEpithet() {

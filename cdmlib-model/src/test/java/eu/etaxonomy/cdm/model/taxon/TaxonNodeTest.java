@@ -316,6 +316,46 @@ public class TaxonNodeTest {
 		assertEquals("Number of all nodes should be 2", 2, allNodes.size());
 		assertTrue("Taxonomic view should include child", allNodes.contains(child));
 	}
+	
+
+    
+    @Test
+    public void testGetAncestors(){
+    	/*
+    	 * Classification
+    	 *  * Pinus
+    	 *  `- Pinus pampa
+    	 *   `- Pinus pampa subsp. persicifolia
+    	 */
+    	Classification classification = Classification.NewInstance("Classification");
+    	BotanicalName pinusName = BotanicalName.NewInstance(null);
+    	pinusName.setGenusOrUninomial("Pinus");
+    	Taxon pinus = Taxon.NewInstance(pinusName, null);
+    	BotanicalName pinusPampaName = BotanicalName.NewInstance(null);
+    	pinusPampaName.setGenusOrUninomial("Pinus");
+    	pinusPampaName.setSpecificEpithet("pampa");
+    	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
+    	BotanicalName pinusPampaSubName = BotanicalName.NewInstance(null);
+    	pinusPampaSubName.setGenusOrUninomial("Pinus");
+    	pinusPampaSubName.setSpecificEpithet("pampa");
+    	pinusPampaSubName.setInfraSpecificEpithet("persicifolia");
+    	Taxon pinusPampaSub = Taxon.NewInstance(pinusPampaSubName, null);
+
+    	TaxonNode pinusNode = classification.addChildTaxon(pinus, null, null);
+    	TaxonNode pinusPampaNode = classification.addParentChild(pinus, pinusPampa, null, null);
+    	TaxonNode pinusPampaSubNode = classification.addParentChild(pinusPampa, pinusPampaSub, null, null);
+    	TaxonNode rootNode = classification.getRootNode();
+    	
+    	Set<TaxonNode> ancestors = pinusPampaSubNode.getAncestors();
+    	assertEquals(3, ancestors.size());
+    	assertTrue(ancestors.contains(pinusPampaNode));
+    	assertTrue(ancestors.contains(pinusNode));
+    	assertTrue(ancestors.contains(rootNode));
+    	
+    	Set<TaxonNode> rootAncestors = rootNode.getAncestors();
+    	assertTrue(rootAncestors.isEmpty());
+    	
+    }
 
     @Test
     public void beanTests(){

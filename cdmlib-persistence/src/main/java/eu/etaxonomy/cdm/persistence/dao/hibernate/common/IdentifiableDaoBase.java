@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -306,6 +307,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return getUuidAndTitleCache(null, null);
     }
 
+    protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
+        List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2]));
+        }
+        return list;
+    }
+
     protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
         List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
 
@@ -545,6 +557,82 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return results;
 	}
 
+	   @Override
+	    public <S extends T> long countByMarker(Class<S> clazz, MarkerType markerType,
+	            Boolean markerValue) {
+	        checkNotInPriorView("IdentifiableDaoBase.countByMarker(T clazz, MarkerType markerType, Boolean markerValue)");
 
+	        if (markerType == null){
+	            return 0;
+	        }
+	        Class<?> clazzParam = clazz == null ? type : clazz;
+	        String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
+	                    "INNER JOIN c.markers as mks " +
+	                    "WHERE (1=1) ";
+
+	        if (markerValue != null){
+	            queryString += " AND mks.flag = :flag";
+	        }
+            queryString += " AND mks.markerType = :type";
+
+	        Query query = getSession().createQuery(queryString);
+            query.setEntity("type", markerType);
+	        if (markerValue != null){
+	            query.setBoolean("flag", markerValue);
+	        }
+
+	        Long c = (Long)query.uniqueResult();
+	        return c;
+	    }
+
+	@Override
+    public <S extends T> List<Object[]> findByMarker(
+            Class<S> clazz, MarkerType markerType,
+            Boolean markerValue, boolean includeEntity, Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths) {
+
+        checkNotInPriorView("IdentifiableDaoBase.findByMarker(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        if (markerType == null){
+            return new ArrayList<Object[]>();
+        }
+
+        Class<?> clazzParam = clazz == null ? type : clazz;
+        String queryString = "SELECT mks.markerType, mks.flag, %s FROM %s as c " +
+                " INNER JOIN c.markers as mks " +
+                " WHERE (1=1) ";
+        queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
+
+        //Matchmode and identifier
+        if (markerValue != null){
+            queryString += " AND mks.flag = :flag";
+        }
+        queryString += " AND mks.markerType = :type";
+
+        //order
+        queryString +=" ORDER BY mks.markerType.uuid, mks.flag, c.uuid ";
+
+        Query query = getSession().createQuery(queryString);
+
+        //parameters
+        query.setEntity("type", markerType);
+        if (markerValue != null){
+            query.setBoolean("flag", markerValue);
+        }
+
+        //paging
+        setPagingParameter(query, pageSize, pageNumber);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = query.list();
+        //initialize
+        if (includeEntity){
+            List<S> entities = new ArrayList<S>();
+            for (Object[] result : results){
+                entities.add((S)result[2]);
+            }
+            defaultBeanInitializer.initializeAll(entities, propertyPaths);
+        }
+        return results;
+    }
 
 }

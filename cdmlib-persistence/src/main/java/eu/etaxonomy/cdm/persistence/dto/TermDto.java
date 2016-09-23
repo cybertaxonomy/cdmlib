@@ -26,24 +26,27 @@ public class TermDto {
     private final UUID uuid;
     private UUID partOfUuid = null;
     private UUID vocabularyUuid = null;
+    private Integer orderIndex = null;
     private final Set<Representation> representations;
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
 
-    public TermDto(UUID uuid, Set<Representation> representations) {
+    public TermDto(UUID uuid, Set<Representation> representations, Integer orderIndex) {
         this.representations = representations;
         this.uuid = uuid;
+        this.setOrderIndex(orderIndex);
     }
 
-    public TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID vocabularyUuid) {
+    public TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID vocabularyUuid, Integer orderIndex) {
         this.representations = representations;
         this.uuid = uuid;
         this.partOfUuid = partOfUuid;
         this.vocabularyUuid = vocabularyUuid;
+        this.setOrderIndex(orderIndex);
     }
 
     static public TermDto fromNamedArea(NamedArea namedArea) {
-        TermDto dto = new TermDto(namedArea.getUuid(), namedArea.getRepresentations());
+        TermDto dto = new TermDto(namedArea.getUuid(), namedArea.getRepresentations(), namedArea.getOrderIndex());
         return dto;
     }
 
@@ -126,5 +129,21 @@ public class TermDto {
         representations.add(representation);
 
     }
+
+    /**
+     * @return the orderIndex
+     */
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    /**
+     * @param orderIndex the orderIndex to set
+     */
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
+
 
 }

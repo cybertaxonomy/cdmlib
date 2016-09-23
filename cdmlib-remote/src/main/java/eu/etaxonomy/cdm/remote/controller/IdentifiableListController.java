@@ -25,11 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -41,16 +44,16 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
  */
 public abstract class IdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> extends BaseListController<T,SERVICE>  {
 
-	
+
     @InitBinder
     @Override
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
     }
-	
+
 	@Autowired
-	private ITermService termservice;
+	private ITermService termService;
 
     /**
      * Find IdentifiableEntity objects by name
@@ -98,7 +101,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
 
     /**
      * list IdentifiableEntity objects by identifiers
-     * 
+     *
      * @param type
      * @param identifierType
      * @param identifier
@@ -112,7 +115,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
-    public  Pager<FindByIdentifierDTO<T>> doFindByIdentifier(
+    public  Pager<IdentifiedEntityDTO<T>> doFindByIdentifier(
     		@RequestParam(value = "class", required = false) Class type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
@@ -129,9 +132,9 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
     	if(StringUtils.isNotBlank(identifierType)){
     		identifierType = StringUtils.trim(identifierType);
     		UUID identifierTypeUUID = UUID.fromString(identifierType);
-    		definedTerm = CdmBase.deproxy(termservice.find(identifierTypeUUID), DefinedTerm.class);
+    		definedTerm = CdmBase.deproxy(termService.find(identifierTypeUUID), DefinedTerm.class);
     	}
-    	
+
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
@@ -140,6 +143,48 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
         boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
         return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
-    
-    
+
+    /**
+     * List identifiable entities by markers
+     *
+     * @param type
+     * @param markerType
+     * @param value
+     * @param pageNumber
+     * @param pageSize
+     * @param request
+     * @param response
+     * @return
+     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"findByMarker"})
+    public Pager<MarkedEntityDTO<T>> doFindByMarker(
+            @RequestParam(value = "class", required = false) Class<T> type,
+            @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
+            @RequestParam(value = "value", required = false) Boolean value,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+            throws IOException {
+
+        MarkerType markerType = null;
+        if(markerTypeUuid != null){
+            DefinedTermBase<?> term = CdmBase.deproxy(termService.find(markerTypeUuid), MarkerType.class);
+            if (term != null && term.isInstanceOf(MarkerType.class)){
+                markerType = CdmBase.deproxy(term, MarkerType.class);
+            }
+        }
+
+        if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
+
+        return service.findByMarker(type, markerType, value, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+    }
+
+
 }

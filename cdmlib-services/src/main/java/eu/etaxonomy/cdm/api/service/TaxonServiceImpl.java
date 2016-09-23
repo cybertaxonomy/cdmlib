@@ -46,8 +46,9 @@ import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
@@ -75,7 +76,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -123,7 +124,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -198,43 +198,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return dao.getTaxaByName(name, sec);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * merge with getRootTaxa(Reference sec, ..., ...)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean)
-     */
-    @Override
-    public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren) {
-        if (cdmFetch == null){
-            cdmFetch = CdmFetch.NO_FETCH();
-        }
-        return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
-    }
-
-    @Override
-    public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,boolean withMisapplications, List<String> propertyPaths) {
-        return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
-    }
-
     @Override
     public List<RelationshipBase> getAllRelationships(int limit, int start){
         return dao.getAllRelationships(limit, start);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.TaxonRelationshipType) ?
-     */
-    @Override
-    @Deprecated
-    public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary() {
-
-        String taxonRelTypeVocabularyId = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
-        UUID uuid = UUID.fromString(taxonRelTypeVocabularyId);
-        OrderedTermVocabulary<TaxonRelationshipType> taxonRelTypeVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return taxonRelTypeVocabulary;
     }
 
     @Override
@@ -1349,11 +1315,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public String getPhylumName(TaxonNameBase name){
         return this.dao.getPhylumName(name);
-    }
-
-    @Override
-    public long deleteSynonymRelationships(Synonym syn, Taxon taxon) {
-        return dao.deleteSynonymRelationships(syn, taxon);
     }
 
     @Override
@@ -3239,7 +3200,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	@Override
 	@Transactional(readOnly = true)
-	public <S extends TaxonBase> Pager<FindByIdentifierDTO<S>> findByIdentifier(
+	public <S extends TaxonBase> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths) {
@@ -3254,18 +3215,46 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
 
-        List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
         	}
         }
-		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+		return new DefaultPagerImpl<IdentifiedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
 	@Override
+    @Transactional(readOnly = true)
+    public <S extends TaxonBase> Pager<MarkedEntityDTO<S>> findByMarker(
+            Class<S> clazz, MarkerType markerType, Boolean markerValue,
+            TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+        if (subtreeFilter == null){
+            return super.findByMarker (clazz, markerType, markerValue, includeEntity, pageSize, pageNumber, propertyPaths);
+        }
+
+        Long numberOfResults = dao.countByMarker(clazz, markerType, markerValue, subtreeFilter);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.findByMarker(clazz, markerType, markerValue, subtreeFilter,
+                    includeEntity, pageSize, pageNumber, propertyPaths);
+        }
+
+        List<MarkedEntityDTO<S>> result = new ArrayList<>();
+        for (Object[] daoObj : daoResults){
+            if (includeEntity){
+                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
+            }else{
+                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+            }
+        }
+        return new DefaultPagerImpl<MarkedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+    }
+
+    @Override
 	@Transactional(readOnly = false)
 	public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, UUID newTaxonUUID, boolean moveHomotypicGroup,
             SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {
@@ -3331,6 +3320,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
 
 		return this.swapSynonymAndAcceptedTaxon(syn, taxon);
+	}
+
+	@Override
+	public UUID saveOrUpdate(TaxonBase taxonbase){
+	    if (taxonbase.getName()!= null && taxonbase.getName().getId() > 0){
+	        TaxonNameBase name = taxonbase.getName();
+	        name = nameService.load(name.getUuid());
+	        taxonbase.setName(name);
+	    }
+	    return super.saveOrUpdate(taxonbase);
 	}
 
 

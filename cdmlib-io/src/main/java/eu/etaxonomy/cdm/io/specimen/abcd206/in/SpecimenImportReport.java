@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -38,9 +39,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Jan 23, 2015
  *
  */
-public class Abcd206ImportReport {
+public class SpecimenImportReport {
 
-    static private final Logger logger = Logger.getLogger(Abcd206ImportReport.class);
+    static private final Logger logger = Logger.getLogger(SpecimenImportReport.class);
 
 
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
@@ -63,18 +64,18 @@ public class Abcd206ImportReport {
         createdTaxonNodes.add(taxonNode);
     }
 
-    public void addDerivate(DerivedUnit parent, Abcd206ImportConfigurator config){
+    public void addDerivate(DerivedUnit parent, SpecimenImportConfiguratorBase config){
         addDerivate(parent, null, config);
     }
 
-    public void addDerivate(DerivedUnit parent, DerivedUnit child, Abcd206ImportConfigurator config){
-        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(AbcdImportUtility.getUnitID(parent, config), parent);
+    public void addDerivate(DerivedUnit parent, DerivedUnit child, SpecimenImportConfiguratorBase config){
+        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(SpecimenImportUtility.getUnitID(parent, config), parent);
         List<UnitIdSpecimen> children = derivateMap.get(parentUnitIdSpecimen);
         if(children==null){
             children = new ArrayList<UnitIdSpecimen>();
         }
         if(child!=null){
-            children.add(new UnitIdSpecimen(AbcdImportUtility.getUnitID(child, config), child));
+            children.add(new UnitIdSpecimen(SpecimenImportUtility.getUnitID(child, config), child));
         }
         derivateMap.put(parentUnitIdSpecimen, children);
     }
@@ -141,6 +142,20 @@ public class Abcd206ImportReport {
             SpecimenOrObservationType type = entry.getKey();
             out.println(type+": "+entry.getValue());
         }
+        //not imported
+        out.println("Skipped/not imported: "+alreadyExistingSpecimens.size());
+        out.println("\n");
+
+        out.println("Imported unit ids");
+        for (UnitIdSpecimen unitIdSpecimen : allSpecimens) {
+			out.print(unitIdSpecimen.unitId+", ");
+		}
+        out.println("\n");
+
+        out.println("Ignored unit ids");
+        for (UnitIdSpecimen unitIdSpecimen : alreadyExistingSpecimens) {
+        	out.print(unitIdSpecimen.unitId+", ");
+        }
         out.println("\n");
 
         //taxon name
@@ -175,14 +190,14 @@ public class Abcd206ImportReport {
         out.println("\n");
 
         //not imported
-        out.println("---Already existing specimen (not imported)---");
+        out.println("---Already existing specimen/not imported ("+alreadyExistingSpecimens.size()+")---");
         for(UnitIdSpecimen specimen:alreadyExistingSpecimens){
             out.println(formatSpecimen(specimen));
         }
         out.println("\n");
 
         //taxa with associated specimens
-        out.println("---Taxa with associated specimens---");
+        out.println("---Taxa with associated specimens ("+taxonToAssociatedSpecimens.size()+")---");
         for(Entry<Taxon, List<UnitIdSpecimen>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
             List<UnitIdSpecimen> specimens = entry.getValue();

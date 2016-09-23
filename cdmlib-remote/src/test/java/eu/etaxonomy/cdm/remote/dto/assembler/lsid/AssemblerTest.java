@@ -126,7 +126,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         for(int i = 0; i < 10; i++) {
             Taxon child = Taxon.NewInstance(name, (Reference)sec);
             child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:" + (2 + i )));
-            taxon.addTaxonomicChild(child, null,null);
+//            taxon.addTaxonomicChild(child, null,null);
         }
 
 

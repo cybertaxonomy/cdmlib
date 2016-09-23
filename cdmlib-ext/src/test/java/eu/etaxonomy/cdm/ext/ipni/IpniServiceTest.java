@@ -112,7 +112,7 @@ public class IpniServiceTest {
 			Assert.assertEquals("There should be exactly 1 result for 'Abies albertiana'", 1, nameList.size());
 			BotanicalName name = nameList.get(0);
 			//title cache
-			Assert.assertEquals("Title Cache for Abies albertiana should be 'Abies albertiana'", "Abies albertiana A.Murr.", name.getTitleCache());
+			Assert.assertEquals("Title Cache for Abies albertiana should be 'Abies albertiana'", "Abies albertiana A.Murray bis", name.getTitleCache());
 
 //			for (BotanicalName listName : nameList){
 //				System.out.println(name.getFullTitleCache());

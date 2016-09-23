@@ -517,7 +517,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param year
 	 * @return
 	 */
-	private INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
+	public INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
 		IBook result = null;
 
 		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);
@@ -1056,7 +1056,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	private String removeHybridBlanks(String fullNameString) {
 		String result = fullNameString
 		        .replaceAll(oWs + "[xX]" + oWs + "(?=[A-Z])", " " + hybridSign + " ")
-		        .replaceAll(hybridFull, " "+hybridSign).trim();
+		        .replaceAll(hybridFull, " " + hybridSign).trim();
+		if (result.contains(hybridSign + " ") &&
+		        result.matches("^" + capitalEpiWord + oWs + hybridSign + oWs + nonCapitalEpiWord + ".*")){
+		    result = result.replaceFirst(hybridSign + oWs, hybridSign);
+		}
 		return result;
 	}
 

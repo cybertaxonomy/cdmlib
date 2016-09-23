@@ -180,24 +180,36 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         }
 
         Query query = null;
+        String whereClause = " WHERE ";
         if (pattern != null){
-            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern" + clazzString);
+            whereClause += "nomenclaturalTitle LIKE :pattern";
+            if (pattern.startsWith("*")){
+                whereClause += " OR titleCache LIKE :pattern";
+            }
+            if (clazzString != ""){
+                whereClause += " AND " + clazzString;
+            }
+
+
+            query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName()  + whereClause);
+
+
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
             if (clazzString != ""){
-                query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() + " where " + clazzString);
+                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() + " WHERE " + clazzString);
             } else{
-                query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName());
+                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName());
             }
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
 
-        return getUuidAndTitleCache(query);
+        return getUuidAndAbbrevTitleCache(query);
     }
 
 

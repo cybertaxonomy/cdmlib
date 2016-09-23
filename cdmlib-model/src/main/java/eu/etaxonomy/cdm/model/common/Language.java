@@ -1136,6 +1136,7 @@ public class Language extends DefinedTermBase<Language> {
     public static final Language NO_LINGUISTIC_CONTENT(){/*@*/ return getTermByUuid(uuidNoLinguisticContent);/*@*/}
     public static final Language ZAZA_DIMILI_DIMLI_KIRDKI_KIRMANJKI_ZAZAKI(){/*@*/ return getTermByUuid(uuidZaza_Dimili_Dimli_Kirdki_Kirmanjki_Zazaki);/*@*/}
     public static final Language UNKNOWN_LANGUAGE() {/*@*/ return getTermByUuid(uuidUnknownLanguage);/*@*/}
+    /* Original language. E.g. the language originally used in a source if the concrete language of the source is unknown or can not be recognized by a machine */
     public static final Language ORIGINAL_LANGUAGE() {/*@*/ return getTermByUuid(uuidOriginalLanguage);/*@*/}
 
     private static Language defaultLanguage = null;  //is set in setDefaultTerms()
@@ -1149,6 +1150,10 @@ public class Language extends DefinedTermBase<Language> {
         return defaultLanguage;
     }
 
+    /**
+     * Language used by the csv term loading files.
+     * @return
+     */
     public static final Language CSV_LANGUAGE(){
         return csvLanguage;
     }

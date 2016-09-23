@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-		<version>4.2.0</version>
+		<version>4.3.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -38,9 +38,9 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-db</artifactId>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -70,14 +70,9 @@
         </configuration>
          <dependencies>
           <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-          </dependency>
-          <dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-db</artifactId>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -165,12 +160,14 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
+      <!-- only needed as long as hibernate-c3p0 is still dependend on c3p0/c3p0/0.9.1 -->
+      <exclusions>
+        <exclusion>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>  
+        </exclusion>
+      </exclusions>
     </dependency>
-   	<!-- only needed as long as hibernate-c3p0 is still dependend on c3p0/c3p0/0.9.1 -->
-   	<dependency>
-		<groupId>com.mchange</groupId>
-		<artifactId>c3p0</artifactId>
-	</dependency>
     <!-- Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
     <dependency>
       <groupId>javax.transaction</groupId>
@@ -247,33 +244,16 @@
     </dependency>
 
     <!-- ******* DATABASES DRIVER ******* -->
+      <!-- 
+            IMPORTANT:
+            Any driver dependency listed here must be excluded from the 
+            cdmlib-remote depedency in cdmlib-remote-webapp
+      -->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-db</artifactId>
+        <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-    </dependency>
-    <!-- SQL Server and Sybase -->
-    <dependency>
-      <groupId>net.sourceforge.jtds</groupId>
-      <artifactId>jtds</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>jdbc4</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-    </dependency>
-
   
 	<!-- Profiling -->
 <!-- 	<dependency> -->

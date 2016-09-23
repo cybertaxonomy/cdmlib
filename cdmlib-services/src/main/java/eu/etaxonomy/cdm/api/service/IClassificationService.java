@@ -18,6 +18,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -49,6 +50,16 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     public ITaxonTreeNode getTreeNodeByUuid(UUID uuid);
+
+    /**
+     *
+     * Returns the root node of the the given classification (specified by its UUID)
+     * @param classificationUuid the uuid of the classification
+     * @return the root node of the classification
+     */
+    public TaxonNode getRootNode(UUID classificationUuid);
+
+    public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid);
 
     /**
      *
@@ -179,7 +190,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classification
      * @return
      */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
     /**
      * @param taxon
@@ -261,7 +272,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param excludeTaxa
      * @return
      */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid);
 
     /**
      * @param classificationUuid
@@ -271,7 +282,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern);
+            UUID classificationUuid, Integer limit, String pattern);
 
     /**
      * @param classification
@@ -281,7 +292,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern);
+            Classification classification, Integer limit, String pattern);
 
     /**
      * @param taxonUuid
@@ -325,6 +336,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
+
+    /**
+     * Returns the most relevant data of a taxon/taxon node, including children, synonyms
+     * and certain ancestors if required.
+     * @param classificationUuid
+     * @param taxonUuid
+     * @param doSynonyms
+     * @param ancestorMarkers
+     * @return
+     */
+    public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
+            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            NodeSortMode sortMode);
 
 
 }

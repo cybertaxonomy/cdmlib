@@ -65,6 +65,7 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
+    public TaxonNode getRootNode(UUID classificationUuid);
 
     public Long countChildrenOf(Taxon taxon, Classification classification);
 
@@ -95,6 +96,11 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @return
      */
     Map<UUID, String> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
+
+    /**
+     * Returns a map of taxon uuids mapping to taxon node uuids in the given classification
+     */
+    public Map<UUID, UUID> getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, List<UUID> taxonUuids);
 
 
 }

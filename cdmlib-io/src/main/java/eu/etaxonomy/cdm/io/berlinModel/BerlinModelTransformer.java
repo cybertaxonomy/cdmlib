@@ -745,8 +745,8 @@ public class BerlinModelTransformer {
 			case 240: return PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
 			case 250: return PresenceAbsenceTerm.INTRODUCED();
 			case 260: return PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
-			case 270: return PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS();
-			case 280: return PresenceAbsenceTerm.INTRODUCED_NATURALIZED();
+			case 270: return PresenceAbsenceTerm.CASUAL();
+			case 280: return PresenceAbsenceTerm.NATURALISED();
 			case 310: return PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 			case 320: return PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 			case 330: return PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE();

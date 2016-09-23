@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -75,8 +76,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
      */
 //    @Test
     public final void testSetTaxonNodeComparator() {
-
-
 //		fail("Not yet implemented");
     }
 
@@ -351,7 +350,20 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         taxonUuids.add(acacia_sect_botrycephalae_uuid);
 
         List<GroupedTaxonDTO> result = this.service.groupTaxaByHigherTaxon(taxonUuids, CLASSIFICATION_UUID, minRank, maxRank);
-        Assert.assertFalse("", result.isEmpty());
+        System.out.println(result);
+        Assert.assertEquals(3, result.size());
+        //acacia_acicularis_uuid  //is a root taxon with no parents
+        Assert.assertEquals(acacia_acicularis_uuid, result.get(0).getTaxonUuid());
+        Assert.assertNull(result.get(0).getGroupTaxonUuid());
+        Assert.assertTrue(StringUtils.isBlank(result.get(0).getGroupTaxonName()));
+        //acacia_cuspidifolia_uuid
+        Assert.assertEquals(acacia_cuspidifolia_uuid, result.get(1).getTaxonUuid());
+        Assert.assertNotNull(result.get(1).getGroupTaxonUuid());
+        Assert.assertFalse(StringUtils.isBlank(result.get(1).getGroupTaxonName()));
+        //acacia_sect_botrycephalae_uuid
+        Assert.assertEquals(acacia_sect_botrycephalae_uuid, result.get(2).getTaxonUuid());
+        Assert.assertNotNull(result.get(2).getGroupTaxonUuid());
+        Assert.assertFalse(StringUtils.isBlank(result.get(2).getGroupTaxonName()));
     }
 
 

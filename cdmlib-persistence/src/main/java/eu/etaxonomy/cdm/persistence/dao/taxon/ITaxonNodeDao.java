@@ -75,18 +75,24 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
 
     /**
-     * @param treeIndexClosure
-     * @param minRankOrderIndex
-     * @param maxRankOrderIndex
+     * Computes a map treeIndex->rank(sortIndex) for each given taxon node treeIndex. Required by #5957.
+     * If the taxon represented by the treeindex is not in the given rank range no record is returned for the given
+     * treeindex.
+     *
+     * @param treeIndex the list of treeIndexes
+     * @param minRankOrderIndex min rank
+     * @param maxRankOrderIndex max rank
      * @return
      */
-    Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndexClosure, Integer minRankOrderIndex,
+    Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndex, Integer minRankOrderIndex,
             Integer maxRankOrderIndex);
 
     /**
-     * @param keySet
-     * @return
+     * For a given set of taxon node tree indexes the uuid and title cache of the taxon represented
+     * by this treeindex is returned.
+     * @param treeIndexSet set of taxon node tree indexes
+     * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
-    Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> keySet);
+    Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> treeIndexSet);
 
 }

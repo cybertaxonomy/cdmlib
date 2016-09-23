@@ -923,7 +923,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
             // rows for a term with multiple representations
-            String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
+            String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid, a.orderIndex "
                     + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
                     + "where a.id in (:allAreaIds) order by a.idInVocabulary";
             query = getSession().createQuery(parentAreasQueryStr);
@@ -959,7 +959,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 } else {
                     representations = (Set<Representation>)elements[1];
                 }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3]));
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
             }
         }
         return new ArrayList<TermDto>(dtoMap.values());

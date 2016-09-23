@@ -19,9 +19,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportReport;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTerm;
@@ -62,11 +62,11 @@ public class AbcdGgbnParser {
 
     private final String prefix = "ggbn:";
 
-    private final Abcd206ImportReport report;
+    private final SpecimenImportReport report;
 
     private final ICdmApplicationConfiguration cdmAppController;
 
-    public AbcdGgbnParser(Abcd206ImportReport report, ICdmApplicationConfiguration cdmAppController) {
+    public AbcdGgbnParser(SpecimenImportReport report, ICdmApplicationConfiguration cdmAppController) {
         this.report = report;
         this.cdmAppController = cdmAppController;
     }

@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -63,6 +64,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
     protected String BasionymStart = "(";
     protected String BasionymEnd = ")";
     protected String ExAuthorSeperator = " ex ";
+    private static String NOTHO = "notho";
     protected CharSequence BasionymAuthorCombinationAuthorSeperator = " ";
 
     @Override
@@ -429,6 +431,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
             tags.addAll(handleTaggedAutonym(nonViralName));
         }else{ //not Autonym
 //			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
+
             List<TaggedText> nameTags = getTaggedName(nonViralName);
             tags.addAll(nameTags);
             String authorCache = getAuthorshipCache(nonViralName);
@@ -649,6 +652,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
         	infraGenericMarker = "'undefined infrageneric rank'";
         }
         String infraGenEpi = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim();
+        if (nonViralName.isBinomHybrid()){
+            infraGenericMarker = CdmUtils.concat("", NOTHO, infraGenericMarker);
+        }
 
         addInfraGenericPart(nonViralName, tags, infraGenericMarker, infraGenEpi);
 
@@ -659,13 +665,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
 
 	/**
 	 * Default implementation for the infrageneric part of a name.
-	 * This is usually the infrageneric marker and the infrageneric epitheton. But may be implemented differently e.g. for zoological
-	 * names the infrageneric epitheton may be surrounded by brackets and the marker left out.
+	 * This is usually the infrageneric marker and the infrageneric epitheton. But may be
+	 * implemented differently e.g. for zoological names the infrageneric epitheton
+	 * may be surrounded by brackets and the marker left out.
 	 * @param nonViralName
 	 * @param tags
 	 * @param infraGenericMarker
 	 */
-	protected void addInfraGenericPart(NonViralName<?> name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
+	protected void addInfraGenericPart(
+	        @SuppressWarnings("unused") NonViralName<?> name,
+	        List<TaggedText> tags,
+	        String infraGenericMarker,
+	        String infraGenEpi) {
 		//add marker
 		tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
 
@@ -742,18 +753,20 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      */
     protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName, boolean includeMarker){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
-        if (includeMarker){
+        if (includeMarker || nonViralName.isTrinomHybrid()){
             String marker = (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
+            if (nonViralName.isTrinomHybrid()){
+                marker = CdmUtils.concat("", NOTHO, marker);
+            }
             if (StringUtils.isNotBlank(marker)){
                 tags.add(new TaggedText(TagEnum.rank, marker));
             }
+
         }
         String infrSpecEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet());
-        if (nonViralName.isTrinomHybrid()){
-            addHybridPrefix(tags);
-        }
 
         infrSpecEpi = infrSpecEpi.trim().replace("null", "");
+
         if (StringUtils.isNotBlank(infrSpecEpi)){
             tags.add(new TaggedText(TagEnum.name, infrSpecEpi));
         }
@@ -786,8 +799,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
         if (hasInfraGenericEpi){
             String infrGenEpi = nonViralName.getInfraGenericEpithet().trim();
             if (nonViralName.isBinomHybrid()){
-//					addHybridPrefix(tags);  FIXME hybridSign should be tag, but then we need to handle "(" ")" differently.
-                infrGenEpi = NonViralNameParserImplRegExBase.hybridSign + infrGenEpi;
+                //maybe not correct but not really expected to happen
+                infrGenEpi = UTF8.HYBRID + infrGenEpi;
             }
             infrGenEpi = "(" + infrGenEpi + ")";
             tags.add(new TaggedText(TagEnum.name, infrGenEpi));
@@ -823,6 +836,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
 
     private String getOriginalNameString(NonViralName<?> currentName, List<TaggedText> originalNameTaggs) {
 		List<String> originalNameStrings = new ArrayList<String>(1);
+		currentName = HibernateProxyHelper.deproxy(currentName, NonViralName.class);
+		//Hibernate.initialize(currentName.getRelationsToThisName());
     	for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
 			NameRelationshipType type = nameRel.getType();
     		if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){

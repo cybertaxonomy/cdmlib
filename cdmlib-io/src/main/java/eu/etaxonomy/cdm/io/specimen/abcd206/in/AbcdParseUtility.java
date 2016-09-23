@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -39,7 +40,7 @@ public class AbcdParseUtility {
     private static final Logger logger = Logger.getLogger(AbcdParseUtility.class);
 
 
-    public static URI parseFirstUri(NodeList nodeList, Abcd206ImportReport report){
+    public static URI parseFirstUri(NodeList nodeList, SpecimenImportReport report){
         URI uri = null;
         String textContent = parseFirstTextContent(nodeList);
         if(textContent!=null){
@@ -69,14 +70,14 @@ public class AbcdParseUtility {
         return string;
     }
 
-    public static Double parseFirstDouble(NodeList nodeList, Abcd206ImportReport report){
+    public static Double parseFirstDouble(NodeList nodeList, SpecimenImportReport report){
         if(nodeList.getLength()>0){
             return parseDouble(nodeList.item(0), report);
         }
         return null;
     }
 
-    public static Double parseDouble(Node node, Abcd206ImportReport report){
+    public static Double parseDouble(Node node, SpecimenImportReport report){
         String message = "Could not parse double value for node " + node.getNodeName();
         Double doubleValue = null;
         try{
@@ -85,7 +86,9 @@ public class AbcdParseUtility {
             textContent = textContent.replace(".","");
             //convert commmas
             textContent = textContent.replace(",",".");
-            doubleValue = Double.parseDouble(textContent);
+            if (!CdmUtils.isBlank(textContent)){
+                doubleValue = Double.parseDouble(textContent);
+            }
         } catch (NullPointerException npe){
             logger.error(message, npe);
             if(report!=null){
@@ -139,7 +142,7 @@ public class AbcdParseUtility {
      * @param fileName: the file's location
      * @return a wrapper with a list of root nodes ("Unit")
      */
-    public static UnitAssociationWrapper parseUnitsNodeList(InputStream inputStream, Abcd206ImportReport report) {
+    public static UnitAssociationWrapper parseUnitsNodeList(InputStream inputStream, SpecimenImportReport report) {
         UnitAssociationWrapper unitAssociationWrapper = new UnitAssociationWrapper();
         NodeList unitList = null;
         try {
