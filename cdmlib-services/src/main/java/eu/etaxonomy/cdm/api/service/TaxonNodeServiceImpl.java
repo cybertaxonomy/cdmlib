@@ -121,17 +121,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
         Integer start = PagerUtils.startFor(pageSize, pageIndex);
-        start = start == null ? 0 : start;
         Integer limit = PagerUtils.limitFor(pageSize);
         limit = limit == null ? Integer.MAX_VALUE : limit;
         Long totalCount = Long.valueOf(allRecords.size());
 
-        if(PagerUtils.hasResultsInRange(totalCount, pageIndex, pageSize)) {
             TaxonNameBase<?,?> parentName = null;
 
-            for(int i = start; i < Math.min(totalCount, start + limit); i++) {
-                CdmBase record = allRecords.get(i);
-
+//            for(int i = start; i < Math.min(totalCount, start + limit); i++) {
+            for(CdmBase record : PagerUtils.pageList(allRecords, pageIndex, pageSize)) {
                 if (record.isInstanceOf(TaxonNode.class)){
                     dtos.add(new TaxonNodeDto(CdmBase.deproxy(record, TaxonNode.class)));
                 }else if (record.isInstanceOf(Synonym.class)){
@@ -141,7 +138,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                     dtos.add(new TaxonNodeDto(synonym, isHomotypic));
                 }
             }
-        }
+
+//        }
 
         return new DefaultPagerImpl<TaxonNodeDto>(pageIndex, totalCount, pageSize , dtos);
     }
