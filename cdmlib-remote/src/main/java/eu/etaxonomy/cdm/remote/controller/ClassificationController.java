@@ -148,7 +148,7 @@ public class ClassificationController extends BaseController<Classification,ICla
    @RequestMapping(
            value = {"childNodesByTaxon/{taxonUuid}"},
            method = RequestMethod.GET)
-   public Pager<TaxonNodeDto> doPageChildNodes(
+   public Pager<TaxonNodeDto> doPageChildNodesByTaxon(
            @PathVariable("uuid") UUID classificationUuid,
            @PathVariable("taxonUuid") UUID taxonUuid,
            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
