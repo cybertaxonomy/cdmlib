@@ -574,10 +574,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
-    	System.out.println("---Before sorting---");
-    	for (TaxonNode node: allNodes){
-    	    System.out.println(node.getTaxon().getTitleCache());
-    	}
+
     	Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
     	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
     	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
@@ -587,10 +584,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
        allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
-        System.out.println("\n---After sorting---");
-        for (TaxonNode node: allNodes){
-            System.out.println(node.getTaxon().getTitleCache());
-        }
+
         Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
         Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
         Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
