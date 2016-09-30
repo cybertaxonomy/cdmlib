@@ -30,6 +30,9 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -115,6 +118,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	private static final String UuidLabel = "UUID or label";
 	private static final String UuidLabelAbbrev = "UUID, label or abbreviation";
 	private static final String UuidAbbrev = "UUID or abbreviation";
+
+	private final static String authorSeparator = ", ";
+    private final static String lastAuthorSeparator = " & ";
 
 	public enum TermMatchMode{
 		UUID_ONLY(0, UuidOnly)
@@ -1345,5 +1351,51 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         // TODO Auto-generated method stub
         return null;
     }
+
+	public static TeamOrPersonBase<?> parseAuthorString(String authorName){
+        TeamOrPersonBase<?> author = null;
+        String[] teamMembers = authorName.split(authorSeparator);
+        String lastMember;
+        String[] lastMembers;
+        Person teamMember;
+        if (teamMembers.length>1){
+            lastMember = teamMembers[teamMembers.length -1];
+            lastMembers = lastMember.split(lastAuthorSeparator);
+            teamMembers[teamMembers.length -1] = "";
+            author = Team.NewInstance();
+            for(String member:teamMembers){
+                if (!member.equals("")){
+                    teamMember = Person.NewInstance();
+                    teamMember.setTitleCache(member, true);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+            if (lastMembers != null){
+                for(String member:lastMembers){
+                   teamMember = Person.NewInstance();
+                   teamMember.setTitleCache(member, true);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+
+        } else {
+            teamMembers = authorName.split(lastAuthorSeparator);
+            if (teamMembers.length>1){
+                author = Team.NewInstance();
+                for(String member:teamMembers){
+                  teamMember = Person.NewInstance();
+                  teamMember.setTitleCache(member, true);
+                  ((Team)author).addTeamMember(teamMember);
+
+                }
+            }else{
+                author = Person.NewInstance();
+                author.setTitleCache(authorName, true);
+            }
+        }
+        author.getTitleCache();
+        return author;
+    }
+
 
 }
