@@ -36,7 +36,7 @@ public class GbifQueryGenerator {
         // only look for preserved specimens
 
         if (checkForValidQuery(query)) {
-            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "basisOfRecord", "PRESERVED_SPECIMEN");
+            //ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "basisOfRecord", "PRESERVED_SPECIMEN");
 
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "limit", "100");
             if (query.tripleIds != null){

@@ -142,6 +142,8 @@ public class SpecimenImportReport {
             SpecimenOrObservationType type = entry.getKey();
             out.println(type+": "+entry.getValue());
         }
+        //not imported
+        out.println("Skipped/not imported: "+alreadyExistingSpecimens.size());
         out.println("\n");
 
         out.println("Imported unit ids");
@@ -188,14 +190,14 @@ public class SpecimenImportReport {
         out.println("\n");
 
         //not imported
-        out.println("---Already existing specimen (not imported)---");
+        out.println("---Already existing specimen/not imported ("+alreadyExistingSpecimens.size()+")---");
         for(UnitIdSpecimen specimen:alreadyExistingSpecimens){
             out.println(formatSpecimen(specimen));
         }
         out.println("\n");
 
         //taxa with associated specimens
-        out.println("---Taxa with associated specimens---");
+        out.println("---Taxa with associated specimens ("+taxonToAssociatedSpecimens.size()+")---");
         for(Entry<Taxon, List<UnitIdSpecimen>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
             List<UnitIdSpecimen> specimens = entry.getValue();
@@ -295,3 +297,4 @@ public class SpecimenImportReport {
     }
 
 }
+
