@@ -36,6 +36,25 @@ public class SpecimenDataHolder {
     protected String gatheringElevation;
 
     private String gatheringElevationUnit;
+    protected Double depth;
+    /**
+     * @return the depth
+     */
+    public Double getDepth() {
+        return depth;
+    }
+
+
+
+    /**
+     * @param depth the depth to set
+     */
+    public void setDepth(Double depth) {
+        this.depth = depth;
+    }
+
+
+
     private String gatheringSpatialDatum;
     private String gatheringCoordinateErrorMethod;
     private String kindOfUnit;
@@ -44,7 +63,8 @@ public class SpecimenDataHolder {
     private String fieldNumber;
     private String unitNotes; //  occurenceRemarks(DwCA)
 
-    private List<String> multimediaObjects;
+    private HashMap<String, Map<String,String>> multimediaObjects;
+    private HashMap<String, Map<String,String>> gatheringMultimediaObjects;
     private List<Identification> identificationList;
 
     private List<SpecimenTypeDesignationStatus> statusList;
@@ -294,7 +314,8 @@ public class SpecimenDataHolder {
 
         gatheringElevationUnit = null;
         gatheringSpatialDatum = null;
-       gatheringCoordinateErrorMethod = null;
+        gatheringCoordinateErrorMethod = null;
+        depth = null;
 
 
     }
@@ -340,7 +361,7 @@ public class SpecimenDataHolder {
     /**
      * @return the multimediaObjects
      */
-    public List<String> getMultimediaObjects() {
+    public HashMap<String,Map<String, String>> getMultimediaObjects() {
         return multimediaObjects;
     }
 
@@ -349,8 +370,32 @@ public class SpecimenDataHolder {
     /**
      * @param multimediaObjects the multimediaObjects to set
      */
-    public void setMultimediaObjects(List<String> multimediaObjects) {
+    public void setMultimediaObjects(HashMap<String,Map<String, String>> multimediaObjects) {
         this.multimediaObjects = multimediaObjects;
+    }
+
+    public void putMultiMediaObject(String uri, Map<String, String> attributes){
+        this.multimediaObjects.put(uri, attributes);
+    }
+
+    /**
+     * @return the multimediaObjects
+     */
+    public HashMap<String,Map<String, String>> getGatheringMultimediaObjects() {
+        return gatheringMultimediaObjects;
+    }
+
+
+
+    /**
+     * @param multimediaObjects the multimediaObjects to set
+     */
+    public void setGatheringMultimediaObjects(HashMap<String,Map<String, String>> multimediaObjects) {
+        this.gatheringMultimediaObjects = multimediaObjects;
+    }
+
+    public void putGatheringMultiMediaObject(String uri, Map<String, String> attributes){
+        this.gatheringMultimediaObjects.put(uri, attributes);
     }
 
 

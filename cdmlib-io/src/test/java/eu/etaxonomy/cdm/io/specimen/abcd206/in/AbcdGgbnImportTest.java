@@ -524,8 +524,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    for (DerivedUnit derivedUnit:derivedUnits){
+	        System.out.println(derivedUnit.getTitleCache());
+	    }
+	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	   // List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 
 	    List<FieldUnit> fieldUnitsTemp = occurrenceService.list(FieldUnit.class, null, null, null, null);
 	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());

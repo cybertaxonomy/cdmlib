@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * @author k.luther
@@ -69,6 +70,22 @@ public abstract class SpecimenImportConfiguratorBase<STATE extends SpecimenImpor
 
     private boolean overwriteExistingSpecimens = false;
 
+    private SpecimenOrObservationType type;
+
+
+    /**
+     * @return the type
+     */
+    public SpecimenOrObservationType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(SpecimenOrObservationType type) {
+        this.type = type;
+    }
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 

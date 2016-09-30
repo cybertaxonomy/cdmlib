@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -636,8 +637,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			        ref.setAuthorship(taxonNameBase.getCombinationAuthorship());
 			    }
 
-			    ref.setProtectedAbbrevTitleCache(false);
-			    ref.setProtectedTitleCache(false);
+			    if (ref.getAbbrevTitle() == null && !ref.isOfType(ReferenceType.Article)) {
+                    ref.setAbbrevTitle(reference);
+                    ref.setProtectedAbbrevTitleCache(false);
+                }
+
+                ref.setProtectedTitleCache(false);
 
 			    taxonNameBase.setNomenclaturalReference(ref);
 			}

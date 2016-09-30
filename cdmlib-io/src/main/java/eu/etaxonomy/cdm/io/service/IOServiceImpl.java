@@ -117,7 +117,7 @@ public class IOServiceImpl implements IIOService {
             stream.write(importData);
             config.setSource(tempFilePath.toUri());
             result = cdmImport.execute(config);
-            Files.delete(tempFilePath);
+     //       Files.delete(tempFilePath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

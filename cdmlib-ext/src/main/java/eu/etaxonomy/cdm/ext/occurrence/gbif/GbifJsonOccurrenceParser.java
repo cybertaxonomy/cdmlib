@@ -24,10 +24,12 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -35,6 +37,9 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -157,6 +162,9 @@ public class GbifJsonOccurrenceParser {
     private static final String FUNGI = "Fungi";
 
     private static final String BACTERIA = "Bacteria";
+
+    private static final String MULTIMEDIA = "media";
+
 
 
 
@@ -417,6 +425,64 @@ public class GbifJsonOccurrenceParser {
                 if (record.has(OCCURENCE_ID)){
                     IdentifiableSource source = IdentifiableSource.NewDataImportInstance((record.getString(OCCURENCE_ID)));
                     derivedUnitFacade.addSource(source);
+                }
+
+                if (record.has(MULTIMEDIA)){
+                    //http://ww2.bgbm.org/herbarium/images/B/-W/08/53/B_-W_08537%20-00%201__3.jpg
+                    JSONArray multimediaArray = record.getJSONArray(MULTIMEDIA);
+                    JSONObject mediaRecord;
+                    Media media;
+                    URI uri = null;
+                    ImageInfo imageInf = null;
+                    MediaRepresentation representation = null;
+                    SpecimenOrObservationType type = null;
+                    for(Object object:multimediaArray){
+                        //parse every record
+                       media = Media.NewInstance();
+                       uri = null;
+                       imageInf = null;
+
+                        if(object instanceof JSONObject){
+                            mediaRecord = (JSONObject) object;
+
+                            if (mediaRecord.has("identifier")){
+                                try {
+                                    uri = new URI(mediaRecord.getString("identifier"));
+                                    imageInf = ImageInfo.NewInstance(uri, 0);
+
+                                } catch (URISyntaxException |IOException | HttpException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                               // media.addIdentifier(mediaRecord.getString("identifier"), null);
+                            }
+                            if (mediaRecord.has("references")){
+
+
+                            }
+                            if (mediaRecord.has("format")){
+
+                            }
+                            if (mediaRecord.has("type")){
+                                if (mediaRecord.get("type").equals("StillImage")){
+                                    type = SpecimenOrObservationType.StillImage;
+                                }
+                            }
+
+                            }
+                            ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInf);
+                            representation = MediaRepresentation.NewInstance();
+
+                            representation.addRepresentationPart(imageFile);
+                            media.addRepresentation(representation);
+
+                            derivedUnitFacade.addDerivedUnitMedia(media);
+                        }
+                    //identifier=http://ww2.bgbm.org/herbarium/images/B/-W/08/53/B_-W_08537%20-00%201__3.jpg
+                   //references=http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=136628
+                    //format=image/jpeg
+                    //type=StillImage
+
                 }
 
                 // create dataset URL

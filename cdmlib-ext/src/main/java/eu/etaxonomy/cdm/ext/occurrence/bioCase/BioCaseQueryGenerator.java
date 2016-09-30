@@ -146,7 +146,11 @@ public class BioCaseQueryGenerator {
             }
         }
         if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
-            addLikeFilter(elAnd, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
+            Element elOr = new Element(OR);
+            addLikeFilter(elOr, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
+            addLikeFilter(elOr, query.accessionNumber, CAT_PATH_ABCD_2_0);
+            addLikeFilter(elOr, query.accessionNumber, UNIT_ID_PATH_ABCD_2_0);
+            elAnd.addContent(elOr);
         }
         if(query.collector!=null && !query.collector.trim().isEmpty()){
             addLikeFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
