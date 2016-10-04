@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest {
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
 
-	private UUID uuid;
 	private TaxonBase<?> cdmBase;
 
 	@SpringBeanByType
@@ -79,7 +78,6 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	 */
 	@Before
 	public void setUp() throws Exception {
-		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
 		cdmBase = Taxon.NewInstance(null, null);
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
 	}
