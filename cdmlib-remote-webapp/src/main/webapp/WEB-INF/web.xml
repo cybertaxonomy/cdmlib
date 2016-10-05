@@ -1,74 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-      version="3.0"> 
-      
-    <!-- 
-      NOTE: 
-      For a detailed overview on the spring MVC and application context configuration and 
-      bootstrapping of this web application see: 
-      http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
-    -->
-    
-    <description>cdmlib-remote web-application instance</description>
-    <display-name>cdmlib-remote-webapp</display-name>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
 
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
+  <!-- 
+       NOTE: For a detailed overview on the spring MVC and application context 
+       configuration and bootstrapping of this web application 
+       see: http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping 
+  -->
 
-    <!-- Creates the Spring Container shared by all Servlets and Filters -->
-    <context-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>/WEB-INF/applicationContext.xml</param-value>
-    </context-param>
-    <listener>
-        <!-- loads by default /WEB-INF/applicationContext.xml but this can be overridden above -->
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
+  <description>cdmlib-remote web-application instance</description>
+  <display-name>cdmlib-remote-webapp</display-name>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- Creates the Spring Container shared by all Servlets and Filters -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
+  </context-param>
+  <listener>
+    <!-- loads by default /WEB-INF/applicationContext.xml but this can be overridden above -->
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
 
 
-    <servlet>
-        <description>CDM Remote API</description>
-        <servlet-name>cdmlib-remote</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-        <!-- loads by default policy /WEB-INF/cdmlib-remote-servlet.xml  -->
-    </servlet>
+  <servlet>
+    <description>CDM Remote API</description>
+    <servlet-name>cdmlib-remote</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+    <!-- loads by default policy /WEB-INF/cdmlib-remote-servlet.xml -->
+  </servlet>
 
-    <servlet-mapping>
-        <servlet-name>cdmlib-remote</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-    
+  <servlet-mapping>
+    <servlet-name>cdmlib-remote</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
 
-    <filter>
-      <filter-name>charsetFilter</filter-name>
-      <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-      <init-param>
-        <param-name>encoding</param-name>
-        <param-value>UTF-8</param-value>
-      </init-param>
-      <init-param>
-        <param-name>forceEncoding</param-name>
-        <param-value>true</param-value>
-      </init-param>
-    </filter>
-    <filter-mapping>
-      <filter-name>charsetFilter</filter-name>
-      <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
-    <!-- Remoting Security -->
-   
-      <filter>
-         <filter-name>springSecurityFilterChain</filter-name>
-         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-     </filter>
-     <filter-mapping>
-       <filter-name>springSecurityFilterChain</filter-name>
-       <url-pattern>/*</url-pattern>
-     </filter-mapping>
+  <filter>
+    <filter-name>charsetFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>charsetFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Remoting Security -->
+
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
 </web-app>
