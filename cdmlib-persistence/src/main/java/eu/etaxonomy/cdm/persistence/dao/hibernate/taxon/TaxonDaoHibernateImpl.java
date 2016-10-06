@@ -1890,48 +1890,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
 
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean isTaxon) {
-        String className;
-        if (isTaxon){
-            className = Taxon.class.getSimpleName();
-        } else{
-            className = Synonym.class.getSimpleName();
-        }
-        String queryString;
-
-        if(pattern == null){
-            queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s' ", type.getSimpleName(), className );
-       } else{
-           queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s' and titleCache like :pattern", type.getSimpleName(), className);
-       }
-        Query query = getSession().createQuery(queryString);
-        if (pattern != null){
-            pattern = pattern.replace("*", "%");
-            pattern = pattern.replace("?", "_");
-            pattern = pattern + "%";
-            pattern = pattern.replace("?", "_");
-            query.setParameter("pattern", pattern);
-        }
-        if (limit  != null){
-            query.setMaxResults(limit);
-        }
-
-        List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
-
-        return result;
-    }
-    @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern){
-
-        return getUuidAndTitleCache(limit, pattern, false);
-    }
-
-    @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern){
-
-        return getUuidAndTitleCache(limit, pattern, true);
-    }
-
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
 
            boolean doAreaRestriction = areasExpanded.size() > 0;

@@ -284,16 +284,22 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
     @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern){
+        return getUuidAndTitleCache(type, limit, pattern);
+    }
+
+
+    @Override
+    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() +" where titleCache like :pattern");
+            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() +" where titleCache like :pattern");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() );
+            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);
@@ -304,7 +310,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
     @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
-        return getUuidAndTitleCache(null, null);
+        return getUuidAndTitleCache(type, null, null);
     }
 
     protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
