@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -39,13 +38,11 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Controller
 @Api("termVocabulary")
 @RequestMapping(value = {"/termVocabulary/{uuid}"})
-public class VocabularyController extends BaseController<TermVocabulary, IVocabularyService> {
+public class VocabularyController extends AbstractIdentifiableController<TermVocabulary, IVocabularyService> {
 
     public static final Logger logger = Logger.getLogger(VocabularyController.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
+
     @Autowired
     @Override
     public void setService(IVocabularyService service) {
@@ -62,7 +59,7 @@ public class VocabularyController extends BaseController<TermVocabulary, IVocabu
 
         logger.info("terms() " + requestPathAndQuery(request));
 
-        TermVocabulary vocabulary = getCdmBaseInstance(uuid, response, (List<String>)null);
+        TermVocabulary<?> vocabulary = getCdmBaseInstance(uuid, response, (List<String>)null);
 
         Pager<DefinedTermBase> pager = service.getTerms(vocabulary, null, 0, orderBy.checkSuitableFor(vocabulary.getClass()).orderHints(), getInitializationStrategy());
 

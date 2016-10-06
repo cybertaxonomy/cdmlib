@@ -53,7 +53,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("classification")
 @RequestMapping(value = {"/classification/{uuid}"})
-public class ClassificationController extends BaseController<Classification,IClassificationService> {
+public class ClassificationController extends AbstractIdentifiableController<Classification,IClassificationService> {
 
 
     private ITermService termService;

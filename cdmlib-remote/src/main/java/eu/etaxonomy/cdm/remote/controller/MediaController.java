@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
@@ -37,6 +35,7 @@ import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -48,12 +47,9 @@ import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
 @Controller
 @Api("media")
 @RequestMapping(value = {"/media/{uuid}"})
-public class MediaController extends BaseController<Media, IMediaService>
-{
+public class MediaController extends AbstractIdentifiableController<Media, IMediaService>{
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
+
     @Autowired
     @Override
     public void setService(IMediaService service) {

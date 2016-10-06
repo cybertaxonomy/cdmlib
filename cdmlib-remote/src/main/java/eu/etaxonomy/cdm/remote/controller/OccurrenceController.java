@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -41,8 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Controller
 @Api("occurrence")
 @RequestMapping(value = {"/occurrence/{uuid}"})
-public class OccurrenceController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
-{
+public class OccurrenceController extends AbstractIdentifiableController<SpecimenOrObservationBase, IOccurrenceService>{
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
