@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -110,6 +111,15 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @see #getUuidAndTitleCache(Class, Integer, String)
      */
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
+
+    /**
+     * Returns the titleCache for a given object defined by uuid.
+     * @param uuid the uuid of the requested object.
+     * @param refresh if false the value as stored in the DB is returned,
+     *      otherwise it is recomputed by loading the object and calling the formatter.
+     * @return the titleCache of the requested object
+     */
+    public String getTitleCache(UUID uuid, boolean refresh);
 
     /**
      * Like {@link #getUuidAndTitleCache(Integer, String)} but searching only on a subclass

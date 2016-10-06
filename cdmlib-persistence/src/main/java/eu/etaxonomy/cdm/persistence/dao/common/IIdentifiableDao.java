@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -117,6 +118,16 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+
+    /**
+     * Returns the titleCache for a given object defined by uuid.
+     * @param uuid the uuid of the requested object.
+     * @param refresh if false the value as stored in the DB is returned,
+     *      otherwise it is recomputed by loading the object and calling the formatter.
+     * @return the titleCache of the requested object
+     */
+    public String getTitleCache(UUID uuid, boolean refresh);
+
 
 	 /**
 	 * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
