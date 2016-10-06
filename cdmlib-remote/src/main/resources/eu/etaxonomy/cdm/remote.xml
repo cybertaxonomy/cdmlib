@@ -9,7 +9,6 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 
-
   <bean id="marshaller" name="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
     <property name="classesToBeBound">
       <list>

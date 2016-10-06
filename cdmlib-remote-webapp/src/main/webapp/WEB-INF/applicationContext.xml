@@ -13,6 +13,8 @@
     bootstrapping of this web application see: 
     http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
   -->
+  
+  <context:annotation-config />
 
   <!-- include default application context and customization -->
   <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml" />
@@ -21,8 +23,7 @@
   </bean>
   <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
 
-  <!-- <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/> -->
-  <import resource="classpath:/eu/etaxonomy/cdm/remote-security.xml" />
+  <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
   <context:component-scan base-package="eu/etaxonomy/cdm/io">
     <context:exclude-filter type="regex"
       expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
@@ -54,8 +55,10 @@
 
   <!-- CONFIGURE WEB APPLICATION HERE -->
   <import resource="datasources/configurable.xml" />
+  
+  <!-- bootstrap the WebSecurityConfiguration -->
+  <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration"></bean>
 
-  <context:annotation-config />
   <bean class="eu.etaxonomy.cdm.remote.config.LoggingConfigurer">
   </bean>
 
