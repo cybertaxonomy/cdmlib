@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -116,7 +118,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
     public  Pager<IdentifiedEntityDTO<T>> doFindByIdentifier(
-    		@RequestParam(value = "class", required = false) Class type,
+    		@RequestParam(value = "class", required = false) Class<T> type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -186,5 +188,29 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
         return service.findByMarker(type, markerType, value, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
+    /**
+     * List identifiable entities by markers
+     *
+     * @param type
+     * @param request
+     * @param response
+     * @return
+     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"uuidAndTitleCache"})
+    public List<UuidAndTitleCache<T>> doGetUuidAndTitleCache(
+            @RequestParam(value = "class", required = false) Class<T> type,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pattern", required = false) String pattern,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+            throws IOException {
+
+        if (logger.isDebugEnabled()){logger.info("doGetUuidAndTitleCache  : " + request.getRequestURI() + "?" + request.getQueryString() );}
+
+        return service.getUuidAndTitleCache(type, limit, pattern);
+    }
 
 }
