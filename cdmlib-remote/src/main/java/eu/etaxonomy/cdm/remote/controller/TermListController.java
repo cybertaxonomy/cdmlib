@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @Controller
 @Api("term")
 @RequestMapping(value = {"/term"})
-public class TermListController extends IdentifiableListController<DefinedTermBase, ITermService> {
+public class TermListController extends AbstractIdentifiableListController<DefinedTermBase, ITermService> {
 
 
     /* (non-Javadoc)
