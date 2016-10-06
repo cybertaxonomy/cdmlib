@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Controller
 @Api("termVocabulary")
 @RequestMapping(value = {"/termVocabulary"})
-public class VocabularyListController extends IdentifiableListController<TermVocabulary, IVocabularyService> {
+public class VocabularyListController extends AbstractIdentifiableListController<TermVocabulary, IVocabularyService> {
 
     public static final Logger logger = Logger.getLogger(VocabularyListController.class);
 

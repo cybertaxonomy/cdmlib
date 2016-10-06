@@ -80,7 +80,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("taxon")
 @RequestMapping(value = {"/taxon"})
-public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
+public class TaxonListController extends AbstractIdentifiableListController<TaxonBase, ITaxonService> {
 
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = DEFAULT_INIT_STRATEGY;
@@ -465,7 +465,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @param request
      * @param response
      * @return
-     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"}, params={"subtree"})
@@ -516,9 +516,9 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @param request
      * @param response
      * @return
-     * @see IdentifiableListController#doFindByMarker(Class, UUID, Boolean, Integer, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see AbstractIdentifiableListController#doFindByMarker(Class, UUID, Boolean, Integer, Integer, Boolean, HttpServletRequest, HttpServletResponse)
      * @see TaxonListController#doFindByIdentifier(Class, UUID, String, Integer, Integer, MatchMode, Boolean, UUID, HttpServletRequest, HttpServletResponse)
-     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByMarker"}, params={"subtree"})

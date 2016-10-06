@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 @Controller
 @Api("occurrence")
 @RequestMapping(value = {"/occurrence"})
-public class OccurrenceListController extends IdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
+public class OccurrenceListController extends AbstractIdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
 
 
     @Autowired

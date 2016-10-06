@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 @Controller
 @Api(value = "agent")
 @RequestMapping(value = {"/agent"})
-public class AgentListController extends IdentifiableListController<AgentBase, IAgentService> {
+public class AgentListController extends AbstractIdentifiableListController<AgentBase, IAgentService> {
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)

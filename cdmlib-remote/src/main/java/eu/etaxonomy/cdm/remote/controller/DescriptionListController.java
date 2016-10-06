@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 @Controller
 @Api("description")
 @RequestMapping(value = {"/description"})
-public class DescriptionListController extends IdentifiableListController<DescriptionBase, IDescriptionService> {
+public class DescriptionListController extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
 
 
     @Autowired
