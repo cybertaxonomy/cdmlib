@@ -1057,6 +1057,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet
+    public void testGetTitleCache(){
+        UUID uuid = UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331");
+        String titleCache = taxonDao.getTitleCache(uuid, false);
+        Assert.assertEquals("Acherontia styx Westwood, 1847 sec. cate-sphingidae.org", titleCache);
+        titleCache = taxonDao.getTitleCache(uuid, true);
+        Assert.assertEquals("Acherontia styxx Westwood, 1847 sec. cate-sphingidae.org", titleCache);
+   }
+
+
+    @Test
     @DataSet("TaxonDaoHibernateImplTest.testPropertyPath.xml")
     public void testPropertyPath(){
         //Test that BeanInitializer also works on HiberanteProxys

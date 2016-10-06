@@ -335,6 +335,25 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return list;
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public String getTitleCache(UUID uuid, boolean refresh){
+        if (! refresh){
+            String queryStr = String.format("SELECT titleCache FROM %s t WHERE t.uuid = '%s'", type.getSimpleName() , uuid.toString());
+            Query query = getSession().createQuery(queryStr);
+            List<?> list = query.list();
+            return list.isEmpty()? null : (String)list.get(0);
+        }else{
+            T entity = this.findByUuid(uuid);
+            if (entity == null){
+                return null;
+            }
+            entity.setTitleCache(null);
+            return entity.getTitleCache();
+        }
+    }
+
+
 
     @Override
     public int countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {

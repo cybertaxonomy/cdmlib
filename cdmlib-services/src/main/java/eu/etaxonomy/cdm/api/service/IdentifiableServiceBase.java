@@ -149,6 +149,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         return dao.getUuidAndTitleCache(clazz, limit, pattern);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public String getTitleCache(UUID uuid, boolean refresh){
+        return dao.getTitleCache(uuid, refresh);
+    }
+
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
