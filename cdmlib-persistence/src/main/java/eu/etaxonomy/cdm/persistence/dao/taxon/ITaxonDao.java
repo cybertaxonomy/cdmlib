@@ -412,16 +412,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
             List<OrderHint> orderHints, List<String> propertyPaths,
             Direction relatedfrom);
 
-    /**
-     * @return
-     */
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern);
-
-    /**
-     * @return
-     */
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern);
-
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 

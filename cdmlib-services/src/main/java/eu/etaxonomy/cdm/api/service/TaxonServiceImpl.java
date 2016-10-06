@@ -1526,7 +1526,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                     newTaxon = HibernateProxyHelper.deproxy(newTaxon, Taxon.class);
                     fromTaxon = HibernateProxyHelper.deproxy(fromTaxon, Taxon.class);
-                    SynonymRelationship newSynRelation = newTaxon.addSynonym(syn, newSynonymRelationshipType, newReference, newRefDetail);
+                    newTaxon.addSynonym(syn, newSynonymRelationshipType, newReference, newRefDetail);
                     fromTaxon.removeSynonymRelation(synRelation, false);
 //
                     //change homotypic group of synonym if relType is 'homotypic'
@@ -1545,22 +1545,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         result.addUpdatedObject(newTaxon);
         saveOrUpdate(fromTaxon);
         saveOrUpdate(newTaxon);
-        //Assert that there is a result
-        if (result == null){
-            String message = "Old synonym relation could not be transformed into new relation. This should not happen.";
-            throw new IllegalStateException(message);
-        }
+
         return result;
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
-        return dao.getUuidAndTitleCacheTaxon(limit, pattern);
-    }
-
-    @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern) {
-        return dao.getUuidAndTitleCacheSynonym(limit, pattern);
+    public <T extends TaxonBase> List<UuidAndTitleCache<T>> getUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(clazz, limit, pattern);
     }
 
     @Override

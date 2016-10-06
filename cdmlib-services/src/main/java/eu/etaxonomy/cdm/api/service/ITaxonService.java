@@ -25,8 +25,8 @@ import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
-import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -837,11 +837,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public Synonym findBestMatchingSynonym(String taxonName);
 
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern);
-
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern);
-
-    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
+     public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
