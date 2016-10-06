@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -59,7 +58,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @Controller
 @Api("taxon")
 @RequestMapping(value = {"/taxon/{uuid}"})
-public class TaxonController extends BaseController<TaxonBase, ITaxonService>
+public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>
 {
     public static final Logger logger = Logger.getLogger(TaxonController.class);
 

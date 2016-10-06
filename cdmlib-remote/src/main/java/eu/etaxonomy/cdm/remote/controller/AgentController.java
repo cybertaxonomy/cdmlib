@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * The AgentController class is a Spring MVC Controller.
@@ -73,7 +72,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 @Controller
 @Api(value = "agent")
 @RequestMapping(value = {"/agent/{uuid}"})
-public class AgentController extends BaseController<AgentBase, IAgentService>
+public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService>
 {
 
     private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
