@@ -275,12 +275,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return null;
 	}
 
-	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
-		return getMarkerType(state, uuid, label, text, labelAbbrev, null);
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev){
+		return getMarkerType(state, uuid, label, description, labelAbbrev, null, null);
+	}
+
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc){
+	    return this.getMarkerType(state, uuid, label, description, labelAbbrev, voc, null);
 	}
 
 
-	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc){
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc, Language language){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -289,6 +293,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			markerType = (MarkerType)getTermService().find(uuid);
 			if (markerType == null){
 				markerType = MarkerType.NewInstance(description, label, labelAbbrev);
+				if (language != null){
+				    markerType.getRepresentations().iterator().next().setLanguage(language);
+				}
 				markerType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
