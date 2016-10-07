@@ -1040,7 +1040,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, null,null, null, AuditEventSort.FORWARDS, propertyPaths);
         assertNotNull("getAuditEvents should return a list", auditEvents);
         assertFalse("the list should not be empty", auditEvents.isEmpty());
-        assertEquals("There should be thirty eight AuditEventRecords in the list", 38, auditEvents.size());
+        assertEquals("There should be thirty eight AuditEventRecords in the list", 2, auditEvents.size());
     }
 
 
