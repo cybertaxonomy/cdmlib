@@ -168,6 +168,22 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //update PresenceAbsenceTerm symbols
         updatePresenceAbsenceTermSymbols(stepList);
 
+        //6089
+        //Remove taxonomicParentCache from Taxon
+        stepName = "Remove taxonomicParentCache from Taxon";
+        tableName = "TaxonBase";
+        oldColumnName = "taxonomicParentCache";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //6089
+        //Remove taxonomicChildrenCount from Taxon
+        stepName = "Remove taxonomicChildrenCount from Taxon";
+        tableName = "TaxonBase";
+        oldColumnName = "taxonomicChildrenCount";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
         return stepList;
 
     }

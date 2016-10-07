@@ -22,7 +22,6 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.Valid;
@@ -158,16 +157,6 @@ public class Taxon
     public boolean isExcluded() {return excluded;}
     public void setExcluded(boolean excluded) {this.excluded = excluded;}
 
-
-    // shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
-    @XmlElement(name = "TaxonomicParentCache")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    private Taxon taxonomicParentCache;
-
-
     @XmlElementWrapper(name = "taxonNodes")
     @XmlElement(name = "taxonNode")
     @XmlIDREF
@@ -176,11 +165,6 @@ public class Taxon
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
     private Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
-
-    //cached number of taxonomic children
-    @XmlElement(name = "TaxonomicChildrenCount")
-    @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
-    private int taxonomicChildrenCount;
 
 // ************************* FACTORY METHODS ********************************/
 
