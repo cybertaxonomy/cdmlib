@@ -316,14 +316,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
         taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
         logger.warn("addSynonym(..)");
-        //this.taxonDao.clear();
+
         Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
         Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
         taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
         this.taxonDao.save(taxonRetheraSecCdmtest);
-        //this.taxonDao.clear();
+
         Taxon test = (Taxon)this.taxonDao.findByUuid(retheraSecCdmtest);
-        Set<Synonym> synonyms = test.getSynonyms();
+//        Set<Synonym> synonyms3 = test.getSynonyms();
         // 1. searching for a taxon (Rethera)
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 
@@ -363,7 +363,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
             null, null, null);
         //only five taxa have a distribution
         assertNotNull("getTaxaByName should return a List", results);
-        assertTrue("expected to find 7 taxa but found "+results.size(), results.size() == 8);
+        assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
     }
 
 
