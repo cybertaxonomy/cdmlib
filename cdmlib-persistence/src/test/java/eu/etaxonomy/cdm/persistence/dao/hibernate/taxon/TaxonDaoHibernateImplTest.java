@@ -33,6 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -709,7 +710,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-   // @ExpectedDataSet("TaxonDaoHibernateImplTest.testDelete-result.xml")
+    @ExpectedDataSet("TaxonDaoHibernateImplTest.testDelete-result.xml")
     public void testDeleteWithMarker() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         taxon.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), true));
