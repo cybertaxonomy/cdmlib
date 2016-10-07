@@ -375,7 +375,6 @@
             <common:TitleCache>Aus aus L.</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-a9036d14-7be1-42bc-bb74-87be966f3a01</taxon:Name>
-            <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
             <taxon:Descriptions>
               <taxon:Description id="1" uuid="urn-uuid-9d5a5b8a-43a8-4967-8199-c6ee4df31671">
                 <common:TitleCache>Diagnosis of Aus aus L. in Europe</common:TitleCache>

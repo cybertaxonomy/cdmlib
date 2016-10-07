@@ -36,7 +36,6 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:complexContent>
       <xs:extension base="taxon:TaxonBase">
         <xs:sequence>
-          <xs:element name="TaxonomicParentCache" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="taxonNodes" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
@@ -44,7 +43,6 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="TaxonomicChildrenCount" type="xs:int"/>
           <xs:element name="SynonymRelations" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>

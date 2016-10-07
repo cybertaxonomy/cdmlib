@@ -91,7 +91,6 @@ public class TaxonGenerator {
         childTaxon.addDescription(taxDesc);
         Classification classification = getTestClassification("TestClassification");
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
-//        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
 
         //homotypic synonym of childTaxon1
         BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
@@ -115,7 +114,6 @@ public class TaxonGenerator {
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
         childTaxon2.setUuid(SPECIES2_UUID);
         classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
-        //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
 
         //heterotypic synonym of childTaxon2
         BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());

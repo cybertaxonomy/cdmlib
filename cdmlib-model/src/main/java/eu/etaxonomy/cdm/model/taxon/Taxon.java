@@ -75,9 +75,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Taxon", propOrder = {
-    "taxonomicParentCache",
     "taxonNodes",
-    "taxonomicChildrenCount",
     "synonymRelations",
     "relationsFromThisTaxon",
     "relationsToThisTaxon",
@@ -581,15 +579,10 @@ public class Taxon
      * The taxon relationship will also be removed from one of both sets
      * belonging to the second taxon involved. Furthermore the inherited RelatedFrom and
      * RelatedTo attributes of the given taxon relationship will be nullified.<P>
-     * If the taxon relationship concerns the classification possible
-     * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
-     * {@link #getTaxonomicChildrenCount() childrens} will be stored.
      *
      * @param  rel  the taxon relationship which should be removed from one
      * 				of both sets
      * @see    		#getTaxonRelations()
-     * @see    	    #getTaxonomicParent()
-     * @see    	    #getTaxonomicChildrenCount()
      * @see    		eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
      * @see    		eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
      *
@@ -626,17 +619,12 @@ public class Taxon
      * source nor the target of the taxon relationship match with <i>this</i> taxon
      * no addition will be carried out. The taxon relationship will also be
      * added to the second taxon involved in the given relationship.<P>
-     * If the taxon relationship concerns the classification possible
-     * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
-     * {@link #getTaxonomicChildrenCount() childrens} will be stored.
      *
      * @param rel  the taxon relationship to be added to one of <i>this</i> taxon's taxon relationships sets
      * @see    	   #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
      * @see    	   #getTaxonRelations()
      * @see    	   #getRelationsFromThisTaxon()
      * @see    	   #getRelationsToThisTaxon()
-     * @see    	   #getTaxonomicParent()
-     * @see    	   #getTaxonomicChildrenCount()
      */
     public void addTaxonRelation(TaxonRelationship rel) {
         if (rel!=null && rel.getType()!=null && !getTaxonRelations().contains(rel) ){
@@ -691,9 +679,6 @@ public class Taxon
      * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to <i>this</i> taxon.
      * The taxon relationship will also be added to the set of taxon
      * relationships to the second taxon involved in the created relationship.<P>
-     * If the taxon relationship concerns the classification possible
-     * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
-     * {@link #getTaxonomicChildrenCount() childrens} will be stored.
      *
      * @param toTaxon		the taxon which plays the target role in the new taxon relationship
      * @param type			the taxon relationship type for the new taxon relationship
@@ -704,8 +689,6 @@ public class Taxon
      * @see    	   			#getTaxonRelations()
      * @see    	   			#getRelationsFromThisTaxon()
      * @see    	   			#getRelationsToThisTaxon()
-     * @see    	   			#getTaxonomicParent()
-     * @see    	   			#getTaxonomicChildrenCount()
      */
     public TaxonRelationship addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, Reference citation, String microcitation) {
         return new TaxonRelationship(this, toTaxon, type, citation, microcitation);

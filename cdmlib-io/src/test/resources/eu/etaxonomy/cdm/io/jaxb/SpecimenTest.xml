@@ -128,7 +128,6 @@
             <common:TitleCache>Aus aus L.</common:TitleCache>
              <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</taxon:Name>
-            <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
         </taxon:Taxon>
     </TaxonBases>
     <Media>

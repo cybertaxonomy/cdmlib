@@ -65,7 +65,6 @@ public class TaxonGenerator {
         botSpecies.setCombinationAuthorship(Person.NewInstance());
         botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
-//        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
 
         //homotypic synonym of childTaxon1
         BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
@@ -85,7 +84,6 @@ public class TaxonGenerator {
         botSpecies2.setCombinationAuthorship(Person.NewInstance());
         botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
-//        childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
 
         //heterotypic synonym of childTaxon2
         BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());
