@@ -311,6 +311,29 @@ public interface ICdmGenericDao {
      */
     public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
 
+    /**
+     * @param itemClass
+     * @param clazz
+     * @param propertyName
+     * @param item
+     * @return
+     */
+    public Integer getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
+
+    /**
+     * @param clazz
+     * @param propertyName
+     * @param referencedCdmBase
+     * @return
+     */
+    Integer getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
+
+    /**
+     * @param referencedCdmBase
+     * @return
+     */
+    Integer getReferencingObjectsCount(CdmBase referencedCdmBase);
+
 
 
 
