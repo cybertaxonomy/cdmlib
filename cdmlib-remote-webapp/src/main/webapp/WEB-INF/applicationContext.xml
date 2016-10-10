@@ -56,14 +56,11 @@
   <!-- CONFIGURE WEB APPLICATION HERE -->
   <import resource="datasources/configurable.xml" />
   
-
   <bean class="eu.etaxonomy.cdm.remote.config.LoggingConfigurer">
   </bean>
 
-  <!-- bootstrap the WebSecurityConfiguration -->
+  <!-- bootstrap the Web Configuration -->
   <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration">
-  </bean>
-  <bean class="eu.etaxonomy.cdm.remote.config.AuthorizationServerConfiguration">
   </bean>
 
   <!-- OAI-PMH TODO externalize? -->
