@@ -78,7 +78,7 @@ public class MultiWebSecurityConfiguration {
      * @date Oct 6, 2016
      *
      */
-    //@Configuration
+    @Configuration
     public static class DefaultWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {

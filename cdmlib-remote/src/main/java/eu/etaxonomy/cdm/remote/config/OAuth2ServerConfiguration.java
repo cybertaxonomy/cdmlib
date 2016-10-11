@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -60,25 +59,37 @@ public class OAuth2ServerConfiguration {
                 .requestMatchers()
                     .antMatchers(
                         "/manage/**",
-                        "/oauth/users/**",
-                        "/oauth/clients/**")
-                     .regexMatchers("/classification/.*|/classification\\..*")
+                        "/user/**"
+                        // "/oauth/users/**",
+                        // "/oauth/clients/**")
+                        )
+                     //.regexMatchers("/classification/.*|/classification\\..*")
             .and()
                 .authorizeRequests()
                     // see
-                    // - http://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html
+                    // - http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-access
+                    //      or
+                    //   org.springframework.security.access.expression.SecurityExpressionRoot
                     // - org.springframework.security.oauth2.provider.expression.OAuth2SecurityExpressionMethods
                     .antMatchers("/manage/**").access("#oauth2.clientHasRole('ROLE_CLIENT') or (!#oauth2.isOAuth() and hasRole('ROLE_ADMIN'))")
-                    .regexMatchers("/classification/.*|/classification\\..*")
+                    .antMatchers("/user/me").access("isAuthenticated()")
+                    .regexMatchers("/user/.*|/user\\..*").access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MANAGER')")
+
+                    // ------ DELVELOPER SNIPPETS ------
+                    // experiments with classification controller
+                    //.regexMatchers("/classification/.*|/classification\\..*")
                             //.access("#oauth2.hasScope('trust')")
-                            .access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+                            //.access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
                             //.access("#oauth2.clientHasRole('ROLE_CLIENT') or (!#oauth2.isOAuth() and hasAnyRole('ROLE_ADMIN', 'ROLE_USER'))")
-                    .regexMatchers(HttpMethod.DELETE, "/oauth/users/([^/].*?)/tokens/.*")
-                        .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('write')")
-                    .regexMatchers(HttpMethod.GET, "/oauth/clients/([^/].*?)/users/.*")
-                        .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('read')")
-                    .regexMatchers(HttpMethod.GET, "/oauth/clients/.*")
-                        .access("#oauth2.clientHasRole('ROLE_CLIENT') and #oauth2.isClient() and #oauth2.hasScope('read')");
+                    //
+                    // .regexMatchers(HttpMethod.DELETE, "/oauth/users/([^/].*?)/tokens/.*")
+                    //     .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('write')")
+                    // .regexMatchers(HttpMethod.GET, "/oauth/clients/([^/].*?)/users/.*")
+                    //     .access("#oauth2.clientHasRole('ROLE_CLIENT') and (hasRole('ROLE_USER') or #oauth2.isClient()) and #oauth2.hasScope('read')")
+                    // .regexMatchers(HttpMethod.GET, "/oauth/clients/.*")
+                    //     .access("#oauth2.clientHasRole('ROLE_CLIENT') and #oauth2.isClient() and #oauth2.hasScope('read')");
+                    // ---------------------------
+            ;
             // @formatter:on
         }
 
