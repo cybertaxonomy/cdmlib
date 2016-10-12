@@ -44,7 +44,7 @@ public class MultiWebSecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
               // @formatter:off
-                 http
+                http
              .anonymous().disable()
              .antMatcher("/remoting/**")
                  .authorizeRequests().anyRequest().fullyAuthenticated()
@@ -61,7 +61,7 @@ public class MultiWebSecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
               // @formatter:off
-                 http
+                http
              .anonymous().disable()
              .antMatcher("/oauth/authorize")
                  .authorizeRequests().anyRequest().fullyAuthenticated()
@@ -83,12 +83,10 @@ public class MultiWebSecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
               // @formatter:off
-                 http
+                http
              .anonymous().and()
-             .antMatcher("/**").authorizeRequests().anyRequest().hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .and()
-             .csrf()
-             .disable()
+             .antMatcher("/**")
+             .csrf().disable()
              .httpBasic();
              // @formatter:on
         }
