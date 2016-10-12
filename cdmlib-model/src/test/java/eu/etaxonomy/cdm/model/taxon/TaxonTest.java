@@ -128,7 +128,7 @@ public class TaxonTest extends EntityTestBase {
 	public void testAddSynonym() {
 		freeT.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		assertTrue(freeT.getSynonyms().contains(syn1));
-		assertTrue(syn1.getAcceptedTaxa().contains(freeT));
+		assertTrue(syn1.getAcceptedTaxon().equals(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
 	}
 
@@ -184,6 +184,39 @@ public class TaxonTest extends EntityTestBase {
 		assertEquals("There should be exactly one taxon relationships", 1, taxon.getTaxonRelations().size());
 	}
 
+    @Test
+    public void testAddHomotypicSynonymName(){
+        TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+        Taxon taxon = Taxon.NewInstance(taxonName, null);
+        TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
+
+        // add a synonym to the taxon
+        Synonym synonym1 = taxon.addHomotypicSynonymName(synonymName1);
+        // get the homotypic group of that synonym
+        HomotypicalGroup homotypicGroupOfSynonym = synonym1.getHomotypicGroup();
+        // everything is fine
+        Assert.assertEquals("We should have two names in the homotypic group",
+                2, homotypicGroupOfSynonym.getTypifiedNames().size());
+    }
+
+    @Test
+    public void testAddHomotypicSynonym(){
+        TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+        Taxon taxon = Taxon.NewInstance(taxonName, null);
+        TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
+        Synonym synonym = Synonym.NewInstance(synonymName1, null);
+
+        // add a synonym to the taxon
+        taxon.addHomotypicSynonym(synonym);
+        //synonym type must be homotypic
+        Assert.assertEquals("Synonym must be homotypic", SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), synonym.getType());
+        // get the homotypic group of that synonym
+        HomotypicalGroup homotypicGroupOfSynonym = synonym.getHomotypicGroup();
+        // everything is fine
+        Assert.assertEquals("We should have two names in the homotypic group",
+                2, homotypicGroupOfSynonym.getTypifiedNames().size());
+    }
+
 
 	@Test
 	public void testAddRemoveSynonymInSameGroup(){
@@ -193,11 +226,11 @@ public class TaxonTest extends EntityTestBase {
 		TaxonNameBase<?,?> synonymName2 = BotanicalName.NewInstance(null);
 
 		// add a synonym to the taxon
-		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1).getSynonym();
+		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1);
 		// get the homotypic group of that synonym
 		HomotypicalGroup homotypicGroupOfSynonym = synonym1.getHomotypicGroup();
 		// add another synonym into the homotypic group we just created
-		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, homotypicGroupOfSynonym, null, null).getSynonym();
+		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, null, null, homotypicGroupOfSynonym);
 		// everything is fine
 		Assert.assertEquals("We should have two synonyms in the group", 2, taxon.getSynonymsInGroup(homotypicGroupOfSynonym).size());
 
@@ -208,7 +241,8 @@ public class TaxonTest extends EntityTestBase {
 		HomotypicalGroup homotypicGroupViaTaxon = taxon.getHeterotypicSynonymyGroups().iterator().next();
 
 		// the group is for sure the same as the synonyms one
-		Assert.assertSame("Accessing the homotypic group via the taxon methods should result in the same object", homotypicGroupOfSynonym, homotypicGroupViaTaxon);
+		Assert.assertSame("Accessing the homotypic group via the taxon methods should result in the same object",
+		        homotypicGroupOfSynonym, homotypicGroupViaTaxon);
 
 		// although it might be correct that the synonym is not deleted from the taxonomic group
 		// we would not expect it to be here, since we just deleted it from the taxon and are accessing synonyms

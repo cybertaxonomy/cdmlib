@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -48,7 +47,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  */
 @Component
 public class DwcaTaxExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaTaxExport.class);
+    private static final long serialVersionUID = -3770976064909193441L;
+
+    private static final Logger logger = Logger.getLogger(DwcaTaxExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "coreTax.txt";
@@ -133,13 +134,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 	}
 
 	private void handleSynonyms(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
-		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
-		for (SynonymRelationship synRel :synRels ){
+		for (Synonym synonym :taxon.getSynonyms() ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
-			Synonym synonym = synRel.getSynonym();
-			SynonymRelationshipType type = synRel.getType();
-			boolean isProParte = synRel.isProParte();
-			boolean isPartial = synRel.isPartial();
+			SynonymRelationshipType type = synonym.getType();
+			boolean isProParte = synonym.isProParte();
+			boolean isPartial = synonym.isPartial();
 			if (type == null){ // should not happen
 				type = SynonymRelationshipType.SYNONYM_OF();
 			}
@@ -153,11 +152,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 				record.write(writer);
 				this.addExistingRecord(synonym);
 			}
-
 		}
-
 	}
-
 
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();

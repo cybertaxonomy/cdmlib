@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service.config;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 
 /**
  * This class is used to configure taxonbase deletion.

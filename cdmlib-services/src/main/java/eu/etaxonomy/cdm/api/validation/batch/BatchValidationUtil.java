@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -109,7 +109,7 @@ class BatchValidationUtil {
                 TaxonNameBase.class,
                 TypeDesignationBase.class,
                 TaxonBase.class,
-                SynonymRelationship.class,
+                Synonym.class,
                 TaxonNode.class,
                 GatheringEvent.class}));
         return classesToValidate;

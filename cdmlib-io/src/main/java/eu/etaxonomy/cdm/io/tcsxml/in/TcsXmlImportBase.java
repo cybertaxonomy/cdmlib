@@ -451,7 +451,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
     			if (name.getTaxa().iterator().hasNext()){
     			    Taxon taxon = (Taxon) name.getTaxa().iterator().next();
     			    //if taxon already exist
-    			    taxon.addHomotypicSynonym((Synonym)state.getStore(TAXON_STORE).get(removeVersionOfRef(id)), null, null);
+    			    taxon.addHomotypicSynonym((Synonym)state.getStore(TAXON_STORE).get(removeVersionOfRef(id)));
     			    //otherwise add to a map for homotypic synonyms
     			}
 			}

@@ -37,8 +37,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -51,7 +49,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -65,15 +62,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
-
-    /**
-     * Computes all relationships.
-     * @param limit
-     * @param start
-     * @return
-     * FIXME candidate for harmonization - rename to listRelationships
-     */
-    public List<RelationshipBase> getAllRelationships(int limit, int start);
 
     /**
      * Returns a list of taxa that matches the name string and the sec reference
@@ -121,15 +109,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * 				an accepted taxon, the synonym had a relationship to
      * @param deleteSynonym
      * 			if true the method tries to delete the old synonym from the database
-     * @param copyCitationInfo
-     * 			if true the citation and the microcitation of newly created synonyms
-     * 			is taken from the old synonym relationships.
-     * @param citation
-     * 			if given this citation is added to the newly created synonym
-     * 			relationships as citation. Only used if copyCitationInfo is <code> false</code>
-     * @param microCitation
-     * 			if given this microCitation is added to the newly created synonym
-     * 			relationships as microCitation.Only used if copyCitationInfo is <code> false</code>
      * @return
      * 			the newly created accepted taxon
      * @throws IllegalArgumentException
@@ -140,7 +119,19 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *          in the homotypic group. It is up to the implementing class to
      *          handle this situation via an exception or in another way.
      */
-    public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException;
+    public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException;
+
+    /**
+     * @param synonymUuid
+     * @param acceptedTaxonUuid
+     * @param newParentNodeUuid
+     * @param deleteSynonym
+     * @return
+     * @throws HomotypicalGroupChangeException
+     */
+    public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, UUID newParentNodeUuid,
+            boolean deleteSynonym)
+            throws HomotypicalGroupChangeException;
 
     /**
      * TODO still needed and correct?
@@ -187,8 +178,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * If the parameter <code>targetTaxon</code> is defined, the synonym is
      * added to this taxon irrespctive of if it has been related to this
      * taxon before.<BR>
-     * If <code>removeFromOtherTaxa</code> is true and <code>targetTaxon</code> is
-     * defined all relationships to other taxa are deleted.<BR>
      * If <code>setBasionymRelationIfApplicable</code> is true a basionym relationship
      * between the existing basionym(s) of the new homotypic group and the synonyms name
      * is added.<BR>
@@ -198,34 +187,68 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param setBasionymRelationIfApplicable
      */
-    public void changeHomotypicalGroupOfSynonym(Synonym synonym, HomotypicalGroup newHomotypicalGroup, Taxon targetTaxon,
-                        boolean removeFromOtherTaxa, boolean setBasionymRelationIfApplicable);
+    public void changeHomotypicalGroupOfSynonym(Synonym synonym, HomotypicalGroup newHomotypicalGroup,
+            Taxon targetTaxon, boolean setBasionymRelationIfApplicable);
+
+    /**
+     * See {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymRelationshipType, Reference, String, boolean)}
+     * @param oldSynonym
+     * @param newTaxon
+     * @param moveHomotypicGroup
+     * @param newSynonymRelationshipType
+     * @return
+     * @throws HomotypicalGroupChangeException
+     */
+    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
+            SynonymRelationshipType newSynonymRelationshipType) throws HomotypicalGroupChangeException;
 
 
     /**
      * Moves a synonym to another taxon and removes the old synonym relationship.
      *
-     * @param oldSynonymRelation the old synonym relationship defining the synonym to move and the old accepted taxon.
+     * @param oldSynonym the old synonym to move.
      * @param newTaxon the taxon the synonym will be moved to
-     * @param moveHomotypicGroup if the synonym belongs to a homotypical group with other synonyms and
+     * @param moveHomotypicGroup if the synonym belongs to a homotypic group with other synonyms and
      * 		<code>moveHomotypicGroup</code> is <code>true</code> all these synonyms are moved to the new taxon,
      * 		if <code>false</code> a {@link HomotypicalGroupChangeException} is thrown.
-     * 		<code>MoveHomotypicGroup</code> has no effect if the synonym is the only synonym in it's homotypic group.
+     * 		<code>moveHomotypicGroup</code> has no effect if the synonym is the only synonym in it's homotypic group.
      * @param newSynonymRelationshipType the synonym relationship type of the new synonym relations. Default is
      * 		{@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() heterotypic}.
-     * @param newReference The reference for the new synonym relation(s).
-     * @param newReferenceDetail The reference detail for the new synonym relation(s).
-     * @param keepReference if no <code>newReference</code> and/or no <code>newReferenceDetail</code>
-     * 		is defined they are taken from the old synonym relation(s) if <code>keepReference</code> is
-     * 		<code>true</code>. If <code>false</code> the reference and the reference detail will be taken
-     * 		only from the <code>newReference</code> and <code>newReferenceDetail</code>.
+     * @param newSecundum The secundum for the new synonyms).
+     * @param newSecundumDetail The secundum micro reference for the new synonym(s).
+     * @param keepSecundumIfUndefined if no <code>newSecundum</code> and/or no <code>newSecundumDetail</code>
+     * 		is defined they are taken from the old synonym(s) if <code>keepSecundumIfUndefined</code> is
+     * 		<code>true</code>. If <code>false</code> the secundum and the secundum detail will be taken
+     * 		only from the <code>newSecundum</code> and <code>newSecundumDetail</code> even if they are
+     *      undefined (<code>null</code>).
      * @return The new synonym relationship. If <code>moveHomotypicGroup</code> is <code>true</code> additionally
      * 		created new synonym relationships must be retrieved separately from the new taxon.
      * @throws HomotypicalGroupChangeException Exception is thrown if (1) synonym is homotypic to the old accepted taxon or
      * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
      */
-    public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymRelationshipType newSynonymRelationshipType, Reference newReference, String newReferenceDetail, boolean keepReference) throws HomotypicalGroupChangeException;
+    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
+            SynonymRelationshipType newSynonymRelationshipType, Reference newSecundum,
+            String newSecundumDetail, boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException;
+
+
+    /**
+     * @param oldSynonym
+     * @param newTaxonUUID
+     * @param moveHomotypicGroup
+     * @param newSynonymRelationshipType
+     * @param reference
+     * @param referenceDetail
+     * @param keepReference
+     * @return
+     * @throws HomotypicalGroupChangeException
+     *
+     * @see {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymRelationshipType, Reference, String, boolean)}
+     */
+    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
+            UUID newTaxonUUID, boolean moveHomotypicGroup,
+            SynonymRelationshipType newSynonymRelationshipType,
+            Reference newSecundum, String newSecundumDetail, boolean keepSecundumIfUndefined)
+            throws HomotypicalGroupChangeException;
 
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied)
@@ -304,7 +327,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             Integer limit, Integer start, List<String> propertyPaths);
 
     /**
-     * lists all accepted taxa for the given {@link Synonym}
+     * Lists all classifications the given taxon/synonym is used in{@link Synonym}
      *
      * @param taxonBase
      * @param limit
@@ -315,32 +338,18 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<Classification> listClassifications(TaxonBase taxonBase, Integer limit, Integer start, List<String> propertyPaths);
 
     /**
-     * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)
-     * where the supplied synonym is relatedFrom.
+     * Returns the Synonyms (with the given synonym relationship type, if this argument is supplied)
+     * that do have the supplied taxon as accepted taxon.
      *
-     * @param taxon The synonym that is relatedFrom
-     * @param type The type of SynonymRelationship (can be null)
-     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+     * @param taxon The accepted taxon
+     * @param type The type of Synonym (can be null)
+     * @param pageSize The maximum number of synonyms returned (can be null for returning synonyms)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager of SynonymRelationship instances
+     * @return a Pager of {@link Synonym} instances
      */
-    public Pager<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-    /**
-     * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)
-     * where the supplied taxon is relatedTo.
-     *
-     * @param taxon The taxon that is relatedTo
-     * @param type The type of SynonymRelationship (can be null)
-     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager of SynonymRelationship instances
-     */
-    public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<Synonym> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * This method returns in the first entry the list of synonyms of the
@@ -748,15 +757,19 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths);
 
-    public int countAllRelationships();
+    /**
+     * Counts the number of synonyms
+     * @param onlyAttachedToTaxon if <code>true</code> only those synonyms being attached to
+     * an accepted taxon are counted
+     * @return the number of synonyms
+     */
+    public int countSynonyms(boolean onlyAttachedToTaxon);
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
 
     public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
-
-    public String getPhylumName(TaxonNameBase name);
-
-    public long deleteSynonymRelationships(Synonym syn);
+//
+//    public String getPhylumName(TaxonNameBase name);
 
     /**
      * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or
@@ -779,14 +792,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * Removes a synonym.<BR><BR>
      *
      * In detail it removes
-     *  <li>all synonym relationship to the given taxon or to all taxa if taxon is <code>null</code></li>
-     *  <li>the synonym concept if it is not referenced by any synonym relationship anymore</li>
+     *  <li>the synonym concept</li>
      *  <BR><BR>
      *  If <code>removeNameIfPossible</code> is true
      *  it also removes the synonym name if it is not used in any other context
      *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)<BR><BR>
-     *  If <code>newHomotypicGroupIfNeeded</code> is <code>true</code> and the synonym name is not deleted and
-     *  the name is homotypic to the taxon the name is moved to a new homotypical group.<BR><BR>
+     *  If <code>newHomotypicGroupIfNeeded</code> is <code>true</code> and the synonym name
+     *  is not deleted and the name is homotypic to the taxon
+     *  the name is moved to a new homotypic group.<BR><BR>
      *
      *  If synonym is <code>null</code> the method has no effect.
      *
@@ -809,23 +822,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return
      */
     public DeleteResult deleteSynonym(UUID synonymUuid, SynonymDeletionConfigurator config);
-
-    /**
-     * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)
-     * depending on direction, where the supplied taxon is relatedTo or the supplied synonym is relatedFrom.
-     *
-     * @param taxonBase The taxon or synonym that is relatedTo or relatedFrom
-     * @param type The type of SynonymRelationship (can be null)
-     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @param direction The direction of the relationship
-     * @return a List of SynonymRelationship instances
-     */
-    public List<SynonymRelationship> listSynonymRelationships(
-            TaxonBase taxonBase, SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths, Direction direction);
 
     /**
      * @param tnb
@@ -856,38 +852,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
-
-
-
-    /**
-     * Removes a synonym.<BR><BR>
-     *
-     * In detail it removes
-     *  <li>all synonym relationship to the given taxon or to all taxa if taxon is <code>null</code></li>
-     *  <li>the synonym concept if it is not referenced by any synonym relationship anymore</li>
-     *  <BR><BR>
-     *  If <code>config.removeNameIfPossible</code> is true
-     *  it also removes the synonym name if it is not used in any other context
-     *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)<BR><BR>
-     *  If <code>config.newHomotypicGroupIfNeeded</code> is <code>true</code> and the synonym name is not deleted and
-     *  the name is homotypic to the taxon the name is moved to a new homotypical group.<BR><BR>
-     *
-     *  If synonym is <code>null</code> the method has no effect.
-     *
-     * @param taxon
-     * @param synonym
-     * @param config
-     * @return deleteResult
-     */
-    public DeleteResult deleteSynonym(Synonym synonym, Taxon taxon, SynonymDeletionConfigurator config);
-
-
-
-    public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths);
-
-    public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths);
+    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, List<String> propertyPaths);
 
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 
@@ -931,14 +896,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             Integer pageNumber, List<String> propertyPaths);
 
     /**
-     * @param synonymUuid
-     * @param taxonUuid
-     * @param config
-     * @return
-     */
-    public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid, SynonymDeletionConfigurator config);
-
-    /**
      * @param synonymUUid
      * @param acceptedTaxonUuid
      * @return
@@ -953,11 +910,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
 
-	public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
-			UUID newTaxonUUID, boolean moveHomotypicGroup,
-			SynonymRelationshipType newSynonymRelationshipType,
-			Reference reference, String referenceDetail, boolean keepReference)
-			throws HomotypicalGroupChangeException;
 
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
 			UUID toTaxonUuid);
@@ -985,20 +937,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
 
-    /**
-     * @param synonymUuid
-     * @param acceptedTaxonUuid
-     * @param newParentNodeUuid
-     * @param deleteSynonym
-     * @param copyCitationInfo
-     * @param citation
-     * @param microCitation
-     * @return
-     * @throws HomotypicalGroupChangeException
-     */
-    public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, UUID newParentNodeUuid,
-            boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation)
-            throws HomotypicalGroupChangeException;
 
 
 

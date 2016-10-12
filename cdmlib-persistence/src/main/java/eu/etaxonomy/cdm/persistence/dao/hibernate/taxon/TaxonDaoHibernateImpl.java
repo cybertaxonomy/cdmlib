@@ -25,13 +25,14 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.envers.query.criteria.internal.NotNullAuditExpression;
+import org.hibernate.envers.query.internal.property.EntityPropertyName;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -312,209 +311,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             String synonymSubselect = subSelects[2];
             String misappliedSelect = subSelects[0];
 
-
-            /*if(classification != null ){
-                if (!doIncludeMisappliedNames){
-                    if(doAreaRestriction){
-
-                        taxonSubselect = "select t.id from" +
-                            " Distribution e" +
-                            " join e.inDescription d" +
-                            " join d.taxon t" +
-                            " join t.name n " +
-                            " join t.taxonNodes as tn "+
-                            " where" +
-                            " e.area.uuid in (:namedAreasUuids) AND" +
-                            " tn.classification = :classification" +
-                            " AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-
-
-                        synonymSubselect = "select s.id from" +
-                            " Distribution e" +
-                            " join e.inDescription d" +
-                            " join d.taxon t" + // the taxa
-                            " join t.taxonNodes as tn "+
-                            " join t.synonymRelations sr" +
-                            " join sr.relatedFrom s" + // the synonyms
-                            " join s.name sn"+
-                            " where" +
-                            " e.area.uuid in (:namedAreasUuids) AND" +
-                            " tn.classification = :classification" +
-                            " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                    } else {
-
-                        taxonSubselect = "select t.id from" +
-                            " Taxon t" +
-                            " join t.name n " +
-                            " join t.taxonNodes as tn "+
-                            " where" +
-                            " tn.classification = :classification" +
-                            " AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                        synonymSubselect = "select s.id from" +
-                            " Taxon t" + // the taxa
-                            " join t.taxonNodes as tn "+
-                            " join t.synonymRelations sr" +
-                            " join sr.relatedFrom s" + // the synonyms
-                            " join s.name sn"+
-                            " where" +
-                            " tn.classification = :classification" +
-                            " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-                    }
-                }else{
-                    if(doAreaRestriction){
-                        if (!doTaxa && !doSynonyms ){
-                            misappliedSelect = "select t.id from" +
-                            " Distribution e" +
-                            " join e.inDescription d" +
-                            " join d.taxon t" +
-                            " join t.name n " +
-                            " join t.taxonNodes as tn "+
-                            " left join t.relationsFromThisTaxon as rft" +
-                            " left join rft.relatedTo as rt" +
-                            " left join rt.taxonNodes as tn2" +
-                            " left join rt.name as n2" +
-                            " left join rft.type as rtype"+
-                            " where" +
-                            " e.area.uuid in (:namedAreasUuids) AND" +
-                            " (tn.classification != :classification" +
-                            " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-                            " AND tn2.classification = :classification" +
-                            " AND rtype = :rType )";
-
-                        }else{
-                            taxonSubselect = "select t.id from" +
-                                " Distribution e" +
-                                " join e.inDescription d" +
-                                " join d.taxon t" +
-                                " join t.name n " +
-                                " join t.taxonNodes as tn "+
-                                " left join t.relationsFromThisTaxon as rft" +
-                                " left join rft.relatedTo as rt" +
-                                " left join rt.taxonNodes as tn2" +
-                                " left join rt.name as n2" +
-                                " left join rft.type as rtype"+
-                                " where" +
-                                " e.area.uuid in (:namedAreasUuids) AND" +
-                                " (tn.classification = :classification" +
-                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString )" +
-                                " OR"+
-                                " (tn.classification != :classification" +
-                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-                                " AND tn2.classification = :classification" +
-                                " AND rtype = :rType )";
-
-
-                            synonymSubselect = "select s.id from" +
-                                " Distribution e" +
-                                " join e.inDescription d" +
-                                " join d.taxon t" + // the taxa
-                                " join t.taxonNodes as tn "+
-                                " join t.synonymRelations sr" +
-                                " join sr.relatedFrom s" + // the synonyms
-                                " join s.name sn"+
-                                " where" +
-                                " e.area.uuid in (:namedAreasUuids) AND" +
-                                " tn.classification != :classification" +
-                                " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-                        }
-                    } else {
-                        if (!doTaxa && !doSynonyms ){
-                            misappliedSelect = "select t.id from" +
-                            " Distribution e" +
-                            " join e.inDescription d" +
-                            " join d.taxon t" +
-                            " join t.name n " +
-                            " join t.taxonNodes as tn "+
-                            " left join t.relationsFromThisTaxon as rft" +
-                            " left join rft.relatedTo as rt" +
-                            " left join rt.taxonNodes as tn2" +
-                            " left join rt.name as n2" +
-                            " left join rft.type as rtype"+
-                            " where" +
-                            " (tn.classification != :classification" +
-                            " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-                            " AND tn2.classification = :classification" +
-                            " AND rtype = :rType )";
-
-                        }else{
-                            taxonSubselect = "select t.id from" +
-                                " Taxon t" +
-                                " join t.name n " +
-                                " join t.taxonNodes as tn "+
-                                " left join t.relationsFromThisTaxon as rft" +
-                                " left join rft.relatedTo as rt" +
-                                " left join rt.taxonNodes as tn2" +
-                                " left join rt.name as n2" +
-                                " left join rft.type as rtype"+
-                                " where " +
-                                " (tn.classification = :classification" +
-                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString )" +
-                                " OR"+
-                                " (tn.classification != :classification" +
-                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-                                " AND tn2.classification = :classification" +
-                                " AND rtype = :rType )";
-
-                            synonymSubselect = "select s.id from" +
-                                " Taxon t" + // the taxa
-                                " join t.taxonNodes as tn "+
-                                " join t.synonymRelations sr" +
-                                " join sr.relatedFrom s" + // the synonyms
-                                " join s.name sn"+
-                                " where" +
-                                " tn.classification != :classification" +
-                                " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-                        }
-                    }
-                }
-            } else {
-
-                if (!doIncludeMisappliedNames){
-                    if(doAreaRestriction){
-                        taxonSubselect = "select t.id from " +
-                            " Distribution e" +
-                            " join e.inDescription d" +
-                            " join d.taxon t" +
-                            " join t.name n "+
-                            " where" +
-                            (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-                            " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                        synonymSubselect = "select s.id from" +
-                            " Distribution e" +
-                            " join e.inDescription d" +
-                            " join d.taxon t" + // the taxa
-                            " join t.synonymRelations sr" +
-                            " join sr.relatedFrom s" + // the synonyms
-                            " join s.name sn"+
-                            " where" +
-                            (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-                            " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                    } else {
-
-                        taxonSubselect = "select t.id from " +
-                            " Taxon t" +
-                            " join t.name n "+
-                            " where" +
-                            " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                        synonymSubselect = "select s.id from" +
-                            " Taxon t" + // the taxa
-                            " join t.synonymRelations sr" +
-                            " join sr.relatedFrom s" + // the synonyms
-                            " join s.name sn"+
-                            " where" +
-                            " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-                    }
-                }else{
-
-                }
-
-            }*/
 
             logger.debug("taxonSubselect: " + taxonSubselect != null ? taxonSubselect: "NULL");
             logger.debug("synonymSubselect: " + synonymSubselect != null ? synonymSubselect: "NULL");
@@ -848,46 +644,46 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return criteria.list();
     }
 
-    @Override
-    public List<RelationshipBase> getAllRelationships(/*Class<? extends RelationshipBase> clazz,*/ Integer limit, Integer start) {
-        Class<? extends RelationshipBase> clazz = RelationshipBase.class;  //preliminary, see #2653
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            // for some reason the HQL .class discriminator didn't work here so I created this preliminary
-            // implementation for now. Should be cleaned in future.
-
-            List<RelationshipBase> result = new ArrayList<RelationshipBase>();
-
-            int taxRelSize = countAllRelationships(TaxonRelationship.class);
-
-            if (taxRelSize > start){
-
-                String hql = " FROM TaxonRelationship as rb ORDER BY rb.id ";
-                Query query = getSession().createQuery(hql);
-                query.setFirstResult(start);
-                if (limit != null){
-                    query.setMaxResults(limit);
-                }
-                result = query.list();
-            }
-            limit = limit - result.size();
-            if (limit > 0){
-                String hql = " FROM SynonymRelationship as rb ORDER BY rb.id ";
-                Query query = getSession().createQuery(hql);
-                start = (taxRelSize > start) ? 0 : (start - taxRelSize);
-                query.setFirstResult(start);
-                if (limit != null){
-                    query.setMaxResults(limit);
-                }
-                result.addAll(query.list());
-            }
-            return result;
-
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-            return query.getResultList();
-        }
-    }
+//    @Override
+//    public List<RelationshipBase> getRelationships(Integer limit, Integer start) {
+//        Class<? extends RelationshipBase> clazz = RelationshipBase.class;  //preliminary, see #2653
+//        AuditEvent auditEvent = getAuditEventFromContext();
+//        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+//            // for some reason the HQL .class discriminator didn't work here so I created this preliminary
+//            // implementation for now. Should be cleaned in future.
+//
+//            List<RelationshipBase> result = new ArrayList<RelationshipBase>();
+//
+//            int taxRelSize = countAllRelationships(TaxonRelationship.class);
+//
+//            if (taxRelSize > start){
+//
+//                String hql = " FROM TaxonRelationship as rb ORDER BY rb.id ";
+//                Query query = getSession().createQuery(hql);
+//                query.setFirstResult(start);
+//                if (limit != null){
+//                    query.setMaxResults(limit);
+//                }
+//                result = query.list();
+//            }
+//            limit = limit - result.size();
+//            if (limit > 0){
+//                String hql = " FROM SynonymRelationship as rb ORDER BY rb.id ";
+//                Query query = getSession().createQuery(hql);
+//                start = (taxRelSize > start) ? 0 : (start - taxRelSize);
+//                query.setFirstResult(start);
+//                if (limit != null){
+//                    query.setMaxResults(limit);
+//                }
+//                result.addAll(query.list());
+//            }
+//            return result;
+//
+//        } else {
+//            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+//            return query.getResultList();
+//        }
+//    }
 
     @Override
     public UUID delete(TaxonBase taxonBase) throws DataAccessException{
@@ -906,9 +702,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         taxonBase.removeSources();
 
         if (taxonBase instanceof Taxon){ //	is Taxon
-            for (Iterator<TaxonRelationship> iterator = ((Taxon)taxonBase).getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
+            Taxon taxon = ((Taxon)taxonBase);
+            //is this needed or maybe not ready?
+            for (Iterator<TaxonRelationship> iterator = taxon.getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
                 TaxonRelationship relationFromThisTaxon = iterator.next();
-
+            }
+            Set<Synonym> syns = new HashSet<Synonym>(taxon.getSynonyms());
+            for (Synonym syn: syns){
+                taxon.removeSynonym(syn);
             }
         }
 
@@ -1040,21 +841,46 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
     }
 
+
+    @Override
+    public int countSynonyms(boolean onlyAttachedToTaxon) {
+        AuditEvent auditEvent = getAuditEventFromContext();
+        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+            Query query = null;
+
+            String queryStr = "SELECT count(syn) FROM Synonym syn";
+            if (onlyAttachedToTaxon){
+                queryStr += " WHERE syn.acceptedTaxon IS NOT NULL";
+            }
+            query = getSession().createQuery(queryStr);
+
+            return ((Long)query.uniqueResult()).intValue();
+        } else {
+            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
+            if (onlyAttachedToTaxon){
+                query.add(new NotNullAuditExpression(new EntityPropertyName("acceptedTaxon")));
+            }
+            query.addProjection(AuditEntity.id().count());
+
+            return ((Long)query.getSingleResult()).intValue();
+        }
+    }
+
     @Override
     public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+            Criteria criteria = getSession().createCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("relatedTo", taxon));
+            criteria.add(Restrictions.eq("acceptedTaxon", taxon));
             if(type != null) {
                 criteria.add(Restrictions.eq("type", type));
             }
             criteria.setProjection(Projections.rowCount());
             return ((Number)criteria.uniqueResult()).intValue();
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
-            query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
+            query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
             query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
@@ -1069,9 +895,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public int countSynonyms(Synonym synonym, SynonymRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+            Criteria criteria = getSession().createCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("relatedFrom", synonym));
+            criteria.add(Restrictions.isNotNull("acceptedTaxon"));
             if(type != null) {
                 criteria.add(Restrictions.eq("type", type));
             }
@@ -1079,8 +905,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             criteria.setProjection(Projections.rowCount());
             return ((Number)criteria.uniqueResult()).intValue();
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
-            query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
+            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
+            query.add(new NotNullAuditExpression(new EntityPropertyName("acceptedTaxon")));
             query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
@@ -1196,7 +1022,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     @Override
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths, Direction direction) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1227,6 +1054,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<TaxonRelationship> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -1273,22 +1101,22 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     }
 
-    class SynonymRelationshipFromTaxonComparator implements Comparator<SynonymRelationship> {
+    class SynonymRelationshipFromTaxonComparator implements Comparator<Synonym> {
 
         @Override
-        public int compare(SynonymRelationship o1, SynonymRelationship o2) {
-            return o1.getSynonym().getTitleCache().compareTo(o2.getSynonym().getTitleCache());
+        public int compare(Synonym syn1, Synonym syn2) {
+            return syn1.getTitleCache().compareTo(syn2.getTitleCache());
         }
 
     }
 
     @Override
-    public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<Synonym> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+            Criteria criteria = getSession().createCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("relatedTo", taxon));
+            criteria.add(Restrictions.eq("acceptedTaxon", taxon));
             if(type != null) {
                 criteria.add(Restrictions.eq("type", type));
             }
@@ -1304,13 +1132,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = criteria.list();
+            @SuppressWarnings("unchecked")
+            List<Synonym> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
-            query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
+            query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1325,57 +1154,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = query.getResultList();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-
-            return result;
-        }
-    }
-
-    @Override
-    public List<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
-
-            criteria.add(Restrictions.eq("relatedFrom", synonym));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
-
-            addOrder(criteria,orderHints);
-
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
-
-            List<SynonymRelationship> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-
-            return result;
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
-            query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
-
-            if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
-            }
-
-            if(pageSize != null) {
-                query.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    query.setFirstResult(pageNumber * pageSize);
-                } else {
-                    query.setFirstResult(0);
-                }
-            }
-
-            List<SynonymRelationship> result = query.getResultList();
+            List<Synonym> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1416,10 +1195,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public List<Taxon> listAcceptedTaxaFor(Synonym synonym, Classification classificationFilter, Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths){
+    public Taxon acceptedTaxonFor(Synonym synonym, Classification classificationFilter, List<String> propertyPaths){
 
-        String hql = prepareListAcceptedTaxaFor(classificationFilter, orderHints, false);
+        String hql = prepareListAcceptedTaxaFor(classificationFilter, false);
 
         Query query = getSession().createQuery(hql);
 
@@ -1429,27 +1207,18 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             query.setParameter("classificationFilter", classificationFilter);
         }
 
-
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            }
-        }
-
         @SuppressWarnings("unchecked")
         List<Taxon> result = query.list();
 
         defaultBeanInitializer.initializeAll(result, propertyPaths);
 
-        return result;
-
+        return result.isEmpty()? null: result.get(0);
     }
 
     @Override
-    public long countAcceptedTaxaFor(Synonym synonym, Classification classificationFilter){
+    public long countAcceptedTaxonFor(Synonym synonym, Classification classificationFilter){
 
-        String hql = prepareListAcceptedTaxaFor(classificationFilter, null, true);
+        String hql = prepareListAcceptedTaxaFor(classificationFilter, true);
 
         Query query = getSession().createQuery(hql);
 
@@ -1471,19 +1240,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * @param orderHints
      * @return
      */
-    private String prepareListAcceptedTaxaFor(Classification classificationFilter, List<OrderHint> orderHints, boolean doCount) {
+    private String prepareListAcceptedTaxaFor(Classification classificationFilter, boolean doCount) {
 
         String hql;
-        String hqlSelect = "select " + (doCount? "count(taxon)" : "taxon") + " from Taxon as taxon left join taxon.synonymRelations as synRel ";
-        String hqlWhere = " where synRel.relatedFrom = :synonym";
+        String hqlSelect = "SELECT " + (doCount? "COUNT(taxon)" : "taxon") + " FROM Synonym as syn JOIN syn.acceptedTaxon as taxon ";
+        String hqlWhere = " WHERE syn = :synonym";
 
         if(classificationFilter != null){
-            hqlSelect += " left join taxon.taxonNodes AS taxonNode";
-            hqlWhere += " and taxonNode.classification = :classificationFilter";
+            hqlSelect += " JOIN taxon.taxonNodes AS taxonNode";
+            hqlWhere += " AND taxonNode.classification = :classificationFilter";
         }
-        hql = hqlSelect + hqlWhere + orderByClause(orderHints, "taxon");
+        hql = hqlSelect + hqlWhere;
         return hql;
     }
+
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern) {
         int classificationId = classification.getId();
@@ -1545,9 +1315,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             propertyPaths.add("relationsFromThisTaxon");
             propertyPaths.add("relationsFromThisTaxon.toTaxon");
             propertyPaths.add("relationsToThisTaxon.type");
-            propertyPaths.add("synonymRelations");
-            propertyPaths.add("synonymRelations.synonym");
-            propertyPaths.add("synonymRelations.type");
+            propertyPaths.add("synonyms");
+            propertyPaths.add("synonyms.type");
             propertyPaths.add("descriptions");
 
             defaultBeanInitializer.initialize(taxonBase, propertyPaths);
@@ -1614,30 +1383,30 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         }
     }*/
-
-    @Override
-    public int countAllRelationships() {
-        return countAllRelationships(null);
-    }
-
-
-    //FIXME add to interface or make private
-    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
-        if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
-            throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
-        }
-        int size = 0;
-
-        if (clazz == null || TaxonRelationship.class.isAssignableFrom(clazz)){
-            String hql = " SELECT count(rel) FROM TaxonRelationship rel";
-            size += (Long)getSession().createQuery(hql).list().get(0);
-        }
-        if (clazz == null || SynonymRelationship.class.isAssignableFrom(clazz)){
-            String hql = " SELECT count(rel) FROM SynonymRelationship rel";
-            size += (Long)getSession().createQuery(hql).list().get(0);
-        }
-        return size;
-    }
+//
+//    @Override
+//    public int countAllRelationships() {
+//        return countAllRelationships(null);
+//    }
+//
+//
+//    //FIXME add to interface or make private
+//    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
+//        if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
+//            throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
+//        }
+//        int size = 0;
+//
+//        if (clazz == null || TaxonRelationship.class.isAssignableFrom(clazz)){
+//            String hql = " SELECT count(rel) FROM TaxonRelationship rel";
+//            size += (Long)getSession().createQuery(hql).list().get(0);
+//        }
+//        if (clazz == null || SynonymRelationship.class.isAssignableFrom(clazz)){
+//            String hql = " SELECT count(rel) FROM SynonymRelationship rel";
+//            size += (Long)getSession().createQuery(hql).list().get(0);
+//        }
+//        return size;
+//    }
 
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
@@ -1735,21 +1504,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     }
 
-
-
-    @Override
-    public String getPhylumName(TaxonNameBase name){
-        List results = new ArrayList();
-        try{
-        Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
-        results = query.list();
-        }catch(Exception e){
-            System.err.println(name.getUuid());
-            return null;
-        }
-        System.err.println("phylum of "+ name.getTitleCache() );
-        return (String)results.get(0);
-    }
+//
+//
+//    @Override
+//    public String getPhylumName(TaxonNameBase name){
+//        List results = new ArrayList();
+//        try{
+//        Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
+//        results = query.list();
+//        }catch(Exception e){
+//            System.err.println(name.getUuid());
+//            return null;
+//        }
+//        System.err.println("phylum of "+ name.getTitleCache() );
+//        return (String)results.get(0);
+//    }
 
 
     @Override
@@ -1767,127 +1536,109 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return 0;
     }
 
-    @Override
-    public long deleteSynonymRelationships(Synonym synonym, Taxon taxon) {
 
-        String hql = "delete SynonymRelationship sr where sr.relatedFrom = :syn ";
-        if (taxon != null){
-            hql += " and sr.relatedTo = :taxon";
-        }
-        Session session = this.getSession();
-        Query q = session.createQuery(hql);
+//    @Override
+//    public Integer countSynonyms(TaxonBase taxonBase,
+//            SynonymRelationshipType type, Direction relatedfrom) {
+//        AuditEvent auditEvent = getAuditEventFromContext();
+//        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+//            Query query = null;
+//
+//            if(type == null) {
+//                xx;
+//                query = getSession().createQuery("SELECT count(synonymRelationship) FROM SynonymRelationship synonymRelationship WHERE synonymRelationship." + relatedfrom + " = :relatedSynonym");
+//            } else {
+//                query = getSession().createQuery("SELECT count(synonymRelationship) FROM SynonymRelationship synonymRelationship WHERE synonymRelationship." + relatedfrom + " = :relatedSynonym and synonymRelationship.type = :type");
+//                query.setParameter("type",type);
+//            }
+//            query.setParameter("relatedTaxon", taxonBase);
+//
+//            return ((Long)query.uniqueResult()).intValue();
+//        } else {
+//            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
+//            query.add(AuditEntity.relatedId(relatedfrom.toString()).eq(taxonBase.getId()));
+//            query.addProjection(AuditEntity.id().count());
+//
+//            if(type != null) {
+//                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+//            }
+//
+//            return ((Long)query.getSingleResult()).intValue();
+//        }
+//    }
 
-        q.setParameter("syn", synonym);
-        if (taxon != null){
-            q.setParameter("taxon", taxon);
-        }
-        long result = q.executeUpdate();
-
-        return result;
-    }
-
-
-    @Override
-    public Integer countSynonymRelationships(TaxonBase taxonBase,
-            SynonymRelationshipType type, Direction relatedfrom) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = null;
-
-            if(type == null) {
-                query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship."+relatedfrom+" = :relatedSynonym");
-            } else {
-                query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship."+relatedfrom+" = :relatedSynonym and synonymRelationship.type = :type");
-                query.setParameter("type",type);
-            }
-            query.setParameter("relatedTaxon", taxonBase);
-
-            return ((Long)query.uniqueResult()).intValue();
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
-            query.add(AuditEntity.relatedId(relatedfrom.toString()).eq(taxonBase.getId()));
-            query.addProjection(AuditEntity.id().count());
-
-            if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
-            }
-
-            return ((Long)query.getSingleResult()).intValue();
-        }
-    }
-
-
-    @Override
-    public List<SynonymRelationship> getSynonymRelationships(TaxonBase taxonBase,
-            SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths,
-            Direction direction) {
-
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
-
-            if (direction.equals(Direction.relatedTo)){
-                criteria.add(Restrictions.eq("relatedTo", taxonBase));
-            }else{
-                criteria.add(Restrictions.eq("relatedFrom", taxonBase));
-            }
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
-
-            addOrder(criteria,orderHints);
-
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
-
-            List<SynonymRelationship> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-
-            return result;
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
-
-            if (direction.equals(Direction.relatedTo)){
-                query.add(AuditEntity.relatedId("relatedTo").eq(taxonBase.getId()));
-            }else{
-                query.add(AuditEntity.relatedId("relatedFrom").eq(taxonBase.getId()));
-            }
-
-            if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
-            }
-
-            if(pageSize != null) {
-                query.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    query.setFirstResult(pageNumber * pageSize);
-                } else {
-                    query.setFirstResult(0);
-                }
-            }
-
-            List<SynonymRelationship> result = query.getResultList();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-
-            // Ugly, but for now, there is no way to sort on a related entity property in Envers,
-            // and we can't live without this functionality in CATE as it screws up the whole
-            // taxon tree thing
-            if(orderHints != null && !orderHints.isEmpty()) {
-                SortedSet<SynonymRelationship> sortedList = new TreeSet<SynonymRelationship>(new SynonymRelationshipFromTaxonComparator());
-                sortedList.addAll(result);
-                return new ArrayList<SynonymRelationship>(sortedList);
-            }
-
-            return result;
-        }
-    }
+//
+//    @Override
+//    public List<Synonym> getSynonyms(TaxonBase taxonBase,
+//            SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
+//            List<OrderHint> orderHints, List<String> propertyPaths,
+//            Direction direction) {
+//
+//        AuditEvent auditEvent = getAuditEventFromContext();
+//        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+//            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+//
+//            if (direction.equals(Direction.relatedTo)){
+//                criteria.add(Restrictions.eq("relatedTo", taxonBase));
+//            }else{
+//                criteria.add(Restrictions.eq("relatedFrom", taxonBase));
+//            }
+//            if(type != null) {
+//                criteria.add(Restrictions.eq("type", type));
+//            }
+//
+//            addOrder(criteria,orderHints);
+//
+//            if(pageSize != null) {
+//                criteria.setMaxResults(pageSize);
+//                if(pageNumber != null) {
+//                    criteria.setFirstResult(pageNumber * pageSize);
+//                } else {
+//                    criteria.setFirstResult(0);
+//                }
+//            }
+//
+//            List<Synonym> result = criteria.list();
+//            defaultBeanInitializer.initializeAll(result, propertyPaths);
+//
+//            return result;
+//        } else {
+//            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
+//
+//            if (direction.equals(Direction.relatedTo)){
+//                query.add(AuditEntity.relatedId("relatedTo").eq(taxonBase.getId()));
+//            }else{
+//                query.add(AuditEntity.relatedId("relatedFrom").eq(taxonBase.getId()));
+//            }
+//
+//            if(type != null) {
+//                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+//            }
+//
+//            if(pageSize != null) {
+//                query.setMaxResults(pageSize);
+//                if(pageNumber != null) {
+//                    query.setFirstResult(pageNumber * pageSize);
+//                } else {
+//                    query.setFirstResult(0);
+//                }
+//            }
+//
+//            List<Synonym> result = query.getResultList();
+//            defaultBeanInitializer.initializeAll(result, propertyPaths);
+//
+//            // Ugly, but for now, there is no way to sort on a related entity property in Envers,
+//            // and we can't live without this functionality in CATE as it screws up the whole
+//            // taxon tree thing
+//            if(orderHints != null && !orderHints.isEmpty()) {
+//                SortedSet<Synonym> sortedList = new TreeSet<Synonym>(new SynonymRelationshipFromTaxonComparator());
+//                sortedList.addAll(result);
+//                return new ArrayList<>(sortedList);
+//            }
+//
+//            return result;
+//        }
+//    }
 
 
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
@@ -1909,7 +1660,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
            String doTaxonNameJoin =   " join t.name n ";
 
-           String doSynonymNameJoin =  	" join t.synonymRelations sr join sr.relatedFrom s join s.name sn";
+           String doSynonymNameJoin =  	" join t.synonyms s join s.name sn";
 
            String doMisappliedNamesJoin = " left join t.relationsFromThisTaxon as rft" +
                 " left join rft.relatedTo as rt" +
@@ -2050,7 +1801,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
-		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+		String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";
 		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
 		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
 
@@ -2096,7 +1847,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
-		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+		String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";
 		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
 		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
 
@@ -2169,7 +1920,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
         String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
         String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
-        String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+        String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon acc LEFT JOIN acc.taxonNodes synTn  " : "";
         String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
         String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
 
@@ -2219,7 +1970,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
         String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
         String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
-        String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+        String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";
         String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
         String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
 
@@ -2262,5 +2013,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         return results;
     }
+
 
 }

@@ -58,7 +58,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	private static final Logger logger = Logger.getLogger(ExcelStreamImportTest.class);
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport defaultImport;
+	CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
 	INameService nameService;
@@ -281,13 +281,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 		return null;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

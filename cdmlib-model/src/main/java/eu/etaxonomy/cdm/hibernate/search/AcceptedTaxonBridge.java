@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import java.util.Set;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -17,7 +15,6 @@ import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -61,12 +58,10 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
         if (value instanceof Synonym) {
             StringBuilder sb = new StringBuilder();
             Synonym synonym = (Synonym) value;
-            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-            for (SynonymRelationship sr : synRelationships) {
-                Taxon accTaxon = sr.getAcceptedTaxon();
+            Taxon accTaxon = synonym.getAcceptedTaxon();
+            if (accTaxon != null){
                 sb.append(accTaxon.getUuid().toString());
                 sb.append(ACCEPTED_TAXON_UUID_LIST_SEP);
-
                 // adding the accTaxon id as multivalue field:
                 Field canonicalNameIdField = new StringField(name + DOC_KEY_ID_SUFFIX,
                         Integer.toString(accTaxon.getId()),
@@ -74,6 +69,7 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
                         );
                 document.add(canonicalNameIdField);
             }
+
             accTaxonUuids = sb.toString();
             if(accTaxonUuids.length() > 0) {
                 accTaxonUuids = accTaxonUuids.substring(0, accTaxonUuids.length()-1);
@@ -90,9 +86,6 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
         //TODO  do we really need to set the boost for an id field?
         canonicalNameUuidField.setBoost(luceneOptions.getBoost());
         document.add(canonicalNameUuidField);
-
-
-
 
     }
 }

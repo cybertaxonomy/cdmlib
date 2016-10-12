@@ -120,7 +120,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -230,7 +229,6 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
 			    Reference.class,
 			    Classification.class,
 			    Synonym.class,
-			    SynonymRelationship.class,
 			    SynonymRelationshipType.class,
 			    Taxon.class,
 			    TaxonNode.class,

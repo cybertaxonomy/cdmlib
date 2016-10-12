@@ -13,28 +13,26 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup;
 
 public class HomotypicSynonymsShouldBelongToGroupValidator implements
-		ConstraintValidator<HomotypicSynonymsShouldBelongToGroup, SynonymRelationship> {
+		ConstraintValidator<HomotypicSynonymsShouldBelongToGroup, Synonym> {
 
 	@Override
     public void initialize(HomotypicSynonymsShouldBelongToGroup homotypicSynonymsShouldBelongToGroup) { }
 
 	@Override
-    public boolean isValid(SynonymRelationship synonymRelationship, ConstraintValidatorContext constraintContext) {
+    public boolean isValid(Synonym synonym, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
-		if (synonymRelationship.getType() == null){
+		if (synonym.getType() == null){
 		    return valid;
 		}
-		if(synonymRelationship.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-			Taxon accepted = synonymRelationship.getAcceptedTaxon();
-			Synonym synonym = synonymRelationship.getSynonym();
+		if(synonym.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+			Taxon accepted = synonym.getAcceptedTaxon();
 
-			if (accepted != null && synonym != null && accepted.getName() != null && synonym.getName() != null){
+			if (accepted != null && accepted.getName() != null && synonym.getName() != null){
     			if(!accepted.getName().getHomotypicalGroup().equals(synonym.getName().getHomotypicalGroup())) {
     				valid = false;
     				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup.message}").addNode("tyoe").addConstraintViolation();

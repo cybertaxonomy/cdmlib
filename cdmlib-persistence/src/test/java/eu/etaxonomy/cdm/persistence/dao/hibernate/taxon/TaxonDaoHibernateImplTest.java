@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -75,7 +74,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.mueller
  * @author ben.clark
- *
  */
 public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -568,13 +566,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         propertyPaths.add("synonym.name");
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
-        orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+        orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
-        List<SynonymRelationship> synonyms = taxonDao.getSynonyms(taxon, null, null, null,orderHints,propertyPaths);
+        List<Synonym> synonyms = taxonDao.getSynonyms(taxon, null, null, null,orderHints,propertyPaths);
 
         assertNotNull("getSynonyms should return a List", synonyms);
-        assertEquals("getSynonyms should return 3 SynonymRelationship entities", 3, synonyms.size());
-        assertTrue("getSynonyms should return SynonymRelationship objects with the synonym initialized",Hibernate.isInitialized(synonyms.get(0).getSynonym()));
+        assertEquals("getSynonyms should return 3 synonyms", 3, synonyms.size());
+        assertTrue("getSynonyms should return synonym objects with the synonym initialized", Hibernate.isInitialized(synonyms.get(0)));
     }
 
     @Test
@@ -593,10 +591,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
-        List<SynonymRelationship> synonyms = taxonDao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,null,null);
+        List<Synonym> synonyms = taxonDao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,null,null);
 
         assertNotNull("getSynonyms should return a List", synonyms);
-        assertEquals("getSynonyms should return 4 SynonymRelationship entities", 3, synonyms.size());
+        assertEquals("getSynonyms should return 4 Synonyms", 3, synonyms.size());
     }
 
     @Test
@@ -606,8 +604,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assert taxon != null : "taxon must exist";
 
         int pageSize = 2;
-        List<SynonymRelationship> firstPage = taxonDao.getSynonyms(taxon, null, pageSize, 0,null,null);
-        List<SynonymRelationship> secondPage = taxonDao.getSynonyms(taxon, null, pageSize, 1,null,null);
+        List<Synonym> firstPage = taxonDao.getSynonyms(taxon, null, pageSize, 0,null,null);
+        List<Synonym> secondPage = taxonDao.getSynonyms(taxon, null, pageSize, 1,null,null);
 
         assertNotNull("getSynonyms: 2, 0 should return a List",firstPage);
         assertEquals("getSynonyms: 2, 0 should return 2 SynonymRelationships", pageSize,firstPage.size());
@@ -623,16 +621,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Synonym synonym = (Synonym)taxonDao.findByUuid(acheontitia_ciprosus);
         assertNotNull("synonym must exist", synonym);
 
-        List<Taxon> list = taxonDao.listAcceptedTaxaFor(synonym, null, 4, 0, null, null);
-        assertNotNull("listAcceptedTaxaFor should return a List");
-        assertEquals("listAcceptedTaxaFor should return 2 Taxa", 2,  list.size());
+        Taxon taxon = taxonDao.acceptedTaxonFor(synonym, null, null);
+        assertNotNull("listAcceptedTaxaFor should return a taxon", taxon);
 
         Classification classification = classificationDao.load(classificationUuid);
         assertNotNull("classification must exist", classification);
 
-        list = taxonDao.listAcceptedTaxaFor(synonym, classification, 4, 0, null, null);
-        assertNotNull("listAcceptedTaxaFor should return a List");
-        assertEquals("listAcceptedTaxaFor should return 1 Taxa", 1,  list.size());
+        taxon = taxonDao.acceptedTaxonFor(synonym, classification, null);
+        assertNull("listAcceptedTaxaFor should return not taxon due to classification filter", taxon);
     }
 
 

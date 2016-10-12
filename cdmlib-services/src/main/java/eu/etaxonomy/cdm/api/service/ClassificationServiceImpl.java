@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -733,10 +732,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         if (taxonBase.isInstanceOf(Synonym.class)){
             isSynonym = true;
             Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-            Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
-            //we expect every synonym to have only 1 accepted taxon as this is how
-            //CDM will be modelled soon
-            acceptedTaxon = acceptedTaxa.isEmpty()? null : acceptedTaxa.iterator().next();
+            acceptedTaxon = synonym.getAcceptedTaxon();
             if (acceptedTaxon == null) {
                 throw new EntityNotFoundException("Accepted taxon not found for synonym"  );
             }

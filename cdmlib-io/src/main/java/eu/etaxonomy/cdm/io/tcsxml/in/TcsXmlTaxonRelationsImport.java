@@ -22,6 +22,7 @@ import org.jdom.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -54,7 +55,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
-	private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsImport.class);
+    private static final long serialVersionUID = 6632990505515905663L;
+
+    private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 
@@ -201,10 +204,9 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						taxonBase.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(taxonBase);
 					} else{
-						if (((Synonym)taxonBase).getAcceptedTaxa().iterator().hasNext()){
-							Taxon acc = ((Synonym)taxonBase).getAcceptedTaxa().iterator().next();
-
-							acc.addHomotypicSynonym((Synonym)basionym, null, null);
+					    Taxon acc = ((Synonym)taxonBase).getAcceptedTaxon();
+						if (acc != null){
+							acc.addHomotypicSynonym((Synonym)basionym);
 							basionymName.getHomotypicalGroup().setGroupBasionym(basionymName);
 						}
 					}
@@ -226,8 +228,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					taxonStore.add(taxon);
 				} else{
 					Synonym syn = (Synonym) taxonBase;
-					if (!syn.getAcceptedTaxa().isEmpty()){
-						Taxon accTaxon = syn.getAcceptedTaxa().iterator().next();
+					if (syn.getAcceptedTaxon() != null){
+						Taxon accTaxon = syn.getAcceptedTaxon();
 						accTaxon.addSynonym(basionymSyn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 						accTaxon.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(accTaxon);
@@ -367,8 +369,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						success.setValue(false);
 					}else{
 						Taxon taxonTo = (Taxon)toTaxon;
-						Reference citation = null;
-						String microReference = null;
 						if (relType instanceof SynonymRelationshipType){
 							SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
 							if (! (fromTaxon instanceof Synonym )){
@@ -383,7 +383,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 									synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 								}
 								if (! relationExists(taxonTo, synonym, synRelType)){
-									taxonTo.addSynonym(synonym, synRelType,  citation, microReference);
+									taxonTo.addSynonym(synonym, synRelType);
 								}else{
 									//TODO citation, microReference
 									//TODO different synRelTypes -> warning
@@ -391,7 +391,9 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 								}
 							}
 						}else if (relType instanceof TaxonRelationshipType){
-							makeTaxonRelationship(state, (TaxonRelationshipType)relType, fromTaxon, taxonTo, citation, microReference, success);
+							Reference citation = null;
+							String microReference = null;
+						    makeTaxonRelationship(state, (TaxonRelationshipType)relType, fromTaxon, taxonTo, citation, microReference, success);
 						}else{
 							logger.warn("Unknown Relationshiptype");
 							success.setValue(false);
@@ -559,29 +561,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return result;
 	}
 
-
-
-
-
-
-
 	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
-		if (synonym == null){
+		if (synonym == null || taxonTo == null
+		        || !taxonTo.equals(synonym.getAcceptedTaxon())){
 			return false;
-		}
-		if (synonym.getRelationType(taxonTo).size() > 0){
-			Set<SynonymRelationshipType> relTypeList = synonym.getRelationType(taxonTo);
-			if (relTypeList.contains(synRelType)){
-				return true;
-			}else{
-				logger.warn("Taxon-Synonym pair has 2 different SynonymRelationships. This is against the rules");
-				return false;
-			}
 		}else{
-			return false;
+		    return CdmUtils.nullSafeEqual(synonym.getType(),synRelType);
 		}
 	}
-
 
 	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
 		TaxonNameBase<?,?> aboutName = aboutTaxon.getName();
@@ -601,14 +588,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoRelTaxa();
 	}
-
-
-
 }

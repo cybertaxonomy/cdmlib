@@ -77,8 +77,8 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
  */
 public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends SpecimenImportStateBase>  extends CdmImportBase<CONFIG, STATE> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenImportBase.class);
+    private static final long serialVersionUID = 4423065367998125678L;
+    private static final Logger logger = Logger.getLogger(SpecimenImportBase.class);
 	protected final boolean DEBUG = true;
 
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
@@ -94,7 +94,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	 * @param state
 	 * @param item
 	 */
-	@SuppressWarnings("rawtypes")
 	protected abstract void handleSingleUnit(STATE state, Object item) ;
 
 
@@ -197,7 +196,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            for (TaxonBase taxonBase : taxonBases) {
 	                if(taxonBase.isInstanceOf(Synonym.class)){
 	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
-	                    taxaFromSynonyms.addAll(synonym.getAcceptedTaxa());
+	                    taxaFromSynonyms.add(synonym.getAcceptedTaxon());
 	                }
 	            }
 	        }
@@ -864,16 +863,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            for (TaxonBase taxonBase : taxonAndSynonyms) {
 	                if(taxonBase.isInstanceOf(Synonym.class)){
 	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
-	                    Set<Taxon> acceptedTaxaOfSynonym = synonym.getAcceptedTaxa();
-	                    if(acceptedTaxaOfSynonym.size()!=1){
-	                        String message = "No accepted taxa could be found for taxon name: "
+	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();
+	                    if(acceptedTaxonOfSynonym == null){
+	                        String message = "No accepted taxon could be found for taxon name: "
 	                                + taxonNameBase.getTitleCache()
-	                                + "!\nEither it is a pro parte synonym or has no accepted taxa";
+	                                + "!";
 	                        state.getReport().addInfoMessage(message);
 	                        logger.warn(message);
 	                    }
 	                    else{
-	                        return acceptedTaxaOfSynonym.iterator().next();
+	                        return acceptedTaxonOfSynonym;
 	                    }
 	                }
 	            }

@@ -123,11 +123,11 @@ public class HomotypicGroupTaxonComparatorTest {
 
         HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
         taxon1.addHeterotypicSynonymName(botName3);
-        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
         botName3.addBasionym(botName5);
 
-        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
-        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
         botName2.addBasionym(botName4);
 
 
@@ -166,11 +166,11 @@ public class HomotypicGroupTaxonComparatorTest {
     public void testCompare_BasionymGroupsSeparated() {
 
         //2 basionym groups in 2 homotypic groups
-        synonym3 = taxon1.addHeterotypicSynonymName(botName3).getSynonym();
+        synonym3 = taxon1.addHeterotypicSynonymName(botName3);
         taxon1.addHeterotypicSynonymName(botName5);
         botName3.addBasionym(botName5);  //also merges homotypic groups
 
-        taxon1.addHeterotypicSynonymName(botName2).getSynonym();
+        taxon1.addHeterotypicSynonymName(botName2);
         taxon1.addHeterotypicSynonymName(botName4);
         botName2.addBasionym(botName4);
 
@@ -216,11 +216,11 @@ public class HomotypicGroupTaxonComparatorTest {
 
         HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
         taxon1.addHeterotypicSynonymName(botName3);
-        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
         botName3.addBasionym(botName5);
 
-        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
-        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
         botName2.addBasionym(botName4);
 
 
@@ -268,11 +268,11 @@ public class HomotypicGroupTaxonComparatorTest {
 
         HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
         taxon1.addHeterotypicSynonymName(botName3);
-        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
         botName3.addBasionym(botName5);
 
-        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
-        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
         botName2.addBasionym(botName4);
 
 
@@ -314,11 +314,11 @@ public class HomotypicGroupTaxonComparatorTest {
 
         HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
         taxon1.addHeterotypicSynonymName(botName3);
-        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
         botName3.addBasionym(botName5);
 
-        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
-        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
         botName2.addBasionym(botName5);
         botName4.addBasionym(botName5);
 
@@ -342,11 +342,11 @@ public class HomotypicGroupTaxonComparatorTest {
 
         HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
         taxon1.addHeterotypicSynonymName(botName3);
-        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
         botName3.addBasionym(botName5);
 
-        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
-        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
 //        botName2.addBasionym(botName4);
 
 
@@ -387,8 +387,8 @@ public class HomotypicGroupTaxonComparatorTest {
         botName3.setNomenclaturalReference(ref1);
         botName2.setNomenclaturalReference(ref2);
 
-        taxon1.addHomotypicSynonymName(botName3, null, null);
-        taxon1.addHomotypicSynonymName(botName2, null, null);
+        taxon1.addHomotypicSynonymName(botName3);
+        taxon1.addHomotypicSynonymName(botName2);
 
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(taxon1));
@@ -401,8 +401,8 @@ public class HomotypicGroupTaxonComparatorTest {
     @Test
     public void testCompare_NoCircularProblemsWithBasionyms() {
 
-        taxon1.addHomotypicSynonymName(botName3, null, null);
-        taxon1.addHomotypicSynonymName(botName5, null, null);
+        taxon1.addHomotypicSynonymName(botName3);
+        taxon1.addHomotypicSynonymName(botName5);
         botName3.addBasionym(botName5);
 
         Assert.assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());
@@ -418,7 +418,7 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals(botName5, list.get(2).getName());
 
         //additional basionym for botName3
-        taxon1.addHomotypicSynonymName(botName2, null, null);
+        taxon1.addHomotypicSynonymName(botName2);
         Assert.assertEquals(botName1.getHomotypicalGroup(), botName2.getHomotypicalGroup());
         botName3.addBasionym(botName2);
         list.clear();
@@ -436,8 +436,8 @@ public class HomotypicGroupTaxonComparatorTest {
     @Test
     public void testCompare_NoCircularProblemsWithReplacedSynonyms() {
 
-        taxon1.addHomotypicSynonymName(botName3, null, null);
-        taxon1.addHomotypicSynonymName(botName5, null, null);
+        taxon1.addHomotypicSynonymName(botName3);
+        taxon1.addHomotypicSynonymName(botName5);
         botName3.addReplacedSynonym(botName5, null, null, null);
 
         Assert.assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());

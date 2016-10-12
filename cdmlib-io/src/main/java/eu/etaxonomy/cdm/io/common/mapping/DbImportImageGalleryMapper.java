@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -42,9 +42,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, Taxon> implements IDbImportMapper<DbImportStateBase<?,?>,Taxon>{
 	private static final Logger logger = Logger.getLogger(DbImportImageGalleryMapper.class);
-	
+
 //************************** FACTORY METHODS ***************************************************************/
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param uuid
@@ -56,12 +56,12 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 	public static DbImportImageGalleryMapper NewInstance(String dbAttributeString){
 		return new DbImportImageGalleryMapper(dbAttributeString);
 	}
-	
+
 //***************** VARIABLES **********************************************************/
-	
+
 
 //******************************** CONSTRUCTOR *****************************************************************/
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param extensionType
@@ -69,9 +69,9 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 	private DbImportImageGalleryMapper(String dbAttributeString) {
 		super(dbAttributeString, dbAttributeString);
 	}
-	
+
 //****************************** METHODS ***************************************************/
-	
+
 	/**
 	 * @param service
 	 * @param state
@@ -89,7 +89,7 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 			//do nothing
 		}
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
@@ -98,7 +98,7 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 		String dbValue = rs.getString(getSourceAttribute());
 		return invoke(dbValue, taxonBase);
 	}
-	
+
 	/**
 	 * @param dbValue
 	 * @param identifiableEntity
@@ -112,16 +112,16 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 		Taxon taxon;
 		if (taxonBase.isInstanceOf(Synonym.class)){
 			Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
-			if (synonym.getAcceptedTaxa().size() > 0){
+			if (synonym.getAcceptedTaxon() != null){
 				logger.warn("Media will be added to a synonyms accepted taxon");
-				taxon = synonym.getAcceptedTaxa().iterator().next();
+				taxon = synonym.getAcceptedTaxon();
 			}else{
 				throw new IllegalArgumentException("TaxonBase was of type synonym and does not belong to an accepted taxon");
 			}
 		}else{
 			taxon = taxonBase.deproxy(taxonBase, Taxon.class);
 		}
-		
+
 		TaxonDescription imageGallery = taxon.getImageGallery(createNew);
 		Set<DescriptionElementBase> elements = imageGallery.getElements();
 		DescriptionElementBase element = null;
@@ -146,12 +146,13 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 		element.addMedia(media);
 		return taxon;
 	}
-	
+
 	//not used
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
 	 */
-	public Class<String> getTypeClass(){
+	@Override
+    public Class<String> getTypeClass(){
 		return String.class;
 	}
 
@@ -162,6 +163,6 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		super.importMapperHelper.initialize(state, destinationClass);
 	}
-	
+
 
 }

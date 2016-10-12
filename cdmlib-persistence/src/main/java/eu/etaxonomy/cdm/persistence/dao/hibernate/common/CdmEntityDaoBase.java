@@ -373,8 +373,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         crit.addOrder(Order.desc("created"));
         @SuppressWarnings("unchecked")
 		List<T> results = crit.list();
-       Set<T> resultSet = new HashSet<>();
-       resultSet.addAll(results);
+        Set<T> resultSet = new HashSet<>();
+        resultSet.addAll(results);
         if (resultSet.isEmpty()){
             return null;
         }else{

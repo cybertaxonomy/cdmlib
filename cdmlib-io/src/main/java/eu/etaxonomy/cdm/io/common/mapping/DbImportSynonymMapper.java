@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
+ * TODO synonyms are no relationships anymore, maybe we need to change something here
  * @author a.mueller
  * @created 02.03.2010
  * @param <CDM_BASE>
@@ -42,7 +43,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	 * @param dbToAttribute
 	 * @param relatedObjectNamespace
 	 * @param relTypeAttribute
-	 * @param taxonRelationshipType this relationshiptype is taken for accepted taxa being synonyms (may be the case if data are dirty)
+	 * @param taxonRelationshipType this relationship type is taken for accepted taxa being synonyms (may be the case if data are dirty)
 	 * @return
 	 */
 	public static DbImportSynonymMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String relTypeAttribute, TaxonRelationshipType taxonRelationshipType){
@@ -81,9 +82,6 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = getState();
@@ -129,7 +127,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 		if (fromObject.isInstanceOf(Synonym.class)){
 			SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
 			Synonym synonym = CdmBase.deproxy(fromObject, Synonym.class);
-			taxon.addSynonym(synonym, relType, citation, microCitation);
+			taxon.addSynonym(synonym, relType); //citation and micro citation not in use anymore as we do not have synonym relationships anymore
 		}else if (fromObject.isInstanceOf(Taxon.class)  && this.useTaxonRelationship){
 			TaxonRelationshipType type = relType;
 			Taxon synonymTaxon = CdmBase.deproxy(fromObject, Taxon.class);

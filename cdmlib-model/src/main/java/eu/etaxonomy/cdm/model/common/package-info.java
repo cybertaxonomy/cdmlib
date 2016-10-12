@@ -215,7 +215,6 @@
         @MetaValue(value = "IdentifiableSource", targetEntity = IdentifiableSource.class),
         @MetaValue(value = "HybridRelationship", targetEntity = HybridRelationship.class),
         @MetaValue(value = "NameRelationship", targetEntity = NameRelationship.class),
-        @MetaValue(value = "SynonymRelationship", targetEntity = SynonymRelationship.class),
         @MetaValue(value = "TaxonRelationship", targetEntity = TaxonRelationship.class),
         @MetaValue(value = "NameTypeDesignation", targetEntity = NameTypeDesignation.class),
         @MetaValue(value = "SpecimenTypeDesignation", targetEntity = SpecimenTypeDesignation.class),
@@ -302,7 +301,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;

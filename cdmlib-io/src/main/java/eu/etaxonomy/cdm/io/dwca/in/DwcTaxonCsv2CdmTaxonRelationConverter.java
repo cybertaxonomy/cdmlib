@@ -287,7 +287,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 				if (accTaxon == null){
 						fireWarningEvent("NON-ID accepted Name Usage not yet implemented or taxon for name usage id not available", item, 4);
 				} else{
-					accTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(),null, null);
+					accTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
 				}
 				// FIXME : no information regarding misapplied name available at this point,
 				//         hence a regexp check for 'misapplied' is done to add them as a relationship
