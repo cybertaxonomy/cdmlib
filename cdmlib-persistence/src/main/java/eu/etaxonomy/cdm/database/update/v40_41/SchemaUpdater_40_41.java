@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
+import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v36_40.SchemaUpdater_36_40;
 
 /**
@@ -56,14 +57,9 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 		String stepName;
 		String tableName;
 		ISchemaUpdaterStep step;
-//		String columnName;
 		String query;
 		String newColumnName;
 		String oldColumnName;
-		String columnNames[];
-		String referencedTables[];
-		String columnTypes[];
-//		boolean includeCdmBaseAttributes = false;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
@@ -184,9 +180,120 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        return stepList;
+        //#5974 Remove synonym relationships
+        removeSynonymRelationships_5974(stepList);
 
+
+        return stepList;
     }
+
+	private void removeSynonymRelationships_5974(List<ISchemaUpdaterStep> stepList) {
+	    //add partial to Synonym
+        String stepName = "Add partial to Synonym";
+        String tableName = "TaxonBase";
+        String newColumnName = "partial";
+        ISchemaUpdaterStep step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+
+	    //add proParte to Synonym
+        stepName = "Add proParte to Synonym";
+        tableName = "TaxonBase";
+        newColumnName = "proParte";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+
+	    //add type to Synonym
+        stepName = "Add type to Synonym";
+        tableName = "TaxonBase";
+        newColumnName = "type_id";
+        String referencedTable = "DefinedTermBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
+	    //add acceptedTaxon_id to Synonym
+        stepName = "Add acceptedTaxon to Synonym";
+        tableName = "TaxonBase";
+        newColumnName = "acceptedTaxon_id";
+        referencedTable = "TaxonBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
+	    //move data
+        //update pro parte
+        stepName = "Update proParte";
+        String updateSql = "UPDATE %%TaxonBase%% syn " +
+                " SET proParte=1 =(SELECT proParte FROM %%SynonymRelationship%% sr WHERE sr.relatedFrom_id = syn.id)";
+//        -- WHERE EXISTS (SELECT proParte FROM SynonymRelationship sr WHERE sr.relatedFrom_id = syn.id AND sr.proParte = 1);
+        String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+        step = SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepName, updateSql, updateSqlAud, -99);
+        stepList.add(step);
+
+        //update partial
+        stepName = "Update partial";
+        updateSql = "UPDATE @@TaxonBase@@ syn " +
+                " SET partial=(SELECT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) ";
+        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+
+        //update synonym type
+        stepName = "Update Synonym type";
+        updateSql = "UPDATE @@TaxonBase@@ syn " +
+                " SET type_id=(SELECT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+
+        //update acceptedTaxon_id
+        stepName = "Update acceptedTaxon_id";
+        updateSql = "UPDATE @@TaxonBase@@ syn " +
+                " SET acceptedTaxon_id=(SELECT relatedTo_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, updateSqlAud, -99);
+        stepList.add(step);
+
+	    //rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE
+        stepName = "Rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE";
+        updateSql = "UPDATE DefinedTermBase SET DTYPE='SynonymType' WHERE DTYPE='SynonymRelationshipType'";
+        String nonAuditedTableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
+        stepList.add(step);
+
+        //rename SynonymRelationshipType to SynonymType in DefinedTermBase.titleCache
+        stepName = "Rename SynonymRelationshipType to SynonymType in DefinedTermBase.titleCache";
+        updateSql = "UPDATE DefinedTermBase SET titleCache='SynonymType' WHERE titleCache='SynonymRelationshipType'";
+        nonAuditedTableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
+        stepList.add(step);
+
+        //rename SynonymRelationshipType to SynonymType in Representation labels
+        stepName = "Rename SynonymRelationshipType to SynonymType in Representation labels";
+        updateSql = "UPDATE Representation SET label='SynonymType' WHERE label='SynonymRelationshipType'";
+        nonAuditedTableName = "Representation";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
+        stepList.add(step);
+
+        //rename SynonymRelationshipType to SynonymType in Representation text
+        stepName = "Rename SynonymRelationshipType to SynonymType in Representation text";
+        updateSql = "UPDATE Representation SET text='SynonymType' WHERE text='SynonymRelationshipType'";
+        nonAuditedTableName = "Representation";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
+        stepList.add(step);
+
+	    //remove SynonymRelationship_Annotation
+        stepName = "Remove SynonymRelationship_Annotation table";
+        tableName = "SynonymRelationship_Annotation";
+        step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //remove SynonymRelationship_Marker
+        stepName = "Remove SynonymRelationship_Marker table";
+        tableName = "SynonymRelationship_Marker";
+        step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //remove SynonymRelationship table
+        stepName = "Remove synonym relationship table";
+        tableName = "SynonymRelationship";
+        step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+        stepList.add(step);
+	}
 
     /**
      * @param stepList
