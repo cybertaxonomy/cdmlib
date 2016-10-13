@@ -200,6 +200,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
         stepList.add(step);
 
+        //#5952 Add fieldNumberCache
+        stepName = "Add identityCache";
+        tableName = "SpecimenOrObservationBase";
+        newColumnName = "identifyingCache";
+        step = ColumnAdder.NewStringInstance(stepName, nonAuditedTableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
         return stepList;
     }
 
