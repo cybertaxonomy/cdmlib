@@ -183,6 +183,22 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //#5974 Remove synonym relationships
         removeSynonymRelationships_5974(stepList);
 
+        //#3658 update nomenclatural code
+        NomenclaturalCodeUpdater.NewInstance(stepList);
+
+        //#5981 Add abbreviation to Rank "Cultivar"
+        stepName = "Add abbreviation to Rank 'Cultivar'";
+        String updateSql = "UPDATE Representation SET abbrevLabel='cv.' WHERE label='Cultivar'";
+        String nonAuditedTableName = "Representation";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
+        stepList.add(step);
+
+        //#5981  Add abbreviation to idInVoc for 'Cultivar
+        stepName = "#5981 Add abbreviation to idInVoc for 'Cultivar'";
+        updateSql = "UPDATE DefinedTermBase SET idInVocabulary='cv.' WHERE uuid='5e98415b-dc6e-440b-95d6-ea33dbb39ad0'";
+        nonAuditedTableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
+        stepList.add(step);
 
         return stepList;
     }
@@ -294,8 +310,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //update nomenclatural code
-        NomenclaturalCodeUpdater.NewInstance(stepList);
 	}
 
     /**
