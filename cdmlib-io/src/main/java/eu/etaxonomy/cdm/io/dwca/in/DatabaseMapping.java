@@ -325,7 +325,7 @@ public class DatabaseMapping implements IImportMapping {
      * @param path
      */
     private void makeDatasource(String path) {
-        datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b", path, null);
+        datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b", path);
     }
 
 

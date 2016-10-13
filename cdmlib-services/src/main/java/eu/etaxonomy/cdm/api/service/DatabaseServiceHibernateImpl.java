@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
 
@@ -65,21 +64,11 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 
 	private CdmApplicationController application;
 
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#setApplicationController(eu.etaxonomy.cdm.api.application.CdmApplicationController)
-	 */
 	@Override
     public void setApplicationController(CdmApplicationController cdmApplicationController){
 		this.application = cdmApplicationController;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatasource(eu.etaxonomy.cdm.database.CdmDataSource)
-	 */
 	@Override
     public boolean connectToDatasource(CdmPersistentDataSource dataSource) throws TermNotFoundException{
 		this.application.changeDataSource(dataSource);
@@ -87,58 +76,39 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
-	 */
 	@Override
     public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
-			String database, String username, String password, int port, String filePath, H2Mode mode, NomenclaturalCode code) throws TermNotFoundException  {
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, port, username, password, code);
+			String database, String username, String password, int port, String filePath, H2Mode mode) throws TermNotFoundException  {
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, port, username, password);
 		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, dataSource);
 		boolean result = connectToDatasource(tmpDataSource);
 		CdmPersistentSourceUtils.delete(tmpDataSource);
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
     public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password)  throws TermNotFoundException {
-		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort(), null, null, null) ;
+		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort(), null, null) ;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(java.lang.String, eu.etaxonomy.cdm.database.ICdmDataSource)
-	 */
 	@Override
     public CdmPersistentDataSource saveDataSource(String strDataSourceName,
 			ICdmDataSource dataSource) {
 		return CdmPersistentDataSource.save(strDataSourceName, dataSource);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#updateDataSource(java.lang.String, eu.etaxonomy.cdm.database.CdmPersistentDataSource)
-	 */
 	@Override
     public CdmPersistentDataSource updateDataSource(String strDataSourceName,
 			CdmPersistentDataSource dataSource) throws DataSourceNotFoundException {
 		return CdmPersistentDataSource.update(strDataSourceName, dataSource);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getUrl()
-	 */
 	@Override
     public String getUrl() {
 		return getDataSource().getUrl();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getUsername()
-	 */
 	@Override
     public String getUsername() {
 		return getDataSource().getUsername();
@@ -155,21 +125,12 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 		return ds;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-	 */
 	@Override
     public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.appContext = applicationContext;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDbSchemaVersion()
-	 */
 	@Override
 	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
@@ -179,10 +140,6 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#isDbEmpty()
-	 */
 	@Override
 	public boolean isDbEmpty() throws CdmSourceException {
 		// Any CDM DB should have a schema version

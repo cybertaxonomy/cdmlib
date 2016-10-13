@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
@@ -92,7 +91,7 @@ public class TestModelUpdate {
             //H2
             String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
             username = "sa";
-            CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+            CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
             return dataSource;
         }else if (dbType == DatabaseTypeEnum.SqlServer2005){
             server = serverSql;
@@ -102,7 +101,7 @@ public class TestModelUpdate {
         }else if (dbType == DatabaseTypeEnum.PostgreSQL){
             server = serverSql;
             username = "postgres";
-            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, 5432, username,  AccountStore.readOrStorePassword(server, database, username, null), null);
+            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, 5432, username,  AccountStore.readOrStorePassword(server, database, username, null));
             return dataSource;
         }else{
             throw new IllegalArgumentException("dbType not supported:" + dbType);
@@ -124,7 +123,7 @@ public class TestModelUpdate {
 	    String pathInProject = "src\\test\\resources\\h2";
 
 	    String path = pathToProject + pathInProject;
-		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
+		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path);
 
 
  		try {

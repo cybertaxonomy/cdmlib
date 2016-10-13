@@ -106,9 +106,9 @@ public class Datasource {
 ////		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
 ////      String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
 //		username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", path,   NomenclaturalCode.ICNAFP);
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", path);
 
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa");
 
 
 //       server = "160.45.63.201";

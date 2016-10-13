@@ -23,7 +23,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * This class is a wrapper class to wrap an {@link javax.sql.DataSource} to an
@@ -147,16 +146,6 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	@Override
 	public void setPort(int port) {
 		throw new UnsupportedOperationException("setPort(int) not supported by WrappedCdmDataSource");
-	}
-
-	@Override
-	public NomenclaturalCode getNomenclaturalCode() {
-		throw new UnsupportedOperationException("getNomenclaturalCode() not supported by WrappedCdmDataSource");
-	}
-
-	@Override
-	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
-		throw new UnsupportedOperationException("setNomenclaturalCode(nc) not supported by WrappedCdmDataSource");
 	}
 
 	@Override

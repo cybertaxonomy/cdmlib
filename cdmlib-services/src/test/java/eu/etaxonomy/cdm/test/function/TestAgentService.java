@@ -44,7 +44,7 @@ public class TestAgentService {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-//		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "", "", NomenclaturalCode.ICBN);
+//		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "", "");
 		CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("TestAgentService", "sa", "");
 		appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
 	}
