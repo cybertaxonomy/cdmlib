@@ -165,7 +165,7 @@
         @MetaValue(value = "Rank", targetEntity = Rank.class),
         @MetaValue(value = "HybridRelationshipType", targetEntity = HybridRelationshipType.class),
         @MetaValue(value = "NameRelationshipType", targetEntity = NameRelationshipType.class),
-        @MetaValue(value = "SynonymRelationshipType", targetEntity = SynonymRelationshipType.class),
+        @MetaValue(value = "SynonymType", targetEntity = SynonymType.class),
         @MetaValue(value = "TaxonRelationshipType", targetEntity = TaxonRelationshipType.class),
         @MetaValue(value = "State", targetEntity = State.class),
         @MetaValue(value = "NameTypeDesignationStatus", targetEntity = NameTypeDesignationStatus.class),
@@ -301,7 +301,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;

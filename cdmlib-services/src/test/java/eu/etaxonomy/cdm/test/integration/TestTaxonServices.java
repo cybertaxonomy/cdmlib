@@ -69,7 +69,7 @@ public class TestTaxonServices {
 //
 //		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
 //		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
-//		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+//		SynonymType synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 //
 //		Reference citation;
 //		ReferenceFactory refFactory = ReferenceFactory.newInstance();

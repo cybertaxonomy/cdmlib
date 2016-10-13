@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -170,8 +170,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 					Taxon taxonTo = (Taxon)toTaxon;
 					Reference citation = null;
 					String microReference = null;
-					if (relType instanceof SynonymRelationshipType){
-						success &= makeSynRelType((SynonymRelationshipType)relType, taxonTo, fromTaxon, citation, microReference);
+					if (relType instanceof SynonymType){
+						success &= makeSynRelType((SynonymType)relType, taxonTo, fromTaxon, citation, microReference);
 					}else if (relType instanceof TaxonRelationshipType){
 						success &= makeTaxonRelType((TaxonRelationshipType)relType, state, taxonTo, fromTaxon, strTaxonAbout , citation, microReference);
 					}else{
@@ -200,7 +200,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	}
 
 
-	private boolean makeSynRelType(SynonymRelationshipType synRelType, Taxon taxonTo, TaxonBase fromTaxon){
+	private boolean makeSynRelType(SynonymType synRelType, Taxon taxonTo, TaxonBase fromTaxon){
 		boolean success = true;
 		if (! (fromTaxon instanceof Synonym )){
 			logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
@@ -210,8 +210,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			TaxonNameBase synName = synonym.getName();
 			TaxonNameBase accName = taxonTo.getName();
 			if (synName != null && accName != null && synName.isHomotypic(accName)
-						&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
-				synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+						&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
+				synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 			}
 			if (! relationExists(taxonTo, synonym, synRelType)){
 				taxonTo.addSynonym(synonym, synRelType);
@@ -250,7 +250,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		return (childNode != null);
 	}
 
-    private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
+    private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymType synRelType){
         if (synonym == null || taxonTo == null
                 || !taxonTo.equals(synonym.getAcceptedTaxon())){
             return false;
@@ -273,7 +273,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				}
 				Set<Synonym> syns = typifiedName.getSynonyms();
 				for(Synonym syn:syns){
-					aboutTaxon.addSynonym(syn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
 				}
 			}
 

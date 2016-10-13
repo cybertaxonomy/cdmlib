@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -249,8 +249,8 @@ public final class TcsRdfTransformer {
 		if (tcsRelationshipCategory == null){ return null;
 
 		//Synonym relationships
-		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymRelationshipType.SYNONYM_OF();
-		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymRelationshipType.SYNONYM_OF();
+		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymType.SYNONYM_OF();
+		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymType.SYNONYM_OF();
 
 		//Taxon relationships
 		}else if (isChildTaxonOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();

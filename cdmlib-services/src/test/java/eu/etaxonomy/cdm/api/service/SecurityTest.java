@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -315,7 +315,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), book , "33");
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF(), book , "33");
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -346,7 +346,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), book , "33");
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymType.HOMOTYPIC_SYNONYM_OF(), book , "33");
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -936,7 +936,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
 
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF(), null, null);
 //            synonymUuid = synonym.getUuid();
 //            taxonService.saveOrUpdate(synonym);
             commitAndStartNewTransaction(null);

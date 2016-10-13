@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -1354,7 +1354,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
-        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymRelationshipType.SYNONYM_OF());
+        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF());
         taxonService.save(t_abies_balsamea);
 
         BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
@@ -1449,7 +1449,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         writeDbUnitDataSetFile(new String[] {
             "TAXONBASE", "TAXONNAMEBASE",
-            "SYNONYMRELATIONSHIP", "TAXONRELATIONSHIP",
+            "TAXONRELATIONSHIP",
             "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
             "AGENTBASE", "HOMOTYPICALGROUP",
             "CLASSIFICATION", "TAXONNODE",

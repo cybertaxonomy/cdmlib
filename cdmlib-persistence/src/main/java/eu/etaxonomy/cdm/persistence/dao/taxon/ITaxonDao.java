@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -320,14 +320,14 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
             Direction direction);
 
     /**
-     * Returns a count of the SynonymRelationships (of where relationship.type == type,
-     *  if this arguement is supplied) where the supplied taxon is relatedTo.
+     * Returns a count of the Synonyms (where relationship.type == type,
+     *  if this argument is supplied) where the supplied taxon is relatedTo.
      *
      * @param taxon The taxon that is relatedTo
-     * @param type The type of SynonymRelationship (can be null)
-     * @return the number of SynonymRelationship instances
+     * @param type The type of Synonym (can be null)
+     * @return the number of Synonym instances
      */
-    public int countSynonyms(Taxon taxon, SynonymRelationshipType type);
+    public int countSynonyms(Taxon taxon, SynonymType type);
 
     /**
      * Returns the Synonyms (of where relationship.type == type, if this argument is supplied)
@@ -341,17 +341,17 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a {@link List} of {@link Synonym} instances
      */
-    public List<Synonym> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Returns a count of the SynonymRelationships (of where relationship.type == type,
-     *  if this arguement is supplied) where the supplied synonym is relatedFrom.
+     * Returns a count of the synonyms (where relationship.type == type,
+     * if this argument is supplied) which do have an accepted taxon.
      *
-     * @param taxon The synonym that is relatedFrom
-     * @param type The type of SynonymRelationship (can be null)
-     * @return the number of SynonymRelationship instances
+     * @param synonym The synonym that is relatedFrom
+     * @param type The type of Synonym (can be null)
+     * @return the number of Synonym instances
      */
-    public int countSynonyms(Synonym synonym, SynonymRelationshipType type);
+    public int countSynonyms(Synonym synonym, SynonymType type);
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
 

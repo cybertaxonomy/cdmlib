@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -284,7 +284,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         classification.addChildTaxon(tb, null, null);
         classificationService.saveOrUpdate(classification);
 
-        tb2.addSynonymName(null, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF());
 
         commitAndStartNewTransaction(null);
 
@@ -296,8 +296,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		        "REFERENCE",
 		        "CLASSIFICATION", "TAXONNODE",
 		        "HOMOTYPICALGROUP",
-		        "TERMVOCABULARY",
-		        "SYNONYMRELATIONSHIP"
+		        "TERMVOCABULARY"
 		 }, "xxxx");
 
     }

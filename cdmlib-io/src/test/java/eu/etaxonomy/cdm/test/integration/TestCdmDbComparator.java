@@ -174,9 +174,6 @@ public class TestCdmDbComparator {
 //			"StateData_DefinedTermBase",
 //			"StatisticalMeasurementValue",
 //			"StatisticalMeasurementValue_DefinedTermBase",
-			"SynonymRelationship",
-//			"SynonymRelationship_Annotation",
-//			"SynonymRelationship_Marker",
 			"TaxonBase",
 //			"TaxonBase_Annotation",
 //			"TaxonBase_Extension",
@@ -454,7 +451,6 @@ public class TestCdmDbComparator {
 		List<Reference> references = appCtr.getReferenceService().list(null,MAX_ROWS, 0,null,null);
 		List<Representation> representations = appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0);
 		List<SpecimenOrObservationBase> specimenOrObservationBases = appCtr.getOccurrenceService().list(null,MAX_ROWS, 0,null,null);
-		//List<SynonymRelationship> synonymRelationships = appCtr.getTaxonService().getAllSynonymRelationships(MAX_ROWS, 0);
 //		List<TaxonBase> taxonBases = appCtr.getTaxonService().getAllTaxa(MAX_ROWS, 0);
 //		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().getAllNames(MAX_ROWS, 0);
 		//List<TaxonRelationship> taxonRelationships = appCtr.getTaxonService().getAllTaxonRelationships(MAX_ROWS, 0);

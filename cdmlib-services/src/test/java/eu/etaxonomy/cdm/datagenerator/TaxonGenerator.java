@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TaxonGenerator {
@@ -100,7 +100,7 @@ public class TaxonGenerator {
         botSpecies4.setCombinationAuthorship(deCandolle);
         botSpecies4.setUuid(SYNONYM_NAME_UUID);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec);
-        childTaxon.addSynonym(homoSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
 
 
         //2nd child species taxon that is the child of genus taxon
@@ -123,7 +123,7 @@ public class TaxonGenerator {
         botSpecies3.setCombinationAuthorship(deCandolle);
         botSpecies3.setUuid(SYNONYM2_NAME_UUID);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec);
-        childTaxon2.addSynonym(heteroSynonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         //missaplied Name for childTaxon2
         BotanicalName missName= BotanicalName.NewInstance(Rank.SPECIES());

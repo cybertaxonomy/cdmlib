@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NameTypeParser;
@@ -562,9 +562,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			if (homotypicalGroup != null) {
 				name.setHomotypicalGroup(homotypicalGroup);
 			}
-			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			SynonymType synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
-				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+				synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 			}
 			taxon.addSynonymName(name, synonymType);
 		} else {

@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -1446,7 +1446,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //        //SYNONYM
         //        Synonym synonym = Synonym.NewInstance(synonymName, null);
         //        synonym.setUuid(synoymUuid);
-        //        taxon.addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        //        taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         //
         //        //IndividualsAssociation
         //        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
@@ -1488,7 +1488,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //                    "TaxonNameBase_TypeDesignationBase",
         //                    "HomotypicalGroup",
         //                    "TeamOrPersonBase",
-        //                    "SynonymRelationship",
         //                    "DeterminationEvent"
         //            }, "testAllKindsOfSpecimenAssociations");
         //        } catch (FileNotFoundException e) {
@@ -1627,7 +1626,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       //SYNONYM
       Synonym synonym = Synonym.NewInstance(synonymName, null);
       synonym.setUuid(synoymUuid);
-      taxon.addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+      taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
 
       //IndividualsAssociation
       TaxonDescription taxonDescription = TaxonDescription.NewInstance();
@@ -1669,7 +1668,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                   "TaxonNameBase_TypeDesignationBase",
                   "HomotypicalGroup",
                   "TeamOrPersonBase",
-                  "SynonymRelationship",
                   "DeterminationEvent"
           }, "testAllKindsOfSpecimenAssociations");
       } catch (FileNotFoundException e) {

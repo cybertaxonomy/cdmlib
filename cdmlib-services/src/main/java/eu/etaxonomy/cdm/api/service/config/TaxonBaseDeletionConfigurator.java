@@ -60,7 +60,7 @@ public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
 
 	/**
     *
-    * If <code>true</code> all {@link SynonymRelationship relations from taxon to synonyms} will be
+    * If <code>true</code> all Synonym relations from taxon to synonyms will be
     * removed.
     * Synonyms itself will be removed depending on {@link #deleteSynonymsIfPossible}.
     * @return

@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -108,7 +108,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private UUID classificationUuid;
 
     private static final String[] TABLE_NAMES = new String[] {
-        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "SYNONYMRELATIONSHIP", "SYNONYMRELATIONSHIP_AUD", "TAXONBASE", "TAXONBASE_AUD"
+        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
         , "TAXONNAMEBASE", "TAXONNAMEBASE_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
 
 
@@ -226,7 +226,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         results = taxonDao.getTaxaByName(true, false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
-        //one synonym is not in a synonymrelationship
+        //one synonym has no accepted taxon
         results = taxonDao.getTaxaByName(true, true, true, "A*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 11 Taxa",11, results.size());
 
@@ -313,12 +313,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // prepare some synonym relation ships for some tests
         Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
         Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
-        taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
+        taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF());
         logger.warn("addSynonym(..)");
 
         Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
         Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
-        taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
+        taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF());
         this.taxonDao.save(taxonRetheraSecCdmtest);
 
         Taxon test = (Taxon)this.taxonDao.findByUuid(retheraSecCdmtest);
@@ -357,7 +357,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
         // 5. searching for a Synonyms and Taxa
-        //   create a synonym relationship first
         results = taxonDao.getTaxaByName(true, true, false, "A", null, MatchMode.BEGINNING, namedAreas,
             null, null, null);
         //only five taxa have a distribution
@@ -384,12 +383,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // prepare some synonym relation ships for some tests
         Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
         Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
-        taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
+        taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF());
         logger.warn("addSynonym(..)");
         this.taxonDao.clear();
         Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
         Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
-        taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
+        taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF());
         this.taxonDao.clear();
         // 1. searching for a taxon (Rethera)
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
@@ -421,10 +420,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
         // 5. searching for a Synonyms and Taxa
-        //   create a synonym relationship first
+        //   attache a synonym first
         Synonym syn = (Synonym)taxonDao.findByUuid(this.atroposLeach);
         Taxon tax = (Taxon) taxonDao.findByUuid(rethera);
-        tax.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        tax.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         taxonDao.save(tax);
         results = taxonDao.findByNameTitleCache(true, true, "A", null, MatchMode.BEGINNING, namedAreas,
@@ -548,17 +547,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testCountSynonymRelationships() {
+    public void testCountSynonyms() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
-        int numberOfSynonymRelationships = taxonDao.countSynonyms(taxon,null);
-        assertEquals("countSynonymRelationships should return 3", 3, numberOfSynonymRelationships);
+        int numberOfRelatedSynonym = taxonDao.countSynonyms(taxon,null);
+        assertEquals("countSynonyms should return 3", 3, numberOfRelatedSynonym);
     }
 
     @Test
     @DataSet
-    public void testSynonymRelationships()	{
+    public void testGetSynonyms()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
         List<String> propertyPaths = new ArrayList<String>();
@@ -577,21 +576,21 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testCountSynonymRelationshipsByType()	{
+    public void testCountSynonymsByType()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
-        int numberOfTaxonomicSynonyms = taxonDao.countSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        int numberOfTaxonomicSynonyms = taxonDao.countSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF());
         assertEquals("countSynonyms should return 4", 3, numberOfTaxonomicSynonyms);
     }
 
     @Test
     @DataSet
-    public void testSynonymRelationshipsByType() {
+    public void testSynonymsByType() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
-        List<Synonym> synonyms = taxonDao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,null,null);
+        List<Synonym> synonyms = taxonDao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF(), null, null,null,null);
 
         assertNotNull("getSynonyms should return a List", synonyms);
         assertEquals("getSynonyms should return 4 Synonyms", 3, synonyms.size());
@@ -599,7 +598,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testPageSynonymRelationships(){
+    public void testPageSynonyms(){
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
@@ -608,9 +607,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<Synonym> secondPage = taxonDao.getSynonyms(taxon, null, pageSize, 1,null,null);
 
         assertNotNull("getSynonyms: 2, 0 should return a List",firstPage);
-        assertEquals("getSynonyms: 2, 0 should return 2 SynonymRelationships", pageSize,firstPage.size());
+        assertEquals("getSynonyms: 2, 0 should return 2 synonyms", pageSize,firstPage.size());
         assertNotNull("getSynonyms: 2, 1 should return a List",secondPage);
-        assertEquals("getSynonyms: 2, 1 should return 1 SynonymRelationship", 1, secondPage.size());
+        assertEquals("getSynonyms: 2, 1 should return 1 synonym", 1, secondPage.size());
     }
 
     @Test

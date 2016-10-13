@@ -13,7 +13,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup;
 
@@ -29,7 +29,7 @@ public class HomotypicSynonymsShouldBelongToGroupValidator implements
 		if (synonym.getType() == null){
 		    return valid;
 		}
-		if(synonym.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+		if(synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF())) {
 			Taxon accepted = synonym.getAcceptedTaxon();
 
 			if (accepted != null && accepted.getName() != null && synonym.getName() != null){

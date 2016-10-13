@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -58,8 +58,8 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	private INameService nameService;
 	private String referenceDetail;
 	private Reference reference;
-	private SynonymRelationshipType homoTypicSynonymRelationshipType;
-	private SynonymRelationshipType heteroTypicSynonymRelationshipType;
+	private SynonymType homoTypicSynonymType;
+	private SynonymType heteroTypicSynonymType;
 	private NonViralName<?> s1n;
 	private NonViralName<?> t2n;
 	private NonViralName<?> t1n;
@@ -86,8 +86,8 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		s2 = Synonym.NewInstance(s2n, reference);
 
 		// referencing
-		homoTypicSynonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		heteroTypicSynonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+		homoTypicSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+		heteroTypicSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
 		reference = ReferenceFactory.newGeneric();
 		referenceDetail = "test";
 	}
@@ -98,7 +98,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testSwapSynonymAndAcceptedTaxon() {
-		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymType);
 
 		service.swapSynonymAndAcceptedTaxon(s1, t1);
 	}
@@ -109,7 +109,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	@Test
 	public final void testChangeSynonymToAcceptedTaxon() {
 
-		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymType);
 		HomotypicalGroup oldGroup = s1.getName().getHomotypicalGroup();
 		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		boolean deleteSynonym = false;
@@ -121,7 +121,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		}
-		t1.addSynonym(s2, heteroTypicSynonymRelationshipType);
+		t1.addSynonym(s2, heteroTypicSynonymType);
 		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
 		try {
@@ -142,7 +142,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testChangeSynonymWithMultipleSynonymsInHomotypicalGroupToAcceptedTaxon() {
-		t1.addSynonym(s1, heteroTypicSynonymRelationshipType);
+		t1.addSynonym(s1, heteroTypicSynonymType);
 		TaxonNameBase<?,?> otherHeteroSynonymName = NonViralName.NewInstance(null);
 		t1.addHeterotypicSynonymName(otherHeteroSynonymName);
 		TaxonNameBase<?,?> homotypicSynonymName = NonViralName.NewInstance(null);
@@ -205,8 +205,8 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testChangeSynonymToRelatedTaxon() {
-		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
-		t1.addSynonym(s2, homoTypicSynonymRelationshipType);
+		t1.addSynonym(s1, homoTypicSynonymType);
+		t1.addSynonym(s2, homoTypicSynonymType);
 		Set<TaxonBase> newInstances = new HashSet<>();
 		newInstances.add(s1);
 		newInstances.add(t1);
@@ -248,16 +248,16 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	public void changeHomotypicalGroupOfSynonym(){
 
 		//s1 - Heterotypic
-		t1.addSynonym(s1, heteroTypicSynonymRelationshipType);
+		t1.addSynonym(s1, heteroTypicSynonymType);
 
 		//s2 - heterotypic
 		TaxonNameBase otherHeteroSynonymName = NonViralName.NewInstance(null);
 		Synonym s2 = Synonym.NewInstance(otherHeteroSynonymName, t1.getSec());
-		t1.addSynonym(s2, heteroTypicSynonymRelationshipType);
+		t1.addSynonym(s2, heteroTypicSynonymType);
 		TaxonNameBase<?,?> otherHeteroSynonymNameB = NonViralName.NewInstance(null);
 		otherHeteroSynonymName.addBasionym(otherHeteroSynonymNameB);
 		Synonym s2b = Synonym.NewInstance(otherHeteroSynonymNameB, t1.getSec());
-		t1.addSynonym(s2b, heteroTypicSynonymRelationshipType);
+		t1.addSynonym(s2b, heteroTypicSynonymType);
 
 		//homotypic
 		TaxonNameBase<?,?> homotypicSynonymName = NonViralName.NewInstance(null);
@@ -269,7 +269,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertFalse("s2 must not be in s1 homotypic group", s2.getHomotypicGroup().equals(s1.getHomotypicGroup()));
 		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
 		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/ must have accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have heterotypic relationship type", heteroTypicSynonymRelationshipType, s2.getType());
+		Assert.assertEquals("s2 must have heterotypic relationship type", heteroTypicSynonymType, s2.getType());
 		Assert.assertEquals("s2 must have exactly 1 basionym relationships", 1, s2.getName().getBasionyms().size());
 
 		//do it
@@ -278,7 +278,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		//postconditions
 		Assert.assertEquals("s2 must be in s1 homotypic group", s2.getHomotypicGroup(), s1.getHomotypicGroup());
 		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have heterotypic relationship", heteroTypicSynonymRelationshipType, s2.getType());
+		Assert.assertEquals("s2 must have heterotypic relationship", heteroTypicSynonymType, s2.getType());
 		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
 
 
@@ -295,11 +295,11 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("s2 must be in 'homotypicSynonym' homotypic group", s2.getHomotypicGroup(), homotypicSynonym.getHomotypicGroup());
 		Assert.assertEquals("s2 must be in 't1' homotypic group", s2.getHomotypicGroup(), t1.getHomotypicGroup());
 		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymRelationshipType, s2.getType());
+		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymType, s2.getType());
 		Assert.assertEquals("s2 must have exactly 1 basionym relationships", 1, s2.getName().getBasionyms().size());
 		Assert.assertEquals("'homotypicSynonym' must have exactly 2 basionym relationships", 2, homotypicSynonym.getName().getNameRelations().size());
 		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
-		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicRelationship().size());
+		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
 		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup().size());
 		Assert.assertEquals("'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)", 3, t1.getHomotypicGroup().getTypifiedNames().size());
 
@@ -311,11 +311,11 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("s2 must be in 't2' homotypic group", t2.getHomotypicGroup(), s2.getHomotypicGroup());
 		Assert.assertFalse("s2 must not be in 't1' homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
 		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymRelationshipType, s2.getType());
+		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymType, s2.getType());
 		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
 		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());
 		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
-		Assert.assertEquals("'t1' must have exactly 1 homotypic synonyms", 1, t1.getHomotypicSynonymsByHomotypicRelationship().size());
+		Assert.assertEquals("'t1' must have exactly 1 homotypic synonyms", 1, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
 		Assert.assertEquals("'t1' must have exactly 1 names in homotypic group", 1, t1.getHomotypicSynonymsByHomotypicGroup().size());
 		Assert.assertEquals("'t1' homotypic group must include 2 names (t1, homotypicSynonym)", 2, t1.getHomotypicGroup().getTypifiedNames().size());
 
@@ -327,7 +327,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertFalse("s2 must not be in 't2' homotypic group", t2.getHomotypicGroup().equals(s2.getHomotypicGroup()));
 		//had 2 accepted taxa when synonym relationships still existed
 		Assert.assertNotNull("s2 must have accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("Both relationships of s2 must be heterotypic", heteroTypicSynonymRelationshipType, s2.getType());
+		Assert.assertEquals("Both relationships of s2 must be heterotypic", heteroTypicSynonymType, s2.getType());
 		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
 
 	}

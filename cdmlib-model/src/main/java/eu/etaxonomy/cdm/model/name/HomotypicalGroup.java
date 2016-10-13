@@ -328,7 +328,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 
 	/**
-	 * Returns all taxon names in the homotypical group that do not have an 'is_basionym_for' (zool.: 'is_original_combination_for')
+	 * Returns all taxon names in the homotypic group that do not have an
+	 * 'is_basionym_for' (zool.: 'is_original_combination_for')
 	 * or a replaced synonym relationship.
 	 * @return
 	 */

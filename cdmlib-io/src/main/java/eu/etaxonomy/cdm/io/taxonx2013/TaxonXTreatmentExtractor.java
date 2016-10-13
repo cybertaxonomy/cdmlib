@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -1579,7 +1579,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                 sourceHandler.addSource(refMods, synonym);
-                acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+                acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
             }
         }
         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -1755,7 +1755,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
                     }
                 }
 
@@ -1788,7 +1788,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
                     }
 
                 }
@@ -1864,7 +1864,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
                     }
                 }
             }

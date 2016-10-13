@@ -148,7 +148,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -347,7 +347,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				SpecimenOrObservationBase.class,
 				Reference.class,
 				Synonym.class,
-				SynonymRelationshipType.class,
+				SynonymType.class,
 				Taxon.class,
 				TaxonBase.class,
 				TaxonNode.class,

@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -83,7 +83,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @param synonym
      * @param acceptedTaxon
-     * @param synonymRelationshipType the relationship type the newly created synonym will have. Defaults to SYNONYM_OF
      * @return
      */
     public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
@@ -168,7 +167,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
   public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
              TaxonRelationshipType oldRelationshipType,
-            SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
+            SynonymType synonymType) throws DataChangeNoRollbackException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -191,16 +190,16 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             Taxon targetTaxon, boolean setBasionymRelationIfApplicable);
 
     /**
-     * See {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymRelationshipType, Reference, String, boolean)}
+     * See {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymType, Reference, String, boolean)}
      * @param oldSynonym
      * @param newTaxon
      * @param moveHomotypicGroup
-     * @param newSynonymRelationshipType
+     * @param newSynonymType
      * @return
      * @throws HomotypicalGroupChangeException
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymRelationshipType newSynonymRelationshipType) throws HomotypicalGroupChangeException;
+            SynonymType newSynonymType) throws HomotypicalGroupChangeException;
 
 
     /**
@@ -212,8 +211,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * 		<code>moveHomotypicGroup</code> is <code>true</code> all these synonyms are moved to the new taxon,
      * 		if <code>false</code> a {@link HomotypicalGroupChangeException} is thrown.
      * 		<code>moveHomotypicGroup</code> has no effect if the synonym is the only synonym in it's homotypic group.
-     * @param newSynonymRelationshipType the synonym relationship type of the new synonym relations. Default is
-     * 		{@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() heterotypic}.
+     * @param newSynonymType the synonym type of the new synonyms. Default is
+     * 		{@link SynonymType#HETEROTYPIC_SYNONYM_OF() heterotypic}.
      * @param newSecundum The secundum for the new synonyms).
      * @param newSecundumDetail The secundum micro reference for the new synonym(s).
      * @param keepSecundumIfUndefined if no <code>newSecundum</code> and/or no <code>newSecundumDetail</code>
@@ -227,7 +226,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymRelationshipType newSynonymRelationshipType, Reference newSecundum,
+            SynonymType newSynonymType, Reference newSecundum,
             String newSecundumDetail, boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException;
 
 
@@ -235,18 +234,18 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param oldSynonym
      * @param newTaxonUUID
      * @param moveHomotypicGroup
-     * @param newSynonymRelationshipType
+     * @param newSynonymType
      * @param reference
      * @param referenceDetail
      * @param keepReference
      * @return
      * @throws HomotypicalGroupChangeException
      *
-     * @see {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymRelationshipType, Reference, String, boolean)}
+     * @see {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymType, Reference, String, boolean)}
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
             UUID newTaxonUUID, boolean moveHomotypicGroup,
-            SynonymRelationshipType newSynonymRelationshipType,
+            SynonymType newSynonymType,
             Reference newSecundum, String newSecundumDetail, boolean keepSecundumIfUndefined)
             throws HomotypicalGroupChangeException;
 
@@ -349,7 +348,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of {@link Synonym} instances
      */
-    public Pager<Synonym> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * This method returns in the first entry the list of synonyms of the
@@ -359,7 +358,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * {@link #getHeterotypicSynonymyGroups(Taxon, List)}
      *
      * @see			#getSynonyms()
-     * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+     * @see			SynonymType#HETEROTYPIC_SYNONYM_OF()
      * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 
      * @param taxon the accepted taxon
@@ -394,7 +393,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @see			#getHeterotypicSynonymyGroups()
      * @see			#getSynonyms()
-     * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+     * @see			SynonymType#HETEROTYPIC_SYNONYM_OF()
      * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 
      * @param taxon
@@ -841,7 +840,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param tree
      * @return list of inferred synonyms
      */
-    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type, boolean doWithMisappliedNames);
+    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymType type, boolean doWithMisappliedNames);
 
     /**
      * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
@@ -930,12 +929,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param fromTaxonUuid
      * @param toTaxonUuid
      * @param oldRelationshipType
-     * @param synonymRelationshipType
+     * @param synonymType
      * @return
      * @throws DataChangeNoRollbackException
      */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
-            TaxonRelationshipType oldRelationshipType, SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
+            TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
 
 
 

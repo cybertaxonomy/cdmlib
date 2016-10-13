@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
@@ -1979,7 +1979,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// MarkerType, AnnotationType, NamedAreaType, NamedAreaLevel, Feature,
 		// Continent, DerivationEventType, StatisticalMeasure,
-		// RightsType,SynonymRelationshipType & HybridRelationshipType &
+		// RightsType,SynonymType & HybridRelationshipType &
 		// NameRelationshipType
 		// => none
 
@@ -2159,12 +2159,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				.setDefaultAuditing(tableName);
 		stepList.add(step);
 
-		// SynonymRelationshipType
+		// SynonymType
 		stepName = "Update termType for SynonymRelationship Type";
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
-				+ TermType.SynonymRelationshipType.getKey() + "' "
+				+ TermType.SynonymType.getKey() + "' "
 				+ " WHERE DTYPE = '"
-				+ SynonymRelationshipType.class.getSimpleName() + "' ";
+				+ SynonymType.class.getSimpleName() + "' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
 				.setDefaultAuditing(tableName);
 		stepList.add(step);

@@ -423,7 +423,7 @@ public class Taxon
      * Returns the set of all {@link Synonym synonyms}
      * for which <i>this</i> ("accepted/valid") taxon is the accepted taxon.
      *
-     * @see    #addSynonym(Synonym, SynonymRelationshipType)
+     * @see    #addSynonym(Synonym, SynonymType)
      * @see    #removeSynonym(Synonym)
      */
     public Set<Synonym> getSynonyms() {
@@ -832,12 +832,12 @@ public class Taxon
      */
     /**
      * Returns the set of all {@link Synonym synonyms} of <i>this</i> ("accepted/valid") taxon
-     * sorted by the different {@link SynonymRelationshipType categories}.
+     * sorted by the different {@link SynonymType categories}.
       *
      * @see    #getSynonyms()
      * @see    #getSynonymNames()
-     * @see    #addSynonym(Synonym, SynonymRelationshipType)
-     * @see    #addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    #addSynonym(Synonym, SynonymType)
+     * @see    #addSynonym(Synonym, SynonymType, Reference, String)
      * @see    #removeSynonym(Synonym)
      * @deprecated not yet implemented
      */
@@ -854,8 +854,8 @@ public class Taxon
      *
      * @see    #getSynonyms()
      * @see    #getSynonymsSortedByType()
-     * @see    #addSynonymName(TaxonNameBase, SynonymRelationshipType)
-     * @see    #addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    #addSynonymName(TaxonNameBase, SynonymType)
+     * @see    #addSynonym(Synonym, SynonymType, Reference, String)
      * @see    #removeSynonym(Synonym)
      */
     @Transient
@@ -884,19 +884,19 @@ public class Taxon
 
     /**
      * Adds the given {@link Synonym synonym} to <code>this</code> taxon
-     * and changes the {@link SynonymRelationshipType
-     * synonym relationship type} before.
+     * and changes the {@link SynonymType
+     * synonym type} before.
      *
      * @param synonym       the synonym to be added
-     * @param synonymType   the synonym relationship type of the synonym to be added. If not <code>null</code>
+     * @param synonymType   the synonym type of the synonym to be added. If not <code>null</code>
      *                      and if the synonym already has a type the existing type will be overwritten.<BR>
-     *                      If synonymType is {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF()}
+     *                      If synonymType is {@link SynonymType#HOMOTYPIC_SYNONYM_OF()}
      *                      the homotypic group of the synonym is changed to that of <code>this</code> taxon.<BR>
-     *                      To explicitly set the type to <code>null</code> use {@link Synonym#setType(SynonymRelationshipType)}
+     *                      To explicitly set the type to <code>null</code> use {@link Synonym#setType(SynonymType)}
      * @see                 #addSynonym(Synonym)
-     * @see                 #addSynonym(Synonym, SynonymRelationshipType, Reference, String)
-     * @see                 #addSynonymName(TaxonNameBase, SynonymRelationshipType)
-     * @see                 #addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
+     * @see                 #addSynonym(Synonym, SynonymType, Reference, String)
+     * @see                 #addSynonymName(TaxonNameBase, SynonymType)
+     * @see                 #addSynonymName(TaxonNameBase, SynonymType, Reference, String)
      * @see                 #addHomotypicSynonymName(TaxonNameBase, Reference, String)
      * @see                 #addHeterotypicSynonymName(TaxonNameBase)
      * @see                 #addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
@@ -904,24 +904,24 @@ public class Taxon
      * @see                 #removeSynonym(Synonym)
      * @see                 Synonym#getAcceptedTaxon()
      */
-    public void addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
+    public void addSynonym(Synonym synonym, SynonymType synonymType){
         synonym.setType(synonymType); //must be set before as otherwise merging of homotypical groups may not work correctly in Synonym.checkHomotypic()
         addSynonym(synonym);
     }
 
     /**
-     * Adds the given {@link Synonym synonym} with the given {@link SynonymRelationshipType
+     * Adds the given {@link Synonym synonym} with the given {@link SynonymType
      * synonym relationship type}
      *
      * @param synonym		the synonym to be added
-     * @param synonymType	the synonym relationship category of the synonym to be added. If not null
+     * @param synonymType	the synonym  type of the synonym to be added. If not null
      *                      and if the synonym already has a type the existing type will be overwritten.
 //     * @param citation		the reference source for the new synonym relationship
 //     * @param microcitation	the string with the details describing the exact localization within the reference
      * @see    	   			#addSynonym(Synonym)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
+     * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
@@ -929,7 +929,7 @@ public class Taxon
      * @see    				#removeSynonym(Synonym)
      * @see    	   			Synonym#getAcceptedTaxon()
      */
-    private void addSynonym(Synonym synonym, SynonymRelationshipType synonymType, Reference newSecReference, String newSecMicroReference){
+    private void addSynonym(Synonym synonym, SynonymType synonymType, Reference newSecReference, String newSecMicroReference){
         if (newSecReference != null){
             synonym.setSec(newSecReference);
         }
@@ -943,8 +943,8 @@ public class Taxon
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the
      * given {@link TaxonNameBase synonym name} and with the given
-     * {@link SynonymRelationshipType synonym type}. If the later is
-     * {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() homotypic synonym}
+     * {@link SynonymType synonym type}. If the later is
+     * {@link SynonymType#HOMOTYPIC_SYNONYM_OF() homotypic synonym}
      * the name will be added to the same {@link HomotypicalGroup homotypical group}
      * as the <code>this</code> accepted taxon.<BR>
      * The secundum reference of the new synonym is taken from <code>this</code> taxon.
@@ -952,12 +952,12 @@ public class Taxon
      *
      * @param synonymName	the taxon name to be used as a synonym to be added
      * 						to <i>this</i> taxon's set of synonyms
-     * @param synonymType	the synonym relationship category of the synonym
+     * @param synonymType	the synonym  type of the synonym
      * 						relationship to be added
      * @return 				the created synonym
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonym(Synonym, SynonymType)
+     * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
      * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
@@ -965,14 +965,14 @@ public class Taxon
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
-    public Synonym addSynonymName(TaxonNameBase synonymName, SynonymRelationshipType synonymType){
+    public Synonym addSynonymName(TaxonNameBase synonymName, SynonymType synonymType){
         return addSynonymName(synonymName, null, null, synonymType);
     }
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the
      * given {@link TaxonNameBase synonym name} and with the given
-     * {@link SynonymRelationshipType synonym type}. If the later is
-     * {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() homotypic synonym}
+     * {@link SynonymType synonym type}. If the later is
+     * {@link SynonymType#HOMOTYPIC_SYNONYM_OF() homotypic synonym}
      * the name will be added to the same {@link HomotypicalGroup homotypical group}
      * as the <code>this</code> accepted taxon.<BR>
      *
@@ -986,12 +986,11 @@ public class Taxon
      * @param secReference	the secundum reference for the new synonym (if <code>null</code>
      *                      <code>this</code> taxon's secundum reference is taken.
      * @param secMicroReference the secundum micro reference of the new synonym
-     * @param synonymType	the synonym relationship category of the synonym
-     * 						relationship to be added
+     * @param synonymType	the synonym type of the synonym to be added
      *
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonym(Synonym, SynonymType)
+     * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
      * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
@@ -999,7 +998,7 @@ public class Taxon
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
-    public Synonym addSynonymName(TaxonNameBase synonymName, Reference secReference, String secMicroReference, SynonymRelationshipType synonymType){
+    public Synonym addSynonymName(TaxonNameBase synonymName, Reference secReference, String secMicroReference, SynonymType synonymType){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec()); //default sec
         addSynonym(synonym, synonymType, secReference, secMicroReference);
         return synonym;
@@ -1008,19 +1007,19 @@ public class Taxon
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the given
      * {@link TaxonNameBase synonym name}. The synonym will have the synonym type
-     * {@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of"}.<BR>
+     * {@link SynonymType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of"}.<BR>
      * The secundum reference is taken from <code>this</code> taxon.
      * No secMicroReference will be set for the new synonym.<BR>
      * The synonym will keep it's old homotypical group.<BR>
      *
      * @param synonymName	the taxon name to be used as an heterotypic synonym
      * 						to be added to <i>this</i> taxon's set of synonyms
-     * @return 				the created synonym relationship
+     * @return 				the created synonym
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonym(Synonym, SynonymType)
+     * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
      * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
      * @see    	   			#getSynonyms()
@@ -1033,7 +1032,7 @@ public class Taxon
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the given
      * {@link TaxonNameBase synonym name}. The synonym will have the synonym type
-     * {@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of"}.<BR>
+     * {@link SynonymType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of"}.<BR>
      *
      * If secReference is not <code>null</code>, the new synonym will have this as
      * secundum reference. Otherwise <code>this</code> taxons sec reference is taken
@@ -1051,10 +1050,10 @@ public class Taxon
      *                          the homotypical group of synonymName is not changed
      * @return 					the created synonym
      * @see    	   				#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
-     * @see    	   				#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-     * @see    	   				#addSynonym(Synonym, SynonymRelationshipType)
-     * @see    	   				#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    	   				#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   				#addSynonymName(TaxonNameBase, SynonymType)
+     * @see    	   				#addSynonym(Synonym, SynonymType)
+     * @see    	   				#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   				#addHomotypicSynonym(Synonym, Reference, String)
      * @see    	   				#addHomotypicSynonymName(TaxonNameBase, Reference, String)
      * @see    	   				#getSynonyms()
@@ -1065,26 +1064,26 @@ public class Taxon
         if (homotypicalGroup != null){
             homotypicalGroup.addTypifiedName(synonymName);
         }
-        addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), secReference, secDetail);
+        addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF(), secReference, secDetail);
         return synonym;
     }
 
     /**
     * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the given
      * {@link TaxonNameBase synonym name}. The synonym will have the synonym type
-     * {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of"}.<BR>
+     * {@link SynonymType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of"}.<BR>
      * The secundum reference is taken from <code>this</code> taxon.
      * No secMicroReference will be set for the new synonym.<BR>
      * The synonym's homotypic group will be changed to <code>this</code> taxon's group.<BR>
      *
      * @param synonymName	the taxon name to be used as an homotypic synonym
      * 						to be added to <i>this</i> taxon's set of synonyms
-     * @return 				the created synonym relationship
+     * @return 				the created synonym
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
+     * @see    	   			#addSynonym(Synonym, SynonymType)
+     * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
      * @see    	   			#getSynonyms()
@@ -1098,20 +1097,18 @@ public class Taxon
 
     /**
      * Adds the given {@link Synonym synonym} to <code>this</code> taxon,
-     * with the {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of"
+     * with the {@link SynonymType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of"
      * relationship type} and returns it.
      * Furthermore the {@link TaxonNameBase taxon name}
      * used as synonym will be added to the same {@link HomotypicalGroup homotypic group}
      * to which the taxon name of <i>this</i> taxon belongs.<BR>
      *
-     * @param synonym		the synonym involved in the "is homotypic synonym of" relationship to be created
-     * 						and added to <i>this</i> taxon's synonym relationships set
-     * @return 				the created synonym relationship
+     * @param synonym		the synonym added to <i>this</i> taxon's synonym set
      * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType)
-     * @see    	   			#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymRelationshipType)
+     * @see    	   			#addSynonym(Synonym, SynonymType)
+     * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
      * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
      * @see    	   			#getSynonyms()
@@ -1119,7 +1116,7 @@ public class Taxon
      */
     public void addHomotypicSynonym(Synonym synonym){
     	if (!this.getSynonyms().contains(synonym)){
-    		addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+    		addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
     	} else{
     		logger.warn("Tried to add a synonym to an accepted taxon that already is a synonym of this taxon.");
     	}
@@ -1168,7 +1165,7 @@ public class Taxon
      * same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group}.
      *
      * @return		the ordered list of homotypic synonyms
-     * @see			#getHomotypicSynonymsByHomotypicRelationship()
+     * @see			#getHomotypicSynonymsByHomotypicSynonymType()
      * @see			#getSynonyms()
      * @see			#getHomotypicSynonymyGroups()
      * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
@@ -1188,24 +1185,24 @@ public class Taxon
      * (according to the same {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * as for <i>this</i> taxon) under the condition that these synonyms and
      * <i>this</i> taxon are involved in {@link SynonymRelationship synonym relationships} with an
-     * "is homotypic synonym of" {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() synonym relationship type}.
+     * "is homotypic synonym of" {@link SynonymType#HOMOTYPIC_SYNONYM_OF() synonym relationship type}.
      *
      * @return		the ordered list of homotypic synonyms
      * @see			#getHomotypicSynonymsByHomotypicGroup()
      * @see			#getSynonyms()
      * @see			#getHomotypicSynonymyGroups()
-     * @see			SynonymRelationshipType
+     * @see			SynonymType
      * @deprecated as the method currently returns data not matching the original description of the method
      * as an ordered list (according to date of publication) of synonyms with same secundum as <i>this</i> taxon.
      * In future this method will either be removed or semantics may change.
      */
     @Deprecated
     @Transient
-    public List<Synonym> getHomotypicSynonymsByHomotypicRelationship(){
+    public List<Synonym> getHomotypicSynonymsByHomotypicSynonymType(){
         Set<Synonym> synonyms = this.getSynonyms();
         List<Synonym> result = new ArrayList<>();
         for(Synonym synonym : synonyms) {
-            if(synonym.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+            if(synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
                 result.add(synonym);
             }
         }
@@ -1271,7 +1268,7 @@ public class Taxon
      *
      * @see			#getHeterotypicSynonymyGroups()
      * @see			#getSynonyms()
-     * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+     * @see			SynonymType#HETEROTYPIC_SYNONYM_OF()
      * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
      */
     @Transient

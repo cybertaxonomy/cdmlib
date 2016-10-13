@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -125,7 +125,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 
 
 		if (fromObject.isInstanceOf(Synonym.class)){
-			SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
+			SynonymType relType = SynonymType.SYNONYM_OF();
 			Synonym synonym = CdmBase.deproxy(fromObject, Synonym.class);
 			taxon.addSynonym(synonym, relType); //citation and micro citation not in use anymore as we do not have synonym relationships anymore
 		}else if (fromObject.isInstanceOf(Taxon.class)  && this.useTaxonRelationship){

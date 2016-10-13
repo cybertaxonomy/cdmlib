@@ -187,7 +187,7 @@
 
       <!-- Taxon Package -->
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
-      <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonBase"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>

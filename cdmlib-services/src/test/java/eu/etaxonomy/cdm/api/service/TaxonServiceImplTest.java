@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -261,11 +261,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Old implementation taken from {@link TaxonServiceImplBusinessTest} for old version of method.
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#moveSynonymToAnotherTaxon(eu.etaxonomy.cdm.model.taxon.SynonymRelationship, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
      */
     @Test
     public final void testMoveSynonymToAnotherTaxon_OLD() {
-        SynonymRelationshipType heteroTypicSynonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+        SynonymType heteroTypicSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
         Reference reference = ReferenceFactory.newGeneric();
         String referenceDetail = "test";
 
@@ -275,7 +274,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon t2 = Taxon.NewInstance(t2n, reference);
         NonViralName<?> s1n = NonViralName.NewInstance(null);
         Synonym s1 = Synonym.NewInstance(s1n, reference);
-        t1.addSynonym(s1, heteroTypicSynonymRelationshipType);
+        t1.addSynonym(s1, heteroTypicSynonymType);
         service.saveOrUpdate(t1);
 
         Synonym synonym = t1.getSynonyms().iterator().next();
@@ -283,7 +282,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         boolean keepReference = false;
         boolean moveHomotypicGroup = false;
         try {
-            service.moveSynonymToAnotherTaxon(synonym, t2, moveHomotypicGroup, heteroTypicSynonymRelationshipType, reference, referenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(synonym, t2, moveHomotypicGroup, heteroTypicSynonymType, reference, referenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Method call should not throw exception");
         }
@@ -296,7 +295,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         synonym = synonyms.iterator().next();
 
         Assert.assertEquals(t2, synonym.getAcceptedTaxon());
-        Assert.assertEquals(heteroTypicSynonymRelationshipType, synonym.getType());
+        Assert.assertEquals(heteroTypicSynonymType, synonym.getType());
         Assert.assertEquals(reference, synonym.getSec());
         Assert.assertEquals(referenceDetail, synonym.getSecMicroReference());
     }
@@ -304,7 +303,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
     public final void testMoveSynonymToAnotherTaxon() throws Exception {
-        final String[] tableNames = new String[]{"SynonymRelationship"};
+        final String[] tableNames = new String[]{};
 
 //        printDataSet(System.err, new String[]{"AgentBase", "TaxonBase"});
 //        printDataSet(System.err, new String[]{"TaxonNode"});
@@ -321,7 +320,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         boolean moveHomotypicGroup = true;
-        SynonymRelationshipType newSynonymRelationshipType = null;
+        SynonymType newSynonymType = null;
         boolean keepReference = true;
         Reference newReference = null;
         String newReferenceDetail = null;
@@ -334,7 +333,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon oldTaxon = homotypicSynonym.getAcceptedTaxon();
 
         try {
-            service.moveSynonymToAnotherTaxon(homotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(homotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
             Assert.fail("Homotypic synonym move to other taxon should throw an exception");
         } catch (HomotypicalGroupChangeException e) {
             if (e.getMessage().contains("Synonym is in homotypic group with accepted taxon and other synonym(s). First remove synonym from homotypic group of accepted taxon before moving to other taxon")){
@@ -360,7 +359,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         moveHomotypicGroup = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
             Assert.fail("Heterotypic synonym move to other taxon should throw an exception");
         } catch (HomotypicalGroupChangeException e) {
             if (e.getMessage().contains("Synonym is in homotypic group with other synonym(s). Either move complete homotypic group or remove synonym from homotypic group prior to moving to other taxon")){
@@ -392,7 +391,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
@@ -438,7 +437,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         keepReference = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym4, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym4, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Move with 'moveHomotypicGroup = true' should not throw exception: " + e.getMessage());
         }
@@ -475,10 +474,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         keepReference = false;
         newReference = ref2;
         newReferenceDetail = "newRefDetail";
-        newSynonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+        newSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
@@ -487,7 +486,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         heterotypicSynonym = (Synonym)service.load(uuidSyn6);
         Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
         Assert.assertNotNull("Synonym should still have accepted taxon", heterotypicSynonym.getAcceptedTaxon());
-        Assert.assertEquals("Relationship type should be 'homotypic synonym'", newSynonymRelationshipType, heterotypicSynonym.getType());
+        Assert.assertEquals("Relationship type should be 'homotypic synonym'", newSynonymType, heterotypicSynonym.getType());
         Assert.assertEquals("Accepted taxon of single relation should be new taxon", newTaxon, heterotypicSynonym.getAcceptedTaxon());
         Assert.assertEquals("New citation should be ref2", ref2 ,heterotypicSynonym.getSec());
         Assert.assertEquals("New detail should be kept", "newRefDetail", heterotypicSynonym.getSecMicroReference());
@@ -510,8 +509,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         synonym0.getName().setHomotypicalGroup(taxon1.getHomotypicGroup());
         synonym2.getName().setHomotypicalGroup(synonym1.getHomotypicGroup());
         //tax2.addHeterotypicSynonymName(synonym.getName());
-        taxon1.addSynonym(synonym1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-        taxon1.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        taxon1.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF());
+        taxon1.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         service.save(synonym1);
         service.save(synonym2);
@@ -544,9 +543,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         synonym0.getName().setHomotypicalGroup(taxon1.getHomotypicGroup());
         synonym2.getName().setHomotypicalGroup(synonym1.getHomotypicGroup());
         //tax2.addHeterotypicSynonymName(synonym.getName());
-        taxon1.addSynonym(synonym0, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-        taxon1.addSynonym(synonym1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-        taxon1.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        taxon1.addSynonym(synonym0, SynonymType.HOMOTYPIC_SYNONYM_OF());
+        taxon1.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF());
+        taxon1.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         service.save(synonym1);
         service.save(synonym2);
@@ -569,7 +568,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testDeleteSynonymSynonymTaxonDontDeleteName(){
         final String[]tableNames = {
 //                "TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-//                "SynonymRelationship","SynonymRelationship_AUD",
 //                "HomotypicalGroup","HomotypicalGroup_AUD"
         };
 
@@ -604,7 +602,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     //test delete synonym and his name
     public final void testDeleteSynonymSynonymTaxonDeleteName(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -637,7 +634,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     //test delete synonym -> all relationships are deleted, the name is deleted and the synonym itself
     public final void testDeleteSynonymSynonymTaxonBooleanRelToOneTaxon(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -708,7 +704,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testDeleteSynonymSynonymTaxonBooleanDeleteOneTaxon(){
         final String[]tableNames = {
 //                "TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-//                "SynonymRelationship","SynonymRelationship_AUD",
 //                "HomotypicalGroup","HomotypicalGroup_AUD"
         };
         int nSynonyms = service.count(Synonym.class);
@@ -721,7 +716,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        taxon2.addSynonym(synonym1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        taxon2.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF());
         service.saveOrUpdate(synonym1);
         int nRelations = service.countSynonyms(true);
         //this was "3" when we still had synonym relationships
@@ -745,7 +740,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedName(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -801,7 +795,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameDeleteAllNameRelations(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -850,7 +843,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameIgnoreIsBasionym(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -905,7 +897,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRollback(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -947,7 +938,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithoutTransaction(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-                "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
         int nSynonyms = service.count(Synonym.class);
@@ -1003,15 +993,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //synonyms = taxonDao.getAllSynonyms(null, null);
         //assertEquals("Number of synonyms should be 2",2,synonyms.size());
-        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF(), true);
+        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymType.INFERRED_EPITHET_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", "SynGenus lachesis syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
 
-        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF(), true);
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymType.INFERRED_GENUS_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", "Acherontia ciprosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
 
-        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF(), true);
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymType.POTENTIAL_COMBINATION_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", "SynGenus ciprosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
         //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
@@ -1772,8 +1762,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
         synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
 
-        taxWithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-        taxWithSyn.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
+        taxWithSyn.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
         uuidSyn = service.save(synonym).getUuid();

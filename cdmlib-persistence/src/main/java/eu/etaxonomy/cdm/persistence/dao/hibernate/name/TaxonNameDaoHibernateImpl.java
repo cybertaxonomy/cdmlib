@@ -791,8 +791,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
         return null;
     }
-@Override
-public List<HashMap<String,String>> getNameRecords(){
+
+    @Override
+    public List<HashMap<String,String>> getNameRecords(){
     	String sql= "SELECT"
     			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
     			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
@@ -816,8 +817,7 @@ public List<HashMap<String,String>> getNameRecords(){
     			+ "	LEFT OUTER JOIN TaxonNameBase nameType ON tdb.typename_id = nameType.id"
     			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameType.nomenclaturalreference_id = nameTypeRef.id"
     			+ "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
-    			+ "	LEFT OUTER JOIN SynonymRelationship sr ON tb.id = sr.relatedfrom_id"
-    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = sr.relatedto_id"
+    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = tb.acceptedTaxon_id"
     			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
     			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
 
@@ -864,9 +864,6 @@ public List<HashMap<String,String>> getNameRecords(){
 	   }
 
 		return nameRecords;
-
-
-
     }
 
 

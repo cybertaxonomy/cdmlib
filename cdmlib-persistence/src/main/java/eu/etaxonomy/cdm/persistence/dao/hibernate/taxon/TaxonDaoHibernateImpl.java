@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -644,46 +644,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return criteria.list();
     }
 
-//    @Override
-//    public List<RelationshipBase> getRelationships(Integer limit, Integer start) {
-//        Class<? extends RelationshipBase> clazz = RelationshipBase.class;  //preliminary, see #2653
-//        AuditEvent auditEvent = getAuditEventFromContext();
-//        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-//            // for some reason the HQL .class discriminator didn't work here so I created this preliminary
-//            // implementation for now. Should be cleaned in future.
-//
-//            List<RelationshipBase> result = new ArrayList<RelationshipBase>();
-//
-//            int taxRelSize = countAllRelationships(TaxonRelationship.class);
-//
-//            if (taxRelSize > start){
-//
-//                String hql = " FROM TaxonRelationship as rb ORDER BY rb.id ";
-//                Query query = getSession().createQuery(hql);
-//                query.setFirstResult(start);
-//                if (limit != null){
-//                    query.setMaxResults(limit);
-//                }
-//                result = query.list();
-//            }
-//            limit = limit - result.size();
-//            if (limit > 0){
-//                String hql = " FROM SynonymRelationship as rb ORDER BY rb.id ";
-//                Query query = getSession().createQuery(hql);
-//                start = (taxRelSize > start) ? 0 : (start - taxRelSize);
-//                query.setFirstResult(start);
-//                if (limit != null){
-//                    query.setMaxResults(limit);
-//                }
-//                result.addAll(query.list());
-//            }
-//            return result;
-//
-//        } else {
-//            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-//            return query.getResultList();
-//        }
-//    }
 
     @Override
     public UUID delete(TaxonBase taxonBase) throws DataAccessException{
@@ -867,7 +827,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
+    public int countSynonyms(Taxon taxon, SynonymType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(Synonym.class);
@@ -892,7 +852,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public int countSynonyms(Synonym synonym, SynonymRelationshipType type) {
+    public int countSynonyms(Synonym synonym, SynonymType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(Synonym.class);
@@ -1101,17 +1061,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     }
 
-    class SynonymRelationshipFromTaxonComparator implements Comparator<Synonym> {
-
-        @Override
-        public int compare(Synonym syn1, Synonym syn2) {
-            return syn1.getTitleCache().compareTo(syn2.getTitleCache());
-        }
-
-    }
-
     @Override
-    public List<Synonym> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(Synonym.class);
@@ -1331,83 +1282,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return null;
     }
 
-
-
-
-/*	private void xxx(List<SynonymRelationship> synonymRelationships, HashMap <UUID, ZoologicalName> zooHashMap, SynonymRelationshipType type, String addString){
-
-        for (SynonymRelationship synonymRelation:synonymRelationships){
-            TaxonNameBase synName;
-            NonViralName inferredSynName;
-            Synonym syn = synonymRelation.getSynonym();
-            HibernateProxyHelper.deproxy(syn);
-
-            synName = syn.getName();
-            ZoologicalName zooName = zooHashMap.get(synName.getUuid());
-            String synGenusName = zooName.getGenusOrUninomial();
-
-            switch(type.getId()){
-            case SynonymRelationshipType.INFERRED_EPITHET_OF().getId():
-                inferredSynName.setSpecificEpithet(addString);
-                break;
-            case SynonymRelationshipType.INFERRED_GENUS_OF().getId():
-                break;
-            case SynonymRelationshipType.POTENTIAL_COMBINATION_OF().getId():
-                break;
-            default:
-            }
-            if (!synonymsGenus.contains(synGenusName)){
-                synonymsGenus.add(synGenusName);
-            }
-            inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
-            inferredSynName.setSpecificEpithet(epithetOfTaxon);
-            inferredSynName.setGenusOrUninomial(synGenusName);
-            inferredEpithet = Synonym.NewInstance(inferredSynName, null);
-            taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
-            inferredSynonyms.add(inferredEpithet);
-            inferredSynName.generateTitle();
-            taxonNames.add(inferredSynName.getNameCache());
-        }
-
-
-        if (!taxonNames.isEmpty()){
-        List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
-        ZoologicalName name;
-        if (!synNotInCDM.isEmpty()){
-            for (Synonym syn :inferredSynonyms){
-                name =zooHashMap.get(syn.getName().getUuid());
-                if (!synNotInCDM.contains(name.getNameCache())){
-                    inferredSynonyms.remove(syn);
-                }
-            }
-        }
-        }
-    }*/
-//
-//    @Override
-//    public int countAllRelationships() {
-//        return countAllRelationships(null);
-//    }
-//
-//
-//    //FIXME add to interface or make private
-//    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
-//        if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
-//            throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
-//        }
-//        int size = 0;
-//
-//        if (clazz == null || TaxonRelationship.class.isAssignableFrom(clazz)){
-//            String hql = " SELECT count(rel) FROM TaxonRelationship rel";
-//            size += (Long)getSession().createQuery(hql).list().get(0);
-//        }
-//        if (clazz == null || SynonymRelationship.class.isAssignableFrom(clazz)){
-//            String hql = " SELECT count(rel) FROM SynonymRelationship rel";
-//            size += (Long)getSession().createQuery(hql).list().get(0);
-//        }
-//        return size;
-//    }
-
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
         List<TaxonBase> notInDB = new ArrayList<TaxonBase>();
@@ -1535,110 +1409,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         return 0;
     }
-
-
-//    @Override
-//    public Integer countSynonyms(TaxonBase taxonBase,
-//            SynonymRelationshipType type, Direction relatedfrom) {
-//        AuditEvent auditEvent = getAuditEventFromContext();
-//        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-//            Query query = null;
-//
-//            if(type == null) {
-//                xx;
-//                query = getSession().createQuery("SELECT count(synonymRelationship) FROM SynonymRelationship synonymRelationship WHERE synonymRelationship." + relatedfrom + " = :relatedSynonym");
-//            } else {
-//                query = getSession().createQuery("SELECT count(synonymRelationship) FROM SynonymRelationship synonymRelationship WHERE synonymRelationship." + relatedfrom + " = :relatedSynonym and synonymRelationship.type = :type");
-//                query.setParameter("type",type);
-//            }
-//            query.setParameter("relatedTaxon", taxonBase);
-//
-//            return ((Long)query.uniqueResult()).intValue();
-//        } else {
-//            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
-//            query.add(AuditEntity.relatedId(relatedfrom.toString()).eq(taxonBase.getId()));
-//            query.addProjection(AuditEntity.id().count());
-//
-//            if(type != null) {
-//                query.add(AuditEntity.relatedId("type").eq(type.getId()));
-//            }
-//
-//            return ((Long)query.getSingleResult()).intValue();
-//        }
-//    }
-
-//
-//    @Override
-//    public List<Synonym> getSynonyms(TaxonBase taxonBase,
-//            SynonymRelationshipType type, Integer pageSize, Integer pageNumber,
-//            List<OrderHint> orderHints, List<String> propertyPaths,
-//            Direction direction) {
-//
-//        AuditEvent auditEvent = getAuditEventFromContext();
-//        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-//            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
-//
-//            if (direction.equals(Direction.relatedTo)){
-//                criteria.add(Restrictions.eq("relatedTo", taxonBase));
-//            }else{
-//                criteria.add(Restrictions.eq("relatedFrom", taxonBase));
-//            }
-//            if(type != null) {
-//                criteria.add(Restrictions.eq("type", type));
-//            }
-//
-//            addOrder(criteria,orderHints);
-//
-//            if(pageSize != null) {
-//                criteria.setMaxResults(pageSize);
-//                if(pageNumber != null) {
-//                    criteria.setFirstResult(pageNumber * pageSize);
-//                } else {
-//                    criteria.setFirstResult(0);
-//                }
-//            }
-//
-//            List<Synonym> result = criteria.list();
-//            defaultBeanInitializer.initializeAll(result, propertyPaths);
-//
-//            return result;
-//        } else {
-//            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
-//
-//            if (direction.equals(Direction.relatedTo)){
-//                query.add(AuditEntity.relatedId("relatedTo").eq(taxonBase.getId()));
-//            }else{
-//                query.add(AuditEntity.relatedId("relatedFrom").eq(taxonBase.getId()));
-//            }
-//
-//            if(type != null) {
-//                query.add(AuditEntity.relatedId("type").eq(type.getId()));
-//            }
-//
-//            if(pageSize != null) {
-//                query.setMaxResults(pageSize);
-//                if(pageNumber != null) {
-//                    query.setFirstResult(pageNumber * pageSize);
-//                } else {
-//                    query.setFirstResult(0);
-//                }
-//            }
-//
-//            List<Synonym> result = query.getResultList();
-//            defaultBeanInitializer.initializeAll(result, propertyPaths);
-//
-//            // Ugly, but for now, there is no way to sort on a related entity property in Envers,
-//            // and we can't live without this functionality in CATE as it screws up the whole
-//            // taxon tree thing
-//            if(orderHints != null && !orderHints.isEmpty()) {
-//                SortedSet<Synonym> sortedList = new TreeSet<Synonym>(new SynonymRelationshipFromTaxonComparator());
-//                sortedList.addAll(result);
-//                return new ArrayList<>(sortedList);
-//            }
-//
-//            return result;
-//        }
-//    }
 
 
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){

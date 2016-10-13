@@ -127,7 +127,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -632,7 +632,7 @@ public class FullCoverageDataGenerator {
 
 		TaxonNameBase<?,?> synName = BotanicalName.NewInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
-		taxon.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 		taxon.setDoubtful(true);
 		handleIdentifiableEntity(syn);
 

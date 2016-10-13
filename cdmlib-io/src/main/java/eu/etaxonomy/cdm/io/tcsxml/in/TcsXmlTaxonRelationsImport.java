@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -193,14 +193,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						//basionymName.getHomotypicalGroup().addTypifiedName(name);
 					} else if (taxonBase instanceof Synonym){
 						Synonym synonym = (Synonym) taxonBase;
-						((Taxon)basionym).addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						((Taxon)basionym).addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
 						basionym.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(basionym);
 					}
 				}else{
 					if (taxonBase instanceof Taxon){
 						Synonym synonym = (Synonym) basionym;
-						((Taxon)taxonBase).addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						((Taxon)taxonBase).addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
 						taxonBase.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(taxonBase);
 					} else{
@@ -223,14 +223,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				Synonym basionymSyn = Synonym.NewInstance(basionymName, unknownSec());
 				if (taxonBase instanceof Taxon){
 					Taxon taxon = (Taxon)taxonBase;
-					taxon.addSynonym(basionymSyn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+					taxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF());
 					taxon.getHomotypicGroup().setGroupBasionym(basionymName);
 					taxonStore.add(taxon);
 				} else{
 					Synonym syn = (Synonym) taxonBase;
 					if (syn.getAcceptedTaxon() != null){
 						Taxon accTaxon = syn.getAcceptedTaxon();
-						accTaxon.addSynonym(basionymSyn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						accTaxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF());
 						accTaxon.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(accTaxon);
 					}
@@ -352,7 +352,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				RelationshipTermBase<?> relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
 
 				//toTaxon (should be part of relationshipType)
-				boolean isSynonym = (relType instanceof SynonymRelationshipType);
+				boolean isSynonym = (relType instanceof SynonymType);
 				TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, state.getMissingConceptLSIDs(), isSynonym, success, state);
 
 				if (toTaxon != null && fromTaxon != null){
@@ -369,8 +369,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						success.setValue(false);
 					}else{
 						Taxon taxonTo = (Taxon)toTaxon;
-						if (relType instanceof SynonymRelationshipType){
-							SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
+						if (relType instanceof SynonymType){
+							SynonymType synRelType = (SynonymType)relType;
 							if (! (fromTaxon instanceof Synonym )){
 								logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
 								success.setValue(false);
@@ -379,8 +379,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 								TaxonNameBase<?,?> synName = synonym.getName();
 								TaxonNameBase<?,?> accName = taxonTo.getName();
 								if (synName != null && accName != null && synName.isHomotypic(accName)
-											&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
-									synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+											&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
+									synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 								}
 								if (! relationExists(taxonTo, synonym, synRelType)){
 									taxonTo.addSynonym(synonym, synRelType);
@@ -561,7 +561,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return result;
 	}
 
-	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
+	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymType synRelType){
 		if (synonym == null || taxonTo == null
 		        || !taxonTo.equals(synonym.getAcceptedTaxon())){
 			return false;
@@ -581,7 +581,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				}
 				Set<Synonym> syns = typifiedName.getSynonyms();
 				for(Synonym syn:syns){
-					aboutTaxon.addSynonym(syn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
 				}
 			}
 		}

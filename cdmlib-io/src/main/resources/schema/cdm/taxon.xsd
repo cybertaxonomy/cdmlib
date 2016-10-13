@@ -18,9 +18,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:element name="Synonym" type="taxon:Synonym"/>
 
-  <xs:element name="SynonymRelationship" type="taxon:SynonymRelationship"/>
-
-  <xs:element name="SynonymRelationshipType" type="taxon:SynonymRelationshipType"/>
+  <xs:element name="SynonymType" type="taxon:SynonymType"/>
 
   <xs:element name="Taxon" type="taxon:Taxon"/>
 
@@ -40,13 +38,6 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="taxonNode" type="taxon:TaxonNode" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="SynonymRelations" minOccurs="0" nillable="true">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="taxon:SynonymRelationship" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -137,24 +128,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:complexContent>
       <xs:extension base="taxon:TaxonBase">
         <xs:sequence>
-          <xs:element name="SynonymRelations" minOccurs="0" nillable="true">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="taxon:SynonymRelationship" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="SynonymRelationship">
-    <xs:complexContent>
-      <xs:extension base="common:RelationshipBase">
-        <xs:sequence>
-          <xs:element name="RelatedFrom" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="RelatedTo" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AcceptedTaxon" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Type" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="IsProParte" type="xs:boolean"/>
           <xs:element name="IsPartial" type="xs:boolean"/>
@@ -163,7 +137,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="SynonymRelationshipType">
+  <xs:complexType name="SynonymType">
     <xs:complexContent>
       <xs:extension base="common:RelationshipTermBase">
         <xs:sequence/>

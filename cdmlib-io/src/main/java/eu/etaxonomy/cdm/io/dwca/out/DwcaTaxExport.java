@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -136,11 +136,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 	private void handleSynonyms(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
 		for (Synonym synonym :taxon.getSynonyms() ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
-			SynonymRelationshipType type = synonym.getType();
+			SynonymType type = synonym.getType();
 			boolean isProParte = synonym.isProParte();
 			boolean isPartial = synonym.isPartial();
 			if (type == null){ // should not happen
-				type = SynonymRelationshipType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF();
 			}
 			NonViralName<?> name = CdmBase.deproxy(synonym.getName(), NonViralName.class);
 			//????
@@ -329,9 +329,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNomenclaturalCode().synonymStatusLabel();
-			if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
+			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
 				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";

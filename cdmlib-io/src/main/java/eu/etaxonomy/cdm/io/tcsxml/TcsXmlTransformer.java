@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.PrintSeries;*/
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 //import eu.etaxonomy.cdm.model.reference.WebPage;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -289,8 +289,8 @@ public final class TcsXmlTransformer {
 		if (tcsRelationshipType == null){ return null;
 
 		//Synonym relationships
-//		}else if (tcsRelationshipType.equals("is synonym for")){return SynonymRelationshipType.SYNONYM_OF();
-		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymRelationshipType.SYNONYM_OF();
+//		}else if (tcsRelationshipType.equals("is synonym for")){return SynonymType.SYNONYM_OF();
+		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymType.SYNONYM_OF();
 
 		//Taxon relationships
 		}else if (tcsRelationshipType.equals("is child taxon of")){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();

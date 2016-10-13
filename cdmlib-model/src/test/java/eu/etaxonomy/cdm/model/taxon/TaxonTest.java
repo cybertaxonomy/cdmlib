@@ -88,8 +88,8 @@ public class TaxonTest extends EntityTestBase {
 		// synonymy
 		syn1=Synonym.NewInstance(name1,sec);
 		syn2=Synonym.NewInstance(name2,sec);
-		child1.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		child2.addSynonym(syn2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+		child1.addSynonym(syn1, SynonymType.HETEROTYPIC_SYNONYM_OF());
+		child2.addSynonym(syn2, SynonymType.HOMOTYPIC_SYNONYM_OF());
 		//misaplication
 		misTaxon1 = Taxon.NewInstance(name4, misSec);
 		misTaxon2 = Taxon.NewInstance(name4, misSec);
@@ -126,7 +126,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddSynonym() {
-		freeT.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		freeT.addSynonym(syn1, SynonymType.HETEROTYPIC_SYNONYM_OF());
 		assertTrue(freeT.getSynonyms().contains(syn1));
 		assertTrue(syn1.getAcceptedTaxon().equals(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
@@ -209,7 +209,7 @@ public class TaxonTest extends EntityTestBase {
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
         //synonym type must be homotypic
-        Assert.assertEquals("Synonym must be homotypic", SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), synonym.getType());
+        Assert.assertEquals("Synonym must be homotypic", SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym.getType());
         // get the homotypic group of that synonym
         HomotypicalGroup homotypicGroupOfSynonym = synonym.getHomotypicGroup();
         // everything is fine

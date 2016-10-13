@@ -42,15 +42,14 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
  * of which are not used by the {@link TaxonBase#getSec() reference} to designate a real
  * taxon but are mentioned as taxon names that were oder are used by some other
  * unspecified references to designate (at least to some extent) the same
- * particular real taxon. Synonyms that are involved in no
- * {@link SynonymRelationship synonym relationship} are actually meaningless.<BR>
- * Splitting taxa in "accepted/correct" and "synonyms"
+ * particular real taxon. Synonyms that are {@link #getAcceptedTaxon() attached} to an accepted {@link Taxon taxon}
+ * are actually meaningless.<BR>
+ * Splitting taxa in "accepted/valid" and "synonyms"
  * makes it easier to handle particular relationships between
- * ("accepted/correct") {@link Taxon taxa} on the one hand and between ("synonym") taxa
- * and ("accepted/correct") taxa on the other.
+ * ("accepted/valid") {@link Taxon taxa} on the one hand and ("synonym") taxa
+ *  on the other.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:55
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -67,9 +66,10 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @Configurable
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
 public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
-	private static final long serialVersionUID = -454067515022159757L;
+    private static final long serialVersionUID = 6977221584815363620L;
 
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Synonym.class);
 
 
@@ -95,7 +95,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    private SynonymRelationshipType type;
+    private SynonymType type;
 
 //************************************* FACTORY ****************************/
 
@@ -201,11 +201,11 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     }
 
 
-    public SynonymRelationshipType getType() {
+    public SynonymType getType() {
         return type;
     }
 
-    public void setType(SynonymRelationshipType type) {
+    public void setType(SynonymType type) {
         this.type = type;
         checkHomotypic();
     }
@@ -231,54 +231,13 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 	    return this.acceptedTaxon == null || this.acceptedTaxon.isOrphaned();
 	}
 
-
-	/**
-	 * Replaces ALL accepted taxa of this synonym by the new accepted taxon.
-	 * The citation information (citation /microcitation) of the synonym relationship
-	 * is kept.
-	 * @param newAcceptedTaxon
-	 * 			the new accepted taxon
-	 * @param relType
-	 * 			if not <code>null</code> the relationship type is changed to relType
-	 * @param copyCitationInfo
-	 * 			if true the citation and the microcitation of relationship
-	 * 			is not changed.
-	 * @param citation
-	 * 			if copyCitationInfo is <code>false</code> this citation is set
-	 * 			to the synonym relationship.
-	 * @param microCitation
-	 * 			if copyCitationInfo is <code>false</code> this micro citation is set
-	 * 			to the synonym relationship.
-
-	 * @param acceptedTaxon
-	 */
-	public void replaceAcceptedTaxon(Taxon newAcceptedTaxon, SynonymRelationshipType relType) {
-
-//		Taxon oldAcceptedTaxon = this.getAcceptedTaxon();
-//
-//		oldAcceptedTaxon.removeSynonym(this, false);
-
-		this.setAcceptedTaxon(newAcceptedTaxon);
-//		newAcceptedTaxon.getSynonyms().add(this);x;
-
-		if (relType != null){
-		    this.setType(relType);
-		}
-	}
-
-	public void replaceAcceptedTaxonAndSecundum(Taxon newAcceptedTaxon, SynonymRelationshipType relType, Reference sec, String microSec) {
-	    replaceAcceptedTaxon(newAcceptedTaxon, relType);
-	    this.setSec(sec);
-        this.setSecMicroReference(microSec);
-	}
-
     /**
-     * Checks if the synonym relationship type is homotypic. If it is
+     * Checks if the synonym type is homotypic. If it is
      * the name of <code>this</code> synonym is added to the {@link HomotypicalGroup
      * homotypic group} of the {@link Taxon accepted taxon}.
      */
     private void checkHomotypic() {
-        if (type != null && type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())
+        if (type != null && type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())
                 && acceptedTaxon != null && acceptedTaxon.getName() != null){
                 acceptedTaxon.getName().getHomotypicalGroup().addTypifiedName(this.getName());
         }

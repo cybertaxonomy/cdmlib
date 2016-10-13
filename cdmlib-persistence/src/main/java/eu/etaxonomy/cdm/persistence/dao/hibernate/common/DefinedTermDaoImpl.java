@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -100,7 +100,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		indexedClasses[20] = NameTypeDesignationStatus.class;
 		indexedClasses[21] = NomenclaturalStatusType.class;
 		indexedClasses[22] = SpecimenTypeDesignationStatus.class;
-		indexedClasses[23] = SynonymRelationshipType.class;
+		indexedClasses[23] = SynonymType.class;
 		indexedClasses[24] = TaxonRelationshipType.class;
 	}
 

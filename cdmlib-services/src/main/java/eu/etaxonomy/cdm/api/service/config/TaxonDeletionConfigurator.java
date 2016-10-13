@@ -123,8 +123,7 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     /**
      * If <code>true</code> synonyms will be removed if possible but only if {@link #isDeleteSynonymRelations()}
      * is also <code>true</code>.
-     * It is possible to remove a synonym if it is not used in any other context, e.g. any
-     * other @link {@link SynonymRelationship}
+     * It is possible to remove a synonym if it is not used in any other context
      * @return
      */
     public boolean isDeleteSynonymsIfPossible() {

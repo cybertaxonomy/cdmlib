@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -100,7 +100,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Taxon t2;
 	private Taxon t4;
 //	private Synonym s1;
-	private SynonymRelationshipType synonymRelationshipType;
+	private SynonymType synonymType;
 	private Reference reference;
 	private String referenceDetail;
 	private Classification classification;
@@ -117,7 +117,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	@DataSet
@@ -127,8 +127,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(node2Uuid);
 		node4 = taxonNodeService.load(node4Uuid);
 		reference = referenceService.load(referenceUuid);
-//		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
+//		synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHomotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
 
 		//
@@ -172,7 +172,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         UUID uuidT4 = t4.getUuid();
         t4 = (Taxon) taxonService.load(uuidT4);
         TaxonNameBase name4 = nameService.load(t4.getName().getUuid());
-        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymRelationshipType, reference, referenceDetail);
+        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail);
         if (result.isError() || result.isAbort()){
             Assert.fail();
         }
@@ -180,7 +180,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(t4);
 
 		//Taxon can't be deleted because of the polytomous key node
-		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymType, reference, referenceDetail);
 		if (result.isError() || result.isAbort()){
 			Assert.fail();
 		}
@@ -215,7 +215,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -226,7 +226,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
 		reference = referenceService.load(referenceUuid);
-		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHeterotypicSynonymOf), SynonymRelationshipType.class) ;
+		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHeterotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
 
 		// descriptions
@@ -258,7 +258,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		//do it
 		DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode
-		        (node1, node2, synonymRelationshipType, reference, referenceDetail);
+		        (node1, node2, synonymType, reference, referenceDetail);
 
 		//post conditions
 		if (!result.getUpdatedObjects().iterator().hasNext()){
@@ -277,7 +277,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
 		HibernateProxyHelper.deproxy(t2.getName());
 
-		termService.saveOrUpdate(synonymRelationshipType);
+		termService.saveOrUpdate(synonymType);
 		Assert.assertFalse("taxon 2 must hav a synonym now", t2.getSynonyms().isEmpty());
 		assertEquals("taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms", 3, t2.getSynonyms().size());
 		assertEquals("taxon 2 must have 2 descriptions now, taken form taxon 1", 2, t2.getDescriptions().size());

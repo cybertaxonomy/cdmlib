@@ -41,7 +41,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 @XmlSeeAlso({
 	HybridRelationshipType.class,
 	NameRelationshipType.class,
-	SynonymRelationshipType.class,
+	SynonymType.class,
 	TaxonRelationshipType.class
 })
 @Entity

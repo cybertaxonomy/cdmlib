@@ -87,9 +87,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         this.isFilterOnly = isFilter;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.dwca.in.ItemFilter#toBeRemovedFromStream(java.lang.Object)
-     */
     @Override
     public boolean toBeRemovedFromStream(StreamItem item) {
         if (!config.isDoSplitRelationshipImport()){
