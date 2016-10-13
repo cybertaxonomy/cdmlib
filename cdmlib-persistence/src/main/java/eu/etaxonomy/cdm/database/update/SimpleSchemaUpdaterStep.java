@@ -38,6 +38,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 // *************************** FACTORY ********************************/
 
 	/**
+	 * Deprecated method
 	 * @deprecated use  {@link #NewNonAuditedInstance(String, String)},
 	 * {@link #NewAuditedInstance(String, String, boolean, String)},
 	 * or {@link #NewExplicitAuditedInstance(String, String, String)} instead
@@ -47,12 +48,22 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 
+	/**
+     * Simple schema updater with update query only for non_AUD tables.
+	 *
+	 * @param stepName step name
+	 * @param defaultQuery the query
+	 * @param adapt preliminary
+	 * @return
+	 */
 	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(String stepName, String defaultQuery, int adapt){
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 
 	/**
-	 * @param stepName Step name
+	 * Simple schema updater with update query for AUD and non_AUD tables.
+     *
+     * @param stepName Step name
 	 * @param defaultQuery query
 	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonNameBase
 	 *     (while TaxonNameBase_AUD is the audited table
@@ -64,6 +75,14 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, nonAuditedTableName, null);
 	}
 
+	/**
+	 * Simple schema updater with an explicit query for AUD table.
+	 * @param stepName step name
+	 * @param defaultQuery the non_AUD update query
+	 * @param defaultQueryForAuditedTables the AUD update query
+	 * @param adapt preliminary
+	 * @return
+	 */
 	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(String stepName, String defaultQuery, String defaultQueryForAuditedTables, int adapt){
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
