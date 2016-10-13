@@ -143,7 +143,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 
 
         //#3925
-        //Mode excluded from Taxon to TaxonNode
+        //Move excluded from Taxon to TaxonNode
         stepName = "Move excluded from Taxon to TaxonNode";
         query = "UPDATE @@TaxonNode@@ tn "
                 + " SET excluded = (SELECT exluded FROM @@TaxonBase@@ tb "
@@ -200,10 +200,10 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
         stepList.add(step);
 
-        //#5952 Add fieldNumberCache
+        //#5952 Add identityCache
         stepName = "Add identityCache";
         tableName = "SpecimenOrObservationBase";
-        newColumnName = "identifyingCache";
+        newColumnName = "identityCache";
         step = ColumnAdder.NewStringInstance(stepName, nonAuditedTableName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
