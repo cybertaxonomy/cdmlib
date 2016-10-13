@@ -293,6 +293,9 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         tableName = "SynonymRelationship";
         step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
+
+        //update nomenclatural code
+        NomenclaturalCodeUpdater.NewInstance(stepList);
 	}
 
     /**
