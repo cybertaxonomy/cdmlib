@@ -50,7 +50,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * International Code of Nomenclature of Bacteria
 	*/
 	@XmlEnumValue("ICNB")
-	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"),
+	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB","BacterialName"),
 
 	//1
 	/**
@@ -58,43 +58,42 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * Former International Code of Botanical Nomenclature
 	 */
 	@XmlEnumValue("ICNAFP")
-	ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP"),
+	ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP","BotanicalName"),
 
 	//2
 	/**
 	 * International Code of Cultivated Plants
 	 */
 	@XmlEnumValue("ICNCP")
-	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"),
+	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP","CultivarPlantName"),
 
 	//3
 	/**
 	 * International Code of Zoological Nomenclature
 	 */
 	@XmlEnumValue("ICZN")
-	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"),
+	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN","ZoologicalName"),
 
 	//4
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
-	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN");
+	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN","ViralName");
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 
-	public String getTitleCache() {
-		return getMessage();
-	}
+	private String dtype;
 
-	private NomenclaturalCode(UUID uuid, String titleCache){
+	private NomenclaturalCode(UUID uuid, String titleCache, String dtype){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
+		this.dtype = dtype;
 	}
 
+    public String getTitleCache() {
+        return getMessage();
+    }
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Enum#toString()
-	 */
 	@Override
 	public String toString() {
 		return "NomenclaturalCode" + " <" + getUuid() + "> " + this.name();
@@ -111,6 +110,16 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		}
 		return null;
 	}
+
+    public static NomenclaturalCode fromDtype(String string){
+        for(NomenclaturalCode code : NomenclaturalCode.values()){
+            if(code.dtype.equals(string)) {
+                return code;
+            }
+        }
+        return null;
+    }
+
 
 	/**
 	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
@@ -219,6 +228,14 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 			return "synonym";
 		}
 	}
+
+
+    /**
+     * @return the dtype of the according CDM class
+     */
+    public String getDtype() {
+        return dtype;
+    }
 
 // *************************** DELEGATE **************************************/
 
