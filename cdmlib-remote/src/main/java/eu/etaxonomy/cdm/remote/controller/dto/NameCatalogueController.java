@@ -839,6 +839,11 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     Set<IdentifiableSource> sources = taxon.getSources();
                     String[] didname = getDatasetIdName(sources);
 
+                    String lsidString = null;
+                    if( taxon.getLsid() != null) {
+                        lsidString = taxon.getLsid().toString();
+                    }
+
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
@@ -850,7 +855,8 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             didname[1],
                             secTitle,
                             modified,
-                            taxon.getLsid().toString());
+                            lsidString
+                     );
 
 
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
