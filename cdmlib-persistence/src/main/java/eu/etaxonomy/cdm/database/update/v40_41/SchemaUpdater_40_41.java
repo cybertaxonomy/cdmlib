@@ -88,9 +88,19 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 //                 " AND NOT EXISTS (SELECT * FROM @@DescriptionElementBase@@ deb WHERE deb.indescription_id = db.id )";
         query = "DELETE FROM @@DescriptionBase@@ "
                 + " WHERE DTYPE = 'TaxonNameDescription' AND id IN (SELECT id FROM " +
-                  " (SELECT id FROM DescriptionBase db WHERE NOT EXISTS "
-                  + " (SELECT * FROM DescriptionElementBase deb WHERE deb.indescription_id = db.id ) ) as drvTbl) ";
-        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionBase", -99);
+                  " (SELECT id FROM DescriptionBase db "
+                  + "   WHERE NOT EXISTS (SELECT * FROM DescriptionElementBase deb WHERE deb.indescription_id = db.id )"
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_Annotation MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_Credit MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_Extension MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_Identifier MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_Marker MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_OriginalSourceBase MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_Reference MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_RightsInfo MN WHERE MN.descriptionbase_id = db.id) "
+                  + "   AND NOT EXISTS (SELECT * FROM WorkingSet_DescriptionBase MN WHERE MN.descriptions_id = db.id) "
+                  + " ) as drvTbl) ";
+        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(simpleStep);
 
         //#5921
