@@ -25,6 +25,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -155,6 +156,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<TaxonNodeAgentRelation>();
 
+    @XmlAttribute(name= "unplaced")
+    private boolean unplaced = false;
+    public boolean isUnplaced() {return unplaced;}
+    public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
+
+    @XmlAttribute(name= "excluded")
+    private boolean excluded = false;
+    public boolean isExcluded() {return excluded;}
+    public void setExcluded(boolean excluded) {this.excluded = excluded;}
+
+//    @XmlElement(name = "microReference")
+//    private String excludedNote;  ==>?? Multi-Lingual?
 
 //	private Taxon originalConcept;
 //	//or

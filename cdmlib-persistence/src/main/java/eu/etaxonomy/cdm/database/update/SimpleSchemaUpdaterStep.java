@@ -157,14 +157,15 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return true;
 	}
 
-	private void makeAuditedQuery(DatabaseTypeEnum dbType, String tableName){
-		String nonAuditQuery = this.queryMap.get(dbType);
-		if (StringUtils.isBlank(nonAuditQuery)){
+	private void makeAuditedQuery(DatabaseTypeEnum dbType, String tableName, boolean addTable){
+		String auditQuery = addTable? auditQueryMap.get(dbType) : queryMap.get(dbType);
+		if (StringUtils.isBlank(auditQuery)){
 			throw new IllegalArgumentException("Non-audit query must not be blank");
 		}
-		String auditQuery = nonAuditQuery.replace("@@" + tableName + "@@", "@@" + tableName + "_AUD@@");
+	    auditQuery = auditQuery.replace("@@" + tableName + "@@", "@@" + tableName + "_AUD@@");
 		//TODO warning if nothing changed
 		this.auditQueryMap.put(dbType, auditQuery);
+		this.includeAudit = true;
 	}
 
 //********************************* DELEGATES *********************************/
@@ -190,9 +191,22 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		if (StringUtils.isBlank(nonAuditedTableName)){
 			throw new IllegalArgumentException("TableName must not be blank");
 		}
-		this.includeAudit = true;
-		makeAuditedQuery(null, nonAuditedTableName);
+		makeAuditedQuery(null, nonAuditedTableName, false);
 		return this;
 	}
+
+	 /**
+     * Defines a further non audited table name for computing the audited query.
+     * Requires at least one non audieted table name to be defined already.
+     * @param nonAuditedTableName uncased table name that is to be audited
+     * @return the step
+     */
+    public SimpleSchemaUpdaterStep addDefaultAuditing(String nonAuditedTableName){
+        if (StringUtils.isBlank(nonAuditedTableName)){
+            throw new IllegalArgumentException("TableName must not be blank");
+        }
+        makeAuditedQuery(null, nonAuditedTableName, true);
+        return this;
+    }
 
 }

@@ -145,18 +145,49 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //#3925
         //Move excluded from Taxon to TaxonNode
         stepName = "Move excluded from Taxon to TaxonNode";
-        query = "UPDATE @@TaxonNode@@ tn "
-                + " SET excluded = (SELECT exluded FROM @@TaxonBase@@ tb "
-                +       " INNER JOIN @@TaxonNode@@ tn2 ON tn2.taxon_id = tb.id "
-                +       " WHERE tn.id = tn2.id ";
-        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99);
+        query = "UPDATE @@TaxonNode@@ " +
+                " SET excluded = 1 " +
+                " WHERE id IN (SELECT id FROM "
+                +       "(SELECT tn.id FROM @@TaxonBase@@ tb  INNER JOIN @@TaxonNode@@ tn ON tn.taxon_id = tb.id  WHERE tb.excluded = 1)"
+                + " as drvTbl)";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
+                .addDefaultAuditing("TaxonBase");
         stepList.add(simpleStep);
 
         //#3925
-        //excluded to TaxonNode
+        //remove excluded from TaxonNode
         stepName = "Remove excluded from TaxonBase";
         tableName = "TaxonBase";
         oldColumnName = "excluded";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //#3925
+        //unplaced to TaxonNode
+        stepName = "Add unplaced to TaxonNode";
+        tableName = "TaxonNode";
+        newColumnName = "unplaced";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+
+
+        //#3925
+        //Move unplaced from Taxon to TaxonNode
+        stepName = "Move unplaced from Taxon to TaxonNode";
+        query = "UPDATE @@TaxonNode@@ " +
+                " SET unplaced = 1 " +
+                " WHERE id IN (SELECT id FROM "
+                +       "(SELECT tn.id FROM @@TaxonBase@@ tb  INNER JOIN @@TaxonNode@@ tn ON tn.taxon_id = tb.id  WHERE tb.unplaced = 1)"
+                + " as drvTbl)";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
+                .addDefaultAuditing("TaxonBase");
+        stepList.add(simpleStep);
+
+        //#3925
+        //remove unplaced from TaxonNode
+        stepName = "Remove unplaced from TaxonBase";
+        tableName = "TaxonBase";
+        oldColumnName = "unplaced";
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 

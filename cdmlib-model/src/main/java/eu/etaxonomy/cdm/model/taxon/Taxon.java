@@ -145,18 +145,6 @@ public class Taxon
      /** @see #isTaxonStatusUnknown()*/
     public void setTaxonStatusUnknown(boolean taxonStatusUnknown) {this.taxonStatusUnknown = taxonStatusUnknown;}
 
-
-    @XmlAttribute(name= "unplaced")
-    private boolean unplaced = false;
-    public boolean isUnplaced() {return unplaced;}
-    public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
-
-
-    @XmlAttribute(name= "excluded")
-    private boolean excluded = false;
-    public boolean isExcluded() {return excluded;}
-    public void setExcluded(boolean excluded) {this.excluded = excluded;}
-
     @XmlElementWrapper(name = "taxonNodes")
     @XmlElement(name = "taxonNode")
     @XmlIDREF

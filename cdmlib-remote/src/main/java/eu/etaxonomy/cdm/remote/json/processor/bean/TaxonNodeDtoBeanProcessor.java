@@ -49,8 +49,8 @@ public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
             }else{
                 json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
             }
-            json.element("unplaced", node.getTaxon().isUnplaced());
-            json.element("excluded", node.getTaxon().isExcluded());
+            json.element("unplaced", node.isUnplaced());
+            json.element("excluded", node.isExcluded());
             String ranklabel = null;
             if(node.getTaxon().getName().getRank() != null){
                 ranklabel = node.getTaxon().getName().getRank().getLabel();

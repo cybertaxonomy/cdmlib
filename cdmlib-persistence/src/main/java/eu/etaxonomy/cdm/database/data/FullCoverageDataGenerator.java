@@ -641,8 +641,6 @@ public class FullCoverageDataGenerator {
 		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(),
 				sec, "444");
 		taxon.setTaxonStatusUnknown(true);
-		taxon.setUnplaced(true);
-		taxon.setExcluded(true);
 		handleAnnotatableEntity(taxRel);
 
 
@@ -660,6 +658,8 @@ public class FullCoverageDataGenerator {
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
+	    node.setUnplaced(true);
+	    node.setExcluded(true);
 
 		cdmBases.add(taxon);
 		cdmBases.add(concept);
