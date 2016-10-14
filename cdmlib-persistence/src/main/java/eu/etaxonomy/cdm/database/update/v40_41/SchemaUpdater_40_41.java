@@ -83,9 +83,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //#5826
         //Cleanup empty name descriptions
         stepName = "Cleanup empty name descriptions";
-        query = " DELETE FROM @@DescriptionBase@@ db " +
-                 " WHERE db.DTYPE = 'TaxonNameDescription' " +
-                 " AND NOT EXISTS (SELECT * FROM @@DescriptionElementBase@@ deb WHERE deb.indescription_id = db.id )";
+//        query = " DELETE FROM @@DescriptionBase@@ db " +
+//                 " WHERE db.DTYPE = 'TaxonNameDescription' " +
+//                 " AND NOT EXISTS (SELECT * FROM @@DescriptionElementBase@@ deb WHERE deb.indescription_id = db.id )";
+        query = "DELETE FROM @@DescriptionBase@@ "
+                + " WHERE DTYPE = 'TaxonNameDescription' AND id IN (SELECT id FROM " +
+                  " (SELECT id FROM DescriptionBase db WHERE NOT EXISTS "
+                  + " (SELECT * FROM DescriptionElementBase deb WHERE deb.indescription_id = db.id ) ) as drvTbl) ";
         SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionBase", -99);
         stepList.add(simpleStep);
 
@@ -109,14 +113,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepList.add(simpleStep);
 
 
-
         //#5976
         //update sortindex on FeatureNode children
         stepName = "Update sort index on FeatureNode children";
         tableName = "FeatureNode";
         String parentIdColumn = "parent_id";
         String sortIndexColumn = "sortIndex";
-        SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, "parent_fk", sortIndexColumn, INCLUDE_AUDIT);
+        SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, parentIdColumn, sortIndexColumn, INCLUDE_AUDIT);
         stepList.add(updateSortIndex);
 
         //#5976
@@ -199,7 +202,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //Remove taxonomicParentCache from Taxon
         stepName = "Remove taxonomicParentCache from Taxon";
         tableName = "TaxonBase";
-        oldColumnName = "taxonomicParentCache";
+        oldColumnName = "taxonomicParentCache_id";
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
@@ -219,7 +222,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 
         //#5981 Add abbreviation to Rank "Cultivar"
         stepName = "Add abbreviation to Rank 'Cultivar'";
-        String updateSql = "UPDATE Representation SET abbrevLabel='cv.' WHERE label='Cultivar'";
+        String updateSql = "UPDATE Representation SET abbreviatedLabel='cv.' WHERE label='Cultivar'";
         String nonAuditedTableName = "Representation";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
         stepList.add(step);
@@ -235,7 +238,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepName = "Add identityCache";
         tableName = "SpecimenOrObservationBase";
         newColumnName = "identityCache";
-        step = ColumnAdder.NewStringInstance(stepName, nonAuditedTableName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Add protectedIdentityCache";
+        tableName = "SpecimenOrObservationBase";
+        newColumnName = "protectedIdentityCache";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
         return stepList;
@@ -275,11 +284,12 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 	    //move data
         //update pro parte
         stepName = "Update proParte";
-        String updateSql = "UPDATE %%TaxonBase%% syn " +
-                " SET proParte=1 =(SELECT proParte FROM %%SynonymRelationship%% sr WHERE sr.relatedFrom_id = syn.id)";
+        String updateSql = "UPDATE @@TaxonBase@@ syn " +
+                " SET proParte = (SELECT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
 //        -- WHERE EXISTS (SELECT proParte FROM SynonymRelationship sr WHERE sr.relatedFrom_id = syn.id AND sr.proParte = 1);
         String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
-        step = SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepName, updateSql, updateSqlAud, -99);
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
+                .addDefaultAuditing("SynonymRelationship");
         stepList.add(step);
 
         //update partial
@@ -287,6 +297,9 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         updateSql = "UPDATE @@TaxonBase@@ syn " +
                 " SET partial=(SELECT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) ";
         updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
+                .addDefaultAuditing("SynonymRelationship");
+        stepList.add(step);
 
         //update synonym type
         stepName = "Update Synonym type";

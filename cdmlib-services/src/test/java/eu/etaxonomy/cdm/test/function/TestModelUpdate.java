@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.update.CdmUpdater;
  * for running in maven.
  * @author a.mueller
  * @date 22.05.2015
- *
+ * @see CdmUpdater
  */
 public class TestModelUpdate {
 	@SuppressWarnings("unused")
@@ -33,12 +33,12 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm40" : "cdm41");
 //		database = "cdm36";
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
