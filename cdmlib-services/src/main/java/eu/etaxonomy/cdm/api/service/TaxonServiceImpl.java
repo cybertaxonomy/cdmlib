@@ -935,7 +935,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(readOnly=false)
     public DeleteResult deleteTaxon(UUID taxonUUID, TaxonDeletionConfigurator config, UUID classificationUuid)  {
 
     	if (config == null){
@@ -1042,118 +1042,103 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
          if (! config.isDeleteTaxonNodes() || (!config.isDeleteInAllClassifications() && classification == null && taxon.getTaxonNodes().size() > 1)){
-                //if (taxon.getTaxonNodes().size() > 0){
-                 result.addException(new Exception( "Taxon can't be deleted as it is used in more than one classification."));
-                   // throw new ReferencedObjectUndeletableException(message);
-                //}
+             result.addException(new Exception( "Taxon can't be deleted as it is used in more than one classification."));
          }else{
-                if (taxon.getTaxonNodes().size() != 0){
-                    Set<TaxonNode> nodes = taxon.getTaxonNodes();
-                    Iterator<TaxonNode> iterator = nodes.iterator();
-                    TaxonNode node = null;
-                    boolean deleteChildren;
-                    if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
-                        deleteChildren = true;
-                    }else {
-                        deleteChildren = false;
+             if (taxon.getTaxonNodes().size() != 0){
+                Set<TaxonNode> nodes = taxon.getTaxonNodes();
+                Iterator<TaxonNode> iterator = nodes.iterator();
+                TaxonNode node = null;
+                boolean deleteChildren;
+                if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
+                    deleteChildren = true;
+                }else {
+                    deleteChildren = false;
+                }
+                boolean success = true;
+                if (!config.isDeleteInAllClassifications() && !(classification == null)){
+                    while (iterator.hasNext()){
+                        node = iterator.next();
+                        if (node.getClassification().equals(classification)){
+                            break;
+                        }
+                        node = null;
                     }
-                    boolean success = true;
-                    if (!config.isDeleteInAllClassifications() && !(classification == null)){
-                        while (iterator.hasNext()){
-                            node = iterator.next();
-                            if (node.getClassification().equals(classification)){
-                                break;
+                    if (node != null){
+                        HibernateProxyHelper.deproxy(node, TaxonNode.class);
+                        success =taxon.removeTaxonNode(node, deleteChildren);
+                        nodeService.delete(node);
+                    } else {
+                    	result.setError();
+                    	result.addException(new Exception("The taxon can not be deleted because it is not used in defined classification."));
+                    }
+                } else if (config.isDeleteInAllClassifications()){
+                    List<TaxonNode> nodesList = new ArrayList<TaxonNode>();
+                    nodesList.addAll(taxon.getTaxonNodes());
+                    for (ITaxonTreeNode treeNode: nodesList){
+                        TaxonNode taxonNode = (TaxonNode) treeNode;
+                        if(!deleteChildren){
+                            Object[] childNodes = taxonNode.getChildNodes().toArray();
+                            for (Object childNode: childNodes){
+                                TaxonNode childNodeCast = (TaxonNode) childNode;
+                                taxonNode.getParent().addChildNode(childNodeCast, childNodeCast.getReference(), childNodeCast.getMicroReference());
                             }
-                            node = null;
-                        }
-                        if (node != null){
-                            HibernateProxyHelper.deproxy(node, TaxonNode.class);
-                            success =taxon.removeTaxonNode(node, deleteChildren);
-                            nodeService.delete(node);
-                        } else {
-                        	result.setError();
-                        	result.addException(new Exception("The taxon can not be deleted because it is not used in defined classification."));
-                        }
-                    } else if (config.isDeleteInAllClassifications()){
-                        List<TaxonNode> nodesList = new ArrayList<TaxonNode>();
-                        nodesList.addAll(taxon.getTaxonNodes());
-
-                            for (ITaxonTreeNode treeNode: nodesList){
-                                TaxonNode taxonNode = (TaxonNode) treeNode;
-                                if(!deleteChildren){
-                                    Object[] childNodes = taxonNode.getChildNodes().toArray();
-                                    for (Object childNode: childNodes){
-                                        TaxonNode childNodeCast = (TaxonNode) childNode;
-                                        taxonNode.getParent().addChildNode(childNodeCast, childNodeCast.getReference(), childNodeCast.getMicroReference());
-                                    }
-
-                                    //taxon.removeTaxonNode(taxonNode);
-                                }
-                            }
-                        config.getTaxonNodeConfig().setDeleteElement(false);
-                        DeleteResult resultNodes = nodeService.deleteTaxonNodes(nodesList, config);
-                        if (!resultNodes.isOk()){
-                        	result.addExceptions(resultNodes.getExceptions());
-                        	result.setStatus(resultNodes.getStatus());
-                        } else {
-                            result.addUpdatedObjects(resultNodes.getUpdatedObjects());
                         }
                     }
-                    if (!success){
-                        result.setError();
-                        result.addException(new Exception("The taxon can not be deleted because the taxon node can not be removed."));
+                    config.getTaxonNodeConfig().setDeleteElement(false);
+                    DeleteResult resultNodes = nodeService.deleteTaxonNodes(nodesList, config);
+                    if (!resultNodes.isOk()){
+                    	result.addExceptions(resultNodes.getExceptions());
+                    	result.setStatus(resultNodes.getStatus());
+                    } else {
+                        result.addUpdatedObjects(resultNodes.getUpdatedObjects());
                     }
                 }
+                if (!success){
+                    result.setError();
+                    result.addException(new Exception("The taxon can not be deleted because the taxon node can not be removed."));
+                }
             }
+         }
+         TaxonNameBase name = taxon.getName();
+         taxon.setName(null);
+         this.saveOrUpdate(taxon);
 
+         if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
+             try{
+                 //taxon.setName(null);
+                 UUID uuid = dao.delete(taxon);
+
+             }catch(Exception e){
+                 result.addException(e);
+                 result.setError();
+
+             }
+         } else {
+             result.setError();
+             result.addException(new Exception("The Taxon can't be deleted because it is used in a classification."));
+
+         }
             //TaxonNameBase
-            if (config.isDeleteNameIfPossible() && result.isOk()){
+        if (config.isDeleteNameIfPossible() && result.isOk()){
+           // name = HibernateProxyHelper.deproxy(name);
 
-
-                    //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
-                    TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName());
-                    //check whether taxon will be deleted or not
-
-                    if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null ){
-
-                        //name.removeTaxonBase(taxon);
-                        //nameService.saveOrUpdate(name);
-                        taxon.setName(null);
-                        //dao.delete(taxon);
-                        DeleteResult nameResult = new DeleteResult();
-
-                        //remove name if possible (and required)
-                        if (name != null && config.isDeleteNameIfPossible()){
-                        	nameResult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
-                        }
-
-                        if (nameResult.isError() || nameResult.isAbort()){
-                        	//result.setError();
-                        	result.addRelatedObject(name);
-                        	result.addExceptions(nameResult.getExceptions());
-                        }
-
-                    }
-
-            }else {
-                taxon.setName(null);
+            DeleteResult nameResult = new DeleteResult();
+            //remove name if possible (and required)
+            if (name != null ){
+                nameResult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
+            }
+            if (nameResult.isError() || nameResult.isAbort()){
+                result.addRelatedObject(name);
+                result.addExceptions(nameResult.getExceptions());
             }
 
 
-            if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
-            	try{
-            		UUID uuid = dao.delete(taxon);
-
-            	}catch(Exception e){
-            		result.addException(e);
-            		result.setError();
-
-            	}
-            } else {
-            	result.setError();
-            	result.addException(new Exception("The Taxon can't be deleted because it is used in a classification."));
-
             }
+
+
+
+
+
         }
 
         return result;
@@ -1228,8 +1213,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     }
 
-    @Transactional(readOnly = false)
+
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult deleteSynonym(Synonym synonym, Taxon taxon, SynonymDeletionConfigurator config) {
         DeleteResult result = new DeleteResult();
     	if (synonym == null){
@@ -3290,6 +3276,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return result;
 	}
 
+	@Transactional(readOnly= false)
 	@Override
 	public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid,
 			SynonymDeletionConfigurator config) {

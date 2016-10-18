@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,16 +35,20 @@ import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
-import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -116,6 +121,21 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private UUID uuidTaxWithoutSyn;
     private UUID uuidSyn2;
     private UUID uuidTaxWithSyn;
+
+    private static String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
+    private static String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
+    private static String[] ranks = {"subsp", "var", "f"};
+
+    public static UUID GENUS_NAME_UUID = UUID.fromString("8d761fc4-b509-42f4-9568-244161934336");
+    public static UUID GENUS_UUID = UUID.fromString("bf4298a8-1735-4353-a210-244442e1bd62");
+    public static UUID BASIONYM_UUID = UUID.fromString("7911c51d-ccb7-4708-8992-639eae58a0e3");
+    public static UUID SPECIES1_UUID = UUID.fromString("f0eb77d9-76e0-47f4-813f-9b5605b78685");
+    public static UUID SPECIES1_NAME_UUID = UUID.fromString("efd78713-126f-42e1-9070-a1ff83f12abf");
+    public static UUID SYNONYM_NAME_UUID = UUID.fromString("b9cbaa74-dbe0-4930-8050-b7754ce85dc0");
+    public static UUID SPECIES2_NAME_UUID = UUID.fromString("0267ab67-483e-4da5-b654-11013b242c22");
+    public static UUID SPECIES2_UUID = UUID.fromString("e20eb549-ced6-4e79-9d74-44f0792a4929");
+    public static UUID SYNONYM2_NAME_UUID = UUID.fromString("7c17c811-4201-454b-8108-7be7c91c0938");
+    public static UUID SPECIES5_NAME_UUID = UUID.fromString("0c6ecaac-804d-49e5-a33f-1b7ee77439e3");
 
 /****************** TESTS *****************************/
 
@@ -1056,15 +1076,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
         UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
         commitAndStartNewTransaction(tableNames);
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        service.save(testTaxon);
+        Taxon testTaxon =getTestTaxon();
+       // service.save(testTaxon);
         commitAndStartNewTransaction(tableNames);
         int nTaxa = service.count(Taxon.class);
 
         Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
-        Taxon parent = (Taxon)service.find(TaxonGenerator.GENUS_UUID);
+        Taxon parent = (Taxon)service.find(GENUS_UUID);
         Assert.assertNotNull("Parent taxon should exist", parent);
-        Taxon child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        Taxon child1 = (Taxon)service.find(SPECIES1_UUID);
         Assert.assertNotNull("Child taxon should exist", child1);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteTaxonNodes(false);
@@ -1079,7 +1099,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
-        child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        child1 = (Taxon)service.find(SPECIES1_UUID);
         Assert.assertNotNull("Child taxon should exist", child1);
         Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
 
@@ -1115,7 +1135,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         occurenceService.delete(identifiedUnit);
 
         commitAndStartNewTransaction(tableNames);
-        child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        child1 = (Taxon)service.find(SPECIES1_UUID);
 
         assertEquals(0, child1.getTaxonNodes().size());
        // try {
@@ -1130,7 +1150,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
 
         config.setDeleteTaxonNodes(true);
-        Taxon child2 =(Taxon) service.find(TaxonGenerator.SPECIES2_UUID);
+        Taxon child2 =(Taxon) service.find(SPECIES2_UUID);
 
        // try {
         result = service.deleteTaxon(child2.getUuid(), config, child2.getTaxonNodes().iterator().next().getClassification().getUuid());
@@ -1155,11 +1175,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testDeleteTaxon(){
 
         //create a small classification
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+
+        Taxon testTaxon = getTestTaxon();
 
         service.save(testTaxon).getUuid();
 
-        Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
         Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
         UUID descrUUID = null;
         UUID descrElementUUID = null;
@@ -1168,7 +1189,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             descrUUID = descr.getUuid();
             descrElementUUID = descr.getElements().iterator().next().getUuid();
         }
-        BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1184,8 +1205,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
-        Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
 
         //descriptionService.find(descrUUID);
         assertNull(descriptionService.find(descrUUID));
@@ -1210,15 +1231,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testDeleteTaxonUsedInTaxonRelation(){
 
         //create a small classification
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
 
         service.save(testTaxon).getUuid();
 
-        Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
-        Taxon speciesTaxon2 = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
+        Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
+        Taxon speciesTaxon2 = (Taxon)service.find(SPECIES2_UUID);
         speciesTaxon.addTaxonRelation(speciesTaxon2, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
 
-        BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1234,8 +1255,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
-        Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
 
 
         assertNotNull(taxonName);
@@ -1278,11 +1299,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
                  "TaxonNameBase","TaxonNameBase_AUD"};
     	 commitAndStartNewTransaction(tableNames);
         //create a small classification
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
 
         service.save(testTaxon).getUuid();
 
-        Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
+        Taxon speciesTaxon = (Taxon)service.find(SPECIES2_UUID);
 
         SynonymRelationship synRel = speciesTaxon.getSynonymRelations().iterator().next();
         UUID synonymRelationUuid = synRel.getUuid();
@@ -1299,7 +1320,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
+        Taxon taxon = (Taxon)service.find(SPECIES2_UUID);
         assertNull("The deleted taxon should no longer exist", taxon);
 
         assertNotNull("The synonym should still exist since DeleteSynonymsIfPossible was false", service.find(synonymUuid));
@@ -1317,13 +1338,13 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testDeleteTaxonNameUsedInOtherContext(){
 
         //create a small classification
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
 
         service.save(testTaxon).getUuid();
 
-        Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
 
-        BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
         BotanicalName fromName = BotanicalName.NewInstance(Rank.SPECIES());
         taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
@@ -1336,8 +1357,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
-        Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
         //because of the namerelationship the name cannot be deleted
         assertNotNull(taxonName);
         assertNull(taxon);
@@ -1350,7 +1371,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         //create a small classification
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
 
         UUID uuid = service.save(testTaxon).getUuid();
         //BotanicalName name = nameService.find(uuid);
@@ -1359,7 +1380,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         List<TaxonNode> childNodes = node.getChildNodes();
         TaxonNode childNode = childNodes.iterator().next();
         UUID childUUID = childNode.getTaxon().getUuid();
-        Classification secondClassification = TaxonGenerator.getTestClassification("secondClassification");
+        Classification secondClassification = getTestClassification("secondClassification");
 
         secondClassification.addChildTaxon(testTaxon, null, null);
         //delete the taxon in all classifications
@@ -1385,9 +1406,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDoNotDeleteAllNodes(){
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
-        Classification secondClassification = TaxonGenerator.getTestClassification("secondClassification");
+        Classification secondClassification = getTestClassification("secondClassification");
         Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
         TaxonNode node = nodes.iterator().next();
         List<TaxonNode> childNodes = node.getChildNodes();
@@ -1423,7 +1444,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorMoveToParent(){
         //test childHandling MOVE_TO_PARENT:
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
@@ -1461,7 +1482,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorDeleteChildren(){
         //test childHandling DELETE:
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
@@ -1501,7 +1522,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testTaxonDeletionConfiguratorDeleteMarker(){
         //test childHandling DELETE:
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
@@ -1540,7 +1561,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedName(){
 
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
@@ -1569,7 +1590,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedNameDoNotDelete(){
 
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
@@ -1599,7 +1620,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonMisappliedName(){
 
-        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedNameTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
@@ -1643,33 +1664,44 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Classification cl2 = Classification.NewInstance("testClassification2");
     	Classification cl3 = Classification.NewInstance("testClassification3");
 
+    	classificationService.save(cl1);
+        classificationService.save(cl2);
+        classificationService.save(cl3);
+
     	Taxon c1Genus = Taxon.NewInstance(null, null);c1Genus.setUuid(UUID.fromString("daa24f6f-7e38-4668-b385-10c789212e4e"));
     	Taxon c1Species = Taxon.NewInstance(null, null);c1Species.setUuid(UUID.fromString("1c1d0566-67d0-4806-bf23-ecf55f4b9118"));
     	Taxon c1SubSpecies1 = Taxon.NewInstance(null, null);c1SubSpecies1.setUuid(UUID.fromString("96ae2fad-76df-429f-b179-42e00838fea4"));
     	Taxon c1SubSpecies2 = Taxon.NewInstance(null, null);c1SubSpecies2.setUuid(UUID.fromString("5d3f6147-ca72-40e0-be8a-6c835a09a579"));
-    	cl1.addParentChild(c1Genus, c1Species, null, null);
-    	cl1.addParentChild(c1Species, c1SubSpecies1, null, null);
-    	cl1.addParentChild(c1Species, c1SubSpecies2, null, null);
+    	TaxonNode c1childNodeSpecies1 = cl1.addParentChild(c1Genus, c1Species, null, null);
+    	nodeService.saveOrUpdate(c1childNodeSpecies1);
+    	TaxonNode c1childNodeSubSpecies1 =cl1.addParentChild(c1Species, c1SubSpecies1, null, null);
+    	nodeService.saveOrUpdate(c1childNodeSubSpecies1);
+    	TaxonNode c1childNodeSubSpecies2 =cl1.addParentChild(c1Species, c1SubSpecies2, null, null);
+    	nodeService.saveOrUpdate(c1childNodeSubSpecies2);
 
     	Taxon c2Genus = Taxon.NewInstance(null, null);c2Genus.setUuid(UUID.fromString("ed0ec006-3ac8-4a12-ae13-fdf2a13dedbe"));
     	Taxon c2Species = Taxon.NewInstance(null, null);c2Species.setUuid(UUID.fromString("1027eb18-1c26-450e-a299-981b775ebc3c"));
     	Taxon c2SubSpecies1 = Taxon.NewInstance(null, null);c2SubSpecies1.setUuid(UUID.fromString("61f039c8-01f3-4f5d-8e16-1602139774e7"));
     	Taxon c2SubSpecies2 = Taxon.NewInstance(null, null);c2SubSpecies2.setUuid(UUID.fromString("2ed6b6f8-05f9-459a-a075-2bca57e3013e"));
-    	cl2.addParentChild(c2Genus, c2Species, null, null);
-    	cl2.addParentChild(c2Species, c2SubSpecies1, null, null);
-    	cl2.addParentChild(c2Species, c2SubSpecies2, null, null);
+    	TaxonNode c2childNodeSpecies1 = cl2.addParentChild(c2Genus, c2Species, null, null);
+    	nodeService.saveOrUpdate(c2childNodeSpecies1);
+    	TaxonNode c2childNodeSubSpecies1 = cl2.addParentChild(c2Species, c2SubSpecies1, null, null);
+    	nodeService.saveOrUpdate(c2childNodeSubSpecies1);
+    	TaxonNode c2childNodeSubSpecies2 = cl2.addParentChild(c2Species, c2SubSpecies2, null, null);
+    	nodeService.saveOrUpdate(c2childNodeSubSpecies2);
 
     	Taxon c3Genus = Taxon.NewInstance(null, null);c3Genus.setUuid(UUID.fromString("407dfc8d-7a4f-4370-ada4-76c1a8279d1f"));
     	Taxon c3Species = Taxon.NewInstance(null, null);c3Species.setUuid(UUID.fromString("b6d34fc7-4aa7-41e5-b633-86f474edbbd5"));
     	Taxon c3SubSpecies1 = Taxon.NewInstance(null, null);c3SubSpecies1.setUuid(UUID.fromString("01c07585-a422-40cd-9339-a74c56901d9f"));
     	Taxon c3SubSpecies2 = Taxon.NewInstance(null, null);c3SubSpecies2.setUuid(UUID.fromString("390c8e23-e05f-4f89-b417-50cf080f4c91"));
-    	cl3.addParentChild(c3Genus, c3Species, null, null);
-    	cl3.addParentChild(c3Species, c3SubSpecies1, null, null);
-    	cl3.addParentChild(c3Species, c3SubSpecies2, null, null);
+    	TaxonNode c3childNodeSpecies1 = cl3.addParentChild(c3Genus, c3Species, null, null);
+    	nodeService.saveOrUpdate(c3childNodeSpecies1);
+    	TaxonNode c3childNodeSubSpecies1 = cl3.addParentChild(c3Species, c3SubSpecies1, null, null);
+    	nodeService.saveOrUpdate(c3childNodeSubSpecies1);
+    	TaxonNode c3childNodeSubSpecies2 = cl3.addParentChild(c3Species, c3SubSpecies2, null, null);
+    	nodeService.saveOrUpdate(c3childNodeSubSpecies2);
 
-    	classificationService.save(cl1);
-    	classificationService.save(cl2);
-    	classificationService.save(cl3);
+
 
       	Taxon c4Genus = Taxon.NewInstance(null, null);c4Genus.setUuid(UUID.fromString("bfd6bbdd-0116-4ab2-a781-9316224aad78"));
     	Taxon c4Species = Taxon.NewInstance(null, null);c4Species.setUuid(UUID.fromString("9347a3d9-5ece-4d64-9035-e8aaf5d3ee02"));
@@ -1805,6 +1837,139 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         uuidTaxWithSyn =service.save(taxWithSyn).getUuid();
 
     }
+
+
+
+        //public static UUID DESCRIPTION1_UUID = UUID.fromString("f3e061f6-c5df-465c-a253-1e18ab4c7e50");
+        //public static UUID DESCRIPTION2_UUID = UUID.fromString("1b009a40-ebff-4f7e-9f7f-75a850ba995d");
+
+
+
+        private final Random rnd = new Random();
+
+        public Taxon getTestTaxon(){
+            int descrIndex = 6000;
+            Person deCandolle = Person.NewInstance();
+            deCandolle.setTitleCache("DC.", true);
+
+            Reference sec = ReferenceFactory.newDatabase();
+            sec.setTitleCache("Flora lunaea", true);
+            Reference citationRef = ReferenceFactory.newBook();
+            citationRef.setTitleCache("Sp. lunarum", true);
+
+            //genus taxon with Name, combinationAuthor,
+            BotanicalName botName = BotanicalName.NewInstance(Rank.GENUS());
+            botName.setTitleCache("Hieracium L.", true);
+            botName.setGenusOrUninomial("Hieracium");
+            botName.setCombinationAuthorship(Person.NewInstance());
+            botName.getCombinationAuthorship().setNomenclaturalTitle("L.");
+            botName.setUuid(GENUS_NAME_UUID);
+            Taxon genusTaxon = Taxon.NewInstance(botName, sec);
+            genusTaxon.setUuid(GENUS_UUID);
+            service.save(genusTaxon);
+            //a name that is the basionym of genusTaxon's name
+            BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS());
+            basionym.setTitleCache("Hieracilla DC.", true);
+            basionym.setGenusOrUninomial("Hieracilla");
+            basionym.setCombinationAuthorship(deCandolle);
+            basionym.setUuid(BASIONYM_UUID);
+            botName.addBasionym(basionym, null, null,"216");
+            nameService.saveOrUpdate(basionym);
+            //species taxon that is the child of genus taxon
+            BotanicalName botSpecies = BotanicalName.NewInstance(Rank.SPECIES());
+            botSpecies.setTitleCache("Hieracium asturianum Pau", true);
+            botSpecies.setGenusOrUninomial("Hieracium");
+            botSpecies.setSpecificEpithet("asturianum");
+            botSpecies.setCombinationAuthorship(Person.NewInstance());
+            botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
+            botSpecies.setUuid(SPECIES1_NAME_UUID);
+            Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
+            childTaxon.setUuid(SPECIES1_UUID);
+            TaxonDescription taxDesc = getTestDescription(descrIndex++);
+            //taxDesc.setUuid(DESCRIPTION1_UUID);
+            childTaxon.addDescription(taxDesc);
+            service.saveOrUpdate(childTaxon);
+            Classification classification = getTestClassification("TestClassification");
+            classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
+//            childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
+            classificationService.save(classification);
+            //homotypic synonym of childTaxon1
+            BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
+            botSpecies4.setTitleCache("Hieracium gueri DC.", true);
+            botSpecies4.setGenusOrUninomial("Hieracium");
+            botSpecies4.setSpecificEpithet("gueri");
+            botSpecies4.setCombinationAuthorship(deCandolle);
+            botSpecies4.setUuid(SYNONYM_NAME_UUID);
+            Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec);
+            childTaxon.addSynonym(homoSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+           service.saveOrUpdate(childTaxon);
+
+            //2nd child species taxon that is the child of genus taxon
+            BotanicalName botSpecies2= BotanicalName.NewInstance(Rank.SPECIES());
+            botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
+            botSpecies2.setGenusOrUninomial("Hieracium");
+            botSpecies2.setSpecificEpithet("wolffii");
+            botSpecies2.setCombinationAuthorship(Person.NewInstance());
+            botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
+            botSpecies2.setUuid(SPECIES2_NAME_UUID);
+            Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
+            childTaxon2.setUuid(SPECIES2_UUID);
+            classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
+            //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
+            service.saveOrUpdate(childTaxon2);
+            //heterotypic synonym of childTaxon2
+            BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());
+            botSpecies3.setTitleCache("Hieracium lupium DC.", true);
+            botSpecies3.setGenusOrUninomial("Hieracium");
+            botSpecies3.setSpecificEpithet("lupium");
+            botSpecies3.setCombinationAuthorship(deCandolle);
+            botSpecies3.setUuid(SYNONYM2_NAME_UUID);
+            Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec);
+            childTaxon2.addSynonym(heteroSynonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+            service.saveOrUpdate(childTaxon2);
+            //missaplied Name for childTaxon2
+            BotanicalName missName= BotanicalName.NewInstance(Rank.SPECIES());
+            missName.setTitleCache("Hieracium lupium DC.", true);
+            missName.setGenusOrUninomial("Hieracium");
+            missName.setSpecificEpithet("lupium");
+            missName.setCombinationAuthorship(deCandolle);
+            missName.setUuid(SPECIES5_NAME_UUID);
+            Taxon misappliedName = Taxon.NewInstance(missName, sec);
+            childTaxon2.addMisappliedName(misappliedName, citationRef, "125");
+            taxDesc = getTestDescription(descrIndex++);
+           // taxDesc.setUuid(DESCRIPTION2_UUID);
+            genusTaxon.addDescription(taxDesc);
+            service.saveOrUpdate(genusTaxon);
+
+            return genusTaxon;
+        }
+
+        public TaxonDescription getTestDescription(int index){
+            TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+            Language language = Language.DEFAULT();
+            //taxonDescription.setId(index);
+
+            //textData
+            TextData textData = TextData.NewInstance();
+            String descriptionText = "this is a desciption for a taxon";
+            LanguageString languageString = LanguageString.NewInstance(descriptionText, language);
+            textData.putText(languageString);
+            taxonDescription.addElement(textData);
+
+            //commonName
+
+            String commonNameString = "Schönveilchen";
+            CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
+            taxonDescription.addElement(commonName);
+
+            return taxonDescription;
+        }
+
+        public Classification getTestClassification(String name){
+            return Classification.NewInstance(name);
+        }
+
+
 
 
 }

@@ -301,7 +301,8 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 			this.endTransaction();
 			Assert.fail("desig1 should not be deletable as it is still connected to name2");
 		}catch (Exception e){
-			//OK
+		    //this.setComplete();
+            this.endTransaction();
 			this.startNewTransaction();
 		}
 		name2 = (BotanicalName)nameDao.load(name2.getUuid());

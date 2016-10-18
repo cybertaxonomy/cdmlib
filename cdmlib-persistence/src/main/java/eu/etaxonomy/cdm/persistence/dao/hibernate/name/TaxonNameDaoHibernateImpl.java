@@ -20,6 +20,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -533,11 +535,24 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
+        Criterion nameCacheLike;
         if (matchmode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString)));
+            nameCacheLike = Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString));
         } else {
-            crit.add(Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString)));
+            nameCacheLike =Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString));
         }
+        Criterion notNull = Restrictions.isNotNull("nameCache");
+        LogicalExpression locExpression = Restrictions.and(notNull, nameCacheLike);
+        Criterion titleCacheLike;
+        if (matchmode == MatchMode.EXACT) {
+            titleCacheLike = Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString));
+        } else {
+            titleCacheLike =Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString));
+        }
+        Criterion isNull = Restrictions.isNull("nameCache");
+        LogicalExpression locExpression2 = Restrictions.and(isNull, titleCacheLike);
+        LogicalExpression orExpression = Restrictions.or(locExpression2, locExpression);
+        crit.add(orExpression);
         if(criteria != null){
             for (Criterion criterion : criteria) {
                 crit.add(criterion);
@@ -740,7 +755,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
         getSession().saveOrUpdate(persistentObject);
         UUID persUuid = persistentObject.getUuid();
-        persistentObject = this.load(persUuid);
+       // persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
 
 
@@ -748,18 +763,20 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
+        homotypicalGroup = HibernateProxyHelper.deproxy(homotypicalGroup, HomotypicalGroup.class);
 
         if (homotypicalGroup != null){
             if (homotypicalGroup.getTypifiedNames().contains(persistentObject)){
                 homotypicalGroup.getTypifiedNames().remove(persistentObject);
                 homotypicalGroupDao.saveOrUpdate(homotypicalGroup);
             }
-            if (homotypicalGroup.getTypifiedNames().isEmpty()){
-        		homotypicalGroupDao.delete(homotypicalGroup);
-        	}
+
         }
 
         getSession().delete(persistentObject);
+        if (homotypicalGroup.getTypifiedNames().isEmpty()){
+            homotypicalGroupDao.delete(homotypicalGroup);
+        }
         return persistentObject.getUuid();
     }
 

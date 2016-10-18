@@ -40,6 +40,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
@@ -64,7 +65,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
-import sun.security.provider.PolicyParser.ParsingException;
 
 
 @DataSet
@@ -825,8 +825,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Taxon taxon = (Taxon)taxonService.load(UUID_LACTUCA);
         try{
-        taxonService.deleteTaxon(taxon.getUuid(), null, null);
-        Assert.fail();
+        DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
+        if(result.isOk()){
+            Assert.fail();
+        }
         }catch(PermissionDeniedException e){
 
         }
@@ -1148,10 +1150,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
         // test for success
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
-        acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+        TaxonNode acherontia_child_node = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 
         try{
-            taxonNodeService.saveOrUpdate(acherontia_node);
+            taxonNodeService.saveOrUpdate(acherontia_child_node);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);

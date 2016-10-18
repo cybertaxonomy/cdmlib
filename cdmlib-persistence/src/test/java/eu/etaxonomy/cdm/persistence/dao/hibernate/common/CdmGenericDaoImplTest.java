@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -168,6 +169,7 @@ import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -200,22 +202,35 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 // ***************** TESTS **************************************************
 
 	@Test
+	@DataSets({
+     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
 	public void testDelete(){
 		Reference ref1 = ReferenceFactory.newBook();
 		Reference ref2 = ReferenceFactory.newBook();
 		Annotation annotation = Annotation.NewInstance("Anno1", null);
 		ref1.addAnnotation(annotation);
-		cdmGenericDao.saveOrUpdate(ref1);
-		cdmGenericDao.saveOrUpdate(ref2);
-		taxonDao.flush();
+		UUID ref1Uuid = cdmGenericDao.saveOrUpdate(ref1);
+		UUID ref2Uuid = cdmGenericDao.saveOrUpdate(ref2);
+		List<Reference> list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
+        System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
+        for (Reference ref: list){
+            System.out.println("reference: " + ref.getUuid());
+        }
 		try {
 			cdmGenericDao.merge(ref2, ref1, null);
-			taxonDao.flush();
+
 		} catch (MergeException e) {
 			Assert.fail();
 		}
-		cdmGenericDao.delete(ref1);
-		taxonDao.flush();
+		commitAndStartNewTransaction(null);
+		list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
+		System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
+        for (Reference ref: list){
+            System.out.println("reference: " + ref.getUuid());
+        }
+		Assert.assertEquals(1, list.size());
+
 	}
 
 
@@ -394,6 +409,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
 	 */
 	@Test
+	@DataSets({
+	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
 	public void testGetReferencingObjectsCdmBase() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
@@ -410,7 +428,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		taxonDao.save(taxon);
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
 //		Reference ref1 = referenceService.findByUuid(uuid);
-
+		commitAndStartNewTransaction(null);
 
 		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(ref1);
 		String debug = "############## RESULT ###################";

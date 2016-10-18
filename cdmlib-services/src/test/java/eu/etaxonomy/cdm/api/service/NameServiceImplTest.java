@@ -396,6 +396,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameBaseAsStoredUnder() {
         final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
 
@@ -412,7 +413,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         if (result.isOk()){
     	   Assert.fail("This should throw an error because name is used for specimen#storedUnder.");
         }
-         commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(uuidName1);
         Assert.assertNotNull("Name should still be in database",name1);
@@ -422,7 +423,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         occurrenceService.saveOrUpdate(specimen);
 
         nameService.delete(name1); //should throw no exception
-
+        commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(uuidName1);
         Assert.assertNull("Name should not be in database anymore",name1);

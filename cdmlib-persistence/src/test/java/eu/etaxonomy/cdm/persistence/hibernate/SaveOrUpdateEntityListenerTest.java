@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence.OccurrenceDaoHibernateImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -43,6 +45,7 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 	 * Test if save or update event correctly handleds
 	 */
 	@Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testOnSaveOrUpdateDeterminationTaxonName() {
 		DerivedUnit unit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
 		Taxon taxon = Taxon.NewInstance(null, null);

@@ -169,7 +169,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         Classification classification = oldTaxonNode.getClassification();
         Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
-        Taxon newAcceptedTaxon = (Taxon)this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid());
+        Taxon newAcceptedTaxon = (Taxon)this.taxonService.find(newAcceptedTaxonNode.getTaxon().getUuid());
+        newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon, Taxon.class);
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
         TaxonNameBase<?,?> synonymName = HibernateProxyHelper.deproxy(oldTaxon.getName());
@@ -187,10 +188,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         HomotypicalGroup newAcceptedTaxonHomotypicalgroup = newAcceptedTaxon.getHomotypicGroup();
         newAcceptedTaxonHomotypicalgroup = HibernateProxyHelper.deproxy(newAcceptedTaxonHomotypicalgroup, HomotypicalGroup.class);
         TaxonNameBase newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonNameBase.class);
+        newAcceptedTaxon.setName(newAcceptedTaxonName);
         // Move Synonym Relations to new Taxon
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
-         HomotypicalGroup homotypicalGroupAcceptedTaxon = synonmyRelationship.getSynonym().getHomotypicGroup();
+         HomotypicalGroup homotypicalGroupOldAcceptedTaxon = synonmyRelationship.getSynonym().getHomotypicGroup();
         // Move Synonym Relations to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
         List<Synonym> synonymsInHomotypicalGroup = null;
@@ -212,7 +214,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             		srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
             	}
             } else {
-                srt = synRelation.getType();
+                if (synonymsInHomotypicalGroup != null && synonymsInHomotypicalGroup.contains(synRelation.getSynonym())){
+                    srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+                }else{
+                    srt = synRelation.getType();
+                }
 
             }
 
@@ -279,17 +285,20 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         oldTaxon.clearDescriptions();
 
-        taxonService.update(newAcceptedTaxon);
+        taxonService.saveOrUpdate(newAcceptedTaxon);
 
-        taxonService.update(oldTaxon);
+        taxonService.saveOrUpdate(oldTaxon);
+        taxonService.getSession().flush();
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
-        DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
         conf.setDeleteNameIfPossible(false);
+        DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
+
 
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, classification.getUuid());
+
         }else{
         	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
@@ -297,8 +306,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	conf.setTaxonNodeConfig(config);
         	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
+
         result.addUpdatedObject(newAcceptedTaxon);
-        result.addUpdatedObject(oldTaxon);
+
 
         //oldTaxonNode.delete();
         return result;
@@ -522,7 +532,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	}
     	result.setCdmEntity(node);
     	boolean success = taxon.removeTaxonNode(node);
-    	dao.save(parent);
+    	dao.saveOrUpdate(parent);
     	taxonService.saveOrUpdate(taxon);
     	result.addUpdatedObject(parent);
 
@@ -678,7 +688,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 //        child = dao.save(child);
 
-        dao.saveOrUpdate(parent);
+        dao.saveOrUpdate(child);
         result.addUpdatedObject(parent);
         if (child != null){
             result.setCdmEntity(child);

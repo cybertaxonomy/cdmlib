@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -66,25 +69,42 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		query.setParameter("taxon", taxon);
 		List result = query.list();*/
 		if (taxon != null){
+		    Hibernate.initialize(taxon);
+		    Hibernate.initialize(taxon.getTaxonNodes());
 			Set<TaxonNode> nodes = taxon.getTaxonNodes();
+			//Hibernate.initialize(taxon.getTaxonNodes());
+			for (TaxonNode node:nodes) {
+			    System.out.println("Number of nodes: " + nodes.size());
+                node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
 
-			if (nodes.size()==1){
+			    if (node.equals(persistentObject)){
+			        if (node.hasChildNodes()){
+			            Iterator<TaxonNode> childNodes = node.getChildNodes().iterator();
+			            TaxonNode childNode;
+			            List<TaxonNode> listForDeletion = new ArrayList<TaxonNode>();
+	                    while (childNodes.hasNext()){
+	                        childNode = childNodes.next();
+	                        listForDeletion.add(childNode);
+	                        childNodes.remove();
 
-				TaxonNode node = nodes.iterator().next();
-				node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+	                    }
+	                    for (TaxonNode deleteNode:listForDeletion){
+	                        delete(deleteNode, deleteChildren);
+	                    }
+	                }
 
-				taxon.removeTaxonNode(node, deleteChildren);
-				taxonDao.delete(taxon);
+			        taxon.removeTaxonNode(node, deleteChildren);
+			        taxonDao.saveOrUpdate(taxon);
+    				taxon = HibernateProxyHelper.deproxy(taxonDao.findByUuid(taxon.getUuid()), Taxon.class);
+    				taxonDao.delete(taxon);
+
+			    }
 			}
 		}
-		//persistentObject.delete();
 
-		super.delete(persistentObject);
+		UUID result = super.delete(persistentObject);
 
-
-
-		//taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
-		return persistentObject.getUuid();
+		return result;
 	}
 
 	@Override

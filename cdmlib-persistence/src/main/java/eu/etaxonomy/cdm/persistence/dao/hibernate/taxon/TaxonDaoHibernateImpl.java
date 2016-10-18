@@ -901,18 +901,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
-        getSession().merge(taxonBase);
+        taxonBase = (TaxonBase)getSession().merge(taxonBase);
 
         taxonBase.removeSources();
-
-        if (taxonBase instanceof Taxon){ //	is Taxon
-            for (Iterator<TaxonRelationship> iterator = ((Taxon)taxonBase).getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
-                TaxonRelationship relationFromThisTaxon = iterator.next();
-
-            }
-        }
-
-       return super.delete(taxonBase);
+        return super.delete(taxonBase);
 
     }
 
