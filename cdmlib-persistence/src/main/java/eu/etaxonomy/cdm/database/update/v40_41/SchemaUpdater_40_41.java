@@ -163,6 +163,9 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 " WHERE id IN (SELECT id FROM "
                 +       "(SELECT tn.id FROM @@TaxonBase@@ tb  INNER JOIN @@TaxonNode@@ tn ON tn.taxon_id = tb.id  WHERE tb.excluded = 1)"
                 + " as drvTbl)";
+        query = "UPDATE @@TaxonNode@@ tn " +
+                " SET excluded = (SELECT excluded FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
+
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
                 .addDefaultAuditing("TaxonBase");
         stepList.add(simpleStep);
@@ -192,6 +195,9 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 " WHERE id IN (SELECT id FROM "
                 +       "(SELECT tn.id FROM @@TaxonBase@@ tb  INNER JOIN @@TaxonNode@@ tn ON tn.taxon_id = tb.id  WHERE tb.unplaced = 1)"
                 + " as drvTbl)";
+        query = "UPDATE @@TaxonNode@@ tn " +
+                " SET unplaced = (SELECT unplaced FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
+
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
                 .addDefaultAuditing("TaxonBase");
         stepList.add(simpleStep);
