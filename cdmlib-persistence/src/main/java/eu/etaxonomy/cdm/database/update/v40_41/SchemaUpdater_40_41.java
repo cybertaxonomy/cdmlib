@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -160,17 +161,19 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //#3925
         //Move excluded from Taxon to TaxonNode
         stepName = "Move excluded from Taxon to TaxonNode";
-        query = "UPDATE @@TaxonNode@@ " +
-                " SET excluded = 1 " +
-                " WHERE id IN (SELECT id FROM "
-                +       "(SELECT tn.id FROM @@TaxonBase@@ tb  INNER JOIN @@TaxonNode@@ tn ON tn.taxon_id = tb.id  WHERE tb.excluded = 1)"
-                + " as drvTbl)";
         query = "UPDATE @@TaxonNode@@ tn " +
                 " SET excluded = (SELECT excluded FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
-
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
                 .addDefaultAuditing("TaxonBase");
         stepList.add(simpleStep);
+
+        stepName = "Move excluded from Taxon to TaxonNode/set null to false";
+        query = "UPDATE @@TaxonNode@@ SET excluded = 0 WHERE excluded IS NULL";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99);
+        simpleStep.put(DatabaseTypeEnum.PostgreSQL, query.replace("0", "false"));
+        simpleStep.putAudited(DatabaseTypeEnum.PostgreSQL, query.replace("TaxonNode","TaxonNode_AUD").replace("0", "false"));
+        stepList.add(simpleStep);
+
 
         //#3925
         //remove excluded from TaxonNode
@@ -191,18 +194,21 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 
         //#3925
         //Move unplaced from Taxon to TaxonNode
+
         stepName = "Move unplaced from Taxon to TaxonNode";
-        query = "UPDATE @@TaxonNode@@ " +
-                " SET unplaced = 1 " +
-                " WHERE id IN (SELECT id FROM "
-                +       "(SELECT tn.id FROM @@TaxonBase@@ tb  INNER JOIN @@TaxonNode@@ tn ON tn.taxon_id = tb.id  WHERE tb.unplaced = 1)"
-                + " as drvTbl)";
         query = "UPDATE @@TaxonNode@@ tn " +
                 " SET unplaced = (SELECT unplaced FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
-
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
                 .addDefaultAuditing("TaxonBase");
         stepList.add(simpleStep);
+
+        stepName = "Move unplaced from Taxon to TaxonNode/set null to false";
+        query = "UPDATE @@TaxonNode@@ SET unplaced = 0 WHERE unplaced IS NULL";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99);
+        simpleStep.put(DatabaseTypeEnum.PostgreSQL, query.replace("0", "false"));
+        simpleStep.putAudited(DatabaseTypeEnum.PostgreSQL, query.replace("TaxonNode","TaxonNode_AUD").replace("0", "false"));
+        stepList.add(simpleStep);
+
 
         //#3925
         //remove unplaced from TaxonNode

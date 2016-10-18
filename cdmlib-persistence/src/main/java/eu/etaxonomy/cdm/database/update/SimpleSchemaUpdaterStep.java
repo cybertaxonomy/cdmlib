@@ -26,7 +26,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 13.09.2010
  *
  */
-public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaUpdaterStep> implements ISchemaUpdaterStep, ITermUpdaterStep{
+public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaUpdaterStep>
+                implements ISchemaUpdaterStep, ITermUpdaterStep{
 	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
 
 	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<DatabaseTypeEnum, String>();
@@ -172,15 +173,31 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 
 	/**
 	 * For certain database types one may define special queries.<BR>
-	 * Don't forget to put case-mask (@@) for table names
+	 * Don't forget to put case-mask (@@) for table names and also
+	 * add AUD query if required.
 	 * @param dbType database type
 	 * @param query query to use for the given database type.
 	 * @return this schema updater step
+     * @see #putAudited(DatabaseTypeEnum, String)
 	 */
 	public SimpleSchemaUpdaterStep put(DatabaseTypeEnum dbType, String query) {
 		queryMap.put(dbType, query);
 		return this;
 	}
+
+	/**
+     * For certain database types one may define special queries.
+     * This is for the AUD query.<BR>
+     * Don't forget to put case-mask (@@) for table names
+     * @param dbType database type
+     * @param query query to use for the given database type.
+     * @return this schema updater step
+     * @see #put(DatabaseTypeEnum, String)
+     */
+    public SimpleSchemaUpdaterStep putAudited(DatabaseTypeEnum dbType, String query) {
+        auditQueryMap.put(dbType, query);
+        return this;
+    }
 
 	/**
 	 * Defines the non audited table name for computing the audited query.
