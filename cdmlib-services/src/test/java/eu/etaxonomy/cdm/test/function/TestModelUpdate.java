@@ -62,14 +62,17 @@ public class TestModelUpdate {
     //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
     //      appCtr.getClassificationService().save(classification);
 
-    //		appCtr.getCommonService().createFullSampleData();
 
-
+    		if (schema == DbSchemaValidation.CREATE){
+    		    System.out.println("fillData");
+    		    appCtr.getCommonService().createFullSampleData();
+    		}
 
     		appCtr.close();
  		}catch (Exception e) {
  		    e.printStackTrace();
  		}
+ 		System.out.println("Ready");
 		System.exit(0);
 	}
 
