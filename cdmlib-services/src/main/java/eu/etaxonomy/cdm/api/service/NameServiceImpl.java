@@ -929,10 +929,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             }
             //NameTypeDesignation#typeName
             else if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-                result.addException(new ReferencedObjectUndeletableException(message));
-                result.addRelatedObject(referencingObject);
-                result.setAbort();
+                NameTypeDesignation typeDesignation = HibernateProxyHelper.deproxy(referencingObject, NameTypeDesignation.class);
+
+                if (typeDesignation.getTypeName().equals(name)){
+                    String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+                    result.addException(new ReferencedObjectUndeletableException(message));
+                    result.addRelatedObject(referencingObject);
+                    result.setAbort();
+                }
             }
             //DeterminationEvent#taxonName
             else if (referencingObject.isInstanceOf(DeterminationEvent.class)){

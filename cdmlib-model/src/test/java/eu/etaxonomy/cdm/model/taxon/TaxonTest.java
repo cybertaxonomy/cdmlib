@@ -189,7 +189,6 @@ public class TaxonTest extends EntityTestBase {
         TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
         TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
-
         // add a synonym to the taxon
         Synonym synonym1 = taxon.addHomotypicSynonymName(synonymName1);
         // get the homotypic group of that synonym
@@ -198,14 +197,12 @@ public class TaxonTest extends EntityTestBase {
         Assert.assertEquals("We should have two names in the homotypic group",
                 2, homotypicGroupOfSynonym.getTypifiedNames().size());
     }
-
     @Test
     public void testAddHomotypicSynonym(){
         TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
         TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
         Synonym synonym = Synonym.NewInstance(synonymName1, null);
-
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
         //synonym type must be homotypic
@@ -216,7 +213,6 @@ public class TaxonTest extends EntityTestBase {
         Assert.assertEquals("We should have two names in the homotypic group",
                 2, homotypicGroupOfSynonym.getTypifiedNames().size());
     }
-
 
 	@Test
 	public void testAddRemoveSynonymInSameGroup(){

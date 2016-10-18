@@ -27,6 +27,8 @@
     <java.codelevel>1.7</java.codelevel>
     <spring.version>4.2.4.RELEASE</spring.version>
     <spring-security.version>4.0.3.RELEASE</spring-security.version>
+    <spring-security-oauth2.version>2.0.11.RELEASE</spring-security-oauth2.version>
+    <spring-cloud.version>1.1.3.RELEASE</spring-cloud.version>
 	<hibernate.version>5.0.7.Final</hibernate.version>
 	<hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
     <hibernate-search.version>5.5.2.Final</hibernate-search.version>
@@ -1372,6 +1374,16 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-web</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security.oauth</groupId>
+      <artifactId>spring-security-oauth2</artifactId>
+        <version>${spring-security-oauth2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-security</artifactId>
         <version>${spring-security.version}</version>
       </dependency>
 
