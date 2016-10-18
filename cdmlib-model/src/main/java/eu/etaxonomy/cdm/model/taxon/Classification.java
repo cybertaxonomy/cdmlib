@@ -124,7 +124,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@JoinTable(name = "Classification_Description")
 //	@Field(name="text", store=Store.YES)
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
-    private final Map<Language,LanguageString> description = new HashMap<>();
+    private Map<Language,LanguageString> description = new HashMap<>();
 
 
 
