@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author n.hoffmann
  * @created Sep 22, 2009
- * @version 1.0
  */
 public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTest{
 
@@ -54,10 +52,6 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
             "taxon.sec",
             "taxon.name.*"
             });
-
-    private Comparator<? super TaxonNode> taxonNodeComparator;
-
-
 
 
     @Test
