@@ -50,19 +50,20 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase<Nomenclatura
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 
-	    String sql = "SELECT count(DTYPE) as n, DTYPE FROM TaxonNameBase GROUP BY DTYPE";
+	    String sql = "SELECT count(DTYPE) as n, DTYPE FROM @@TaxonNameBase@@ "
+	            + " GROUP BY DTYPE ORDER BY count(DTYPE) DESC ";
+	    sql = caseType.replaceTableNames(sql);
 	    ResultSet rs = datasource.executeQuery(sql);
 	    if (rs.next()){
-//	        int n = rs.getInt(1);
 	        String dtype = rs.getString(2);
-	        NomenclaturalCode code = NomenclaturalCode.fromString(dtype);
+	        NomenclaturalCode code = NomenclaturalCode.fromDtype(dtype);
 
 	        if (code != null){
-//	            String nomCodeKey = PreferencePredicate.NomenclaturalCode.getKey();
 	            String insertSql = " INSERT INTO @@CdmPreference@@ (key_predicate, key_subject, value)"
 	                    + " VALUES ('model.name.NC','/','eu.etaxonomy.cdm.model.name.NomenclaturalCode.%s')";
 
 	            insertSql = String.format(insertSql, code.getUuid());
+	            insertSql = caseType.replaceTableNames(insertSql);
 	            datasource.executeUpdate(insertSql);
 	            logger.warn("Nomenclatural code updated");
 	        }

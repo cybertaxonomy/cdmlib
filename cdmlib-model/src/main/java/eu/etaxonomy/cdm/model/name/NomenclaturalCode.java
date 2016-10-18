@@ -101,7 +101,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
 	public static NomenclaturalCode fromString(String string){
 		for(NomenclaturalCode code : NomenclaturalCode.values()){
-			if(code.name().equals(string)) {
+			if(code.name().equalsIgnoreCase(string)) {
 				return code;
 			}
 		}
@@ -113,7 +113,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
     public static NomenclaturalCode fromDtype(String string){
         for(NomenclaturalCode code : NomenclaturalCode.values()){
-            if(code.dtype.equals(string)) {
+            if(code.dtype.equalsIgnoreCase(string)) {
                 return code;
             }
         }
