@@ -44,8 +44,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -153,8 +152,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
-
+    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode,
+            SynonymType synonymType, Reference citation, String citationMicroReference)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -166,69 +165,60 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             throw new IllegalArgumentException("Taxon can not be made synonym of its own.");
         }
 
-
         Classification classification = oldTaxonNode.getClassification();
         Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid());
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-        TaxonNameBase<?,?> synonymName = HibernateProxyHelper.deproxy(oldTaxon.getName());
-        HomotypicalGroup group = synonymName.getHomotypicalGroup();
-        group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
-        if (synonymRelationshipType == null){
-            if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
-                synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+        TaxonNameBase<?,?> newSynonymName = CdmBase.deproxy(oldTaxon.getName());
+        HomotypicalGroup group = CdmBase.deproxy(newSynonymName.getHomotypicalGroup());
+        if (synonymType == null){
+            if (newSynonymName.isHomotypic(newAcceptedTaxon.getName())){
+                synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
             }else{
-                synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+                synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
             }
         }
 
         //set homotypic group
-        HomotypicalGroup newAcceptedTaxonHomotypicalgroup = newAcceptedTaxon.getHomotypicGroup();
-        newAcceptedTaxonHomotypicalgroup = HibernateProxyHelper.deproxy(newAcceptedTaxonHomotypicalgroup, HomotypicalGroup.class);
-        TaxonNameBase newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonNameBase.class);
+        TaxonNameBase<?,?> newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonNameBase.class);
         // Move Synonym Relations to new Taxon
-        SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
-                synonymRelationshipType, citation, citationMicroReference);
-         HomotypicalGroup homotypicalGroupAcceptedTaxon = synonmyRelationship.getSynonym().getHomotypicGroup();
-        // Move Synonym Relations to new Taxon
+        Synonym newSynonym = newAcceptedTaxon.addSynonymName(newSynonymName, citation, citationMicroReference,
+                synonymType);
+         // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
         List<Synonym> synonymsInHomotypicalGroup = null;
 
         //the synonyms of the homotypical group of the old taxon
-        if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+        if (synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
         	synonymsInHomotypicalGroup = oldTaxon.getSynonymsInGroup(group);
         }
 
-        for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
-            SynonymRelationshipType srt;
-            if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null
-                    && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxonName.getHomotypicalGroup())) {
-                srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-            } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-            	if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
-            		srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+        Set<Synonym> syns = new HashSet<>(oldTaxon.getSynonyms());
+        for(Synonym synonym : syns){
+            SynonymType srt;
+            if(synonym.getHomotypicGroup()!= null
+                    && synonym.getHomotypicGroup().equals(newAcceptedTaxonName.getHomotypicalGroup())) {
+                srt = SynonymType.HOMOTYPIC_SYNONYM_OF();
+            } else if(synonym.getType() != null && synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF())) {
+            	if (synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
+            		srt = SynonymType.HOMOTYPIC_SYNONYM_OF();
             	} else{
-            		srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+            		srt = SynonymType.HETEROTYPIC_SYNONYM_OF();
             	}
             } else {
-                srt = synRelation.getType();
+                srt = synonym.getType();
 
             }
 
-            newAcceptedTaxon.addSynonym(synRelation.getSynonym(),
-                    srt,
-                    synRelation.getCitation(),
-                    synRelation.getCitationMicroReference());
+            newAcceptedTaxon.addSynonym(synonym, srt);
 
-            /*if (synonymsInHomotypicalGroup.contains(synRelation.getSynonym()) && srt.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
+
+            /*if (synonymsInHomotypicalGroup.contains(synRelation.getSynonym()) && srt.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
             	homotypicalGroupAcceptedTaxon.addTypifiedName(synRelation.getSynonym().getName());
             }*/
 
         }
-
-
-
 
 
         // CHILD NODES
@@ -313,7 +303,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Transactional(readOnly = false)
     public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
             UUID newAcceptedTaxonNodeUUID,
-            SynonymRelationshipType synonymRelationshipType,
+            SynonymType synonymType,
             Reference citation,
             String citationMicroReference) {
 
@@ -323,7 +313,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         UpdateResult result = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
                 newTaxonNode,
-                synonymRelationshipType,
+                synonymType,
                 citation,
                 citationMicroReference);
         result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));

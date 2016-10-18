@@ -106,7 +106,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Field(name="modifyingText")
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
-    private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> modifyingText = new HashMap<>();
 
 //********************* FACTORY METHODS ************************\
 
@@ -318,12 +318,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
             }
 
             //modifying text
-            result.modifyingText = new HashMap<Language, LanguageString>();
-            for (Language language : getModifyingText().keySet()){
-                //TODO clone needed? See also IndividualsAssociation
-                LanguageString newLanguageString = (LanguageString)getModifyingText().get(language).clone();
-                result.modifyingText.put(language, newLanguageString);
-            }
+            result.modifyingText = cloneLanguageString(this.modifyingText);
 
             return result;
             //no changes to: state

@@ -50,7 +50,6 @@
       <common:TitleCache>Aus aus L., 1758 sec CATE 2008</common:TitleCache>
       <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
       <taxon:Name>urn-uuid-57db34b2-1130-4d42-afe1-cf2d8f1f2a3e</taxon:Name>
-      <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
     </taxon:Taxon>
     </TaxonBases>
 </DataSet>

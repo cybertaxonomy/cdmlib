@@ -19,14 +19,13 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
  * for running in maven.
  * @author a.mueller
  * @date 22.05.2015
- *
+ * @see CdmUpdater
  */
 public class TestModelUpdate {
 	@SuppressWarnings("unused")
@@ -34,12 +33,12 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm40" : "cdm41");
 //		database = "cdm36";
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
@@ -63,14 +62,17 @@ public class TestModelUpdate {
     //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
     //      appCtr.getClassificationService().save(classification);
 
-    //		appCtr.getCommonService().createFullSampleData();
 
-
+    		if (schema == DbSchemaValidation.CREATE){
+    		    System.out.println("fillData");
+    		    appCtr.getCommonService().createFullSampleData();
+    		}
 
     		appCtr.close();
  		}catch (Exception e) {
  		    e.printStackTrace();
  		}
+ 		System.out.println("Ready");
 		System.exit(0);
 	}
 
@@ -92,7 +94,7 @@ public class TestModelUpdate {
             //H2
             String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
             username = "sa";
-            CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+            CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
             return dataSource;
         }else if (dbType == DatabaseTypeEnum.SqlServer2005){
             server = serverSql;
@@ -102,7 +104,7 @@ public class TestModelUpdate {
         }else if (dbType == DatabaseTypeEnum.PostgreSQL){
             server = serverSql;
             username = "postgres";
-            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, 5432, username,  AccountStore.readOrStorePassword(server, database, username, null), null);
+            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, 5432, username,  AccountStore.readOrStorePassword(server, database, username, null));
             return dataSource;
         }else{
             throw new IllegalArgumentException("dbType not supported:" + dbType);
@@ -124,7 +126,7 @@ public class TestModelUpdate {
 	    String pathInProject = "src\\test\\resources\\h2";
 
 	    String path = pathToProject + pathInProject;
-		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
+		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path);
 
 
  		try {

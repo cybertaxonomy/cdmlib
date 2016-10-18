@@ -88,15 +88,9 @@
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-5cd1a686-d647-49ed-8c4b-501134b5eb66</taxon:Name>
             <taxon:Sec>urn-uuid-2106b156-1336-4912-a709-54c180b61e5f</taxon:Sec>
-            <taxon:TaxonomicChildrenCount>1</taxon:TaxonomicChildrenCount>
-            <taxon:SynonymRelations>
-                <taxon:SynonymRelationship id="0" uuid="urn-uuid-29e493e0-11e7-4892-848b-43cf193b68d6">
-                    <taxon:RelatedFrom>urn-uuid-406dbfb0-2f5a-11de-8c30-0800200c9a66</taxon:RelatedFrom>
-                    <taxon:RelatedTo>urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df</taxon:RelatedTo>
-                    <taxon:IsProParte>false</taxon:IsProParte>
-                    <taxon:IsPartial>false</taxon:IsPartial>
-                </taxon:SynonymRelationship>
-            </taxon:SynonymRelations>
+            <taxon:Synonyms>
+                <taxon:Synonym>urn-uuid-406dbfb0-2f5a-11de-8c30-0800200c9a66</taxon:Synonym>
+            </taxon:Synonyms>
             <taxon:RelationsFromThisTaxon>
                 <taxon:FromThisTaxonRelationship id="1" uuid="urn-uuid-71d6b608-d13d-492c-870a-9536be49239e">
                     <common:Citation>urn-uuid-2106b156-1336-4912-a709-54c180b61e5f</common:Citation>
@@ -111,7 +105,6 @@
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-b1e3894b-4339-44f8-8ee6-d1828a8857be</taxon:Name>
             <taxon:Sec>urn-uuid-2106b156-1336-4912-a709-54c180b61e5f</taxon:Sec>
-            <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
             <taxon:RelationsToThisTaxon>
               <taxon:ToThisTaxonRelationship>urn-uuid-71d6b608-d13d-492c-870a-9536be49239e</taxon:ToThisTaxonRelationship>
             </taxon:RelationsToThisTaxon>
@@ -120,9 +113,9 @@
             <common:TitleCache>Acherontia atropos charon (Closs, 1910)</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-838fafd3-25a1-4aae-8b50-ecbcbad3c915</taxon:Name>
-            <taxon:SynonymRelations>
-                <taxon:SynonymRelationship>urn-uuid-29e493e0-11e7-4892-848b-43cf193b68d6</taxon:SynonymRelationship>
-            </taxon:SynonymRelations>
+            <taxon:acceptedTaxon>urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df</taxon:acceptedTaxon>
+            <taxon:IsProParte>false</taxon:IsProParte>
+            <taxon:IsPartial>false</taxon:IsPartial>
         </taxon:Synonym>
     </TaxonBases>
 </DataSet>

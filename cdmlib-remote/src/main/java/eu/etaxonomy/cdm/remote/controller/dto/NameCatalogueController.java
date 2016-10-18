@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller.dto;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -58,7 +56,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -74,6 +71,7 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+import io.swagger.annotations.Api;
 
 /**
  * The controller class for the namespace 'name_catalogue'. This web service namespace
@@ -859,17 +857,16 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                      );
 
 
-                    Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
+                    Set<Synonym> syns = taxon.getSynonyms();
                     // add synonyms (if exists) to taxon information object
-                    for (SynonymRelationship sr : synRelationships) {
-                        Synonym syn = sr.getSynonym();
+                    for (Synonym syn : syns) {
                         String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
-                        TaxonNameBase synnvn = syn.getName();
+                        TaxonNameBase<?,?> synnvn = syn.getName();
                         String name = synnvn.getTitleCache();
                         String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
-                        String relLabel = sr.getType()
+                        String relLabel = syn.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
 
@@ -995,19 +992,18 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             modified, null);
                     // add accepted taxa (if exists) to taxon information object
 
-                    Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-                    for (SynonymRelationship sr : synRelationships) {
-                        Taxon accTaxon = sr.getAcceptedTaxon();
+                    Taxon accTaxon = synonym.getAcceptedTaxon();
+                    if (accTaxon != null){
                         String uuid = accTaxon.getUuid().toString();
                         logger.info("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();
                         logger.info("taxon title cache : " + accTaxon.getTitleCache());
 
-                        TaxonNameBase accnvn = accTaxon.getName();
+                        TaxonNameBase<?,?> accnvn = accTaxon.getName();
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
-                        String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
+                        String relLabel = synonym.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
                         dt = accTaxon.getUpdated();
                         modified = fmt.print(dt);
@@ -1028,7 +1024,6 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                                 secTitle,
                                 modified);
                     }
-
                 }
                 tiList.add(ti);
             } else {
@@ -1184,12 +1179,11 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                         // if synonym then get accepted taxa.
                         if (tb instanceof Synonym) {
                             Synonym synonym = (Synonym) tb;
-                            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-                            for (SynonymRelationship sr : synRelationships) {
-                                Taxon accTaxon = sr.getAcceptedTaxon();
-                                NonViralName accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
-                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
-                                ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
+                            Taxon accTaxon = synonym.getAcceptedTaxon();
+                            if (accTaxon != null) {
+                                NonViralName<?> accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
+                                Map<String, Map> classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
+                                ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(), classificationMap);
                             }
                         } else {
                             Taxon taxon = (Taxon)tb;

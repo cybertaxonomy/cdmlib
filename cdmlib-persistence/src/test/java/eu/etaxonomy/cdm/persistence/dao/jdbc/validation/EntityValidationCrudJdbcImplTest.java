@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
-    private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
+    private static final String SYNONYM = "eu.etaxonomy.cdm.model.taxon.Synonym";
     private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
     @SpringBeanByType
@@ -382,8 +382,8 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     @ExpectedDataSet
     public void test_DeleteValidationResult() {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
-        dao.deleteEntityValidation(SYNONYM_RELATIONSHIP, 200);
-        EntityValidation result = dao.getEntityValidation(SYNONYM_RELATIONSHIP, 200);
+        dao.deleteEntityValidation(SYNONYM, 200);
+        EntityValidation result = dao.getEntityValidation(SYNONYM, 200);
         assertTrue(result == null);
     }
 
@@ -398,7 +398,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         assertEquals("Unexpected entity id", 1, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
-        result = dao.getEntityValidation(SYNONYM_RELATIONSHIP, 200);
+        result = dao.getEntityValidation(SYNONYM, 200);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 2, result.getId());
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());

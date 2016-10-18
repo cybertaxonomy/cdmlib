@@ -37,8 +37,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -53,7 +52,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 @Component
 public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
-	private static final Logger logger = Logger.getLogger(CsvTaxExportRedlist.class);
+    private static final long serialVersionUID = 841703025922543361L;
+
+    private static final Logger logger = Logger.getLogger(CsvTaxExportRedlist.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";
@@ -281,9 +282,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNomenclaturalCode().synonymStatusLabel();
-			if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
+			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
 				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
@@ -302,18 +303,17 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 
 	private void handleSynonyms(CsvTaxRecordRedlist record, Taxon taxon) {
 
-		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
-		ArrayList<String> synonyms = new ArrayList<String>();
-		for (SynonymRelationship synRel :synRels ){
-			Synonym synonym = synRel.getSynonym();
-			SynonymRelationshipType type = synRel.getType();
+		Set<Synonym> synonyms = taxon.getSynonyms();
+		ArrayList<String> synonymLabels = new ArrayList<>();
+		for (Synonym synonym :synonyms ){
+			SynonymType type = synonym.getType();
 			if (type == null){ // should not happen
-				type = SynonymRelationshipType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF();
 			}
 			NonViralName<?> name = CdmBase.deproxy(synonym.getName(), NonViralName.class);
-			synonyms.add(name.getTitleCache());
+			synonymLabels.add(name.getTitleCache());
 		}
-		record.setSynonyms(synonyms);
+		record.setSynonyms(synonymLabels);
 	}
 
 	private void handleDiscriptionData(CsvTaxRecordRedlist record, Taxon taxon) {

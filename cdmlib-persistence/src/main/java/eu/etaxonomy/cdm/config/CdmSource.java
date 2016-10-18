@@ -8,27 +8,22 @@
 */
 package eu.etaxonomy.cdm.config;
 
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-
 /**
  * Abstract class representing the base CDM Source object.
- * 
- *
  */
 public abstract class CdmSource implements ICdmSource {
-	
+
 	private String name;
 	private String server;
 	private int port;
-	private NomenclaturalCode nomenclaturalCode;
-	
+
 	public static final int NULL_PORT = -1;
-	
+
 	public static final String DEFAULT_ENTRY = "-";
-	
+
 	/**
 	 * Sets the CDM Source name
-	 * 
+	 *
 	 * @param name
 	 */
 	@Override
@@ -38,7 +33,7 @@ public abstract class CdmSource implements ICdmSource {
 
 	/**
 	 * Sets the CDM Source server
-	 * 
+	 *
 	 * @param server
 	 */
 	@Override
@@ -48,7 +43,7 @@ public abstract class CdmSource implements ICdmSource {
 
 	/**
 	 * Sets the CDM Source port
-	 * 
+	 *
 	 * @param port
 	 */
 	@Override
@@ -56,79 +51,36 @@ public abstract class CdmSource implements ICdmSource {
 		this.port = port;
 	}
 
-	/**
-	 * Sets the CDM Source {@link NomenclaturalCode}
-	 * 
-	 * @param nomenclaturalCode
-	 */
-	@Override
-	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
-		this.nomenclaturalCode = nomenclaturalCode;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#getName()
-	 */
 	@Override
 	public String getName() {
 		return this.name;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#getServer()
-	 */
 	@Override
 	public String getServer() {
 		return this.server;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#getPort()
-	 */
 	@Override
 	public int getPort() {
 		return this.port;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#getNomenclaturalCode()
-	 */
-	@Override
-	public NomenclaturalCode getNomenclaturalCode() {
-		return this.nomenclaturalCode;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#getDbSchemaVersion()
-	 */
 	@Override
 	public abstract String getDbSchemaVersion() throws CdmSourceException;
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#isDbEmpty()
-	 */
+
 	@Override
 	public abstract boolean isDbEmpty() throws CdmSourceException;
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#checkConnection()
-	 */
+
 	@Override
 	public abstract boolean checkConnection() throws CdmSourceException;
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#getConnectionMessage()
-	 */
+
 	@Override
 	public abstract String getConnectionMessage();
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.config.ICdmSource#closeOpenConnections()
-	 */
+
 	@Override
 	public void closeOpenConnections() {
-		
-	}		
+
+	}
 
 }

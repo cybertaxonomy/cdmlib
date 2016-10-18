@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,13 +37,13 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_30_301.class);
 	private static final String startSchemaVersion = "3.0.0.0.201011090000";
 	private static final String endSchemaVersion = "3.0.1.0.201104190000";
-	
+
 // ********************** FACTORY METHOD *******************************************
-	
+
 	public static SchemaUpdater_30_301 NewInstance(){
 		return new SchemaUpdater_30_301();
 	}
-	
+
 	/**
 	 * @param startSchemaVersion
 	 * @param endSchemaVersion
@@ -51,16 +51,12 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 	protected SchemaUpdater_30_301() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterBase#getUpdaterList()
-	 */
+
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
-		
+
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-		String stepName;
-		
+
 		//drop unique index for DefinedTermBase_media.media_id
 		ISchemaUpdaterStep step = UniqueIndexDropper.NewInstance("DefinedTermBase_media", "media_id", ! INCLUDE_AUDIT);
 		stepList.add(step);
@@ -74,14 +70,14 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 		//this was part of schema version 2.5 but an updater was never written
 		step = UniqueIndexDropper.NewInstance("StatisticalMeasurementValue_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
 		stepList.add(step);
-		
+
 		//Makes PolytomousKeyNode parent-child bidirectional
 		step = ColumnAdder.NewIntegerInstance("Add parent_id to PolytomousKeyNode_AUD", "PolytomousKeyNode_AUD", "parent_id", ! INCLUDE_AUDIT, false, "PolytomousKeyNode");
 		stepList.add(step);
 		step = TableDroper.NewInstance("Drop PolytomousKeyNode_PolytomousKeyNode_AUD table", "PolytomousKeyNode_PolytomousKeyNode_AUD", ! INCLUDE_AUDIT);
 		stepList.add(step);
-		
-		
+
+
 		return stepList;
 	}
 

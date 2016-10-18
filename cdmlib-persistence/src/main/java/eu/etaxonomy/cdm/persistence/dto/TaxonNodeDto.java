@@ -83,8 +83,8 @@ public class TaxonNodeDto {
         taxonUuid = taxon.getUuid();
         titleCache = taxon.getName().getTitleCache();
         taggedTitle = taxon.getName().getTaggedName();
-        unplaced = taxon.isUnplaced();
-        excluded = taxon.isExcluded();
+        unplaced = taxonNode.isUnplaced();
+        excluded = taxonNode.isExcluded();
         rankLabel = taxon.getName().getRank().getLabel();
         status = TaxonStatus.Accepted;
     }

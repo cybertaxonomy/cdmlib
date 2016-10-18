@@ -704,8 +704,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
     @Override
-    @Test
-    @Ignore
+//    @Test
     public void createTestDataSet() throws FileNotFoundException {
         UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
 

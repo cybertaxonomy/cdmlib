@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -583,11 +582,11 @@ public class CsvNameExport extends CsvNameExportBase {
         HomotypicalGroup group;
         BotanicalName synonymName;
         String doubtfulTitleCache;
-        for (SynonymRelationship synRel: taxon.getSynonymRelations()){
-            synonymName = HibernateProxyHelper.deproxy(synRel.getSynonym().getName(), BotanicalName.class);
+        for (Synonym synonym: taxon.getSynonyms()){
+            synonymName = HibernateProxyHelper.deproxy(synonym.getName(), BotanicalName.class);
             group = HibernateProxyHelper.deproxy(synonymName.getHomotypicalGroup(), HomotypicalGroup.class);
             synonymName.generateFullTitle();
-            if (synRel.getSynonym().isDoubtful()){
+            if (synonym.isDoubtful()){
                 if (!synonymName.getFullTitleCache().startsWith("?")){
                     doubtfulTitleCache = "?" + synonymName.getFullTitleCache();
                     synonymName = (BotanicalName) synonymName.clone();
@@ -596,16 +595,16 @@ public class CsvNameExport extends CsvNameExportBase {
             }
             if (!group.equals(name.getHomotypicalGroup())){
                 if (heterotypicSynonymsList.containsKey(group)){
-                    heterotypicSynonymsList.get(group).add(synRel.getSynonym());
+                    heterotypicSynonymsList.get(group).add(synonym);
                 }else{
                     homotypicSynonyms = new ArrayList<Synonym>();
-                    homotypicSynonyms.add(synRel.getSynonym());
+                    homotypicSynonyms.add(synonym);
                     heterotypicSynonymsList.put(group, homotypicSynonyms);
                     homotypicSynonyms= null;
                 }
             } else{
                 synonymName.generateFullTitle();
-                homotypicSynonymsList.add(synRel.getSynonym());
+                homotypicSynonymsList.add(synonym);
             }
         }
 

@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.database.CdmDataSourceTest;
-import eu.etaxonomy.cdm.database.DatabaseEnumTest;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnumTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImplTest;
@@ -51,7 +51,7 @@ public class CdmTestSuite {
         org.junit.runner.JUnitCore.runClasses(
                 //database
                 CdmDataSourceTest.class,
-                DatabaseEnumTest.class,
+                DatabaseTypeEnumTest.class,
                 //dao.common
                 CdmEntityDaoBaseTest.class,
                 DaoBaseTest.class,

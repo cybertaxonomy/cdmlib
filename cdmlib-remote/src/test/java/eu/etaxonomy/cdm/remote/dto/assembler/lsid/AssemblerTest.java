@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -187,7 +187,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     public void testDeepMapping() {
         for(int i = 0; i < 3; i++) {
             Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
-            taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+            taxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
         }
 
         if(!UriUtils.isInternetAvailable(null)){

@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -72,7 +72,7 @@ public class TestService {
 		logger.info("Create taxon objects...");
 		Taxon childTaxon = Taxon.NewInstance(nvn, sec);
 		Synonym syn = Synonym.NewInstance(bn, sec);
-		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
+		childTaxon.addSynonym(syn, SynonymType.SYNONYM_OF());
  		TransactionStatus txStatus = appCtr.startTransaction();
 		appCtr.getTaxonService().save(childTaxon);
 		appCtr.commitTransaction(txStatus);

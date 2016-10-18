@@ -707,7 +707,7 @@ public class TaxonNameBaseTest {
 	@Test
 	public void testRemoveTaxonBases(){
 
-		Taxon newTaxon = new Taxon(nameBase1, null);
+		Taxon newTaxon = Taxon.NewInstance(nameBase1, null);
 		assertEquals(1, nameBase1.getTaxonBases().size());
 
 

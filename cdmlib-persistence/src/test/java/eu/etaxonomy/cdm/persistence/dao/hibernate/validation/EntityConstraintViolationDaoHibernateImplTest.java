@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegrationTest {
 
 	private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
-	private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
+	private static final String SYNONYM = "eu.etaxonomy.cdm.model.taxon.Synonym";
 	private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
 	@SpringBeanByType
@@ -39,7 +39,7 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 		results = dao.getConstraintViolations(MEDIA);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP);
+		results = dao.getConstraintViolations(SYNONYM);
 		assertEquals("Unexpected number of validation results", 2, results.size());
 
 		results = dao.getConstraintViolations(GATHERING_EVENT);
@@ -61,11 +61,11 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 		results = dao.getConstraintViolations(MEDIA, Severity.ERROR);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.NOTICE);
+		results = dao.getConstraintViolations(SYNONYM, Severity.NOTICE);
 		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.WARNING);
+		results = dao.getConstraintViolations(SYNONYM, Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.ERROR);
+		results = dao.getConstraintViolations(SYNONYM, Severity.ERROR);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.NOTICE);

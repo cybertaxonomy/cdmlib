@@ -124,7 +124,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@JoinTable(name = "Classification_Description")
 //	@Field(name="text", store=Store.YES)
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
-    private final Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> description = new HashMap<>();
 
 
 
@@ -671,13 +671,15 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
         try{
             result = (Classification)super.clone();
             //result.rootNode.childNodes = new ArrayList<TaxonNode>();
-            List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
+            List<TaxonNode> rootNodes = new ArrayList<>();
             TaxonNode rootNodeClone;
 
 
             rootNodes.addAll(rootNode.getChildNodes());
             TaxonNode rootNode;
             Iterator<TaxonNode> iterator = rootNodes.iterator();
+
+            result.description = cloneLanguageString(this.description);
 
             while (iterator.hasNext()){
                 rootNode = iterator.next();
@@ -688,7 +690,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             }
 
             //geo-scopes
-            result.geoScopes = new HashSet<NamedArea>();
+            result.geoScopes = new HashSet<>();
             for (NamedArea namedArea : getGeoScopes()){
                 result.geoScopes.add(namedArea);
             }

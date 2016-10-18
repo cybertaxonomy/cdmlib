@@ -90,7 +90,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 
     /**
      * Class constructor: creates a new taxon relationship instance (with the
-     * given "accepted/correct" {@link Taxon taxa}, the given {@link SynonymRelationshipType synonym relationship type}
+     * given "accepted/valid" {@link Taxon taxa}, the given {@link TaxonRelationshipType taxon relationship type}
      * and with the {@link eu.etaxonomy.cdm.model.reference.Reference reference source} on which the relationship
      * assertion is based). Moreover the new taxon relationship will be added to
      * the respective sets of taxon relationships assigned to both taxa.
@@ -127,7 +127,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
      * be removed from the set of taxon relationships assigned to the "old"
      * source taxon.
      *
-     * @param fromTaxon	the taxon instance to be set as a source in <i>this</i> synonym relationship
+     * @param fromTaxon	the taxon instance to be set as a source in <i>this</i> taxon relationship
      * @see    			#getFromTaxon()
      */
     public void setFromTaxon(Taxon fromTaxon){
@@ -156,7 +156,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
      * be removed from the set of taxon relationships assigned to the "old"
      * target taxon.
      *
-     * @param toTaxon	the taxon instance to be set as a target in <i>this</i> synonym relationship
+     * @param toTaxon	the taxon instance to be set as a target in <i>this</i> taxon relationship
      * @see    			#getToTaxon()
      */
     public void setToTaxon(Taxon toTaxon){

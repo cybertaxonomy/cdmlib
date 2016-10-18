@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Basic;
@@ -169,4 +171,21 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 		//no changes to: -
 		return result;
 	}
+
+
+    /**
+     * Convenience method to clone a LanguageString map
+     * @param oldMap
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    protected Map<Language,LanguageString> cloneLanguageString(Map<Language,LanguageString> oldMap) throws CloneNotSupportedException{
+        Map<Language,LanguageString> result = new HashMap<>();
+        for (Language language : oldMap.keySet()){
+            LanguageString newLanguageString = (LanguageString)oldMap.get(language).clone();
+            result.put(language, newLanguageString);
+        }
+        return result;
+
+    }
 }

@@ -278,7 +278,27 @@ public enum DatabaseTypeEnum {
         return null;
     }
 
-
+    /**
+     * Returns the database type evaluating the connection string.
+     * To retrieves parts of the connection string (e.g. database name),
+     * get the database type from the enum and call e.g.
+     * type.getDatabaseType().getDatabaseNameByConnectionString(url);
+     *
+     * @param url the connection string
+     * @return the database type
+     */
+    public static DatabaseTypeEnum byConnectionString(String url) {
+        if (url == null){
+            return null;
+        }
+        for (DatabaseTypeEnum type : values()){
+            if (url.startsWith(type.getUrl())){
+                type.getDatabaseType().getDatabaseNameByConnectionString(url);
+                return type;
+            }
+        }
+        return null;
+    }
 
 
 }

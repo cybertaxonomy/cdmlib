@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -402,7 +402,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					Synonym synonym = Synonym.NewInstance(name, sec);
 					taxonService.save(synonym);
 					taxon.addSynonym(synonym,
-							SynonymRelationshipType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF());
 
 					synonymCounter++;
 				}
@@ -454,7 +454,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 		commit();
 
 		writeDbUnitDataSetFile(new String[] { "TAXONBASE", "TAXONNAMEBASE",
-				"TAXONRELATIONSHIP", "SYNONYMRELATIONSHIP", "REFERENCE",
+				"TAXONRELATIONSHIP", "REFERENCE",
 				"DESCRIPTIONELEMENTBASE",
 				"DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE",
 				"ORIGINALSOURCEBASE", "DESCRIPTIONBASE", "REFERENCE_ORIGINALSOURCEBASE","LANGUAGESTRING",

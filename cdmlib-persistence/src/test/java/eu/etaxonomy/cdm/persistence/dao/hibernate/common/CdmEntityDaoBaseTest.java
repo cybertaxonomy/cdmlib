@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
  */
 public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSecurity {
 
-    private static final UUID UUID_USER_BEN = UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66");
     private UUID uuid;
     private TaxonBase<?> cdmBase;
 

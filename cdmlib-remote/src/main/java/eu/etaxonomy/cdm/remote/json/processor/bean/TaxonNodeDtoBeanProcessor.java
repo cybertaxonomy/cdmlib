@@ -12,11 +12,11 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.kohlbecker
@@ -28,9 +28,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
 
 
-    /* (non-Javadoc)
-     * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 
@@ -52,8 +49,8 @@ public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
             }else{
                 json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
             }
-            json.element("unplaced", node.getTaxon().isUnplaced());
-            json.element("excluded", node.getTaxon().isExcluded());
+            json.element("unplaced", node.isUnplaced());
+            json.element("excluded", node.isExcluded());
             String ranklabel = null;
             if(node.getTaxon().getName().getRank() != null){
                 ranklabel = node.getTaxon().getName().getRank().getLabel();

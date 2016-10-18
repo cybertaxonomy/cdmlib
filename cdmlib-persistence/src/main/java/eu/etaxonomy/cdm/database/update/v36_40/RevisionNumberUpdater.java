@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.database.update.v36_40;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -31,9 +29,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 25.04.2016
  */
 public class RevisionNumberUpdater extends SchemaUpdaterStepBase<RevisionNumberUpdater> implements ITermUpdaterStep{
-	private static final Logger logger = Logger.getLogger(RevisionNumberUpdater.class);
 
-	private static final String stepName = "Update referenced obj_type";
 
 // **************************** STATIC METHODS ********************************/
 

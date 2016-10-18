@@ -77,7 +77,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "TaxonInteraction_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> description = new HashMap<>();
 
 	@XmlElement(name = "Taxon2")
 	@XmlIDREF
@@ -248,13 +248,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 			TaxonInteraction result = (TaxonInteraction)super.clone();
 
 			//description
-			result.description = new HashMap<Language, LanguageString>();
-			for (Language language : getDescriptions().keySet()){
-				//TODO clone needed? See also IndividualsAssociation
-				LanguageString newLanguageString = (LanguageString)getDescriptions().get(language).clone();
-				result.description.put(language, newLanguageString);
-			}
-
+			result.description = cloneLanguageString(getDescriptions());
 
 			return result;
 			//no changes to: taxon2
@@ -264,4 +258,5 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 			return null;
 		}
 	}
+
 }

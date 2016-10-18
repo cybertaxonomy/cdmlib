@@ -74,8 +74,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue("Invoke should return true", result);
 		//to be continued
 //		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
-//                "SynonymRelationship","TaxonNode",
-//                "HomotypicalGroup"};
+//                "TaxonNode","HomotypicalGroup"};
 //		commitAndStartNewTransaction(tableNames);
 	}
 

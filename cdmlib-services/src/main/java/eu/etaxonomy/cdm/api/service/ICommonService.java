@@ -286,6 +286,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
 	/**
+	 * Creates a database that more or less has all tables filled.
 	 * Preliminary, may be moved to test later
 	 */
 	@Deprecated

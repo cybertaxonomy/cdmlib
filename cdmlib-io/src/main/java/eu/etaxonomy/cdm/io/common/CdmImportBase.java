@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -1221,26 +1220,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return CdmBase.deproxy(taxonBase, Taxon.class);
 		}else if(taxonBase.isInstanceOf(Synonym.class)){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-			Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
-			if (acceptedTaxa.size() == 0){
-				return null;
-			}else if (acceptedTaxa.size() == 1){
-				return acceptedTaxa.iterator().next();
-			}else{
-				Reference sec = synonym.getSec();
-				if (sec != null){
-					Set<Taxon> taxaWithSameSec = new HashSet<Taxon>();
-					for (Taxon taxon: acceptedTaxa){
-						if (sec.equals(taxon.getSec())){
-							taxaWithSameSec.add(taxon);
-						}
-					}
-					if (taxaWithSameSec.size() == 1){
-						return taxaWithSameSec.iterator().next();
-					}
-				}
-				throw new IllegalStateException("Can't define the one accepted taxon for a synonym out of multiple accept taxa");
-			}
+			Taxon acceptedTaxon = synonym.getAcceptedTaxon();
+			return acceptedTaxon;
 		}else{
 			throw new IllegalStateException("Unknown TaxonBase subclass: " + taxonBase.getClass().getName());
 		}

@@ -189,7 +189,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 
 				return;
 			} else if (isStartingElement(next, TAXON)) {
-				Taxon thisTaxon = handleTaxon(state, reader, next.asStartElement());
+				state.setCurrentTaxonExcluded(false);
+			    Taxon thisTaxon = handleTaxon(state, reader, next.asStartElement());
 				doTaxonRelation(state, thisTaxon, lastTaxon, parentEvent.getLocation());
 				if (state.isTaxonInClassification() == true){
 					lastTaxon = thisTaxon;
@@ -209,16 +210,19 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 * @param taxon
 	 * @param lastTaxon
 	 */
-	private void doTaxonRelation(MarkupImportState state, Taxon taxon, Taxon lastTaxon, Location dataLocation) {
+	private TaxonNode doTaxonRelation(MarkupImportState state, Taxon taxon, Taxon lastTaxon, Location dataLocation) {
 
 		if (state.isTaxonInClassification() == false){
-			return;
+			return null;
 		}
 
+		boolean excluded = state.isCurrentTaxonExcluded();
+		TaxonNode node;
 		Classification tree = makeTree(state, dataLocation);
 		if (lastTaxon == null) {
-			tree.addChildTaxon(taxon, null, null);
-			return;
+			node = tree.addChildTaxon(taxon, null, null);
+			node.setExcluded(excluded);
+			return node;
 		}
 		Rank thisRank = taxon.getName().getRank();
 		Rank lastRank = lastTaxon.getName().getRank();
@@ -226,40 +230,56 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			String message = "Last rank was null. Can't create tree correctly";
 			fireWarningEvent(message, makeLocationStr(dataLocation), 12);
 		}
-		if (lastTaxon.getTaxonNodes().size() > 0) {
+		if (!lastTaxon.getTaxonNodes().isEmpty()) {
 			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
 			if (thisRank == null){
-				String message = "Rank is undefined for taxon '%s'. Can't create classification without rank.";
+			    String message = "Rank is undefined for taxon '%s'. Can't create classification without rank.";
 				message = String.format(message, taxon.getName().getTitleCache());
 				fireWarningEvent(message, makeLocationStr(dataLocation), 6);
+				node = null;
 			}else if (thisRank.isLower(lastRank)) {
-				lastNode.addChildTaxon(taxon, null, null);
+			    node = null;
+	            node = lastNode.addChildTaxon(taxon, null, null);
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			} else if (thisRank.equals(lastRank)) {
-				TaxonNode parent = lastNode.getParent();
+			    TaxonNode parent = lastNode.getParent();
 				if (parent != null && parent.getTaxon() != null) {
-					parent.addChildTaxon(taxon, null, null);
+					node = parent.addChildTaxon(taxon, null, null);
 					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
 				} else {
-					tree.addChildTaxon(taxon, null, null);
+					node = tree.addChildTaxon(taxon, null, null);
 				}
 			} else if (thisRank.isHigher(lastRank)) {
-				TaxonNode parent = lastNode.getParent();
+			    TaxonNode parent = lastNode.getParent();
 				if (parent != null){
-					doTaxonRelation(state, taxon, parent.getTaxon(),	dataLocation);
+					node = doTaxonRelation(state, taxon, parent.getTaxon(), dataLocation);
 				}else{
 					String warning = "No parent available for lastNode. Classification can not be build correctly. Maybe the rank was missing for the lastNode";
 					fireWarningEvent(warning, makeLocationStr(dataLocation), 16);
 					//TODO what to do in this case (haven't spend time to think about yet
+					node = null;
 				}
+
 				// TaxonNode parentNode = handleTaxonRelation(state, taxon,
 				// lastNode.getParent().getTaxon());
 				// parentNode.addChildTaxon(taxon, null, null, null);
+			}else{
+			    fireWarningEvent("Unhandled case", makeLocationStr(dataLocation), 8);
+			    node = null;
 			}
 		} else {
 			String message = "Last taxon has no node";
 			fireWarningEvent(message, makeLocationStr(dataLocation), 6);
+			node = null;
 		}
+		if (excluded){
+		    if (node != null){
+		        node.setExcluded(excluded);
+		    }else{
+		        fireWarningEvent("Taxon is excluded but no taxon node can be created", makeLocationStr(dataLocation), 4);
+		    }
+		}
+		return node;
 	}
 
 
@@ -514,7 +534,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		if (checkAndRemoveAttributeValue(attributes, CLASS, "dubious")) {
 			taxon.setDoubtful(true);
 		} else if (checkAndRemoveAttributeValue(attributes, CLASS, "excluded")) {
-			taxon.setExcluded(true);
+			state.setCurrentTaxonExcluded(true);
 		}
 		// TODO insufficient, new, expected
 		handleNotYetImplementedAttribute(attributes, CLASS);

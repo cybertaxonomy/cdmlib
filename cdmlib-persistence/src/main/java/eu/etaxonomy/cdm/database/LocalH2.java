@@ -26,7 +26,6 @@ import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
 /**
@@ -56,8 +55,6 @@ public class LocalH2 extends BasicDataSource {
 	/** default driver class name */
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.h2.Driver";
 	String mode = H2Mode.EMBEDDED.toString();
-
-	private NomenclaturalCode nomenclaturalCode;
 
 	/**
 	 *
@@ -230,10 +227,5 @@ public class LocalH2 extends BasicDataSource {
 	public String getMode(){
 		return mode;
 	}
-
-	public void setNomenclaturalCode(NomenclaturalCode code){
-		this.nomenclaturalCode = code;
-	}
-
 
 }

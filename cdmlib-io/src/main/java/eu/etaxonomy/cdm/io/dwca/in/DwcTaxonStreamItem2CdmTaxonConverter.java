@@ -87,9 +87,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         this.isFilterOnly = isFilter;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.dwca.in.ItemFilter#toBeRemovedFromStream(java.lang.Object)
-     */
     @Override
     public boolean toBeRemovedFromStream(StreamItem item) {
         if (!config.isDoSplitRelationshipImport()){
@@ -311,44 +308,38 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param taxonBase
 	 */
 	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
-		// TODO Auto-generated method stub
 		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
 		if (tdwg_area != null){
-		if(taxonBase instanceof Synonym){
-			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-			Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
-			if(acceptedTaxaList.size()>1){
-				String message = "Synonym is related to more than one accepted Taxa";
-				fireWarningEvent(message, item, 4);
-			}else{
-				for(Taxon taxon : acceptedTaxaList){
-					TaxonDescription td = getTaxonDescription(taxon, false);
-					NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
+    		if(taxonBase instanceof Synonym){
+    			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+    			Taxon acceptedTaxon = synonym.getAcceptedTaxon();
+    			if (acceptedTaxon != null){
+    			    TaxonDescription td = getTaxonDescription(acceptedTaxon, false);
+    			    NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
 
-					if (area == null){
-						area = NamedArea.getAreaByTdwgLabel(tdwg_area);
-					}
-					if (area != null){
-						Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
-						td.addElement(distribution);
-					}
-				}
-			}
-		}
-		if(!(taxonBase instanceof Synonym)){
-			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-			TaxonDescription td = getTaxonDescription(taxon, false);
-			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
+    			    if (area == null){
+    			        area = NamedArea.getAreaByTdwgLabel(tdwg_area);
+    			    }
+    			    if (area != null){
+    			        Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
+    			        td.addElement(distribution);
+    			    }
+    			}
+    		}
+    		if(!(taxonBase instanceof Synonym)){
+    			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+    			TaxonDescription td = getTaxonDescription(taxon, false);
+    			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
 
-			if (area == null){
-				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
-			}
-			if (area != null){
-				Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
-				td.addElement(distribution);
-			}
-		}
-	}
+    			if (area == null){
+    				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
+    			}
+    			if (area != null){
+    				Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
+    				td.addElement(distribution);
+    			}
+    		}
+    	}
 	}
 
 

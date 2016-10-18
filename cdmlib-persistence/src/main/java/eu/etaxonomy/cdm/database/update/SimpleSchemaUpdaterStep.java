@@ -26,7 +26,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 13.09.2010
  *
  */
-public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaUpdaterStep> implements ISchemaUpdaterStep, ITermUpdaterStep{
+public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaUpdaterStep>
+                implements ISchemaUpdaterStep, ITermUpdaterStep{
 	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
 
 	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<DatabaseTypeEnum, String>();
@@ -38,6 +39,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 // *************************** FACTORY ********************************/
 
 	/**
+	 * Deprecated method
 	 * @deprecated use  {@link #NewNonAuditedInstance(String, String)},
 	 * {@link #NewAuditedInstance(String, String, boolean, String)},
 	 * or {@link #NewExplicitAuditedInstance(String, String, String)} instead
@@ -47,12 +49,22 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 
+	/**
+     * Simple schema updater with update query only for non_AUD tables.
+	 *
+	 * @param stepName step name
+	 * @param defaultQuery the query
+	 * @param adapt preliminary
+	 * @return
+	 */
 	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(String stepName, String defaultQuery, int adapt){
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 
 	/**
-	 * @param stepName Step name
+	 * Simple schema updater with update query for AUD and non_AUD tables.
+     *
+     * @param stepName Step name
 	 * @param defaultQuery query
 	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonNameBase
 	 *     (while TaxonNameBase_AUD is the audited table
@@ -64,6 +76,14 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, nonAuditedTableName, null);
 	}
 
+	/**
+	 * Simple schema updater with an explicit query for AUD table.
+	 * @param stepName step name
+	 * @param defaultQuery the non_AUD update query
+	 * @param defaultQueryForAuditedTables the AUD update query
+	 * @param adapt preliminary
+	 * @return
+	 */
 	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(String stepName, String defaultQuery, String defaultQueryForAuditedTables, int adapt){
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
@@ -138,29 +158,46 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return true;
 	}
 
-	private void makeAuditedQuery(DatabaseTypeEnum dbType, String tableName){
-		String nonAuditQuery = this.queryMap.get(dbType);
-		if (StringUtils.isBlank(nonAuditQuery)){
+	private void makeAuditedQuery(DatabaseTypeEnum dbType, String tableName, boolean addTable){
+		String auditQuery = addTable? auditQueryMap.get(dbType) : queryMap.get(dbType);
+		if (StringUtils.isBlank(auditQuery)){
 			throw new IllegalArgumentException("Non-audit query must not be blank");
 		}
-		String auditQuery = nonAuditQuery.replace("@@" + tableName + "@@", "@@" + tableName + "_AUD@@");
+	    auditQuery = auditQuery.replace("@@" + tableName + "@@", "@@" + tableName + "_AUD@@");
 		//TODO warning if nothing changed
 		this.auditQueryMap.put(dbType, auditQuery);
+		this.includeAudit = true;
 	}
 
 //********************************* DELEGATES *********************************/
 
 	/**
 	 * For certain database types one may define special queries.<BR>
-	 * Don't forget to put case-mask (@@) for table names
+	 * Don't forget to put case-mask (@@) for table names and also
+	 * add AUD query if required.
 	 * @param dbType database type
 	 * @param query query to use for the given database type.
 	 * @return this schema updater step
+     * @see #putAudited(DatabaseTypeEnum, String)
 	 */
 	public SimpleSchemaUpdaterStep put(DatabaseTypeEnum dbType, String query) {
 		queryMap.put(dbType, query);
 		return this;
 	}
+
+	/**
+     * For certain database types one may define special queries.
+     * This is for the AUD query.<BR>
+     * Don't forget to put case-mask (@@) for table names
+     * @param dbType database type
+     * @param query query to use for the given database type.
+     * @return this schema updater step
+     * @see #put(DatabaseTypeEnum, String)
+     */
+    public SimpleSchemaUpdaterStep putAudited(DatabaseTypeEnum dbType, String query) {
+        auditQueryMap.put(dbType, query);
+        return this;
+    }
 
 	/**
 	 * Defines the non audited table name for computing the audited query.
@@ -171,9 +208,22 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		if (StringUtils.isBlank(nonAuditedTableName)){
 			throw new IllegalArgumentException("TableName must not be blank");
 		}
-		this.includeAudit = true;
-		makeAuditedQuery(null, nonAuditedTableName);
+		makeAuditedQuery(null, nonAuditedTableName, false);
 		return this;
 	}
+
+	 /**
+     * Defines a further non audited table name for computing the audited query.
+     * Requires at least one non audieted table name to be defined already.
+     * @param nonAuditedTableName uncased table name that is to be audited
+     * @return the step
+     */
+    public SimpleSchemaUpdaterStep addDefaultAuditing(String nonAuditedTableName){
+        if (StringUtils.isBlank(nonAuditedTableName)){
+            throw new IllegalArgumentException("TableName must not be blank");
+        }
+        makeAuditedQuery(null, nonAuditedTableName, true);
+        return this;
+    }
 
 }

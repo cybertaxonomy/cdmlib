@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -124,8 +123,7 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     /**
      * If <code>true</code> synonyms will be removed if possible but only if {@link #isDeleteSynonymRelations()}
      * is also <code>true</code>.
-     * It is possible to remove a synonym if it is not used in any other context, e.g. any
-     * other @link {@link SynonymRelationship}
+     * It is possible to remove a synonym if it is not used in any other context
      * @return
      */
     public boolean isDeleteSynonymsIfPossible() {

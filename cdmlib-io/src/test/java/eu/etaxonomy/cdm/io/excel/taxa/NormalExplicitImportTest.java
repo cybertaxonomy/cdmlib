@@ -261,7 +261,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Taxon should have no description", 0, taxon.getDescriptions().size());
 		Synonym synonym = (Synonym)taxonService.find(synonymUuid);
 		assertNotNull("Synonym with given uuid should exist", synonym);
-		assertEquals("Synonym should have 1 accepted taxon", 1, synonym.getAcceptedTaxa().size());
+		assertNotNull("Synonym should have 1 accepted taxon", synonym.getAcceptedTaxon());
 
 		//import
 		boolean result = defaultImport.invoke(uuidConfigurator).isSuccess();

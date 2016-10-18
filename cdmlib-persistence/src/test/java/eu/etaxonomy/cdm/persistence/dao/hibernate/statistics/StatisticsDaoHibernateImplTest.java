@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
@@ -381,7 +381,7 @@ public class StatisticsDaoHibernateImplTest
 					Synonym synonym = Synonym.NewInstance(name, sec);
 					taxonDao.save(synonym);
 					taxon.addSynonym(synonym,
-							SynonymRelationshipType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF());
 
 					synonymCounter++;
 				}

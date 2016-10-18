@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
-    private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
+    private static final String SYNONYM = "eu.etaxonomy.cdm.model.taxon.Synonym";
     private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
     @SpringBeanByType
@@ -93,13 +93,12 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
 
     @Test
     @ExpectedDataSet
-    // @Ignore //FIXME unignore entity validation result dao delete test
     public void testDeleteValidationResult() {
-        dao.deleteEntityValidation(SYNONYM_RELATIONSHIP, 200);
+        dao.deleteEntityValidation(SYNONYM, 200);
 
         commitAndStartNewTransaction(null);
 
-        List<EntityValidation> results = dao.getEntityValidations(SYNONYM_RELATIONSHIP);
+        List<EntityValidation> results = dao.getEntityValidations(SYNONYM);
         assertEquals("Unexpected number of validation results", 0, results.size());
     }
 
@@ -112,7 +111,7 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
         assertEquals("Unexpected entity id", 1, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
-        result = dao.getEntityValidation(SYNONYM_RELATIONSHIP, 200);
+        result = dao.getEntityValidation(SYNONYM, 200);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 2, result.getId());
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -152,7 +151,7 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
         assertEquals("Unexpected number of validation results", 1, results.size());
         assertEquals("Unexpected number of error", 1, results.get(0).getEntityConstraintViolations().size());
 
-        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP);
+        results = dao.getEntityValidations(SYNONYM);
         assertEquals("Unexpected number of validation results", 1, results.size());
         assertEquals("Unexpected number of error", 2, results.get(0).getEntityConstraintViolations().size());
 
@@ -197,11 +196,11 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
         assertEquals("Unexpected severity", Severity.ERROR, results.iterator().next().getEntityConstraintViolations()
                 .iterator().next().getSeverity());
 
-        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP, Severity.NOTICE);
+        results = dao.getEntityValidations(SYNONYM, Severity.NOTICE);
         assertEquals("Unexpected number of validation results", 0, results.size());
-        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP, Severity.WARNING);
+        results = dao.getEntityValidations(SYNONYM, Severity.WARNING);
         assertEquals("Unexpected number of validation results", 1, results.size());
-        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP, Severity.ERROR);
+        results = dao.getEntityValidations(SYNONYM, Severity.ERROR);
         assertEquals("Unexpected number of validation results", 1, results.size());
 
         results = dao.getEntityValidations(GATHERING_EVENT, Severity.NOTICE);

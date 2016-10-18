@@ -73,6 +73,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private boolean isCitation = false;
 	private boolean isNameType = false;
 	private boolean isProParte = false;
+	private boolean currentTaxonExcluded = false;
 
 	private boolean isSpecimenType = false;
 
@@ -450,6 +451,14 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void resetCollectionAndType() {
 		collectionAndType = "";
 	}
+
+
+    public boolean isCurrentTaxonExcluded() {
+        return currentTaxonExcluded;
+    }
+    public void setCurrentTaxonExcluded(boolean currentTaxonExcluded) {
+        this.currentTaxonExcluded = currentTaxonExcluded;
+    }
 
 
 

@@ -22,7 +22,8 @@ public enum UTF8 {
 	SMALL_A_ACUTE("\u00E1"),
 	RIGHT_SINGLE_QUOT("\u2019"), // Right single quotation mark
 	ENGLISH_QUOT_START("\u201e"),  //Left English quotation mark
-	ENGLISH_QUOT_END("\u201f")  //Right English quotation mark -‟-
+	ENGLISH_QUOT_END("\u201f"),  //Right English quotation mark -‟-
+	BLACK_CIRCLE("\u25CF")       //Black circle, symbol for endemic
 
 	;
 

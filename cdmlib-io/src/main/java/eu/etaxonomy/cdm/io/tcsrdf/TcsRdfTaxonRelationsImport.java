@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,17 +19,18 @@ import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 
 
 /**
@@ -46,7 +47,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	public TcsRdfTaxonRelationsImport(){
 		super();
 	}
-	
+
 	@Override
 	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
@@ -54,13 +55,13 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		logger.warn("Creation of homotypic relations is still problematic");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
-		
+
 		return result;
 	}
-	
+
 	@Override
-	public void doInvoke(TcsRdfImportState state){ 
-	
+	public void doInvoke(TcsRdfImportState state){
+
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		logger.info("start makeTaxonRelationships ...");
@@ -68,9 +69,9 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 
 		String xmlElementName;
 		Namespace elementNamespace;
-		
+
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-		
+
 		TcsRdfImportConfigurator config = state.getConfig();
 		Model root = config.getSourceRoot();
 		String taxonConceptNamespace = config.getTcNamespaceURIString();
@@ -83,28 +84,28 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		for (Element elTaxonConcept : elTaxonConcepts){
 			try {
 				if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-				
+
 				//TaxonConcept about
 				xmlElementName = "about";
 				elementNamespace = config.getRdfNamespace();
 				String strTaxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
-				
+
 				TaxonBase aboutTaxon = taxonMap.get(strTaxonAbout);
-				
+
 				if (aboutTaxon instanceof Taxon){
 					success &= makeHomotypicSynonymRelations((Taxon)aboutTaxon);
 				}
-				
+
 				xmlElementName = "hasRelationship";
 				elementNamespace = taxonConceptNamespace;
 				List<Element> elHasRelationships = elTaxonConcept.getChildren(xmlElementName, elementNamespace);
-				
-				
+
+
 				for (Element elHasRelationship: elHasRelationships){
 					xmlElementName = "relationship";
 					elementNamespace = taxonConceptNamespace;
 					List<Element> elRelationships = elHasRelationship.getChildren(xmlElementName, elementNamespace);
-					
+
 					for (Element elRelationship: elRelationships){
 						success &= 	makeRelationship(elRelationship, strTaxonAbout, taxonMap, state, taxonStore);
 					}//relationship
@@ -117,15 +118,15 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		}//elTaxonConcept
 		logger.info("Taxa to save: " + taxonStore.size());
 		getTaxonService().save(taxonStore);
-		
+
 		logger.info("end makeRelTaxa ...");
 		*/
 		return;
 
 	}
-	
+
 	private boolean makeRelationship(
-				Element elRelationship, 
+				Element elRelationship,
 				String strTaxonAbout,
 				MapWrapper<TaxonBase> taxonMap,
 				TcsRdfImportState state,
@@ -160,7 +161,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 					toTaxon = fromTaxon;
 					fromTaxon = tmp;
 				}
-				
+
 				//Create relationship
 				if (! (toTaxon instanceof Taxon)){
 					logger.warn("TaxonBase toTaxon is not of Type 'Taxon'. Relationship is not added.");
@@ -169,8 +170,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 					Taxon taxonTo = (Taxon)toTaxon;
 					Reference citation = null;
 					String microReference = null;
-					if (relType instanceof SynonymRelationshipType){
-						success &= makeSynRelType((SynonymRelationshipType)relType, taxonTo, fromTaxon, citation, microReference);
+					if (relType instanceof SynonymType){
+						success &= makeSynRelType((SynonymType)relType, taxonTo, fromTaxon, citation, microReference);
 					}else if (relType instanceof TaxonRelationshipType){
 						success &= makeTaxonRelType((TaxonRelationshipType)relType, state, taxonTo, fromTaxon, strTaxonAbout , citation, microReference);
 					}else{
@@ -189,7 +190,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				}
 				success = false;
 			}
-			
+
 		} catch (UnknownCdmTypeException e) {
 			//TODO
 			logger.warn("tc:relationshipCategory " + strRelCategory + " not yet implemented");
@@ -197,9 +198,9 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		}*/
 		return success;
 	}
-	
-	
-	private boolean makeSynRelType(SynonymRelationshipType synRelType, Taxon taxonTo, TaxonBase fromTaxon, Reference citation, String microReference){
+
+
+	private boolean makeSynRelType(SynonymType synRelType, Taxon taxonTo, TaxonBase fromTaxon){
 		boolean success = true;
 		if (! (fromTaxon instanceof Synonym )){
 			logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
@@ -209,11 +210,11 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			TaxonNameBase synName = synonym.getName();
 			TaxonNameBase accName = taxonTo.getName();
 			if (synName != null && accName != null && synName.isHomotypic(accName)
-						&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
-				synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
+						&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
+				synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 			}
 			if (! relationExists(taxonTo, synonym, synRelType)){
-				taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
+				taxonTo.addSynonym(synonym, synRelType);
 			}else{
 				//TODO citation, microReference
 				//TODO different synRelTypes -> warning
@@ -222,7 +223,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		}
 		return success;
 	}
-	
+
 	private boolean makeTaxonRelType(TaxonRelationshipType relType, TcsRdfImportState state, Taxon taxonTo, TaxonBase fromTaxon, String strTaxonAbout, Reference citation, String microReference){
 		boolean success = true;
 		if (! (fromTaxon instanceof Taxon )){
@@ -238,7 +239,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		}
 		return success;
 	}
-	
+
 	private boolean makeTaxonomicallyIncluded(TcsRdfImportState state, Taxon toTaxon, Taxon fromTaxon, Reference citation, String microCitation){
 		Reference sec = toTaxon.getSec();
 		Classification tree = state.getTree(sec);
@@ -248,26 +249,20 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		TaxonNode childNode = tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
 		return (childNode != null);
 	}
-	
-	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
-		if (synonym == null){
-			return false;
-		}
-		if (synonym.getRelationType(taxonTo).size() > 0){
-			Set<SynonymRelationshipType> relTypeList = synonym.getRelationType(taxonTo);
-			if (relTypeList.contains(synRelType)){
-				return true;
-			}else{
-				logger.warn("Taxon-Synonym pair has 2 different SynonymRelationships. This is against the rules");
-				return false;
-			}
-		}else{
-			return false;
-		}
-	}
+
+    private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymType synRelType){
+        if (synonym == null || taxonTo == null
+                || !taxonTo.equals(synonym.getAcceptedTaxon())){
+            return false;
+        }else{
+            return CdmUtils.nullSafeEqual(synonym.getType(),synRelType);
+        }
+    }
 
 	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
-		if (true)return false;
+		if (true) {
+            return false;
+        }
 		TaxonNameBase aboutName = aboutTaxon.getName();
 		if (aboutName != null){
 			Set<TaxonNameBase> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
@@ -278,20 +273,18 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				}
 				Set<Synonym> syns = typifiedName.getSynonyms();
 				for(Synonym syn:syns){
-					aboutTaxon.addSynonym(syn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
 				}
 			}
-			
-			
+
+
 		}
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	protected boolean isIgnore(TcsRdfImportState state){
+
+	@Override
+    protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoRelTaxa();
 	}
-	
+
 }

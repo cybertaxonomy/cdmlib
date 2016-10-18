@@ -174,12 +174,13 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
      * @param  sec				the reference using the taxon name
      * @see    #TaxonBase()
      */
-    protected TaxonBase(TaxonNameBase taxonNameBase, Reference sec){
+    protected TaxonBase(TaxonNameBase taxonNameBase, Reference sec, String secDetail){
         super();
         if (taxonNameBase != null){
             this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);
         }
         this.setSec(sec);
+        this.setSecMicroReference(secDetail);
     }
 
 //********* METHODS **************************************/
@@ -352,6 +353,12 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
         this.useNameCache = useNameCache;
     }
 
+    /**
+     * Returns <code>true</code> if <code>this</code>
+     * taxon base is not part of any classification.
+     * False otherwise
+     * @return boolean
+     */
     @Transient
     public abstract boolean isOrphaned();
 

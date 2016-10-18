@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -57,8 +56,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * It is used to define in which context a term may be used. From v3.3 on this replaces the semantic part of the subclasses
  * of the class {@link DefinedTermBase}. E.g. before v3.3 a term defining a sex and a term defining a stage had to different
  * classes Sex and Stage. With v3.3 they both became {@link DefinedTerm}s but with different types.<BR>
- * The type of a term and the type of its vocabulary should be the same. Before v3.3 it was not always possible to define
- * what the context of an (empty) vocabulary is.
+ * The type of a term and the type of its vocabulary should be the same. Before v3.3 it was not always
+ * possible to define what the context of an (empty) vocabulary is.
  * In future versions this enum may also be expressed as a term, not an enum. For now the general policy is to
  * transform former classes to general classes with enums as their types.
  *
@@ -173,12 +172,11 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
     //13
     /**
      * Term type for the type of a synonym relationship between 2 {@link TaxonBase taxa}
-     * @see SynonymRelationship
-     * @see Synonym
+     * @see Synonym#getType()
      * @see TaxonBase
      */
-    @XmlEnumValue("SynonymRelationshipType")
-    SynonymRelationshipType(UUID.fromString("1eb4fee0-7716-4531-a9ed-a95327f1f4bb"), "Synonym Relationship Type", "SRT"),
+    @XmlEnumValue("SynonymType")
+    SynonymType(UUID.fromString("1eb4fee0-7716-4531-a9ed-a95327f1f4bb"), "Synonym Type", "SRT"),
 
     //14
     /**

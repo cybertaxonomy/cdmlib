@@ -95,7 +95,7 @@ http://www.w3.org/2001/XMLSchema
               <xs:element ref="description:Stage"/>
               <xs:element ref="description:State"/>
               <xs:element ref="description:StatisticalMeasure"/>
-              <xs:element ref="taxon:SynonymRelationshipType"/>
+              <xs:element ref="taxon:SynonymType"/>
               <xs:element ref="taxon:TaxonRelationshipType"/>
               <xs:element ref="description:TextFormat"/>
               <xs:element ref="location:Country"/>

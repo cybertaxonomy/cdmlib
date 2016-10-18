@@ -36,13 +36,13 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
              *  - in hsqldb:
              *      Caused by: java.sql.SQLException: Violation of unique constraint SYS_PK_1209:
              *      duplicate value(s) for column(s) ID in statement
-             *      [insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, taxonomicchildrencount, taxonomicparentcache_id, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?)]
+             *      [insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?)]
              *		at org.hsqldb.jdbc.Util.throwError(Util.java:58)
              *
              *  - in h2:
              * 		Caused by: org.h2.jdbc.JdbcSQLException: Unique index or primary key violation:
              *      PRIMARY_KEY_C0 ON PUBLIC.TAXONBASE(ID); SQL statement:
-             * 		insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, taxonomicchildrencount, taxonomicparentcache_id, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?) [23001-115]
+             * 		insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?) [23001-115]
              *
              */
             DescriptionDaoHibernateImplTest.class,

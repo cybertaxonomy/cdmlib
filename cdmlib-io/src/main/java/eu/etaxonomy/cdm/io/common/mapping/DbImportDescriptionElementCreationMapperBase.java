@@ -108,20 +108,17 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 
 		}else if (taxonBase instanceof Synonym){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-			Set<Taxon> taxa = synonym.getAcceptedTaxa();
-			if (taxa.size() == 0){
+			Taxon accTaxon = synonym.getAcceptedTaxon();
+			if (accTaxon == null){
 				logger.warn("Synonym '" + synonym.getTitleCache() + "' ("+ taxonFk + ") has no accepted taxon. Can't define a taxon to add the description element to");
-			}else if (taxa.size() == 1){
-				taxon = taxa.iterator().next();
-			}else{
-				logger.warn("Synonym '" + synonym.getTitleCache() + "' ("+ taxonFk + ") has more than one accepted taxon. Can't decide which one to take");
+			}else {
+				taxon = accTaxon;
 			}
 		}else{ //null
 			throw new IllegalStateException("TaxonBase must either be null, Taxon or Synonym but was something else");
 		}
 		return taxon;
 	}
-
 
 
 	/**

@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 /**
  * @author a.mueller
  * @created 05.08.2009
- * @version 1.0
  */
 public class MediaTest {
     @SuppressWarnings("unused")
@@ -126,7 +125,8 @@ public class MediaTest {
             Media mediaClone = (Media)media1.clone();
             Assert.assertSame("Artist must be the same", team1, mediaClone.getArtist());
             Assert.assertTrue("Clone must have a default language description", mediaClone.getAllDescriptions().containsKey(Language.DEFAULT()));
-            Assert.assertSame("Description1 must be the same", languageString1, mediaClone.getAllDescriptions().get(Language.DEFAULT()) );
+            Assert.assertEquals("Description1.text must be the equal", languageString1.getText(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getText() );
+            Assert.assertSame("Description1.language must be the same", languageString1.getLanguage(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getLanguage() );
             Assert.assertTrue("Clone must have a german description", mediaClone.getAllDescriptions().containsKey(Language.GERMAN()));
             Assert.assertEquals("German description must equal media1Desc2", germanDescription, mediaClone.getAllDescriptions().get(Language.GERMAN()).getText() );
 
@@ -141,7 +141,8 @@ public class MediaTest {
             Assert.assertFalse("Rights must be coloned", mediaClone.getRights().iterator().next().equals(rights1));
 
             Assert.assertTrue("Clone must have a default language title", mediaClone.getAllTitles().containsKey(Language.DEFAULT()));
-            Assert.assertSame("Title must be the same", languageString2, mediaClone.getAllTitles().get(Language.DEFAULT()) );
+            Assert.assertSame("Title.language must be the same", languageString2.getLanguage(), mediaClone.getAllTitles().get(Language.DEFAULT()).getLanguage() );
+            Assert.assertEquals("Title.text must be equal", languageString2.getText(), mediaClone.getAllTitles().get(Language.DEFAULT()).getText() );
 
         } catch (CloneNotSupportedException e) {
             Assert.fail("Media must be cloneable");

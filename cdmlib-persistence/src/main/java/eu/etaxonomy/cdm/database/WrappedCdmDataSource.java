@@ -4,7 +4,6 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -24,7 +23,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * This class is a wrapper class to wrap an {@link javax.sql.DataSource} to an
@@ -151,16 +149,6 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	}
 
 	@Override
-	public NomenclaturalCode getNomenclaturalCode() {
-		throw new UnsupportedOperationException("getNomenclaturalCode() not supported by WrappedCdmDataSource");
-	}
-
-	@Override
-	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
-		throw new UnsupportedOperationException("setNomenclaturalCode(nc) not supported by WrappedCdmDataSource");
-	}
-
-	@Override
 	public String getDbSchemaVersion() throws CdmSourceException {
 		try {
 			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
@@ -273,13 +261,19 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	}
 
     /**
+     * @param dbType
      * @param jdbcUrl
      * @return
      * @throws URISyntaxException
      */
     private String getDatabaseFrom(String jdbcUrl) throws URISyntaxException {
-        URI url = new URI(jdbcUrl.substring(5));
-        return url.getPath().substring(1);
+        DatabaseTypeEnum type = DatabaseTypeEnum.byConnectionString(jdbcUrl);
+        if (type == null){
+            return null;
+        }else{
+            String dbName = type.getDatabaseType().getDatabaseNameByConnectionString(jdbcUrl);
+            return dbName;
+        }
     }
 
 	@Override
