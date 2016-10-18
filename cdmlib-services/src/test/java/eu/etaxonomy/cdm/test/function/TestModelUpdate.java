@@ -138,6 +138,7 @@ public class TestModelUpdate {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
 		appCtr.close();
+		System.out.println("\nEnd Datasource");
 		System.exit(0);
 	}
 
