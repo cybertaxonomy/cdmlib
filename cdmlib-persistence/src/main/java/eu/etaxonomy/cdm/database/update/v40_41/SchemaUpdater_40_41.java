@@ -256,7 +256,14 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepName = "Add identityCache";
         tableName = "SpecimenOrObservationBase";
         newColumnName = "identityCache";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnAdder.NewStringInstance (stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //index
+        stepName = "Add identityCache index";
+        tableName = "SpecimenOrObservationBase";
+        newColumnName = "identityCache";
+        step = IndexAdder.NewInstance(stepName, tableName, newColumnName, null);
         stepList.add(step);
 
         stepName = "Add protectedIdentityCache";
