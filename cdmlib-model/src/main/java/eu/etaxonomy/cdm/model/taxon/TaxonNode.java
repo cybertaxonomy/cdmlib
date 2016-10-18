@@ -916,14 +916,23 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         try{
             TaxonNode result = (TaxonNode)super.clone();
             result.getTaxon().addTaxonNode(result);
-            result.childNodes = new ArrayList<TaxonNode>();
+
+            //childNodes
+            result.childNodes = new ArrayList<>();
             result.countChildren = 0;
 
             //agents
-            result.agentRelations = new HashSet<TaxonNodeAgentRelation>();
+            result.agentRelations = new HashSet<>();
             for (TaxonNodeAgentRelation rel : this.agentRelations){
                 result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
             }
+
+            //excludedNote
+            result.excludedNote = new HashMap<>();
+            for(Language lang : this.excludedNote.keySet()){
+                result.excludedNote.put(lang, this.excludedNote.get(lang));
+            }
+
 
             return result;
         }catch (CloneNotSupportedException e) {
