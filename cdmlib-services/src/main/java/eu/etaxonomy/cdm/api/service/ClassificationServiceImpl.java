@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -844,9 +843,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             }
         }
         TaxonNode parentNode = node.getParent();
-        if (parentNode != null){
-            handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
-        }
         if (parentNode != null){
             handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
         }

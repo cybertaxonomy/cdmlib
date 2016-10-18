@@ -870,43 +870,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @see IIdentifiableEntityService#findByIdentifier(Class, String, DefinedTerm, MatchMode, boolean, Integer, Integer, List)
      */
     public <S extends TaxonBase> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
-    /**
-     * @param clazz the optional {@link TaxonBase} subclass
-     * @param identifier the identifier string
-     * @param identifierType the identifier type
-     * @param subtreeFilter filter on a classification subtree (TaxonNode)
-     * @param matchmode the match mode for the identifier string
-     * @param includeEntity should the taxon as an object be included in the result
-     * @param pageSize page size
-     * @param pageNumber page number
-     * @param propertyPaths property path for initializing the returned taxon object (requires includeEntity=true)
-     * @return the resulting {@link IdentifiedEntityDTO} pager
-     * @see IIdentifiableEntityService#findByIdentifier(Class, String, DefinedTerm, MatchMode, boolean, Integer, Integer, List)
-     */
-    public <S extends TaxonBase> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths);
 
-    /**
-     * Returns a pager for {@link MarkedEntityDTO DTOs} that hold the marker including type, title and uuid
-     * and the according {@link TaxonBase} information (uuid, title and the taxon object itself (optional)).
-     *
-     * @param clazz The optional {@link TaxonBase} subclass
-     * @param markerType the obligatory marker type, if not given, the results will always be empty
-     * @param markerValue the optional
-     * @param subtreeFilter filter on a classification subtree (TaxonNode)
-     * @param includeEntity should the taxon as an object be included in the result
-     * @param pageSize page size
-     * @param pageNumber page number
-     * @param propertyPaths property path for initializing the returned taxon object (requires includeEntity=true)
-     * @return the resulting {@link MarkedEntityDTO} pager
-     * @see IIdentifiableEntityService#findByMarker(Class, MarkerType, Boolean, boolean, Integer, Integer, List)
-     */
-    public <S extends TaxonBase> Pager<MarkedEntityDTO<S>> findByMarker(
-            Class<S> clazz, MarkerType markerType, Boolean markerValue,
-            TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths);
     /**
      * Returns a pager for {@link MarkedEntityDTO DTOs} that hold the marker including type, title and uuid
      * and the according {@link TaxonBase} information (uuid, title and the taxon object itself (optional)).
