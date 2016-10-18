@@ -98,7 +98,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
-    private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> title = new HashMap<>();
 
     //creation date of the media (not of the record)
     @XmlElement(name = "MediaCreated", type= String.class)
@@ -117,7 +117,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @IndexedEmbedded
     @NotNull
-    private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> description = new HashMap<>();
 
     //A single medium such as a picture can have multiple representations in files.
     //Common are multiple resolutions or file formats for images for example
@@ -356,7 +356,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
 
     public Map<Language,LanguageString> getAllDescriptions(){
         if(this.description == null) {
-            this.description = new HashMap<Language,LanguageString>();
+            this.description = new HashMap<>();
         }
         return this.description;
     }
@@ -387,17 +387,13 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     public Object clone() throws CloneNotSupportedException{
         Media result = (Media)super.clone();
         //description
-        result.description = new HashMap<Language, LanguageString>();
-        for (Language language: this.description.keySet()){
-            result.description.put(language, this.description.get(language));
-        }
+        result.description = cloneLanguageString(this.description);
+
         //title
-        result.title = new HashMap<Language, LanguageString>();
-        for (Language language: this.title.keySet()){
-            result.title.put(language, this.title.get(language));
-        }
+        result.title = cloneLanguageString(this.title);
+
         //media representations
-        result.representations = new HashSet<MediaRepresentation>();
+        result.representations = new HashSet<>();
         for (MediaRepresentation mediaRepresentation: this.representations){
             result.representations.add((MediaRepresentation)mediaRepresentation.clone());
         }

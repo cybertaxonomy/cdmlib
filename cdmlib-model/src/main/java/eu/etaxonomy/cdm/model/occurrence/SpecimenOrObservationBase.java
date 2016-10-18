@@ -197,7 +197,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded
     @NotNull
-    protected Map<Language,LanguageString> definition = new HashMap<Language,LanguageString>();
+    protected Map<Language,LanguageString> definition = new HashMap<>();
 
     // events that created derivedUnits from this unit
     @XmlElementWrapper(name = "DerivationEvents")
@@ -594,11 +594,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         result = (SpecimenOrObservationBase)super.clone();
 
         //defininion (description, languageString)
-        result.definition = new HashMap<Language,LanguageString>();
-        for(LanguageString languageString : this.definition.values()) {
-            LanguageString newLanguageString = (LanguageString)languageString.clone();
-            result.putDefinition(newLanguageString);
-        }
+        result.definition = cloneLanguageString(this.definition);
 
         //sex
         result.setSex(this.sex);

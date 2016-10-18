@@ -125,7 +125,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
-    private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> modifyingText = new HashMap<>();
 
     @XmlElementWrapper(name = "Media")
     @XmlElement(name = "Medium")
@@ -501,12 +501,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         }
 
         //modifying text
-        result.modifyingText = new HashMap<Language, LanguageString>();
-        for (Language language : getModifyingText().keySet()){
-            //TODO clone needed? See also IndividualsAssociation
-            LanguageString newLanguageString = (LanguageString)getModifyingText().get(language).clone();
-            result.modifyingText.put(language, newLanguageString);
-        }
+        result.modifyingText = cloneLanguageString(getModifyingText());
 
         //modifiers
         result.modifiers = new HashSet<DefinedTerm>();

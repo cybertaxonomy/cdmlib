@@ -74,7 +74,7 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "IndividualsAssociation_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString cases
-	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+	private Map<Language,LanguageString> description = new HashMap<>();
 
 	@XmlElement(name = "AssociatedSpecimenOrObservation")
 	@XmlIDREF
@@ -229,13 +229,7 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 			IndividualsAssociation result = (IndividualsAssociation)super.clone();
 
 			//description
-			result.description = new HashMap<Language, LanguageString>();
-			for (Language language : getDescription().keySet()){
-				//TODO clone needed?
-				LanguageString newLanguageString = (LanguageString)getDescription().get(language).clone();
-				result.description.put(language, newLanguageString);
-			}
-
+			result.description = cloneLanguageString(getDescription());
 
 			return result;
 			//no changes to: associatedSpecimenOrObservation

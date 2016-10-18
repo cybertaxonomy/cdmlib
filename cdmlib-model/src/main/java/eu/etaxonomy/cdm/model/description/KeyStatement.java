@@ -6,7 +6,6 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -290,13 +289,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		try {
 			result = (KeyStatement) super.clone();
 
-			result.label = new HashMap<Language, LanguageString>();
-
-
-			for (Entry<Language,LanguageString> entry: this.label.entrySet()){
-
-				result.label.put(entry.getKey(), entry.getValue());
-			}
+			result.label = cloneLanguageString(this.label);
 
 			return result;
 		}catch (CloneNotSupportedException e) {
