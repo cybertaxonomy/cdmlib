@@ -212,11 +212,11 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //5778
+        //#5778
         //update PresenceAbsenceTerm symbols
         updatePresenceAbsenceTermSymbols(stepList);
 
-        //6089
+        //#6089
         //Remove taxonomicParentCache from Taxon
         stepName = "Remove taxonomicParentCache from Taxon";
         tableName = "TaxonBase";
@@ -224,7 +224,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //6089
+        //#6089
         //Remove taxonomicChildrenCount from Taxon
         stepName = "Remove taxonomicChildrenCount from Taxon";
         tableName = "TaxonBase";
@@ -338,6 +338,8 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         updateSql = "UPDATE @@TaxonBase@@ syn " +
                 " SET type_id=(SELECT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
         updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, updateSqlAud, -99);
+        stepList.add(step);
 
         //update acceptedTaxon_id
         stepName = "Update acceptedTaxon_id";
@@ -363,14 +365,14 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 
         //rename SynonymRelationshipType to SynonymType in Representation labels
         stepName = "Rename SynonymRelationshipType to SynonymType in Representation labels";
-        updateSql = "UPDATE Representation SET label='SynonymType' WHERE label='SynonymRelationshipType'";
+        updateSql = "UPDATE Representation SET label='Synonym Type' WHERE label='Synonym Relationship Type'";
         nonAuditedTableName = "Representation";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
         stepList.add(step);
 
         //rename SynonymRelationshipType to SynonymType in Representation text
         stepName = "Rename SynonymRelationshipType to SynonymType in Representation text";
-        updateSql = "UPDATE Representation SET text='SynonymType' WHERE text='SynonymRelationshipType'";
+        updateSql = "UPDATE Representation SET text='Synonym Type' WHERE text='Synonym Relationship Type'";
         nonAuditedTableName = "Representation";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
         stepList.add(step);

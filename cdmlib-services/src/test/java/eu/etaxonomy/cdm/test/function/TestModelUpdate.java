@@ -35,7 +35,7 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
 
 
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm40" : "cdm41");
