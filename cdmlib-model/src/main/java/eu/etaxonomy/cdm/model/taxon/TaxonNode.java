@@ -11,14 +11,18 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
@@ -32,6 +36,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
@@ -45,11 +50,14 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -74,7 +82,8 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "microReferenceForParentChildRelation",
     "countChildren",
     "agentRelations",
-    "synonymToBeUsed"
+    "synonymToBeUsed",
+    "excludedNote"
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
@@ -129,7 +138,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+    private List<TaxonNode> childNodes = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     //see https://dev.e-taxonomy.eu/trac/ticket/4200
@@ -154,7 +163,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<TaxonNodeAgentRelation>();
+    private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
     @XmlAttribute(name= "unplaced")
     private boolean unplaced = false;
@@ -166,8 +175,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     public boolean isExcluded() {return excluded;}
     public void setExcluded(boolean excluded) {this.excluded = excluded;}
 
-//    @XmlElement(name = "microReference")
-//    private String excludedNote;  ==>?? Multi-Lingual?
+    @XmlElement(name = "excludedNote")
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @MapKeyJoinColumn(name="excludedNote_mapkey_id")
+    @JoinTable(name = "TaxonNode_ExcludedNote")  //to make possible to add also unplacedNote
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private Map<Language,LanguageString> excludedNote = new HashMap<>();
 
 //	private Taxon originalConcept;
 //	//or

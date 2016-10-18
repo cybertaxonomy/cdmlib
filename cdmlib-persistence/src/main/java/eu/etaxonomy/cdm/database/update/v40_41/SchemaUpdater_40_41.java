@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.IndexAdder;
+import eu.etaxonomy.cdm.database.update.LanguageStringTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
@@ -243,7 +245,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, nonAuditedTableName, -99);
         stepList.add(step);
 
-        //#5981  Add abbreviation to idInVoc for 'Cultivar
+        //#5981  Add abbreviation to idInVoc for 'Cultivar'
         stepName = "#5981 Add abbreviation to idInVoc for 'Cultivar'";
         updateSql = "UPDATE DefinedTermBase SET idInVocabulary='cv.' WHERE uuid='5e98415b-dc6e-440b-95d6-ea33dbb39ad0'";
         nonAuditedTableName = "DefinedTermBase";
@@ -261,6 +263,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         tableName = "SpecimenOrObservationBase";
         newColumnName = "protectedIdentityCache";
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+
+        //#5634 Add excluded note
+        stepName = "Add excluded note";
+        tableName = "TaxonNode";
+        String attributeName = "excludedNote";
+        step = LanguageStringTableCreator.NewLanguageStringInstance(stepName, tableName, attributeName, INCLUDE_AUDIT);
         stepList.add(step);
 
         return stepList;
