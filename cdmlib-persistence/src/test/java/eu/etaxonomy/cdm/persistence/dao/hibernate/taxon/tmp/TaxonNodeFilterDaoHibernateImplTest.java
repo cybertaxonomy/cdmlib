@@ -63,11 +63,25 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 		Taxon taxon4 = Taxon.NewInstance(null, null);
 		Taxon taxon5 = Taxon.NewInstance(null, null);
 		node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
+		node1= taxonNodeDao.save(node1);
+
 		node2 = classification1.addChildTaxon(taxon2, citation, microCitation);
+		node2 = taxonNodeDao.save(node2);
 		node3 = node1.addChildTaxon(taxon3, citation, microCitation);
+		taxonNodeDao.save(node3);
 		node4 = node3.addChildTaxon(taxon4, citation, microCitation);
+		taxonNodeDao.save(node4);
 		node5 = node3.addChildTaxon(taxon5, citation, microCitation);
+		node5 = taxonNodeDao.save(node5);
+		//MergeResult result = taxonNodeDao.merge(node5, true);
+		//node5 = (TaxonNode) result.getMergedEntity();
+
+		//taxonNodeDao.save(node5);
+
+
+
 		classificationDao.save(classification1);
+
 
 	}
 
@@ -79,6 +93,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 		Classification classification = classificationDao.findByUuid(classification1.getUuid());
 		TaxonNodeFilter filter = new TaxonNodeFilter(node1);
 		List<UUID> listUuid = filterDao.listUuids(filter);
+		List<TaxonNode> children = taxonNodeDao.listChildrenOf(node1, null, null, null, true);
 		Assert.assertEquals("All 4 children should be returned", 4, listUuid.size());
 		Assert.assertTrue(listUuid.contains(node4.getUuid()));
 		Assert.assertFalse(listUuid.contains(node2.getUuid()));

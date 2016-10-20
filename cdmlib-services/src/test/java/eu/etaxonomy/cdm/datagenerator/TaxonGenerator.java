@@ -53,6 +53,7 @@ public class TaxonGenerator {
 		int descrIndex = 6000;
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.", true);
+
 		Reference sec = ReferenceFactory.newDatabase();
 		sec.setTitleCache("Flora lunaea", true);
 		Reference citationRef = ReferenceFactory.newBook();
@@ -89,6 +90,7 @@ public class TaxonGenerator {
         TaxonDescription taxDesc = getTestDescription(descrIndex++);
         //taxDesc.setUuid(DESCRIPTION1_UUID);
         childTaxon.addDescription(taxDesc);
+
         Classification classification = getTestClassification("TestClassification");
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
 

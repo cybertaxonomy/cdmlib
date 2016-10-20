@@ -350,5 +350,11 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
             Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
             NodeSortMode sortMode);
 
+    /**
+     * @param classification
+     * @return
+     */
+    UUID saveClassification(Classification classification);
+
 
 }

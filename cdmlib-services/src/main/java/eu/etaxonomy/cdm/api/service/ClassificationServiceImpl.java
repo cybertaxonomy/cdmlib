@@ -337,6 +337,14 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
+    public UUID saveClassification(Classification classification) {
+
+       taxonNodeDao.saveOrUpdateAll(classification.getAllNodes());
+       UUID result =dao.saveOrUpdate(classification);
+       return result;
+    }
+
+    @Override
     public UUID saveTreeNode(ITaxonTreeNode treeNode) {
         if(treeNode instanceof Classification){
             return dao.save((Classification) treeNode).getUuid();

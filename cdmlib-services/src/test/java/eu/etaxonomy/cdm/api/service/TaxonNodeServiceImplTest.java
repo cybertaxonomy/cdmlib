@@ -170,8 +170,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		t4 = node4.getTaxon();
         UUID uuidT4 = t4.getUuid();
-        t4 = (Taxon) taxonService.load(uuidT4);
-        TaxonNameBase name4 = nameService.load(t4.getName().getUuid());
+        t4 = (Taxon) taxonService.find(uuidT4);
+        TaxonNameBase name4 = nameService.find(t4.getName().getUuid());
         result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail);
         if (result.isError() || result.isAbort()){
             Assert.fail();
@@ -193,22 +193,21 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Set<CdmBase> updatedObjects = result.getUpdatedObjects();
 		Iterator<CdmBase> it = updatedObjects.iterator();
 		Taxon taxon;
-		if (it.hasNext()) {
+		while (it.hasNext()) {
 			CdmBase updatedObject = it.next();
 			if(updatedObject.isInstanceOf(Taxon.class)){
 				taxon = HibernateProxyHelper.deproxy(updatedObject, Taxon.class);
 				Set<Synonym> syns =  taxon.getSynonyms();
 				assertNotNull(syns);
-				assertEquals(4,syns.size());
+				if (taxon.equals(t2)){
+				    assertEquals(4,syns.size());
+				    Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
+	                assertEquals(typifiedNames.size(),4);
+	                assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
 
-				Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
-				assertEquals(typifiedNames.size(),4);
-				assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
+	                assertEquals(taxon, t2);
+				}
 
-				assertEquals(taxon, t2);
-
-			} else{
-				Assert.fail();
 			}
 
 		}
@@ -264,7 +263,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		if (!result.getUpdatedObjects().iterator().hasNext()){
 			Assert.fail("Some updates must have taken place");
 		}
-		Taxon newAcceptedTaxon = (Taxon)result.getUpdatedObjects().iterator().next();
+		assertTrue(result.getUpdatedObjects().size() == 3);
 		assertNotNull("Old taxon should not have been deleted as it is referenced by key node", taxonService.find(t1Uuid));
 		assertNull("Old taxon node should not exist anymore", taxonNodeService.find(node1Uuid));
 
@@ -273,9 +272,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		keyNode.setTaxon(null);
 		polKeyNodeService.saveOrUpdate(keyNode);
-		HibernateProxyHelper.deproxy(t2);
+		t2 =HibernateProxyHelper.deproxy(t2);
 		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
-		HibernateProxyHelper.deproxy(t2.getName());
+		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
 
 		termService.saveOrUpdate(synonymType);
 		Assert.assertFalse("taxon 2 must hav a synonym now", t2.getSynonyms().isEmpty());
@@ -299,6 +298,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals("The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic", newSynonym.getName().getHomotypicalGroup(), t1HomotypSynonym.getName().getHomotypicalGroup());
 		assertFalse("The new accepted taxon must not be homotypic to ",newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()));
 
+
 		assertEquals("The new accepted taxon is taxon 2", newAcceptedTaxon, t2);
 		assertEquals("The new synonyms name must be the same as the old accepted taxon's name", newSynonym.getName(), nameT1);
 	}
@@ -313,7 +313,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		String oldTreeIndex = node2.treeIndex();
 
 		TaxonNode newNode = node2.addChildTaxon(taxon, null, null);
-		taxonNodeService.saveOrUpdate(node2);
+		taxonNodeService.saveOrUpdate(newNode);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		newNode = taxonNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + "#", newNode.treeIndex());
@@ -348,8 +348,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		//into new classification
 		node2 = taxonNodeService.load(node2Uuid);
 		TaxonNode node5 = taxonNodeService.load(node5Uuid);
-		node5.addChildNode(node2, null, null);
-		taxonNodeService.saveOrUpdate(node5);
+		node2 =node5.addChildNode(node2, null, null);
+		taxonNodeService.saveOrUpdate(node2);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = taxonNodeService.load(node2Uuid);
 		Assert.assertEquals("Node3 treeindex is not correct", "#t2#8#2#5#3#", node2.treeIndex());
@@ -453,7 +453,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         if (!result.isOk()){
             Assert.fail();
         }
-        taxonService.getSession().flush();
+        //taxonService.getSession().flush();
         newNode = taxonNodeService.load(uuidNewNode);
         node1 = taxonNodeService.load(node1Uuid);
         assertNull(newNode);
@@ -493,7 +493,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(newNode);
 		assertNull(node1);
-		taxonService.getSession().flush();
+		//taxonService.getSession().flush();
 		t1 = (Taxon) taxonService.load(t1Uuid);
 		assertNull(t1);
 		t2 = (Taxon) taxonService.load(t2Uuid);
@@ -545,14 +545,16 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         abiesBalsameaName.setSpecificEpithet("balsamea");
         Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);
 
-
-    	classification.addChildTaxon(abies, null, null);
+        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
+    	nodes.add(classification.addChildTaxon(abies, null, null));
     	TaxonNode abiesAlbaNode = classification.addParentChild(abies, abiesAlba, null, null);
     	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
-    	classification.addChildTaxon(pinus, null, null);
-    	classification.addParentChild(pinus, pinusPampa, null, null);
-    	classificationService.save(classification);
-
+    	nodes.add(balsameaNode);
+    	nodes.add(abiesAlbaNode);
+    	nodes.add(classification.addChildTaxon(pinus, null, null));
+    	nodes.add(classification.addParentChild(pinus, pinusPampa, null, null));
+    	classificationService.saveClassification(classification);
+    	//this.taxonNodeService.save(nodes);
     	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
@@ -564,7 +566,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	taxonNodeService.moveTaxonNode(balsameaNode, abiesAlbaNode,1);
     	classification = classificationService.load(classification.getUuid());
 
-       allNodes = new ArrayList<>(classification.getAllNodes());
+    	allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
 
         Assert.assertEquals(allNodes.get(0).getTaxon(), abies );

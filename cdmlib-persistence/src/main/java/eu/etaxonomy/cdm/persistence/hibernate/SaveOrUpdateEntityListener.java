@@ -26,8 +26,8 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener{
     @Override
     public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
         //System.err.println("SaveOrUpdateListener" + event.getEntity().getClass());
-        Object entity = event.getObject();
-        saveOrUpdate(entity, event.getSession());
+      Object entity = event.getObject();
+      saveOrUpdate(entity, event.getSession());
     }
 
 

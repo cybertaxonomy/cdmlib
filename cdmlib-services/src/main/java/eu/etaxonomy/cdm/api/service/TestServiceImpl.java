@@ -74,7 +74,8 @@ public class TestServiceImpl implements ITestService {
     @Transactional(readOnly = false)
     public UpdateResult addChild(CdmEntityIdentifier taxonNodeCei) {
         TaxonNode taxonNode = taxonNodeService.find(taxonNodeCei.getId());
-        taxonNode.addChildTaxon(Taxon.NewInstance(null, null), null, null);
+        TaxonNode child = taxonNode.addChildTaxon(Taxon.NewInstance(null, null), null, null);
+        taxonNodeService.saveOrUpdate(child);
         UpdateResult result = new UpdateResult();
         result.addUpdatedCdmId(taxonNodeCei);
         result.setStatus(Status.OK);

@@ -28,6 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -49,6 +51,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @SpringBeanByType
     ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    IHomotypicalGroupDao homotypicalGroupDao;
 
     private UUID cryptocoryneGriffithiiUuid;
     private UUID acherontiaUuid;
@@ -212,20 +217,24 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
         HibernateProxyHelper.deproxy(acherontiaLachesis, TaxonNameBase.class);
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
+        HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
+        UUID groupUuid = group.getUuid();
         taxonNameDao.delete(acherontiaLachesis);
+
         Iterator<TaxonBase> taxa= taxonBases.iterator();
         TaxonBase taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
-        //acherontiaLachesis.removeTaxonBase(taxon);
-        //taxonDao.save(taxon);
-        taxonDao.flush();
+        
         //int numbOfTaxa = taxonDao.count(TaxonBase.class);
         List<TaxonBase> taxaList = taxonDao.getAllTaxonBases(100, 0);
-        taxonNameDao.flush();
+      
         acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
         taxon = taxonDao.findByUuid(taxonUuid);
+        group = homotypicalGroupDao.findByUuid(groupUuid);
+        group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
         assertNull("There should be no taxonName with the deleted uuid", acherontiaLachesis);
         assertNull("There should be no taxon with the deleted uuid", taxon);
+        assertNull("There should be no homotypicalGroup with the deleted uuid", group);
 
     }
 

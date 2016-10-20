@@ -137,7 +137,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    //@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<TaxonNode> childNodes = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
@@ -468,15 +468,17 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-        Taxon taxon = node.getTaxon();
+        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon(), Taxon.class);
+        node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
         node.setTaxon(null);
-        taxon.removeTaxonNode(node);
+
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
+            HibernateProxyHelper.deproxy(childNode, TaxonNode.class);
             node.deleteChildNode(childNode);
         }
-
+        taxon.removeTaxonNode(node);
         return result;
     }
 
@@ -644,14 +646,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         //FIXME also set the tree index here for performance reasons
         classification = HibernateProxyHelper.deproxy(classification, Classification.class);
         setClassificationRecursively(classification);
-
         // add this node to the parent's child nodes
         parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
-        HHH_9751_Util.removeAllNull(parentChildren);
-        parent.updateSortIndex(0);
+//        HHH_9751_Util.removeAllNull(parentChildren);
+//        parent.updateSortIndex(0);
         if (index > parent.getChildNodes().size()){
             index = parent.getChildNodes().size();
         }

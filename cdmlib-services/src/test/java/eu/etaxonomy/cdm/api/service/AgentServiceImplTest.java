@@ -16,6 +16,8 @@ import java.net.URI;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Contact;
@@ -27,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -45,6 +48,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
     @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+    })
     public void testConvertPerson2Team(){
     	String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
@@ -84,6 +91,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
     @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+    })
     public void testConvertTeam2Person(){
     	String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
@@ -117,6 +128,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
     @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+    })
     public void testConvertTeam2PersonWithMember(){
     	String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
