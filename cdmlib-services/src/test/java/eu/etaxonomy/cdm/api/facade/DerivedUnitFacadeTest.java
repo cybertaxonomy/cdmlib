@@ -1680,6 +1680,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      *
      */
     @Test
+    @Ignore
     public void testNoRecursiveChangeEvents(){
         String username = "username";
         String password = "password";
