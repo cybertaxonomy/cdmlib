@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -73,9 +74,10 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
+    @Ignore
     public void testInsertData(){
     	commitAndStartNewTransaction(null);
-    	TaxonGenerator.getTestTaxon();
+
     	Taxon newTaxon = TaxonGenerator.getTestTaxon();
     	UUID taxonUUID = taxonService.save(newTaxon).getUuid();
 
@@ -83,6 +85,7 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     	newTaxon.addDescription(description);
     	Set<TaxonDescription> descriptions = newTaxon.getDescriptions();
     	descriptionService.save(description);
+
     	newTaxon = null;
     	newTaxon = (Taxon)taxonService.find(taxonUUID);
     	descriptions = newTaxon.getDescriptions();
