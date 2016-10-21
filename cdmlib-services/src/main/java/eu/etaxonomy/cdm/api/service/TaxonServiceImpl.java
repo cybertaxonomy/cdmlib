@@ -3150,7 +3150,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     	return result;
 	}
 
-	@Transactional(readOnly= false)
 	@Override
 	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,

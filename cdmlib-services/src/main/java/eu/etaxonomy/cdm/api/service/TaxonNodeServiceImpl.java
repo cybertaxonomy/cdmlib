@@ -209,9 +209,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             		srt = SynonymType.HETEROTYPIC_SYNONYM_OF();
             	}
             } else {
-                srt = synonym.getType();
-                    srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+                if (synonymsInHomotypicalGroup != null && synonymsInHomotypicalGroup.contains(synonym)){
+                    srt = SynonymType.HOMOTYPIC_SYNONYM_OF();
                 }else{
+                    srt = synonym.getType();
                 }
 
             }
@@ -304,10 +305,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#makeTaxonNodeASynonymOfAnotherTaxonNode(java.util.UUID, java.util.UUID, java.util.UUID, java.util.UUID, java.lang.String)
-     */
     @Override
     @Transactional(readOnly = false)
     public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,

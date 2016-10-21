@@ -263,7 +263,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		if (!result.getUpdatedObjects().iterator().hasNext()){
 			Assert.fail("Some updates must have taken place");
 		}
-		assertTrue(result.getUpdatedObjects().size() == 3);
+		assertEquals(3,result.getUpdatedObjects().size());
 		assertNotNull("Old taxon should not have been deleted as it is referenced by key node", taxonService.find(t1Uuid));
 		assertNull("Old taxon node should not exist anymore", taxonNodeService.find(node1Uuid));
 
@@ -277,7 +277,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
 
 		termService.saveOrUpdate(synonymType);
-		Assert.assertFalse("taxon 2 must hav a synonym now", t2.getSynonyms().isEmpty());
+		assertFalse("taxon 2 must have a synonym now", t2.getSynonyms().isEmpty());
 		assertEquals("taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms", 3, t2.getSynonyms().size());
 		assertEquals("taxon 2 must have 2 descriptions now, taken form taxon 1", 2, t2.getDescriptions().size());
 
@@ -295,8 +295,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		Synonym newSynonym =(Synonym) name1.getTaxonBases().iterator().next();
 
-		assertEquals("The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic", newSynonym.getName().getHomotypicalGroup(), t1HomotypSynonym.getName().getHomotypicalGroup());
-		assertFalse("The new accepted taxon must not be homotypic to ",newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()));
+//		Taxon newAcceptedTaxon = (Taxon)result.getUpdatedObjects().iterator().next();
+
+		Taxon newAcceptedTaxon = t2;
+		assertEquals("The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic", newSynonym.getHomotypicGroup(), t1HomotypSynonym.getName().getHomotypicalGroup());
+		assertFalse("The new accepted taxon must not be homotypic to ", newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()));
 
 
 		assertEquals("The new accepted taxon is taxon 2", newAcceptedTaxon, t2);

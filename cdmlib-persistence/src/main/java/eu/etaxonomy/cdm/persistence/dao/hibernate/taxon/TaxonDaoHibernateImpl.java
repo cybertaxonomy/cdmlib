@@ -660,11 +660,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         taxonBase = (TaxonBase)getSession().merge(taxonBase);
 
         taxonBase.removeSources();
+
+        if (taxonBase instanceof Taxon){ // is Taxon
             Taxon taxon = ((Taxon)taxonBase);
-            //is this needed or maybe not ready?
-            for (Iterator<TaxonRelationship> iterator = taxon.getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
-            }
-            Set<Synonym> syns = new HashSet<Synonym>(taxon.getSynonyms());
+            Set<Synonym> syns = new HashSet<>(taxon.getSynonyms());
             for (Synonym syn: syns){
                 taxon.removeSynonym(syn);
             }
