@@ -304,7 +304,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query"})
+    @RequestMapping(value = { "" }, method = {RequestMethod.GET,RequestMethod.POST} , params = {"query"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
     return doGetNameSearch(queries, DEFAULT_SEARCH_TYPE, DEFAULT_MAX_NB_FOR_EXACT_SEARCH, request, response);
@@ -337,7 +337,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query", "type"})
+    @RequestMapping(value = { "" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"query", "type"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
             @RequestParam(value = "hits", required = false, defaultValue = DEFAULT_MAX_NB_FOR_EXACT_SEARCH) String hits,
@@ -670,7 +670,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "name" }, method = RequestMethod.GET, params = {"nameUuid"})
+    @RequestMapping(value = { "name" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"nameUuid"})
     public ModelAndView doGetNameInformation(@RequestParam(value = "nameUuid", required = true) String[] nameUuids,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
@@ -797,7 +797,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET, params = {"taxonUuid"})
+    @RequestMapping(value = { "taxon" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"taxonUuid"})
     public ModelAndView doGetTaxonInformation(
             @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
             @RequestParam(value = "classification", required = false, defaultValue = CLASSIFICATION_DEFAULT) String classificationType,
@@ -1101,7 +1101,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query"})
+    @RequestMapping(value = { "accepted" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"query"})
     public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         return doGetAcceptedNameSearch(queries, DEFAULT_SEARCH_TYPE, request, response);
@@ -1131,7 +1131,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query", "type"})
+    @RequestMapping(value = { "accepted" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"query", "type"})
     public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
