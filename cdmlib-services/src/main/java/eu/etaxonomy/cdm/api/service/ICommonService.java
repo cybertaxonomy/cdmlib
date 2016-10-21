@@ -347,5 +347,11 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException;
 
+    /**
+     * @param referencedCdmBase
+     * @return
+     */
+    Integer getReferencingObjectsCount(CdmBase referencedCdmBase);
+
 
 }
