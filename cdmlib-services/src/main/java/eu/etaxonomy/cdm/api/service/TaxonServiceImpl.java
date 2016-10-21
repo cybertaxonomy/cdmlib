@@ -130,7 +130,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author a.kohlbecker
  * @date 10.09.2010
- *
  */
 @Service
 @Transactional(readOnly = true)
@@ -406,7 +405,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
+    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
         if (clazz == null){
             clazz = TaxonBase.class;
         }
@@ -462,6 +461,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
         return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
+    }
+
+    @Override
+    public List<TaxonRelationship> listTaxonRelationships(Set<TaxonRelationshipType> types,
+            Integer pageSize, Integer pageStart, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Long numberOfResults = dao.countTaxonRelationships(types);
+
+        List<TaxonRelationship> results = new ArrayList<>();
+        if(numberOfResults > 0) {
+            results = dao.getTaxonRelationships(types, pageSize, pageStart, orderHints, propertyPaths);
+        }
+        return results;
     }
 
     @Override
@@ -3171,7 +3182,5 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	    }
 	    return super.saveOrUpdate(taxonbase);
 	}
-
-
 
 }

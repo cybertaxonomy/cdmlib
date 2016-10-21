@@ -1779,5 +1779,53 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return results;
     }
 
+    @Override
+    public long countTaxonRelationships(Set<TaxonRelationshipType> types) {
+        Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
+
+        if (types != null) {
+            if (types.isEmpty()){
+                return 0l;
+            }else{
+                criteria.add(Restrictions.in("type", types) );
+            }
+        }
+        //count
+        criteria.setProjection(Projections.rowCount());
+        long result = ((Number)criteria.uniqueResult()).longValue();
+
+        return result;
+    }
+
+    @Override
+    public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
+
+        if (types != null) {
+            if (types.isEmpty()){
+                return new ArrayList<>();
+            }else{
+                criteria.add(Restrictions.in("type", types) );
+            }
+        }
+        addOrder(criteria,orderHints);
+
+        if(pageSize != null) {
+            criteria.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                criteria.setFirstResult(pageNumber * pageSize);
+            } else {
+                criteria.setFirstResult(0);
+            }
+        }
+
+        List<TaxonRelationship> results = criteria.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
 
 }

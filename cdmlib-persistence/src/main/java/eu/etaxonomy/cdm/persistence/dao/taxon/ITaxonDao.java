@@ -447,4 +447,22 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern);
 
+    /**
+     * @param types
+     * @return
+     */
+    public long countTaxonRelationships(Set<TaxonRelationshipType> types);
+
+    /**
+     * @param types
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths);
+
 }

@@ -264,7 +264,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
-
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied)
      * where the supplied taxon is relatedTo.
@@ -324,6 +323,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
             Integer limit, Integer start, List<String> propertyPaths);
+
+
+    /**
+     * Returns all or a page of all taxon concept relationships in the database.
+     * The result can be filtered by relationship types.
+     *
+     * @param types The taxon relationship type filter, if <code>null</code> no filter is set, if empty the result will also be empty
+     * @param pageSize the page size
+     * @param pageStart the number of the start page
+     * @param orderHints the order hints
+     * @param propertyPaths the property path to initialize the resulting objects
+     * @return list of taxon relationships matching the filter criteria
+     */
+    public List<TaxonRelationship> listTaxonRelationships(Set<TaxonRelationshipType> types,
+            Integer pageSize, Integer pageStart, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Lists all classifications the given taxon/synonym is used in{@link Synonym}
@@ -935,12 +949,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
-
-
-
-
-
-
 
 
 }

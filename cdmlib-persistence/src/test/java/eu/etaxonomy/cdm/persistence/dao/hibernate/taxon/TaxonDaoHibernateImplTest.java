@@ -468,7 +468,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testCountTaxonRelationships()	{
+    public void testCountTaxonRelationshipsByTaxon()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
 
@@ -610,6 +610,47 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("getSynonyms: 2, 0 should return 2 synonyms", pageSize,firstPage.size());
         assertNotNull("getSynonyms: 2, 1 should return a List",secondPage);
         assertEquals("getSynonyms: 2, 1 should return 1 synonym", 1, secondPage.size());
+    }
+
+    @Test
+    @DataSet
+    public void testCountTaxonRelationships() {
+        long count = taxonDao.countTaxonRelationships(null);
+        assertEquals("There should be 11 relationships", 11, count);
+
+        Set<TaxonRelationshipType> types = new HashSet<>();
+        count = taxonDao.countTaxonRelationships(types);
+        assertEquals("Empty filter should return empty result", 0, count);
+
+        types.add(TaxonRelationshipType.CONGRUENT_TO());
+        count = taxonDao.countTaxonRelationships(types);
+        assertEquals("There should be no congruent relationship", 0, count);
+
+        types.add(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
+        count = taxonDao.countTaxonRelationships(types);
+        assertEquals("There should be 11 tax included relationships", 11, count);
+    }
+
+    @Test
+    @DataSet
+    public void testlistTaxonRelationships() {
+        List<TaxonRelationship> rels = taxonDao.getTaxonRelationships(null, null, null, null, null);
+        assertEquals("There should be 11 relationships", 11, rels.size());
+
+        rels = taxonDao.getTaxonRelationships(null, 2, 3, null, null);
+        assertEquals("There should be 11 relationships", 2, rels.size());
+
+        Set<TaxonRelationshipType> types = new HashSet<>();
+        rels = taxonDao.getTaxonRelationships(types, null, null, null, null);
+        assertEquals("Empty filter should return empty result", 0, rels.size());
+
+        types.add(TaxonRelationshipType.CONGRUENT_TO());
+        rels = taxonDao.getTaxonRelationships(types, null, null, null, null);
+        assertEquals("There should be no congruent relationship", 0, rels.size());
+
+        types.add(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
+        rels = taxonDao.getTaxonRelationships(types, null, null, null, null);
+        assertEquals("There should be 11 tax included relationships", 11, rels.size());
     }
 
     @Test
