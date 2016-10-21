@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
-
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <TAXONNAMEBASE UUID="8564287e-9654-4b8b-a38c-0ccdd9e885db" TITLECACHE="Name1"/>
   <TYPEDESIGNATIONBASE DTYPE="SpecimenTypeDesignation" UUID="ceca086e-e8d3-444e-abfb-c47f76835130"/>
-   <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="ceca086e-e8d3-444e-abfb-c47f76835130"/>
-<!-- for testing  <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="[null]" ORIGINALNAMESTRING="orig" NOTDESIGNATED="false"/> -->
-
- </dataset>
+  <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="ceca086e-e8d3-444e-abfb-c47f76835130"/>
+  <!-- for testing  <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="[null]" ORIGINALNAMESTRING="orig" NOTDESIGNATED="false"/> -->
+</dataset>

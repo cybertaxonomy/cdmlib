@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <LANGUAGESTRING ID="1" CREATED="2009-06-18 13:47:59.0" UUID="2b5846e5-b8d2-4ca9-ac51-099286ea4adc" TEXT="Name" LANGUAGE_ID="1"/>
 
   <REFERENCE  ID="1" CREATED="2008-12-10 09:56:07.0" UUID="596b1325-be50-4b0a-9aa2-3ecd610215f2" UPDATED="2008-12-10 09:56:07.253" TITLECACHE="Lorem ipsum" PROTECTEDTITLECACHE="true" PROTECTEDABBREVTITLECACHE="false" ABBREVTITLECACHE="Sp. Pl." ABBREVTITLE="Sp. Pl." NOMENCLATURALLYRELEVANT="false" PARSINGPROBLEM="0" PROBLEMENDS="-1" PROBLEMSTARTS="-1"/>

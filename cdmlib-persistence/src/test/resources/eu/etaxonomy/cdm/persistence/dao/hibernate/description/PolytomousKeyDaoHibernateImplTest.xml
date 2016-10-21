@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <POLYTOMOUSKEY ID="1" UUID="bab66772-2c83-428a-bb6d-655d12ac6097" ROOT_ID="1" PROTECTEDTITLECACHE="false" STARTNUMBER="1"/>
   <POLYTOMOUSKEYNODE ID="1" KEY_ID="1" UUID="260e8e6a-c13d-4c0d-85de-8ac6eec155a4"  PARENT_ID="[null]" SORTINDEX="[null]"  STATEMENT_ID="[null]" QUESTION_ID="[null]"/>
   <POLYTOMOUSKEYNODE ID="2" KEY_ID="1" UUID="97012bdb-b7cd-4dda-ac42-4501ad14102e"  PARENT_ID="1" SORTINDEX="0"  STATEMENT_ID="1" QUESTION_ID="2"/>

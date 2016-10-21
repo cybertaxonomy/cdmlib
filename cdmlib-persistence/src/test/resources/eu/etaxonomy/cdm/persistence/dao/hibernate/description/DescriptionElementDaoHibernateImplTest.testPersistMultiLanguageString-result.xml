@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <DESCRIPTIONELEMENTBASE DTYPE="TextData" ID="34" INDESCRIPTION_ID="1" CREATED="2008-12-10 09:56:07.0" UUID="31a0160a-51b2-4565-85cf-2be58cb561d6" FEATURE_ID="922"/>
   <DESCRIPTIONELEMENTBASE_LANGUAGESTRING TEXTDATA_ID="34" MULTILANGUAGETEXT_MAPKEY_ID="406"/>
   <LANGUAGESTRING LANGUAGE_ID="406" TEXT="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <AUDITEVENT REVISIONNUMBER="1000" TIMESTAMP="1232914238974" UUID="a680fab4-365e-4765-b49e-768f2ee30cda"/>
   <AUDITEVENT REVISIONNUMBER="1001" TIMESTAMP="1232914244116" UUID="afe8e761-8545-497b-9134-6a6791fc0b0d"/>
   <HOMOTYPICALGROUP ID="1" CREATED="2008-12-10 09:56:07.0" UUID="7b214eb9-a6ac-48e5-af02-bbea634d2a03" UPDATED="2008-12-10 09:56:07.238"/>

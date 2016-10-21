@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <HOMOTYPICALGROUP ID="1" CREATED="2008-12-10 09:56:07.0" UUID="7b214eb9-a6ac-48e5-af02-bbea634d2a03" UPDATED="2008-12-10 09:56:07.238"/>
   <MEDIAKEY_TAXONSCOPE MEDIAKEY_ID="1" TAXONOMICSCOPE_ID="1"/>
   <MEDIAKEY_TAXONSCOPE MEDIAKEY_ID="2" TAXONOMICSCOPE_ID="1"/>
