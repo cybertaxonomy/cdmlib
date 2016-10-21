@@ -295,12 +295,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		Synonym newSynonym =(Synonym) name1.getTaxonBases().iterator().next();
 
-//		Taxon newAcceptedTaxon = (Taxon)result.getUpdatedObjects().iterator().next();
-
-		Taxon newAcceptedTaxon = t2;
+		Taxon newAcceptedTaxon = CdmBase.deproxy(taxonService.find(t2.getUuid()), Taxon.class);
 		assertEquals("The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic", newSynonym.getHomotypicGroup(), t1HomotypSynonym.getName().getHomotypicalGroup());
 		assertFalse("The new accepted taxon must not be homotypic to ", newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()));
-
 
 		assertEquals("The new accepted taxon is taxon 2", newAcceptedTaxon, t2);
 		assertEquals("The new synonyms name must be the same as the old accepted taxon's name", newSynonym.getName(), nameT1);
