@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO.ContigFile;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO.Link;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO.MolecularData;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
@@ -637,18 +638,22 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             logger.error("Could not create BOLD URI", e1);
                         }
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
-                        MolecularData molecularData = derivateDataDTO.addProviderLink(boldUri != null ? boldUri : null, dnaMarker != null ? dnaMarker.getLabel() : "[no marker]");
+                        Link providerLink = null;
+                        if(boldUri!=null && dnaMarker!=null){
+                        	providerLink = new DerivateDataDTO.Link(boldUri, dnaMarker.getLabel());
+                        }
+                        MolecularData molecularData = derivateDataDTO.addProviderLink(providerLink);
 
                         //contig file
                         ContigFile contigFile = null;
                         if (sequence.getContigFile() != null) {
                             MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
                             if (contigMediaRepresentationPart != null) {
-                                contigFile = molecularData.addContigFile(contigMediaRepresentationPart.getUri(), "contig");
+                                contigFile = molecularData.addContigFile(new Link(contigMediaRepresentationPart.getUri(), "contig"));
                             }
                         }
-                        if(contigFile==null){
-                            contigFile = molecularData.addContigFile(null, "[no contig]");
+                        else{
+                        	contigFile = molecularData.addContigFile(null);
                         }
                         // primer files
                         if (sequence.getSingleReads() != null) {
@@ -670,7 +675,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 URI mediaUri = getMediaUri(media);
                 if (media.getKindOfUnit() != null) {
                     // specimen scan
-                    if (media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))) {
+                    if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
                         derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
                         derivateDTO.setHasSpecimenScan(true);
                         String imageLinkText = "scan";
@@ -680,7 +685,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText);
                     }
                     // detail image
-                    else if (media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))) {
+                    else if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidDetailImage)) {
                         derivateDataDTO.addDetailImageUuid(media.getMediaSpecimen().getUuid());
                         derivateDTO.setHasDetailImage(true);
                         String motif = "detail image";
@@ -689,7 +694,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         		motif = media.getMediaSpecimen().getTitleCache();
                         	}
                         }
-                        derivateDataDTO.addDetailImage(mediaUri, motif != null ? motif : "[no motif]");
+                        derivateDataDTO.addDetailImage(mediaUri, motif);
                     }
                 }
             }

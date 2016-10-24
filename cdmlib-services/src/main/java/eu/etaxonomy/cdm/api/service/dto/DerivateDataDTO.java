@@ -34,11 +34,11 @@ public class DerivateDataDTO {
         return molecularDataList;
     }
 
-    public MolecularData addProviderLink(URI uri, String linkText) {
+    public MolecularData addProviderLink(Link providerLink) {
         if(this.molecularDataList==null){
             molecularDataList = new ArrayList<MolecularData>();
         }
-        MolecularData molecularData = new MolecularData(new Link(uri, linkText));
+        MolecularData molecularData = new MolecularData(providerLink);
         this.molecularDataList.add(molecularData);
         return molecularData;
     }
@@ -108,11 +108,11 @@ public class DerivateDataDTO {
             this.providerLink = providerLink;
         }
 
-        public ContigFile addContigFile(URI uri, String linkText){
+        public ContigFile addContigFile(Link contigLink){
             if(contigFiles==null){
                 contigFiles = new ArrayList<ContigFile>();
             }
-            ContigFile contigFile = new ContigFile(new Link(uri, linkText));
+            ContigFile contigFile = new ContigFile(contigLink);
             contigFiles.add(contigFile);
             return contigFile;
         }
@@ -152,7 +152,7 @@ public class DerivateDataDTO {
 
     }
 
-    public class Link{
+    public static class Link{
         private String linkText;
         private URI uri;
 
