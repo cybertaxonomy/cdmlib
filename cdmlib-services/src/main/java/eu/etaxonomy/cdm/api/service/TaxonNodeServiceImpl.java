@@ -589,7 +589,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         UpdateResult result = new UpdateResult();
 
         TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent(), TaxonNode.class);
-
+        TaxonNode oldParent = HibernateProxyHelper.deproxy(taxonNode.getParent(), TaxonNode.class);
         Integer sortIndex = -1;
         if (movingType == 0){
             sortIndex = 0;
@@ -607,9 +607,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.addUpdatedObject(taxonNode.getParent());
         result.setCdmEntity(taxonNode);
 
-        newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        taxonNode = newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
 
-        dao.saveOrUpdate(newParent);
+        dao.saveOrUpdate(taxonNode);
+        dao.saveOrUpdate(oldParent);
 
         return result;
     }
