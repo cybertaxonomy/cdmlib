@@ -133,6 +133,21 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+        String queryString = "select tn.uuid, tn.id, tx.titleCache from TaxonNode tn INNER JOIN tn.taxon as tx where tn.parent.id = :parentId";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("parentId", parent.getId());
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        }
+        return list;
+    }
+
+    @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
     	if (recursive == true){
     		Criteria crit = getSession().createCriteria(TaxonNode.class);

@@ -40,6 +40,15 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
+    /**
+     * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
+     * represents the parent {@link TaxonNode}
+     * @param parent a UuidAndTitleCache object which represents a parent {@link TaxonNode}
+     * @return a list of UuidAndTitleCache objects that represent children of the
+     * parent
+     */
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
 
     public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive);

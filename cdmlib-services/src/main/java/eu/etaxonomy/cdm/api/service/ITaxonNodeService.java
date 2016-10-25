@@ -20,11 +20,13 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
 /**
@@ -35,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	/**
-	 *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
+	 * returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
 	 *
 	 * @param taxonNode
 	 * @param propertyPaths
@@ -43,6 +45,23 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return List<TaxonNode>
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, NodeSortMode sortMode);
+
+	/**
+	 * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
+	 * represents the parent {@link TaxonNode}
+	 * @param parent a UuidAndTitleCache object which represents a parent {@link TaxonNode}
+	 * @return a list of UuidAndTitleCache objects that represent children of the
+	 * parent
+	 */
+	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
+	/**
+     * Lists all direct child nodes of the given {@link ITaxonTreeNode}
+     * @param parent the parent ITaxonTreeNode
+     * @return a list of UuidAndTitleCache objects that represent children of the
+     * parent
+     */
+	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 
 	/**
      *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted

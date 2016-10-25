@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author n.hoffmann
@@ -93,6 +95,25 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+        return dao.listChildNodesAsUuidAndTitleCache(parent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
+        UUID uuid = parent.getUuid();
+        int id = parent.getId();
+        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<TaxonNode>(uuid, id, null);
+        return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
     }
 
     /**

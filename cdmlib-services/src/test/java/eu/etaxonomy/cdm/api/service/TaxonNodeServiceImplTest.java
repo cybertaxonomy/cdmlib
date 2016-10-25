@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -595,9 +596,187 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     }
 
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonNodeServiceImplTest.testGetUuidAndTitleCacheHierarchy.xml")
+    public void testGetUuidAndTitleCacheHierarchy(){
+        UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
+        UUID abiesUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
+        UUID abiesAlbaUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
+        UUID abiesAlbaSubBrotaUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
+        UUID abiesPalmaUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
+        UUID pinusUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
+//        /*
+//         * Checklist
+//         *  - Abies
+//         *   - Abies alba
+//         *    - Abieas alba subs. brota
+//         *   - Abies palma
+//         *  -Pinus
+//         */
+//        Classification checklist = Classification.NewInstance("Checklist");
+//        checklist.setUuid(classificationUuid);
+//
+//        BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+//        abiesName.setGenusOrUninomial("Abies");
+//        Taxon abies = Taxon.NewInstance(abiesName, null);
+//
+//        BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+//        abiesAlbaName.setGenusOrUninomial("Abies");
+//        abiesAlbaName.setSpecificEpithet("alba");
+//        Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+//
+//        BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+//        abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
+//        abiesAlbaSubBrotaName.setSpecificEpithet("alba");
+//        abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
+//        Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
+//
+//        BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
+//        abiesPalmaName.setGenusOrUninomial("Abies");
+//        abiesPalmaName.setSpecificEpithet("palma");
+//        Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
+//
+//        BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+//        pinusName.setGenusOrUninomial("Pinus");
+//        Taxon pinus = Taxon.NewInstance(pinusName, null);
+//
+//        checklist.addParentChild(null, abies, null, null);
+//        checklist.addParentChild(abies, abiesAlba, null, null);
+//        checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
+//        checklist.addParentChild(abies, abiesPalma, null, null);
+//        checklist.addParentChild(null, pinus, null, null);
+//
+//
+//        setComplete();
+//        endTransaction();
+//
+//        String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
+//
+//        writeDbUnitDataSetFile(new String[] {
+//            "TAXONBASE", "TAXONNAMEBASE",
+//            "TAXONRELATIONSHIP",
+//            "HOMOTYPICALGROUP",
+//            "CLASSIFICATION", "TAXONNODE",
+//            "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+//            },
+//            fileNameAppendix );
+        Classification classification = classificationService.load(classificationUuid);
+
+        List<TaxonNode> expectedChildTaxonNodes = classification.getChildNodes();
+        List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsUuidAndTitleCache(classification.getRootNode());
+        assertNotNull("child UuidAndTitleCache list is null", childNodesUuidAndTitleCache);
+
+        compareChildren(expectedChildTaxonNodes, childNodesUuidAndTitleCache);
+    }
+
+    private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache){
+        assertEquals("Number of children does not match", expectedChildTaxonNodes.size(), childNodesUuidAndTitleCache.size());
+        UuidAndTitleCache<TaxonNode> foundMatch = null;
+        for (TaxonNode taxonNode : expectedChildTaxonNodes) {
+            foundMatch = null;
+            for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
+                if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
+                    String titleCache = taxonNode.getTaxon().getTitleCache();
+                    if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
+                        foundMatch = uuidAndTitleCache;
+                        break;
+                    }
+                }
+            }
+            assertTrue(String.format("no matching UuidAndTitleCache found for child %s", taxonNode), foundMatch!=null);
+            compareChildren(taxonNode.getChildNodes(), taxonNodeService.listChildNodesAsUuidAndTitleCache(foundMatch));
+        }
+    }
+
+    private UuidAndTitleCache<TaxonNode> findMatchingUuidAndTitleCache(List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache,
+            UuidAndTitleCache<TaxonNode> foundMatch, TaxonNode taxonNode) {
+        for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
+            if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
+                String titleCache = taxonNode.getTaxon().getTitleCache();
+                if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
+                    foundMatch = uuidAndTitleCache;
+                    break;
+                }
+            }
+        }
+        return foundMatch;
+    }
+
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {}
+//    @Test
+    public void createTestDataSet() throws FileNotFoundException {
+        UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
+        UUID abiesUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
+        UUID abiesAlbaUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
+        UUID abiesAlbaSubBrotaUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
+        UUID abiesPalmaUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
+        UUID pinusUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
+
+        /*
+         * Checklist
+         *  - Abies
+         *   - Abies alba
+         *    - Abieas alba subs. brota
+         *   - Abies palma
+         *  -Pinus
+         */
+        Classification checklist = Classification.NewInstance("Checklist");
+        checklist.setUuid(classificationUuid);
+
+        BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+        abiesName.setGenusOrUninomial("Abies");
+        Taxon abies = Taxon.NewInstance(abiesName, null);
+
+        BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+        abiesAlbaName.setGenusOrUninomial("Abies");
+        abiesAlbaName.setSpecificEpithet("alba");
+        Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+
+        BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+        abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
+        abiesAlbaSubBrotaName.setSpecificEpithet("alba");
+        abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
+        Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
+
+        BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
+        abiesPalmaName.setGenusOrUninomial("Abies");
+        abiesPalmaName.setSpecificEpithet("palma");
+        Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
+
+        BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+        pinusName.setGenusOrUninomial("Pinus");
+        Taxon pinus = Taxon.NewInstance(pinusName, null);
+
+        checklist.addChildTaxon(abies, null, null);
+        checklist.addParentChild(abies, abiesAlba, null, null);
+        checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
+        checklist.addParentChild(abies, abiesPalma, null, null);
+        checklist.addChildTaxon(pinus, null, null);
+
+        taxonService.saveOrUpdate(abies);
+        taxonService.saveOrUpdate(abiesAlba);
+        taxonService.saveOrUpdate(abiesAlbaSubBrota);
+        taxonService.saveOrUpdate(abiesPalma);
+        taxonService.saveOrUpdate(pinus);
+        classificationService.saveOrUpdate(checklist);
+
+
+        setComplete();
+        endTransaction();
+
+        String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
+
+        writeDbUnitDataSetFile(new String[] {
+            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONRELATIONSHIP",
+            "HOMOTYPICALGROUP",
+            "CLASSIFICATION", "TAXONNODE",
+            "LANGUAGESTRING",
+            "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+            },
+            fileNameAppendix );
+    }
 
 
 }
