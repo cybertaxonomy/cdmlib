@@ -147,6 +147,39 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child) {
+        String queryString = "select tn.parent.uuid, tn.parent.id, tn.parent.taxon.titleCache, tn.parent.classification.titleCache "
+                + " from TaxonNode tn"
+                + " LEFT OUTER JOIN tn.parent.taxon"
+                + " where tn.id = :childId";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("childId", child.getId());
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            UUID uuid = (UUID) object[0];
+            Integer id = (Integer) object[1];
+            String taxonTitleCache = (String) object[2];
+            String classificationTitleCache = (String) object[3];
+            if(taxonTitleCache!=null){
+                list.add(new UuidAndTitleCache<TaxonNode>(uuid,id, taxonTitleCache));
+            }
+            else{
+                list.add(new UuidAndTitleCache<TaxonNode>(uuid,id, classificationTitleCache));
+            }
+        }
+        if(list.size()==1){
+            return list.iterator().next();
+        }
+        return null;
+    }
+
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
     	if (recursive == true){

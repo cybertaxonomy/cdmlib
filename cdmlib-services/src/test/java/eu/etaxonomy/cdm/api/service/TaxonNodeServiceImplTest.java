@@ -667,6 +667,26 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNotNull("child UuidAndTitleCache list is null", childNodesUuidAndTitleCache);
 
         compareChildren(expectedChildTaxonNodes, childNodesUuidAndTitleCache);
+
+        //test taxon parent of sub species
+        Taxon abiesAlbaSubBrota = HibernateProxyHelper.deproxy(taxonService.load(abiesAlbaSubBrotaUuid), Taxon.class);
+        TaxonNode abiesAlbaSubBrotaNode = abiesAlbaSubBrota.getTaxonNodes().iterator().next();
+        TaxonNode expectedTaxonParent = HibernateProxyHelper.deproxy(abiesAlbaSubBrotaNode.getParent(), TaxonNode.class);
+        UuidAndTitleCache<TaxonNode> taxonParent = taxonNodeService.getParentUuidAndTitleCache(abiesAlbaSubBrotaNode);
+        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getUuid(), taxonParent.getUuid());
+        assertEquals("Taxon Nodes do not match. ", (Integer)expectedTaxonParent.getId(), taxonParent.getId());
+        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getTaxon().getTitleCache(), taxonParent.getTitleCache());
+        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent, taxonNodeService.load(taxonParent.getUuid()));
+
+        //test classification parent
+        Taxon abies = HibernateProxyHelper.deproxy(taxonService.load(abiesUuid), Taxon.class);
+        TaxonNode abiesNode = abies.getTaxonNodes().iterator().next();
+        TaxonNode expectedClassificationParent = HibernateProxyHelper.deproxy(abiesNode.getParent(), TaxonNode.class);
+        UuidAndTitleCache<TaxonNode> classificationParent= taxonNodeService.getParentUuidAndTitleCache(abiesNode);
+        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getUuid(), classificationParent.getUuid());
+        assertEquals("Taxon Nodes do not match. ", (Integer)expectedClassificationParent.getId(), classificationParent.getId());
+        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getClassification().getTitleCache(), classificationParent.getTitleCache());
+        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent, taxonNodeService.load(classificationParent.getUuid()));
     }
 
     private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache){
@@ -727,26 +747,31 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
         abiesName.setGenusOrUninomial("Abies");
         Taxon abies = Taxon.NewInstance(abiesName, null);
+        abies.setUuid(abiesUuid);
 
         BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
         abiesAlbaName.setGenusOrUninomial("Abies");
         abiesAlbaName.setSpecificEpithet("alba");
         Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+        abiesAlba.setUuid(abiesAlbaUuid);
 
         BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
         abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
         abiesAlbaSubBrotaName.setSpecificEpithet("alba");
         abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
         Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
+        abiesAlbaSubBrota.setUuid(abiesAlbaSubBrotaUuid);
 
         BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
         abiesPalmaName.setGenusOrUninomial("Abies");
         abiesPalmaName.setSpecificEpithet("palma");
         Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
+        abiesPalma.setUuid(abiesPalmaUuid);
 
         BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
         pinusName.setGenusOrUninomial("Pinus");
         Taxon pinus = Taxon.NewInstance(pinusName, null);
+        pinus.setUuid(pinusUuid);
 
         checklist.addChildTaxon(abies, null, null);
         checklist.addParentChild(abies, abiesAlba, null, null);
