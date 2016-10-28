@@ -692,7 +692,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                     //parent-child relation:
                                     //copy derivation event and connect parent and sub derivative
-                                    if(associationWrapper.getAssociationType().contains("individual")){
+                                    if(associationWrapper.getAssociationType().contains("individual") || associationWrapper.getAssociationType().contains("culture")){
                                         if(currentDerivedFrom==null){
                                             state.getReport().addInfoMessage(String.format("No derivation event found for unit %s. Defaulting to ACCESSIONING event.",SpecimenImportUtility.getUnitID(currentUnit, config)));
                                             DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, DerivationEventType.ACCESSIONING());
