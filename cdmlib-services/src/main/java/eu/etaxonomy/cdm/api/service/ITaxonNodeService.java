@@ -55,6 +55,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
+	/**
+     * Retrieves a list of {@link UuidAndTitleCache} objects that have a matchin titleCache
+     * @param limit the maximum results
+     * @param pattern the titleCache that is searched for
+     * @return a list of matches
+     */
+	public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern);
+
     /**
      * Retrieves the parent node of the child {@link TaxonNode}
      * @param child the child for which the parent should be retrieved

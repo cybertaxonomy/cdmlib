@@ -128,6 +128,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(limit, pattern);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
         UUID uuid = parent.getUuid();
         int id = parent.getId();
