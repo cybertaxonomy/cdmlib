@@ -1093,12 +1093,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
+    public DeleteResult isDeletable(UUID specimenUuid, DeleteConfiguratorBase config) {
         DeleteResult deleteResult = new DeleteResult();
+        SpecimenOrObservationBase specimen = this.load(specimenUuid);
         SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator) config;
 
         // check elements found by super method
-        Set<CdmBase> relatedObjects = super.isDeletable(specimen, config).getRelatedObjects();
+        Set<CdmBase> relatedObjects = super.isDeletable(specimenUuid, config).getRelatedObjects();
         for (CdmBase cdmBase : relatedObjects) {
             // check for type designation
             if (cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()) {
@@ -1145,7 +1146,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
                         DeleteResult childResult = new DeleteResult();
                         for (DerivedUnit derivedUnit : derivatives) {
-                            childResult.includeResult(isDeletable(derivedUnit, specimenDeleteConfigurator));
+                            childResult.includeResult(isDeletable(derivedUnit.getUuid(), specimenDeleteConfigurator));
                         }
                         if (!childResult.isOk()) {
                             deleteResult.setAbort();
@@ -1210,7 +1211,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
 
-        DeleteResult deleteResult = isDeletable(specimen, config);
+        DeleteResult deleteResult = isDeletable(specimen.getUuid(), config);
         if (!deleteResult.isOk()) {
             return deleteResult;
         }
@@ -1248,7 +1249,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if (specimen.getDescriptions().contains(specimenDescription)) {
                     specimen.removeDescription(specimenDescription);
                 }
-                DeleteResult descriptionDelete = descriptionService.isDeletable(specimenDescription, null);
+                DeleteResult descriptionDelete = descriptionService.isDeletable(specimenDescription.getUuid(), null);
                 if (descriptionDelete.isOk()){
                     descriptionService.delete(specimenDescription);
                 }

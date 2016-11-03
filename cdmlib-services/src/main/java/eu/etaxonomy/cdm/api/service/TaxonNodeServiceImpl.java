@@ -341,7 +341,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         conf.setDeleteNameIfPossible(false);
-        DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
+        DeleteResult result = taxonService.isDeletable(oldTaxon.getUuid(), conf);
 
 
         if (result.isOk()){

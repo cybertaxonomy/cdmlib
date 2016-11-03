@@ -100,7 +100,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         DeleteResult result = new DeleteResult();
         Media media = this.load(mediaUuid);
 
-        result = isDeletable(media, config);
+        result = isDeletable(mediaUuid, config);
 
         if (result.isOk()){
             Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
@@ -151,8 +151,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     }
 
     @Override
-    public DeleteResult isDeletable(Media media, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID mediaUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
+        Media media = this.load(mediaUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
         String message = null;
         MediaDeletionConfigurator mediaConfig = (MediaDeletionConfigurator)config;
