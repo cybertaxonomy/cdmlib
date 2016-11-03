@@ -57,12 +57,13 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child);
 
     /**
-     * Retrieves a list of {@link UuidAndTitleCache} objects that have a matchin titleCache
+     * Retrieves a list of {@link UuidAndTitleCache} objects that have a matching titleCache
      * @param limit the maximum results
      * @param pattern the titleCache that is searched for
+     * @param classificationUuid if specified only nodes of this classification are retrieved
      * @return a list of matches
      */
-    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
 

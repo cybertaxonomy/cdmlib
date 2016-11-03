@@ -128,8 +128,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern) {
-        return dao.getUuidAndTitleCache(limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
+        return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
     }
 
     /**
