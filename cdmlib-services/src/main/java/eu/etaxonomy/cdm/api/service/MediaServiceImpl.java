@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -94,6 +95,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
      * @see eu.etaxonomy.cdm.api.service.IMediaService#delete(java.util.UUID, eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator)
      */
     @Override
+    @Transactional(readOnly=false)
     public DeleteResult delete(UUID mediaUuid, MediaDeletionConfigurator config) {
         DeleteResult result = new DeleteResult();
         Media media = this.load(mediaUuid);
@@ -104,9 +106,15 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
             String message = null;
             for (CdmBase ref: references){
-                if (ref instanceof TextData){
+                if (ref instanceof MediaRepresentation){
+                    MediaRepresentation mediaRep = HibernateProxyHelper.deproxy(ref, MediaRepresentation.class);
+                    media.removeRepresentation(mediaRep);
+                }
+                else if (ref instanceof TextData){
+
                     TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
-                    DescriptionBase description = textData.getInDescription();
+                    DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
+
                     if (description.isImageGallery()){
                         if (description instanceof TaxonDescription){
                             TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
@@ -135,8 +143,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         }
                     }
                 }
+
+            }
             dao.delete(media);
-        }
         }
         return result;
     }
