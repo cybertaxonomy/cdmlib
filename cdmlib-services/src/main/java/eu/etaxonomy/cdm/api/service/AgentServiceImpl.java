@@ -143,7 +143,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	@Transactional(readOnly = false)
     public DeleteResult delete(UUID agentUUID){
 		AgentBase base = dao.load(agentUUID);
-		DeleteResult result = this.isDeletable(base, null);
+		DeleteResult result = this.isDeletable(base.getUuid(), null);
 
     	if (result.isOk()){
 			if (base instanceof Team){

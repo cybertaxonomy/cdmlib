@@ -916,7 +916,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     	}
     	taxon = HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
-        result = isDeletable(taxon, config);
+        result = isDeletable(taxonUUID, config);
 
         if (result.isOk()){
             // --- DeleteSynonymRelations
@@ -960,9 +960,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         }
                     } else if (config.isDeleteConceptRelationships() && taxRel.getType().isConceptRelationship()){
 
-                        if (taxon.equals(taxRel.getToTaxon()) && isDeletable(taxRel.getFromTaxon(), configRelTaxon).isOk()){
+                        if (taxon.equals(taxRel.getToTaxon()) && isDeletable(taxRel.getFromTaxon().getUuid(), configRelTaxon).isOk()){
                             this.deleteTaxon(taxRel.getFromTaxon().getUuid(), configRelTaxon, classificationUuid);
-                        }else if (isDeletable(taxRel.getToTaxon(), configRelTaxon).isOk()){
+                        }else if (isDeletable(taxRel.getToTaxon().getUuid(), configRelTaxon).isOk()){
                             this.deleteTaxon(taxRel.getToTaxon().getUuid(), configRelTaxon, classificationUuid);
                         }
                     }
@@ -1178,7 +1178,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             config = new SynonymDeletionConfigurator();
         }
 
-        result = isDeletable(synonym, config);
+        result = isDeletable(synonym.getUuid(), config);
 
 
         if (result.isOk()){
@@ -2840,8 +2840,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public DeleteResult isDeletable(TaxonBase taxonBase, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID taxonBaseUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
+        TaxonBase taxonBase = load(taxonBaseUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;

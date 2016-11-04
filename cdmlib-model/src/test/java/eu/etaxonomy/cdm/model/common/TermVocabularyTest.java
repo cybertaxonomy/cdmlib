@@ -1,12 +1,12 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +16,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -38,7 +41,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	private TermVocabulary<DefinedTermBase> voc2;
 	private TermVocabulary<DefinedTermBase> voc3;
 
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -49,9 +52,10 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		dtb1 = new DerivedDefinedTermBase(TermType.Unknown, "otb1", "high", null);
-		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", null);
-		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", null);
+		dtb1 = new DerivedDefinedTermBase(TermType.Unknown, "otb1", "high", "h");
+		dtb1.setIdInVocabulary("x");
+		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", "m");
+		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", "l");
 		dtbFree = new DerivedDefinedTermBase();
 		voc1 = new TermVocabulary<DefinedTermBase>();
 		voc1.addTerm(dtb1);
@@ -62,7 +66,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
 	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
 		private DerivedDefinedTermBase(){
 			super(TermType.Unknown);
@@ -75,15 +79,15 @@ public class TermVocabularyTest extends EntityTestBase {
 		@Override
 		public void resetTerms() {};
 	}
-	
+
 /****************** TESTS ****************************************/
-	
+
 	@Test
 	public final void testSetUp() {
 		assertEquals(3, voc1.size());
 		assertEquals(3, voc1.getTerms().size());
 	}
-	
+
 	@Test
 	public final void testGetNewTermSet() {
 //		assertNotNull(voc1.getNewTermSet());
@@ -98,11 +102,27 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testTermVocabularyStringStringString() {
 		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
-		assertEquals("label", voc2.getLabel());	
+		assertEquals("label", voc2.getLabel());
 	}
 
 	@Test
-	
+    public final void testTermIdInVocabularyComparator() {
+        assertNotNull(voc1);
+        Set<DefinedTermBase> terms = voc1.getTerms();
+        TermIdInVocabularyComparator comp = new TermIdInVocabularyComparator();
+        int res = comp.compare(dtb1, dtb2);
+        int res2 = comp.compare(dtb2, dtb1);
+        assertEquals(res, -res2);
+        SortedSet<DefinedTermBase> result = new TreeSet(comp);
+        for (DefinedTermBase term:terms){
+            result.add(term);
+        }
+       assertEquals(result.first(), dtb3);
+       assertEquals(result.last(), dtb1);
+
+	}
+
+	@Test
 	public final void testGetTerms() {
 		assertEquals(3, voc1.getTerms().size());
 		//assertNotSame(voc1.terms, voc1.getTerms());
@@ -119,7 +139,7 @@ public class TermVocabularyTest extends EntityTestBase {
 		voc1.addTerm(dtbFree);
 		assertEquals(4, voc1.size());
 	}
-	
+
 	@Test
 	public final void testAddTerm_2() {
 //		Rank rank = Rank.SPECIES();
@@ -137,7 +157,7 @@ public class TermVocabularyTest extends EntityTestBase {
 //			assertTrue(true);
 //		}
 	}
-	
+
 	@Test
 	public final void testRemoveTerm() {
 		assertEquals(3, voc1.size());

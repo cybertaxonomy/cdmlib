@@ -133,6 +133,78 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+        String queryString = "select tn.uuid, tn.id, tx.titleCache from TaxonNode tn INNER JOIN tn.taxon as tx where tn.parent.id = :parentId";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("parentId", parent.getId());
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        }
+        return list;
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
+        String queryString = "select tn.uuid, tn.id, tx.titleCache from TaxonNode tn "
+        		+ "INNER JOIN tn.taxon as tx "
+        		+ "INNER JOIN tn.classification as cls "
+        		+ "WHERE tx.titleCache like :pattern ";
+        if(classificationUuid!=null){
+        	queryString += "AND cls.uuid = :classificationUuid";
+        }
+        Query query =  getSession().createQuery(queryString);
+        
+        query.setParameter("pattern", pattern.toLowerCase()+"%");
+        query.setParameter("classificationUuid", classificationUuid);
+        
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        }
+        return list;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child) {
+        String queryString = "select tn.parent.uuid, tn.parent.id, tn.parent.taxon.titleCache, tn.parent.classification.titleCache "
+                + " from TaxonNode tn"
+                + " LEFT OUTER JOIN tn.parent.taxon"
+                + " where tn.id = :childId";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("childId", child.getId());
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            UUID uuid = (UUID) object[0];
+            Integer id = (Integer) object[1];
+            String taxonTitleCache = (String) object[2];
+            String classificationTitleCache = (String) object[3];
+            if(taxonTitleCache!=null){
+                list.add(new UuidAndTitleCache<TaxonNode>(uuid,id, taxonTitleCache));
+            }
+            else{
+                list.add(new UuidAndTitleCache<TaxonNode>(uuid,id, classificationTitleCache));
+            }
+        }
+        if(list.size()==1){
+            return list.iterator().next();
+        }
+        return null;
+    }
+
+    @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
     	if (recursive == true){
     		Criteria crit = getSession().createCriteria(TaxonNode.class);

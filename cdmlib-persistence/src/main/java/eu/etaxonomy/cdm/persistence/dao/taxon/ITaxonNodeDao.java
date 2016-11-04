@@ -40,6 +40,31 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
+    /**
+     * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
+     * represents the parent {@link TaxonNode}
+     * @param parent a UuidAndTitleCache object which represents a parent {@link TaxonNode}
+     * @return a list of UuidAndTitleCache objects that represent children of the
+     * parent
+     */
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
+    /**
+     * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
+     * @param child the child for which the parent should be retrieved
+     * @return an UuidAndTitleCache object representing the parent node
+     */
+    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child);
+
+    /**
+     * Retrieves a list of {@link UuidAndTitleCache} objects that have a matching titleCache
+     * @param limit the maximum results
+     * @param pattern the titleCache that is searched for
+     * @param classificationUuid if specified only nodes of this classification are retrieved
+     * @return a list of matches
+     */
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
 
     public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive);

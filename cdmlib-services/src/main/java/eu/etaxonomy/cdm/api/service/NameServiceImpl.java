@@ -151,7 +151,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
 
     	try{
-    		result = this.isDeletable(name, config);
+    		result = this.isDeletable(name.getUuid(), config);
         }catch(Exception e){
         	result.addException(e);
         	result.setError();
@@ -863,9 +863,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
-    	//name = this.load(name.getUuid());
+    	TaxonNameBase name = this.load(nameUUID);
     	NameDeletionConfigurator nameConfig = null;
     	if (config instanceof NameDeletionConfigurator){
     		nameConfig = (NameDeletionConfigurator) config;
@@ -905,7 +905,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //hybrid relationships
         if (name.isInstanceOf(NonViralName.class)){
             NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
-            if (! nvn.getHybridParentRelations().isEmpty()){
+            Set<HybridRelationship> parentHybridRelations = nvn.getHybridParentRelations();
+            //Hibernate.initialize(parentHybridRelations);
+            if (! parentHybridRelations.isEmpty()){
             	result.addException(new Exception("Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion."));
             	result.setAbort();
             }

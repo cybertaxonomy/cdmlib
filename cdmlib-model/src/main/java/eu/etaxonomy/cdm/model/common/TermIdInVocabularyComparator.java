@@ -25,8 +25,28 @@ public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implemen
      */
     @Override
     public int compare(T term1, T term2) {
-        String label1 = CdmUtils.Nz(term1.getIdInVocabulary());
-        String label2 = CdmUtils.Nz(term2.getIdInVocabulary());
+        String label1;
+        String label2;
+        if (term1 == term2){
+            return 0;
+        }
+        if (term1 == null){
+            return 1;
+        }
+        if (term2 == null){
+            return -1;
+        }
+        if (term1.getIdInVocabulary() == null){
+            label1 = CdmUtils.Nz(term1.getTitleCache());
+        }else{
+            label1 = CdmUtils.Nz(term1.getIdInVocabulary());
+        }
+        if (term2.getIdInVocabulary() == null){
+            label2 = CdmUtils.Nz(term2.getTitleCache());
+        }else{
+            label2 = CdmUtils.Nz(term2.getIdInVocabulary());
+        }
+
         return  label1.compareTo(label2);
     }
 
