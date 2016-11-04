@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
@@ -62,6 +64,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
@@ -129,6 +132,50 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     public TaxonNode loadTaxonNode(UUID taxonNodeUuid, List<String> propertyPaths){
         return taxonNodeDao.load(taxonNodeUuid, propertyPaths);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult cloneClassification(UUID classificationUuid,
+    		String name, Reference sec, TaxonRelationshipType relationshipType) {
+        UpdateResult result = new UpdateResult();
+    	Classification classification = load(classificationUuid);
+    	Classification clone = Classification.NewInstance(name);
+    	clone.setReference(sec);
+
+    	//clone taxa and taxon nodes
+    	List<TaxonNode> childNodes = classification.getRootNode().getChildNodes();
+    	for (TaxonNode taxonNode : childNodes) {
+    		addChildTaxa(taxonNode, null, clone, relationshipType);
+    	}
+    	dao.saveOrUpdate(clone);
+    	result.setCdmEntity(clone);
+    	return result;
+    }
+
+    private void addChildTaxa(TaxonNode originalParentNode, TaxonNode cloneParentNode, Classification classification, TaxonRelationshipType relationshipType){
+    	Taxon cloneTaxon = (Taxon) HibernateProxyHelper.deproxy(originalParentNode.getTaxon(), Taxon.class).clone();
+    	Reference reference = null;
+		String microReference = null;
+//		Reference reference = originalParentNode.getReference();
+//		String microReference = originalParentNode.getMicroReference();
+		List<TaxonNode> origiinalChildNodes = originalParentNode.getChildNodes();
+
+		//add relation between taxa
+		cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), relationshipType, reference, microReference);
+
+		TaxonNode cloneChildNode = null;
+    	//add taxon node to either parent node or classification (no parent node)
+    	if(cloneParentNode==null){
+    		cloneChildNode = classification.addChildTaxon(cloneTaxon, reference, microReference);
+    	}
+    	else{
+    		cloneChildNode = cloneParentNode.addChildTaxon(cloneTaxon, reference, microReference);
+    	}
+    	//add children
+		for (TaxonNode originalChildNode : origiinalChildNodes) {
+    		addChildTaxa(originalChildNode, cloneChildNode, classification, relationshipType);
+    	}
     }
 
     @Override

@@ -22,10 +22,12 @@ import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -60,6 +62,15 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public TaxonNode getRootNode(UUID classificationUuid);
 
     public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid);
+
+    /**
+     * Clones an existing classification including all taxa and taxon nodes.
+     * @param name
+     * @param sec
+     * @param relationshipType
+     * @return
+     */
+    public UpdateResult cloneClassification(UUID classificationUuid, String name, Reference sec, TaxonRelationshipType relationshipType);
 
     /**
      *
