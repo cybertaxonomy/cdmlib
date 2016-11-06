@@ -159,7 +159,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 		String microReference = null;
 //		Reference reference = originalParentNode.getReference();
 //		String microReference = originalParentNode.getMicroReference();
-		List<TaxonNode> origiinalChildNodes = originalParentNode.getChildNodes();
+		List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
 
 		//add relation between taxa
 		cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), relationshipType, reference, microReference);
@@ -172,8 +172,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	else{
     		cloneChildNode = cloneParentNode.addChildTaxon(cloneTaxon, reference, microReference);
     	}
+    	taxonNodeDao.saveOrUpdate(cloneChildNode);
     	//add children
-		for (TaxonNode originalChildNode : origiinalChildNodes) {
+		for (TaxonNode originalChildNode : originalChildNodes) {
     		addChildTaxa(originalChildNode, cloneChildNode, classification, relationshipType);
     	}
     }
