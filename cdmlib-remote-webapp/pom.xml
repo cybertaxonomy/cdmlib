@@ -221,7 +221,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.0.RC1</version>
+        <version>9.1.3.v20140225</version>
         <!--  
             NOTE:
             9.4.0.RC1 requires jdk 1.8, formerly we've been using version 9.1.3.v20140225 which was 
