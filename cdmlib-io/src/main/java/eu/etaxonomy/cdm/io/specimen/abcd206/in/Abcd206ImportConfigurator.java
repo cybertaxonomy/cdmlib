@@ -39,6 +39,8 @@ public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends Spe
 
     private URI sourceUri;
 
+    private boolean getSiblings = true;
+
 
 
     @Override
@@ -132,12 +134,26 @@ public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends Spe
     }
 
 
-   
+
 
     @Override
     public Reference getSourceReference() {
         //TODO
         return sourceReference;
+    }
+
+    /**
+     * @return the getSiblings
+     */
+    public boolean isGetSiblings() {
+        return getSiblings;
+    }
+
+    /**
+     * @param getSiblings the getSiblings to set
+     */
+    public void setGetSiblings(boolean getSiblings) {
+        this.getSiblings = getSiblings;
     }
 
 

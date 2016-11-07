@@ -709,8 +709,12 @@ public class Abcd206XMLFieldGetter {
             group = root.getElementsByTagName(prefix + "MultiMediaObjects");
             for (int i = 0; i < group.getLength(); i++) {
                 multimedias = group.item(i).getChildNodes();
+                System.out.println(multimedias.getLength());
                 for (int j = 0; j < multimedias.getLength(); j++) {
+                    System.out.println("new multimedia object" + multimedias.item(j).getNodeName());
+
                     if (multimedias.item(j).getNodeName().equals(prefix + "MultiMediaObject")) {
+                        System.out.println("new multimedia object");
                         multimedia = multimedias.item(j).getChildNodes();
                         Map<String,String> mediaObjectMap = new HashMap<String, String>();
                         String fileUri = "";
@@ -792,7 +796,7 @@ public class Abcd206XMLFieldGetter {
                         childrenUnitAssociations = childrenAssociations.item(j).getChildNodes();
                         for (int k = 0; k < childrenUnitAssociations.getLength(); k++) {
                             if (childrenUnitAssociations.item(k).getNodeName().equals(prefix + "UnitID")) {
-                                dataHolder.associatedUnitIds.add(childrenUnitAssociations.item(k).getTextContent());
+                                dataHolder.addAssociatedUnitId(childrenUnitAssociations.item(k).getTextContent());
                                 path = childrenUnitAssociations.item(k).getNodeName();
                                 getHierarchie(childrenUnitAssociations.item(k));
                                 dataHolder.knownABCDelements.add(path);
@@ -955,6 +959,28 @@ public class Abcd206XMLFieldGetter {
             dataHolder.setGatheringDateText(null);
         }
     }
+
+    protected void getGatheringMethod(Element root) {
+        try {
+            NodeList group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equalsIgnoreCase(prefix + "Method")) {
+                        NodeList methods = children.item(j).getChildNodes();
+                        for (int k = 0; k < methods.getLength(); k++) {
+                            dataHolder.setGatheringMethod(methods.item(k).getTextContent());
+                        }
+                    }
+
+                }
+            }
+
+        } catch (NullPointerException e) {
+            dataHolder.setGatheringDateText(null);
+        }
+    }
+
 
     /**
      * getGatheringPeople : get GatheringAgent with fullname

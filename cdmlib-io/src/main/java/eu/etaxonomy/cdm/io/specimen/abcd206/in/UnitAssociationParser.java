@@ -121,4 +121,56 @@ public class UnitAssociationParser {
         return null;
     }
 
+    public UnitAssociationWrapper parseSiblings(String unitID, URI datasetAccessPoint){
+
+        String unableToLoadMessage = String.format("Unable to load unit %s from %s", unitID, datasetAccessPoint);
+        if(unitID!=null && datasetAccessPoint!=null){
+            BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
+
+
+            OccurenceQuery query = new OccurenceQuery(unitID);
+
+                InputStream inputStream;
+                try {
+                    inputStream = serviceWrapper.query(query, datasetAccessPoint);
+
+                    if(inputStream!=null){
+                    UnitAssociationWrapper unitAssociationWrapper = null;
+                    try {
+                        unitAssociationWrapper = AbcdParseUtility.parseUnitsNodeList(inputStream, report);
+                    } catch (Exception e) {
+                        String exceptionMessage = "An exception occurred during parsing of associated units!";
+                        logger.error(exceptionMessage, e);
+                        report.addException(exceptionMessage, e);
+                    }
+
+                    if(unitAssociationWrapper!=null){
+
+                        if(unitAssociationWrapper.getAssociatedUnits()!=null && unitAssociationWrapper.getAssociatedUnits().getLength()>1){
+                            String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitID);
+                            logger.warn(moreThanOneUnitFoundMessage);
+                            report.addInfoMessage(moreThanOneUnitFoundMessage);
+                        }
+                    }
+                    return unitAssociationWrapper;
+                    }
+                    else{
+                        logger.error(unableToLoadMessage);
+                        report.addInfoMessage(unableToLoadMessage);
+                    }
+                } catch (ClientProtocolException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+            }
+            else{
+                report.addInfoMessage(unableToLoadMessage);
+            }
+        return null;
+    }
+
 }

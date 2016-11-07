@@ -67,6 +67,8 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
     private Double gatheringDepthMin;
     private String gatheringDepthText;
 
+    private String gatheringMethod;
+
 
 
 
@@ -165,6 +167,32 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
      */
     public void setGatheringDepthText(String gatheringDepthText) {
         this.gatheringDepthText = gatheringDepthText;
+    }
+
+
+
+
+    /**
+     * @param gatheringMethod
+     */
+    public void setGatheringMethod(String gatheringMethod) {
+        this.gatheringMethod = gatheringMethod;
+
+    }
+
+    /**
+     * @param gatheringMethod
+     */
+    public String getGatheringMethod() {
+        return this.gatheringMethod ;
+
+    }
+    public void addAssociatedUnitId(String associatedUnitId){
+        this.associatedUnitIds.add(associatedUnitId);
+    }
+
+    public List<String> getAssociatedUnitIds(){
+        return associatedUnitIds;
     }
 
 
