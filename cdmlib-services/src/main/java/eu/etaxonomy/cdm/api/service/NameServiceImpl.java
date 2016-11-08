@@ -186,14 +186,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	        return result;
         }
 
-
-
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#deleteTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.TypeDesignationBase)
-     */
     @Override
     public DeleteResult deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
     	if(typeDesignation!=null && typeDesignation.getId()!=0){
@@ -296,15 +291,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 //********************* METHODS ****************************************************************//
 
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByName
-     */
-    @Override
-    @Deprecated
-    public List getNamesByName(String name){
-        return super.findCdmObjectsByTitle(name);
-    }
 
     /**
      * TODO candidate for harmonization
@@ -342,41 +328,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * Replace by load(UUID, propertyPaths)
-     */
-    @Override
-    @Deprecated
-    public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
-        return (NonViralName)dao.findByUuid(uuid, null ,propertyPaths);
-    }
-
-    /**
      * TODO candidate for harmonization
      */
     @Override
     public List getNamesByName(String name, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(name, sessionObject);
-    }
-
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
-     */
-    @Override
-    @Deprecated
-    public List findNamesByTitle(String title){
-        return super.findCdmObjectsByTitle(title);
-    }
-
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle()
-     */
-    @Override
-    @Deprecated
-    public List findNamesByTitle(String title, CdmBase sessionObject){
-        return super.findCdmObjectsByTitle(title, sessionObject);
     }
 
     /**

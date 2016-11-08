@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -63,16 +63,16 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
 //    private static final String NOTES_COLUMN = "Notes";
 //    private static final String PAGE_NUMBER_COLUMN = "Page";
 //    private static final String INFO_COLUMN = "Info";
-    
-	
+
+
 	// Stores already processed descriptions
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
 	protected void doInvoke(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
-		
+
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
-    	
+
 		// read and save all rows of the excel worksheet
 		ArrayList<HashMap<String, String>> recordList;
 		URI source = state.getConfig().getSource();
@@ -95,20 +95,20 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     		}
     		commitTransaction(txStatus);
     	}
-    	
+
 		try {
 			if (logger.isDebugEnabled()) { logger.debug("End distribution data import"); }
-				
+
 		} catch (Exception e) {
     		logger.error("Error closing the application context");
     		e.printStackTrace();
 		}
-    	
+
     	return;
 	}
-			
 
-	/** 
+
+	/**
 	 *  Reads the data of one Excel sheet row
 	 */
     private void analyzeRecord(HashMap<String,String> record) {
@@ -116,54 +116,54 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     	 * Relevant columns:
     	 * Name (EDIT)
     	 * Distribution TDWG
-    	 * Status (only entries if not native) 
+    	 * Status (only entries if not native)
     	 * Literature number
     	 * Literature
     	*/
-    	
+
         String editName = "";
         ArrayList<String> distributionList = new ArrayList<String>();
         String status = "";
         String literatureNumber = "";
         String literature = "";
-        
+
     	Set<String> keys = record.keySet();
-    	
+
     	for (String key: keys) {
-    		
-    		String value = (String) record.get(key);
+
+    		String value = record.get(key);
     		if (!value.equals("")) {
     			if (logger.isDebugEnabled()) { logger.debug(key + ": '" + value + "'"); }
     		}
-    		
+
     		if (key.contains(EDIT_NAME_COLUMN)) {
     			editName = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
-    			
+
 			} else if(key.contains(TDWG_DISTRIBUTION_COLUMN)) {
 				distributionList =  CdmUtils.buildList(value);
-				
+
 			} else if(key.contains(STATUS_COLUMN)) {
 				status = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
-				
+
 //			} else if(key.contains(LITERATURE_NUMBER_COLUMN)) {
 //				literatureNumber = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
-//				
+//
 //			} else if(key.contains(LITERATURE_COLUMN)) {
 //				literature = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
-//				
+//
 			} else {
 				//logger.warn("Column " + key + " ignored");
 			}
     	}
-    	
+
     	// Store the data of this record in the DB
     	if (!editName.equals("")) {
     		saveRecord(editName, distributionList, status, literatureNumber, literature);
     	}
     }
-    
-    
-	/** 
+
+
+	/**
 	 *  Stores the data of one Excel sheet row in the database
 	 */
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
@@ -172,11 +172,11 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     	IdentifiableServiceConfiguratorImpl<TaxonNameBase> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonNameBase.class);
     	config.setTitleSearchString(taxonName);
     	config.setMatchMode(MatchMode.BEGINNING);
-    	
+
 		try {
     		// get the matching names from the DB
     		//List<TaxonNameBase> taxonNameBases = getNameService().findByTitle(config);
-    		List<TaxonNameBase<?,?>> taxonNameBases = getNameService().findNamesByTitle(taxonName);
+    		List<TaxonNameBase> taxonNameBases = getNameService().findByName(null, taxonName, null, null, null, null,null,null).getRecords();
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
@@ -215,30 +215,30 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     				} else {
     					presenceAbsenceStatus = PresenceAbsenceTerm.getPresenceAbsenceTermByAbbreviation(status);
     				}
-    				// TODO: Handle absence case. 
+    				// TODO: Handle absence case.
     				// This case has not yet occurred in the excel input file, though.
-					
+
     				/* Set to true if taxon needs to be saved if at least one new distribution exists */
     				boolean save = false;
-    				
+
     				// TDWG areas
     				for (String distribution: distributionList) {
 
                         /* Set to true if this distribution is a new one*/
         				boolean ignore = false;
-        				
+
     					if(!distribution.equals("")) {
     						NamedArea namedArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(distribution);
         					TaxonDescription taxonDescription = myDescriptions.get(taxon);
-        					if (namedArea != null) {    
+        					if (namedArea != null) {
     		    				// Check against existing distributions and ignore the ones that occur multiple times
             					Set<DescriptionElementBase> myDescriptionElements = taxonDescription.getElements();
     	    					for(DescriptionElementBase descriptionElement : myDescriptionElements) {
     	    						if (descriptionElement instanceof Distribution) {
     	    							if (namedArea == ((Distribution)descriptionElement).getArea()) {
     	    								ignore = true;
-    	    								if (logger.isDebugEnabled()) { 
-    	    									logger.debug("Distribution ignored: " + distribution); 
+    	    								if (logger.isDebugEnabled()) {
+    	    									logger.debug("Distribution ignored: " + distribution);
     	    								}
     	    		    					break;
      	    							}
@@ -249,7 +249,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     	    						save = true;
     	    						Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
     	    						myDescription.addElement(newDistribution);
-    	    						if (logger.isDebugEnabled()) { 
+    	    						if (logger.isDebugEnabled()) {
     	    							logger.debug("Distribution created: " + newDistribution.toString());
     	    						}
     	    					}
@@ -261,21 +261,21 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     					if (logger.isDebugEnabled()) { logger.debug("Taxon saved"); }
     				}
     			}
-    		} 
+    		}
     	} catch (Exception e) {
     		logger.error("Error");
     		e.printStackTrace();
     	}
     }
-    
-    
+
+
 	@Override
 	protected boolean doCheck(ExcelImportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for distribution data import");
 		return result;
 	}
-	
+
 
 	@Override
 	protected boolean isIgnore(ExcelImportState state) {
