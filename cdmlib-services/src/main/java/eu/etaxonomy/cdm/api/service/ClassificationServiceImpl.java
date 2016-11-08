@@ -155,10 +155,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     private void addChildTaxa(TaxonNode originalParentNode, TaxonNode cloneParentNode, Classification classification, TaxonRelationshipType relationshipType){
     	Taxon cloneTaxon = (Taxon) HibernateProxyHelper.deproxy(originalParentNode.getTaxon(), Taxon.class).clone();
-    	Reference reference = null;
+    	Reference reference = classification.getReference();
 		String microReference = null;
-//		Reference reference = originalParentNode.getReference();
-//		String microReference = originalParentNode.getMicroReference();
 		List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
 
 		//add relation between taxa
