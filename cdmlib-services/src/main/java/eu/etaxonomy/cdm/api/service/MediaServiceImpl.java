@@ -155,12 +155,12 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         DeleteResult result = new DeleteResult();
         Media media = this.load(mediaUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
-        String message = null;
         MediaDeletionConfigurator mediaConfig = (MediaDeletionConfigurator)config;
         for (CdmBase ref: references){
+            String message = null;
             if (ref instanceof TextData){
                 TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
-                DescriptionBase description = textData.getInDescription();
+                DescriptionBase<?> description = textData.getInDescription();
                 if (description.isImageGallery()){
                     if (description instanceof TaxonDescription){
                         TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
