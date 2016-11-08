@@ -160,7 +160,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 		List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
 
 		//add relation between taxa
-		cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), relationshipType, reference, microReference);
+		if (relationshipType != null){
+		    cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), relationshipType, reference, microReference);
+		}
 
 		TaxonNode cloneChildNode = null;
     	//add taxon node to either parent node or classification (no parent node)

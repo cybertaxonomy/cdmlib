@@ -381,7 +381,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     @DataSet
     public final void testCloneClassification(){
     	Classification classification = classificationDao.load(CLASSIFICATION_UUID);
-    	Reference sec = ReferenceFactory.newArticle();
+    	Reference sec = ReferenceFactory.newGeneric();
     	sec.setTitle("cloned sec");
     	Classification clone = (Classification) classificationService.cloneClassification(CLASSIFICATION_UUID, "Cloned classification", sec, TaxonRelationshipType.CONGRUENT_TO()).getCdmEntity();
 
