@@ -62,7 +62,7 @@ public class Datasource {
 
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
@@ -78,7 +78,7 @@ public class Datasource {
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 		String server = "160.45.63.171";
-		String database = "cdm_production_edaphobase";
+		String database = "cdm_production_salvador";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -135,7 +135,7 @@ public class Datasource {
 
 //		TransactionStatus tx = appCtr.startTransaction();
 
-		testGroupedTaxa(appCtr);
+//		testGroupedTaxa(appCtr);
 
 
 //		int n = appCtr.getAgentService().count(null);

@@ -58,7 +58,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	private static final Logger logger = Logger.getLogger(ExcelStreamImportTest.class);
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport defaultImport;
+	CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
 	INameService nameService;

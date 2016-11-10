@@ -36,7 +36,7 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
 
 
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
@@ -65,7 +65,10 @@ public class TestModelUpdate {
 
     //		appCtr.getCommonService().createFullSampleData();
 
-
+            if (schema == DbSchemaValidation.CREATE){
+                System.out.println("fillData");
+                appCtr.getCommonService().createFullSampleData();
+            }
 
     		appCtr.close();
  		}catch (Exception e) {
