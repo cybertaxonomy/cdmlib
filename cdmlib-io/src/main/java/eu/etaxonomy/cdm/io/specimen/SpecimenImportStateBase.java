@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
@@ -67,11 +68,26 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private boolean descriptionGroupSet = false;
     protected HashMap<String, Institution> institutions = new HashMap<String, Institution>();
     protected HashMap<String, Collection> collections= new HashMap<String, Collection>();
+    private HashMap<String,FieldUnit> fieldUnits = new HashMap<String, FieldUnit>();
 
 
 
 
     /* -----Getter/Setter ---*/
+
+    /**
+     * @return the fieldUnits
+     */
+    public FieldUnit getFieldUnit(String fieldNumber) {
+        return fieldUnits.get(fieldNumber);
+    }
+
+    /**
+     * @param fieldUnits the fieldUnits to set
+     */
+    public void setFieldUnit(FieldUnit fieldUnit) {
+        this.fieldUnits.put(fieldUnit.getFieldNumber(), fieldUnit);
+    }
 
     @Override
     public CONFIG getConfig(){
@@ -237,7 +253,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     }
     public void reset() {
         getDataHolder().reset();
-        setDerivedUnitBase(null);
+       // setDerivedUnitBase(null);
     }
 
 }

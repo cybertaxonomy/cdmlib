@@ -21,19 +21,19 @@ import java.util.Set;
  *
  */
 public class OccurenceQuery implements Serializable{
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static  SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public final Set<String[]> tripleIds;
+    public  Set<String[]> tripleIds = null;
 
-    public final String taxonName;
-    public final String collector;
-    public final String collectorsNumber;
-    public final String accessionNumber;
-    public final String herbarium;
-    public final String country;
-    public final String locality;
-    public final Calendar dateFrom;
-    public final Calendar dateTo;
+    public String taxonName = null;
+    public String collector = null;
+    public String collectorsNumber = null;
+    public String accessionNumber = null;
+    public String herbarium = null;
+    public String country = null;
+    public String locality = null;
+    public Calendar dateFrom = null;
+    public Calendar dateTo = null;
 
 
 
@@ -72,6 +72,13 @@ public class OccurenceQuery implements Serializable{
         this.locality = locality;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+    }
+
+    /**
+     * @param unitID
+     */
+    public OccurenceQuery(String unitID) {
+        this.accessionNumber = unitID;
     }
 
     /* (non-Javadoc)

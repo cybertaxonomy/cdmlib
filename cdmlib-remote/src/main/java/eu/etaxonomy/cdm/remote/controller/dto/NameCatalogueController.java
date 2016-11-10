@@ -678,8 +678,8 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
-            NonViralName nvn = service.findNameByUuid(UUID.fromString(nameUuid),
-                        NAME_INFORMATION_INIT_STRATEGY);
+            NonViralName<?> nvn = CdmBase.deproxy(service.load(UUID.fromString(nameUuid),
+                        NAME_INFORMATION_INIT_STRATEGY), NonViralName.class);
 
             // if search is successful then get related information, else return error
             if (nvn != null) {
@@ -808,7 +808,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetTaxonInformation()" + request.getRequestURI() + " for taxon uuid \""
                     + taxonUuid);
             // find name by uuid
-            TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
+            TaxonBase<?> tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
                     TAXON_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
@@ -820,11 +820,11 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     Taxon taxon = (Taxon) tb;
                     // build classification map
                     boolean includeUuids = Arrays.asList(includes).contains(INCLUDE_CLUUIDS);
-                    Map classificationMap = getClassification(taxon, classificationType, includeUuids);
+                    Map<String,Map> classificationMap = getClassification(taxon, classificationType, includeUuids);
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
-                    NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+                    NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
                     String secTitle = "" ;
                     String modified = "";

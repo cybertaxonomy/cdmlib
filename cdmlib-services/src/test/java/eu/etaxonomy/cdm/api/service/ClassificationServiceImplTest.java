@@ -10,12 +10,16 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -50,7 +55,13 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     IClassificationService service;
 
     @SpringBeanByType
+    ITaxonService taxonService;
+
+    @SpringBeanByType
     ITaxonNodeService taxonNodeService;
+
+    @SpringBeanByType
+    IClassificationService classificationService;
 
     @SpringBeanByType
     IClassificationDao classificationDao;
@@ -337,7 +348,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertNotNull(service);
     }
 
-
     @Test
     @DataSet
     public final void testGroupTaxaByHigherTaxon(){
@@ -364,6 +374,33 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals(acacia_sect_botrycephalae_uuid, result.get(2).getTaxonUuid());
         Assert.assertNotNull(result.get(2).getGroupTaxonUuid());
         Assert.assertFalse(StringUtils.isBlank(result.get(2).getGroupTaxonName()));
+    }
+
+
+    @Test
+    @DataSet
+    public final void testCloneClassification(){
+    	Classification classification = classificationDao.load(CLASSIFICATION_UUID);
+    	Reference sec = ReferenceFactory.newGeneric();
+    	sec.setTitle("cloned sec");
+    	Classification clone = (Classification) classificationService.cloneClassification(CLASSIFICATION_UUID, "Cloned classification", sec, TaxonRelationshipType.CONGRUENT_TO()).getCdmEntity();
+
+    	List<TaxonNode> childNodes = classification.getChildNodes();
+    	for (TaxonNode taxonNode : childNodes) {
+			System.out.println(taxonNode.getTaxon().getTitleCache());
+		}
+    	childNodes = clone.getChildNodes();
+    	for (TaxonNode taxonNode : childNodes) {
+    		System.out.println(taxonNode.getTaxon().getTitleCache());
+    	}
+    	Set<TaxonNode> allNodes = classification.getAllNodes();
+    	assertEquals("# of direct children does not match", classification.getChildNodes().size(), clone.getChildNodes().size());
+		assertEquals("# of all nodes does not match", allNodes.size(), clone.getAllNodes().size());
+
+    	//check that original taxon does not appear in cloned classification
+		for (TaxonNode taxonNode : allNodes) {
+    		assertNull(clone.getNode(taxonNode.getTaxon()));
+    	}
     }
 
 

@@ -1419,6 +1419,12 @@ public class Taxon
             newSyn.setAcceptedTaxon(result);
         }
 
+        result.descriptions = new HashSet<>();
+        for (TaxonDescription description : this.getDescriptions()){
+            TaxonDescription newDescription = (TaxonDescription)description.clone();
+            result.addDescription(newDescription);
+        }
+
 
         result.taxonNodes = new HashSet<TaxonNode>();
 

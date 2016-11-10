@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -58,38 +59,48 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 /**
  * @author a.oppermann
  * @created 20.09.2012
- * 
+ *
  */
 @Controller
 @RequestMapping(value = { "/csv" })
 public class CsvExportController extends AbstractController{
 
 	/**
-	 * 
+	 *
 	 */
 	@Autowired
 	private ApplicationContext appContext;
-	
-	@Autowired 
+
+	@Autowired
 	private ITermService termService;
 
-	@Autowired 
+	@Autowired
 	private IClassificationService classificationService;
 
-	@Autowired 
+	@Autowired
 	private ITaxonNodeService taxonNodeService;
 
-	@Autowired 
+	@Autowired
 	private ITaxonService taxonService;
-	
+
 	@Autowired
 	public ProgressMonitorController progressMonitorController;
-	
+
 	private static final Logger logger = Logger.getLogger(CsvExportController.class);
-	
+
+
+    private static final List<String> TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
+            "taxonNodes.$",
+            "taxonNodes.classification.$",
+            "taxonNodes.childNodes.$"
+            });
+
+    private static final List<String> CLASSIFICATION_INIT_STRATEGY =
+            Arrays.asList(new String[]{"rootNode"});
+
 	/**
 	 * Helper method, which allows to convert strings directly into uuids.
-	 * 
+	 *
 	 * @param binder Special DataBinder for data binding from web request parameters to JavaBean objects.
 	 */
     @InitBinder
@@ -117,27 +128,25 @@ public class CsvExportController extends AbstractController{
 			HttpServletResponse response,
 			HttpServletRequest request) {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		UUID taxonNodeUuid = null;
-		Classification classification = classificationService.load(UUID.fromString(classificationUuid));
+		Classification classification = classificationService.load(UUID.fromString(classificationUuid), CLASSIFICATION_INIT_STRATEGY);
+		UUID taxonNodeUuid = classification.getRootNode().getUuid();
+
 		if(CdmUtils.isNotBlank(taxonName)){
 			MatchingTaxonConfigurator config = new MatchingTaxonConfigurator();
 			config.setClassificationUuid(UUID.fromString(classificationUuid));
 			config.setTaxonNameTitle(taxonName);
+
 			List<TaxonBase> taxaByName = taxonService.findTaxaByName(config);
-			if(taxaByName.isEmpty()){
-				logger.warn("No taxon found with name: "+taxonName+". Using only classification.");
+			for (TaxonBase taxonBase : taxaByName) {
+			    if(taxonBase.isInstanceOf(Taxon.class)){
+			        TaxonNode taxonNode = classification.getNode(HibernateProxyHelper.deproxy(
+			                taxonService.load(taxonBase.getUuid(),TAXON_WITH_NODES_INIT_STRATEGY), Taxon.class));
+			        if(taxonNode!=null){
+			            taxonNodeUuid = taxonNode.getUuid();
+			            break;
+			        }
+			    }
 			}
-			else if(taxaByName.size()>1){
-				logger.warn("More than one taxon found for name: "+taxonName+". Using the first insance.");
-			}
-			else{
-				UUID uuid = taxaByName.iterator().next().getUuid();
-				Taxon taxon = HibernateProxyHelper.deproxy(taxonService.load(uuid, Arrays.asList(new String[]{"taxonNodes.classification"})), Taxon.class);
-				taxonNodeUuid = classification.getNode(taxon).getUuid();
-			}
-		}
-		else{
-			taxonNodeUuid = classification.getRootNode().getUuid();
 		}
 		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(taxonNodeUuid, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
@@ -147,9 +156,9 @@ public class CsvExportController extends AbstractController{
 		try {
 			/*
 			 *  Fetch data from the appContext and forward stream to HttpServleResponse
-			 *  
+			 *
 			 *  FIXME: Large Data could be out of memory
-			 *  
+			 *
 			 *  HTPP Error Break
 			 */
 			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());//byteArrayOutputStream.toByteArray()
@@ -178,17 +187,17 @@ public class CsvExportController extends AbstractController{
 
 	/**
 	 * Cofiguration method to set the configuration details for the defaultExport in the application context.
-	 * 
+	 *
 	 * @param taxonNodeUuid pass-through the selected {@link Classification classification}
 	 * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
-	 * @param areas 
+	 * @param areas
 	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
 	 * @return the CsvTaxExportConfiguratorRedlist config
 	 */
 	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(UUID taxonNodeUuid, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Set<UUID> taxonNodeUuids = Collections.singleton(taxonNodeUuid); 
+		Set<UUID> taxonNodeUuids = Collections.singleton(taxonNodeUuid);
 		String destination = System.getProperty("java.io.tmpdir");
 		List<Feature> features = new ArrayList<Feature>();
 		if(featureUuids != null){
@@ -209,18 +218,20 @@ public class CsvExportController extends AbstractController{
 		config.setFieldsTerminatedBy("\t");
 		config.setTaxonNodeUuids(taxonNodeUuids);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
-		if(features != null)config.setFeatures(features);
+		if(features != null) {
+            config.setFeatures(features);
+        }
         config.setNamedAreas(selectedAreas);
 		return config;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
 	 */
 	@Override
 	public void setService(IService service) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

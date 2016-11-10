@@ -139,8 +139,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	protected Set<TaxonNode> assembleTaxonNodeSet(CsvTaxExportConfiguratorRedlist config){
 		Set<TaxonNode> taxonNodes = new HashSet<>();
 		if(config != null){
-			Set<UUID> taxonNodeUuidSet = config.getTaxonNodeUuids();
-			taxonNodes.addAll(getTaxonNodeService().find(taxonNodeUuidSet));
+			List<UUID> taxonNodeUuidSet = new ArrayList<>(config.getTaxonNodeUuids());
+			List<TaxonNode> loadedNodes = getTaxonNodeService().load(taxonNodeUuidSet, null);
+			taxonNodes.addAll(loadedNodes);
 		}
 		return taxonNodes;
 	}
@@ -175,6 +176,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	    List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
 	    List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
 	    for (TaxonNode node : taxonNodes){
+	        if(node.getTaxon()!=null){
+	            allNodes.add(node);
+	        }
 	        allNodes.addAll(getTaxonNodeService().loadChildNodesOfTaxonNode(node, null, true, null));
 	    }
 	    //Geographical filter

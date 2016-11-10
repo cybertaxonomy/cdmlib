@@ -35,7 +35,7 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
 
 
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm40" : "cdm41");
@@ -61,7 +61,6 @@ public class TestModelUpdate {
     //		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
     //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
     //      appCtr.getClassificationService().save(classification);
-
 
     		if (schema == DbSchemaValidation.CREATE){
     		    System.out.println("fillData");

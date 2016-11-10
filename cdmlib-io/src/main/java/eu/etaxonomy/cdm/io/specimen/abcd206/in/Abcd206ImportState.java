@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -32,6 +34,8 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
 
 	private String prefix;
 	MapWrapper<TeamOrPersonBase<?>> personStore;
+
+	private List<String> associatedUnitIds = new ArrayList<String>();
 
 
 
@@ -97,6 +101,14 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
         ByteArrayOutputStream importStream = new ByteArrayOutputStream();
         getReport().printReport(new PrintStream(importStream));
         return importStream.toByteArray();
+    }
+
+    public void setAssociatedUnitIds(List<String> associatedUnitIds){
+        this.associatedUnitIds = associatedUnitIds;
+    }
+
+    public List<String> getAssociatedUnitIds(){
+        return this.associatedUnitIds;
     }
 
 //

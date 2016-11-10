@@ -96,13 +96,14 @@ public class UnitsGatheringEvent {
      */
     public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude,
             Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit,
-            String date, String gatheringNotes, ReferenceSystem referenceSystem,
+            String date, String gatheringNotes, String gatheringMethod, ReferenceSystem referenceSystem,
              Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
         this.setCoordinates(longitude, latitude, referenceSystem);
         this.setDate(date);
         this.setNotes(gatheringNotes);
         this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
+        this.setGatheringMethod(gatheringMethod);
 
 
 
@@ -355,6 +356,17 @@ public class UnitsGatheringEvent {
      */
     public void setGatheringDate(TimePeriod tp) {
         this.gatheringEvent.setTimeperiod(tp);
+    }
+
+    /**
+     * @param tp
+     */
+    public void setGatheringMethod(String gatheringMethod) {
+        this.gatheringEvent.setCollectingMethod(gatheringMethod);
+    }
+
+    public String getGatheringMethod(){
+        return this.gatheringEvent.getCollectingMethod();
     }
 
     /**

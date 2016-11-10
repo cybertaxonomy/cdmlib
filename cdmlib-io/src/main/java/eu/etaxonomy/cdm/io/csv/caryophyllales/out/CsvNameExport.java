@@ -59,6 +59,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 @Component
 public class CsvNameExport extends CsvNameExportBase {
+    private static final long serialVersionUID = 7289805663701807425L;
+
     private static final Logger logger = Logger.getLogger(CsvNameExport.class);
 
     @Autowired

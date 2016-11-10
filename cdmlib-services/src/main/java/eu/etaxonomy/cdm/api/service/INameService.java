@@ -117,12 +117,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
 
 	/**
-	 * @param name
-	 * @return
-	 */
-	public List<TaxonNameBase> getNamesByName(String name);
-
-	/**
 	 * Returns all NonViralNames with a name cache that matches the given string
 	 * @param name
 	 * @return
@@ -151,15 +145,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
 
-	/**
-	 * Returns the NonViralName with the given UUID
-	 * using the given match mode and initialization strategy
-	 *
-	 * @param uuid
-	 * @param propertyPaths
-	 * @return
-	 */
-	public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths);
 	/**
 	 * @param name
 	 * @param sessionObject An object that is attached to the session before executing the query
@@ -262,11 +247,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
 
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
-
-	// FIXME candidate for harmonization?
-	public List findNamesByTitle(String title);
-
-	public List findNamesByTitle(String title, CdmBase sessionObject);
 
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 

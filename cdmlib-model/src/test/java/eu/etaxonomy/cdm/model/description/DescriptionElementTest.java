@@ -134,7 +134,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 	@Test
 	public void testCloneTaxonInteraction(){
 		TaxonInteraction clone = (TaxonInteraction)taxonInteraction.clone();
-		assertNotSame(clone.getDescriptions().get(Language.ENGLISH()), taxonInteraction.getDescriptions().get(Language.ENGLISH()));
+		assertNotSame(clone.getDescription().get(Language.ENGLISH()), taxonInteraction.getDescription().get(Language.ENGLISH()));
 		assertTrue(clone.getDescription(Language.ENGLISH()).equals(taxonInteraction.getDescription(Language.ENGLISH())));
 	}
 

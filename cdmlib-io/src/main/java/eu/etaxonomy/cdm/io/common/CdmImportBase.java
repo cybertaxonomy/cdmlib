@@ -660,7 +660,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	protected DefinedTerm getKindOfUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		if (uuid == null){
-			return null;
+		    uuid = UUID.randomUUID();
 		}
 		DefinedTerm unit = state.getKindOfUnit(uuid);
 		if (unit == null){
