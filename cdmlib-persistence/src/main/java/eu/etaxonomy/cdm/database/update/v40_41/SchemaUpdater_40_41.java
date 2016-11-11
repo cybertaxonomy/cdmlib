@@ -157,14 +157,14 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
-
         //#3925
         //Move excluded from Taxon to TaxonNode
         stepName = "Move excluded from Taxon to TaxonNode";
         query = "UPDATE @@TaxonNode@@ tn " +
-                " SET excluded = (SELECT excluded FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
+                " SET excluded = (SELECT DISTINCT excluded FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
-                .addDefaultAuditing("TaxonBase");
+                //.addDefaultAuditing("TaxonBase") removed due to non unique results in subquery, solving this problem is too much work to be implemented here, so audited values will not be correct partly but always representing the current state
+                ;
         stepList.add(simpleStep);
 
         stepName = "Move excluded from Taxon to TaxonNode/set null to false";
@@ -173,7 +173,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         simpleStep.put(DatabaseTypeEnum.PostgreSQL, query.replace("0", "false"));
         simpleStep.putAudited(DatabaseTypeEnum.PostgreSQL, query.replace("TaxonNode","TaxonNode_AUD").replace("0", "false"));
         stepList.add(simpleStep);
-
 
         //#3925
         //remove excluded from TaxonNode
@@ -197,9 +196,10 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 
         stepName = "Move unplaced from Taxon to TaxonNode";
         query = "UPDATE @@TaxonNode@@ tn " +
-                " SET unplaced = (SELECT unplaced FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
+                " SET unplaced = (SELECT DISTINCT unplaced FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99)
-                .addDefaultAuditing("TaxonBase");
+                //.addDefaultAuditing("TaxonBase") removed due to non unique results in subquery, solving this problem is too much work to be implemented here, so audited values will not be correct partly but always representing the current state
+                ;
         stepList.add(simpleStep);
 
         stepName = "Move unplaced from Taxon to TaxonNode/set null to false";
@@ -208,7 +208,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         simpleStep.put(DatabaseTypeEnum.PostgreSQL, query.replace("0", "false"));
         simpleStep.putAudited(DatabaseTypeEnum.PostgreSQL, query.replace("TaxonNode","TaxonNode_AUD").replace("0", "false"));
         stepList.add(simpleStep);
-
 
         //#3925
         //remove unplaced from TaxonNode
@@ -323,36 +322,36 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //update pro parte
         stepName = "Update proParte";
         String updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET proParte = (SELECT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+                " SET proParte = (SELECT DISTINCT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
 //        -- WHERE EXISTS (SELECT proParte FROM SynonymRelationship sr WHERE sr.relatedFrom_id = syn.id AND sr.proParte = 1);
-        String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
-                .addDefaultAuditing("SynonymRelationship");
+                //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
+                ;
         stepList.add(step);
 
         //update partial
         stepName = "Update partial";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET partial=(SELECT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) ";
-        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+                " SET partial=(SELECT DISTINCT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) ";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
-                .addDefaultAuditing("SynonymRelationship");
+                //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
+                ;
         stepList.add(step);
 
         //update synonym type
         stepName = "Update Synonym type";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET type_id=(SELECT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
-        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, updateSqlAud, -99);
+                " SET type_id=(SELECT DISTINCT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+//        String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
         stepList.add(step);
 
         //update acceptedTaxon_id
         stepName = "Update acceptedTaxon_id";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET acceptedTaxon_id=(SELECT relatedTo_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
-        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, updateSqlAud, -99);
+                " SET acceptedTaxon_id=(SELECT DISTINCT relatedTo_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+//        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
         stepList.add(step);
 
 	    //rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE
