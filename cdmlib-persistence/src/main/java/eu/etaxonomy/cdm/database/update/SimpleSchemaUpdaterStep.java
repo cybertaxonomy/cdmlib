@@ -214,8 +214,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 
 	 /**
      * Defines a further non audited table name for computing the audited query.
-     * Requires at least one non audieted table name to be defined already.
-     * @param nonAuditedTableName uncased table name that is to be audited
+     * Requires at least one non audited table name to be defined already.
+     * @param nonAuditedTableName non-cased table name that is to be audited
      * @return the step
      */
     public SimpleSchemaUpdaterStep addDefaultAuditing(String nonAuditedTableName){

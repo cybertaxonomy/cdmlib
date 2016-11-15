@@ -47,10 +47,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @created 04.08.2008
- * @version 1.0
  */
 public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfigurator, TcsXmlImportState> {
-	private static final Logger logger = Logger.getLogger(TcsXmlImportBase.class);
+    private static final long serialVersionUID = -2169244092211698392L;
+
+    private static final Logger logger = Logger.getLogger(TcsXmlImportBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
 	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
@@ -459,10 +460,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoTaxonNames();
