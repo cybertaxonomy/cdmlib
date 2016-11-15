@@ -162,23 +162,6 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * 						in a particular language
 	 * @see    	   			#getDescription()
 	 * @see    	   			#putDescription(String, Language)
-	 * @deprecated			should follow the put semantic of maps, this method will be removed in v4.0
-	 * 						Use the {@link #putDescription(LanguageString) putDescription} method instead
-	 */
-	@Deprecated
-	public void addDescription(LanguageString description){
-		this.putDescription(description);
-	}
-
-	/**
-	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the {@link MultilanguageText multilanguage text} used to describe
-	 * <i>this</i> taxon interaction.
-	 *
-	 * @param description	the language string describing the taxon interaction
-	 * 						in a particular language
-	 * @see    	   			#getDescription()
-	 * @see    	   			#putDescription(String, Language)
 	 */
 	public void putDescription(LanguageString description){
 		this.description.put(description.getLanguage(),description);
@@ -198,23 +181,6 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
 
-	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-	 * used to describe <i>this</i> taxon interaction.
-	 *
-	 * @param text		the string describing the taxon interaction
-	 * 					in a particular language
-	 * @param language	the language in which the text string is formulated
-	 * @see    	   		#getDescription()
-	 * @see    	   		#addDescription(LanguageString)
-	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-	 * 					Use the {@link #putDescription(Language, String) putDescription} method instead
-	 */
-	@Deprecated
-	public void addDescription(String text, Language language){
-		this.putDescription(language, text);
-	}
 	/**
 	 * Removes from the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> taxon interaction the one {@link LanguageString language string}
