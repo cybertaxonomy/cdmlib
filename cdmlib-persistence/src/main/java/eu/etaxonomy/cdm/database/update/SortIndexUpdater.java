@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> implements ISchemaUpdaterStep {
+public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
 	private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
 
 	private final String tableName;
@@ -58,15 +58,15 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
-		result &= addColumn(caseType.transformTo(tableName), datasource, monitor, caseType);
+		result &= addColumn(caseType.transformTo(tableName), datasource);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= addColumn(caseType.transformTo(tableName + aud), datasource, monitor, caseType);
+			result &= addColumn(caseType.transformTo(tableName + aud), datasource);
 		}
 		return (result == true )? 0 : null;
 	}
 
-	private boolean addColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+	private boolean addColumn(String tableName, ICdmDataSource datasource) throws SQLException {
 		//Note: caseType not required here
 		Map<Integer, Set<Integer>> indexMap = makeIndexMap(tableName, datasource);
 
@@ -75,12 +75,12 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 		return true;
 	}
 
+
 	/**
+	 * For each (new) sortIndex value the according record ids are computed.
+	 * This allows updating all records sortindex by sortindex.
 	 * @param tableName
 	 * @param datasource
-	 * @param rs
-	 * @param index
-	 * @param oldParentId
 	 * @return
 	 * @throws SQLException
 	 */
@@ -99,7 +99,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 
 
 		//increase index with each row, set to 0 if parent is not the same as the previous one
-		Map<Integer, Set<Integer>> indexMap = new HashMap<Integer, Set<Integer>>();
+		Map<Integer, Set<Integer>> indexMap = new HashMap<>();
 		while (rs.next() ){
 			int id = rs.getInt("id");
 			Object oParentId = rs.getObject(parentColumn);
@@ -151,7 +151,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 	private void putIndex(Integer id, Integer index, Map<Integer, Set<Integer>> indexMap) {
 		Set<Integer> set = indexMap.get(index);
 		if (set == null){
-			set = new HashSet<Integer>();
+			set = new HashSet<>();
 			indexMap.put(index, set);
 		}
 		set.add(id);
