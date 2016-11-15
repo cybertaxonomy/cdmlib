@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -324,6 +325,77 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected void setParent(TaxonNode parent) {
         this.parent = parent;
+    }
+
+    //Excluded Note
+
+    /**
+     * Returns the {@link MultilanguageText multi-language text} to add a note to the
+     * excluded flag. The different {@link LanguageString language strings}
+     * contained in the multi-language text should all have the same meaning.
+     * @see #getExcludedNote()
+     * @see #putExcludedNote(Language, String)
+     */
+    public Map<Language,LanguageString> getExcludedNote(){
+        return this.excludedNote;
+    }
+
+    /**
+     * Returns the excluded note string in the given {@link Language language}
+     *
+     * @param language  the language in which the description string looked for is formulated
+     * @see             #getExcludedNote()
+     * @see             #putExcludedNote(Language, String)
+     */
+    public String getExcludedNote(Language language){
+        LanguageString languageString = excludedNote.get(language);
+        if (languageString == null){
+            return null;
+        }else{
+            return languageString.getText();
+        }
+    }
+
+    /**
+     * Adds a translated {@link LanguageString text in a particular language}
+     * to the {@link MultilanguageText multilanguage text} used to add a note to
+     * the {@link #isExcluded() excluded} flag.
+     *
+     * @param excludedNote   the language string adding a note to the excluded flag
+     *                      in a particular language
+     * @see                 #getExcludedNote()
+     * @see                 #putExcludedNote(String, Language)
+     */
+    public void putExcludedNote(LanguageString excludedNote){
+        this.excludedNote.put(excludedNote.getLanguage(),excludedNote);
+    }
+    /**
+     * Creates a {@link LanguageString language string} based on the given text string
+     * and the given {@link Language language} and adds it to the {@link MultilanguageText
+     * multi-language text} used to annotate the excluded flag.
+     *
+     * @param text      the string annotating the excluded flag
+     *                  in a particular language
+     * @param language  the language in which the text string is formulated
+     * @see             #getExcludedNote()
+     * @see             #putExcludedNote(LanguageString)
+     * @see             #removeExcludedNote(Language)
+     */
+    public void putExcludedNote(Language language, String text){
+        this.excludedNote.put(language, LanguageString.NewInstance(text, language));
+    }
+
+    /**
+     * Removes from the {@link MultilanguageText multilanguage text} used to annotate
+     * the excluded flag the one {@link LanguageString language string}
+     * with the given {@link Language language}.
+     *
+     * @param  lang the language in which the language string to be removed
+     *       has been formulated
+     * @see         #getExcludedNote()
+     */
+    public void removeExcludedNote(Language lang){
+        this.excludedNote.remove(lang);
     }
 
 // ****************** Agent Relations ****************************/
