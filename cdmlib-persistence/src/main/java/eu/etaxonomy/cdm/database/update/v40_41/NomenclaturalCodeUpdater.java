@@ -50,6 +50,13 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase<Nomenclatura
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 
+	    String existsSql = " SELECT count(*) FROM @@CdmPreference@@ "
+	            + " WHERE key_predicate = 'model.name.NC' AND key_subject = '/'";
+	    existsSql = caseType.replaceTableNames(existsSql);
+	    if (((Number)datasource.getSingleValue(existsSql)).intValue() > 0 ){
+	        return 0;
+	    }
+
 	    String sql = "SELECT count(DTYPE) as n, DTYPE FROM @@TaxonNameBase@@ "
 	            + " GROUP BY DTYPE ORDER BY count(DTYPE) DESC ";
 	    sql = caseType.replaceTableNames(sql);

@@ -67,6 +67,9 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
 
+        //#3658 update nomenclatural code
+        NomenclaturalCodeUpdater.NewInstance(stepList);
+
         //#5970
         //Implement allowOverride in CdmPreference
         stepName = "Add allowOverride in CdmPreference";
@@ -247,8 +250,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //#5974 Remove synonym relationships
         removeSynonymRelationships_5974(stepList);
 
-        //#3658 update nomenclatural code
-        NomenclaturalCodeUpdater.NewInstance(stepList);
 
         //#5981 Add abbreviation to Rank "Cultivar"
         stepName = "Add abbreviation to Rank 'Cultivar'";
