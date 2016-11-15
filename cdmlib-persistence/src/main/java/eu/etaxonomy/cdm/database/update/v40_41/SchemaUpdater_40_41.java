@@ -288,22 +288,22 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
     }
 
 	private void removeSynonymRelationships_5974(List<ISchemaUpdaterStep> stepList) {
-	    //add partial to Synonym
-        String stepName = "Add partial to Synonym";
+	    //add partial column to Synonym
+        String stepName = "Add partial column to Synonym";
         String tableName = "TaxonBase";
         String newColumnName = "partial";
         ISchemaUpdaterStep step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
-	    //add proParte to Synonym
-        stepName = "Add proParte to Synonym";
+	    //add proParte column to Synonym
+        stepName = "Add proParte column to Synonym";
         tableName = "TaxonBase";
         newColumnName = "proParte";
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
-	    //add type to Synonym
-        stepName = "Add type to Synonym";
+	    //add type column to Synonym
+        stepName = "Add type column to Synonym";
         tableName = "TaxonBase";
         newColumnName = "type_id";
         String referencedTable = "DefinedTermBase";
@@ -319,10 +319,15 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepList.add(step);
 
 	    //move data
+        //move duplicates first
+        step = SynonymDeduplicator.NewInstance();
+        stepList.add(step);
+
         //update pro parte
         stepName = "Update proParte";
         String updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET proParte = (SELECT DISTINCT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+                " SET proParte = (SELECT DISTINCT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) " +
+                " WHERE acceptedTaxon_id IS NULL ";
 //        -- WHERE EXISTS (SELECT proParte FROM SynonymRelationship sr WHERE sr.relatedFrom_id = syn.id AND sr.proParte = 1);
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
                 //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
@@ -332,7 +337,8 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //update partial
         stepName = "Update partial";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET partial=(SELECT DISTINCT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) ";
+                " SET partial=(SELECT DISTINCT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) " +
+                " WHERE acceptedTaxon_id IS NULL ";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
                 //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
                 ;
@@ -341,15 +347,17 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //update synonym type
         stepName = "Update Synonym type";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET type_id=(SELECT DISTINCT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
-//        String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
+                " SET type_id=(SELECT DISTINCT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)" +
+                " WHERE acceptedTaxon_id IS NULL ";
+        //        String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
         stepList.add(step);
 
         //update acceptedTaxon_id
         stepName = "Update acceptedTaxon_id";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
-                " SET acceptedTaxon_id=(SELECT DISTINCT relatedTo_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)";
+                " SET acceptedTaxon_id=(SELECT DISTINCT relatedTo_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)" +
+                " WHERE acceptedTaxon_id IS NULL ";
 //        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
         stepList.add(step);
