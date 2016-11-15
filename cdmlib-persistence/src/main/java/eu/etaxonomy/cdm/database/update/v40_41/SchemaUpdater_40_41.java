@@ -147,7 +147,14 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepList.add(updateSortIndex);
 
         //#5976
-        // TODO?: update sortindex for PolytomousKeyNodes
+        stepName = "Update sort index on PolytomousKeyNode children";
+        tableName = "PolytomousKeyNode";
+        parentIdColumn = "parent_id";
+        sortIndexColumn = "sortIndex";
+        updateSortIndex = SortIndexUpdater.NewInstance(
+                stepName, tableName, parentIdColumn, sortIndexColumn,
+                INCLUDE_AUDIT);
+        stepList.add(updateSortIndex);
 
         //#3925
         //excluded to TaxonNode
@@ -407,7 +414,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         tableName = "SynonymRelationship";
         step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
-
 	}
 
     /**
