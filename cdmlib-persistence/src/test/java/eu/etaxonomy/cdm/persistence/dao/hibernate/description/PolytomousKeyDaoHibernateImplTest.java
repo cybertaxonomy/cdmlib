@@ -29,6 +29,8 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 	@SpringBeanByType
 	PolytomousKeyDaoImpl polytomousKeyDao;
 
+	@SpringBeanByType
+    PolytomousKeyNodeDaoImpl polytomousKeyNodeDao;
 
 	@Before
 	public void setUp() {
@@ -80,7 +82,7 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 		UUID uuid = UUID.fromString("bab66772-2c83-428a-bb6d-655d12ac6097");
 		PolytomousKey existingKey = polytomousKeyDao.findByUuid(uuid);
 		Assert.assertNotNull("",existingKey);
-
+		PolytomousKeyNode node = existingKey.getRoot();
 		polytomousKeyDao.delete(existingKey);
 
 		commitAndStartNewTransaction(null);
@@ -90,6 +92,8 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 
 		PolytomousKey nonExistingKey = polytomousKeyDao.findByUuid(uuid);
 		Assert.assertNull("", nonExistingKey);
+		node = polytomousKeyNodeDao.findByUuid(node.getUuid());
+		Assert.assertNull("", node);
 	}
 
 	@Test

@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 
 /**
@@ -38,6 +40,9 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 		this.dao = dao;
 	}
 
+	@Autowired
+	protected IPolytomousKeyDao keyDao;
+
 	@Override
 	public DeleteResult delete(UUID nodeUUID, boolean deleteChildren){
         DeleteResult result = new DeleteResult();
@@ -52,6 +57,11 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         }
         PolytomousKeyNode parent = node.getParent();
         parent = HibernateProxyHelper.deproxy(parent, PolytomousKeyNode.class);
+        PolytomousKey key = null;
+        if (parent == null){
+            key = node.getKey();
+            key = HibernateProxyHelper.deproxy(key, PolytomousKey.class);
+        }
 
         if(!deleteChildren){
 
@@ -76,8 +86,8 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
             parent.removeChild(node);
             dao.saveOrUpdate(parent);
         }
-        if (node.getKey().getRoot().equals(node)){
-            node.getKey().setRoot(null);
+        if (node.getKey() != null && key != null){
+            key.setRoot(null);
         }
         if (node.getTaxon() != null){
             node.removeTaxon();
@@ -85,8 +95,14 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         if (dao.delete(node) == null){
             result.setAbort();
         }
-        dao.saveOrUpdate(parent);
-        result.addUpdatedObject(parent);
+        if (parent != null){
+            dao.saveOrUpdate(parent);
+            result.addUpdatedObject(parent);
+        } else{
+            keyDao.saveOrUpdate(key);
+            result.addUpdatedObject(key);
+        }
+
         return result;
 
     }

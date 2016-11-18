@@ -187,7 +187,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private PolytomousKeyNode parent;
 
 	// see comment on children @IndexColumn
-	private Integer sortIndex;
+	private Integer sortIndex = -1;
 
 	@XmlElement(name = "Statement")
 	@XmlIDREF
@@ -465,6 +465,10 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
+		if (children.contains(null)){
+		    HHH_9751_Util.removeAllNull(children);
+		    updateSortIndex();
+		}
 		if(nodeNumber == null) {
             	nodeNumber = getMaxNodeNumberFromRoot() + 1;
         }
@@ -540,6 +544,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private int getMaxNodeNumberFromRoot() {
 		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();
 		int rootNumber = this.getKey().getStartNumber();
+		HHH_9751_Util.removeAllNull(rootKeyNode.getChildren());
+		rootKeyNode.updateSortIndex();
 		return getMaxNodeNumber(rootNumber, rootKeyNode);
 	}
 
@@ -553,7 +559,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (parent.getNodeNumber() != null) {
 			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
 			for (PolytomousKeyNode child : parent.getChildren()) {
-				if (parent == child){
+			    if (parent == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating the max node number.");
 				}else{
 					maxNumber = getMaxNodeNumber(maxNumber, child);

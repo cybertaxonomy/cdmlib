@@ -161,11 +161,13 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 
 	    DeleteResult result = isDeletable(key.getUuid(), null);
-
+	    DeleteResult resultRoot = new DeleteResult();
 	    if (result.isOk()){
     	    try{
     	        if (root != null){
-    	            nodeService.delete(root.getUuid(), true);
+    	           // root.setKey(null);
+    	            resultRoot = nodeService.delete(root.getUuid(), true);
+
     	        }
     	    }catch(Exception e){
     	        result.addException(e);
@@ -173,7 +175,9 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
     	        return result;
     	    }
     	    try{
-    	        dao.delete(key);
+    	        if (resultRoot.isOk()){
+    	            dao.delete(key);
+    	        }
     	    }catch(Exception e){
                 result.addException(e);
                 result.setAbort();
