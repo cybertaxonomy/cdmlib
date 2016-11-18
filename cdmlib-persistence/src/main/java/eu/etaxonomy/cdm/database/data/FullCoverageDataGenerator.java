@@ -783,7 +783,6 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(event);
 		handleEventBase(event);
 
-
 		//SpecOrObservationBase
 		fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
 		DefinedTerm lifeStage = DefinedTerm.NewStageInstance("Live stage", "stage", null);
