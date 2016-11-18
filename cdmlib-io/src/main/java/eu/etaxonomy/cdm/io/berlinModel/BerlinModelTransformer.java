@@ -406,6 +406,7 @@ public class BerlinModelTransformer {
 
 	//Salvador
 	public static final UUID uuidFeatureDistributionGlobal = UUID.fromString("9bd09ada-7bb3-4fe5-be35-dc4564bdd161");
+	public static final UUID uuidReporteParaElSalvador = UUID.fromString("1869a1a6-becb-468e-bc62-b2473f7d9391");
 	public static final UUID uuidFeatureOtherReferences = UUID.fromString("f5dc30bd-a5b1-436d-8cc0-69a999e61590");
 	public static final UUID uuidFeatureTaxonIllustrationReferences = UUID.fromString("6062122b-07c7-44e4-a9af-7daea0005819");
     public static final UUID uuidFeatureSpecimenNotes = UUID.fromString("3c657936-f51a-4bfa-9ea4-287926ac63e5");
@@ -809,7 +810,7 @@ public class BerlinModelTransformer {
 		}else if (key.equalsIgnoreCase("303-Distribución global")){ return uuidFeatureDistributionGlobal;
 		}else if (key.equalsIgnoreCase("306-Nombre(s) común(es)")){ return Feature.uuidCommonName;
 		}else if (key.equalsIgnoreCase("307-Muestras de herbario")){ return Feature.uuidSpecimen;
-        }else if (key.equalsIgnoreCase("309-Specimen")){ return Feature.uuidSpecimen;
+        }else if (key.equalsIgnoreCase("309-Reporte para El Salvador")){ return uuidReporteParaElSalvador;
         }else if (key.equalsIgnoreCase("310-Otras referencias")){ return uuidFeatureOtherReferences;
         }else if (key.equalsIgnoreCase("311-Ilustración(es)")){ return uuidFeatureTaxonIllustrationReferences;
         }else if (key.equalsIgnoreCase("312-Imágen")){ return Feature.uuidImage;
