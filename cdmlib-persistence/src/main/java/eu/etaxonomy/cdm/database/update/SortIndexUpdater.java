@@ -33,24 +33,34 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
 	private final String sortIndexColumn;
 	private final String parentColumn;
 	private String idColumn = "id";
+	private String currentSortColumn = "id";
 	private final boolean includeAudTable;
 	private Integer baseValue = 0;
 
 	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
-		return new SortIndexUpdater(stepName, tableName, parentColumn, sortIndexColumn, "id", includeAudTable, 0);
+		return new SortIndexUpdater(stepName, tableName, parentColumn, sortIndexColumn, "id", "id", includeAudTable, 0);
 	}
 
 	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable){
-		return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, idColumn, includeAudTable, 0);
+		return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, idColumn, idColumn, includeAudTable, 0);
 	}
 
+    /**
+     * Returns an SortIndexUpdater that updates an existing sortindex which might have missing sortindex numbers in between.
+     *
+     */
+    public static final SortIndexUpdater NewUpdateExistingSortindexInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
+        return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
+    }
 
-	protected SortIndexUpdater(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable, Integer baseValue) {
+
+	protected SortIndexUpdater(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, String currentSortColumn, boolean includeAudTable, Integer baseValue) {
 		super(stepName);
 		this.tableName = tableName;
 		this.parentColumn = parentColumn;
 		this.sortIndexColumn = sortIndexColumn;
 		this.idColumn = idColumn;
+		this.currentSortColumn = currentSortColumn;
 		this.includeAudTable = includeAudTable;
 		this.baseValue = baseValue;
 	}
@@ -88,10 +98,10 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
 		String resulsetQuery = "SELECT @id as id, @parentColumn " +
 				" FROM @tableName " +
 				" WHERE @parentColumn IS NOT NULL " +
-				" ORDER BY @parentColumn,    @id";
+				" ORDER BY @parentColumn,    @sorted";
 		resulsetQuery = resulsetQuery.replace("@tableName", tableName);
 		resulsetQuery = resulsetQuery.replace("@parentColumn", parentColumn);
-		resulsetQuery = resulsetQuery.replace("@id", idColumn);
+		resulsetQuery = resulsetQuery.replace("@sorted", currentSortColumn);
 
 		ResultSet rs = datasource.executeQuery(resulsetQuery);
 		Integer index = baseValue;

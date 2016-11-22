@@ -135,7 +135,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         tableName = "FeatureNode";
         String parentIdColumn = "parent_id";
         String sortIndexColumn = "sortIndex";
-        SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, parentIdColumn, sortIndexColumn, INCLUDE_AUDIT);
+        SortIndexUpdater updateSortIndex = SortIndexUpdater.NewUpdateExistingSortindexInstance(stepName, tableName, parentIdColumn, sortIndexColumn, INCLUDE_AUDIT);
         stepList.add(updateSortIndex);
 
         //#5976
@@ -144,7 +144,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         tableName = "TaxonNode";
         parentIdColumn = "parent_id";
         sortIndexColumn = "sortIndex";
-        updateSortIndex = SortIndexUpdater.NewInstance(
+        updateSortIndex = SortIndexUpdater.NewUpdateExistingSortindexInstance(
                 stepName, tableName, parentIdColumn, sortIndexColumn,
                 INCLUDE_AUDIT);
         stepList.add(updateSortIndex);
@@ -154,7 +154,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         tableName = "PolytomousKeyNode";
         parentIdColumn = "parent_id";
         sortIndexColumn = "sortIndex";
-        updateSortIndex = SortIndexUpdater.NewInstance(
+        updateSortIndex = SortIndexUpdater.NewUpdateExistingSortindexInstance(
                 stepName, tableName, parentIdColumn, sortIndexColumn,
                 INCLUDE_AUDIT);
         stepList.add(updateSortIndex);
@@ -328,7 +328,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 
 	    //move data
         //move duplicates first
-        step = SynonymDeduplicator.NewInstance();
+	    step = SynonymDeduplicator.NewInstance();
         stepList.add(step);
 
         //update pro parte
