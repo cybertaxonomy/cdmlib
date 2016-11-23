@@ -336,11 +336,17 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         String updateSql = "UPDATE @@TaxonBase@@ syn " +
                 " SET proParte = (SELECT DISTINCT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) " +
                 " WHERE acceptedTaxon_id IS NULL ";
-//        -- WHERE EXISTS (SELECT proParte FROM SynonymRelationship sr WHERE sr.relatedFrom_id = syn.id AND sr.proParte = 1);
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
                 //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
                 ;
         stepList.add(step);
+
+        updateSql = "UPDATE @@TaxonBase@@ " +
+                " SET proParte = @FALSE@ " +
+                " WHERE DTYPE='Synonym' AND proParte IS NULL ";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
+        stepList.add(step);
+
 
         //update partial
         stepName = "Update partial";
@@ -350,6 +356,12 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99)
                 //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
                 ;
+        stepList.add(step);
+
+        updateSql = "UPDATE @@TaxonBase@@ " +
+                " SET partial = @FALSE@ " +
+                " WHERE DTYPE='Synonym' AND partial IS NULL ";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
         stepList.add(step);
 
         //update synonym type
@@ -369,6 +381,8 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 //        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateSql, "TaxonBase", -99);
         stepList.add(step);
+
+
 
 	    //rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE
         stepName = "Rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE";
