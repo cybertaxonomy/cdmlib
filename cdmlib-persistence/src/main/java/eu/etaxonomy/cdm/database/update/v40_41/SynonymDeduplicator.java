@@ -139,49 +139,42 @@ public class SynonymDeduplicator extends SchemaUpdaterStepBase<SynonymDeduplicat
     private void cloneExtension(Integer newSynonymId, Integer oldExtensionId, String mnTableName, String mnCol, ICdmDataSource datasource, CaseType caseType,
             String tableName, String specificParams, Integer sortIndex) throws SQLException {
 
-        try {
-            //new id
-            String maxIdSql = "SELECT max(id) FROM @tableName"
-                    .replace("@tableName",  caseType.transformTo(tableName));
-            int newExtensionId = (Integer)datasource.getSingleValue(maxIdSql) + 1;
+        //new id
+        String maxIdSql = "SELECT max(id) FROM @tableName"
+                .replace("@tableName",  caseType.transformTo(tableName));
+        int newExtensionId = (Integer)datasource.getSingleValue(maxIdSql) + 1;
 
 //      insert clone record
-            String idParams = "id, uuid,";
-            String generalParams = "created, updated, createdBy_id, updatedBy_id,";
-            String allParams = idParams + generalParams + specificParams;
-            String idSelect = newExtensionId + ", '" + UUID.randomUUID() + "',";
-            String selectParams = idSelect + generalParams + specificParams;
-            String sql = "INSERT INTO @tableName (@allParams)"
-                    + " SELECT @selectParams FROM @tableName WHERE id = " + oldExtensionId;
-            sql = sql.replace("@selectParams", selectParams)
-                    .replace("@allParams", allParams)
-                    .replace("@tableName", caseType.transformTo(tableName))
-                    ;
-            datasource.executeUpdate(sql);
+        String idParams = "id, uuid,";
+        String generalParams = "created, updated, createdBy_id, updatedBy_id,";
+        String allParams = idParams + generalParams + specificParams;
+        String idSelect = newExtensionId + ", '" + UUID.randomUUID() + "',";
+        String selectParams = idSelect + generalParams + specificParams;
+        String sql = "INSERT INTO @tableName (@allParams)"
+                + " SELECT @selectParams FROM @tableName WHERE id = " + oldExtensionId;
+        sql = sql.replace("@selectParams", selectParams)
+                .replace("@allParams", allParams)
+                .replace("@tableName", caseType.transformTo(tableName))
+                ;
+        datasource.executeUpdate(sql);
 
-            //insert MN
-            String sortIndexStr = "";
-            String sortIndexValueStr = "";
-            if (sortIndex != null){
-                sortIndexStr = ", sortIndex";
-                sortIndexValueStr = ", " + sortIndex;
-            }
-            String insertMNSql = ("INSERT INTO @mnTable (taxonbase_id, @mn_col @sortIndexInsert)"
-                    + "VALUES (@newSynonymId, @extensionId @sortIndexValue)")
-                        .replace("@mnTable", mnTableName)
-                        .replace("@mn_col", mnCol)
-                        .replace("@newSynonymId", String.valueOf(newSynonymId))
-                        .replace("@extensionId", String.valueOf(newExtensionId))
-                        .replace("@sortIndexInsert", sortIndexStr)
-                        .replace("@sortIndexValue", sortIndexValueStr)
-                        ;
-            datasource.executeUpdate(insertMNSql);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            logger.error("Synonym extension could not be cloned");
-            throw e;
+        //insert MN
+        String sortIndexStr = "";
+        String sortIndexValueStr = "";
+        if (sortIndex != null){
+            sortIndexStr = ", sortIndex";
+            sortIndexValueStr = ", " + sortIndex;
         }
+        String insertMNSql = ("INSERT INTO @mnTable (taxonbase_id, @mn_col @sortIndexInsert)"
+                + "VALUES (@newSynonymId, @extensionId @sortIndexValue)")
+                    .replace("@mnTable", mnTableName)
+                    .replace("@mn_col", mnCol)
+                    .replace("@newSynonymId", String.valueOf(newSynonymId))
+                    .replace("@extensionId", String.valueOf(newExtensionId))
+                    .replace("@sortIndexInsert", sortIndexStr)
+                    .replace("@sortIndexValue", sortIndexValueStr)
+                    ;
+        datasource.executeUpdate(insertMNSql);
 
     }
 }
