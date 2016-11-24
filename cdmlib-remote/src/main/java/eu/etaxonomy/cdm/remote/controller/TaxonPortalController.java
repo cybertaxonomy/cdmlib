@@ -326,7 +326,7 @@ public class TaxonPortalController extends TaxonController
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
+        Map<String, List<?>> synonymy = new Hashtable<>();
 
         //new
         List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
