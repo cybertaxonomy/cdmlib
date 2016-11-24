@@ -15,10 +15,11 @@ import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
-
-import javassist.util.proxy.Proxy;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -31,6 +32,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -44,6 +47,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import javassist.util.proxy.Proxy;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -265,10 +269,31 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Assert.assertNotSame(rel, newRel);
     }
 
+    //see comment 7 in #6199
+    @Test
+    @DataSet
+    public void testPersistExcludedInfos(){
+        //test read
+        TaxonNode excludedNode = taxonNodeDao.load(UUID.fromString("4f73adcc-a535-4fbe-a97a-c05ee8b12191"));
+        Assert.assertTrue("Node should be excluded", excludedNode.isExcluded());
+        TaxonNode unplacedNode = taxonNodeDao.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
+        Assert.assertTrue("Node should be unplaced", unplacedNode.isUnplaced());
+        TaxonNode notSpecialNode = taxonNodeDao.load(UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519"));
+        Assert.assertFalse("Node should be neither excluded nor unplaced", notSpecialNode.isUnplaced() || notSpecialNode.isExcluded());
+
+        //read excluded node
+        Map<Language, LanguageString> map = excludedNode.getExcludedNote();
+        Assert.assertEquals(2, map.size());
+        Set<Integer> langIds = new HashSet<>();
+        for (Language lang : map.keySet()){
+            langIds.add(lang.getId());
+        }
+        Assert.assertTrue("Excluded note must contain text for language id = 1", langIds.contains(1));
+        Assert.assertTrue("", langIds.contains(2));
+    }
+
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

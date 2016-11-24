@@ -327,7 +327,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         this.parent = parent;
     }
 
-    //Excluded Note
+    // *************** Excluded Note ***************
 
     /**
      * Returns the {@link MultilanguageText multi-language text} to add a note to the
@@ -367,7 +367,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @see                 #putExcludedNote(String, Language)
      */
     public void putExcludedNote(LanguageString excludedNote){
-        this.excludedNote.put(excludedNote.getLanguage(),excludedNote);
+        this.excludedNote.put(excludedNote.getLanguage(), excludedNote);
     }
     /**
      * Creates a {@link LanguageString language string} based on the given text string
