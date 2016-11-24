@@ -1230,11 +1230,19 @@ public class Taxon
     public boolean isOrphaned() {
 
         if(taxonNodes == null || taxonNodes.isEmpty()) {
-            if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
+            if(getRelationsFromThisTaxon().isEmpty()) {
                 return true;
+            }else{
+                for (TaxonRelationship rel : getRelationsFromThisTaxon()){
+                    if (rel.getType() != null && ! rel.getType().isConceptRelationship()){
+                        return false;
+                    }
+                }
+                return true;  //all relations are real concept relations and therefore not relevant
             }
+        }else{
+            return false;
         }
-        return false;
     }
 
     /**
