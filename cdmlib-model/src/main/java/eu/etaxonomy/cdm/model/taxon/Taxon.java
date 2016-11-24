@@ -1225,6 +1225,11 @@ public class Taxon
         return result;
     }
 
+    /**
+     * {@inheritDoc}.
+     * <BR>Also returns <code>false</code> if it is a misapplied name or has a similar concept relationship that
+     * is similar to synonym relationship (shows up in the synonymy of applications)
+     */
     @Override
     @Transient
     public boolean isOrphaned() {
@@ -1235,7 +1240,7 @@ public class Taxon
             }else{
                 for (TaxonRelationship rel : getRelationsFromThisTaxon()){
                     if (rel.getType() != null && ! rel.getType().isConceptRelationship()){
-                        return false;
+                        return false;  //a synonym relationship type similar relationship exists => not orphaned
                     }
                 }
                 return true;  //all relations are real concept relations and therefore not relevant
