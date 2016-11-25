@@ -300,7 +300,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("'homotypicSynonym' must have exactly 2 basionym relationships", 2, homotypicSynonym.getName().getNameRelations().size());
 		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
 		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
-		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup().size());
+		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup(null).size());
 		Assert.assertEquals("'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)", 3, t1.getHomotypicGroup().getTypifiedNames().size());
 
 
@@ -316,7 +316,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());
 		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
 		Assert.assertEquals("'t1' must have exactly 1 homotypic synonyms", 1, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
-		Assert.assertEquals("'t1' must have exactly 1 names in homotypic group", 1, t1.getHomotypicSynonymsByHomotypicGroup().size());
+		Assert.assertEquals("'t1' must have exactly 1 names in homotypic group", 1, t1.getHomotypicSynonymsByHomotypicGroup(null).size());
 		Assert.assertEquals("'t1' homotypic group must include 2 names (t1, homotypicSynonym)", 2, t1.getHomotypicGroup().getTypifiedNames().size());
 
 		//do it

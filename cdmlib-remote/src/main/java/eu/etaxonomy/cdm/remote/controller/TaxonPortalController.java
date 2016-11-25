@@ -120,9 +120,6 @@ public class TaxonPortalController extends TaxonController
     @Autowired
     private ITermService termService;
 
-    @Autowired
-    private IFeatureTreeService featureTreeService;
-
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "sources",
@@ -162,8 +159,8 @@ public class TaxonPortalController extends TaxonController
             "synonyms.name.status.type.representations",
             "synonyms.name.nomenclaturalReference.authorship",
             "synonyms.name.nomenclaturalReference.inReference",
-            "synonyms.name.homotypicalGroup.typifiedNames.$",
-            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
+//            "synonyms.name.homotypicalGroup.typifiedNames.$",
+//            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
             "synonyms.name.combinationAuthorship.$",
 
             "name.typeDesignations",
@@ -172,7 +169,7 @@ public class TaxonPortalController extends TaxonController
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
-            "name.homotypicalGroup.typifiedNames.taxonBases.$"
+//            "name.homotypicalGroup.typifiedNames.taxonBases.$"
     });
 
 

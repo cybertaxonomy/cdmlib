@@ -104,6 +104,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -597,16 +598,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
-         List<List<Synonym>> result = new ArrayList<List<Synonym>>();
-        Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+        List<List<Synonym>> result = new ArrayList<>();
+        taxon = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+        HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(taxon);
+
 
         //homotypic
-        result.add(t.getHomotypicSynonymsByHomotypicGroup());
+        result.add(taxon.getHomotypicSynonymsByHomotypicGroup(comparator));
 
         //heterotypic
-        List<HomotypicalGroup> homotypicalGroups = t.getHeterotypicSynonymyGroups();
+        List<HomotypicalGroup> homotypicalGroups = taxon.getHeterotypicSynonymyGroups();  //currently the list is sorted by the Taxon.defaultTaxonComparator
         for(HomotypicalGroup homotypicalGroup : homotypicalGroups){
-            result.add(t.getSynonymsInGroup(homotypicalGroup));
+            result.add(taxon.getSynonymsInGroup(homotypicalGroup, comparator));
         }
 
         return result;
@@ -616,14 +619,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
         Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
-        return t.getHomotypicSynonymsByHomotypicGroup();
+        HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(taxon);
+
+        return t.getHomotypicSynonymsByHomotypicGroup(comparator);
     }
 
     @Override
     public List<List<Synonym>> getHeterotypicSynonymyGroups(Taxon taxon, List<String> propertyPaths){
         Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
         List<HomotypicalGroup> homotypicalGroups = t.getHeterotypicSynonymyGroups();
-        List<List<Synonym>> heterotypicSynonymyGroups = new ArrayList<List<Synonym>>(homotypicalGroups.size());
+        List<List<Synonym>> heterotypicSynonymyGroups = new ArrayList<>(homotypicalGroups.size());
         for(HomotypicalGroup homotypicalGroup : homotypicalGroups){
             heterotypicSynonymyGroups.add(t.getSynonymsInGroup(homotypicalGroup));
         }

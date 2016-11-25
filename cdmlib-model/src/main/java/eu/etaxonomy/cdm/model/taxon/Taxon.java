@@ -97,6 +97,8 @@ public class Taxon
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
 
+    private static final TaxonComparator defaultTaxonComparator = new TaxonComparator();
+
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
@@ -1160,11 +1162,13 @@ public class Taxon
      * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(Reference)
      */
     @Transient
-    public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
+    public List<Synonym> getHomotypicSynonymsByHomotypicGroup(TaxonComparator comparator){
         if (this.getHomotypicGroup() == null){
             return null;
-        }else{
+        }else if (comparator == null){
             return this.getSynonymsInGroup(this.getHomotypicGroup());
+        }else{
+            return this.getSynonymsInGroup(this.getHomotypicGroup(), comparator);
         }
     }
 
@@ -1212,16 +1216,18 @@ public class Taxon
      */
     @Transient
     public List<HomotypicalGroup> getHomotypicSynonymyGroups(){
-        List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
-        result.add(this.getHomotypicGroup());
+        List<HomotypicalGroup> result = new ArrayList<>();
+        HomotypicalGroup myGroup = this.getHomotypicGroup();
+        if (myGroup != null){  //if taxon has no name HG might be null
+            result.add(myGroup);
+        }
         for (TaxonNameBase taxonNameBase :this.getSynonymNames()){
             if (taxonNameBase != null) {
                 if (!result.contains(taxonNameBase.getHomotypicalGroup())){
                     result.add(taxonNameBase.getHomotypicalGroup());
                 }
-            } // TODO: give error message to user
+            }
         }
-        // TODO: sort list according to date of first published name within each group
         return result;
     }
 
@@ -1275,9 +1281,10 @@ public class Taxon
     @Transient
     public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
         List<HomotypicalGroup> list = getHomotypicSynonymyGroups();
+        //remove homotypic group
         list.remove(this.getHomotypicGroup());
         //sort
-        Map<Synonym, HomotypicalGroup> map = new HashMap<Synonym, HomotypicalGroup>();
+        Map<Synonym, HomotypicalGroup> map = new HashMap<>();
         for (HomotypicalGroup homotypicalGroup: list){
             List<Synonym> synonymList = getSynonymsInGroup(homotypicalGroup);
             if (synonymList.size() > 0){
@@ -1285,13 +1292,14 @@ public class Taxon
                 map.put(synonymList.get(0), homotypicalGroup);
             }
         }
-        List<Synonym> keyList = new ArrayList<Synonym>();
+        List<Synonym> keyList = new ArrayList<>();
         keyList.addAll(map.keySet());
         //order by first synonym
-        Collections.sort(keyList, new TaxonComparator());
+        Collections.sort(keyList, defaultTaxonComparator);
 
-        List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
+        List<HomotypicalGroup> result = new ArrayList<>();
         for(Synonym synonym: keyList){
+            //"replace" synonyms by homotypic groups
             result.add(map.get(synonym));
         }
         //sort end
@@ -1327,16 +1335,25 @@ public class Taxon
      */
     @Transient
     public List<Synonym> getSynonymsInGroup(HomotypicalGroup homotypicGroup, TaxonComparator comparator){
-        List<Synonym> result = new ArrayList<Synonym>();
+        List<Synonym> result = new ArrayList<>();
+        if (homotypicGroup == null){
+            return result;  //always empty
+        }
 
-        for (TaxonNameBase<?, ?>name : homotypicGroup.getTypifiedNames()){
-            for (Synonym synonym : name.getSynonyms()){
-                Taxon accTaxon = synonym.getAcceptedTaxon();
-                if (accTaxon != null && accTaxon.equals(this) ) {
-                    result.add(synonym);
-                }
+        for (Synonym synonym : this.getSynonyms()){
+            if (homotypicGroup.equals(synonym.getHomotypicGroup())){
+                result.add(synonym);
             }
         }
+
+//        for (TaxonNameBase<?,?> name : homotypicGroup.getTypifiedNames()){
+//            for (Synonym synonym : name.getSynonyms()){
+//                Taxon accTaxon = synonym.getAcceptedTaxon();
+//                if (accTaxon != null && accTaxon.equals(this) ) {
+//                    result.add(synonym);
+//                }
+//            }
+//        }
         Collections.sort(result, comparator);
         return result;
     }
