@@ -43,10 +43,6 @@ public class TermController extends AbstractIdentifiableController<DefinedTermBa
             "vocabulary"
     });
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITermService service) {
@@ -81,6 +77,5 @@ public class TermController extends AbstractIdentifiableController<DefinedTermBa
         response.sendError(400, "Terms of different vocabuaries can not be compared");
         return mv;
     }
-
 
 }
