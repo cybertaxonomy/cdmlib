@@ -46,7 +46,6 @@ public class TaxonBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonBase> 
 	@Override
 	public List<String> getIgnorePropNames() {
 		return Arrays.asList(new String[]{
-//				"acceptedTaxon"  //#6211  to avoid infinite loops
 		});
 	}
 
