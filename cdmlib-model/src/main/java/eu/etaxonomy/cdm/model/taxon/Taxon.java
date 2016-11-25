@@ -1146,6 +1146,13 @@ public class Taxon
         }
     }
 
+    /**
+     * @see #getHomotypicSynonymsByHomotypicGroup(TaxonComparator)
+     */
+    @Transient
+    public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
+        return getHomotypicSynonymsByHomotypicGroup(null);
+    }
 
     /**
      * Retrieves the ordered list (depending on the date of publication) of
@@ -1154,12 +1161,13 @@ public class Taxon
      * of these synonyms and the taxon name of <i>this</i> taxon belong to the
      * same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group}.
      *
-     * @return		the ordered list of homotypic synonyms
-     * @see			#getHomotypicSynonymsByHomotypicSynonymType()
-     * @see			#getSynonyms()
-     * @see			#getHomotypicSynonymyGroups()
-     * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
-     * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(Reference)
+     * @param       comparator the taxon comparator to use, if <code>null</code> the default comparator is taken.
+     * @return      the ordered list of homotypic synonyms
+     * @see         #getHomotypicSynonymsByHomotypicSynonymType()
+     * @see         #getSynonyms()
+     * @see         #getHomotypicSynonymyGroups()
+     * @see         eu.etaxonomy.cdm.model.name.HomotypicalGroup
+     * @see         eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(Reference)
      */
     @Transient
     public List<Synonym> getHomotypicSynonymsByHomotypicGroup(TaxonComparator comparator){
