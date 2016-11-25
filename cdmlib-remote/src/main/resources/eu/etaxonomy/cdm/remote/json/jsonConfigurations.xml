@@ -305,7 +305,7 @@
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonBaseBeanProcessor">
           <property name="excludes">
              <set value-type="java.lang.String">
-                 <value>acceptedTaxon</value><!-- to avoid infinite loops in the synonymy -->
+                 <value>acceptedTaxon</value><!-- #6211 to avoid infinite loops in the synonymy -->
              </set>
           </property>
          </bean>  
