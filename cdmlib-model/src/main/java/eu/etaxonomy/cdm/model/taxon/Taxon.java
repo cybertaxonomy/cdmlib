@@ -1354,14 +1354,6 @@ public class Taxon
             }
         }
 
-//        for (TaxonNameBase<?,?> name : homotypicGroup.getTypifiedNames()){
-//            for (Synonym synonym : name.getSynonyms()){
-//                Taxon accTaxon = synonym.getAcceptedTaxon();
-//                if (accTaxon != null && accTaxon.equals(this) ) {
-//                    result.add(synonym);
-//                }
-//            }
-//        }
         Collections.sort(result, comparator);
         return result;
     }
