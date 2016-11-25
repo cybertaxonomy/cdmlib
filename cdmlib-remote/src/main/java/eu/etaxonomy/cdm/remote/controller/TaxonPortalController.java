@@ -37,9 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -107,9 +105,6 @@ public class TaxonPortalController extends TaxonController
 
     @Autowired
     private IDescriptionService descriptionService;
-
-    @Autowired
-    private IOccurrenceService occurrenceService;
 
     @Autowired
     private IClassificationService classificationService;
@@ -330,6 +325,8 @@ public class TaxonPortalController extends TaxonController
         synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
         synonymyGroups.remove(0);
         synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
+
+
 
         //old
 //        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
