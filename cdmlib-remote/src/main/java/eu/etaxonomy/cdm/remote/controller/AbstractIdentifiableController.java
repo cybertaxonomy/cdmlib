@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.remote.dto.common.StringResultDTO;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 
 /**
@@ -53,7 +54,7 @@ public abstract class AbstractIdentifiableController <T extends IdentifiableEnti
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"titleCache"})
-    public String doGetTitleCache(
+    public StringResultDTO doGetTitleCache(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "refresh", defaultValue= "false", required = false) Boolean refresh,
             HttpServletRequest request,
@@ -63,9 +64,8 @@ public abstract class AbstractIdentifiableController <T extends IdentifiableEnti
 
         if (logger.isDebugEnabled()){logger.info("doGetTitleCache  : " + request.getRequestURI() + "?" + request.getQueryString() );}
 
-        return service.getTitleCache(uuid, refresh);
+        String result = service.getTitleCache(uuid, refresh);
+
+        return new StringResultDTO(result);
     }
-
-
-
 }
