@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,10 +29,10 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -45,7 +43,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Controller
 @Api("portal_occurrence")
 @RequestMapping(value = {"/portal/occurrence/{uuid}"})
-public class OccurrencePortalController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
+public class OccurrencePortalController extends OccurrenceController
 {
 
     private static final List<String> DEFAULT_INIT_STRATEGY =  Arrays.asList(new String []{
@@ -84,24 +82,6 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
     @Override
     public void setService(IOccurrenceService service) {
         this.service = service;
-    }
-
-    @RequestMapping(value = { "derivedFrom" }, method = RequestMethod.GET)
-    public ModelAndView doGetDerivedFrom(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        logger.info("doGetDerivedFrom() " + request.getRequestURI());
-
-        ModelAndView mv = new ModelAndView();
-
-        SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, getInitializationStrategy());
-        if(sob instanceof DerivedUnit){
-            DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
-            mv.addObject(derivationEvent);
-        }
-        return mv;
     }
 
     @RequestMapping(value = { "derivateHierarchy" }, method = RequestMethod.GET)

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -52,6 +52,10 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             "derivedFrom.originals",
     });
 
+    private static final List<String> EXTENSIONS_INIT_STRATEGY =  Arrays.asList(new String []{
+            "extensions.type",
+    });
+
 
 
     /* (non-Javadoc)
@@ -64,21 +68,44 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     }
 
     @RequestMapping(value = { "derivedFrom" }, method = RequestMethod.GET)
-    public ModelAndView doGetDerivedFrom(
+    public DerivationEvent doGetDerivedFrom(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetDerivedFrom()" + request.getRequestURI());
+        logger.info("doGetDerivedFrom()" + requestPathAndQuery(request));
 
-        ModelAndView mv = new ModelAndView();
-        SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
         if(sob instanceof DerivedUnit){
             DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
             if (derivationEvent != null) {
-                mv.addObject(derivationEvent);
+                return derivationEvent;
             }
         }
-        return mv;
+        return null;
     }
 
+    /**
+     *
+     * @param uuid
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = { "extensions" }, method = RequestMethod.GET)
+    public Object doGetExtensions(
+            @PathVariable("uuid") UUID uuid, HttpServletRequest request,
+            // doPage request parametes
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            // doList request parametes
+            @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetExtensions()" + requestPathAndQuery(request));
+        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, EXTENSIONS_INIT_STRATEGY);
+
+        return pageFromCollection(sob.getExtensions(), pageNumber, pageSize, start, limit, response) ;
+    }
 }

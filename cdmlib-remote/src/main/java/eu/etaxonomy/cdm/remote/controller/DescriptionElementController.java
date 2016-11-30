@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +45,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -126,7 +125,7 @@ public class DescriptionElementController
 //        return mv;
 //    }
 
-    @RequestMapping(value = "annotations", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
+    @RequestMapping(value = "annotations", method = RequestMethod.GET)
     public Pager<Annotation> doGetDescriptionElementAnnotations(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
@@ -143,7 +142,7 @@ public class DescriptionElementController
         return annotations;
     }
 
-    @RequestMapping(value = "states", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
+    @RequestMapping(value = "states", method = RequestMethod.GET)
     public ModelAndView doGetDescriptionElementStates(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
