@@ -154,7 +154,7 @@ public class Taxon
     @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
-    private Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
+    private Set<TaxonNode> taxonNodes = new HashSet<>();
 
 // ************************* FACTORY METHODS ********************************/
 
@@ -203,7 +203,7 @@ public class Taxon
     //TODO should be private, but still produces Spring init errors
     @Deprecated
     public Taxon(){
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
     }
 
     private Taxon(TaxonNameBase taxonNameBase, Reference sec){

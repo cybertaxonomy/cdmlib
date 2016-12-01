@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -65,7 +64,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * @created 11.06.2013
  */
 @XmlEnum
-public enum TermType implements IEnumTerm<TermType>, Serializable{
+public enum TermType implements IEnumTerm<TermType>{
 
     //0
     /**

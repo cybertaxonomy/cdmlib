@@ -186,6 +186,5 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
             result.put(language, newLanguageString);
         }
         return result;
-
     }
 }

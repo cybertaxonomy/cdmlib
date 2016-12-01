@@ -242,7 +242,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     @Transient
     public Map<Language,LanguageString> getAllTitles(){
         if(title == null) {
-            this.title = new HashMap<Language,LanguageString>();
+            this.title = new HashMap<>();
         }
         return this.title;
     }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable, IMultiLanguageText {
 	private static final long serialVersionUID = 7876604337076705862L;
 	private static final Logger logger = Logger.getLogger(MultilanguageText.class);
-		
+
 	/**
 	 * Factory method
 	 * @return
@@ -32,7 +32,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		MultilanguageText result =  new MultilanguageText();
 		return result;
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -41,12 +41,12 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		MultilanguageText result =  new MultilanguageText(languageString);
 		return result;
 	}
-	
+
 	public MultilanguageText(){
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
@@ -54,14 +54,12 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		super();
 		this.add(languageString);
 	}
-	
+
 	public MultilanguageText(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#getText(eu.etaxonomy.cdm.model.common.Language)
-	 */
+    @Override
 	public String getText(Language language){
 		LanguageString languageString = super.get(language);
 		if (languageString != null){
@@ -70,11 +68,8 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 			return null;
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#add(eu.etaxonomy.cdm.model.common.LanguageString)
-	 */
-	@Deprecated
+
+	@Override
 	public LanguageString add(LanguageString languageString){
 		if (languageString == null){
 			return null;
@@ -82,32 +77,29 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 			return this.put(languageString.getLanguage(), languageString);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#put(eu.etaxonomy.cdm.model.common.LanguageString)
-	 */
-	public LanguageString put(LanguageString languageString){
+
+	@Override
+    public LanguageString put(LanguageString languageString){
 		if (languageString == null){
 			return null;
 		}else{
 			return this.put(languageString.getLanguage(), languageString);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#getPreferredLanguageString(java.util.List)
-	 */
-	public LanguageString getPreferredLanguageString(List<Language> languages){
+
+	@Override
+    public LanguageString getPreferredLanguageString(List<Language> languages){
 		return MultilanguageTextHelper.getPreferredLanguageString(this, languages);
 	}
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> multi-language text. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> multi-language text
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link DerivedUnit DerivedUnit}.
-	 * 
+	 *
 	 * @see DerivedUnit#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
@@ -115,7 +107,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	@Override
 	public MultilanguageText clone() {
 		MultilanguageText result = (MultilanguageText)super.clone();
-		
+
 		for (LanguageString languageString : this.values()){
 			LanguageString newLanguageString;
 			try {
@@ -129,6 +121,6 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		return result;
 	}
 
-	
+
 
 }
