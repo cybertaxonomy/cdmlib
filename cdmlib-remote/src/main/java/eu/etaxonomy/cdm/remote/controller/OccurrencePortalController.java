@@ -63,6 +63,7 @@ public class OccurrencePortalController extends OccurrenceController
             "markers.markerType",
             "gatheringEvent.$",
             "gatheringEvent.exactLocation.referenceSystem", // TODO implement auto initializer?
+            "gatheringEvent.collectingAreas",
             "descriptions"
     });
 

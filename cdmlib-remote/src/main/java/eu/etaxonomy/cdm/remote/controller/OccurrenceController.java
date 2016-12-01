@@ -44,7 +44,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "sequences.$"
+            "sequences.$",
     });
 
     private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
