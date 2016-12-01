@@ -811,6 +811,18 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             throw new EntityNotFoundException("Taxon not found in classficiation with uuid " + classificationUuid + ". Either classification does not exist or does not contain taxon/synonym with uuid " + taxonBaseUuid );
         }
         result.setTaxonNodeUuid(taxonNodeUuid);
+
+        //TODO make it a dao call
+        Taxon parentTaxon = getParentTaxon(classificationUuid, acceptedTaxon);
+        if (parentTaxon != null){
+            result.setParentTaxonUuid(parentTaxon.getUuid());
+            result.setParentTaxonLabel(parentTaxon.getTitleCache());
+            if (parentTaxon.getName() != null){
+                result.setParentNameLabel(parentTaxon.getName().getTitleCache());
+            }
+        }
+
+
         result.setTaxonUuid(taxonBaseUuid);
         result.setClassificationUuid(classificationUuid);
         if (taxonBase.getSec() != null){
@@ -883,6 +895,27 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         return result;
+    }
+
+    /**
+     * @param classificationUuid
+     * @param acceptedTaxon
+     * @return
+     */
+    private Taxon getParentTaxon(UUID classificationUuid, Taxon acceptedTaxon) {
+        if (classificationUuid == null){
+            return null;
+        }
+        TaxonNode parent = null;
+        for (TaxonNode node : acceptedTaxon.getTaxonNodes()){
+            if (classificationUuid.equals(node.getClassification().getUuid())){
+                parent = node.getParent();
+            }
+        }
+        if (parent != null){
+            return parent.getTaxon();
+        }
+        return null;
     }
 
     /**
