@@ -303,7 +303,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameAndArea() {
 
-        Set<NamedArea> namedAreas = new HashSet<NamedArea>();
+        Set<NamedArea> namedAreas = new HashSet<>();
         namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
         //namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
         //namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
@@ -436,7 +436,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testTaxonNameInTwoClassifications(){
         int numberOfClassifications = classificationDao.count();
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxonNodes");
         List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, false, false, "P", null, MatchMode.BEGINNING, null, null, null, null);
         Taxon taxon = (Taxon)taxa.get(0);
@@ -450,14 +450,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testFindByUuid() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(uuid);
-        assertNotNull("findByUuid should return a taxon",taxon);
+        assertNotNull("findByUuid should return a taxon", taxon);
         assertFalse("findByUuid should not return a taxon with it's name initialized",Hibernate.isInitialized(taxon.getName()));
     }
 
     @Test
     @DataSet
     public void testLoad() {
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("name");
         propertyPaths.add("sec");
         Taxon taxon = (Taxon)taxonDao.load(uuid, propertyPaths);
@@ -501,10 +501,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("fromTaxon");
         propertyPaths.add("fromTaxon.name");
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("relatedFrom.name.genusOrUninomial", SortOrder.ASCENDING));
         orderHints.add(new OrderHint("relatedFrom.name.specificEpithet", SortOrder.ASCENDING));
         orderHints.add(new OrderHint("relatedFrom.name.infraSpecificEpithet", SortOrder.ASCENDING));
@@ -525,11 +525,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("fromTaxon");
         propertyPaths.add("fromTaxon.name");
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
 
         int pageSize = 3;
@@ -564,7 +564,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         propertyPaths.add("synonym");
         propertyPaths.add("synonym.name");
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
         List<Synonym> synonyms = taxonDao.getSynonyms(taxon, null, null, null,orderHints,propertyPaths);
@@ -795,7 +795,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("name");
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
@@ -825,7 +825,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        int numberOfAuditEvents = taxonDao.countAuditEvents(taxon,null);
+        int numberOfAuditEvents = taxonDao.countAuditEvents(taxon, null);
         assertEquals("countAuditEvents should return 2",numberOfAuditEvents,2);
     }
 
@@ -897,11 +897,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
          propertyPaths.add("fromTaxon");
          propertyPaths.add("fromTaxon.name");
 
-         List<OrderHint> orderHints = new ArrayList<OrderHint>();
+         List<OrderHint> orderHints = new ArrayList<>();
          orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
 
         List<TaxonRelationship> taxonRelations = taxonDao.getTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null,orderHints,propertyPaths, TaxonRelationship.Direction.relatedFrom);
@@ -930,7 +930,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
        propertyPaths.add("relatedFrom");
        propertyPaths.add("relatedFrom.name");
 
-       List<OrderHint> orderHints = new ArrayList<OrderHint>();
+       List<OrderHint> orderHints = new ArrayList<>();
        orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
 
        List<TaxonRelationship> taxonRelations = taxonDao.getTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null,orderHints,propertyPaths, TaxonRelationship.Direction.relatedFrom);
@@ -950,7 +950,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGroupTaxa() {
-        List<Grouping> groups = new ArrayList<Grouping>();
+        List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
         groups.add(new Grouping("name.genusOrUninomial", "genus", "n", SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
@@ -963,7 +963,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGroupTaxaByClass() {
-        List<Grouping> groups = new ArrayList<Grouping>();
+        List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
         groups.add(new Grouping("class", "class",null, SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
@@ -976,7 +976,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testNativeSQLOrder() {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
 
         List<TaxonBase> results = taxonDao.list(null, null, orderHints);
@@ -989,7 +989,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGroupByDateTaxa() {
-        List<Grouping> groups = new ArrayList<Grouping>();
+        List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count",null));
         groups.add(new GroupByDate("created", "dateGroup", SortOrder.ASCENDING, GroupByDate.Resolution.MONTH));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
@@ -1009,7 +1009,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         //test exclude
         UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-        List<UUID> excludeUUids = new ArrayList<UUID>();
+        List<UUID> excludeUUids = new ArrayList<>();
         excludeUUids.add(excludeUUID);
         result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null);
         assertEquals(5, result.size());
@@ -1044,7 +1044,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
 
-        List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
+        List<AuditCriterion> criteria = new ArrayList<>();
         criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
 
         int count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
@@ -1071,7 +1071,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         printDataSet(System.out, new String[]{"AUDITEVENT", "TAXONBASE_AUD"});
         commitAndStartNewTransaction(new String[]{"AUDITEVENT", "TAXONBASE_AUD"});
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("name");
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
@@ -1115,7 +1115,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxonProxy = singleNode.getTaxon();
         Assert.assertTrue("Object to test should be a proxy ", taxonProxy instanceof HibernateProxy);
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxonNodes");
         Taxon taxon = (Taxon)this.taxonDao.load(
                 UUID.fromString("4a5bc930-844f-45ec-aea8-dd155e1ab25f"),
