@@ -252,9 +252,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#addGroupAuthority(java.lang.String, org.springframework.security.core.GrantedAuthority)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -269,9 +266,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#addUserToGroup(java.lang.String, java.lang.String)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -289,9 +283,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#createGroup(java.lang.String, java.util.List)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -309,9 +300,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         groupDao.save(group);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#deleteGroup(java.lang.String)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -323,9 +311,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         groupDao.delete(group);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#findAllGroups()
-     */
     @Override
     @Deprecated // use GroupService instead
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -333,9 +318,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return groupDao.listNames(null,null);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#findGroupAuthorities(java.lang.String)
-     */
     @Override
     @Deprecated // use GroupService instead
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -346,9 +328,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#findUsersInGroup(java.lang.String)
-     */
     @Override
     @Deprecated // use GroupService instead
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -361,9 +340,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return users;
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#removeGroupAuthority(java.lang.String, org.springframework.security.core.GrantedAuthority)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -379,9 +355,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#removeUserFromGroup(java.lang.String, java.lang.String)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -399,9 +372,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#renameGroup(java.lang.String, java.lang.String)
-     */
     @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
@@ -416,9 +386,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         groupDao.update(group);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#save(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     @Transactional(readOnly=false)
    // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -431,9 +398,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return user;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#update(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID update(User user) {
@@ -441,9 +405,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return user.getUuid();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#saveGrantedAuthority(org.springframework.security.core.GrantedAuthority)
-     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -453,15 +414,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#listByUsername(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     @Transactional(readOnly = true)
     public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         Integer numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
+         long numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
 
-         List<User> results = new ArrayList<User>();
+         List<User> results = new ArrayList<>();
          if(numberOfResults > 0) {
                 results = dao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }

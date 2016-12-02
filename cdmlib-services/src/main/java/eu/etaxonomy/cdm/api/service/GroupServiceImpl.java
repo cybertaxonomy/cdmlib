@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy
@@ -32,7 +31,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author n.hoffmann
  * @created Mar 9, 2011
- * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)
@@ -41,17 +39,11 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
     protected IUserDao userDao;
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#findAllGroups()
-     */
     @Override
     public List<String> findAllGroups() {
         return dao.listNames(null,null);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#findUsersInGroup(java.lang.String)
-     */
     @Override
     public List<String> findUsersInGroup(String groupName) {
         Assert.hasText(groupName);
@@ -62,10 +54,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return users;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#deleteGroup(java.lang.String)
-     */
     @Override
     @Transactional(readOnly=false)
     public void deleteGroup(String groupUUID) {
@@ -81,9 +69,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#renameGroup(java.lang.String, java.lang.String)
-     */
     @Override
     @Transactional(readOnly=false)
     public void renameGroup(String oldName, String newName) {
@@ -96,9 +81,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         dao.update(group);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#addUserToGroup(java.lang.String, java.lang.String)
-     */
     @Override
     @Transactional(readOnly=false)
     public void addUserToGroup(String username, String groupName) {
@@ -115,9 +97,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#removeUserFromGroup(java.lang.String, java.lang.String)
-     */
     @Override
     @Transactional(readOnly=false)
     public void removeUserFromGroup(String username, String groupName) {
@@ -134,9 +113,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#findGroupAuthorities(java.lang.String)
-     */
     @Override
     public List<GrantedAuthority> findGroupAuthorities(String groupName) {
         Assert.hasText(groupName);
@@ -149,9 +125,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return new ArrayList<GrantedAuthority>();
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#addGroupAuthority(java.lang.String, org.springframework.security.core.GrantedAuthority)
-     */
     @Override
     @Transactional(readOnly=false)
     public void addGroupAuthority(String groupName, GrantedAuthority authority) {
@@ -167,9 +140,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#removeGroupAuthority(java.lang.String, org.springframework.security.core.GrantedAuthority)
-     */
     @Override
     @Transactional(readOnly=false)
     public void removeGroupAuthority(String groupName,
@@ -186,9 +156,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
     @Override
     @Autowired
     protected void setDao(IGroupDao dao) {
@@ -203,7 +170,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly = true)
     public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         Integer numberOfResults = dao.countByName(queryString, matchmode, criteria);
+         long numberOfResults = dao.countByName(queryString, matchmode, criteria);
 
          List<Group> results = new ArrayList<Group>();
          if(numberOfResults > 0) {
@@ -212,9 +179,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
          return results;
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#createGroup(java.lang.String, java.util.List)
-     */
     @Override
     @Transactional(readOnly=false)
     public void createGroup(String groupName, List<GrantedAuthority> authorities) {
@@ -228,9 +192,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         saveGroup(newGroup);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#saveGroup(eu.etaxonomy.cdm.model.common.Group)
-     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")

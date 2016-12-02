@@ -356,12 +356,12 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
 
     @Override
-    public int countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+    public long countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
     }
 
     @Override
-    public int countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+    public long countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "title",queryString,matchmode,criterion);
     }
 

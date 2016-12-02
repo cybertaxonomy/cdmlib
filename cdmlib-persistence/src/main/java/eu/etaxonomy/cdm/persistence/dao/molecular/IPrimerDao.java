@@ -44,7 +44,7 @@ public interface IPrimerDao extends IAnnotatableDao<Primer>{
      * @param criteria extra restrictions to apply
      * @return a count of instances of type T matching the queryString
      */
-    public Integer countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria);
+    public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria);
 
     /**
     * Return a List of {@link Primer}s matching the given query string, optionally with a particular MatchMode

@@ -158,7 +158,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
 		 List<T> results = new ArrayList<T>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -177,7 +177,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
 		 List<T> results = new ArrayList<T>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -195,7 +195,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findTitleCache(clazz, queryString, pageSize, pageNumber, orderHints, matchMode);
 		 }
-		 int r = 0;
+		 long r = 0;
 		 r += numberOfResults;
 
 		  return new DefaultPagerImpl<T>(pageNumber, r , pageSize, results);
@@ -204,7 +204,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
+		 long numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 
 		 List<T> results = new ArrayList<T>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -573,9 +573,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
-		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-		 return numberOfResults;
+		 return ((Number)numberOfResults).intValue();
 	}
 
 	@Transactional(readOnly = true)

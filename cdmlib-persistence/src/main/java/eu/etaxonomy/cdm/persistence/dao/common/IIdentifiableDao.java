@@ -188,7 +188,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param criteria extra restrictions to apply
 	 * @return a count of instances of type T matching the queryString
 	 */
-	public int countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	/**
 	 * Return a count of objects matching the given query string in the title, optionally filtered by class, optionally with a particular MatchMode
@@ -199,7 +199,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param criteria extra restrictions to apply
 	 * @return a count of instances of type T matching the queryString
 	 */
-	public int countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	/**
 	 * Return a count of distinct titleCache Strings for a given {@link IdentifiableEntity}, optionally filtered by class, optionally with a particular MatchMode

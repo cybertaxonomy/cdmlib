@@ -392,7 +392,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+	protected long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
     	return super.countByParam(clazz, param, queryString, matchmode, criterion);
 	}
