@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.FactoryBean;
+
+import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
@@ -23,46 +27,41 @@ import net.sf.json.processors.JsonValueProcessorMatcher;
 import net.sf.json.util.CycleDetectionStrategy;
 import net.sf.json.util.PropertyFilter;
 
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.FactoryBean;
-
-import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
-
 /**
- * 
+ *
  * @author ben.clark
  * @author a.kohlbecker
  */
-public class JsonConfigFactoryBean implements FactoryBean {
-	
+public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
+
 	public static final Logger logger = Logger.getLogger(JsonConfigFactoryBean.class);
 
 	private JsonConfig jsonConfig = null;
-	
+
 	private CycleDetectionStrategy cycleDetectionStrategy = CycleDetectionStrategy.LENIENT;
-	
+
 	/**
 	 * Default is true, to avoid LayzyLoadingExceptions. See
 	 * {@link #setIgnoreJPATransient(boolean)}
 	 */
 	private boolean ignoreJPATransient = true;
-	
-	private Map<Class,JsonBeanProcessor> jsonBeanProcessors = new HashMap<Class,JsonBeanProcessor>();
+
+	private Map<Class<?>,JsonBeanProcessor> jsonBeanProcessors = new HashMap<>();
 	private PropertyFilter jsonPropertyFilter = null;
-	private Map<Class,JsonValueProcessor> jsonValueProcessors = new HashMap<Class,JsonValueProcessor>();
+	private Map<Class<?>,JsonValueProcessor> jsonValueProcessors = new HashMap<>();
 	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
 	private boolean ignoreDefaultExcludes = false;
-	private List<String> excludes = new ArrayList<String>();
-	
+	private List<String> excludes = new ArrayList<>();
+
 	public void setCycleDetectionStrategy(CycleDetectionStrategy cycleDetectionStrategy) {
 		this.cycleDetectionStrategy = cycleDetectionStrategy;
 	}
-	
+
 	/**
 	 * Default is true, to avoid LayzyLoadingExceptions.
 	 * <p>
-	 * 
+	 *
 	 * @deprecated Setting this property to false will cause
 	 *             LazyLoadingExceptions and will thus completely break the JSON
 	 *             serialization!! <br>
@@ -88,7 +87,7 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	 *             initialization strategy.</li>
 	 *             </ol>
 	 * <strong>please see also http://dev.e-taxonomy.eu/trac/wiki/CdmEntityInitalization</strong>
-	 * 
+	 *
 	 * @param ignoreJPATransient
 	 */
 	@Deprecated
@@ -99,7 +98,7 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.ignoreJPATransient = ignoreJPATransient;
 	}
 
-	public void setJsonBeanProcessors(Map<Class, JsonBeanProcessor> jsonBeanProcessors) {
+	public void setJsonBeanProcessors(Map<Class<?>, JsonBeanProcessor> jsonBeanProcessors) {
 		this.jsonBeanProcessors = jsonBeanProcessors;
 	}
 
@@ -110,15 +109,15 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	public void setJsonBeanProcessorMatcher(JsonBeanProcessorMatcher jsonBeanProcessorMatcher) {
 		this.jsonBeanProcessorMatcher = jsonBeanProcessorMatcher;
 	}
-	
+
 	public void setJsonValueProcessorMatcher(JsonValueProcessorMatcher jsonValueProcessorMatcher ) {
 		this.jsonValueProcessorMatcher = jsonValueProcessorMatcher;
 	}
 
-	public void setJsonValueProcessors(Map<Class, JsonValueProcessor> jsonValueProcessors) {
+	public void setJsonValueProcessors(Map<Class<?>, JsonValueProcessor> jsonValueProcessors) {
 		this.jsonValueProcessors = jsonValueProcessors;
 	}
-	
+
 	public void setIgnoreDefaultExcludes(boolean ignoreDefaultExcludes) {
 		this.ignoreDefaultExcludes = ignoreDefaultExcludes;
 	}
@@ -129,48 +128,47 @@ public class JsonConfigFactoryBean implements FactoryBean {
 
 	public void init() {
 		jsonConfig = new JsonConfig();
-		
+
 		jsonConfig.setCycleDetectionStrategy(cycleDetectionStrategy);
-		
+
 		jsonConfig.setIgnoreJPATransient(ignoreJPATransient);
-		
+
 		jsonConfig.setJsonValueProcessorMatcher(jsonValueProcessorMatcher);
 
 		jsonConfig.setJsonBeanProcessorMatcher(jsonBeanProcessorMatcher);
-		
+
 		jsonConfig.setExcludes(excludes.toArray(new String[]{}));
-		
+
 		jsonConfig.setIgnoreDefaultExcludes(ignoreDefaultExcludes);
-		
+
 		jsonConfig.setJsonPropertyFilter(jsonPropertyFilter);
 
-		for(Class clazz : jsonBeanProcessors.keySet()) {
+		for(Class<?> clazz : jsonBeanProcessors.keySet()) {
 			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));
 		}
-		
-		
 
-		
-		for(Class clazz : jsonValueProcessors.keySet()) {
-		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessors.get(clazz)); 
+
+		for(Class<?> clazz : jsonValueProcessors.keySet()) {
+		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessors.get(clazz));
 		}
-		
-		
 	}
-	
-	
-	public Object getObject() throws Exception {
+
+
+	@Override
+    public JsonConfig getObject() throws Exception {
 		if(jsonConfig == null) {
 			init();
 		}
 		return jsonConfig;
 	}
 
-    public Class getObjectType() {
+    @Override
+    public Class<?> getObjectType() {
 		return JsonConfig.class;
 	}
 
-	public boolean isSingleton() {
+	@Override
+    public boolean isSingleton() {
 		return true;
 	}
 

@@ -185,7 +185,8 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
 
-        return service.findByMarker(type, markerType, value, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+        Pager<MarkedEntityDTO<T>> result = service.findByMarker(type, markerType, value, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+        return result;
     }
 
     /**
