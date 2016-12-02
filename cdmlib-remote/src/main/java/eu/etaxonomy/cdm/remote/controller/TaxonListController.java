@@ -286,7 +286,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
         config.setTaxonPropertyPath(getSimpleTaxonInitStrategy());
         config.setNamedAreas(areas);
-        config.setDoIncludeAuthors(includeAuthors);
+        config.setDoIncludeAuthors(includeAuthors != null ? includeAuthors : Boolean.FALSE);
         if(treeUuid != null){
             Classification classification = classificationService.find(treeUuid);
             config.setClassification(classification);
