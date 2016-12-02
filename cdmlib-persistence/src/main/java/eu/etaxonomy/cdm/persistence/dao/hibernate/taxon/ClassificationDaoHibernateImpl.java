@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -22,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -252,7 +256,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
     @Override
     public UUID delete(Classification persistentObject){
-        //delete all childnodes, then delete the tree
+        //delete all child nodes, then delete the tree
 
         List<TaxonNode> nodes = persistentObject.getChildNodes();
         List<TaxonNode> nodesTmp = new ArrayList<TaxonNode>(nodes);
@@ -299,7 +303,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
     @Override
-    public Map<UUID, String> treeIndexForTaxonUuids(UUID classificationUuid,
+    public Map<UUID, TreeIndex> treeIndexForTaxonUuids(UUID classificationUuid,
             List<UUID> taxonUuids) {
         String hql = " SELECT t.uuid, tn.treeIndex "
                 + " FROM Taxon t JOIN t.taxonNodes tn "
@@ -311,19 +315,43 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         query.setParameter("classificationUuid", classificationUuid);
         query.setParameterList("taxonUuids", taxonUuids);
 
-        Map<UUID, String> result = new HashMap<>();
+        Map<UUID, TreeIndex> result = new HashMap<>();
         @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
-            result.put((UUID)o[0], (String)o[1]);
+            result.put((UUID)o[0], TreeIndex.NewInstance((String)o[1]));
         }
         return result;
     }
 
+    @Override
+    public Set<TreeIndex> getMarkedTreeIndexes(MarkerType markerType, Boolean flag){
+        String hql = " SELECT tn.treeIndex "
+                + " FROM Taxon t JOIN t.taxonNodes tn "
+                + "     JOIN t.markers m "
+                + " WHERE (1=1)"
+                + "   AND m.markerType = :markerType "
+                ;
+        if (flag != null){
+            hql += "  AND m.flag = :flag ";
 
-    /**
-     * {@inheritDoc}
-     */
+        }
+
+        Query query =  getSession().createQuery(hql);
+        if (flag != null){
+            query.setParameter("flag", flag);
+        }
+        query.setParameter("markerType", markerType);
+
+        Set<TreeIndex> result = new HashSet<>();
+        @SuppressWarnings("unchecked")
+        List<String> list = query.list();
+        for (String o : list){
+            result.add(TreeIndex.NewInstance(o));
+        }
+        return result;
+    }
+
     @Override
     public Map<UUID, UUID> getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, List<UUID> taxonUuids) {
         String hql = " SELECT t.uuid, tn.uuid "
@@ -344,7 +372,5 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         }
         return result;
     }
-
-
 
 }

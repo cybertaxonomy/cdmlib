@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -189,6 +190,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             @RequestParam(value = "taxonUuids", required = true) UuidList taxonUuids,
             @RequestParam(value = "minRankUuid", required = false) UUID minRankUuid,
             @RequestParam(value = "maxRankUuid", required = false) UUID maxRankUuid,
+
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -201,12 +203,46 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             return null;
         }
 
-
         Rank minRank = findRank(minRankUuid);
         Rank maxRank = findRank(maxRankUuid);
 
 //        long start = System.currentTimeMillis();
         List<GroupedTaxonDTO> result = service.groupTaxaByHigherTaxon(taxonUuids, classificationUuid, minRank, maxRank);
+//        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
+
+        return result;
+    }
+
+    /**
+     * @param classificationUuid
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"groupedTaxaByMarker"},
+            method = RequestMethod.GET)
+    public List<GroupedTaxonDTO> getGroupedTaxaByMarkedParents(
+            @PathVariable("uuid") UUID classificationUuid,
+            @RequestParam(value = "taxonUuids", required = true) UuidList taxonUuids,
+            @RequestParam(value = "markerTypeUuid", required = false) UUID markerTypeUuid,
+            @RequestParam(value = "flag", required = false) Boolean flag,
+
+            HttpServletRequest request,
+            HttpServletResponse response
+            ) throws IOException {
+
+        logger.info("getGroupedTaxaByHigherTaxon() - " + request.getRequestURI());
+
+        Classification classification = service.find(classificationUuid);
+        if(classification == null) {
+            response.sendError(404 , "Classification not found using " + classificationUuid );
+            return null;
+        }
+
+        MarkerType markerType = findMarkerType(markerTypeUuid);
+//        long start = System.currentTimeMillis();
+        List<GroupedTaxonDTO> result = service.groupTaxaByMarkedParents(taxonUuids, classificationUuid, markerType, flag);
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return result;
@@ -224,6 +260,19 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             }
         }
         return rank;
+    }
+
+    private MarkerType findMarkerType(UUID markerTypeUuid) {
+        MarkerType markerType = null;
+        if(markerTypeUuid != null){
+            DefinedTermBase<?> definedTermBase =  termService.find(markerTypeUuid);
+            if(definedTermBase instanceof MarkerType){
+                markerType = (MarkerType) definedTermBase;
+            } else {
+               throw new IllegalArgumentException("DefinedTermBase is not a MarkerType");
+            }
+        }
+        return markerType;
     }
 
 

@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -349,6 +350,17 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
     /**
+     * @param taxonUuids
+     * @param classificationUuid
+     * @param markerType
+     * @param value
+     * @return
+     */
+    public List<GroupedTaxonDTO> groupTaxaByMarkedParents(List<UUID> taxonUuids, UUID classificationUuid,
+            MarkerType markerType, Boolean value);
+
+
+    /**
      * Returns the most relevant data of a taxon/taxon node, including children, synonyms
      * and certain ancestors if required.
      * @param classificationUuid
@@ -365,7 +377,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classification
      * @return
      */
-    UUID saveClassification(Classification classification);
+    public UUID saveClassification(Classification classification);
+
 
 
 }

@@ -9,11 +9,12 @@
 
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -109,7 +110,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param maxRankOrderIndex max rank
      * @return
      */
-    Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndex, Integer minRankOrderIndex,
+    Map<TreeIndex, Integer> rankOrderIndexForTreeIndex(List<TreeIndex> treeIndex, Integer minRankOrderIndex,
             Integer maxRankOrderIndex);
 
     /**
@@ -118,6 +119,6 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param treeIndexSet set of taxon node tree indexes
      * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
-    Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> treeIndexSet);
+    Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
 
 }

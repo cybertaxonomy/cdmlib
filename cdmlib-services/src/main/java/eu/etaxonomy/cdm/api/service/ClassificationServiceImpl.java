@@ -16,8 +16,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -47,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -700,20 +703,21 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         List<GroupedTaxonDTO> result = new ArrayList<>();
 
         //get treeindex for each taxonUUID
-        Map<UUID, String> taxonIdTreeIndexMap = dao.treeIndexForTaxonUuids(classificationUuid, originalTaxonUuids);
+        Map<UUID, TreeIndex> taxonIdTreeIndexMap = dao.treeIndexForTaxonUuids(classificationUuid, originalTaxonUuids);
 
         //build treeindex list (or tree)
-        List<String> treeIndexClosure = new ArrayList<>();
-        for (String treeIndex : taxonIdTreeIndexMap.values()){
-            String[] splits = treeIndex.substring(1).split(ITreeNode.separator);
+        //TODO make it work with TreeIndex or move there
+        List<String> treeIndexClosureStr = new ArrayList<>();
+        for (TreeIndex treeIndex : taxonIdTreeIndexMap.values()){
+            String[] splits = treeIndex.toString().substring(1).split(ITreeNode.separator);
             String currentIndex = ITreeNode.separator;
             for (String split : splits){
                 if (split.equals("")){
                     continue;
                 }
                 currentIndex += split + ITreeNode.separator;
-                if (!treeIndexClosure.contains(currentIndex) && !split.startsWith(ITreeNode.treePrefix)){
-                    treeIndexClosure.add(currentIndex);
+                if (!treeIndexClosureStr.contains(currentIndex) && !split.startsWith(ITreeNode.treePrefix)){
+                    treeIndexClosureStr.add(currentIndex);
                 }
             }
         }
@@ -721,15 +725,17 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         //get rank sortindex for all parent taxa with sortindex <= minRank and sortIndex >= maxRank (if available)
         Integer minRankOrderIndex = minRank == null ? null : minRank.getOrderIndex();
         Integer maxRankOrderIndex = maxRank == null ? null : maxRank.getOrderIndex();
-        Map<String, Integer> treeIndexSortIndexMapTmp = taxonNodeDao.rankOrderIndexForTreeIndex(treeIndexClosure, minRankOrderIndex, maxRankOrderIndex);
+        List<TreeIndex> treeIndexClosure = TreeIndex.NewListInstance(treeIndexClosureStr);
+
+        Map<TreeIndex, Integer> treeIndexSortIndexMapTmp = taxonNodeDao.rankOrderIndexForTreeIndex(treeIndexClosure, minRankOrderIndex, maxRankOrderIndex);
 
         //remove all treeindex with "exists child in above map(and child.sortindex > xxx)
-        List<String> treeIndexList = new ArrayList<>(treeIndexSortIndexMapTmp.keySet());
-        Collections.sort(treeIndexList, new TreeIndexComparator());
-        Map<String, Integer> treeIndexSortIndexMap = new HashMap<>();
-        String lastTreeIndex = null;
-        for (String treeIndex : treeIndexList){
-            if (lastTreeIndex != null && treeIndex.startsWith(lastTreeIndex)){
+        List<TreeIndex> treeIndexList = TreeIndex.sort(treeIndexSortIndexMapTmp.keySet());
+
+        Map<TreeIndex, Integer> treeIndexSortIndexMap = new HashMap<>();
+        TreeIndex lastTreeIndex = null;
+        for (TreeIndex treeIndex : treeIndexList){
+            if (lastTreeIndex != null && lastTreeIndex.hasChild(treeIndex)){
                 treeIndexSortIndexMap.remove(lastTreeIndex);
             }
             treeIndexSortIndexMap.put(treeIndex, treeIndexSortIndexMapTmp.get(treeIndex));
@@ -737,24 +743,67 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         //get taxonID for treeIndexes
-        Map<String, UuidAndTitleCache<?>> treeIndexTaxonIdMap = taxonNodeDao.taxonUuidsForTreeIndexes(treeIndexSortIndexMap.keySet());
+        Map<TreeIndex, UuidAndTitleCache<?>> treeIndexTaxonIdMap = taxonNodeDao.taxonUuidsForTreeIndexes(treeIndexSortIndexMap.keySet());
 
         //fill result list
         for (UUID originalTaxonUuid : originalTaxonUuids){
             GroupedTaxonDTO item = new GroupedTaxonDTO();
             result.add(item);
             item.setTaxonUuid(originalTaxonUuid);
-            String groupIndex = taxonIdTreeIndexMap.get(originalTaxonUuid);
-            while (groupIndex != null){
-                if (treeIndexTaxonIdMap.get(groupIndex) != null){
-                    UuidAndTitleCache<?> uuidAndLabel = treeIndexTaxonIdMap.get(groupIndex);
+            TreeIndex groupTreeIndex = taxonIdTreeIndexMap.get(originalTaxonUuid);
+            String groupIndexX = TreeIndex.toString(groupTreeIndex);
+            while (groupTreeIndex != null){
+                if (treeIndexTaxonIdMap.get(groupTreeIndex) != null){
+                    UuidAndTitleCache<?> uuidAndLabel = treeIndexTaxonIdMap.get(groupTreeIndex);
                     item.setGroupTaxonUuid(uuidAndLabel.getUuid());
                     item.setGroupTaxonName(uuidAndLabel.getTitleCache());
                     break;
                 }else{
-                    int index = groupIndex.substring(0, groupIndex.length()-1).lastIndexOf(ITreeNode.separator);
-                    groupIndex = index<0 ? null : groupIndex.substring(0, index+1);
+                    groupTreeIndex = groupTreeIndex.parent();
+//                    int index = groupIndex.substring(0, groupIndex.length()-1).lastIndexOf(ITreeNode.separator);
+//                    groupIndex = index < 0 ? null : groupIndex.substring(0, index+1);
                 }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<GroupedTaxonDTO> groupTaxaByMarkedParents(List<UUID> originalTaxonUuids, UUID classificationUuid,
+            MarkerType markerType, Boolean flag) {
+
+        List<GroupedTaxonDTO> result = new ArrayList<>();
+
+        //get treeindex for each taxonUUID
+        Map<UUID, TreeIndex> taxonIdTreeIndexMap = dao.treeIndexForTaxonUuids(classificationUuid, originalTaxonUuids);
+
+        //get all marked tree indexes
+        Set<TreeIndex> markedTreeIndexes = dao.getMarkedTreeIndexes(markerType, flag);
+
+
+        Map<TreeIndex, TreeIndex> groupedMap = TreeIndex.group(markedTreeIndexes, taxonIdTreeIndexMap.values());
+        Set<TreeIndex> notNullGroups = new HashSet<>(groupedMap.values());
+        notNullGroups.remove(null);
+
+        //get taxonInfo for treeIndexes
+        Map<TreeIndex, UuidAndTitleCache<?>> treeIndexTaxonIdMap = taxonNodeDao.taxonUuidsForTreeIndexes(notNullGroups);
+
+        //fill result list
+        for (UUID originalTaxonUuid : originalTaxonUuids){
+            GroupedTaxonDTO item = new GroupedTaxonDTO();
+            result.add(item);
+            item.setTaxonUuid(originalTaxonUuid);
+
+            TreeIndex toBeGroupedTreeIndex = taxonIdTreeIndexMap.get(originalTaxonUuid);
+            TreeIndex groupTreeIndex = groupedMap.get(toBeGroupedTreeIndex);
+            UuidAndTitleCache<?> uuidAndLabel = treeIndexTaxonIdMap.get(groupTreeIndex);
+            if (uuidAndLabel != null){
+                item.setGroupTaxonUuid(uuidAndLabel.getUuid());
+                item.setGroupTaxonName(uuidAndLabel.getTitleCache());
             }
         }
 
@@ -937,5 +986,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
         }
     }
+
 
 }
