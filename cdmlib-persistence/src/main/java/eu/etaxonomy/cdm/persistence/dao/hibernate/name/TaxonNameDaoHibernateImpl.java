@@ -531,18 +531,20 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public List<? extends TaxonNameBase<?,?>> findByName(String queryString,
-            MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+    public List<? extends TaxonNameBase<?,?>> findByName(boolean doIncludeAuthors,
+            String queryString, MatchMode matchmode, Integer pageSize,
+            Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
         Criterion nameCacheLike;
         if (matchmode == MatchMode.EXACT) {
             nameCacheLike = Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString));
         } else {
-            nameCacheLike =Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString));
+            nameCacheLike = Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString));
         }
         Criterion notNull = Restrictions.isNotNull("nameCache");
-        LogicalExpression locExpression = Restrictions.and(notNull, nameCacheLike);
+        LogicalExpression nameCacheExpression = Restrictions.and(notNull, nameCacheLike);
+
         Criterion titleCacheLike;
         if (matchmode == MatchMode.EXACT) {
             titleCacheLike = Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString));
@@ -550,9 +552,13 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             titleCacheLike =Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString));
         }
         Criterion isNull = Restrictions.isNull("nameCache");
-        LogicalExpression locExpression2 = Restrictions.and(isNull, titleCacheLike);
-        LogicalExpression orExpression = Restrictions.or(locExpression2, locExpression);
-        crit.add(orExpression);
+        LogicalExpression titleCacheExpression = Restrictions.and(isNull, titleCacheLike);
+
+        LogicalExpression orExpression = Restrictions.or(titleCacheExpression, nameCacheExpression);
+
+        Criterion finalCriterion = doIncludeAuthors ? titleCacheLike : orExpression;
+
+        crit.add(finalCriterion);
         if(criteria != null){
             for (Criterion criterion : criteria) {
                 crit.add(criterion);
@@ -567,6 +573,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             }
         }
 
+        @SuppressWarnings("unchecked")
         List<? extends TaxonNameBase<?,?>> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -703,7 +710,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
         //TODO improve performance
-        List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
+        boolean includeAuthors = false;
+        List<? extends TaxonNameBase<?,?>> results = findByName(
+                includeAuthors,queryString, matchmode, null, null, criteria, null);
         return results.size();
 
     }
@@ -736,7 +745,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public Integer countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
+    public long countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
         return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
     }
 

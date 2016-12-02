@@ -90,7 +90,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param propertyPaths TODO
      * @return list of found taxa
      */
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
+    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+            boolean includeAuthors, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
@@ -105,8 +106,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param propertyPaths
      * @return
      */
-    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
-
+    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+            boolean doIncludeAuthors, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
 //	/**
@@ -327,7 +328,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param type The type of Synonym (can be null)
      * @return the number of Synonym instances
      */
-    public int countSynonyms(Taxon taxon, SynonymType type);
+    public long countSynonyms(Taxon taxon, SynonymType type);
 
     /**
      * Returns the Synonyms (of where relationship.type == type, if this argument is supplied)
@@ -363,7 +364,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     public List<TaxonNameBase> findIdenticalNamesNew(List <String> propertyPaths);
 
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
+            boolean doMisappliedNames,
+            String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);

@@ -85,7 +85,6 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = DEFAULT_INIT_STRATEGY;
     protected List<String> getSimpleTaxonInitStrategy() {
-        // TODO Auto-generated method stub
         return SIMPLE_TAXON_INIT_STRATEGY;
     }
 
@@ -264,6 +263,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "includeAuthors", required = false) Boolean includeAuthors,
             HttpServletRequest request,
             HttpServletResponse response
             )
@@ -275,7 +275,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator<?> config = new FindTaxaAndNamesConfiguratorImpl<>();
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
@@ -286,6 +286,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
         config.setTaxonPropertyPath(getSimpleTaxonInitStrategy());
         config.setNamedAreas(areas);
+        config.setDoIncludeAuthors(includeAuthors);
         if(treeUuid != null){
             Classification classification = classificationService.find(treeUuid);
             config.setClassification(classification);

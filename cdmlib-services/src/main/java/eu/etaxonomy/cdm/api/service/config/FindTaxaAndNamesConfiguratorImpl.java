@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -27,133 +27,151 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
 			implements IFindTaxaAndNamesConfigurator<T> {
 
+    private static final long serialVersionUID = -8510776848175860267L;
 
-	public static FindTaxaAndNamesConfiguratorImpl NewInstance() {
-		return new FindTaxaAndNamesConfiguratorImpl();
+
+    public static FindTaxaAndNamesConfiguratorImpl<?> NewInstance() {
+		return new FindTaxaAndNamesConfiguratorImpl<>();
 	}
 
-	
+
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
 	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
 	private boolean doMisappliedNames = false;
+	private boolean doIncludeAuthors = false;
 	private Classification classification = null;
 	private List<String> taxonPropertyPath;
 	private List<String> synonymPropertyPath;
 	private List<String> taxonNamePropertyPath;
 	private List<String> commonNamePropertyPath;
 	private Set<NamedArea> namedAreas;
-	
-	
+
+
 	/**
 	 * @return the taxonNamePropertyPath
 	 */
-	public List<String> getTaxonNamePropertyPath() {
+	@Override
+    public List<String> getTaxonNamePropertyPath() {
 		return taxonNamePropertyPath;
 	}
 
 	/**
 	 * @param taxonNamePropertyPath the taxonNamePropertyPath to set
 	 */
-	public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath) {
+	@Override
+    public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath) {
 		this.taxonNamePropertyPath = taxonNamePropertyPath;
 	}
-	
-	public boolean isDoTaxa() {
+
+	@Override
+    public boolean isDoTaxa() {
 		return doTaxa;
 	}
 
-	public void setDoTaxa(boolean doTaxa) {
+	@Override
+    public void setDoTaxa(boolean doTaxa) {
 		this.doTaxa = doTaxa;
 	}
 
-	public boolean isDoSynonyms() {
+	@Override
+    public boolean isDoSynonyms() {
 		return doSynonyms;
 	}
 
-	public void setDoSynonyms(boolean doSynonyms) {
+	@Override
+    public void setDoSynonyms(boolean doSynonyms) {
         this.doSynonyms = doSynonyms;
 	}
 
 	/**
 	 * @return doTaxaByCommonNames
 	 */
-	public boolean isDoTaxaByCommonNames() {
+	@Override
+    public boolean isDoTaxaByCommonNames() {
 		return doTaxaByCommonNames;
 	}
 
 	/**
 	 * @param doTaxaByCommonNames
 	 */
-	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames) {
+	@Override
+    public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames) {
 		this.doTaxaByCommonNames = doTaxaByCommonNames;
 	}
-	
+
 	/**
 	 * @return doNamesWithoutTaxa
 	 */
-	public boolean isDoNamesWithoutTaxa() {
+	@Override
+    public boolean isDoNamesWithoutTaxa() {
 		return doNamesWithoutTaxa;
 	}
 
 	/**
 	 * @param doNamesWithoutTaxa
 	 */
-	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa) {
+	@Override
+    public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa) {
 		this.doNamesWithoutTaxa = doNamesWithoutTaxa;
 	}
 
-	public MatchMode getMatchMode() {
+	@Override
+    public MatchMode getMatchMode() {
 		return matchMode;
 	}
 
-	public void setMatchMode(MatchMode matchMode) {
+	@Override
+    public void setMatchMode(MatchMode matchMode) {
 		this.matchMode = matchMode;
 	}
-	
-	public Classification getClassification() {
+
+	@Override
+    public Classification getClassification() {
 		return classification;
 	}
-	
-	public void setClassification(Classification classification) {
+
+	@Override
+    public void setClassification(Classification classification) {
 		this.classification = classification;
 	}
 
-	public List<String> getTaxonPropertyPath() {
+	@Override
+    public List<String> getTaxonPropertyPath() {
 		return taxonPropertyPath;
 	}
 
-	public void setTaxonPropertyPath(List<String> taxonPropertyPath) {
+	@Override
+    public void setTaxonPropertyPath(List<String> taxonPropertyPath) {
 		this.taxonPropertyPath = taxonPropertyPath;
 	}
 
-	public List<String> getCommonNamePropertyPath() {
+	@Override
+    public List<String> getCommonNamePropertyPath() {
 		return commonNamePropertyPath;
 	}
 
-	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath) {
+	@Override
+    public void setCommonNamePropertyPath(List<String> commonNamePropertyPath) {
 		this.commonNamePropertyPath = commonNamePropertyPath;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator#getAreas()
-	 */
-	public Set<NamedArea> getNamedAreas() {
+	@Override
+    public Set<NamedArea> getNamedAreas() {
 		return namedAreas;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator#setAreas(java.util.List)
-	 */
-	public void setNamedAreas(Set<NamedArea> namedAreas) {
+	@Override
+    public void setNamedAreas(Set<NamedArea> namedAreas) {
 		this.namedAreas = namedAreas;
 	}
 
-	public List<String> getSynonymPropertyPath() {
+	@Override
+    public List<String> getSynonymPropertyPath() {
 		return synonymPropertyPath;
 	}
-	
+
 	@Override
 	public void setSynonymPropertyPath(List<String> synonymPropertyPath){
 		this.synonymPropertyPath = synonymPropertyPath;
@@ -168,5 +186,15 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
 	public void setDoMisappliedNames(boolean doMisappliedNames) {
 				this.doMisappliedNames = doMisappliedNames;
 	}
-	
+
+	@Override
+    public boolean isDoIncludeAuthors() {
+        return doIncludeAuthors;
+    }
+
+	@Override
+    public void setDoIncludeAuthors(boolean doIncludeAuthors) {
+        this.doIncludeAuthors = doIncludeAuthors;
+    }
+
 }

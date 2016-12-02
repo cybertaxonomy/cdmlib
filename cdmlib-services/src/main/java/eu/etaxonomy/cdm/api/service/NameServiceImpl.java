@@ -297,8 +297,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * new name findByName
      */
     @Override
+    @Deprecated
     public List<NonViralName> getNamesByNameCache(String nameCache){
-        List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
+        boolean includeAuthors = false;
+        List result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
     }
 
@@ -323,7 +325,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     @Override
     public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByName(nameCache, matchMode, null, null, null ,propertyPaths);
+        List result = dao.findByName(false, nameCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
 
@@ -770,14 +772,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
-        Integer numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
+         Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 
-         List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
+         List<TaxonNameBase> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                 results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
 
-          return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
+         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override

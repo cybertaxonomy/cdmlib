@@ -67,4 +67,8 @@ public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIde
     public boolean isDoMisappliedNames();
 
     public void setDoMisappliedNames(boolean doMisappliedNames);
+
+    public boolean isDoIncludeAuthors();
+
+    public void setDoIncludeAuthors(boolean doIncludeAuthors);
 }

@@ -132,7 +132,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
             Integer pageSize, Integer pageNumber) {
 
-        return getTaxaByName(doTaxa, doSynonyms, false, queryString, null, matchMode, null, pageSize, pageNumber, null);
+        return getTaxaByName(doTaxa, doSynonyms, false, false, queryString, null, matchMode, null, pageSize, pageNumber, null);
     }
 
     @Override
@@ -151,13 +151,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,String queryString, Classification classification,
+    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+            boolean includeAuthors,
+            String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
         boolean doCount = false;
 
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
+        String searchField = includeAuthors ? "titleCache" : "nameCache";
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 
         if (query != null){
             @SuppressWarnings("unchecked")
@@ -169,7 +172,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             return results;
         }
 
-        return new ArrayList<TaxonBase>();
+        return new ArrayList<>();
 
     }
 
@@ -183,9 +186,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //        long zstNachher;
 
         boolean doCount = false;
+        boolean includeAuthors = false;
         List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
         if (doNamesWithoutTaxa){
-        	List<? extends TaxonNameBase<?,?>> nameResult = taxonNameDao.findByName(queryString,matchMode, null, null, null, null);
+        	List<? extends TaxonNameBase<?,?>> nameResult = taxonNameDao.findByName(
+        	        includeAuthors, queryString, matchMode, null, null, null, null);
 
         	for (TaxonNameBase name: nameResult){
         		if (name.getTaxonBases().size() == 0){
@@ -573,7 +578,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
+    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+            boolean doIncludeAuthors, String queryString, Classification classification,
         MatchMode matchMode, Set<NamedArea> namedAreas) {
 
         boolean doCount = true;
@@ -586,9 +592,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             doTaxa = false;
         }
         */
+        String searchField = doIncludeAuthors ? "titleCache": "nameCache";
 
-
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, null, null, doCount);
         if (query != null) {
             return (Long)query.uniqueResult();
         }else{
@@ -823,7 +829,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public int countSynonyms(Taxon taxon, SynonymType type) {
+    public long countSynonyms(Taxon taxon, SynonymType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(Synonym.class);
@@ -843,7 +849,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
             }
 
-            return ((Long)query.getSingleResult()).intValue();
+            return (Long)query.getSingleResult();
         }
     }
 

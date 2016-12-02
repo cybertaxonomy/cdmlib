@@ -586,7 +586,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public Pager<Synonym> getSynonyms(Taxon taxon,	SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countSynonyms(taxon, type);
+        Long numberOfResults = dao.countSynonyms(taxon, type);
 
         List<Synonym> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -658,8 +658,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator) {
 
-        List<IdentifiableEntity> results = new ArrayList<IdentifiableEntity>();
-        int numberOfResults = 0; // overall number of results (as opposed to number of results per page)
+        List<IdentifiableEntity> results = new ArrayList<>();
+        long numberOfResults = 0; // overall number of results (as opposed to number of results per page)
         List<TaxonBase> taxa = null;
 
         // Taxa and synonyms
@@ -676,13 +676,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if(configurator.getPageSize() != null){ // no point counting if we need all anyway
                 numberTaxaResults =
                     dao.countTaxaByName(configurator.isDoTaxa(),configurator.isDoSynonyms(), configurator.isDoMisappliedNames(),
-                        configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
+                        configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(),
+                        configurator.getClassification(), configurator.getMatchMode(),
                         configurator.getNamedAreas());
             }
 
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
                 taxa = dao.getTaxaByName(configurator.isDoTaxa(), configurator.isDoSynonyms(),
-                    configurator.isDoMisappliedNames(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(),
+                    configurator.isDoMisappliedNames(), configurator.isDoIncludeAuthors(),
+                    configurator.getTitleSearchStringSqlized(), configurator.getClassification(),
                     configurator.getMatchMode(), configurator.getNamedAreas(),
                     configurator.getPageSize(), configurator.getPageNumber(), propertyPath);
             }
@@ -701,7 +703,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             int numberNameResults = 0;
 
             List<? extends TaxonNameBase<?,?>> names =
-                nameDao.findByName(configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
+                nameDao.findByName(configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
                         configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
             if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
             if (names.size() > 0) {
@@ -719,7 +721,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // Taxa from common names
 
         if (configurator.isDoTaxaByCommonNames()) {
-            taxa = new ArrayList<TaxonBase>();
+            taxa = new ArrayList<>();
             numberTaxaResults = 0;
             if(configurator.getPageSize() != null){// no point counting if we need all anyway
                 numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
@@ -735,7 +737,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         }
 
-       return new DefaultPagerImpl<IdentifiableEntity>
+       return new DefaultPagerImpl<>
             (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
     }
 
@@ -3061,7 +3063,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
-        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
+        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
 
