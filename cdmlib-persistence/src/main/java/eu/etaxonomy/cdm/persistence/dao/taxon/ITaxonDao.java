@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -92,7 +93,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
             boolean includeAuthors, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+            MatchMode matchMode, Set<NamedArea> namedAreas,
+            NameSearchOrder order, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param doTaxa
@@ -186,7 +188,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param onlyAcccepted
      * @return
      */
-    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
+    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
+            NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
     /**
      * Returns a taxon corresponding to the given uuid

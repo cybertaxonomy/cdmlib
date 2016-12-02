@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 
 /**
  * @author a.babadshanjan
@@ -47,9 +48,9 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
 	private List<String> taxonNamePropertyPath;
 	private List<String> commonNamePropertyPath;
 	private Set<NamedArea> namedAreas;
+	private NameSearchOrder order;
 
-
-	/**
+    /**
 	 * @return the taxonNamePropertyPath
 	 */
 	@Override
@@ -195,6 +196,16 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
 	@Override
     public void setDoIncludeAuthors(boolean doIncludeAuthors) {
         this.doIncludeAuthors = doIncludeAuthors;
+    }
+
+
+    @Override
+    public NameSearchOrder getOrder() {
+        return order;
+    }
+    @Override
+    public void setOrder(NameSearchOrder order) {
+        this.order = order;
     }
 
 }

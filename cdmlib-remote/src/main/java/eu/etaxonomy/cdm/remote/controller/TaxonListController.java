@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
@@ -263,6 +264,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "order", required = false, defaultValue="ALPHA") NameSearchOrder order,
             @RequestParam(value = "includeAuthors", required = false) Boolean includeAuthors,
             HttpServletRequest request,
             HttpServletResponse response
@@ -287,6 +289,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setTaxonPropertyPath(getSimpleTaxonInitStrategy());
         config.setNamedAreas(areas);
         config.setDoIncludeAuthors(includeAuthors != null ? includeAuthors : Boolean.FALSE);
+        config.setOrder(order);
         if(treeUuid != null){
             Classification classification = classificationService.find(treeUuid);
             config.setClassification(classification);

@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -132,7 +133,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
             Integer pageSize, Integer pageNumber) {
 
-        return getTaxaByName(doTaxa, doSynonyms, false, false, queryString, null, matchMode, null, pageSize, pageNumber, null);
+        return getTaxaByName(doTaxa, doSynonyms, false, false, queryString, null, matchMode, null, null, pageSize, pageNumber, null);
     }
 
     @Override
@@ -154,13 +155,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
             boolean includeAuthors,
             String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
+            MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         boolean doCount = false;
 
         String searchField = includeAuthors ? "titleCache" : "nameCache";
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
 
         if (query != null){
             @SuppressWarnings("unchecked")
@@ -184,6 +185,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             MatchMode matchMode, Set<NamedArea> namedAreas) {
 //        long zstVorher;
 //        long zstNachher;
+        NameSearchOrder order = NameSearchOrder.ALPHA;  //TODO add to signature
 
         boolean doCount = false;
         boolean includeAuthors = false;
@@ -201,7 +203,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         		return resultObjects;
         	}
         }
-        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, doCount);
+        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, doCount, order);
 
 
         if (query != null){
@@ -265,10 +267,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      *
      *
      */
-    private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String searchField, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount) {
+    private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+            String searchField, String queryString, Classification classification,
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, NameSearchOrder order) {
         return prepareQuery(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString,
-                classification, matchMode, namedAreas, doCount, true);
+                classification, matchMode, namedAreas, order, doCount, true);
     }
 
     /**
@@ -282,12 +285,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      *            if set true the seach method will not return synonym and taxon
      *            entities but an array containing the uuid, titleCache, and the
      *            DTYPE in lowercase letters.
+     * @param order
      * @param clazz
      * @return
      */
     private Query prepareQuery(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, String searchField, String queryString,
-                Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doNotReturnFullEntities){
+                Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, boolean doCount, boolean doNotReturnFullEntities){
 
+            if (order == null){
+                order = NameSearchOrder.DEFAULT();
+            }
             String hqlQueryString = matchMode.queryStringFrom(queryString);
             String selectWhat;
             if (doNotReturnFullEntities){
@@ -474,10 +481,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 return null;
             }
             if(!doCount){
-                hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+                String orderBy = " ORDER BY ";
+                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+                if (order == NameSearchOrder.LENGTH_ALPHA_NAME){
+                    orderBy += " length(t.name.nameCache), " + alphabeticBase;
+                }else if (order == NameSearchOrder.LENGTH_ALPHA_TITLE){
+                    orderBy += " length(t.name.titleCache), " + alphabeticBase;
+                }else{
+                    orderBy += alphabeticBase;
+                }
+
+                hql += orderBy;
             }
 
-            logger.debug("hql: " + hql);
+            if(logger.isDebugEnabled()){ logger.debug("hql: " + hql);}
             Query query = getSession().createQuery(hql);
 
 
@@ -535,9 +552,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * FIXME implement classification restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
      */
     private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String searchField, String queryString,
-            Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
+            Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageSize, Integer pageNumber, boolean doCount) {
 
-        Query query = prepareQuery(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, doCount, false);
+        Query query = prepareQuery(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, order, doCount, false);
 
         if(pageSize != null &&  !doCount && query != null) {
             query.setMaxResults(pageSize);
@@ -594,7 +611,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         */
         String searchField = doIncludeAuthors ? "titleCache": "nameCache";
 
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, null, null, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, null, null, null, doCount);
         if (query != null) {
             return (Long)query.uniqueResult();
         }else{
@@ -680,10 +697,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
+    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
 
         boolean doCount = false;
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, false, "titleCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, false, "titleCache", queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
         if (query != null){
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1752,7 +1769,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 synTreeJoin +
                 " WHERE (1=1) " +
                     " AND ( " + accWhere + " OR " + synWhere + ")";
-        queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
+        queryString = String.format(queryString, (includeEntity ? "c" : "c.uuid, c.titleCache") , clazzParam.getSimpleName());
 
         //type and value
         if (markerValue != null){
