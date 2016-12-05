@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
@@ -897,6 +898,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param markerValue the optional
      * @param subtreeFilter filter on a classification subtree (TaxonNode)
      * @param includeEntity should the taxon as an object be included in the result
+     * @param titleType which label to give the returned entity, taxon.titleCache, name.titleCache or name.nameCache
      * @param pageSize page size
      * @param pageNumber page number
      * @param propertyPaths property path for initializing the returned taxon object (requires includeEntity=true)
@@ -905,8 +907,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public <S extends TaxonBase> Pager<MarkedEntityDTO<S>> findByMarker(
             Class<S> clazz, MarkerType markerType, Boolean markerValue,
-            TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths);
+            TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param synonymUUid

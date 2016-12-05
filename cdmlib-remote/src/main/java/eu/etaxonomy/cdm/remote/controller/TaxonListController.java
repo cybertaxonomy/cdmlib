@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -534,6 +535,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
+            @RequestParam(value = "titleType", required = false) TaxonTitleType titleType,
             HttpServletRequest request,
             HttpServletResponse response
             )
@@ -558,8 +560,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
-        includeEntity  = true;
-        return service.findByMarker(type, markerType, value, subTree, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+        return service.findByMarker(type, markerType, value, subTree, includeEntity, titleType, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
     @RequestMapping(value = "doFindByNameParts", method = RequestMethod.GET)

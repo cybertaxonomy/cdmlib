@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 
 /**
@@ -1744,11 +1745,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      */
     @Override
     public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
-            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize, Integer pageNumber,
-            List<String> propertyPaths) {
+            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity,
+            TaxonTitleType titleType, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("TaxonDaoHibernateImpl.findByMarker(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
         if (markerType == null){
             return new ArrayList<Object[]>();
+        }
+        if (titleType == null){
+            titleType = TaxonTitleType.DEFAULT();
         }
 
         Class<?> clazzParam = clazz == null ? type : clazz;
@@ -1761,15 +1765,18 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";
         String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
         String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+        String selectParams = includeEntity ? "c" : titleType.hqlReplaceSelect("c.uuid, c.titleCache", "c.titleCache");
+        String titleTypeJoin = includeEntity ? "" : titleType.hqlJoin();
 
         String queryString = "SELECT mks.markerType, mks.flag, %s " +
                 " FROM %s as c " +
                 " INNER JOIN c.markers as mks " +
+                titleTypeJoin +
                 accTreeJoin +
                 synTreeJoin +
                 " WHERE (1=1) " +
                     " AND ( " + accWhere + " OR " + synWhere + ")";
-        queryString = String.format(queryString, (includeEntity ? "c" : "c.uuid, c.titleCache") , clazzParam.getSimpleName());
+        queryString = String.format(queryString, selectParams, clazzParam.getSimpleName());
 
         //type and value
         if (markerValue != null){

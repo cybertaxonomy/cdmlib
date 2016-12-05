@@ -125,6 +125,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
@@ -3099,8 +3100,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Transactional(readOnly = true)
     public <S extends TaxonBase> Pager<MarkedEntityDTO<S>> findByMarker(
             Class<S> clazz, MarkerType markerType, Boolean markerValue,
-            TaxonNode subtreeFilter, boolean includeEntity, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
+            TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         if (subtreeFilter == null){
             return super.findByMarker (clazz, markerType, markerValue, includeEntity, pageSize, pageNumber, propertyPaths);
         }
@@ -3109,7 +3110,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<Object[]> daoResults = new ArrayList<Object[]>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByMarker(clazz, markerType, markerValue, subtreeFilter,
-                    includeEntity, pageSize, pageNumber, propertyPaths);
+                    includeEntity, titleType, pageSize, pageNumber, propertyPaths);
         }
 
         List<MarkedEntityDTO<S>> result = new ArrayList<>();

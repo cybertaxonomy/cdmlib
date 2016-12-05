@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 /**
  * @author a.mueller
@@ -440,7 +441,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return
      */
     public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
-            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity,
+            Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
