@@ -95,15 +95,16 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
 	 * @throws SQLException
 	 */
 	private Map<Integer, Set<Integer>> makeIndexMap(String tableName, ICdmDataSource datasource) throws SQLException {
-		String resulsetQuery = "SELECT @id as id, @parentColumn " +
+		String resultsetQuery = "SELECT @id as id, @parentColumn " +
 				" FROM @tableName " +
 				" WHERE @parentColumn IS NOT NULL " +
-				" ORDER BY @parentColumn,    @sorted";
-		resulsetQuery = resulsetQuery.replace("@tableName", tableName);
-		resulsetQuery = resulsetQuery.replace("@parentColumn", parentColumn);
-		resulsetQuery = resulsetQuery.replace("@sorted", currentSortColumn);
+				" ORDER BY @parentColumn, @sorted";
+		resultsetQuery = resultsetQuery.replace("@id", idColumn);
+		resultsetQuery = resultsetQuery.replace("@tableName", tableName);
+		resultsetQuery = resultsetQuery.replace("@parentColumn", parentColumn);
+		resultsetQuery = resultsetQuery.replace("@sorted", currentSortColumn);
 
-		ResultSet rs = datasource.executeQuery(resulsetQuery);
+		ResultSet rs = datasource.executeQuery(resultsetQuery);
 		Integer index = baseValue;
 		int oldParentId = -1;
 
