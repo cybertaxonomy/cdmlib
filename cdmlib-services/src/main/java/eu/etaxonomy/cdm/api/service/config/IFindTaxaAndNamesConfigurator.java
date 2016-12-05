@@ -16,11 +16,11 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 
 /**
  * @author a.babadshanjan
  * @created 20.01.2009
- * @version 1.0
  */
 public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
 
@@ -67,4 +67,12 @@ public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIde
     public boolean isDoMisappliedNames();
 
     public void setDoMisappliedNames(boolean doMisappliedNames);
+
+    public boolean isDoIncludeAuthors();
+
+    public void setDoIncludeAuthors(boolean doIncludeAuthors);
+
+    public void setOrder(NameSearchOrder order);
+
+    public NameSearchOrder getOrder();
 }

@@ -62,7 +62,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
     }
 
     @Override
-    public Integer countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
+    public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
         return countByParam(Primer.class, "label", queryString, matchmode, criteria);
     }
 

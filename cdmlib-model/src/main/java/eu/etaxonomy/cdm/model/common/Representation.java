@@ -58,8 +58,8 @@ public class Representation extends LanguageStringBase {
      * @param lang
      * @return
      */
-    public static Representation NewInstance(String text, String label, String abbreviatedLabel, Language lang){
-        return new Representation(text, label, abbreviatedLabel, lang);
+    public static Representation NewInstance(String description, String label, String abbreviatedLabel, Language lang){
+        return new Representation(description, label, abbreviatedLabel, lang);
     }
 
     public Representation() {
@@ -70,8 +70,8 @@ public class Representation extends LanguageStringBase {
      * text represents an explanation/declaration ('The name is illegitimate according to ICBN'); label a string identifier ('illegitimate name');
      * abbreviatedLabel a shortened string for the label ('nom. illeg.')
      */
-    public Representation(String text, String label, String abbreviatedLabel, Language language) {
-        super(text, language);
+    public Representation(String description, String label, String abbreviatedLabel, Language language) {
+        super(description, language);
         this.label = label;
         this.abbreviatedLabel = abbreviatedLabel;
     }

@@ -52,10 +52,10 @@ public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplificati
 
     @Override
     public Pager<Amplification> findByLabelCache(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
+        long numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
 
         List<Amplification> results = new ArrayList<Amplification>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
                results = dao.findByTitle(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
         }
 

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -84,7 +85,25 @@ public class Abcd206XMLFieldGetter {
     protected void getScientificNames(NodeList group) {
         NodeList identifications, results;
         String tmpName = null;
-
+        //TODO: add the identifier!!
+//        abcd:Identification>
+//        <abcd:Result>
+//        <abcd:TaxonIdentified>
+//        <abcd:ScientificName>
+//        <abcd:FullScientificNameString>Melosira varians C. Agardh</abcd:FullScientificNameString>
+//        <abcd:NameAtomised><abcd:Botanical><abcd:GenusOrMonomial>Melosira</abcd:GenusOrMonomial><abcd:FirstEpithet>varians</abcd:FirstEpithet><abcd:Rank>sp.</abcd:Rank><abcd:AuthorTeam>C.Agardh</abcd:AuthorTeam></abcd:Botanical></abcd:NameAtomised>
+//        </abcd:ScientificName>
+//        </abcd:TaxonIdentified>
+//        </abcd:Result>
+//        <abcd:PreferredFlag>true</abcd:PreferredFlag>
+//        <abcd:Identifiers>
+//        <abcd:Identifier>
+//        <abcd:PersonName><abcd:FullName>W.-H. Kusber</abcd:FullName></abcd:PersonName>
+//        </abcd:Identifier>
+//        </abcd:Identifiers>
+//        <abcd:Date>
+//        <abcd:DateText>2014-07-11T00:00:00</abcd:DateText></abcd:Date>
+//        </abcd:Identification>
         for (int j = 0; j < group.getLength(); j++) {
             if (group.item(j).getNodeName().equals(prefix + "Identification")) {
                 identifications = group.item(j).getChildNodes();
@@ -551,16 +570,7 @@ public class Abcd206XMLFieldGetter {
             dataHolder.altitude = -9999;
         }
 
-        try {
-            group = root.getElementsByTagName(prefix + "Depth");
-            path = group.item(0).getNodeName();
-            getHierarchie(group.item(0));
-            dataHolder.knownABCDelements.add(path);
-            path = "";
-            dataHolder.depth = Integer.valueOf(group.item(0).getTextContent());
-        } catch (NullPointerException e) {
-            dataHolder.depth = -9999;
-        }
+        getGatheringDepth(root);
 
         try {
             group = root.getElementsByTagName(prefix + "NamedArea");
@@ -606,27 +616,166 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+
+    /**
+     * @param root
+     */
+    private void getGatheringDepth(Element root) {
+        NodeList group;
+        try {
+            group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Depth")) {
+                        NodeList altitudes = children.item(j).getChildNodes();
+                        for (int k = 0; k < altitudes.getLength(); k++) {
+                            if (altitudes.item(k).getNodeName().equals(prefix + "MeasurementOrFactText")) {
+                                path = altitudes.item(k).getNodeName();
+                                getHierarchie(altitudes.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                                try{
+                                    dataHolder.setGatheringDepthText(altitudes.item(k).getTextContent());
+                                }catch(NumberFormatException e){
+                                    logger.debug("Gathering depth value is not parsable to double: " + altitudes.item(k).getTextContent());
+                                }
+                            }
+                        }
+                    }
+                }
+                }
+            } catch (NullPointerException e) {
+                dataHolder.setDepth( -9999.0);
+            }
+        if(dataHolder.getDepth()==null){
+            group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Depth")) {
+                        NodeList altitudes = children.item(j).getChildNodes();
+                        for (int k = 0; k < altitudes.getLength(); k++) {
+                            if (altitudes.item(k).getNodeName().equals(prefix + "MeasurementOrFactAtomised")) {
+                                NodeList facts = altitudes.item(k).getChildNodes();
+                                for (int l = 0; l < facts.getLength(); l++) {
+                                    if (facts.item(l).getNodeName().equalsIgnoreCase(prefix + "LowerValue")) {
+                                        path = facts.item(l).getNodeName();
+                                        getHierarchie(facts.item(l));
+                                        dataHolder.knownABCDelements.add(path);
+                                        path = "";
+                                        try{
+                                            dataHolder.setGatheringDepthMin(Double.parseDouble(facts.item(l).getTextContent()));
+                                        } catch(NumberFormatException e){
+                                            logger.debug("Gathering depth min is not numeric. " + facts.item(l).getTextContent());
+                                        }
+                                    }
+                                    else if (facts.item(l).getNodeName().equalsIgnoreCase(prefix + "UpperValue")) {
+                                        path = facts.item(l).getNodeName();
+                                        getHierarchie(facts.item(l));
+                                        dataHolder.knownABCDelements.add(path);
+                                        path = "";
+                                        try{
+                                            dataHolder.setGatheringDepthMax(Double.parseDouble(facts.item(l).getTextContent()));
+                                        }catch(NumberFormatException e){
+                                            logger.debug("Gathering depth max is not numeric. " + facts.item(l).getTextContent());
+                                        }
+                                    }
+                                    else if (facts.item(l).getNodeName().equals(prefix + "UnitOfMeasurement")) {
+                                        path = facts.item(l).getNodeName();
+                                        getHierarchie(facts.item(l));
+                                        dataHolder.knownABCDelements.add(path);
+                                        path = "";
+                                        dataHolder.setGatheringDepthUnit(facts.item(l).getTextContent());
+                                    } else{
+                                        System.out.println(facts.item(l).getNodeName() + " " + facts.item(l).getTextContent());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * getMultimedia: get the FileURI objects
      * @param root
      */
     protected void getMultimedia(Element root) {
-        NodeList group, multimedias, multimedia;
+        NodeList group, multimedias, multimedia, creators, creator, copyRightNodes, iprNodes, textNodes, licences, copyrights;
         try {
             group = root.getElementsByTagName(prefix + "MultiMediaObjects");
             for (int i = 0; i < group.getLength(); i++) {
                 multimedias = group.item(i).getChildNodes();
+                System.out.println(multimedias.getLength());
                 for (int j = 0; j < multimedias.getLength(); j++) {
+                    System.out.println("new multimedia object" + multimedias.item(j).getNodeName());
+
                     if (multimedias.item(j).getNodeName().equals(prefix + "MultiMediaObject")) {
+                        System.out.println("new multimedia object");
                         multimedia = multimedias.item(j).getChildNodes();
+                        Map<String,String> mediaObjectMap = new HashMap<String, String>();
+                        String fileUri = "";
                         for (int k = 0; k < multimedia.getLength(); k++) {
-                            if (multimedia.item(k).getNodeName().equals(prefix + "FileURI")) {
-                                dataHolder.getMultimediaObjects().add(multimedia.item(k).getTextContent());
+                            if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
+                                fileUri = multimedia.item(k).getTextContent();
+                                mediaObjectMap.put("fileUri", fileUri);
                                 path = multimedia.item(k).getNodeName();
                                 getHierarchie(multimedia.item(k));
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "context")) {
+                                mediaObjectMap.put("Context", multimedia.item(k).getTextContent());
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creators")){
+                                String creatorString = "";
+                                creators = multimedia.item(k).getChildNodes();
+                                for (int l = 0; l < creators.getLength(); l++) {
+
+                                    if (creators.item(l).getNodeName().equalsIgnoreCase(prefix + "Creator")){
+                                        if (creatorString != ""){
+                                            creatorString += ", ";
+                                        }
+                                       creatorString += creators.item(l).getTextContent();
+                                    }
+                                }
+                                mediaObjectMap.put("Creators",creatorString);
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creator")){
+                                mediaObjectMap.put("Creators",multimedia.item(k).getTextContent());
+                            } else if (multimedia.item(k).getNodeName().equals("CreatedDate")){
+                                mediaObjectMap.put("CreatedDate",multimedia.item(k).getTextContent());
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "comment")){
+                                mediaObjectMap.put("Comment",multimedia.item(k).getTextContent());
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "IPR")){
+                                String copyRightString = "";
+                                iprNodes = multimedia.item(k).getChildNodes();
+                                for (int l = 0; l < iprNodes.getLength(); l++) {
+                                    if (iprNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyrights")){
+                                        copyRightNodes = iprNodes.item(l).getChildNodes();
+                                        for (int m = 0; m < copyRightNodes.getLength(); m++) {
+                                            if (copyRightNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyright")){
+                                                copyrights = copyRightNodes.item(l).getChildNodes();
+                                                for (int n = 0; n < copyrights.getLength(); n++){
+                                                    if (copyrights.item(n).getNodeName().equalsIgnoreCase(prefix + "text")){
+                                                           //TODO: decide whether this is the copyright owner or a description text
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+                              // TODO: mediaObjectMap.put("IPR",multimedia.item(k).getTextContent());
+                            } else{
+                                System.out.println(multimedia.item(k).getNodeName() + " " + multimedia.item(k).getTextContent());
                             }
+
+                        }
+                        if (fileUri != ""){
+                            dataHolder.putMultiMediaObject(fileUri,mediaObjectMap);
                         }
                     }
                 }
@@ -647,7 +796,7 @@ public class Abcd206XMLFieldGetter {
                         childrenUnitAssociations = childrenAssociations.item(j).getChildNodes();
                         for (int k = 0; k < childrenUnitAssociations.getLength(); k++) {
                             if (childrenUnitAssociations.item(k).getNodeName().equals(prefix + "UnitID")) {
-                                dataHolder.associatedUnitIds.add(childrenUnitAssociations.item(k).getTextContent());
+                                dataHolder.addAssociatedUnitId(childrenUnitAssociations.item(k).getTextContent());
                                 path = childrenUnitAssociations.item(k).getNodeName();
                                 getHierarchie(childrenUnitAssociations.item(k));
                                 dataHolder.knownABCDelements.add(path);
@@ -811,13 +960,35 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+    protected void getGatheringMethod(Element root) {
+        try {
+            NodeList group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equalsIgnoreCase(prefix + "Method")) {
+                        NodeList methods = children.item(j).getChildNodes();
+                        for (int k = 0; k < methods.getLength(); k++) {
+                            dataHolder.setGatheringMethod(methods.item(k).getTextContent());
+                        }
+                    }
+
+                }
+            }
+
+        } catch (NullPointerException e) {
+            dataHolder.setGatheringDateText(null);
+        }
+    }
+
+
     /**
      * getGatheringPeople : get GatheringAgent with fullname
      * @param root
      */
     protected void getGatheringPeople(Element root) {
         try {
-            dataHolder.gatheringAgentList = new ArrayList<String>();
+            dataHolder.gatheringAgents = "";
 
             NodeList group = root.getElementsByTagName(prefix + "GatheringAgent");
             for (int i = 0; i < group.getLength(); i++) {
@@ -832,7 +1003,8 @@ public class Abcd206XMLFieldGetter {
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
                                 if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
-                                    dataHolder.gatheringAgentList.add(persons.item(k).getTextContent());
+
+                                    dataHolder.gatheringAgents += persons.item(k).getTextContent();
                                 }
                             }
                         }
@@ -854,7 +1026,7 @@ public class Abcd206XMLFieldGetter {
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
                                 if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
-                                    dataHolder.gatheringAgentList.add(persons.item(k).getTextContent());
+                                    dataHolder.gatheringAgents+=persons.item(k).getTextContent();
                                 }
                             }
                         }
@@ -864,12 +1036,9 @@ public class Abcd206XMLFieldGetter {
             }
 
         } catch (NullPointerException e) {
-            dataHolder.gatheringAgentList = new ArrayList<String>();
+            dataHolder.gatheringAgents = "";
         }
-        if (dataHolder.gatheringAgentList.size() > 1){
-            dataHolder.gatheringTeamList.addAll(dataHolder.gatheringAgentList);
-            dataHolder.gatheringAgentList = new ArrayList<String>();
-        }
+
     }
 
     /*PARSING METHODS*/
@@ -1135,6 +1304,64 @@ public class Abcd206XMLFieldGetter {
             }
         }
         return atomisedMap;
+    }
+
+
+    /**
+     * @param root
+     */
+    public void getGatheringImages(Element root) {
+        NodeList group, multimedias, multimedia, creators, creator;
+        try {
+            group = root.getElementsByTagName(prefix + "SiteImages");
+            for (int i = 0; i < group.getLength(); i++) {
+                multimedias = group.item(i).getChildNodes();
+                for (int j = 0; j < multimedias.getLength(); j++) {
+                    if (multimedias.item(j).getNodeName().equals(prefix + "SiteImage")) {
+                        multimedia = multimedias.item(j).getChildNodes();
+                        Map<String,String> mediaObjectMap = new HashMap<String, String>();
+                        String fileUri = "";
+                        for (int k = 0; k < multimedia.getLength(); k++) {
+
+
+                            if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
+                                fileUri = multimedia.item(k).getTextContent();
+                                mediaObjectMap.put("fileUri", fileUri);
+                                path = multimedia.item(k).getNodeName();
+                                getHierarchie(multimedia.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Context")) {
+                                mediaObjectMap.put("Context", multimedia.item(k).getTextContent());
+                            }else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Comment")) {
+                                mediaObjectMap.put("Comment", multimedia.item(k).getTextContent());
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creators")){
+                                String creatorString = "";
+                                creators = multimedia.item(k).getChildNodes();
+                                for (int l = 0; l < creators.getLength(); l++) {
+
+                                    if (creators.item(l).getNodeName().equalsIgnoreCase(prefix + "Creator")){
+                                        if (creatorString != ""){
+                                            creatorString += ", ";
+                                        }
+                                       creatorString += creators.item(l).getTextContent();
+                                    }
+                                }
+                                mediaObjectMap.put("Creators",creatorString);
+                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creator")){
+                                mediaObjectMap.put("Creators",multimedia.item(k).getTextContent());
+                            }
+                        }
+                        if (fileUri != ""){
+                            dataHolder.putGatheringMultiMediaObject(fileUri,mediaObjectMap);
+                        }
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            logger.info(e);
+        }
+
     }
 
 }

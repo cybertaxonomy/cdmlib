@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -59,7 +58,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @Controller
 @Api("taxon")
 @RequestMapping(value = {"/taxon/{uuid}"})
-public class TaxonController extends BaseController<TaxonBase, ITaxonService>
+public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>
 {
     public static final Logger logger = Logger.getLogger(TaxonController.class);
 
@@ -91,6 +90,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     }
 
 
+
     /**
      * Get the set of accepted {@link Taxon} entities for a given
      * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
@@ -104,59 +104,25 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
      *         {@link #DEFAULT_INIT_STRATEGY}
      * @throws IOException
      */
-    /**
-     * Get the set of accepted {@link Taxon} entities for a given
-     * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>
-     *
-     * @param request
-     * @param response
-     * @return a Set of {@link Taxon} entities which are initialized
-     *         using the following initialization strategy:
-     *         {@link #SYNONYMY_INIT_STRATEGY}
-     * @throws IOException
-     * @Deprecated use getAcceptedFor() instead
-     */
-    @Deprecated
-    @RequestMapping(value = "accepted/{classification_uuid}", method = RequestMethod.GET)
-    public List<Taxon> getAcceptedForWithClassificationFilter(
-                @PathVariable("uuid") UUID uuid,
-                @PathVariable("classification_uuid") UUID classification_uuid,
-                @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                HttpServletRequest request,
-                HttpServletResponse response)
-                throws IOException {
-
-
-        return getAcceptedFor(uuid, classification_uuid, pageNumber, pageSize, request, response);
-    }
-
     @RequestMapping(value = "accepted", method = RequestMethod.GET)
-    public List<Taxon> getAcceptedFor(
+    public Taxon getAcceptedFor(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "classificationFilter", required = false) UUID classification_uuid,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
         if(request != null){
-            logger.info("getAccepted() " + requestPathAndQuery(request));
+            logger.info("getAcceptedFor() " + requestPathAndQuery(request));
         }
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
-
-        List<Taxon> resultset = new ArrayList<Taxon>();
+        Taxon result = null;
         try {
-            resultset = service.listAcceptedTaxaFor(uuid, classification_uuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, getInitializationStrategy());
+            result = service.findAcceptedTaxonFor(uuid, classification_uuid, getInitializationStrategy());
         } catch (EntityNotFoundException e){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
 
-        return resultset;
+        return result;
     }
 
     @RequestMapping(value = "classifications", method = RequestMethod.GET)

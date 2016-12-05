@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -21,29 +21,28 @@ import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
- * Service interface which provides functionality to directly access database 
+ * Service interface which provides functionality to directly access database
  * related information.
- * 
+ *
  * @author a.mueller
  *
  */
 public interface IDatabaseService {
-	
+
 	/**
 	 * Returns the database URL
 	 * @return
 	 */
 	public String getUrl();
-	
+
 	/**
 	 * Returns the username.
 	 * @return
 	 */
 	public String getUsername();
-	
+
 	/**
 	 * Connect to the database with the given parameters
 	 * @param databaseTypeEnum
@@ -54,7 +53,7 @@ public interface IDatabaseService {
 	 * @return returns true if successful
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
-			String database, String username, String password, int port, String filePath, H2Mode mode, NomenclaturalCode code)  throws TermNotFoundException ;
+			String database, String username, String password, int port, String filePath, H2Mode mode)  throws TermNotFoundException ;
 
 	/**
 	 * Connect to the database with the given parameters. Uses default port.
@@ -65,7 +64,7 @@ public interface IDatabaseService {
 	 * @return returns true if successful
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password)  throws TermNotFoundException;
-	
+
 
 	/**
 	 * Connect to the database with the given parameters. Uses default port.
@@ -76,14 +75,14 @@ public interface IDatabaseService {
 
 	/**
 	 * Saves a new ICdmDatasource into the datasource config file.
-	 * 
+	 *
 	 * @param strDataSourceName
 	 * @param dataSource
 	 * @param code
 	 * @return
 	 */
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName, ICdmDataSource dataSource);
-	
+
 	/**
 	 * Update an already saved datasource in datasource config file
 	 * @param strDataSourceName
@@ -92,7 +91,7 @@ public interface IDatabaseService {
 	 * 			the dataSource to be saved
 	 * @return
 	 * 			the CdmDataSource, null if not successful
-	 * @throws DataSourceNotFoundException 
+	 * @throws DataSourceNotFoundException
 	 */
 	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource) throws DataSourceNotFoundException;
 
@@ -100,24 +99,24 @@ public interface IDatabaseService {
 	 * @param cdmApplicationController
 	 */
 	public void setApplicationController(CdmApplicationController cdmApplicationController);
-	
+
 	/**
 	 * Returns the CDM model schema version number
-	 * 
+	 *
 	 * @return the CDM model schema version number
 	 * @throws CdmSourceException , incase of an underlying SQL error
 	 */
 	public  String getDbSchemaVersion() throws CdmSourceException;
-	
+
 	/**
 	 * Returns a boolean flag to indicate whether the database is empty
-	 * 
+	 *
 	 * @return boolean flag to indicate whether the database is  empty
 	 * @throws CdmSourceException , incase of an underlying SQL error
 	 */
 	public boolean isDbEmpty() throws CdmSourceException;
-	
-	
+
+
 	public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
 
 }

@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service.config;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 
 /**
  * This class is used to configure taxonbase deletion.
@@ -61,7 +60,7 @@ public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
 
 	/**
     *
-    * If <code>true</code> all {@link SynonymRelationship relations from taxon to synonyms} will be
+    * If <code>true</code> all Synonym relations from taxon to synonyms will be
     * removed.
     * Synonyms itself will be removed depending on {@link #deleteSynonymsIfPossible}.
     * @return

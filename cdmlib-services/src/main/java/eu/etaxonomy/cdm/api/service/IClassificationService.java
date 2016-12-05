@@ -20,12 +20,15 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -60,6 +63,15 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public TaxonNode getRootNode(UUID classificationUuid);
 
     public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid);
+
+    /**
+     * Clones an existing classification including all taxa and taxon nodes.
+     * @param name
+     * @param sec
+     * @param relationshipType
+     * @return
+     */
+    public UpdateResult cloneClassification(UUID classificationUuid, String name, Reference sec, TaxonRelationshipType relationshipType);
 
     /**
      *
@@ -338,6 +350,17 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
     /**
+     * @param taxonUuids
+     * @param classificationUuid
+     * @param markerType
+     * @param value
+     * @return
+     */
+    public List<GroupedTaxonDTO> groupTaxaByMarkedParents(List<UUID> taxonUuids, UUID classificationUuid,
+            MarkerType markerType, Boolean value);
+
+
+    /**
      * Returns the most relevant data of a taxon/taxon node, including children, synonyms
      * and certain ancestors if required.
      * @param classificationUuid
@@ -349,6 +372,13 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
             Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
             NodeSortMode sortMode);
+
+    /**
+     * @param classification
+     * @return
+     */
+    public UUID saveClassification(Classification classification);
+
 
 
 }

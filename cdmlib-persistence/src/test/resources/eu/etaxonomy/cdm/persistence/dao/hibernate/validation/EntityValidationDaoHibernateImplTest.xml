@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
 	<!-- ********************* -->
 	<!-- Validation results -->
 	<!-- ********************* -->
@@ -7,7 +7,7 @@
 		VALIDATEDENTITYID="100" VALIDATEDENTITYUUID="f8de74c6-aa56-4de3-931e-87b61da0218c" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.media.Media" 
         VALIDATIONCOUNT="1" />
 	<ENTITYVALIDATION ID="2" CREATED="2008-12-10 09:56:07.0" UUID="ffc704c9-14b7-4558-ab1f-7c789b94b725"
-		VALIDATEDENTITYID="200" VALIDATEDENTITYUUID="d5b5dba7-7e9f-4408-9b53-f68c92d5a62c" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.taxon.SynonymRelationship" 
+		VALIDATEDENTITYID="200" VALIDATEDENTITYUUID="d5b5dba7-7e9f-4408-9b53-f68c92d5a62c" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.taxon.Synonym" 
         VALIDATIONCOUNT="1" />
 	<ENTITYVALIDATION ID="3" CREATED="2008-12-10 09:56:07.0" UUID="c28aa49a-7751-461b-b2e4-868c252028ad"
 		VALIDATEDENTITYID="300" VALIDATEDENTITYUUID="676aa309-2e30-4652-84eb-b1e46c626a1b" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.occurrence.GatheringEvent" 

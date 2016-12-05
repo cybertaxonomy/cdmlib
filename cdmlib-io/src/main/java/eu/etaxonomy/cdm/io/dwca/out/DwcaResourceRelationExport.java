@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -62,7 +62,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -74,17 +74,17 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 
 		PrintWriter writer = null;
 		try {
-			
+
 			writer = createPrintWriter(fileName, state);
 
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
-			
+
 			List<TaxonNode> allNodes =  getAllNodes(null);
-			
+
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				
+
 				//taxon interactions
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
 				for (TaxonDescription description : descriptions){
@@ -100,13 +100,13 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 						}
 					}
 				}
-				
+
 				//concept relationships
 				for (TaxonRelationship rel : taxon.getTaxonRelations()){
 					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
 					IdentifiableEntity<?> subject = rel.getFromTaxon();
 					IdentifiableEntity<?> object = rel.getToTaxon();
-					
+
 					if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) ){
 						//misapplied names are handled in core (tax)
 						continue;
@@ -118,7 +118,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 					}
 
 				}
-				
+
 				//Name relationship
 				//TODO
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
@@ -130,7 +130,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				Set<NameRelationship> rels = name.getNameRelations();
 				for (NameRelationship rel : rels){
 					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
-					IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName(), TaxonNameBase.class); 
+					IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName(), TaxonNameBase.class);
 					IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName(), TaxonNameBase.class);
 					boolean isInverse = false;
 					if(subject == name){
@@ -143,7 +143,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 						String message = "Both, subject and object, are not part of the relationship for " + name.getTitleCache();
 						logger.warn(message);
 					}
-					
+
 					if (! this.recordExistsUuid(rel)){
 						//????
 						handleRelationship(record, subject, object, rel, isInverse);
@@ -152,10 +152,10 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 					}
 
 				}
-				
-				
+
+
 				writer.flush();
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -175,11 +175,11 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	private void handleRelationship(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, IdentifiableEntity<?> object,
 			RelationshipBase<?,?,?> rel, boolean isInverse) {
 		RelationshipTermBase<?> type = rel.getType();
-		
+
 		record.setId(subject.getId());
 		record.setUuid(subject.getUuid());
-		
-		
+
+
 		record.setResourceRelationshipId(rel.getId());
 		record.setResourceRelationshipId(rel.getUuid());
 		//TODO id / uuid / names ??
@@ -201,17 +201,17 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		if (object.isInstanceOf(TaxonNameBase.class)){
 			record.setScientificName(object.getTitleCache());
 		}
-		
-		
+
+
 	}
 
 	private void handleInteraction(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, TaxonInteraction interaction) {
 		Taxon object = interaction.getTaxon2();
-		Map<Language, LanguageString> description = interaction.getDescriptions();
-		
+		Map<Language, LanguageString> description = interaction.getDescription();
+
 		record.setId(subject.getId());
 		record.setUuid(subject.getUuid());
-		
+
 		record.setRelatedResourceId(object.getUuid());
 		//TODO transform to controlled voc
 		if (description != null && description.get(Language.DEFAULT()) != null){
@@ -222,7 +222,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		//TODO uuid
 		record.setResourceRelationshipId(interaction.getId());
 		record.setResourceRelationshipId(interaction.getUuid());
-		
+
 		//FIXME multiple sources
 		record.setRelationshipAccordingTo(null);
 		//TODO missing
@@ -232,7 +232,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		record.setScientificName(null);
 
 	}
-	
+
 
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
@@ -246,5 +246,5 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoResourceRelation();
 	}
-	
+
 }

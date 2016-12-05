@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,9 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -72,6 +68,7 @@ import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -110,9 +107,6 @@ public class TaxonPortalController extends TaxonController
     private IDescriptionService descriptionService;
 
     @Autowired
-    private IOccurrenceService occurrenceService;
-
-    @Autowired
     private IClassificationService classificationService;
 
     @Autowired
@@ -120,9 +114,6 @@ public class TaxonPortalController extends TaxonController
 
     @Autowired
     private ITermService termService;
-
-    @Autowired
-    private IFeatureTreeService featureTreeService;
 
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -159,14 +150,13 @@ public class TaxonPortalController extends TaxonController
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
             // initialize homotypical and heterotypical groups; needs synonyms
-            "synonymRelations.$",
-            "synonymRelations.synonym.$",
-            "synonymRelations.synonym.name.status.type.representations",
-            "synonymRelations.synonym.name.nomenclaturalReference.authorship",
-            "synonymRelations.synonym.name.nomenclaturalReference.inReference",
-            "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
-            "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
-            "synonymRelations.synonym.name.combinationAuthorship.$",
+            "synonyms.$",
+            "synonyms.name.status.type.representations",
+            "synonyms.name.nomenclaturalReference.authorship",
+            "synonyms.name.nomenclaturalReference.inReference",
+//            "synonyms.name.homotypicalGroup.typifiedNames.$",
+//            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
+            "synonyms.name.combinationAuthorship.$",
 
             "name.typeDesignations",
 
@@ -174,46 +164,8 @@ public class TaxonPortalController extends TaxonController
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
-            "name.homotypicalGroup.typifiedNames.taxonBases.$"
+//            "name.homotypicalGroup.typifiedNames.taxonBases.$"
     });
-
-    private static final List<String> SYNONYMY_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
-            // initialize homotypical and heterotypical groups; needs synonyms
-            "synonymRelations.$",
-            "synonymRelations.synonym.$",
-            "synonymRelations.synonym.name.status.type.representation",
-            "synonymRelations.synonym.name.nomenclaturalReference.authorship",
-            "synonymRelations.synonym.name.nomenclaturalReference.inReference",
-            "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
-            "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
-            "synonymRelations.synonym.name.combinationAuthorship.$",
-
-            "name.homotypicalGroup.$",
-            "name.homotypicalGroup.typifiedNames.$",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
-
-            "name.homotypicalGroup.typifiedNames.taxonBases.$",
-
-            "taxonNodes.$",
-            "taxonNodes.classification.$",
-            "taxonNodes.childNodes.$"
-    });
-    private static final List<String> SIMPLE_TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
-            "*",
-            // taxon relations
-            "relationsToThisName.fromTaxon.name",
-            // the name
-            "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
-            "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference",
-
-            "taxonNodes.$",
-            "taxonNodes.classification.$",
-            "taxonNodes.childNodes.$"
-            });
 
 
     private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
@@ -236,7 +188,6 @@ public class TaxonPortalController extends TaxonController
             "fromName.nomenclaturalReference.inReference",
 
     });
-
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "$",
@@ -367,13 +318,15 @@ public class TaxonPortalController extends TaxonController
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
+        Map<String, List<?>> synonymy = new Hashtable<>();
 
         //new
         List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
         synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
         synonymyGroups.remove(0);
         synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
+
+
 
         //old
 //        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));

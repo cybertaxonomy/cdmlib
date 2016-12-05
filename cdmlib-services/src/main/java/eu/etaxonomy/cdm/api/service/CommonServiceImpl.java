@@ -104,6 +104,10 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         return this.genericDao.getReferencingObjects(referencedCdmBase);
     }
 
+    @Override
+    public Integer getReferencingObjectsCount(CdmBase referencedCdmBase){
+        return this.genericDao.getReferencingObjects(referencedCdmBase).size();
+    }
 
     @Override
     public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){

@@ -13,13 +13,12 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
@@ -45,9 +44,6 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
         this.skipTaggedName = skipTaggedName;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
-     */
     @Override
     public List<String> getIgnorePropNames() {
         return Arrays.asList(new String[]{
@@ -63,9 +59,6 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
         });
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStage(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBeanSecondStep(TaxonNameBase bean, JSONObject json, JsonConfig jsonConfig) {
         if(logger.isDebugEnabled()){

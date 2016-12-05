@@ -61,7 +61,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -80,12 +82,11 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("taxon")
 @RequestMapping(value = {"/taxon"})
-public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
+public class TaxonListController extends AbstractIdentifiableListController<TaxonBase, ITaxonService> {
 
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = DEFAULT_INIT_STRATEGY;
     protected List<String> getSimpleTaxonInitStrategy() {
-        // TODO Auto-generated method stub
         return SIMPLE_TAXON_INIT_STRATEGY;
     }
 
@@ -264,6 +265,8 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "order", required = false, defaultValue="ALPHA") NameSearchOrder order,
+            @RequestParam(value = "includeAuthors", required = false) Boolean includeAuthors,
             HttpServletRequest request,
             HttpServletResponse response
             )
@@ -275,7 +278,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator<?> config = new FindTaxaAndNamesConfiguratorImpl<>();
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
@@ -286,6 +289,8 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
         config.setTaxonPropertyPath(getSimpleTaxonInitStrategy());
         config.setNamedAreas(areas);
+        config.setDoIncludeAuthors(includeAuthors != null ? includeAuthors : Boolean.FALSE);
+        config.setOrder(order);
         if(treeUuid != null){
             Classification classification = classificationService.find(treeUuid);
             config.setClassification(classification);
@@ -465,7 +470,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @param request
      * @param response
      * @return
-     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"}, params={"subtree"})
@@ -516,9 +521,9 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @param request
      * @param response
      * @return
-     * @see IdentifiableListController#doFindByMarker(Class, UUID, Boolean, Integer, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see AbstractIdentifiableListController#doFindByMarker(Class, UUID, Boolean, Integer, Integer, Boolean, HttpServletRequest, HttpServletResponse)
      * @see TaxonListController#doFindByIdentifier(Class, UUID, String, Integer, Integer, MatchMode, Boolean, UUID, HttpServletRequest, HttpServletResponse)
-     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByMarker"}, params={"subtree"})
@@ -530,6 +535,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
+            @RequestParam(value = "titleType", required = false) TaxonTitleType titleType,
             HttpServletRequest request,
             HttpServletResponse response
             )
@@ -554,8 +560,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
-        includeEntity  = true;
-        return service.findByMarker(type, markerType, value, subTree, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+        return service.findByMarker(type, markerType, value, subTree, includeEntity, titleType, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
     @RequestMapping(value = "doFindByNameParts", method = RequestMethod.GET)

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
     <ANNOTATION ID="1" CREATED="2008-12-10 09:56:07.0" UUID="97097410-a112-4dde-a2c6-0096754076b5" UPDATED="2008-12-10 09:56:07.253" TEXT="Lorem ipsum dolor sit amet, consectetur adipiscing elit. "/>
     <ANNOTATION ID="2" CREATED="2008-12-10 09:56:07.0" UUID="80d00b2d-3ad6-4ad5-83ac-b43dd6f13d94" UPDATED="2008-12-10 09:56:07.253" TEXT="Quisque gravida, quam a pretium lobortis, nisi purus luctus ligula, sit amet vehicula ante dui a augue."/>
     <ANNOTATION ID="3" CREATED="2008-12-10 09:56:07.0" UUID="16a7ab58-3f63-4454-a648-4ef5ce05062e" UPDATED="2008-12-10 09:56:07.253" TEXT="Etiam mauris. Proin ullamcorper ullamcorper ante. Sed vitae sem a dui mattis varius. "/>

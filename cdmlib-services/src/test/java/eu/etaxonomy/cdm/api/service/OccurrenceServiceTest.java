@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -567,7 +567,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         DeleteResult deleteResult = null;
         // delete derivedUnit1
-        deleteResult = occurrenceService.isDeletable(derivedUnit, config);
+        deleteResult = occurrenceService.isDeletable(derivedUnit.getUuid(), config);
         //deletion of specimen description should always work because there are no
         //specimen description without a specimen
         assertTrue(deleteResult.toString(), deleteResult.isOk());
@@ -642,13 +642,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DeleteResult deleteResult = null;
         // check deletion of field unit -> should fail because of voucher
         // specimen (describedSpecimen) in TaxonDescription
-        deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
+        deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
 
         // allow deletion from TaxonDescription and deletion of child derivates
         config.setDeleteFromDescription(true);
         config.setDeleteChildren(true);
-        deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
+        deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
     }
 
@@ -716,13 +716,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DeleteResult deleteResult = null;
         // check deletion of field unit -> should fail because of
         // IndividualAssociation
-        deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
+        deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(individualsAssociation));
 
         // allow deletion of individuals association
         config.setDeleteFromIndividualsAssociation(true);
-        deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
+        deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
 
     }
@@ -791,14 +791,14 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DeleteResult deleteResult = null;
 
         // check deletion of specimen
-        deleteResult = occurrenceService.isDeletable(typeSpecimen, config);
+        deleteResult = occurrenceService.isDeletable(typeSpecimen.getUuid(), config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(typeDesignation));
 
         // allow deletion of type designation
         config.setDeleteFromTypeDesignation(true);
 
-        deleteResult = occurrenceService.isDeletable(typeSpecimen, config);
+        deleteResult = occurrenceService.isDeletable(typeSpecimen.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
     }
 
@@ -871,28 +871,28 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         DeleteResult deleteResult = null;
         // check deletion of DnaSample
-        deleteResult = occurrenceService.isDeletable(dnaSample, config);
+        deleteResult = occurrenceService.isDeletable(dnaSample.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
 
         // check deletion of Specimen
-        deleteResult = occurrenceService.isDeletable(derivedUnit, config);
+        deleteResult = occurrenceService.isDeletable(derivedUnit.getUuid(), config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
 
         // check deletion of fieldUnit
-        deleteResult = occurrenceService.isDeletable(fieldUnit, config);
+        deleteResult = occurrenceService.isDeletable(fieldUnit.getUuid(), config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
 
         // check deletion of Specimen
         config.setDeleteChildren(true);
-        deleteResult = occurrenceService.isDeletable(derivedUnit, config);
+        deleteResult = occurrenceService.isDeletable(derivedUnit.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
 
         // check deletion of fieldUnit
         config.setDeleteFromDescription(true);
-        deleteResult = occurrenceService.isDeletable(fieldUnit, config);
+        deleteResult = occurrenceService.isDeletable(fieldUnit.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
 
     }
@@ -1446,7 +1446,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //        //SYNONYM
         //        Synonym synonym = Synonym.NewInstance(synonymName, null);
         //        synonym.setUuid(synoymUuid);
-        //        taxon.addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        //        taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         //
         //        //IndividualsAssociation
         //        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
@@ -1488,7 +1488,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //                    "TaxonNameBase_TypeDesignationBase",
         //                    "HomotypicalGroup",
         //                    "TeamOrPersonBase",
-        //                    "SynonymRelationship",
         //                    "DeterminationEvent"
         //            }, "testAllKindsOfSpecimenAssociations");
         //        } catch (FileNotFoundException e) {
@@ -1627,7 +1626,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       //SYNONYM
       Synonym synonym = Synonym.NewInstance(synonymName, null);
       synonym.setUuid(synoymUuid);
-      taxon.addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+      taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
 
       //IndividualsAssociation
       TaxonDescription taxonDescription = TaxonDescription.NewInstance();
@@ -1669,7 +1668,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                   "TaxonNameBase_TypeDesignationBase",
                   "HomotypicalGroup",
                   "TeamOrPersonBase",
-                  "SynonymRelationship",
                   "DeterminationEvent"
           }, "testAllKindsOfSpecimenAssociations");
       } catch (FileNotFoundException e) {

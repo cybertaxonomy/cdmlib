@@ -103,6 +103,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator.setGetSiblings(false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -123,7 +124,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
-        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula glomerata", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
 
 	}
 
@@ -524,8 +525,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    for (DerivedUnit derivedUnit:derivedUnits){
+	        System.out.println(derivedUnit.getTitleCache());
+	    }
+	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	   // List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 
 	    List<FieldUnit> fieldUnitsTemp = occurrenceService.list(FieldUnit.class, null, null, null, null);
 	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());

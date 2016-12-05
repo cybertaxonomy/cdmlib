@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
     <GRANTEDAUTHORITYIMPL ID="1" UUID="5dfa2adb-2fac-48f6-abe6-c032e4a995d1" CREATED="2008-12-10 09:56:07.0" AUTHORITY="USER"/>
     <GRANTEDAUTHORITYIMPL ID="2" UUID="45f13d2c-52c2-411f-afcd-bf5768ce200d" CREATED="2008-12-10 09:56:07.0" AUTHORITY="ADMINISTRATOR"/>
     <GRANTEDAUTHORITYIMPL ID="3" UUID="d95c8c68-c99d-4124-a65f-78f0d3db3aae" CREATED="2008-12-10 09:56:07.0" AUTHORITY="OWNER"/>

@@ -166,6 +166,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public boolean isConceptRelationship(){
 		if (this.equals(MISAPPLIED_NAME_FOR())){
 			return false;
+		}else if (this.equals(INVALID_DESIGNATION_FOR())){
+            return false;
 		}else if (this.equals(TAXONOMICALLY_INCLUDED_IN())){
 			return false;
 		}

@@ -16,9 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -33,7 +31,6 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -273,14 +270,14 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 //		logger.info("# Synonym: " + taxonBaseRows);
 //		dataSet.setSynonyms(new ArrayList<Synonym>());
 //		dataSet.setSynonyms(getTaxonService().getAllSynonyms(taxonBaseRows, 0));
-
-		if (sddExpConfig.isDoRelTaxa() == true) {
-			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
-			logger.info("# Relationships");
-			List<RelationshipBase> relationList = getTaxonService().getAllRelationships(relationshipRows, 0);
-			Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
-			sddDataSet.setRelationships(relationSet);
-		}
+//
+//		if (sddExpConfig.isDoRelTaxa() == true) {
+//			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
+//			logger.info("# Relationships");
+//			List<RelationshipBase> relationList = getTaxonService()..listTaxonRelationships(relationshipRows, 0);
+//			Set<RelationshipBase> relationSet = new HashSet<>(relationList);
+//			sddDataSet.setRelationships(relationSet);
+//		}
 
 		if (sddExpConfig.isDoReferencedEntities() == true) {
 			logger.info("# Referenced Entities");

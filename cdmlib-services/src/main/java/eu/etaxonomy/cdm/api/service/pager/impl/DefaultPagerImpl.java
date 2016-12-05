@@ -60,7 +60,7 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
      */
     @Deprecated
     public DefaultPagerImpl(Integer currentIndex, Integer count, Integer pageSize,	List<T> records, String suggestion) {
-        super(currentIndex, count, pageSize, records,suggestion);
+        super(currentIndex, count, pageSize, records, suggestion);
     }
 
     @Override

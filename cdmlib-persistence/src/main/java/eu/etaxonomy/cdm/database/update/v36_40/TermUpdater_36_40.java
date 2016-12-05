@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v35_36.TermUpdater_35_36;
+import eu.etaxonomy.cdm.database.update.v40_41.TermUpdater_40_41;
 
 /**
  * @author a.mueller
@@ -48,21 +49,6 @@ public class TermUpdater_36_40 extends TermUpdaterBase {
 	protected List<ITermUpdaterStep> getUpdaterList() {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 
-//		// proles, #2793
-//		UUID uuidTerm = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
-//		String description = "Rank ''Proles''. Note: This rank is not compliant with the current nomenclatural codes";
-//		String label = "Proles";
-//		String abbrev = "prol.";
-//		String dtype = Rank.class.getSimpleName();
-//		boolean isOrdered = true;
-//		UUID uuidVocabulary = UUID.fromString("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b");
-//		UUID uuidAfterTerm = UUID.fromString("bff22f84-553a-4429-a4e7-c4b3796c3a18");
-//		UUID uuidLang = Language.uuidEnglish;
-//		RankClass rankClass = RankClass.Infraspecific;
-//		String stepName = "Add 'proles' rank to ranks";
-//		TermType termType = TermType.Rank;
-//		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm).setRankClass(rankClass));
-
 		//there are some more new vocabularies, but we trust that the term initializer will
 		//initialize and persist them correctly
 
@@ -71,7 +57,7 @@ public class TermUpdater_36_40 extends TermUpdaterBase {
 
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_40_41.NewInstance();
 	}
 
 	@Override

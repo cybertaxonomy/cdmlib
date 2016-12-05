@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -34,9 +34,9 @@ import eu.etaxonomy.cdm.model.media.Media;
 /**
  * We decided by convention to have only ONE TextData element in an image gallery and that
  * all media objects should be attached to that element.
- * 
+ *
  * Run this script to clean-up a database for which this convention was not satisfied.
- * 
+ *
  * @author n.hoffmann
  * @created Jun 9, 2010
  * @version 1.0
@@ -51,75 +51,75 @@ public class FixMultipleTextDataInImageGalleries {
 		String cdmUserName = "<user>";
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
-	
+
 	private static ICdmDataSource makeDestination(DatabaseTypeEnum dbType, String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
 		//establish connection
 		pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, pwd);
 		ICdmDataSource destination;
 		if(dbType.equals(DatabaseTypeEnum.MySQL)){
-			destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);			
+			destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
 		} else if(dbType.equals(DatabaseTypeEnum.PostgreSQL)){
-			destination = CdmDataSource.NewPostgreSQLInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);			
+			destination = CdmDataSource.NewPostgreSQLInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
 		} else {
 			//TODO others
 			throw new RuntimeException("Unsupported DatabaseType");
 		}
 		return destination;
 	}
-	
+
 	/**
 	 * @param args
-	 * @throws TermNotFoundException 
-	 * @throws DataSourceNotFoundException 
+	 * @throws TermNotFoundException
+	 * @throws DataSourceNotFoundException
 	 */
 	public static void main(String[] args) throws DataSourceNotFoundException, TermNotFoundException {
-		
+
 		CdmApplicationController applicationController = CdmApplicationController.NewInstance(dataSource());
-		
+
 		ConversationHolder conversation = applicationController.NewConversation();
 		conversation.startTransaction();
-		
+
 		IDescriptionService service = applicationController.getDescriptionService();
-		
+
 		// get all taxon descriptions
 		List<TaxonDescription> result = service.list(TaxonDescription.class, null, null, null, null);
-		
+
 		int countTaxonDescriptions = 0;
-		
+
 		for (TaxonDescription description : result){
 			// filter image galleries with more than one element
 			if(description.isImageGallery() && description.getElements().size() > 1){
 				countTaxonDescriptions++;
-				
+
 				logger.warn("Found image gallery with mulitple TextData: " + description.getElements().size());
-				
+
 				TextData newDescriptionElement = TextData.NewInstance(Feature.IMAGE());
-				
+
 				Set<DescriptionElementBase> elementsToRemove = new HashSet<DescriptionElementBase>();
-				
+
 				// consolidate media from all elements into a new element
 				for(DescriptionElementBase element : description.getElements()){
 					List<Media> medias = element.getMedia();
-					
+
 					for(Media media : medias){
 						newDescriptionElement.addMedia(media);
 						logger.warn("Consolidating media");
 					}
 					elementsToRemove.add(element);
 				}
-				
+
 				// remove old elements
 				for(DescriptionElementBase element : elementsToRemove){
 					description.removeElement(element);
-				}				
-				
+				}
+
 				// add the new element
 				description.addElement(newDescriptionElement);
-				
+
 			}
-		}	
+		}
 		conversation.commit(false);
-		
+
 		logger.warn("Descriptions Processed: "  + countTaxonDescriptions);
 	}
 }

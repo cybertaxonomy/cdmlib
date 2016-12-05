@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author ben.clark
@@ -85,7 +87,11 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 	}
 
 	@Test
-	@DataSet
+	 @DataSets({
+	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+	        @DataSet(value="ReferringObjectMetadataFactoryTest.xml")
+	    })
 	@ExpectedDataSet
 	public void testReplaceToOneProperty() throws Exception {
 		Person x = (Person)agentDao.findByUuid(person1);

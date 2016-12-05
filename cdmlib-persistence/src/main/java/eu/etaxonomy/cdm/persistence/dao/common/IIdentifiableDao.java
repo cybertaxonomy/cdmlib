@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -91,8 +92,23 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * a selection has been made.
 	 *
 	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 * @see #getUuidAndTitleCache(Class, Integer, String)
 	 */
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
+
+	/**
+	 * Like {@link #getUuidAndTitleCache(Integer, String)} but searching only on a subclass
+	 * of the type handled by the DAO.
+	 *
+	 * @param clazz the (sub)class
+	 * @param limit max number of results
+	 * @param pattern search pattern
+
+	 * @see #getUuidAndTitleCache(Integer, String)
+	 */
+	public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern);
+
+
 	/**
      * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
      * Retrieving this list is considered to be significantly faster than initializing the fully fledged buiseness
@@ -102,6 +118,16 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+
+    /**
+     * Returns the titleCache for a given object defined by uuid.
+     * @param uuid the uuid of the requested object.
+     * @param refresh if false the value as stored in the DB is returned,
+     *      otherwise it is recomputed by loading the object and calling the formatter.
+     * @return the titleCache of the requested object
+     */
+    public String getTitleCache(UUID uuid, boolean refresh);
+
 
 	 /**
 	 * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -162,7 +188,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param criteria extra restrictions to apply
 	 * @return a count of instances of type T matching the queryString
 	 */
-	public int countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	/**
 	 * Return a count of objects matching the given query string in the title, optionally filtered by class, optionally with a particular MatchMode
@@ -173,7 +199,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param criteria extra restrictions to apply
 	 * @return a count of instances of type T matching the queryString
 	 */
-	public int countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	/**
 	 * Return a count of distinct titleCache Strings for a given {@link IdentifiableEntity}, optionally filtered by class, optionally with a particular MatchMode

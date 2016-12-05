@@ -20,6 +20,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -529,15 +531,34 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public List<? extends TaxonNameBase<?,?>> findByName(String queryString,
-            MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+    public List<? extends TaxonNameBase<?,?>> findByName(boolean doIncludeAuthors,
+            String queryString, MatchMode matchmode, Integer pageSize,
+            Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
+        Criterion nameCacheLike;
         if (matchmode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString)));
+            nameCacheLike = Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString));
         } else {
-            crit.add(Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString)));
+            nameCacheLike = Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString));
         }
+        Criterion notNull = Restrictions.isNotNull("nameCache");
+        LogicalExpression nameCacheExpression = Restrictions.and(notNull, nameCacheLike);
+
+        Criterion titleCacheLike;
+        if (matchmode == MatchMode.EXACT) {
+            titleCacheLike = Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString));
+        } else {
+            titleCacheLike =Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString));
+        }
+        Criterion isNull = Restrictions.isNull("nameCache");
+        LogicalExpression titleCacheExpression = Restrictions.and(isNull, titleCacheLike);
+
+        LogicalExpression orExpression = Restrictions.or(titleCacheExpression, nameCacheExpression);
+
+        Criterion finalCriterion = doIncludeAuthors ? titleCacheLike : orExpression;
+
+        crit.add(finalCriterion);
         if(criteria != null){
             for (Criterion criterion : criteria) {
                 crit.add(criterion);
@@ -552,6 +573,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             }
         }
 
+        @SuppressWarnings("unchecked")
         List<? extends TaxonNameBase<?,?>> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -688,7 +710,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
         //TODO improve performance
-        List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
+        boolean includeAuthors = false;
+        List<? extends TaxonNameBase<?,?>> results = findByName(
+                includeAuthors,queryString, matchmode, null, null, criteria, null);
         return results.size();
 
     }
@@ -721,7 +745,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public Integer countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
+    public long countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
         return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
     }
 
@@ -740,7 +764,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
         getSession().saveOrUpdate(persistentObject);
         UUID persUuid = persistentObject.getUuid();
-        persistentObject = this.load(persUuid);
+       // persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
 
 
@@ -748,18 +772,20 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
+        homotypicalGroup = HibernateProxyHelper.deproxy(homotypicalGroup, HomotypicalGroup.class);
 
         if (homotypicalGroup != null){
             if (homotypicalGroup.getTypifiedNames().contains(persistentObject)){
                 homotypicalGroup.getTypifiedNames().remove(persistentObject);
                 homotypicalGroupDao.saveOrUpdate(homotypicalGroup);
             }
-            if (homotypicalGroup.getTypifiedNames().isEmpty()){
-        		homotypicalGroupDao.delete(homotypicalGroup);
-        	}
+
         }
 
         getSession().delete(persistentObject);
+        if (homotypicalGroup.getTypifiedNames().isEmpty()){
+            homotypicalGroupDao.delete(homotypicalGroup);
+        }
         return persistentObject.getUuid();
     }
 
@@ -791,8 +817,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
         return null;
     }
-@Override
-public List<HashMap<String,String>> getNameRecords(){
+
+    @Override
+    public List<HashMap<String,String>> getNameRecords(){
     	String sql= "SELECT"
     			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
     			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
@@ -816,8 +843,7 @@ public List<HashMap<String,String>> getNameRecords(){
     			+ "	LEFT OUTER JOIN TaxonNameBase nameType ON tdb.typename_id = nameType.id"
     			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameType.nomenclaturalreference_id = nameTypeRef.id"
     			+ "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
-    			+ "	LEFT OUTER JOIN SynonymRelationship sr ON tb.id = sr.relatedfrom_id"
-    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = sr.relatedto_id"
+    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = tb.acceptedTaxon_id"
     			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
     			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
 
@@ -864,9 +890,6 @@ public List<HashMap<String,String>> getNameRecords(){
 	   }
 
 		return nameRecords;
-
-
-
     }
 
 

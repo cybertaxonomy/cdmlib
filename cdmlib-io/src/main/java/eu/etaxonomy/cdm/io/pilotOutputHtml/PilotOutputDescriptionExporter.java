@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -28,7 +26,6 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -51,9 +48,9 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 
 	private String ioName = null;
 
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public PilotOutputDescriptionExporter() {
 		super();
@@ -63,7 +60,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of theclassification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -72,7 +69,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 	protected void doInvoke(PilotOutputExportState state){
 //		protected boolean doInvoke(IExportConfigurator config,
 //		Map<String, MapWrapper<? extends CdmBase>> stores) {
-	
+
 		PilotOutputExportConfigurator sddExpConfig = state.getConfig();
 		String dbname = sddExpConfig.getSource().getName();
     	String fileName = sddExpConfig.getDestinationNameString();
@@ -114,9 +111,9 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		} catch (Exception e) {
 			logger.error("Marshalling error");
 			e.printStackTrace();
-		} 
+		}
 		commitTransaction(txStatus);
-		
+
 		return;
 
 	}
@@ -127,7 +124,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		PilotOutputExportConfigurator sddExpConfig = (PilotOutputExportConfigurator)config;
 		final int MAX_ROWS = 50000;
 		int numberOfRows = sddExpConfig.getMaxRows();
-		// TODO: 
+		// TODO:
 		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		int agentRows = numberOfRows;
@@ -205,21 +202,21 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 			}
 		}
 
-		// TODO: 
+		// TODO:
 		// retrieve taxa and synonyms separately
 		// need correct count for taxa and synonyms
 //		if (taxonBaseRows == 0) { taxonBaseRows = getTaxonService().count(TaxonBase.class); }
 //		logger.info("# Synonym: " + taxonBaseRows);
 //		dataSet.setSynonyms(new ArrayList<Synonym>());
 //		dataSet.setSynonyms(getTaxonService().getAllSynonyms(taxonBaseRows, 0));
-
-		if (sddExpConfig.isDoRelTaxa() == true) {
-			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
-			logger.info("# Relationships");
-			List<RelationshipBase> relationList = getTaxonService().getAllRelationships(relationshipRows, 0);
-			Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
-			sddDataSet.setRelationships(relationSet);
-		}
+//
+//		if (sddExpConfig.isDoRelTaxa() == true) {
+//			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
+//			logger.info("# Relationships");
+//			List<RelationshipBase> relationList = getTaxonService().getAllRelationships(relationshipRows, 0);
+//			Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
+//			sddDataSet.setRelationships(relationSet);
+//		}
 
 		if (sddExpConfig.isDoReferencedEntities() == true) {
 			logger.info("# Referenced Entities");
@@ -262,5 +259,5 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 	protected boolean isIgnore(PilotOutputExportState state) {
 		return false;
 	}
-	
+
 }

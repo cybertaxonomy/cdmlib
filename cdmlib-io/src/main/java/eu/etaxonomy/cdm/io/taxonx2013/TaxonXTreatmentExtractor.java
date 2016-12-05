@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -1579,7 +1579,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                 sourceHandler.addSource(refMods, synonym);
-                acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(),refMods, null);
+                acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
             }
         }
         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -1755,7 +1755,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(),refMods, null);
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
                     }
                 }
 
@@ -1772,7 +1772,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     nameTBF = getTaxonNameBase(nameTBF,nametosave,statusType);
                      */
                     TaxonNameBase nameTBF = currentMyName.getTaxonNameBase();
-                    Synonym synonym = Synonym.NewInstance(nameTBF, refMods);
+                    Synonym synonym = Synonym.NewInstance(nameTBF, re);
 
                     Set<Synonym> synonymsSet= acceptedTaxon.getSynonyms();
                     //                    System.out.println(synonym.getName()+" -- "+synonym.getSec());
@@ -1788,7 +1788,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(),re, null);
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
                     }
 
                 }
@@ -1864,7 +1864,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(),refMods, null);
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
                     }
                 }
             }
@@ -2145,11 +2145,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 sourceHandler.addSource(refMods, nameToBeFilled);
 
                                 if (nameToBeFilled.getNomenclaturalReference() == null) {
-                                    acceptedTaxon= new Taxon(nameToBeFilled,refMods);
+                                    acceptedTaxon= Taxon.NewInstance(nameToBeFilled,refMods);
                                     //System.out.println("NEW ACCEPTED HERE "+nameToBeFilled);
                                 }
                                 else {
-                                    acceptedTaxon= new Taxon(nameToBeFilled,(Reference) nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
+                                    acceptedTaxon= Taxon.NewInstance(nameToBeFilled,(Reference) nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
                                     //System.out.println("NEW ACCEPTED HERE2 "+nameToBeFilled);
                                 }
 
@@ -3657,7 +3657,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 	                        } else {
 	                            logger.info("Found the same name but from another type (taxon/synonym)");
 	                            TaxonNameBase<?,?> existingTnb = getTaxon().getName();
-                                tmpTaxonBase = new Synonym(existingTnb, refMods);
+                                tmpTaxonBase = Synonym.NewInstance(existingTnb, refMods);
                                 importer.getTaxonService().saveOrUpdate(tmpTaxonBase);
                                 exist =true;
                             }
@@ -3766,7 +3766,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         Synonym castTest=CdmBase.deproxy(tmpTaxonBase, Synonym.class);
                     }catch(Exception e){
                         TaxonNameBase<?,?> existingTnb = tmpTaxonBase.getName();
-                        Synonym castTest = new Synonym(existingTnb, refMods);
+                        Synonym castTest = Synonym.NewInstance(existingTnb, refMods);
                         importer.getTaxonService().saveOrUpdate(castTest);
                         tmpTaxonBase=CdmBase.deproxy(castTest, Synonym.class);
                     }

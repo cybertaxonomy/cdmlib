@@ -11,26 +11,32 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
@@ -44,11 +50,15 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -73,7 +83,8 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "microReferenceForParentChildRelation",
     "countChildren",
     "agentRelations",
-    "synonymToBeUsed"
+    "synonymToBeUsed",
+    "excludedNote"
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
@@ -127,8 +138,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+    //@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    private List<TaxonNode> childNodes = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     //see https://dev.e-taxonomy.eu/trac/ticket/4200
@@ -153,8 +164,25 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<TaxonNodeAgentRelation>();
+    private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
+    @XmlAttribute(name= "unplaced")
+    private boolean unplaced = false;
+    public boolean isUnplaced() {return unplaced;}
+    public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
+
+    @XmlAttribute(name= "excluded")
+    private boolean excluded = false;
+    public boolean isExcluded() {return excluded;}
+    public void setExcluded(boolean excluded) {this.excluded = excluded;}
+
+    @XmlElement(name = "excludedNote")
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @MapKeyJoinColumn(name="excludedNote_mapkey_id")
+    @JoinTable(name = "TaxonNode_ExcludedNote")  //to make possible to add also unplacedNote
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private Map<Language,LanguageString> excludedNote = new HashMap<>();
 
 //	private Taxon originalConcept;
 //	//or
@@ -299,6 +327,77 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         this.parent = parent;
     }
 
+    // *************** Excluded Note ***************
+
+    /**
+     * Returns the {@link MultilanguageText multi-language text} to add a note to the
+     * excluded flag. The different {@link LanguageString language strings}
+     * contained in the multi-language text should all have the same meaning.
+     * @see #getExcludedNote()
+     * @see #putExcludedNote(Language, String)
+     */
+    public Map<Language,LanguageString> getExcludedNote(){
+        return this.excludedNote;
+    }
+
+    /**
+     * Returns the excluded note string in the given {@link Language language}
+     *
+     * @param language  the language in which the description string looked for is formulated
+     * @see             #getExcludedNote()
+     * @see             #putExcludedNote(Language, String)
+     */
+    public String getExcludedNote(Language language){
+        LanguageString languageString = excludedNote.get(language);
+        if (languageString == null){
+            return null;
+        }else{
+            return languageString.getText();
+        }
+    }
+
+    /**
+     * Adds a translated {@link LanguageString text in a particular language}
+     * to the {@link MultilanguageText multilanguage text} used to add a note to
+     * the {@link #isExcluded() excluded} flag.
+     *
+     * @param excludedNote   the language string adding a note to the excluded flag
+     *                      in a particular language
+     * @see                 #getExcludedNote()
+     * @see                 #putExcludedNote(String, Language)
+     */
+    public void putExcludedNote(LanguageString excludedNote){
+        this.excludedNote.put(excludedNote.getLanguage(), excludedNote);
+    }
+    /**
+     * Creates a {@link LanguageString language string} based on the given text string
+     * and the given {@link Language language} and adds it to the {@link MultilanguageText
+     * multi-language text} used to annotate the excluded flag.
+     *
+     * @param text      the string annotating the excluded flag
+     *                  in a particular language
+     * @param language  the language in which the text string is formulated
+     * @see             #getExcludedNote()
+     * @see             #putExcludedNote(LanguageString)
+     * @see             #removeExcludedNote(Language)
+     */
+    public void putExcludedNote(Language language, String text){
+        this.excludedNote.put(language, LanguageString.NewInstance(text, language));
+    }
+
+    /**
+     * Removes from the {@link MultilanguageText multilanguage text} used to annotate
+     * the excluded flag the one {@link LanguageString language string}
+     * with the given {@link Language language}.
+     *
+     * @param  lang the language in which the language string to be removed
+     *       has been formulated
+     * @see         #getExcludedNote()
+     */
+    public void removeExcludedNote(Language lang){
+        this.excludedNote.remove(lang);
+    }
+
 // ****************** Agent Relations ****************************/
 
 
@@ -441,15 +540,17 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-        Taxon taxon = node.getTaxon();
+        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon(), Taxon.class);
+        node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
         node.setTaxon(null);
-        taxon.removeTaxonNode(node);
+
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
+            HibernateProxyHelper.deproxy(childNode, TaxonNode.class);
             node.deleteChildNode(childNode);
         }
-
+        taxon.removeTaxonNode(node);
         return result;
     }
 
@@ -617,14 +718,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         //FIXME also set the tree index here for performance reasons
         classification = HibernateProxyHelper.deproxy(classification, Classification.class);
         setClassificationRecursively(classification);
-
         // add this node to the parent's child nodes
         parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
-        HHH_9751_Util.removeAllNull(parentChildren);
-        parent.updateSortIndex(0);
+//        HHH_9751_Util.removeAllNull(parentChildren);
+//        parent.updateSortIndex(0);
         if (index > parent.getChildNodes().size()){
             index = parent.getChildNodes().size();
         }
@@ -889,14 +989,23 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         try{
             TaxonNode result = (TaxonNode)super.clone();
             result.getTaxon().addTaxonNode(result);
-            result.childNodes = new ArrayList<TaxonNode>();
+
+            //childNodes
+            result.childNodes = new ArrayList<>();
             result.countChildren = 0;
 
             //agents
-            result.agentRelations = new HashSet<TaxonNodeAgentRelation>();
+            result.agentRelations = new HashSet<>();
             for (TaxonNodeAgentRelation rel : this.agentRelations){
                 result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
             }
+
+            //excludedNote
+            result.excludedNote = new HashMap<>();
+            for(Language lang : this.excludedNote.keySet()){
+                result.excludedNote.put(lang, this.excludedNote.get(lang));
+            }
+
 
             return result;
         }catch (CloneNotSupportedException e) {

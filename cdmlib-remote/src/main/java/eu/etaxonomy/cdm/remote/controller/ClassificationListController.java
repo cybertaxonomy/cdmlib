@@ -29,7 +29,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("classification")
 @RequestMapping(value = {"/classification"})
-public class ClassificationListController extends IdentifiableListController<Classification,IClassificationService> {
+public class ClassificationListController extends AbstractIdentifiableListController<Classification,IClassificationService> {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger

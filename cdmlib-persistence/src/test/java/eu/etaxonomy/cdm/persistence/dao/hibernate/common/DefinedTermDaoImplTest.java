@@ -311,6 +311,9 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
          Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
 
 
+         List<DefinedTerm> languages = this.dao.listByTermType(TermType.Language, null, null, null, null);
+         Assert.assertNotNull(languages);
+         Assert.assertEquals(485, languages.size());
 	 }
 
 

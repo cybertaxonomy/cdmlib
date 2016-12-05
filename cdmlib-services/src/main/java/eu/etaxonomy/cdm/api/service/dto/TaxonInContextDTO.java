@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
  *
  */
 public class TaxonInContextDTO {
+
     private UUID classificationUuid;
     private UUID taxonNodeUuid;
     private UUID taxonUuid;
@@ -50,23 +51,15 @@ public class TaxonInContextDTO {
     private UUID acceptedTaxonUuid;
     private String acceptedNameLabel;
 
-
     private String acceptedTaxonLabel;
 
 
-    /**
-     * @return the acceptedTaxonLabel
-     */
-    public String getAcceptedTaxonLabel() {
-        return acceptedTaxonLabel;
-    }
+    //parent taxon
+    private UUID parentTaxonUuid;
+    private String parentNameLabel;
+    private String parentTaxonLabel;
 
-    /**
-     * @param acceptedTaxonLabel the acceptedTaxonLabel to set
-     */
-    public void setAcceptedTaxonLabel(String acceptedTaxonLabel) {
-        this.acceptedTaxonLabel = acceptedTaxonLabel;
-    }
+
 
     private List<EntityDTO<Taxon>> children = new ArrayList<>();
 
@@ -78,181 +71,54 @@ public class TaxonInContextDTO {
 
 //********************* GETTER / SETTER ****************************/
 
-    /**
-     * @return the classificationUuid
-     */
-    public UUID getClassificationUuid() {
-        return classificationUuid;
-    }
+    public UUID getClassificationUuid() {return classificationUuid;}
+    public void setClassificationUuid(UUID classificationUuid) {this.classificationUuid = classificationUuid;}
 
-    /**
-     * @param classificationUuid the classificationUuid to set
-     */
-    public void setClassificationUuid(UUID classificationUuid) {
-        this.classificationUuid = classificationUuid;
-    }
+    public String getAcceptedTaxonLabel() {return acceptedTaxonLabel;}
+    public void setAcceptedTaxonLabel(String acceptedTaxonLabel) {this.acceptedTaxonLabel = acceptedTaxonLabel;}
 
-    /**
-     * @param taxonNodeUuid the taxonNodeUuid to set
-     */
-    public void setTaxonNodeUuid(UUID taxonNodeUuid) {
-        this.taxonNodeUuid = taxonNodeUuid;
-    }
+    public void setTaxonNodeUuid(UUID taxonNodeUuid) {this.taxonNodeUuid = taxonNodeUuid;}
+    public void setTaxonUuid(UUID taxonUuid) {this.taxonUuid = taxonUuid;}
 
-    /**
-     * @param taxonUuid the taxonUuid to set
-     */
-    public void setTaxonUuid(UUID taxonUuid) {
-        this.taxonUuid = taxonUuid;
-    }
+    public void setNameUuid(UUID nameUuid) {this.nameUuid = nameUuid;}
 
-    /**
-     * @param nameUuid the nameUuid to set
-     */
-    public void setNameUuid(UUID nameUuid) {
-        this.nameUuid = nameUuid;
-    }
+    public void setRankUuid(UUID rankUuid) {this.rankUuid = rankUuid;}
+    public void setRankLabel(String rankLabel) {this.rankLabel = rankLabel;}
 
-    /**
-     * @param rankUuid the rankUuid to set
-     */
-    public void setRankUuid(UUID rankUuid) {
-        this.rankUuid = rankUuid;
-    }
+    public void setGenusOrUninomial(String genusOrUninomial) {this.genusOrUninomial = genusOrUninomial;}
 
-    /**
-     * @param rankLabel the rankLabel to set
-     */
-    public void setRankLabel(String rankLabel) {
-        this.rankLabel = rankLabel;
-    }
+    public void setInfraGenericEpithet(String infraGenericEpithet) {this.infraGenericEpithet = infraGenericEpithet;}
 
-    /**
-     * @param genusOrUninomial the genusOrUninomial to set
-     */
-    public void setGenusOrUninomial(String genusOrUninomial) {
-        this.genusOrUninomial = genusOrUninomial;
-    }
+    public void setSpeciesEpithet(String speciesEpithet) {this.speciesEpithet = speciesEpithet;}
 
-    /**
-     * @param infragenericEpithet the infragenericEpithet to set
-     */
-    public void setInfraGenericEpithet(String infraGenericEpithet) {
-        this.infraGenericEpithet = infraGenericEpithet;
-    }
+    public void setInfraSpecificEpithet(String infraSpecificEpithet) {this.infraSpecificEpithet = infraSpecificEpithet;}
 
-    /**
-     * @param speciesEpithet the speciesEpithet to set
-     */
-    public void setSpeciesEpithet(String speciesEpithet) {
-        this.speciesEpithet = speciesEpithet;
-    }
+    public void setAuthorship(String authorship) {this.authorship = authorship;}
 
-    /**
-     * @param infraspecificEpithet the infraspecificEpithet to set
-     */
-    public void setInfraSpecificEpithet(String infraSpecificEpithet) {
-        this.infraSpecificEpithet = infraSpecificEpithet;
-    }
+    public void setSecundumUuid(UUID secundumUuid) {this.secundumUuid = secundumUuid;}
 
-    /**
-     * @param authorship the authorship to set
-     */
-    public void setAuthorship(String authorship) {
-        this.authorship = authorship;
-    }
+    public void setSecundumLabel(String secundumLabel) {this.secundumLabel = secundumLabel;}
 
-    /**
-     * @param secundumUuid the secundumUuid to set
-     */
-    public void setSecundumUuid(UUID secundumUuid) {
-        this.secundumUuid = secundumUuid;
-    }
+    public void setChildren(List<EntityDTO<Taxon>> children) {this.children = children;}
 
-    /**
-     * @param secundumLabel the secundumLabel to set
-     */
-    public void setSecundumLabel(String secundumLabel) {
-        this.secundumLabel = secundumLabel;
-    }
+    public void setMarkedAncestors(List<MarkedEntityDTO<Taxon>> markedAncestors) {this.markedAncestors = markedAncestors;}
 
-    /**
-     * @param children the children to set
-     */
-    public void setChildren(List<EntityDTO<Taxon>> children) {
-        this.children = children;
-    }
+    public UUID getTaxonNodeUuid() {return taxonNodeUuid;}
 
+    public UUID getTaxonUuid() {return taxonUuid;}
 
-    /**
-     * @param markedAncestors the markedAncestors to set
-     */
-    public void setMarkedAncestors(List<MarkedEntityDTO<Taxon>> markedAncestors) {
-        this.markedAncestors = markedAncestors;
-    }
+    public UUID getNameUuid() {return nameUuid;}
 
-    /**
-     * @return the taxonNodeUuid
-     */
-    public UUID getTaxonNodeUuid() {
-        return taxonNodeUuid;
-    }
+    public UUID getRankUuid() {return rankUuid;}
 
-    /**
-     * @return the taxonUuid
-     */
-    public UUID getTaxonUuid() {
-        return taxonUuid;
-    }
+    public String getRankLabel() {return rankLabel;}
 
-    /**
-     * @return the nameUuid
-     */
-    public UUID getNameUuid() {
-        return nameUuid;
-    }
+    public String getGenusOrUninomial() {return genusOrUninomial;}
 
-    /**
-     * @return the rankUuid
-     */
-    public UUID getRankUuid() {
-        return rankUuid;
-    }
+    public String getInfraGenericEpithet() {return infraGenericEpithet;}
+    public String getSpeciesEpithet() {return speciesEpithet;}
 
-    /**
-     * @return the rankLabel
-     */
-    public String getRankLabel() {
-        return rankLabel;
-    }
-
-    /**
-     * @return the genusOrUninomial
-     */
-    public String getGenusOrUninomial() {
-        return genusOrUninomial;
-    }
-
-    /**
-     * @return the infragenericEpithet
-     */
-    public String getInfraGenericEpithet() {
-        return infraGenericEpithet;
-    }
-
-    /**
-     * @return the speciesEpithet
-     */
-    public String getSpeciesEpithet() {
-        return speciesEpithet;
-    }
-
-    /**
-     * @return the infraspecificEpithet
-     */
-    public String getInfraSpecificEpithet() {
-        return infraSpecificEpithet;
-    }
+    public String getInfraSpecificEpithet() {return infraSpecificEpithet;}
 
     /**
      * @return the authorship
@@ -389,6 +255,27 @@ public class TaxonInContextDTO {
         this.taxonStatus = taxonStatus;
     }
 
+    public UUID getParentTaxonUuid() {
+        return parentTaxonUuid;
+    }
+    public void setParentTaxonUuid(UUID parentTaxonUuid) {
+        this.parentTaxonUuid = parentTaxonUuid;
+    }
+
+    public String getParentNameLabel() {
+        return parentNameLabel;
+    }
+    public void setParentNameLabel(String parentNameLabel) {
+        this.parentNameLabel = parentNameLabel;
+    }
+
+    public String getParentTaxonLabel() {
+        return parentTaxonLabel;
+    }
+    public void setParentTaxonLabel(String parentTaxonLabel) {
+        this.parentTaxonLabel = parentTaxonLabel;
+    }
+
 // *************************** ADDER *******************************/
 
     public void addChild(EntityDTO<Taxon> childDto){
@@ -403,5 +290,7 @@ public class TaxonInContextDTO {
     public void addMarkedAncestor(MarkedEntityDTO<Taxon> markedAncestor){
         this.markedAncestors.add(markedAncestor);
     }
+
+
 
 }

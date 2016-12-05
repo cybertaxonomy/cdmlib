@@ -118,7 +118,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PolytomousKey_Scope")
     @NotNull
-//    @Cascade({CascadeType.MERGE}) remove cascade #5755
+ //   @Cascade({CascadeType.MERGE}) remove cascade #5755
     private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 
     @XmlElement(name = "Root")

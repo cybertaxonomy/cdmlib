@@ -217,15 +217,9 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		return compareResult < 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.IUpdater#getNextUpdater()
-	 */
 	@Override
 	public abstract U getNextUpdater();
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.IUpdater#getPreviousUpdater()
-	 */
 	@Override
 	public abstract U getPreviousUpdater();
 

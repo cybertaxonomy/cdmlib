@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.function;
 
@@ -24,39 +24,39 @@ public class Datasource {
 		String username = "";
 		String pwd = "";
 		String server = "87.106.XXX.XXX";
-		
+
 		CdmPersistentDataSource defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", CdmDataSource.NewMySqlInstance(server , "cdm_edit_cichorieae",port, username, pwd, null));
+				"mysql_cichorieae", CdmDataSource.NewMySqlInstance(server , "cdm_edit_cichorieae",port, username, pwd));
 
 //		logger.warn(defaultDataSource.getDatabase());
 //		logger.warn(defaultDataSource.getPort());
 //		logger.warn(defaultDataSource.getServer());
-		
+
 		defaultDataSource = CdmPersistentDataSource.save(
 				"mysql_cichorieae", CdmDataSource.NewSqlServer2005Instance(server, "cdm_edit_cichorieae", port, username, pwd));
 
 		logger.warn(defaultDataSource.getDatabase());
 		logger.warn(defaultDataSource.getPort());
 		logger.warn(defaultDataSource.getServer());
-		
-		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_edit_cichorieae", 3306, username, "XXX", null));
-		
-		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", CdmDataSource.NewMySqlInstance(server, "cdm_edit_cichorieae", port, username, pwd, null));
 
-		
+		defaultDataSource = CdmPersistentDataSource.save(
+				"mysql_cichorieae", CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_edit_cichorieae", 3306, username, "XXX"));
+
+		defaultDataSource = CdmPersistentDataSource.save(
+				"mysql_cichorieae", CdmDataSource.NewMySqlInstance(server, "cdm_edit_cichorieae", port, username, pwd));
+
+
 		try {
 			logger.warn("Connect: " + defaultDataSource.testConnection());
 		} catch (Exception e) {
 			logger.warn("Could not connect", e);
 		}
-		
-		
-		
+
+
+
 		System.out.println("\nEnd Datasource");
 	}
-	
+
 	/**
 	 * @param args
 	 */

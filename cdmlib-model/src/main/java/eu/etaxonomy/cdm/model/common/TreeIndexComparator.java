@@ -7,24 +7,22 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.model.common;
 
 import java.util.Comparator;
-
-import eu.etaxonomy.cdm.model.common.ITreeNode;
 
 /**
  * @author a.mueller
  * @date 05.07.2016
  *
- * Comparator for treeindexes.
+ * Comparator for tree indexes.
  * Compares the tree indexes node by node, sorted by node number.
  * If one index is shorter than the other one but
  */
-public class TreeIndexComparator implements Comparator<String>{
+public class TreeIndexComparator implements Comparator<TreeIndex>{
 
     @Override
-    public int compare(String treeIndex1, String treeIndex2) {
+    public int compare(TreeIndex treeIndex1, TreeIndex treeIndex2) {
         if (treeIndex1 == null && treeIndex2 == null){
             return 0;
         }else if (treeIndex1 == null){
@@ -36,8 +34,8 @@ public class TreeIndexComparator implements Comparator<String>{
             return 0;
         }
 
-        String[] splits1 = treeIndex1.split(ITreeNode.separator);
-        String[] splits2 = treeIndex2.split(ITreeNode.separator);
+        String[] splits1 = treeIndex1.toString().split(ITreeNode.separator);
+        String[] splits2 = treeIndex2.toString().split(ITreeNode.separator);
 
 
         for (int i=0; i < splits1.length; i++){
@@ -52,6 +50,5 @@ public class TreeIndexComparator implements Comparator<String>{
         return -1;
 
     }
-
 
 }

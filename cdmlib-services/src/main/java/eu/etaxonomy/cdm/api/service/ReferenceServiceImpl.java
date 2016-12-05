@@ -94,7 +94,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
     @Override
     public DeleteResult delete(Reference reference) {
         //check whether the reference is used somewhere
-        DeleteResult result = isDeletable(reference, null);
+        DeleteResult result = isDeletable(reference.getUuid(), null);
 
         if (result.isOk()){
             dao.delete(reference);

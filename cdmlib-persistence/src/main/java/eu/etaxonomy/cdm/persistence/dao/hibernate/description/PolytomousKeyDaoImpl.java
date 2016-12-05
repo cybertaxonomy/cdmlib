@@ -61,10 +61,11 @@ public class PolytomousKeyDaoImpl extends IdentifiableDaoBase<PolytomousKey> imp
 
 	@Override
     public UUID delete(PolytomousKey key){
-
+	    key = this.load(key.getUuid());
 	    key = HibernateProxyHelper.deproxy(key, PolytomousKey.class);
 	    if (key.getRoot() != null){
 	       PolytomousKeyNode root = HibernateProxyHelper.deproxy(key.getRoot(), PolytomousKeyNode.class);
+	       key.setRoot(null);
 	       nodeDao.delete(root);
 
 	    }

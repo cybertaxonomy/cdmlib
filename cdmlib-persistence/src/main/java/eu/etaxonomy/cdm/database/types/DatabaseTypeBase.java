@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.NomenclaturalCodeAwareDataSource;
+import eu.etaxonomy.cdm.database.DbcpSaveDataSource;
 
 
 /**
@@ -93,7 +93,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 
 	@Override
 	public Class<? extends DataSource> getDataSourceClass() {
-		return NomenclaturalCodeAwareDataSource.class;
+		return DbcpSaveDataSource.class;
 	} 
 	
 	@Override

@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.sdd.out.SDDCdmExporter;
 import eu.etaxonomy.cdm.io.sdd.out.SDDExportConfigurator;
 import eu.etaxonomy.cdm.io.sdd.out.SDDExportState;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -139,8 +138,8 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, code);
         String dataSourceName = "cdm_test2";
         String password = CdmUtils.readInputLine("Password: ");
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_test2", 3306, "ljm", password, NomenclaturalCode.ICNAFP);
-        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_test", 3306, "edit", password, NomenclaturalCode.ICBN);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_test2", 3306, "ljm", password);
+        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_test", 3306, "edit", password);
         boolean connectionAvailable;
         try {
             connectionAvailable = dataSource.testConnection();
@@ -148,10 +147,8 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
             Assert.assertTrue("Testdatabase is not available", connectionAvailable);
 
         } catch (ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         } catch (SQLException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -159,9 +156,9 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         try {
             loadedDataSource = CdmPersistentDataSource.NewInstance(dataSourceName);
 //			CdmApplicationController.NewInstance(loadedDataSource, DbSchemaValidation.CREATE);
-            NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
-
-            Assert.assertEquals(NomenclaturalCode.ICNAFP, loadedCode);
+//            NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
+//
+//            Assert.assertEquals(NomenclaturalCode.ICNAFP, loadedCode);
         } catch (DataSourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -177,6 +174,6 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

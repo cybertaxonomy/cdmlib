@@ -35,11 +35,12 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -211,9 +212,11 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         MarkerType markerType2 = (MarkerType)termService.find(uuidMarkerTypeDoubtful);
         Assert.assertNotNull(markerType2);
 
+        TaxonTitleType titleType = TaxonTitleType.TAXON;
+
         MarkerType markerType = markerType1;
         Pager<MarkedEntityDTO<Taxon>> taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue,
-                rootNode, true, null, null, null);
+                rootNode, true, titleType, null, null, null);
         Assert.assertEquals("Result size for 'marker1=true' should be 1", Long.valueOf(1), taxonPager.getCount());
         Assert.assertEquals("Result size for 'marker1=true' should be 1", 1, taxonPager.getRecords().size());
         MarkedEntityDTO<Taxon> dto = taxonPager.getRecords().get(0);
@@ -223,29 +226,30 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         Assert.assertNotNull("the CDM entity in the dto must not be empty if includeEntity=true", dto.getCdmEntity().getEntity());
         Assert.assertEquals(5000, dto.getCdmEntity().getEntity().getId());
 
+
         markerValue = false;
-        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
         Assert.assertEquals("Result size for 'marker1=false' should be 0", Long.valueOf(0), taxonPager.getCount());
 
         markerValue = true;
         markerType = noMarkerType;
-        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
         Assert.assertEquals("Result size for not existing marker type should be 0", Long.valueOf(0), taxonPager.getCount());
 
         markerType = markerType2;
-        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
         Assert.assertEquals("Result size for markerType2 should be 0", Long.valueOf(0), taxonPager.getCount());
 
         rootNode = null;
         markerType = markerType1;
-        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, null, null, null);
+        taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
         Assert.assertEquals("Result size for no subtree should be 2", Long.valueOf(2), taxonPager.getCount());
 
-        Pager<MarkedEntityDTO<TaxonBase>> taxonBasePager = taxonService.findByMarker(TaxonBase.class, markerType, markerValue, rootNode, false, null, null, null);
+        Pager<MarkedEntityDTO<TaxonBase>> taxonBasePager = taxonService.findByMarker(TaxonBase.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
         Assert.assertEquals("Result size for taxa and synonyms without subtree filter with flag = true should be 3", Long.valueOf(3), taxonBasePager.getCount());
 
         markerValue = null;
-        taxonBasePager = taxonService.findByMarker(TaxonBase.class, markerType, markerValue, rootNode, false, null, null, null);
+        taxonBasePager = taxonService.findByMarker(TaxonBase.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
         Assert.assertEquals("Result size for taxa and synonyms without subtree filter with any flag value should be 4", Long.valueOf(4), taxonBasePager.getCount());
 
         markerValue = true;
@@ -284,7 +288,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         classification.addChildTaxon(tb, null, null);
         classificationService.saveOrUpdate(classification);
 
-        tb2.addSynonymName(null, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF());
 
         commitAndStartNewTransaction(null);
 
@@ -296,8 +300,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		        "REFERENCE",
 		        "CLASSIFICATION", "TAXONNODE",
 		        "HOMOTYPICALGROUP",
-		        "TERMVOCABULARY",
-		        "SYNONYMRELATIONSHIP"
+		        "TERMVOCABULARY"
 		 }, "xxxx");
 
     }

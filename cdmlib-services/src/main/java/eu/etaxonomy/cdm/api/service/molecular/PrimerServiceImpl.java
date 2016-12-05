@@ -53,13 +53,13 @@ public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao
 
     @Override
     public Pager<Primer> findByLabel(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
+        long numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
 
         List<Primer> results = new ArrayList<Primer>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
                results = dao.findByTitle(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-         return new DefaultPagerImpl<Primer>(pageNumber, numberOfResults, pageSize, results);
+         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 }

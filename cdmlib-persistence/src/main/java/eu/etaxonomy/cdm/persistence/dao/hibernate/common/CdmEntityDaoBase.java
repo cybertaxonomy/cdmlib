@@ -373,8 +373,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         crit.addOrder(Order.desc("created"));
         @SuppressWarnings("unchecked")
 		List<T> results = crit.list();
-       Set<T> resultSet = new HashSet<>();
-       resultSet.addAll(results);
+        Set<T> resultSet = new HashSet<>();
+        resultSet.addAll(results);
         if (resultSet.isEmpty()){
             return null;
         }else{
@@ -839,7 +839,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
 
-    protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+    protected long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
         Criteria criteria = null;
 
         if(clazz == null) {
@@ -866,8 +866,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         criteria.setProjection(Projections.rowCount());
 
-//        List<T> result = criteria.list();
-        return ((Number)criteria.uniqueResult()).intValue();
+        return ((Number)criteria.uniqueResult()).longValue();
     }
 
 

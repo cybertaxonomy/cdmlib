@@ -1748,7 +1748,8 @@ public class DerivedUnitFacade {
 	}
 
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
-		getFieldUnit(true).setKindOfUnit(kindOfUnit);
+	    this.derivedUnit.setKindOfUnit(kindOfUnit);
+		//getFieldUnit(true).setKindOfUnit(kindOfUnit);
 	}
 
 
@@ -1779,7 +1780,7 @@ public class DerivedUnitFacade {
 	}
 
 
-	private void setFieldUnit(FieldUnit fieldUnit) {
+	public void setFieldUnit(FieldUnit fieldUnit) {
 		this.fieldUnit = fieldUnit;
 		if (fieldUnit != null){
 			if (config.isFirePropertyChangeEvents()){

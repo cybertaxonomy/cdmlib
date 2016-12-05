@@ -76,6 +76,8 @@
              <value>IdentifiableSource.citation</value>
 
              <value>SearchResult.entity</value>
+             
+             <value>CdmEntity.entity</value>
          </set>
        </property>
      </bean>
@@ -302,7 +304,13 @@
             class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonBase">
-          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonBaseBeanProcessor" />
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonBaseBeanProcessor">
+          <property name="excludes">
+             <set value-type="java.lang.String">
+                 <value>acceptedTaxon</value><!-- #6211 to avoid infinite loops in the synonymy -->
+             </set>
+          </property>
+         </bean>  
         </entry>
         <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
           <bean

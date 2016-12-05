@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -77,7 +76,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "TaxonInteraction_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+    private Map<Language,LanguageString> description = new HashMap<>();
 
 	@XmlElement(name = "Taxon2")
 	@XmlIDREF
@@ -135,7 +134,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * <i>this</i> taxon interaction. The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.
 	 */
-	public Map<Language,LanguageString> getDescriptions(){
+	public Map<Language,LanguageString> getDescription(){
 		return this.description;
 	}
 
@@ -146,30 +145,12 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * @see				#getDescriptions()
 	 */
 	public String getDescription(Language language){
-	   Hibernate.initialize(description);
-		LanguageString languageString = description.get(language);
+	    LanguageString languageString = description.get(language);
 		if (languageString == null){
 			return null;
 		}else{
 			return languageString.getText();
 		}
-	}
-
-	/**
-	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the {@link MultilanguageText multilanguage text} used to describe
-	 * <i>this</i> taxon interaction.
-	 *
-	 * @param description	the language string describing the taxon interaction
-	 * 						in a particular language
-	 * @see    	   			#getDescription()
-	 * @see    	   			#putDescription(String, Language)
-	 * @deprecated			should follow the put semantic of maps, this method will be removed in v4.0
-	 * 						Use the {@link #putDescription(LanguageString) putDescription} method instead
-	 */
-	@Deprecated
-	public void addDescription(LanguageString description){
-		this.putDescription(description);
 	}
 
 	/**
@@ -201,23 +182,6 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	}
 
 	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-	 * used to describe <i>this</i> taxon interaction.
-	 *
-	 * @param text		the string describing the taxon interaction
-	 * 					in a particular language
-	 * @param language	the language in which the text string is formulated
-	 * @see    	   		#getDescription()
-	 * @see    	   		#addDescription(LanguageString)
-	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-	 * 					Use the {@link #putDescription(Language, String) putDescription} method instead
-	 */
-	@Deprecated
-	public void addDescription(String text, Language language){
-		this.putDescription(language, text);
-	}
-	/**
 	 * Removes from the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> taxon interaction the one {@link LanguageString language string}
 	 * with the given {@link Language language}.
@@ -248,13 +212,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 			TaxonInteraction result = (TaxonInteraction)super.clone();
 
 			//description
-			result.description = new HashMap<Language, LanguageString>();
-			for (Language language : getDescriptions().keySet()){
-				//TODO clone needed? See also IndividualsAssociation
-				LanguageString newLanguageString = (LanguageString)getDescriptions().get(language).clone();
-				result.description.put(language, newLanguageString);
-			}
-
+			result.description = cloneLanguageString(getDescription());
 
 			return result;
 			//no changes to: taxon2
@@ -264,4 +222,5 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 			return null;
 		}
 	}
+
 }

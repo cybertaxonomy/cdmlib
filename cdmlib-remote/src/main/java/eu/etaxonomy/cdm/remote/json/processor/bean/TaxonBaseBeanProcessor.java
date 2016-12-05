@@ -13,12 +13,11 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
@@ -44,19 +43,12 @@ public class TaxonBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonBase> 
         this.skipTaggedTitle = skipTaggedTitle;
     }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
-	 */
 	@Override
 	public List<String> getIgnorePropNames() {
 		return Arrays.asList(new String[]{
-				"taxonomicParent", //TODO put in json-config ignore list ?
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStage(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-	 */
 	@Override
 	public JSONObject processBeanSecondStep(TaxonBase bean, JSONObject json, JsonConfig jsonConfig) {
 	    if(!skipTaggedTitle) {

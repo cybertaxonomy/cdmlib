@@ -93,6 +93,7 @@ public class BioCaseQueryGenerator {
     private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgentsText";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
     private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
+    private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"Associations/UnitAssociation/AssociatedUnitID";
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -146,7 +147,11 @@ public class BioCaseQueryGenerator {
             }
         }
         if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
-            addLikeFilter(elAnd, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
+            Element elOr = new Element(OR);
+            addLikeFilter(elOr, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
+            addLikeFilter(elOr, query.accessionNumber, CAT_PATH_ABCD_2_0);
+            addLikeFilter(elOr, query.accessionNumber, UNIT_ID_PATH_ABCD_2_0);
+            elAnd.addContent(elOr);
         }
         if(query.collector!=null && !query.collector.trim().isEmpty()){
             addLikeFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
@@ -169,6 +174,56 @@ public class BioCaseQueryGenerator {
         }
         if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
             addLikeFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
+        }
+
+        elSearch.addContent(elCount);
+        elCount.addContent(FALSE);
+
+        return document;
+    }
+
+    /**
+     * Generates an XML query according to the BioCASe protocol.
+     * @param query the {@link OccurenceQuery} to transform to XML
+     * @param abcdSchema The abcdSchema with which you want to query
+     * @return the query XML {@link Document} according to the BioCASe protocol
+     */
+    public static Document generateXMLQueryForSiblings(OccurenceQuery query, String abcdSchema){
+        if(abcdSchema==null){
+            abcdSchema = ABCD_SCHEMA_2_0;
+        }
+        Document document = new Document();
+        Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
+        Element elHeader = new Element(HEADER);
+        Element elType = new Element(TYPE);
+        Element elSearch = new Element(SEARCH);
+        Element elRequestFormat = new Element(REQUEST_FORMAT);
+        Element elResponseFormat = new Element(RESPONSE_FORMAT);
+        Element elFilter = new Element(FILTER);
+        Element elAnd = new Element(AND);
+
+        Element elCount = new Element(COUNT);
+
+        document.setRootElement(elRequest);
+        elRequest.addContent(elHeader);
+        elHeader.addContent(elType);
+        elType.addContent(SEARCH);
+
+        elRequest.addContent(elSearch);
+        elSearch.addContent(elRequestFormat);
+        elRequestFormat.addContent(abcdSchema);
+
+        elSearch.addContent(elResponseFormat);
+        elResponseFormat.setAttribute(START, "0");
+        elResponseFormat.setAttribute(LIMIT, "100");
+        elResponseFormat.addContent(abcdSchema);
+
+        elSearch.addContent(elFilter);
+        elFilter.addContent(elAnd);
+
+
+        if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
+            addLikeFilter(elAnd, query.accessionNumber, ASSOCIATION_UNIT_ID_ABCD_2_0);
         }
 
         elSearch.addContent(elCount);

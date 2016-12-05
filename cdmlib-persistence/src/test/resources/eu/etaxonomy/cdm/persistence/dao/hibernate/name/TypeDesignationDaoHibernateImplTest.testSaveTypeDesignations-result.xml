@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <TAXONNAMEBASE DTYPE="ZoologicalName" UUID="7969821b-a2cf-4d01-95ec-6a5ed0ca3f69" TITLECACHE="Acherontia lachesis (Fabricius, 1798)" PROTECTEDTITLECACHE="true"  />
   <TAXONNAMEBASE DTYPE="ZoologicalName" UUID="61b1dcae-8aa6-478a-bcd6-080cf0eb6ad7" TITLECACHE="Acherontia styx Westwood, 1847" PROTECTEDTITLECACHE="true" />
   <TAXONNAMEBASE DTYPE="BotanicalName"  UUID="c9e7124b-2e60-4df2-996c-b7d024c85d33" TITLECACHE="Cryptocoryne x purpurea nothovar borneoensis N.Jacobsen, Bastm. &amp; Yuji Sasaki" PROTECTEDTITLECACHE="true" />

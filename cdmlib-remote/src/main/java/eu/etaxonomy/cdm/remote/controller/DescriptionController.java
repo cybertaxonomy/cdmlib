@@ -56,7 +56,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("description")
 @RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})
-public class DescriptionController extends BaseController<DescriptionBase, IDescriptionService>
+public class DescriptionController extends AbstractIdentifiableController<DescriptionBase, IDescriptionService>
 {
     @Autowired
     private IFeatureTreeService featureTreeService;

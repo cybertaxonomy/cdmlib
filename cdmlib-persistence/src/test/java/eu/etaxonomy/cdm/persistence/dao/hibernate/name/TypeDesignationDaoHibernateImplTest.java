@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.babadshanjan
  * @author a.mueller
  * @created 25.05.2009
- * @version 1.1
  */
 public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
@@ -301,7 +300,8 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 			this.endTransaction();
 			Assert.fail("desig1 should not be deletable as it is still connected to name2");
 		}catch (Exception e){
-			//OK
+		    //this.setComplete();
+            this.endTransaction();
 			this.startNewTransaction();
 		}
 		name2 = (BotanicalName)nameDao.load(name2.getUuid());

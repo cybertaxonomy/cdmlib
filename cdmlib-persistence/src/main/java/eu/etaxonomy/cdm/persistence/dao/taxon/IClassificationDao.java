@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -79,7 +82,7 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @param propertyPaths
      * @return
      */
-    List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex,
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
     /**
@@ -87,7 +90,7 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @param classification
      * @return
      */
-    Long countSiblingsOf(Taxon taxon, Classification classification);
+    public Long countSiblingsOf(Taxon taxon, Classification classification);
 
     /**
      * Returns the tree indexes for a given set of taxon uuids as a map.
@@ -95,7 +98,14 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @param originalTaxonUuids
      * @return
      */
-    Map<UUID, String> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
+    public Map<UUID, TreeIndex> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
+
+    /**
+     * @param markerType
+     * @param value
+     * @return
+     */
+    public Set<TreeIndex> getMarkedTreeIndexes(MarkerType markerType, Boolean value);
 
     /**
      * Returns a map of taxon uuids mapping to taxon node uuids in the given classification

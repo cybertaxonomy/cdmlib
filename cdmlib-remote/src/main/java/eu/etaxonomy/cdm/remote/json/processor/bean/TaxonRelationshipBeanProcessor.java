@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author a.kohlbecker
@@ -22,17 +22,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  */
 public class TaxonRelationshipBeanProcessor extends AbstractCdmBeanProcessor<TaxonRelationship> {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
-     */
     @Override
     public List<String> getIgnorePropNames() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBeanSecondStep(TaxonRelationship bean, JSONObject json, JsonConfig jsonConfig) {
 

@@ -32,6 +32,11 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 
 	private final String referencedTable;
 
+	/**
+	 * Add ForeignKey.
+	 * @param referencedTable
+	 * @return
+	 */
 	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull, String referencedTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable, null, notNull, referencedTable);
 	}

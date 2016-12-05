@@ -151,7 +151,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
 
     	try{
-    		result = this.isDeletable(name, config);
+    		result = this.isDeletable(name.getUuid(), config);
         }catch(Exception e){
         	result.addException(e);
         	result.setError();
@@ -186,14 +186,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	        return result;
         }
 
-
-
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#deleteTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.TypeDesignationBase)
-     */
     @Override
     public DeleteResult deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
     	if(typeDesignation!=null && typeDesignation.getId()!=0){
@@ -296,23 +291,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 //********************* METHODS ****************************************************************//
 
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByName
-     */
-    @Override
-    @Deprecated
-    public List getNamesByName(String name){
-        return super.findCdmObjectsByTitle(name);
-    }
 
     /**
      * TODO candidate for harmonization
      * new name findByName
      */
     @Override
+    @Deprecated
     public List<NonViralName> getNamesByNameCache(String nameCache){
-        List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
+        boolean includeAuthors = false;
+        List result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
     }
 
@@ -337,18 +325,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     @Override
     public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByName(nameCache, matchMode, null, null, null ,propertyPaths);
+        List result = dao.findByName(false, nameCache, matchMode, null, null, null ,propertyPaths);
         return result;
-    }
-
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * Replace by load(UUID, propertyPaths)
-     */
-    @Override
-    @Deprecated
-    public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
-        return (NonViralName)dao.findByUuid(uuid, null ,propertyPaths);
     }
 
     /**
@@ -357,26 +335,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     public List getNamesByName(String name, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(name, sessionObject);
-    }
-
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
-     */
-    @Override
-    @Deprecated
-    public List findNamesByTitle(String title){
-        return super.findCdmObjectsByTitle(title);
-    }
-
-    /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle()
-     */
-    @Override
-    @Deprecated
-    public List findNamesByTitle(String title, CdmBase sessionObject){
-        return super.findCdmObjectsByTitle(title, sessionObject);
     }
 
     /**
@@ -814,14 +772,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
-        Integer numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
+         Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 
-         List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
+         List<TaxonNameBase> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                 results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
 
-          return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
+         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -863,9 +821,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
-    	//name = this.load(name.getUuid());
+    	TaxonNameBase name = this.load(nameUUID);
     	NameDeletionConfigurator nameConfig = null;
     	if (config instanceof NameDeletionConfigurator){
     		nameConfig = (NameDeletionConfigurator) config;
@@ -905,7 +863,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //hybrid relationships
         if (name.isInstanceOf(NonViralName.class)){
             NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
-            if (! nvn.getHybridParentRelations().isEmpty()){
+            Set<HybridRelationship> parentHybridRelations = nvn.getHybridParentRelations();
+            //Hibernate.initialize(parentHybridRelations);
+            if (! parentHybridRelations.isEmpty()){
             	result.addException(new Exception("Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion."));
             	result.setAbort();
             }
@@ -929,10 +889,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             }
             //NameTypeDesignation#typeName
             else if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-                result.addException(new ReferencedObjectUndeletableException(message));
-                result.addRelatedObject(referencingObject);
-                result.setAbort();
+                NameTypeDesignation typeDesignation = HibernateProxyHelper.deproxy(referencingObject, NameTypeDesignation.class);
+
+                if (typeDesignation.getTypeName().equals(name)){
+                    String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+                    result.addException(new ReferencedObjectUndeletableException(message));
+                    result.addRelatedObject(referencingObject);
+                    result.setAbort();
+                }
             }
             //DeterminationEvent#taxonName
             else if (referencingObject.isInstanceOf(DeterminationEvent.class)){

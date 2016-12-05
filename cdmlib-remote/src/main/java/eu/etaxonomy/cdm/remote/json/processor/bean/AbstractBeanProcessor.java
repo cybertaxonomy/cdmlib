@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -24,13 +30,6 @@ import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonValueProcessor;
 import net.sf.json.processors.JsonVerifier;
 import net.sf.json.util.PropertyFilter;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 
 /**
  * @author a.kohlbecker
@@ -172,8 +171,8 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
     }
 
     /**
-     * This method is called ate the end of {@link #processBean(Object, JsonConfig)} just before the JSONObject is returned.
-     * By overriding this method it is possible to to further processing.
+     * This method is called at the end of {@link #processBean(Object, JsonConfig)} just before the JSONObject is returned.
+     * By overriding this method it is possible to do further processing.
      * <p>
      * <b>See also {@link #getIgnorePropNames()}!</b>
      *

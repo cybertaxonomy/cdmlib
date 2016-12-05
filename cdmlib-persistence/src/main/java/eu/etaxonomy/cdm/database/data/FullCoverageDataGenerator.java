@@ -127,8 +127,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -632,11 +631,9 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(taxon);
 
 		TaxonNameBase<?,?> synName = BotanicalName.NewInstance(Rank.GENUS());
-		Synonym syn = Synonym.NewInstance(synName, sec);
-		SynonymRelationship synRel = taxon.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(),
-				getReference(), "123");
+		Synonym syn = Synonym.NewInstance(synName, sec, "123");
+		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 		taxon.setDoubtful(true);
-		handleAnnotatableEntity(synRel);
 		handleIdentifiableEntity(syn);
 
 
@@ -644,8 +641,6 @@ public class FullCoverageDataGenerator {
 		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(),
 				sec, "444");
 		taxon.setTaxonStatusUnknown(true);
-		taxon.setUnplaced(true);
-		taxon.setExcluded(true);
 		handleAnnotatableEntity(taxRel);
 
 
@@ -663,6 +658,8 @@ public class FullCoverageDataGenerator {
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
+	    node.setUnplaced(true);
+	    node.setExcluded(true);
 
 		cdmBases.add(taxon);
 		cdmBases.add(concept);
@@ -785,7 +782,6 @@ public class FullCoverageDataGenerator {
 		event.setInstitution(inst);
 		handleAnnotatableEntity(event);
 		handleEventBase(event);
-
 
 		//SpecOrObservationBase
 		fieldUnit.setSex(DefinedTerm.SEX_FEMALE());

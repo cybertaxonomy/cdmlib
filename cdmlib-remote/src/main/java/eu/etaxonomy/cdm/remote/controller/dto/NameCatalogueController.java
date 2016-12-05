@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller.dto;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -58,7 +56,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -74,6 +71,7 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+import io.swagger.annotations.Api;
 
 /**
  * The controller class for the namespace 'name_catalogue'. This web service namespace
@@ -304,7 +302,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query"})
+    @RequestMapping(value = { "" }, method = {RequestMethod.GET,RequestMethod.POST} , params = {"query"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
     return doGetNameSearch(queries, DEFAULT_SEARCH_TYPE, DEFAULT_MAX_NB_FOR_EXACT_SEARCH, request, response);
@@ -337,7 +335,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query", "type"})
+    @RequestMapping(value = { "" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"query", "type"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
             @RequestParam(value = "hits", required = false, defaultValue = DEFAULT_MAX_NB_FOR_EXACT_SEARCH) String hits,
@@ -670,7 +668,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "name" }, method = RequestMethod.GET, params = {"nameUuid"})
+    @RequestMapping(value = { "name" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"nameUuid"})
     public ModelAndView doGetNameInformation(@RequestParam(value = "nameUuid", required = true) String[] nameUuids,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
@@ -680,8 +678,8 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
-            NonViralName nvn = service.findNameByUuid(UUID.fromString(nameUuid),
-                        NAME_INFORMATION_INIT_STRATEGY);
+            NonViralName<?> nvn = CdmBase.deproxy(service.load(UUID.fromString(nameUuid),
+                        NAME_INFORMATION_INIT_STRATEGY), NonViralName.class);
 
             // if search is successful then get related information, else return error
             if (nvn != null) {
@@ -797,7 +795,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET, params = {"taxonUuid"})
+    @RequestMapping(value = { "taxon" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"taxonUuid"})
     public ModelAndView doGetTaxonInformation(
             @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
             @RequestParam(value = "classification", required = false, defaultValue = CLASSIFICATION_DEFAULT) String classificationType,
@@ -810,7 +808,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetTaxonInformation()" + request.getRequestURI() + " for taxon uuid \""
                     + taxonUuid);
             // find name by uuid
-            TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
+            TaxonBase<?> tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
                     TAXON_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
@@ -822,11 +820,11 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     Taxon taxon = (Taxon) tb;
                     // build classification map
                     boolean includeUuids = Arrays.asList(includes).contains(INCLUDE_CLUUIDS);
-                    Map classificationMap = getClassification(taxon, classificationType, includeUuids);
+                    Map<String,Map> classificationMap = getClassification(taxon, classificationType, includeUuids);
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
-                    NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+                    NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
                     String secTitle = "" ;
                     String modified = "";
@@ -839,6 +837,11 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     Set<IdentifiableSource> sources = taxon.getSources();
                     String[] didname = getDatasetIdName(sources);
 
+                    String lsidString = null;
+                    if( taxon.getLsid() != null) {
+                        lsidString = taxon.getLsid().toString();
+                    }
+
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
@@ -850,20 +853,20 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             didname[1],
                             secTitle,
                             modified,
-                            taxon.getLsid().toString());
+                            lsidString
+                     );
 
 
-                    Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
+                    Set<Synonym> syns = taxon.getSynonyms();
                     // add synonyms (if exists) to taxon information object
-                    for (SynonymRelationship sr : synRelationships) {
-                        Synonym syn = sr.getSynonym();
+                    for (Synonym syn : syns) {
                         String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
-                        TaxonNameBase synnvn = syn.getName();
+                        TaxonNameBase<?,?> synnvn = syn.getName();
                         String name = synnvn.getTitleCache();
                         String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
-                        String relLabel = sr.getType()
+                        String relLabel = syn.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
 
@@ -989,19 +992,18 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             modified, null);
                     // add accepted taxa (if exists) to taxon information object
 
-                    Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-                    for (SynonymRelationship sr : synRelationships) {
-                        Taxon accTaxon = sr.getAcceptedTaxon();
+                    Taxon accTaxon = synonym.getAcceptedTaxon();
+                    if (accTaxon != null){
                         String uuid = accTaxon.getUuid().toString();
                         logger.info("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();
                         logger.info("taxon title cache : " + accTaxon.getTitleCache());
 
-                        TaxonNameBase accnvn = accTaxon.getName();
+                        TaxonNameBase<?,?> accnvn = accTaxon.getName();
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
-                        String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
+                        String relLabel = synonym.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
                         dt = accTaxon.getUpdated();
                         modified = fmt.print(dt);
@@ -1022,7 +1024,6 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                                 secTitle,
                                 modified);
                     }
-
                 }
                 tiList.add(ti);
             } else {
@@ -1095,7 +1096,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query"})
+    @RequestMapping(value = { "accepted" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"query"})
     public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         return doGetAcceptedNameSearch(queries, DEFAULT_SEARCH_TYPE, request, response);
@@ -1125,7 +1126,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query", "type"})
+    @RequestMapping(value = { "accepted" }, method = {RequestMethod.GET,RequestMethod.POST}, params = {"query", "type"})
     public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -1178,12 +1179,11 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                         // if synonym then get accepted taxa.
                         if (tb instanceof Synonym) {
                             Synonym synonym = (Synonym) tb;
-                            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-                            for (SynonymRelationship sr : synRelationships) {
-                                Taxon accTaxon = sr.getAcceptedTaxon();
-                                NonViralName accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
-                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
-                                ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
+                            Taxon accTaxon = synonym.getAcceptedTaxon();
+                            if (accTaxon != null) {
+                                NonViralName<?> accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
+                                Map<String, Map> classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
+                                ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(), classificationMap);
                             }
                         } else {
                             Taxon taxon = (Taxon)tb;

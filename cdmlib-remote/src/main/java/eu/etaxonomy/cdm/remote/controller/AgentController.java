@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -40,6 +37,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * The AgentController class is a Spring MVC Controller.
@@ -73,7 +71,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 @Controller
 @Api(value = "agent")
 @RequestMapping(value = {"/agent/{uuid}"})
-public class AgentController extends BaseController<AgentBase, IAgentService>
+public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService>
 {
 
     private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -89,9 +87,6 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
     @Autowired
     private ITaxonNodeService nodeService;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IAgentService service) {
@@ -105,31 +100,6 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
         binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
     }
 
-    /**
-     * This method is only needed for
-     * {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase} or sub classes
-     * which are also handled by this controller.
-     *
-     * The method
-     * {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache() } is
-     * annotated with @Transient and thus it is not automatically made available
-     * by the BaseController.
-     *
-     * @param uuid
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = {"titleCache"}, method = RequestMethod.GET)
-    public ModelAndView doGetTitleCache(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ModelAndView mv = new ModelAndView();
-        AgentBase<?> agentbase = service.load(uuid);
-        mv.addObject(agentbase.getTitleCache());
-        return mv;
-
-    }
     /**
      *
      * See also {@link TaxonController#doGetTaxonNodeAgentRelations(UUID, UUID, Integer, Integer, HttpServletRequest, HttpServletResponse)}

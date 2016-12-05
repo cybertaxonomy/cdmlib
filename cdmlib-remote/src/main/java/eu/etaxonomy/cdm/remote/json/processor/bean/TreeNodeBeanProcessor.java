@@ -12,10 +12,10 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Collection;
 import java.util.List;
 
+import eu.etaxonomy.cdm.common.TreeNode;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.common.TreeNode;
 
 /**
  * @author a.kohlbecker
@@ -24,18 +24,12 @@ import eu.etaxonomy.cdm.common.TreeNode;
  */
 public class TreeNodeBeanProcessor extends AbstractBeanProcessor<TreeNode> {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#getIgnorePropNames()
-     */
     @Override
-    public List getIgnorePropNames() {
+    public List<String> getIgnorePropNames() {
         // nothing to ignore by default
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     @SuppressWarnings("rawtypes")
     public JSONObject processBeanSecondStep(TreeNode bean, JSONObject json, JsonConfig jsonConfig) {

@@ -160,12 +160,14 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	    PolytomousKeyNode root = key.getRoot();
 
 
-	    DeleteResult result = isDeletable(key, null);
-
+	    DeleteResult result = isDeletable(key.getUuid(), null);
+	    DeleteResult resultRoot = new DeleteResult();
 	    if (result.isOk()){
     	    try{
     	        if (root != null){
-    	            nodeService.delete(root.getUuid(), true);
+    	           // root.setKey(null);
+    	            resultRoot = nodeService.delete(root.getUuid(), true);
+
     	        }
     	    }catch(Exception e){
     	        result.addException(e);
@@ -173,7 +175,9 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
     	        return result;
     	    }
     	    try{
-    	        dao.delete(key);
+    	        if (resultRoot.isOk()){
+    	            dao.delete(key);
+    	        }
     	    }catch(Exception e){
                 result.addException(e);
                 result.setAbort();
@@ -184,8 +188,9 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	}
 
 	@Override
-    public DeleteResult isDeletable(PolytomousKey key, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID keyUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
+        PolytomousKey key = this.load(keyUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(key);
         if (references != null){
            Iterator<CdmBase> iterator = references.iterator();

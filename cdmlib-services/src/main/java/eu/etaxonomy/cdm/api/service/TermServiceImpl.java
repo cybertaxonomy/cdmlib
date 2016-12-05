@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -273,7 +274,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
 
-		DeleteResult result = isDeletable(term, config);
+		DeleteResult result = isDeletable(term.getUuid(), config);
 		//CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 		try {
 			//generalization of
@@ -412,8 +413,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	}
 
 	@Override
-    public DeleteResult isDeletable(DefinedTermBase term, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID termUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
+        TermBase term = load(termUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(term);
         if (references != null){
             result.addRelatedObjects(references);

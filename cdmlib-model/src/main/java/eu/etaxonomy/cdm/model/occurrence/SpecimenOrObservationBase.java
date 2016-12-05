@@ -49,10 +49,16 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.SortableField;
+import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
+import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -69,6 +75,9 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * type figures are observations with at least a figure object in media
@@ -78,6 +87,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
     "recordBasis",
+    "identityCache",
+    "protectedIdentityCache",
     "publish",
     "preferredStableUri",
     "sex",
@@ -93,7 +104,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }),
+        @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnNames = { "identityCache" }) })
 public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S>
                 implements IMultiLanguageTextHolder, IDescribable<DescriptionBase>, IPublishable  {
     private static final long serialVersionUID = 6932680139334408031L;
@@ -185,7 +197,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded
     @NotNull
-    protected Map<Language,LanguageString> definition = new HashMap<Language,LanguageString>();
+    protected Map<Language,LanguageString> definition = new HashMap<>();
 
     // events that created derivedUnits from this unit
     @XmlElementWrapper(name = "DerivationEvents")
@@ -199,6 +211,25 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     @XmlAttribute(name = "publish")
     private boolean publish = true;
+
+    @XmlElement(name = "IdentityCache", required = false)
+    @XmlJavaTypeAdapter(FormattedTextAdapter.class)
+    @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
+//    @NotEmpty(groups = Level2.class) // implictly NotNull
+    @Fields({
+        @Field(store=Store.YES),
+        //  If the field is only needed for sorting and nothing else, you may configure it as
+        //  un-indexed and un-stored, thus avoid unnecessary index growth.
+        @Field(name = "identityCache__sort", analyze = Analyze.NO, store=Store.NO, index = org.hibernate.search.annotations.Index.NO)
+    })
+    @SortableField(forField = "identityCache__sort")
+    @FieldBridge(impl=StripHtmlBridge.class)
+    private String identityCache;
+
+
+    //if true identityCache will not be automatically generated/updated
+    @XmlElement(name = "ProtectedIdentityCache")
+    private boolean protectedIdentityCache;
 
 
 //********************************** CONSTRUCTOR *********************************/
@@ -234,6 +265,32 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         this.recordBasis = recordBasis;
     }
 
+
+    /**
+     * @return the identityCache
+     */
+    public String getIdentityCache() {
+        return identityCache;
+    }
+    /**
+     * @param identityCache the identityCache to set
+     */
+    public void setIdentityCache(String identityCache) {
+        this.identityCache = identityCache;
+    }
+
+    /**
+     * @return the protectedIdentityCache
+     */
+    public boolean isProtectedIdentityCache() {
+        return protectedIdentityCache;
+    }
+    /**
+     * @param protectedIdentityCache the protectedIdentityCache to set
+     */
+    public void setProtectedIdentityCache(boolean protectedIdentityCache) {
+        this.protectedIdentityCache = protectedIdentityCache;
+    }
 
     /**@see #preferredStableUri */
     public URI getPreferredStableUri() {
@@ -537,11 +594,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         result = (SpecimenOrObservationBase)super.clone();
 
         //defininion (description, languageString)
-        result.definition = new HashMap<Language,LanguageString>();
-        for(LanguageString languageString : this.definition.values()) {
-            LanguageString newLanguageString = (LanguageString)languageString.clone();
-            result.putDefinition(newLanguageString);
-        }
+        result.definition = cloneLanguageString(this.definition);
 
         //sex
         result.setSex(this.sex);

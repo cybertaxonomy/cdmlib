@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Controller
 @Api("reference")
 @RequestMapping(value = {"/reference"})
-public class ReferenceListController extends IdentifiableListController<Reference, IReferenceService> {
+public class ReferenceListController extends AbstractIdentifiableListController<Reference, IReferenceService> {
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)

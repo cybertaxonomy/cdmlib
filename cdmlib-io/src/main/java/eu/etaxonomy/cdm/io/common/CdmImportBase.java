@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +29,9 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -115,6 +117,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	private static final String UuidLabel = "UUID or label";
 	private static final String UuidLabelAbbrev = "UUID, label or abbreviation";
 	private static final String UuidAbbrev = "UUID or abbreviation";
+
+	private final static String authorSeparator = ", ";
+    private final static String lastAuthorSeparator = " & ";
 
 	public enum TermMatchMode{
 		UUID_ONLY(0, UuidOnly)
@@ -269,12 +274,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return null;
 	}
 
-	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
-		return getMarkerType(state, uuid, label, text, labelAbbrev, null);
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev){
+		return getMarkerType(state, uuid, label, description, labelAbbrev, null, null);
+	}
+
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc){
+	    return this.getMarkerType(state, uuid, label, description, labelAbbrev, voc, null);
 	}
 
 
-	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc){
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc, Language language){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -283,6 +292,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			markerType = (MarkerType)getTermService().find(uuid);
 			if (markerType == null){
 				markerType = MarkerType.NewInstance(description, label, labelAbbrev);
+				if (language != null){
+				    markerType.getRepresentations().iterator().next().setLanguage(language);
+				}
 				markerType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
@@ -648,7 +660,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	protected DefinedTerm getKindOfUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		if (uuid == null){
-			return null;
+		    uuid = UUID.randomUUID();
 		}
 		DefinedTerm unit = state.getKindOfUnit(uuid);
 		if (unit == null){
@@ -1208,26 +1220,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return CdmBase.deproxy(taxonBase, Taxon.class);
 		}else if(taxonBase.isInstanceOf(Synonym.class)){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-			Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
-			if (acceptedTaxa.size() == 0){
-				return null;
-			}else if (acceptedTaxa.size() == 1){
-				return acceptedTaxa.iterator().next();
-			}else{
-				Reference sec = synonym.getSec();
-				if (sec != null){
-					Set<Taxon> taxaWithSameSec = new HashSet<Taxon>();
-					for (Taxon taxon: acceptedTaxa){
-						if (sec.equals(taxon.getSec())){
-							taxaWithSameSec.add(taxon);
-						}
-					}
-					if (taxaWithSameSec.size() == 1){
-						return taxaWithSameSec.iterator().next();
-					}
-				}
-				throw new IllegalStateException("Can't define the one accepted taxon for a synonym out of multiple accept taxa");
-			}
+			Taxon acceptedTaxon = synonym.getAcceptedTaxon();
+			return acceptedTaxon;
 		}else{
 			throw new IllegalStateException("Unknown TaxonBase subclass: " + taxonBase.getClass().getName());
 		}
@@ -1345,5 +1339,51 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         // TODO Auto-generated method stub
         return null;
     }
+
+	public static TeamOrPersonBase<?> parseAuthorString(String authorName){
+        TeamOrPersonBase<?> author = null;
+        String[] teamMembers = authorName.split(authorSeparator);
+        String lastMember;
+        String[] lastMembers;
+        Person teamMember;
+        if (teamMembers.length>1){
+            lastMember = teamMembers[teamMembers.length -1];
+            lastMembers = lastMember.split(lastAuthorSeparator);
+            teamMembers[teamMembers.length -1] = "";
+            author = Team.NewInstance();
+            for(String member:teamMembers){
+                if (!member.equals("")){
+                    teamMember = Person.NewInstance();
+                    teamMember.setTitleCache(member, true);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+            if (lastMembers != null){
+                for(String member:lastMembers){
+                   teamMember = Person.NewInstance();
+                   teamMember.setTitleCache(member, true);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+
+        } else {
+            teamMembers = authorName.split(lastAuthorSeparator);
+            if (teamMembers.length>1){
+                author = Team.NewInstance();
+                for(String member:teamMembers){
+                  teamMember = Person.NewInstance();
+                  teamMember.setTitleCache(member, true);
+                  ((Team)author).addTeamMember(teamMember);
+
+                }
+            }else{
+                author = Person.NewInstance();
+                author.setTitleCache(authorName, true);
+            }
+        }
+        author.getTitleCache();
+        return author;
+    }
+
 
 }

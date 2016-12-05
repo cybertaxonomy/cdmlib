@@ -251,7 +251,7 @@ public class CdmUtils {
 
 
     /**
-     * Concatenates an array of strings using the defined seperator.<BR>
+     * Concatenates an array of strings using the defined separator.<BR>
      * <code>Null</code> values are interpreted as empty strings.<BR>
      * If all strings are <code>null</code> then <code>null</code> is returned.
      * @param strings

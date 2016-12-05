@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   	<TERMVOCABULARY DTYPE="TermVocabulary" TERMTYPE="LA" ID="100" CREATED="2012-01-04 10:08:57.0" UUID="f253962f-d787-4b16-b2d2-e645da73ae4f" PROTECTEDTITLECACHE="False" URI="" TERMSOURCEURI="http://myterms.org/emptyVocabulary"/>
 	<TERMVOCABULARY DTYPE="TermVocabulary" TERMTYPE="LA" ID="101" CREATED="2012-01-04 10:08:57.0" UUID="e0664987-cc9c-4d84-b7e6-24067986a171" PROTECTEDTITLECACHE="False" URI="" TERMSOURCEURI="http://myterms.org/notEmptyVocabulary"/>
   	<DEFINEDTERMBASE DTYPE="Language" TERMTYPE="LA" ID="1" CREATED="2008-12-18 11:35:36.0" UUID="e9f8cdb7-6819-44e8-95d3-e2d0690c3523" UPDATED="2008-12-18 11:35:38.65" URI="" ISO639_1="en" VOCABULARY_ID="101"/>
-
 </dataset>

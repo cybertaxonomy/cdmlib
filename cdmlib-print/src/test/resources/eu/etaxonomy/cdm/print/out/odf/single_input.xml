@@ -185,8 +185,6 @@
                 <e class="object" null="true"/>
             </taxonNodes>
             <taxonStatusUnknown type="boolean">false</taxonStatusUnknown>
-            <taxonomicChildrenCount type="number">0</taxonomicChildrenCount>
-            <taxonomicParent class="object" null="true"/>
             <titleCache type="string">Chondrilla L. sec. "Edit WP6 - Cichorieae", .
                 2006</titleCache>
             <useNameCache type="boolean">false</useNameCache>
@@ -2898,7 +2896,6 @@
                             <volume type="string"/>
                         </sec>
                         <taxonStatusUnknown type="boolean">false</taxonStatusUnknown>
-                        <taxonomicChildrenCount type="number">0</taxonomicChildrenCount>
                         <titleCache type="string">Chondrilla L. sec. "Edit WP6 - Cichorieae", .
                             2006</titleCache>
                         <updated type="string">2010-04-28T17:30:29.386+02:00</updated>

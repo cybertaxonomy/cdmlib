@@ -43,8 +43,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("name")
 @RequestMapping(value = {"/name/{uuid}"})
-public class NameController extends BaseController<TaxonNameBase, INameService>
-{
+public class NameController extends AbstractIdentifiableController<TaxonNameBase, INameService>{
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
             "typeStatus.representations",

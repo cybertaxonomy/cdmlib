@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -65,7 +65,6 @@ public class TaxonGenerator {
         botSpecies.setCombinationAuthorship(Person.NewInstance());
         botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
-//        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
 
         //homotypic synonym of childTaxon1
         BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
@@ -74,7 +73,7 @@ public class TaxonGenerator {
         botSpecies4.setSpecificEpithet("gueri");
         botSpecies4.setCombinationAuthorship(deCandolle);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec);
-        childTaxon.addSynonym(homoSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
 
 
         //2nd child species taxon that is the child of genus taxon
@@ -85,7 +84,6 @@ public class TaxonGenerator {
         botSpecies2.setCombinationAuthorship(Person.NewInstance());
         botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
-//        childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
 
         //heterotypic synonym of childTaxon2
         BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());
@@ -94,7 +92,7 @@ public class TaxonGenerator {
         botSpecies3.setSpecificEpithet("lupium");
         botSpecies3.setCombinationAuthorship(deCandolle);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec);
-        childTaxon2.addSynonym(heteroSynonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         //missaplied Name for childTaxon2
         BotanicalName missName= BotanicalName.NewInstance(Rank.SPECIES());

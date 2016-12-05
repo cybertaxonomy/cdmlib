@@ -19,7 +19,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -105,7 +106,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      * TODO implement bulk version of this method
      */
     @RequestMapping(value = "*", method = RequestMethod.GET)
-    public ModelAndView doGetMethod(
+    public Object doGetMethod(
             @PathVariable("uuid") UUID uuid,
             // doPage request parametes
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -116,59 +117,81 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        ModelAndView modelAndView = new ModelAndView();
-
         String servletPath = request.getServletPath();
         String baseName = FilenameUtils.getBaseName(servletPath);
 
         if(request != null) {
-            logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getRequestURI());
+            logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + requestPathAndQuery(request));
         }
 
         // <CUT
 //		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
-
         //Class<?> propertyClass = propertyClass(instance, baseName);
-
         Object objectFromProperty = getCdmBaseProperty(uuid, baseName, response);//   invokeProperty(instance, baseName, response);
-
         // CUT>
-
         if(objectFromProperty != null){
-
             if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
                 // Map types cannot be returned as list or in a pager!
-
-                Collection c = (Collection)objectFromProperty;
-                if(start != null){
-                    // return list
-                    limit = (limit == null ? DEFAULT_PAGE_SIZE : limit);
-                    Collection sub_c = subCollection(c, start, limit);
-                    modelAndView.addObject(sub_c);
-
-                } else {
-                    //FIXME use real paging mechanism of according service class instead of subCollection()
-                    //FIXME use BaseListController.normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
-                    PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
-                    pagerParameters.normalizeAndValidate(response);
-
-                    start = pagerParameters.getPageIndex() * pagerParameters.getPageSize();
-                    List sub_c = subCollection(c, start, pagerParameters.getPageSize());
-                    Pager p = new DefaultPagerImpl(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
-                    modelAndView.addObject(p);
-                }
-
+                return pageFromCollection((Collection<CdmBase>)objectFromProperty, pageNumber, pageSize, start, limit, response);
             } else {
-                modelAndView.addObject(objectFromProperty);
+               return objectFromProperty;
             }
+        }
+        return null;
+    }
 
+    /**
+     * Returns a sub-collection of <code>c</code>. A pager object will be returned if the <code>pageNumber</code> and
+     * <code>pageSize</code> are given. Otherwise a <code>List</code> in case of <code>start</code> and <code>limit</code>.
+     *
+     * @param pageNumber
+     * @param pageSize
+     * @param start
+     * @param limit
+     * @param response
+     * @param objectFromProperty
+     * @return either a List or Pager depending on the parameter combination.
+     *
+     * @throws IOException
+     */
+    protected Object pageFromCollection(Collection<? extends CdmBase> c, Integer pageNumber, Integer pageSize, Integer start,
+            Integer limit, HttpServletResponse response) throws IOException {
+
+        if(c instanceof Set){
+            // sets need to be sorted to have a defined order
+            List<CdmBase> list = new ArrayList<>(c);
+            java.util.Collections.sort(list, new Comparator<CdmBase>() {
+
+                @Override
+                public int compare(CdmBase o1, CdmBase o2) {
+                    if (o1 == null && o2 == null){
+                        return 0;
+                    }else if (o1 == null){
+                        return -1;
+                    }else if (o2 == null){
+                        return 1;
+                    }
+                    return Integer.compare(o1.getId(), o2.getId());
+                }
+            });
+            c = list;
         }
 
-        if(modelAndView.isEmpty()){
-            return null;
+        if(start != null){
+            // return list
+            limit = (limit == null ? DEFAULT_PAGE_SIZE : limit);
+            Collection<CdmBase> sub_c = subCollection(c, start, limit);
+            return sub_c;
         } else {
+            //FIXME use real paging mechanism of according service class instead of subCollection()
+            //FIXME use BaseListController.normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
+            PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+            pagerParameters.normalizeAndValidate(response);
 
-            return modelAndView;
+            start = pagerParameters.getPageIndex() * pagerParameters.getPageSize();
+            List sub_c = subCollection(c, start, pagerParameters.getPageSize());
+            Pager p = new DefaultPagerImpl(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
+            return p;
         }
     }
 

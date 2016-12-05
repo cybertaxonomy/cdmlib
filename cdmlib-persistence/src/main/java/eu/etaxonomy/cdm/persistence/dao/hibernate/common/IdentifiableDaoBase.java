@@ -284,16 +284,22 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
     @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern){
+        return getUuidAndTitleCache(type, limit, pattern);
+    }
+
+
+    @Override
+    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() +" where titleCache like :pattern");
+            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() +" where titleCache like :pattern");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() );
+            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);
@@ -304,7 +310,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
     @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
-        return getUuidAndTitleCache(null, null);
+        return getUuidAndTitleCache(type, null, null);
     }
 
     protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
@@ -329,14 +335,33 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return list;
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public String getTitleCache(UUID uuid, boolean refresh){
+        if (! refresh){
+            String queryStr = String.format("SELECT titleCache FROM %s t WHERE t.uuid = '%s'", type.getSimpleName() , uuid.toString());
+            Query query = getSession().createQuery(queryStr);
+            List<?> list = query.list();
+            return list.isEmpty()? null : (String)list.get(0);
+        }else{
+            T entity = this.findByUuid(uuid);
+            if (entity == null){
+                return null;
+            }
+            entity.setTitleCache(null);
+            return entity.getTitleCache();
+        }
+    }
+
+
 
     @Override
-    public int countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+    public long countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
     }
 
     @Override
-    public int countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+    public long countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "title",queryString,matchmode,criterion);
     }
 

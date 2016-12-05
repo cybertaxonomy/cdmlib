@@ -27,13 +27,13 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
- * The class representing categories of {@link SynonymRelationship synonym relationships}
+ * The class representing categories of {@link Synonym synonyms}
  * (like "heterotypic synonym of").
  * <P>
- * A standard (ordered) list of synonym relationship type instances will be
+ * A standard (ordered) list of synonym type instances will be
  * automatically created as the project starts. But this class allows to extend
  * this standard list by creating new instances of additional synonym
- * relationship types if needed.
+ * types if needed.
  * <P>
  * This class corresponds in part to: <ul>
  * <li> TaxonRelationshipTerm according to the TDWG ontology
@@ -44,17 +44,17 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @created 08-Nov-2007 13:06:55
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SynonymRelationshipType")
+@XmlType(name = "SynonymType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
+public class SynonymType extends RelationshipTermBase<SynonymType> {
 	private static final long serialVersionUID = -3775216614202923889L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SynonymRelationshipType.class);
+	private static final Logger logger = Logger.getLogger(SynonymType.class);
 
-	protected static Map<UUID, SynonymRelationshipType> termMap = null;
+	protected static Map<UUID, SynonymType> termMap = null;
 
 	public static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
 	public static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
@@ -69,26 +69,26 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 
   	//for hibernate use only
   	@Deprecated
-  	protected SynonymRelationshipType() {
-		super(TermType.SynonymRelationshipType);
+  	protected SynonymType() {
+		super(TermType.SynonymType);
 	}
 
 	/**
-	 * Class constructor: creates an additional synonym relationship type
-	 * instance with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and
-	 * a label abbreviation. Synonym relationships types can be neither
+	 * Class constructor: creates an additional synonym type
+	 * instance with a description (in the {@link Language#DEFAULT() default language}), a label and
+	 * a label abbreviation. Synonym types can be neither
 	 * symmetric nor transitive.
 	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new synonym relationship type to be created
-	 * @param	label  		 the string identifying the new synonym relationship
+	 * 						 new synonym type to be created
+	 * @param	label  		 the string identifying the new synonym
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new synonym relationship type to be created
-	 * @see 				 #SynonymRelationshipType()
+	 * 						 new synonym type to be created
+	 * @see 				 #SynonymType()
 	 */
-	private SynonymRelationshipType(String term, String label, String labelAbbrev) {
-		super(TermType.SynonymRelationshipType, term, label, labelAbbrev, false, false);
+	private SynonymType(String term, String label, String labelAbbrev) {
+		super(TermType.SynonymType, term, label, labelAbbrev, false, false);
 	}
 
 
@@ -103,31 +103,31 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	}
 
 
-	protected static SynonymRelationshipType getTermByUuid(UUID uuid){
+	protected static SynonymType getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
-            return getTermByClassAndUUID(SynonymRelationshipType.class, uuid);
+            return getTermByClassAndUUID(SynonymType.class, uuid);
         } else {
             return termMap.get(uuid);
         }
 	}
 
 	/**
-	 * Returns the synonym relationship type "is synonym of". This indicates
-	 * that the reference asserting the {@link SynonymRelationship synonym relationship} does not know
+	 * Returns the synonym type "is synonym of". This indicates
+	 * that the reference asserting the synonym relationship does not know
 	 * whether both {@link name.TaxonNameBase taxon names} involved are typified by the same type or
 	 * not.
 	 *
 	 * @see		#HOMOTYPIC_SYNONYM_OF()
 	 * @see		#HETEROTYPIC_SYNONYM_OF()
 	 */
-	public static final SynonymRelationshipType SYNONYM_OF(){
+	public static final SynonymType SYNONYM_OF(){
 		return getTermByUuid(uuidSynonymOf);
 	}
 
 	/**
 	 * Returns the synonym relationship type "is homotypic synonym of"
 	 * ("is nomenclatural synonym of" in zoology). This indicates that the
-	 * the reference asserting the {@link SynonymRelationship synonym relationship} holds that
+	 * the reference asserting the synonym relationship holds that
 	 * the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
 	 * ("accepted/correct") {@link Taxon taxon} are typified by the same type.
 	 * In this case they should belong to the same {@link name.HomotypicalGroup homotypical group}.
@@ -135,14 +135,14 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#HETEROTYPIC_SYNONYM_OF()
 	 * @see		#SYNONYM_OF()
 	 */
-	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
+	public static final SynonymType HOMOTYPIC_SYNONYM_OF(){
 		return getTermByUuid(uuidHomotypicSynonymOf);
 	}
 
 	/**
 	 * Returns the synonym relationship type "is heterotypic synonym of"
 	 * ("is taxonomic synonym of" in zoology). This indicates that the
-	 * the reference asserting the {@link SynonymRelationship synonym relationship} holds that
+	 * the reference asserting the synonym relationship holds that
 	 * the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
 	 * ("accepted/correct") {@link Taxon taxon} are not typified by the same type.
 	 * In this case they should not belong to the same {@link name.HomotypicalGroup homotypical group}.
@@ -150,7 +150,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#HOMOTYPIC_SYNONYM_OF()
 	 * @see		#SYNONYM_OF()
 	 */
-	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
+	public static final SynonymType HETEROTYPIC_SYNONYM_OF(){
 		return getTermByUuid(uuidHeterotypicSynonymOf);
 	}
 
@@ -159,7 +159,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
 	 * level is derived from a genus synonymy.
 	 */
-	public static final SynonymRelationshipType INFERRED_SYNONYM_OF(){
+	public static final SynonymType INFERRED_SYNONYM_OF(){
 		return getTermByUuid(uuidInferredSynonymOf);
 	}
 
@@ -168,7 +168,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
 	 * level is derived from a epithet synonymy.
 	 */
-	public static final SynonymRelationshipType INFERRED_GENUS_OF(){
+	public static final SynonymType INFERRED_GENUS_OF(){
 		return getTermByUuid(uuidInferredGenusOf);
 	}
 
@@ -177,24 +177,24 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
 	 * level is derived from a genus synonymy.
 	 */
-	public static final SynonymRelationshipType INFERRED_EPITHET_OF(){
+	public static final SynonymType INFERRED_EPITHET_OF(){
 		return getTermByUuid(uuidInferredEpithetOf);
 	}
 
-	public static SynonymRelationshipType POTENTIAL_COMBINATION_OF() {
+	public static SynonymType POTENTIAL_COMBINATION_OF() {
 		return getTermByUuid(uuidPotentialCombinationOf);
 	}
 
 
 //	@Override
-//	public SynonymRelationshipType readCsvLine(Class<SynonymRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+//	public SynonymType readCsvLine(Class<SynonymType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 //		return super.readCsvLine(termClass, csvLine, terms);
 //	}
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<SynonymRelationshipType> termVocabulary) {
-		termMap = new HashMap<UUID, SynonymRelationshipType>();
-		for (SynonymRelationshipType term : termVocabulary.getTerms()){
+	protected void setDefaultTerms(TermVocabulary<SynonymType> termVocabulary) {
+		termMap = new HashMap<UUID, SynonymType>();
+		for (SynonymType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
 	}

@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -225,6 +226,18 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 		String warning = "getRankUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+
+    @Override
+    public DefinedTerm getIdentifierTypeByKey(String key) throws UndefinedTransformerMethodException {
+        String warning = "getIdentifierTypeByKey is not implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
+    @Override
+    public UUID getIdentifierTypeUuid(String key) throws UndefinedTransformerMethodException {
+        String warning = "getIdentifierTypeUuid is not implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
 
 
 }

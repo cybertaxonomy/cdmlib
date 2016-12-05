@@ -74,7 +74,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "descriptionSources",
     "workingSets",
     "descriptionElements",
-    "imageGallery"
+    "imageGallery",
+    "isDefault"
 })
 @Entity
 @Audited
@@ -130,6 +131,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 
     @XmlElement(name = "ImageGallery")
     private boolean imageGallery;
+
+    @XmlElement(name = "isDefault")
+    private boolean isDefault;
 
 
     /**
@@ -281,6 +285,14 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      */
     public void setImageGallery(boolean imageGallery) {
         this.imageGallery = imageGallery;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
 

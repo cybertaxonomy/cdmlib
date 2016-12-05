@@ -71,16 +71,7 @@
     </property>
   </bean>
   
-  <bean id="httpPreferenceService"
-    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-    <property name="service">
-      <ref bean="preferenceServiceImpl" />
-    </property>
-    <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IPreferenceService</value>
-    </property>
-  </bean>
-
+  
   <bean id="httpDescriptionService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -210,6 +201,16 @@
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IPolytomousKeyService</value>
+    </property>
+  </bean>
+  
+  <bean id="httpPreferenceService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="preferenceServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IPreferenceService</value>
     </property>
   </bean>
   

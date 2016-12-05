@@ -10,9 +10,9 @@
 package eu.etaxonomy.cdm.io.specimen;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigu
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -95,23 +96,28 @@ public class UnitsGatheringEvent {
      */
     public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude,
             Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit,
-            String date, String gatheringNotes, ReferenceSystem referenceSystem, List<String> collectorName,
-            List<String> team, Abcd206ImportConfigurator config) {
+            String date, String gatheringNotes, String gatheringMethod, ReferenceSystem referenceSystem,
+             Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
         this.setCoordinates(longitude, latitude, referenceSystem);
         this.setDate(date);
         this.setNotes(gatheringNotes);
         this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
-        if (!collectorName.isEmpty()) {
-            List<String> tmp =  new ArrayList<String>(new HashSet<String>(collectorName));
-            this.setCollector(tmp.get(0), config);
-        }
-        if (!team.isEmpty()) {
-            List<String> tmpTeam = new ArrayList<String>(new HashSet<String>(team));
-            this.setTeam(StringUtils.join(tmpTeam," & "), config);
-        }
+        this.setGatheringMethod(gatheringMethod);
+
+
+
+
+
     }
 
+    /**
+     * @param gatheringImages
+     */
+    public void setGatheringImages(HashMap<String, Map<String, String>> gatheringImages) {
+
+
+    }
     public GatheringEvent getGatheringEvent(){
         return this.gatheringEvent;
     }
@@ -236,6 +242,49 @@ public class UnitsGatheringEvent {
         }
     }
 
+    public void setHeight(String heightText, String heightMin, String heightMax, String heightUnit){
+        if(heightText!=null){
+            this.gatheringEvent.setAbsoluteElevationText(heightText);
+        }
+        else{
+            //TODO check for unit at string end
+            String pattern = "\\D";// regex for non-digits
+            if(heightMin!=null){
+                Double min = Double.parseDouble(heightMin.replaceAll(pattern, ""));
+                this.gatheringEvent.setDistanceToGround(min);
+            }
+            if(heightMax!=null){
+                Double max = Double.parseDouble(heightMax.replaceAll(pattern, ""));
+                this.gatheringEvent.setDistanceToGroundMax(max);
+            }
+            if(heightUnit!=null){
+                if (!heightUnit.equals("m")){
+                    logger.debug("The unit " + heightUnit + " of the distance to ground is not meter.");
+                }
+            }
+        }
+    }
+
+    public void setGatheringDepth(String depthText, Double depthMin, Double depthMax, String depthUnit){
+        if(depthText!=null){
+            this.gatheringEvent.setDistanceToWaterSurfaceText(depthText);
+        }
+        else{
+
+            if(depthMin!=null){
+                this.gatheringEvent.setDistanceToWaterSurface(depthMin);
+            }
+            if(depthMax!=null){
+                this.gatheringEvent.setDistanceToWaterSurfaceMax(depthMax);
+            }
+            if(depthUnit!=null){
+                if (!depthUnit.equals("m")){
+                    logger.debug("The unit " + depthUnit + " of the distance to ground is not meter.");
+                }
+            }
+        }
+    }
+
     /*
      * Add a NamedArea to the GatheringEvent
      * @param area: the NamedArea to add
@@ -293,15 +342,13 @@ public class UnitsGatheringEvent {
      * @param: collectorNames: the list of names to add as collector/collectorTeam
      * USED - create each time a new Collector
      */
-    public void setCollector(String collectorName, Abcd206ImportConfigurator config){
+    public void setCollector(TeamOrPersonBase collector, Abcd206ImportConfigurator config){
         //        System.out.println("collectors : "+collectorNames.toString());
-        Person collector;
-        collector = Person.NewInstance();
-        collector.setTitleCache(collectorName, true);
+
         if (DEBUG) {
             System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
         }
-       // this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
+        this.gatheringEvent.setCollector(collector);
     }
 
     /**
@@ -309,6 +356,17 @@ public class UnitsGatheringEvent {
      */
     public void setGatheringDate(TimePeriod tp) {
         this.gatheringEvent.setTimeperiod(tp);
+    }
+
+    /**
+     * @param tp
+     */
+    public void setGatheringMethod(String gatheringMethod) {
+        this.gatheringEvent.setCollectingMethod(gatheringMethod);
+    }
+
+    public String getGatheringMethod(){
+        return this.gatheringEvent.getCollectingMethod();
     }
 
     /**

@@ -41,11 +41,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -100,7 +101,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Taxon t2;
 	private Taxon t4;
 //	private Synonym s1;
-	private SynonymRelationshipType synonymRelationshipType;
+	private SynonymType synonymType;
 	private Reference reference;
 	private String referenceDetail;
 	private Classification classification;
@@ -117,7 +118,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	@DataSet
@@ -127,8 +128,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(node2Uuid);
 		node4 = taxonNodeService.load(node4Uuid);
 		reference = referenceService.load(referenceUuid);
-//		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
+//		synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHomotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
 
 		//
@@ -153,7 +154,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 		UUID uuidSynonym = taxonService.save(synonym).getUuid();
 
-		t1.addHomotypicSynonym(synonym, null, null);
+		t1.addHomotypicSynonym(synonym);
 		UUID uuidT1 = taxonService.saveOrUpdate(t1);
 		t1 = null;
 		t1 =(Taxon) taxonService.load(uuidT1);
@@ -170,77 +171,63 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		t4 = node4.getTaxon();
         UUID uuidT4 = t4.getUuid();
-        t4 = (Taxon) taxonService.load(uuidT4);
-        TaxonNameBase name4 = nameService.load(t4.getName().getUuid());
-        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymRelationshipType, reference, referenceDetail);
+        t4 = (Taxon) taxonService.find(uuidT4);
+        TaxonNameBase name4 = nameService.find(t4.getName().getUuid());
+        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail);
         if (result.isError() || result.isAbort()){
             Assert.fail();
         }
         t4 = (Taxon)taxonService.find(uuidT4);
         assertNull(t4);
 
-
 		//Taxon can't be deleted because of the polytomous key node
-
-		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymType, reference, referenceDetail);
 		if (result.isError() || result.isAbort()){
 			Assert.fail();
 		}
-		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		commitAndStartNewTransaction(new String[]{/*"TaxonNode"*/});
 		t1 = (Taxon)taxonService.find(t1Uuid);
 		assertNotNull(t1);//because of the polytomous key node
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(node1);
 
-
-
-
 		Set<CdmBase> updatedObjects = result.getUpdatedObjects();
 		Iterator<CdmBase> it = updatedObjects.iterator();
 		Taxon taxon;
-		if (it.hasNext()) {
+		while (it.hasNext()) {
 			CdmBase updatedObject = it.next();
 			if(updatedObject.isInstanceOf(Taxon.class)){
 				taxon = HibernateProxyHelper.deproxy(updatedObject, Taxon.class);
 				Set<Synonym> syns =  taxon.getSynonyms();
 				assertNotNull(syns);
-				assertEquals(4,syns.size());
+				if (taxon.equals(t2)){
+				    assertEquals(4,syns.size());
+				    Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
+	                assertEquals(typifiedNames.size(),4);
+	                assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
 
-				Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
-				assertEquals(typifiedNames.size(),4);
-				assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
+	                assertEquals(taxon, t2);
+				}
 
-				assertEquals(taxon, t2);
-
-			} else{
-				Assert.fail();
 			}
 
-
 		}
-
-
-
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
 	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public final void testMakeTaxonNodeAHeterotypicSynonymOfAnotherTaxonNode() {
-		classification = classificationService.load(classificationUuid);
+
+	    //create data
+	    classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
 		reference = referenceService.load(referenceUuid);
-//		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHeterotypicSynonymOf), SynonymRelationshipType.class) ;
+		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHeterotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
-
-		//
-		//TODO
-
-//		printDataSet(System.err, new String [] {"TaxonNode"});
 
 		// descriptions
 		t1 = node1.getTaxon();
@@ -251,53 +238,49 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		polKeyService.save(polKey);
 
 		//nameRelations
-
 		t1.getName().addRelationshipFromName(BotanicalName.NewInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
-		TaxonNameBase name1 = t1.getName();
+		TaxonNameBase<?,?> name1 = t1.getName();
 		UUID name1UUID = name1.getUuid();
 		//taxonRelations
 		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
-		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
-		UUID uuidSynonym = taxonService.save(synonym).getUuid();
-		t1.addHomotypicSynonym(synonym, null, null);
-		TaxonNameBase nameT1 = t1.getName();
-		UUID t1UUID = t1.getUuid();
+		Synonym t1HomotypSynonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+
+		t1.addHomotypicSynonym(t1HomotypSynonym);
+		TaxonNameBase<?,?> nameT1 = t1.getName();
 		t2 = node2.getTaxon();
-		assertEquals(2, t1.getDescriptions().size());
-		Assert.assertTrue(t2.getSynonyms().isEmpty());
-		Assert.assertTrue(t2.getDescriptions().size() == 0);
-		assertEquals(2,t1.getSynonyms().size());
-		UUID synUUID = null;
-		DeleteResult result;
-		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		assertEquals("taxon 1 must have 2 descriptions", 2, t1.getDescriptions().size());
+		assertEquals("taxon 1 must have 2 synonyms", 2, t1.getSynonyms().size());
+		Assert.assertTrue("taxon 2 must have no synonyms", t2.getSynonyms().isEmpty());
+		Assert.assertTrue("taxon 2 must have no descriptions", t2.getDescriptions().size() == 0);
 
+		//save
+		UUID uuidSynonym = taxonService.save(t1HomotypSynonym).getUuid();
+
+		//do it
+		DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode
+		        (node1, node2, synonymType, reference, referenceDetail);
+
+		//post conditions
 		if (!result.getUpdatedObjects().iterator().hasNext()){
-			Assert.fail();
+			Assert.fail("Some updates must have taken place");
 		}
-		Taxon newAcceptedTaxon = (Taxon)result.getUpdatedObjects().iterator().next();
-		assertNotNull(taxonService.find(t1Uuid));
-		assertNull(taxonNodeService.find(node1Uuid));
+		assertEquals(3,result.getUpdatedObjects().size());
+		assertNotNull("Old taxon should not have been deleted as it is referenced by key node", taxonService.find(t1Uuid));
+		assertNull("Old taxon node should not exist anymore", taxonNodeService.find(node1Uuid));
 
+		t1HomotypSynonym = (Synonym)taxonService.find(uuidSynonym);
+		assertNotNull(t1HomotypSynonym);
 
-		synonym = (Synonym)taxonService.find(uuidSynonym);
-
-		assertNotNull(synonym);
 		keyNode.setTaxon(null);
 		polKeyNodeService.saveOrUpdate(keyNode);
-		HibernateProxyHelper.deproxy(t2);
+		t2 =HibernateProxyHelper.deproxy(t2);
 		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
-		HibernateProxyHelper.deproxy(t2.getName());
-//		syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-//		if (syn == null){
-//			Assert.fail();
-//		}
-//		synUUID = syn.getUuid();
+		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
 
-
-		termService.saveOrUpdate(synonymRelationshipType);
-		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		assertEquals(3,t2.getSynonyms().size());
-		assertEquals(2, t2.getDescriptions().size());
+		termService.saveOrUpdate(synonymType);
+		assertFalse("taxon 2 must have a synonym now", t2.getSynonyms().isEmpty());
+		assertEquals("taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms", 3, t2.getSynonyms().size());
+		assertEquals("taxon 2 must have 2 descriptions now, taken form taxon 1", 2, t2.getDescriptions().size());
 
 		result = taxonService.deleteTaxon(t1.getUuid(), null, null);
 		if (result.isAbort() || result.isError()){
@@ -306,19 +289,19 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertNull(taxonService.find(t1Uuid));
 		assertNull(taxonNodeService.find(node1Uuid));
 		name1 = nameService.find(name1UUID);
-		synonym = (Synonym)taxonService.find(uuidSynonym);
-		assertNotNull(name1);
-		assertEquals(1, name1.getTaxonBases().size());
-		assertNotNull(synonym);
+		assertNotNull("taxon name 1 should still exist", name1);
+		assertEquals("... but being used for the new synonym only as taxon 1 is deleted", 1, name1.getTaxonBases().size());
+		t1HomotypSynonym = (Synonym)taxonService.find(uuidSynonym);
+		assertNotNull(t1HomotypSynonym);
 
-		Synonym syn =(Synonym) name1.getTaxonBases().iterator().next();
+		Synonym newSynonym =(Synonym) name1.getTaxonBases().iterator().next();
 
-		assertEquals(syn.getName().getHomotypicalGroup(), synonym.getName().getHomotypicalGroup());
-		assertFalse(newAcceptedTaxon.getHomotypicGroup().equals( syn.getName().getHomotypicalGroup()));
+		Taxon newAcceptedTaxon = CdmBase.deproxy(taxonService.find(t2.getUuid()), Taxon.class);
+		assertEquals("The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic", newSynonym.getHomotypicGroup(), t1HomotypSynonym.getName().getHomotypicalGroup());
+		assertFalse("The new accepted taxon must not be homotypic to ", newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()));
 
-		assertEquals(newAcceptedTaxon, t2);
-		TaxonNameBase name = syn.getName();
-		assertEquals(name, nameT1);
+		assertEquals("The new accepted taxon is taxon 2", newAcceptedTaxon, t2);
+		assertEquals("The new synonyms name must be the same as the old accepted taxon's name", newSynonym.getName(), nameT1);
 	}
 
 
@@ -331,7 +314,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		String oldTreeIndex = node2.treeIndex();
 
 		TaxonNode newNode = node2.addChildTaxon(taxon, null, null);
-		taxonNodeService.saveOrUpdate(node2);
+		taxonNodeService.saveOrUpdate(newNode);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		newNode = taxonNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + "#", newNode.treeIndex());
@@ -366,8 +349,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		//into new classification
 		node2 = taxonNodeService.load(node2Uuid);
 		TaxonNode node5 = taxonNodeService.load(node5Uuid);
-		node5.addChildNode(node2, null, null);
-		taxonNodeService.saveOrUpdate(node5);
+		node2 =node5.addChildNode(node2, null, null);
+		taxonNodeService.saveOrUpdate(node2);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = taxonNodeService.load(node2Uuid);
 		Assert.assertEquals("Node3 treeindex is not correct", "#t2#8#2#5#3#", node2.treeIndex());
@@ -471,7 +454,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         if (!result.isOk()){
             Assert.fail();
         }
-        taxonService.getSession().flush();
+        //taxonService.getSession().flush();
         newNode = taxonNodeService.load(uuidNewNode);
         node1 = taxonNodeService.load(node1Uuid);
         assertNull(newNode);
@@ -511,7 +494,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(newNode);
 		assertNull(node1);
-		taxonService.getSession().flush();
+		//taxonService.getSession().flush();
 		t1 = (Taxon) taxonService.load(t1Uuid);
 		assertNull(t1);
 		t2 = (Taxon) taxonService.load(t2Uuid);
@@ -563,21 +546,20 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         abiesBalsameaName.setSpecificEpithet("balsamea");
         Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);
 
-
-    	classification.addChildTaxon(abies, null, null);
+        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
+    	nodes.add(classification.addChildTaxon(abies, null, null));
     	TaxonNode abiesAlbaNode = classification.addParentChild(abies, abiesAlba, null, null);
     	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
-    	classification.addChildTaxon(pinus, null, null);
-    	classification.addParentChild(pinus, pinusPampa, null, null);
-    	classificationService.save(classification);
-
+    	nodes.add(balsameaNode);
+    	nodes.add(abiesAlbaNode);
+    	nodes.add(classification.addChildTaxon(pinus, null, null));
+    	nodes.add(classification.addParentChild(pinus, pinusPampa, null, null));
+    	classificationService.saveClassification(classification);
+    	//this.taxonNodeService.save(nodes);
     	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
-    	System.out.println("---Before sorting---");
-    	for (TaxonNode node: allNodes){
-    	    System.out.println(node.getTaxon().getTitleCache());
-    	}
+
     	Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
     	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
     	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
@@ -585,21 +567,221 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	taxonNodeService.moveTaxonNode(balsameaNode, abiesAlbaNode,1);
     	classification = classificationService.load(classification.getUuid());
 
-       allNodes = new ArrayList<>(classification.getAllNodes());
+    	allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
-        System.out.println("\n---After sorting---");
-        for (TaxonNode node: allNodes){
-            System.out.println(node.getTaxon().getTitleCache());
-        }
+
         Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
         Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
         Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
 
     }
 
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonNodeServiceImplTest.testGetUuidAndTitleCacheHierarchy.xml")
+    public void testGetUuidAndTitleCacheHierarchy(){
+        UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
+        UUID abiesUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
+        UUID abiesAlbaUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
+        UUID abiesAlbaSubBrotaUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
+        UUID abiesPalmaUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
+        UUID pinusUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
+//        /*
+//         * Checklist
+//         *  - Abies
+//         *   - Abies alba
+//         *    - Abieas alba subs. brota
+//         *   - Abies palma
+//         *  -Pinus
+//         */
+//        Classification checklist = Classification.NewInstance("Checklist");
+//        checklist.setUuid(classificationUuid);
+//
+//        BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+//        abiesName.setGenusOrUninomial("Abies");
+//        Taxon abies = Taxon.NewInstance(abiesName, null);
+//
+//        BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+//        abiesAlbaName.setGenusOrUninomial("Abies");
+//        abiesAlbaName.setSpecificEpithet("alba");
+//        Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+//
+//        BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+//        abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
+//        abiesAlbaSubBrotaName.setSpecificEpithet("alba");
+//        abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
+//        Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
+//
+//        BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
+//        abiesPalmaName.setGenusOrUninomial("Abies");
+//        abiesPalmaName.setSpecificEpithet("palma");
+//        Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
+//
+//        BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+//        pinusName.setGenusOrUninomial("Pinus");
+//        Taxon pinus = Taxon.NewInstance(pinusName, null);
+//
+//        checklist.addParentChild(null, abies, null, null);
+//        checklist.addParentChild(abies, abiesAlba, null, null);
+//        checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
+//        checklist.addParentChild(abies, abiesPalma, null, null);
+//        checklist.addParentChild(null, pinus, null, null);
+//
+//
+//        setComplete();
+//        endTransaction();
+//
+//        String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
+//
+//        writeDbUnitDataSetFile(new String[] {
+//            "TAXONBASE", "TAXONNAMEBASE",
+//            "TAXONRELATIONSHIP",
+//            "HOMOTYPICALGROUP",
+//            "CLASSIFICATION", "TAXONNODE",
+//            "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+//            },
+//            fileNameAppendix );
+        Classification classification = classificationService.load(classificationUuid);
+
+        List<TaxonNode> expectedChildTaxonNodes = classification.getChildNodes();
+        List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsUuidAndTitleCache(classification.getRootNode());
+        assertNotNull("child UuidAndTitleCache list is null", childNodesUuidAndTitleCache);
+
+        compareChildren(expectedChildTaxonNodes, childNodesUuidAndTitleCache);
+
+        //test taxon parent of sub species
+        Taxon abiesAlbaSubBrota = HibernateProxyHelper.deproxy(taxonService.load(abiesAlbaSubBrotaUuid), Taxon.class);
+        TaxonNode abiesAlbaSubBrotaNode = abiesAlbaSubBrota.getTaxonNodes().iterator().next();
+        TaxonNode expectedTaxonParent = HibernateProxyHelper.deproxy(abiesAlbaSubBrotaNode.getParent(), TaxonNode.class);
+        UuidAndTitleCache<TaxonNode> taxonParent = taxonNodeService.getParentUuidAndTitleCache(abiesAlbaSubBrotaNode);
+        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getUuid(), taxonParent.getUuid());
+        assertEquals("Taxon Nodes do not match. ", (Integer)expectedTaxonParent.getId(), taxonParent.getId());
+        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getTaxon().getTitleCache(), taxonParent.getTitleCache());
+        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent, taxonNodeService.load(taxonParent.getUuid()));
+
+        //test classification parent
+        Taxon abies = HibernateProxyHelper.deproxy(taxonService.load(abiesUuid), Taxon.class);
+        TaxonNode abiesNode = abies.getTaxonNodes().iterator().next();
+        TaxonNode expectedClassificationParent = HibernateProxyHelper.deproxy(abiesNode.getParent(), TaxonNode.class);
+        UuidAndTitleCache<TaxonNode> classificationParent= taxonNodeService.getParentUuidAndTitleCache(abiesNode);
+        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getUuid(), classificationParent.getUuid());
+        assertEquals("Taxon Nodes do not match. ", (Integer)expectedClassificationParent.getId(), classificationParent.getId());
+        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getClassification().getTitleCache(), classificationParent.getTitleCache());
+        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent, taxonNodeService.load(classificationParent.getUuid()));
+    }
+
+    private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache){
+        assertEquals("Number of children does not match", expectedChildTaxonNodes.size(), childNodesUuidAndTitleCache.size());
+        UuidAndTitleCache<TaxonNode> foundMatch = null;
+        for (TaxonNode taxonNode : expectedChildTaxonNodes) {
+            foundMatch = null;
+            for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
+                if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
+                    String titleCache = taxonNode.getTaxon().getTitleCache();
+                    if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
+                        foundMatch = uuidAndTitleCache;
+                        break;
+                    }
+                }
+            }
+            assertTrue(String.format("no matching UuidAndTitleCache found for child %s", taxonNode), foundMatch!=null);
+            compareChildren(taxonNode.getChildNodes(), taxonNodeService.listChildNodesAsUuidAndTitleCache(foundMatch));
+        }
+    }
+
+    private UuidAndTitleCache<TaxonNode> findMatchingUuidAndTitleCache(List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache,
+            UuidAndTitleCache<TaxonNode> foundMatch, TaxonNode taxonNode) {
+        for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
+            if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
+                String titleCache = taxonNode.getTaxon().getTitleCache();
+                if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
+                    foundMatch = uuidAndTitleCache;
+                    break;
+                }
+            }
+        }
+        return foundMatch;
+    }
+
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {}
+//    @Test
+    public void createTestDataSet() throws FileNotFoundException {
+        UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
+        UUID abiesUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
+        UUID abiesAlbaUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
+        UUID abiesAlbaSubBrotaUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
+        UUID abiesPalmaUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
+        UUID pinusUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
+
+        /*
+         * Checklist
+         *  - Abies
+         *   - Abies alba
+         *    - Abieas alba subs. brota
+         *   - Abies palma
+         *  -Pinus
+         */
+        Classification checklist = Classification.NewInstance("Checklist");
+        checklist.setUuid(classificationUuid);
+
+        BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+        abiesName.setGenusOrUninomial("Abies");
+        Taxon abies = Taxon.NewInstance(abiesName, null);
+        abies.setUuid(abiesUuid);
+
+        BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+        abiesAlbaName.setGenusOrUninomial("Abies");
+        abiesAlbaName.setSpecificEpithet("alba");
+        Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+        abiesAlba.setUuid(abiesAlbaUuid);
+
+        BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+        abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
+        abiesAlbaSubBrotaName.setSpecificEpithet("alba");
+        abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
+        Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
+        abiesAlbaSubBrota.setUuid(abiesAlbaSubBrotaUuid);
+
+        BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
+        abiesPalmaName.setGenusOrUninomial("Abies");
+        abiesPalmaName.setSpecificEpithet("palma");
+        Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
+        abiesPalma.setUuid(abiesPalmaUuid);
+
+        BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+        pinusName.setGenusOrUninomial("Pinus");
+        Taxon pinus = Taxon.NewInstance(pinusName, null);
+        pinus.setUuid(pinusUuid);
+
+        checklist.addChildTaxon(abies, null, null);
+        checklist.addParentChild(abies, abiesAlba, null, null);
+        checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
+        checklist.addParentChild(abies, abiesPalma, null, null);
+        checklist.addChildTaxon(pinus, null, null);
+
+        taxonService.saveOrUpdate(abies);
+        taxonService.saveOrUpdate(abiesAlba);
+        taxonService.saveOrUpdate(abiesAlbaSubBrota);
+        taxonService.saveOrUpdate(abiesPalma);
+        taxonService.saveOrUpdate(pinus);
+        classificationService.saveOrUpdate(checklist);
+
+
+        setComplete();
+        endTransaction();
+
+        String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
+
+        writeDbUnitDataSetFile(new String[] {
+            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONRELATIONSHIP",
+            "HOMOTYPICALGROUP",
+            "CLASSIFICATION", "TAXONNODE",
+            "LANGUAGESTRING",
+            "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+            },
+            fileNameAppendix );
+    }
 
 
 }

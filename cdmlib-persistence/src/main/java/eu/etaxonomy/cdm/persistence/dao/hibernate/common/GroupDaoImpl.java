@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
@@ -28,22 +28,24 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 		super(Group.class);
 	}
 
+	@Override
 	public Group findGroupByName(String groupName) {
 		Query query = getSession().createQuery("select g from Group g where g.name = :name");
 		query.setParameter("name",groupName);
-		
+
 		Group group = (Group)query.uniqueResult();
 		if(group != null) {
 		  Hibernate.initialize(group.getGrantedAuthorities());
 		  Hibernate.initialize(group.getMembers());
 		}
-		
+
 		return group;
 	}
 
-	public List<String> listNames(Integer pageSize, Integer pageNumber) {
+	@Override
+    public List<String> listNames(Integer pageSize, Integer pageNumber) {
 		Query query = getSession().createQuery("select g.name from Group g");
-		
+
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
@@ -52,14 +54,17 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 		    	query.setFirstResult(0);
 		    }
 		}
-		
-		return (List<String>)query.list();
+
+        @SuppressWarnings("unchecked")
+        List<String> result = query.list();
+        return result;
 	}
 
-	public List<String> listMembers(Group group, Integer pageSize,	Integer pageNumber) {
+	@Override
+    public List<String> listMembers(Group group, Integer pageSize,	Integer pageNumber) {
 		Query query = getSession().createQuery("select m.username from Group g join g.members m where g = :group");
 		query.setParameter("group", group);
-		
+
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
@@ -68,21 +73,19 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 		    	query.setFirstResult(0);
 		    }
 		}
-		
-		return (List<String>)query.list();
+
+		@SuppressWarnings("unchecked")
+        List<String> result = query.list();
+		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IGroupDao#countByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List)
-	 */
-	public int countByName(String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+
+	@Override
+    public long countByName(String queryString,	MatchMode matchmode, List<Criterion> criterion) {
 		return countByParam(type, "name",queryString,matchmode,criterion);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IGroupDao#findByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
-	public List<Group> findByName(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+	@Override
+    public List<Group> findByName(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return findByParam(type, "name", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 }

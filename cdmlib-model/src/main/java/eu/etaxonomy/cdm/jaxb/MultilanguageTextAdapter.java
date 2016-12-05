@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,9 +26,9 @@ public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextElemen
 	@Override
 	public MultilanguageTextElement marshal(Map<Language, LanguageString> value)
 			throws Exception {
-		
+
 		MultilanguageTextElement multilanguageTextElement = new MultilanguageTextElement();
-		
+
 		for(Language l : value.keySet()) {
 			multilanguageTextElement.getLanguageString().add(value.get(l));
 		}
@@ -38,9 +38,9 @@ public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextElemen
     @Override
 	public Map<Language, LanguageString> unmarshal(MultilanguageTextElement value)
 			throws Exception {
-		
-        Map<Language,LanguageString> map = new ConcurrentHashMap<Language, LanguageString>();
-		
+
+        Map<Language,LanguageString> map = new ConcurrentHashMap<>();
+
 		for(LanguageString l : value.getLanguageString()) {
 			map.put(l.getLanguage(), l);
 		}

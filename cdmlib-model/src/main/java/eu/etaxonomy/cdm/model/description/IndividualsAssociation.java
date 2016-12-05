@@ -74,7 +74,7 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "IndividualsAssociation_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString cases
-	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+	private Map<Language,LanguageString> description = new HashMap<>();
 
 	@XmlElement(name = "AssociatedSpecimenOrObservation")
 	@XmlIDREF
@@ -135,22 +135,6 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 		return this.description;
 	}
 
-	/**
-	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the {@link MultilanguageText multilanguage text} used to describe
-	 * <i>this</i> individuals association.
-	 *
-	 * @param description	the language string describing the individuals association
-	 * 						in a particular language
-	 * @see    	   			#getDescription()
-	 * @see    	   			#putDescription(Language, String)
-	 * @deprecated 			should follow the put semantic of maps, this method will be removed in v4.0
-	 * 						Use the {@link #putDescription(LanguageString) putDescription} method instead
-	 */
-	@Deprecated
-    public void addDescription(LanguageString description){
-		this.putDescription(description);
-	}
 
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
@@ -182,23 +166,6 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	}
 
 	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-	 * used to describe <i>this</i> individuals association.
-	 *
-	 * @param text		the string describing the individuals association
-	 * 					in a particular language
-	 * @param language	the language in which the text string is formulated
-	 * @see    	   		#getDescription()
-	 * @see    	   		#putDescription(LanguageString)
-	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
-	 * 					Use the {@link #putDescription(Language, String) putDescription} method instead
-	 */
-	@Deprecated
-    public void addDescription(String text, Language language){
-		this.putDescription(language, text);
-	}
-	/**
 	 * Removes from the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> individuals association the one {@link LanguageString language string}
 	 * with the given {@link Language language}.
@@ -229,13 +196,7 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 			IndividualsAssociation result = (IndividualsAssociation)super.clone();
 
 			//description
-			result.description = new HashMap<Language, LanguageString>();
-			for (Language language : getDescription().keySet()){
-				//TODO clone needed?
-				LanguageString newLanguageString = (LanguageString)getDescription().get(language).clone();
-				result.description.put(language, newLanguageString);
-			}
-
+			result.description = cloneLanguageString(getDescription());
 
 			return result;
 			//no changes to: associatedSpecimenOrObservation

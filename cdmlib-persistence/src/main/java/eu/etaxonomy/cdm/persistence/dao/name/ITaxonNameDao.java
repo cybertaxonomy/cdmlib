@@ -252,7 +252,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonNameBase<?, ?>> findByName(String queryString,
+	public List<? extends TaxonNameBase<?, ?>> findByName(boolean doIncludeAuthors,
+	        String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
@@ -315,7 +316,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param criteria
 	 * @return
 	 */
-	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
 

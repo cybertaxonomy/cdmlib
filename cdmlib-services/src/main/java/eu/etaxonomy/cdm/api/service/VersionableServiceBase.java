@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +76,9 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
      */
 
     @Override
-    public DeleteResult isDeletable(T base, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(UUID baseUUID, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
+    	T base = this.find(baseUUID);
     	Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
     	if (references != null){
 	    	result.addRelatedObjects(references);

@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
@@ -179,6 +179,7 @@ public class StatisticsDaoHibernateImplTest
 		for (Classification classification : classifications) {
 			TaxonNode root;
 			root= createTaxTree(classification);
+
 			result=statisticsDao.getAllChildNodeIds(root.getUuid());
 			System.out.println("classification "+ classification.getName()+": ");
 			System.out.println("result: "+result.toString());
@@ -381,7 +382,7 @@ public class StatisticsDaoHibernateImplTest
 					Synonym synonym = Synonym.NewInstance(name, sec);
 					taxonDao.save(synonym);
 					taxon.addSynonym(synonym,
-							SynonymRelationshipType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF());
 
 					synonymCounter++;
 				}
@@ -513,7 +514,7 @@ public class StatisticsDaoHibernateImplTest
 		Random rand = new Random();
 
 			Set<TaxonNode> nodes = classification.getAllNodes();
-			ArrayList<TaxonNode> children = new ArrayList<TaxonNode>();
+			ArrayList<TaxonNode> children = new ArrayList<>();
 			TaxonNode parent = nodes.iterator().next();
 
 			TaxonNode root = parent;
@@ -522,14 +523,15 @@ public class StatisticsDaoHibernateImplTest
 				int n = rand.nextInt(2) + 1;
 				for (int i = 1; i <= n && !(nodes.isEmpty()); i++) {
 					TaxonNode nextNode = nodes.iterator().next();
-					parent.getChildNodes().add(nextNode);
+					nextNode = parent.addChildNode(nextNode, null, null);
 					children.add(nextNode);
 					nodes.remove(nextNode);
 				}
-				taxonNodeDao.save(parent);
+
 				parent = children.get(0);
 				children.remove(0);
 			}
+
 		return root;
 	}
 

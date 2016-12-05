@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 @Controller
 @Api("featureTree")
 @RequestMapping(value = {"/featureTree"})
-public class FeatureTreeListController extends IdentifiableListController<FeatureTree, IFeatureTreeService> {
+public class FeatureTreeListController extends AbstractIdentifiableListController<FeatureTree, IFeatureTreeService> {
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)

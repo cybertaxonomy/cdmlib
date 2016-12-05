@@ -3,28 +3,28 @@
 "1ed87175-59dd-437e-959e-0d71583d8417",,"Misapplied Name for","Misapplied Name for","–","Has Misapplied Name","Has Misapplied Name",,FALSE,FALSE
 "605b1d01-f2b1-4544-b2e0-6f08def3d6ed",,"Invalid Designation for","Invalid Designation for","–","Has Invalid Designation","Has Invalid Designation",,FALSE,FALSE
 "a8f03491-2ad6-4fae-a04c-2a4c117a2e9b",,"Contradiction","Contradiction","∅","Contradiction","Contradiction","∅",TRUE,FALSE
-"60974c98-64ab-4574-bb5c-c110f6db634d",,"Congruent to","Congruent to","≅","Congruent to","Congruent to","≅",TRUE,FALSE
+"60974c98-64ab-4574-bb5c-c110f6db634d",,"Congruent to","Congruent to","≜","Congruent to","Congruent to","≜",TRUE,FALSE
 "0501c385-cab1-4fbe-b945-fc747419bb13",,"Includes","Includes","⊃","Included in","Included in","⊂",FALSE,TRUE
-"b55cb3a2-6e20-4ca3-95bc-12b59d3235b0",,"Congruent to or Includes","Congruent to or Includes","≅⊃","Congruent to or Included in","Congruent to or Included in","≅⊂",FALSE,TRUE
+"b55cb3a2-6e20-4ca3-95bc-12b59d3235b0",,"Congruent to or Includes","Congruent to or Includes","≜⊃","Congruent to or Included in","Congruent to or Included in","≜⊂",FALSE,TRUE
 "c3ed5089-6779-4051-bb24-f5ea0eca80d5",,"Included in or Includes","Included in or Includes","⊂⊃","Included in or Includes","Included in or Includes","⊂⊃",TRUE,FALSE
-"0170cd83-93ad-43c2-9ad1-7ac879300e2f",,"Congruent to or Included in or Includes","Congruent to or Included in or Includes","≅⊂⊃","Congruent to or Included in or Includes","Congruent to or Included in or Includes","≅⊂⊃",TRUE,FALSE
+"0170cd83-93ad-43c2-9ad1-7ac879300e2f",,"Congruent to or Included in or Includes","Congruent to or Included in or Includes","≜⊂⊃","Congruent to or Included in or Includes","Congruent to or Included in or Includes","≜⊂⊃",TRUE,FALSE
 "2046a0fd-4fd6-45a1-b707-2b91547f3ec7",,"Overlaps","Overlaps","⊕","Overlaps","Overlaps","⊕",TRUE,FALSE
-"78355cfa-5200-432f-8e00-82b97afad0ed",,"Congruent to or Overlaps","Congruent to or Overlaps","≅⊕","Congruent to or Overlaps","Congruent to or Overlaps","≅⊕",TRUE,FALSE
+"78355cfa-5200-432f-8e00-82b97afad0ed",,"Congruent to or Overlaps","Congruent to or Overlaps","≜⊕","Congruent to or Overlaps","Congruent to or Overlaps","≜⊕",TRUE,FALSE
 "f1ec567b-3c73-436b-8625-b4fd53588abb",,"Includes or Overlaps","Includes or Overlaps","⊃⊕","Included in or Overlaps","Included in or Overlaps","⊂⊕",FALSE,FALSE
-"2d923b1a-6c0f-414c-ac9b-bbc502e18078",,"Congruent to or Includes or Overlaps","Congruent to or Includes or Overlaps","≅⊃⊕","Congruent to or Included in or Overlaps","Congruent to or Included in or Overlaps","≅⊂⊕",FALSE,FALSE
+"2d923b1a-6c0f-414c-ac9b-bbc502e18078",,"Congruent to or Includes or Overlaps","Congruent to or Includes or Overlaps","≜⊃⊕","Congruent to or Included in or Overlaps","Congruent to or Included in or Overlaps","≜⊂⊕",FALSE,FALSE
 "43466aa9-e431-4f37-8bca-febfd9f63716",,"Included in or Includes or Overlaps","Included in or Includes or Overlaps","⊂⊃⊕","Included in or Includes or Overlaps","Included in or Includes or Overlaps","⊂⊃⊕",TRUE,FALSE
-"0e5099bb-87c0-400e-abdc-bcfed5b5eece",,"Does Not Exclude","Does Not Exclude","≅⊂⊃⊕","Does Not Exclude","Does Not Exclude","≅⊂⊃⊕",TRUE,FALSE
+"0e5099bb-87c0-400e-abdc-bcfed5b5eece",,"Does Not Exclude","Does Not Exclude","≜⊂⊃⊕","Does Not Exclude","Does Not Exclude","≜⊂⊃⊕",TRUE,FALSE
 "4535a63c-4a3f-4d69-9350-7bf02e2c23be",,"Excludes","Excludes","!","Excludes","Excludes","!",TRUE,FALSE
-"758e6cf3-05a0-49ed-9496-d8c4a9fd02ae",,"Congruent to or Excludes","Congruent to or Excludes","≅!","Congruent to or Excludes","Congruent to or Excludes","≅!",TRUE,FALSE
+"758e6cf3-05a0-49ed-9496-d8c4a9fd02ae",,"Congruent to or Excludes","Congruent to or Excludes","≜!","Congruent to or Excludes","Congruent to or Excludes","≜!",TRUE,FALSE
 "6ee440bc-fd3d-4da2-ad85-906d35a94731",,"Includes or Excludes","Includes or Excludes","⊃!","Included in or Excludes","Included in or Excludes","⊂!",FALSE,FALSE
-"d5c6953d-aa53-46f8-aafc-ebc6428ad5d0",,"Congruent to or Includes or Excludes","Congruent to or Includes or Excludes","≅⊃!","Congruent to or Included in or Excludes","Congruent to or Included in or Excludes","≅⊂!",FALSE,FALSE
+"d5c6953d-aa53-46f8-aafc-ebc6428ad5d0",,"Congruent to or Includes or Excludes","Congruent to or Includes or Excludes","≜⊃!","Congruent to or Included in or Excludes","Congruent to or Included in or Excludes","≜⊂!",FALSE,FALSE
 "43d8492c-8bd5-4f38-a633-f1ad910a34dd",,"Included in or Includes or Excludes","Included in or Includes or Excludes","⊂⊃!","Included in or Includes or Excludes","Included in or Includes or Excludes","⊂⊃",TRUE,FALSE
-"ecd2382b-3d94-4169-9dd2-2c4ea1d24605",,"Does Not Overlap","Does Not Overlap","≅⊂⊃!","Does Not Overlap","Does Not Overlap","≅⊂⊃!",TRUE,FALSE
+"ecd2382b-3d94-4169-9dd2-2c4ea1d24605",,"Does Not Overlap","Does Not Overlap","≜⊂⊃!","Does Not Overlap","Does Not Overlap","≜⊂⊃!",TRUE,FALSE
 "623ecdeb-ff1f-471d-a8dc-0d75b2fe8d94",,"Overlaps or Excludes","Overlaps or Excludes","⊕!","Overlaps or Excludes","Overlaps or Excludes","⊕!",TRUE,FALSE
-"6fabef72-5264-44f1-bfc0-8e2e141375f2",,"Congruent to or Overlaps or Excludes","Congruent to or Overlaps or Excludes","≅⊕!","Congruent to or Overlaps or Excludes","Congruent to or Overlaps or Excludes","≅⊕!",TRUE,FALSE
+"6fabef72-5264-44f1-bfc0-8e2e141375f2",,"Congruent to or Overlaps or Excludes","Congruent to or Overlaps or Excludes","≜⊕!","Congruent to or Overlaps or Excludes","Congruent to or Overlaps or Excludes","≜⊕!",TRUE,FALSE
 "b7153c89-cc6c-4f8c-bf74-216f10feac46",,"Includes or Overlaps or Excludes","Includes or Overlaps or Excludes","⊃⊕!","Included in or Overlaps or Excludes","Included in or Overlaps or Excludes","⊂⊕!",FALSE,FALSE
-"89dffa4e-e004-4d42-b0d1-ae1827529e43",,"Not Included in","Not Included in","≅⊃⊕!","Does Not Include","Does Not Include","≅⊂⊕!",FALSE,FALSE
+"89dffa4e-e004-4d42-b0d1-ae1827529e43",,"Not Included in","Not Included in","≜⊃⊕!","Does Not Include","Does Not Include","≜⊂⊕!",FALSE,FALSE
 "6c16c33b-cfc5-4a00-92bd-a9f9e448f389",,"Not Congruent to","Not Congruent to","⊂⊃⊕!","Not Congruent to","Not Congruent to","⊂⊃⊕!",TRUE,FALSE
-"831fcd88-e5c9-49e0-b06e-bbb67d1c05c9",,"All Relationships","All Relationships","≅⊂⊃⊕!","All Relationships","All Relationships","≅⊂⊃⊕!",TRUE,FALSE
+"831fcd88-e5c9-49e0-b06e-bbb67d1c05c9",,"All Relationships","All Relationships","≜⊂⊃⊕!","All Relationships","All Relationships","≜⊂⊃⊕!",TRUE,FALSE
 "4c48ba25-c1d0-4bdd-9260-c1fa2e42a5d3",,"Unclear","Unclear","??","Unclear","Unclear","??",TRUE,FALSE
 "8d47e59a-790d-428f-8060-01d443519166",,"Not yet worked on","Not yet worked on","⌛","Unclear","Unclear","⌛",TRUE,FALSE

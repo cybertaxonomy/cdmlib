@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -38,16 +37,12 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 @Controller
 @Api("term")
 @RequestMapping(value = {"/term/{uuid}"})
-public class TermController extends BaseController<DefinedTermBase, ITermService> {
+public class TermController extends AbstractIdentifiableController<DefinedTermBase, ITermService> {
 
     private static final List<String> TERM_COMPARE_INIT_STRATEGY = Arrays.asList(new String []{
             "vocabulary"
     });
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITermService service) {
@@ -82,6 +77,5 @@ public class TermController extends BaseController<DefinedTermBase, ITermService
         response.sendError(400, "Terms of different vocabuaries can not be compared");
         return mv;
     }
-
 
 }

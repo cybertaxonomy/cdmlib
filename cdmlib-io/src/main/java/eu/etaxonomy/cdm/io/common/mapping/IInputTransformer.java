@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -99,5 +100,9 @@ public interface IInputTransformer {
 	public UUID getStateUuid(String key) throws UndefinedTransformerMethodException;
 
     public NomenclaturalStatusType getNomenclaturalStatusByKey(String key) throws UndefinedTransformerMethodException;
+
+    public DefinedTerm getIdentifierTypeByKey(String key) throws UndefinedTransformerMethodException;
+
+    public UUID getIdentifierTypeUuid(String key) throws UndefinedTransformerMethodException;
 
 }

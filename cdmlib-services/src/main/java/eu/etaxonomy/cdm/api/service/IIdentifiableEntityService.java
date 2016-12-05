@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -99,12 +100,6 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      */
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-//    /**
-//     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
-//     * @see #getUuidAndTitleCache(Integer, String)
-//     */
-//    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
-
     /**
      * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
      * Retrieving this list is considered to be significantly faster than initializing the fully fledged business
@@ -112,8 +107,31 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * a selection has been made.
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
+     *
+     * @see #getUuidAndTitleCache(Class, Integer, String)
      */
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
+
+    /**
+     * Returns the titleCache for a given object defined by uuid.
+     * @param uuid the uuid of the requested object.
+     * @param refresh if false the value as stored in the DB is returned,
+     *      otherwise it is recomputed by loading the object and calling the formatter.
+     * @return the titleCache of the requested object
+     */
+    public String getTitleCache(UUID uuid, boolean refresh);
+
+    /**
+     * Like {@link #getUuidAndTitleCache(Integer, String)} but searching only on a subclass
+     * of the type handled by the DAO.
+     *
+     * @param clazz the (sub)class
+     * @param limit max number of results
+     * @param pattern search pattern
+
+     * @see #getUuidAndTitleCache(Integer, String)
+     */
+    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern);
 
     /**
      * Return a Pager of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode

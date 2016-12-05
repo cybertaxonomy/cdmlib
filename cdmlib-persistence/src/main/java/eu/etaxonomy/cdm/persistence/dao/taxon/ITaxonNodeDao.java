@@ -9,11 +9,12 @@
 
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -39,6 +40,31 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return
      */
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
+
+    /**
+     * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
+     * represents the parent {@link TaxonNode}
+     * @param parent a UuidAndTitleCache object which represents a parent {@link TaxonNode}
+     * @return a list of UuidAndTitleCache objects that represent children of the
+     * parent
+     */
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
+    /**
+     * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
+     * @param child the child for which the parent should be retrieved
+     * @return an UuidAndTitleCache object representing the parent node
+     */
+    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child);
+
+    /**
+     * Retrieves a list of {@link UuidAndTitleCache} objects that have a matching titleCache
+     * @param limit the maximum results
+     * @param pattern the titleCache that is searched for
+     * @param classificationUuid if specified only nodes of this classification are retrieved
+     * @return a list of matches
+     */
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
 
@@ -84,7 +110,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param maxRankOrderIndex max rank
      * @return
      */
-    Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndex, Integer minRankOrderIndex,
+    Map<TreeIndex, Integer> rankOrderIndexForTreeIndex(List<TreeIndex> treeIndex, Integer minRankOrderIndex,
             Integer maxRankOrderIndex);
 
     /**
@@ -93,6 +119,6 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param treeIndexSet set of taxon node tree indexes
      * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
-    Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> treeIndexSet);
+    Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
 
 }

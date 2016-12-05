@@ -9,6 +9,9 @@
  */
 package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +19,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
  * @date 16.09.2013
  *
  */
-public class BioCaseQueryServiceWrapperTest extends TestCase{
+public class BioCaseQueryServiceWrapperTest {
 
     public static final Logger logger = Logger.getLogger(BioCaseQueryServiceWrapperTest.class);
 

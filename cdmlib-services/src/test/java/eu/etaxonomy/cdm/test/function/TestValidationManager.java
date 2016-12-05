@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.api.validation.ValidationManager;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -32,7 +31,7 @@ public class TestValidationManager {
 
         String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\testValidation2";
         String username = "sa";
-        CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("validationTest", username, "", path,   NomenclaturalCode.ICNAFP);
+        CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("validationTest", username, "", path);
 //        dataSource = getMySQLDatasource(schema);
 
 

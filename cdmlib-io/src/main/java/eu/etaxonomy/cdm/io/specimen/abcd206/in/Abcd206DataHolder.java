@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -30,8 +31,8 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
     protected List<String> knownABCDelements = new ArrayList<String>();
     protected HashMap<String,String> allABCDelements = new HashMap<String,String>();
-    public List<String> gatheringAgentList;
-    protected List<String> gatheringTeamList;
+    public String gatheringAgents ="";
+
 
     //per unit
 
@@ -55,8 +56,18 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
     protected String languageIso;
     protected String country;
     protected String isocountry;
-    protected Integer depth;
+
+
     protected Integer altitude;
+
+    private String gatheringDepthUnit;
+
+    private Double gatheringDepthMax;
+
+    private Double gatheringDepthMin;
+    private String gatheringDepthText;
+
+    private String gatheringMethod;
 
 
 
@@ -77,7 +88,7 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         languageIso = null;
         country = null;
         isocountry = null;
-        depth = null;
+
         altitude = null;
 
         gatheringElevationText = null;
@@ -85,12 +96,104 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
 
         setReferenceList(new ArrayList<String[]>());
-        setMultimediaObjects(new ArrayList<String>());
+        setMultimediaObjects(new HashMap<String,Map<String, String>>());
+        setGatheringMultimediaObjects(new HashMap<String,Map<String, String>>());
         setDocSources(new ArrayList<String>());
         associatedUnitIds = new ArrayList<String>();
     }
 
 
+
+
+    /**
+     * @param textContent
+     */
+    public void setGatheringDepthMin(Double gatheringDepthMin) {
+        this.gatheringDepthMin = gatheringDepthMin;
+
+    }
+
+    public Double getGatheringDepthMin() {
+        return gatheringDepthMin;
+
+    }
+
+
+
+    /**
+     * @param textContent
+     */
+    public void setGatheringDepthMax(Double gatheringDepthMax) {
+        this.gatheringDepthMax = gatheringDepthMax;
+
+    }
+
+    public Double getGatheringDepthMax() {
+        return gatheringDepthMax;
+
+    }
+
+
+
+    /**
+     * @param textContent
+     */
+    public void setGatheringDepthUnit(String gatheringDepthUnit) {
+        this.gatheringDepthUnit = gatheringDepthUnit;
+
+    }
+
+    public String getGatheringDepthUnit() {
+        return gatheringDepthUnit;
+
+    }
+
+
+
+
+
+    /**
+     * @return the gatheringDepthText
+     */
+    public String getGatheringDepthText() {
+        return gatheringDepthText;
+    }
+
+
+
+
+    /**
+     * @param gatheringDepthText the gatheringDepthText to set
+     */
+    public void setGatheringDepthText(String gatheringDepthText) {
+        this.gatheringDepthText = gatheringDepthText;
+    }
+
+
+
+
+    /**
+     * @param gatheringMethod
+     */
+    public void setGatheringMethod(String gatheringMethod) {
+        this.gatheringMethod = gatheringMethod;
+
+    }
+
+    /**
+     * @param gatheringMethod
+     */
+    public String getGatheringMethod() {
+        return this.gatheringMethod ;
+
+    }
+    public void addAssociatedUnitId(String associatedUnitId){
+        this.associatedUnitIds.add(associatedUnitId);
+    }
+
+    public List<String> getAssociatedUnitIds(){
+        return associatedUnitIds;
+    }
 
 
 }

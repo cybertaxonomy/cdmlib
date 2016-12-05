@@ -15,7 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 
 /**
@@ -79,8 +78,8 @@ public final class CdmPreference implements Serializable {
 	private String value;
 
     //if false, the preference should not be overridden by local preferences,
-	//if false local preferences override database preferences
-    @Transient  //preliminary until model change implemented
+	//if true existing local preferences override database preferences
+	    //and the database preference only defines the default.
     private boolean allowOverride = false;
 
     @Embeddable
@@ -222,9 +221,5 @@ public final class CdmPreference implements Serializable {
     public void setAllowOverride(boolean allowOverride) {
         this.allowOverride = allowOverride;
     }
-
-
-
-
 
 }

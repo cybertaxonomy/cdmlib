@@ -58,7 +58,7 @@ public interface IUserDao extends ICdmEntityDao<User> {
      *
      * @see {@link IIdentifiableDao#countByTitle(Class, String, MatchMode, List)}
      */
-    public int countByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria);
+    public long countByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 
 }

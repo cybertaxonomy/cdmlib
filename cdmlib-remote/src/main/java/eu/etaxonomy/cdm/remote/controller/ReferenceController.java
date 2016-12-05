@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -42,7 +41,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Controller
 @Api("reference")
 @RequestMapping(value = {"/reference/{uuid}"})
-public class ReferenceController extends BaseController<Reference, IReferenceService>
+public class ReferenceController extends AbstractIdentifiableController<Reference, IReferenceService>
 {
 
     private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{

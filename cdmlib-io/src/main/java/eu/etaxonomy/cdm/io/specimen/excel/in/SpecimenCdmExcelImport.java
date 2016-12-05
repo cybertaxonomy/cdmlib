@@ -838,7 +838,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (result != null){
 			return result;
 		}
-		List<TaxonNameBase<?,?>> list = getNameService().findNamesByTitle(name);
+		List<TaxonNameBase> list = getNameService().findByTitle(null, name, null, null, null, null, null, null).getRecords();
 		//TODO better strategy to find best name, e.g. depending on the classification it is used in
 		if (! list.isEmpty()){
 			result = list.get(0);

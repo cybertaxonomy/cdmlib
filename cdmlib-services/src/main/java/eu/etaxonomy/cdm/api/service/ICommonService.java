@@ -286,6 +286,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
 	/**
+	 * Creates a database that more or less has all tables filled.
 	 * Preliminary, may be moved to test later
 	 */
 	@Deprecated
@@ -346,6 +347,12 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @throws MergeException
      */
     public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException;
+
+    /**
+     * @param referencedCdmBase
+     * @return
+     */
+    Integer getReferencingObjectsCount(CdmBase referencedCdmBase);
 
 
 }

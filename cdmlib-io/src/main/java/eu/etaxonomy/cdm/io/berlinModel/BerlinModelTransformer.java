@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
-import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -257,6 +256,10 @@ public class BerlinModelTransformer {
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
 
 
+	//salvador
+	public static UUID uuidSalvadorAreas = UUID.fromString("8ef90ca3-77d7-4adc-8bbc-1eb354e61b65");
+
+
 
 	//language areas
 //	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
@@ -401,7 +404,14 @@ public class BerlinModelTransformer {
 	public static final UUID uuidFeatureInedited = UUID.fromString("c93e2968-bc52-4165-9755-ce37611faf01");
 	public static final UUID uuidFeatureCommentsEditing = UUID.fromString("7a155021-158a-48bb-81d0-9a72b718e2de");
 
-
+	//Salvador
+	public static final UUID uuidFeatureDistributionGlobal = UUID.fromString("9bd09ada-7bb3-4fe5-be35-dc4564bdd161");
+	public static final UUID uuidReporteParaElSalvador = UUID.fromString("1869a1a6-becb-468e-bc62-b2473f7d9391");
+	public static final UUID uuidFeatureOtherReferences = UUID.fromString("f5dc30bd-a5b1-436d-8cc0-69a999e61590");
+	public static final UUID uuidFeatureTaxonIllustrationReferences = UUID.fromString("6062122b-07c7-44e4-a9af-7daea0005819");
+    public static final UUID uuidFeatureSpecimenNotes = UUID.fromString("3c657936-f51a-4bfa-9ea4-287926ac63e5");
+    public static final UUID uuidFeatureEditorialNotes = UUID.fromString("5f971b66-1bc7-4b12-923e-2b4ee8b3737d");
+    public static final UUID uuidFeatureHabitatSalvador = UUID.fromString("d03a5e2c-fd93-4fff-b0b3-e16cefbb9847");
 
 	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
 	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
@@ -780,7 +790,7 @@ public class BerlinModelTransformer {
 		}
 	}
 
-	public static UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
+	public static UUID getFeatureUuid(String key) {
 		if (key == null){
 			return null;
 		}else if (key.equalsIgnoreCase("14-Maps")){ return uuidFeatureMaps;
@@ -794,6 +804,26 @@ public class BerlinModelTransformer {
 		}else if (key.equalsIgnoreCase("251-Editor_Parenthesis")){ return uuidFeatureEditorParenthesis;
 		}else if (key.equalsIgnoreCase("252-Inedited")){ return uuidFeatureInedited;
 		}else if (key.equalsIgnoreCase("253-Comments on editing process")){ return uuidFeatureCommentsEditing;
+
+		//salvador
+		}else if (key.equalsIgnoreCase("302-Usos")){ return Feature.uuidUses;
+		}else if (key.equalsIgnoreCase("303-Distribución global")){ return uuidFeatureDistributionGlobal;
+		}else if (key.equalsIgnoreCase("306-Nombre(s) común(es)")){ return Feature.uuidCommonName;
+		}else if (key.equalsIgnoreCase("307-Muestras de herbario")){ return Feature.uuidSpecimen;
+        }else if (key.equalsIgnoreCase("309-Reporte para El Salvador")){ return uuidReporteParaElSalvador;
+        }else if (key.equalsIgnoreCase("310-Otras referencias")){ return uuidFeatureOtherReferences;
+        }else if (key.equalsIgnoreCase("311-Ilustración(es)")){ return uuidFeatureTaxonIllustrationReferences;
+        }else if (key.equalsIgnoreCase("312-Imágen")){ return Feature.uuidImage;
+        }else if (key.equalsIgnoreCase("350-Descripción*")){ return Feature.uuidDescription;
+        }else if (key.equalsIgnoreCase("1800-Notas de muestras*")){ return uuidFeatureSpecimenNotes;
+        }else if (key.equalsIgnoreCase("1900-Notas editoriales*")){ return uuidFeatureEditorialNotes;
+        }else if (key.equalsIgnoreCase("2000-Habitat en El Salvador*")){ return uuidFeatureHabitatSalvador;
+
+
+
+
+
+
 
 		}else{
 			return null;
@@ -1053,9 +1083,9 @@ public class BerlinModelTransformer {
 			RelationshipTermBase<?> type = rel.getType();
 			if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {return TAX_REL_IS_INCLUDED_IN;
 			}else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {return TAX_REL_IS_MISAPPLIED_NAME_OF;
-			}else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {return TAX_REL_IS_SYNONYM_OF;
-			}else if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HOMOTYPIC_SYNONYM_OF;
-			}else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HETEROTYPIC_SYNONYM_OF;
+			}else if (type.equals(SynonymType.SYNONYM_OF())) {return TAX_REL_IS_SYNONYM_OF;
+			}else if (type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HOMOTYPIC_SYNONYM_OF;
+			}else if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HETEROTYPIC_SYNONYM_OF;
 			}else if (type.equals(TaxonRelationshipType.CONGRUENT_TO())) {return 11;
 //			public static int TAX_REL_IS_PROPARTE_SYN_OF = 4;
 //			public static int TAX_REL_IS_PARTIAL_SYN_OF = 5;

@@ -11,13 +11,15 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
-
-import javassist.util.proxy.Proxy;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -30,6 +32,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -43,6 +47,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import javassist.util.proxy.Proxy;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -127,17 +132,21 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         taxNode = HibernateProxyHelper.deproxy(taxNode, TaxonNode.class);
         taxNode2 = HibernateProxyHelper.deproxy(taxNode2, TaxonNode.class);
         TaxonNode rootNode = HibernateProxyHelper.deproxy(classification.getRootNode(), TaxonNode.class);
-        rootNode.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);
+        TaxonNode newNode = rootNode.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);
+        taxonNodeDao.saveOrUpdate(newNode);
         taxonNodeDao.delete(taxNode3, true);
+
+        assertNull(taxonNodeDao.findByUuid(taxNode3.getUuid()));
         classification = classificationDao.findByUuid(ClassificationUuid);
 
         taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be 7 taxa left", 7, taxa.size());
-        taxonNodeDao.flush();
+        // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon; 1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
+        assertEquals("there should be 4 taxa left", 4, taxa.size());
+
         classificationDao.delete(classification);
         classification = null;
 
-        classificationDao.flush();
+       // classificationDao.flush();
         classification = classificationDao.findByUuid(ClassificationUuid);
         assertEquals("The tree should be null", null, classification);
 
@@ -186,13 +195,18 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
         Taxon taxon1 = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
         Taxon taxon2 = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
-        taxNode.addChildTaxon(taxon, null, null);
-        taxNode2.addChildTaxon(taxon1, null, null);
-        taxNode3.addChildTaxon(taxon2, null, null);
+        TaxonNode child = taxNode.addChildTaxon(taxon, null, null);
+        UUID childUuid = taxonNodeDao.saveOrUpdate(child);
+        child = taxonNodeDao.load(childUuid);
+        assertNotNull(child);
+        child = taxNode2.addChildTaxon(taxon1, null, null);
+        taxonNodeDao.saveOrUpdate(child);
+        child = taxNode3.addChildTaxon(taxon2, null, null);
+        taxonNodeDao.saveOrUpdate(child);
 
         List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
         assertEquals("there should be 7 taxa left", 7, taxas.size());
-
+        commitAndStartNewTransaction(null);
 
         taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
         logger.info(taxas.size());
@@ -214,7 +228,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
     	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
-    	classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
+    	TaxonNode childNode = classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
+    	this.taxonNodeDao.saveOrUpdate(childNode);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
 
@@ -230,6 +245,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode newNode = classification.addChildTaxon(newTaxon, 0, null, null);
     	newNode.setUuid(UUID.fromString("58728644-1155-4520-98f7-309fdb62abd7"));
+    	this.taxonNodeDao.saveOrUpdate(newNode);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
 
@@ -253,10 +269,31 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Assert.assertNotSame(rel, newRel);
     }
 
+    //see comment 7 in #6199
+    @Test
+    @DataSet
+    public void testPersistExcludedInfos(){
+        //test read
+        TaxonNode excludedNode = taxonNodeDao.load(UUID.fromString("4f73adcc-a535-4fbe-a97a-c05ee8b12191"));
+        Assert.assertTrue("Node should be excluded", excludedNode.isExcluded());
+        TaxonNode unplacedNode = taxonNodeDao.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
+        Assert.assertTrue("Node should be unplaced", unplacedNode.isUnplaced());
+        TaxonNode notSpecialNode = taxonNodeDao.load(UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519"));
+        Assert.assertFalse("Node should be neither excluded nor unplaced", notSpecialNode.isUnplaced() || notSpecialNode.isExcluded());
+
+        //read excluded node
+        Map<Language, LanguageString> map = excludedNode.getExcludedNote();
+        Assert.assertEquals(2, map.size());
+        Set<Integer> langIds = new HashSet<>();
+        for (Language lang : map.keySet()){
+            langIds.add(lang.getId());
+        }
+        Assert.assertTrue("Excluded note must contain text for language id = 1", langIds.contains(1));
+        Assert.assertTrue("", langIds.contains(2));
+    }
+
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
