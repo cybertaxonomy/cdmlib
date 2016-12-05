@@ -76,6 +76,8 @@
              <value>IdentifiableSource.citation</value>
 
              <value>SearchResult.entity</value>
+             
+             <value>CdmEntity.entity</value>
          </set>
        </property>
      </bean>
