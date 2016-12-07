@@ -742,6 +742,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         //sortIndex
         //TODO workaround (see sortIndex doc)
+       // this.getParent().removeNullValueFromChildren();
         this.getParent().updateSortIndex(index);
         //only for debugging
         if (! this.getSortIndex().equals(index)){
@@ -761,6 +762,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	private void updateSortIndex(int index) {
 	    if (this.hasChildNodes()){
     	    List<TaxonNode> children = this.getChildNodes();
+    	    HHH_9751_Util.removeAllNull(children);
     	    for(int i = index; i < children.size(); i++){
                 	TaxonNode child = children.get(i);
                 	if (child != null){
@@ -964,7 +966,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     public void removeNullValueFromChildren(){
         try {
-            HHH_9751_Util.removeAllNull(childNodes);
+            //HHH_9751_Util.removeAllNull(childNodes);
             this.updateSortIndex(0);
         } catch (LazyInitializationException e) {
             logger.info("Cannot clean up uninitialized children without a session, skipping.");
