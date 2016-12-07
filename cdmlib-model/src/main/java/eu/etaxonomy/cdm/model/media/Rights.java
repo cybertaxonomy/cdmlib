@@ -89,7 +89,6 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	 * @return
 	 */
 	public static Rights NewInstance() {
-		logger.debug("NewInstance");
 		return new Rights();
 	}
 
@@ -100,6 +99,14 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	public static Rights NewInstance(String text, Language language) {
 		return new Rights(text, language);
 	}
+
+	/**
+     * Factory method
+     * @return
+     */
+    public static Rights NewInstance(String text, Language language, RightsType type) {
+        return new Rights(text, language, type);
+    }
 
 //*********************** CONSTRUCTOR *************************/
 
@@ -116,6 +123,14 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	protected Rights(String text, Language language) {
 		super(text, language);
 	}
+
+	/**
+     * Constructor
+     */
+    protected Rights(String text, Language language, RightsType type) {
+        super(text, language);
+        this.setType(type);
+    }
 
 //*********************** GETTER /SETTER *****************************/
 
