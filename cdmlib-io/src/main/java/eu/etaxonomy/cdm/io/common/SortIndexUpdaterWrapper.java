@@ -10,14 +10,18 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 
 /**
@@ -36,47 +40,76 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
     protected void doInvoke(DefaultImportState<SortIndexUpdaterConfigurator> state) {
         SortIndexUpdaterConfigurator config = state.getConfig();
         SortIndexUpdater updater;
-        ICdmDataSource source = config.getDestination();
-        CaseType caseType = CaseType.caseTypeOfDatasource(config.getDestination());
+
+       // CaseType caseType = CaseType.caseTypeOfDatasource(config.getDestination());
         IProgressMonitor  monitor = DefaultProgressMonitor.NewInstance();
+
         if (config.isDoTaxonNode()){
             updater = SortIndexUpdater.NewInstance("Update taxonnode sortindex", "TaxonNode", "parent_id", "sortIndex", true);
-            try {
-                source.startTransaction();
-                updater.invoke(config.getDestination(), monitor, caseType);
-                source.commitTransaction();
-            } catch (SQLException e) {
 
-                monitor.warning("Stopped sortIndex updater");
-            }
+            update(updater, monitor);
+
+
         }
         if (config.isDoFeatureNode()){
             updater = SortIndexUpdater.NewInstance("Update Feature node sortindex", "FeatureNode", "parent_id", "sortIndex", true);
-            try {
-                source.startTransaction();
-                updater.invoke(config.getDestination(), monitor, caseType);
-                source.commitTransaction();
-            } catch (SQLException e) {
-
-                monitor.warning("Stopped sortIndex updater");
-            }
+            update(updater, monitor);
         }
         if (config.isDoPolytomousKeyNode()){
             updater = SortIndexUpdater.NewInstance("Update Polytomouskey node sortindex", "PolytomousKeyNode", "parent_id", "sortindex", true);
-            try {
-                source.startTransaction();
-                updater.invoke(config.getDestination(), monitor, caseType);
-                source.commitTransaction();
-            } catch (SQLException e) {
-
-                monitor.warning("Stopped sortIndex updater");
-            }
+           update(updater, monitor);
         }
         return;
 
     }
 
+    private void update(SortIndexUpdater updater,  IProgressMonitor  monitor){
+        try {
+            TransactionStatus tx;
+            tx = startTransaction();
+            String query = updater.createIndexMapQuery();
+            SQLQuery sqlQuery = getAgentService().getSession().createSQLQuery(query);
 
+            List data = sqlQuery.list();
+
+           List<Integer[]> result = new ArrayList<Integer[]>();
+           int id;
+           int parentId;
+           Object oId;
+           Object oParentId;
+           Integer[] rowArray = new Integer[2];
+            for(Object object : data)
+            {
+               Object[] row = (Object[])object;
+               oId = row[0];
+
+                if (oId != null){
+                    id = Integer.valueOf(oId.toString());
+                    oParentId = row[1];
+                    if (oParentId != null){
+                        parentId = Integer.valueOf(oParentId.toString());
+                        rowArray = new Integer[2];
+                        rowArray[0]= id;
+                        rowArray[1]= parentId;
+                        result.add(rowArray);
+
+                    }
+                }
+            }
+            Map<Integer, Set<Integer>> indexMap =  updater.makeIndexMap(result);
+            for (Map.Entry<Integer, Set<Integer>> entry: indexMap.entrySet()){
+                String idSet = updater.makeIdSetString(entry.getValue());
+                query = updater.createUpdateIndicesQuery(null,entry.getKey(), idSet);
+                sqlQuery = getAgentService().getSession().createSQLQuery(query);
+                int resultInt = sqlQuery.executeUpdate();
+                System.out.println("update all indice with index "+entry.getKey()+ " - " + resultInt);
+            }
+            commitTransaction(tx);
+        } catch (SQLException e) {
+
+            monitor.warning("Stopped sortIndex updater");
+        }
+    }
 
 
     @Override

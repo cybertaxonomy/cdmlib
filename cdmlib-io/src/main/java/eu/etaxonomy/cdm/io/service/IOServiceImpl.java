@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
@@ -164,6 +165,18 @@ public class IOServiceImpl implements IIOService {
                 result = cdmImport.execute(configurator);
             }
             return result;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportResult updateSortIndex(SortIndexUpdaterConfigurator config) {
+        ImportResult result = new ImportResult();
+
+        result = cdmImport.invoke(config);
+        return result;
     }
 
 

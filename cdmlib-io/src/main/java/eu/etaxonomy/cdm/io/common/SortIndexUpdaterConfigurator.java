@@ -24,6 +24,8 @@ public class SortIndexUpdaterConfigurator extends ImportConfiguratorBase<Default
     private boolean doFeatureNode = true;
     private boolean doPolytomousKeyNode = true;
 
+    private String subTreeIndex = null;
+
     private SortIndexUpdaterConfigurator(ICdmDataSource destination){
         super(null);
         this.setDestination(destination);
