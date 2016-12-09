@@ -118,6 +118,7 @@ public  class ImageInfo extends MediaInfo {
 			width = imageInfo.getWidth();
 			height = imageInfo.getHeight();
 			bitPerPixel = imageInfo.getBitsPerPixel();
+			inputStream.close();
 
 		} catch (ImageReadException e) {
 			logger.error("Could not read: " + imageUri + ". " + e.getMessage());
@@ -131,11 +132,10 @@ public  class ImageInfo extends MediaInfo {
 		try {
 			InputStream inputStream = UriUtils.getInputStream(imageUri);
 
-			IImageMetadata mediaData;
-			mediaData = Sanselan.getMetadata(inputStream, null);
+			 IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
 
 			if (mediaData != null){
-				metaData = new HashMap<String, String>();
+				metaData = new HashMap<>();
 				for (Object object : mediaData.getItems()){
 					Item item = (Item) object;
 					if (item.getKeyword().contains("/")){
