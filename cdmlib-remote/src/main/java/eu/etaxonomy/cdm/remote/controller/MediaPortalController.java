@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -46,9 +45,6 @@ public class MediaPortalController extends MediaController
         setInitializationStrategy(MEDIA_INIT_STRATEGY);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IMediaService service) {
