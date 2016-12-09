@@ -55,6 +55,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final UUID uuidProvince = UUID.fromString("401d48b4-9f09-4354-be0f-c2138444f72d");
 	private static final UUID uuidTown = UUID.fromString("f127b4d2-f6bc-4019-9c87-ee3f4de1f094");
 	private static final UUID uuidCountry = UUID.fromString("79db63a4-1563-461e-8e41-48f5722feca4");
+    private static final UUID uuidDepartment = UUID.fromString("a31fe600-d142-4722-b82e-4df2f5ec3cb3");
 
 //************************** FACTORY METHODS ********************************
 
@@ -135,6 +136,10 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		return getTermByUuid(uuidProvince);
 	}
 
+    public static NamedAreaLevel DEPARTMENT() {
+        return getTermByUuid(uuidDepartment);
+    }
+
 	public static final NamedAreaLevel TOWN(){
 		return getTermByUuid(uuidTown);
 	}
@@ -193,4 +198,5 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 			termMap.put(term.getUuid(), term);
 		}
 	}
+
 }
