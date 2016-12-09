@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -127,8 +128,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @ManyToMany(fetch = FetchType.LAZY /*, orphanRemoval=false*/)  //#5762 M:N now
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
