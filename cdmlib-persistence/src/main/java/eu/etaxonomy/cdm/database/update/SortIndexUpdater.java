@@ -210,4 +210,45 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
 		set.add(id);
 	}
 
+
+	public String getChildrenCountQuery(){
+
+        String countSelect = "SELECT COUNT(child.id) as realCount, parent.countChildren as countChildren, parent.id as parentID FROM @tableName child RIGHT JOIN @tableName parent ON child.parent_id = parent.id GROUP BY parent.id";
+        countSelect = countSelect.replace("@tableName", tableName);
+        return countSelect;
+
+	}
+
+	public String getUpdateChildrenCount(int count, int id){
+
+        String countUpdate =  "UPDATE @tableName SET countChildren = " + count+" WHERE id = " + id;
+        countUpdate = countUpdate.replace("@tableName", tableName);
+
+
+        return countUpdate;
+
+    }
+
+	public void updateChildrenCount(String select, ICdmDataSource datasource) throws SQLException{
+	    ResultSet rs;
+
+        rs = datasource.executeQuery(select);
+
+        List<Integer[]> result = new ArrayList<Integer[]>();
+        int count ;
+        int countChildren;
+        int parentId;
+
+        while (rs.next()){
+            count = rs.getInt("realCount");
+            countChildren = rs.getInt("countChildren");
+            parentId = rs.getInt("parentID");
+            if (count != countChildren){
+                String updateQuery = getUpdateChildrenCount(count, parentId);
+                datasource.executeUpdate(updateQuery);
+            }
+        }
+
+	}
+
 }
