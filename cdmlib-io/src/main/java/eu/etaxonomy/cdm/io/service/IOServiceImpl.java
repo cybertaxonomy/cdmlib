@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
+import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
@@ -76,6 +77,7 @@ public class IOServiceImpl implements IIOService {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
+
                 configurator.setProgressMonitor(monitor);
                 ImportResult result = importData(configurator, importData, type);
                 for(byte[] report : result.getReports()) {
@@ -95,6 +97,10 @@ public class IOServiceImpl implements IIOService {
         ImportResult result;
         switch(type) {
         case URI:
+            if (importData.equals(new byte[1])){
+                result = cdmImport.execute(configurator);
+                return result;
+            }
             return importDataFromUri(configurator, importData);
         case INPUTSTREAM:
             return importDataFromInputStream(configurator,importData);
@@ -138,7 +144,12 @@ public class IOServiceImpl implements IIOService {
         ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
         ImportResult result;
         try {
-            config.setSource(new ByteArrayInputStream(importData));
+            if (config instanceof NormalExplicitImportConfigurator){
+                NormalExplicitImportConfigurator excelConfig = (NormalExplicitImportConfigurator)config;
+                excelConfig.setStream(new ByteArrayInputStream(importData));
+            }else{
+                config.setSource(new ByteArrayInputStream(importData));
+            }
             result = cdmImport.execute(config);
         } catch (Exception e) {
             throw new RuntimeException(e);
