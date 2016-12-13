@@ -1148,7 +1148,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     private boolean checkForPolytomousKeys(Taxon taxon){
         boolean result = false;
-        List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon);
+        List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon, null);
         if (!list.isEmpty()) {
             result = true;
         }

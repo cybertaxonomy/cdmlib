@@ -48,7 +48,7 @@ public interface ICdmGenericDao {
 	 * @param value
 	 * @return
 	 */
-	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
+	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase, Integer limit);
 
 	/**
 	 * Returns ...
@@ -58,7 +58,7 @@ public interface ICdmGenericDao {
 	 * @param referencedCdmBase
 	 * @return
 	 */
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit);
 
 	/**
 	 * Returns all classes that are persisted via the persisting framework.

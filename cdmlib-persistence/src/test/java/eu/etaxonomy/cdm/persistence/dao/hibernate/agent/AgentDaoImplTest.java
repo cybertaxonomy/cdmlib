@@ -164,6 +164,9 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Person person = (Person)agentDao.findByUuid(personUuid);
         agentDao.delete(person);
 
+
+        person =(Person)agentDao.findByUuid(personUuid);
+        Assert.assertNull(person);
         commitAndStartNewTransaction(null);
     }
 
