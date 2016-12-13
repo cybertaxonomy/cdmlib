@@ -106,7 +106,7 @@ public class DeduplicationHelper {
 			//merge objects
 			//externel impl
 			//internal impl
-			session.flush();
+
 			Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
 			Set<ICdmBase> cloneSet = new HashSet<ICdmBase>();
 			if (cdmBase1 instanceof IMergable){
@@ -115,7 +115,7 @@ public class DeduplicationHelper {
 				deleteSet = mergeStrategy.invoke(mergable1, mergable2, cloneSet);
 				//session.saveOrUpdate(mergable1);
 
-				session.flush();
+				//session.flush();
 				//((IMergable)cdmBase1).mergeInto(cdmBase2, DefaultMergeStrategy.NewInstance(cdmBase1.getClass()));
 			}else{
 				//TODO should we better use clazz2 here?
@@ -125,6 +125,7 @@ public class DeduplicationHelper {
 
 			if (cdmBase2.getId() > 0){
 				session.saveOrUpdate(cdmBase2);
+				session.flush();
 				//rearrange references pointing to cdmBase2 to cdmBase1 in future
 				reallocateReferences(cdmBase1, cdmBase2, sessionFactory, clazz2, cloneSet);
 			}
@@ -138,10 +139,12 @@ public class DeduplicationHelper {
 			}
 			if(deleteSecond){
 			    session.delete(cdmBase2);
+
 			    for (ICdmBase toBeDeleted : deleteSet){
 	                logger.debug("Delete " + toBeDeleted);
 	                if (toBeDeleted != cdmBase2){
 	                    session.delete(toBeDeleted);
+
 	                }
 	            }
 			}
@@ -487,7 +490,7 @@ public class DeduplicationHelper {
 		Class<?> clazz1 = cdmBase1.getClass();
 		if (! targetClass.isAssignableFrom(clazz1)){
 			//FIXME only do count or hasXXX, we do not need to instantiate objects here
-			List<CdmBase> referencingObjects = genericDao.getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2);
+			List<CdmBase> referencingObjects = genericDao.getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 			if (! referencingObjects.isEmpty()){
 				return false;
 			}
@@ -509,7 +512,7 @@ public class DeduplicationHelper {
 	 */
 	private void reallocateCollection(CdmBase cdmBase1, CdmBase cdmBase2,
 			ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws MergeException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		List<CdmBase> list = genericDao.getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2);
+		List<CdmBase> list = genericDao.getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 		for (CdmBase referencingObject : list){
 			Field referencingField = getFieldRecursive(refHolder.otherClass, refHolder.propertyName);
 			referencingField.setAccessible(true);
@@ -533,7 +536,7 @@ public class DeduplicationHelper {
 		Class<?> clazz1 = cdmBase1.getClass();
 		if (! targetClass.isAssignableFrom(clazz1)){
 			//FIXME only do count or hasXXX, we do not need to instantiate objects here
-			List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2);
+			List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 			if (! referencingObjects.isEmpty()){
 				return false;
 			}
@@ -542,7 +545,7 @@ public class DeduplicationHelper {
 	}
 
 	private void reallocateSingleItem(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2);
+		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 		for (CdmBase referencingObject : referencingObjects){
 			if (!cloneSet.contains(referencingObject)){
 		        String className = refHolder.otherClass.getSimpleName();
@@ -580,7 +583,7 @@ public class DeduplicationHelper {
 	 *
 	 */
 	private void reallocateSingleItem_Old(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2);
+		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 		for (CdmBase referencingObject : referencingObjects){
 			Field referencingField = refHolder.otherClass.getDeclaredField(refHolder.propertyName);
 			referencingField.setAccessible(true);
