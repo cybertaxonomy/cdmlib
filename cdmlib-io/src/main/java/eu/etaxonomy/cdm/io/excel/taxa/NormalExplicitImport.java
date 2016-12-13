@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.SourceDataHolder;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTransformer;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -45,11 +46,14 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -97,31 +101,42 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		String value = keyValue.value;
 		Integer index = keyValue.index;
 		if (((NormalExplicitImportConfigurator)state.getConfig()).getParentUUID() != null){
-            normalExplicitRow.setParentId(0);
+            normalExplicitRow.setParentId("0");
 		}
 
 		key = key.replace(" ","");
 		if (key.equalsIgnoreCase(ID_COLUMN)) {
-			int ivalue = floatString2IntValue(value);
-			normalExplicitRow.setId(ivalue);
+			//String ivalue = floatString2IntValue(value);
+			normalExplicitRow.setId(value);
 
 		} else if(key.equalsIgnoreCase(PARENT_ID_COLUMN) ) {
-			int ivalue = floatString2IntValue(value);
-			normalExplicitRow.setParentId(ivalue);
+			//int ivalue = floatString2IntValue(value);
+			normalExplicitRow.setParentId(value);
 
 		} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
 			normalExplicitRow.setRank(value);
 
-		} else if(key.trim().equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
+		} else if(key.trim().equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN) || key.trim().equalsIgnoreCase(FULLNAME_COLUMN)) {
 			normalExplicitRow.setScientificName(value);
 
-		} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
+		} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)|| key.equalsIgnoreCase(AUTHORS_COLUMN)) {
 			normalExplicitRow.setAuthor(value);
+		}else if(key.equalsIgnoreCase(PUBLISHING_AUTHOR_COLUMN)) {
+            normalExplicitRow.setPublishingAuthor(value);
+		}else if(key.equalsIgnoreCase(BASIONYM_AUTHOR_COLUMN)) {
+            normalExplicitRow.setBasionymAuthor(value);
 
-		} else if(key.equalsIgnoreCase(REFERENCE_COLUMN)) {
+		}else if(key.equalsIgnoreCase(BASIONYM_COLUMN)) {
+            normalExplicitRow.setBasionym(value);
+		}else if(key.trim().equalsIgnoreCase(NOMENCLATURAL_SYNONYM_COLUMN)) {
+            normalExplicitRow.setSynonym(value);
+		} else if(key.equalsIgnoreCase(REFERENCE_COLUMN) || key.equalsIgnoreCase(PUBLICATION_COLUMN)) {
 			normalExplicitRow.setReference(value);
 
-		} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN) ) {
+		} else if(key.equalsIgnoreCase(COLLATION_COLUMN)) {
+            normalExplicitRow.setCollation(value);
+
+        }else if(key.equalsIgnoreCase(NAMESTATUS_COLUMN)) {
 			normalExplicitRow.setNameStatus(value);
 
 		} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
@@ -130,7 +145,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
 			normalExplicitRow.setLanguage(value);
 
-		} else if(key.equalsIgnoreCase(TDWG_COLUMN)) {
+		} else if(key.equalsIgnoreCase(TDWG_COLUMN) ) {
 			//TODO replace still necessary?
 			value = value.replace(".0", "");
 			normalExplicitRow.putDistribution(index, value);
@@ -141,12 +156,29 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		} else if(key.equalsIgnoreCase(IMAGE_COLUMN)) {
 			normalExplicitRow.putImage(index, value);
 
-		} else if(key.equalsIgnoreCase(DATE_COLUMN) || key.equalsIgnoreCase(YEAR_COLUMN)) {
+		} else if(key.equalsIgnoreCase(DATE_COLUMN) || key.equalsIgnoreCase(YEAR_COLUMN)|| key.equalsIgnoreCase(PUBLICATION_YEAR_COLUMN)) {
             normalExplicitRow.setDate(value);
 
         } else if(key.equalsIgnoreCase(FAMILY_COLUMN)) {
             normalExplicitRow.setFamily(value);
-        }else if(key.equalsIgnoreCase("!")) {
+        } else if(key.equalsIgnoreCase(INFRA_FAMILY_COLUMN)) {
+            normalExplicitRow.setInfraFamily(value);
+        }else if(key.equalsIgnoreCase(GENUS_COLUMN)) {
+            normalExplicitRow.setGenus(value);
+        }else if(key.trim().equalsIgnoreCase(INFRA_GENUS_COLUMN.trim())) {
+            normalExplicitRow.setInfraGenus(value);
+        }else if(key.equalsIgnoreCase(SPECIES_COLUMN)) {
+            normalExplicitRow.setSpecies(value);
+        }else if(key.equalsIgnoreCase(INFRA_SPECIES_COLUMN)) {
+            normalExplicitRow.setInfraSpecies(value);
+        } else if (key.equalsIgnoreCase(VERSION_COLUMN)){
+            normalExplicitRow.setVersion(value);
+        }
+
+
+
+
+        else if(key.equalsIgnoreCase("!")) {
             //! = Legitimate, * = Illegitimate, ** = Invalid, *** = nom. rej., !! = nom. cons.
             if (value.equals("!")){
                 normalExplicitRow.setNameStatus("accepted");
@@ -163,12 +195,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
             }
         }else {
 			if (analyzeFeatures(state, keyValue)){
-				//ok
+
 			}else{
 				String message = "Unexpected column header " + key;
 				fireWarningEvent(message, state, 10);
 				state.setUnsuccessfull();
-				logger.error(message);
+				//logger.error(message);
 			}
 		}
 		return;
@@ -191,11 +223,25 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		String rankStr = taxonDataHolder.getRank();
 		String taxonNameStr = taxonDataHolder.getScientificName();
 		String authorStr = taxonDataHolder.getAuthor();
+		String publishingAuthor= taxonDataHolder.getPublishingAuthor();
+		String basionymAuthor = taxonDataHolder.getBasionymAuthor();
+
 		String referenceStr = taxonDataHolder.getReference();
 		String nameStatus = taxonDataHolder.getNameStatus();
 		String familyNameStr = taxonDataHolder.getFamily();
+		String infraFamilyNameStr = taxonDataHolder.getInfraFamily();
+		String genusNameStr = taxonDataHolder.getGenus();
+		String infraGenusNameStr = taxonDataHolder.getInfraGenus();
+		String speciesNameStr = taxonDataHolder.getSpecies();
+		String infraSpeciesNameStr = taxonDataHolder.getInfraSpecies();
+
+		String version = taxonDataHolder.getVersion();
+
+
+
+
 		String dateStr = taxonDataHolder.getDate();
-		Integer id = taxonDataHolder.getId();
+		String id = taxonDataHolder.getId();
 		UUID cdmUuid = taxonDataHolder.getCdmUuid();
 
 		TaxonBase<?> taxonBase = null;
@@ -213,13 +259,18 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					try {
 						rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
 					} catch (UnknownCdmTypeException e) {
-						//state.setUnsuccessfull();
-						logger.error(rankStr + " is not a valid rank.");
+					    try {
+	                           rank = TcsRdfTransformer.rankString2Rank(rankStr);
+	                       } catch (UnknownCdmTypeException e1) {
+	                            // TODO Auto-generated catch block
+	                            e1.printStackTrace();
+	                       }
+					   
 					}
 				}
 
 	            //taxon
-				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, referenceStr, dateStr, nameStatus);
+				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthor, basionymAuthor, referenceStr, dateStr, nameStatus);
 			}else{
 				return;
 			}
@@ -248,8 +299,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 
 		state.putTaxon(id, taxonBase);
-		getTaxonService().save(taxonBase);
-
+		taxonBase = getTaxonService().save(taxonBase);
+		taxonDataHolder.setCdmUuid(taxonBase.getUuid());
 		return;
     }
 
@@ -268,93 +319,124 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			String taxonNameStr = taxonDataHolder.getScientificName();
 			String nameStatus = taxonDataHolder.getNameStatus();
 			String commonNameStr = taxonDataHolder.getCommonName();
-			Integer parentId = taxonDataHolder.getParentId();
-			Integer childId = taxonDataHolder.getId();
+
+			String synonymNameStr = taxonDataHolder.getSynonym();
+			String basionymNameStr = taxonDataHolder.getBasionym();
+
+			String parentId = taxonDataHolder.getParentId();
+			String childId = taxonDataHolder.getId();
 			UUID cdmUuid = taxonDataHolder.getCdmUuid();
 			Taxon acceptedTaxon = null;
 			TaxonNameBase<?,?> nameUsedInSource = null;
 			TaxonBase<?> taxonBase = null;
+			Taxon parentTaxon = null;
 
 			if (cdmUuid != null){
 				taxonBase = getTaxonService().find(cdmUuid);
-				acceptedTaxon = getAcceptedTaxon(taxonBase);
-				nameUsedInSource = taxonBase.getName();
-			}else{
-			    //TODO error handling for class cast
-			    Taxon parentTaxon = null;
-			    if (parentId == 0 && state.getParent() == null){
-			        parentTaxon =(Taxon) getTaxonService().load(((NormalExplicitImportConfigurator)state.getConfig()).getParentUUID());
-			        state.setParent(parentTaxon);
-			    }else if (parentId != 0){
-			       parentTaxon = CdmBase.deproxy(state.getTaxonBase(parentId), Taxon.class);
-			    } else if (state.getParent() != null){
-			        parentTaxon = state.getParent();
-			    }
-				if (StringUtils.isNotBlank(taxonNameStr)) {
-					taxonBase = state.getTaxonBase(childId);
-					if (taxonBase != null){
-
-					nameUsedInSource = taxonBase.getName();
-					nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
-					if (validMarkers.contains(nameStatus)){
-						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-						acceptedTaxon = taxon;
-						// Add the parent relationship
-						//if (state.getCurrentRow().getParentId() != 0) {
-						MergeResult result = null;
-							if (parentTaxon != null) {
-								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
-
-								Reference sourceRef = state.getConfig().getSourceReference();
-								String microCitation = null;
-								Taxon childTaxon = taxon;
-								makeParent(state, parentTaxon, childTaxon, sourceRef, microCitation);
-								getTaxonService().saveOrUpdate(parentTaxon);
-								state.putTaxon(parentId, parentTaxon);
-							} else {
-								String message = "Taxonomic parent not found for " + taxonNameStr;
-								logger.warn(message);
-								fireWarningEvent(message, state, 6);
-								//state.setUnsuccessfull();
-							}
-//						}else{
-//							//do nothing (parent == 0) no parent exists
-//						}
-					}else if (synonymMarkers.contains(nameStatus)){
-						//add synonym relationship
-						acceptedTaxon = parentTaxon;
-						try {
-							Synonym synonym = CdmBase.deproxy(taxonBase,Synonym.class);
-							if (acceptedTaxon == null){
-								String message = "Accepted/valid taxon could not be found. Please check referential integrity.";
-								fireWarningEvent(message, state, 8);
-							}else{
-							    if (parentId != 0){
-							        //if no relation was defined in file skip relationship creation
-							        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
-							        getTaxonService().saveOrUpdate(acceptedTaxon);
-							    }
-							}
-						} catch (Exception e) {
-							String message = "Unhandled exception (%s) occurred during synonym import/update";
-							message = String.format(message, e.getMessage());
-							fireWarningEvent(message, state, 10);
-							state.setUnsuccessfull();
-						}
-					}
-					}else{
-						acceptedTaxon = null;
-						String message = "Unhandled name status (%s)";
-						message = String.format(message, nameStatus);
-						fireWarningEvent(message, state, 8);
-					}
-				}else{//taxonNameStr is empty
-					//vernacular name case
-					acceptedTaxon = parentTaxon;
-					nameUsedInSource = null;
+				if (taxonBase != null ){
+                    acceptedTaxon = getAcceptedTaxon(taxonBase);
+                    nameUsedInSource = taxonBase.getName();
 				}
-			}
+			} else{
+			    taxonBase = state.getTaxonBase(childId);
 
+    			 if (parentId == "0" && state.getParent() == null){
+                     parentTaxon =(Taxon) getTaxonService().load(((NormalExplicitImportConfigurator)state.getConfig()).getParentUUID());
+                     state.setParent(parentTaxon);
+                 }else if (parentId != "0"){
+                    parentTaxon = CdmBase.deproxy(state.getTaxonBase(parentId), Taxon.class);
+                 } else if (state.getParent() != null){
+                     parentTaxon = state.getParent();
+                 }
+    			if (taxonBase != null ){
+    				acceptedTaxon = getAcceptedTaxon(taxonBase);
+    				if (synonymNameStr != null){
+    				    Synonym syn = createSynonym(state,taxonBase,synonymNameStr);
+    				    acceptedTaxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+    				}
+    				if (basionymNameStr != null){
+    				    Synonym syn = createSynonym(state,taxonBase,basionymNameStr);
+                        acceptedTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
+                        syn.getName().addRelationshipToName(acceptedTaxon.getName(), NameRelationshipType.BASIONYM(), null);
+    				}
+    				nameUsedInSource = taxonBase.getName();
+
+    			    //TODO error handling for class cast
+
+
+    				nameUsedInSource = taxonBase.getName();
+    				nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
+    				if (validMarkers.contains(nameStatus)){
+    						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+    						acceptedTaxon = taxon;
+    						// Add the parent relationship
+    						//if (state.getCurrentRow().getParentId() != 0) {
+    						MergeResult result = null;
+    							if (parentTaxon != null) {
+    								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
+
+    								Reference sourceRef = state.getConfig().getSourceReference();
+    								String microCitation = null;
+    								Taxon childTaxon = taxon;
+    								makeParent(state, parentTaxon, childTaxon, sourceRef, microCitation);
+    								getTaxonService().saveOrUpdate(childTaxon);
+    								state.putTaxon(parentId, parentTaxon);
+    							} else {
+    								String message = "Taxonomic parent not found for " + taxonNameStr;
+    								logger.warn(message);
+    								fireWarningEvent(message, state, 6);
+    								//state.setUnsuccessfull();
+    							}
+    //						}else{
+    //							//do nothing (parent == 0) no parent exists
+    //						}
+    					}else if (synonymMarkers.contains(nameStatus)){
+    						//add synonym relationship
+    						acceptedTaxon = parentTaxon;
+    						try {
+    							Synonym synonym = CdmBase.deproxy(taxonBase,Synonym.class);
+    							if (acceptedTaxon == null){
+    								String message = "Accepted/valid taxon could not be found. Please check referential integrity.";
+    								fireWarningEvent(message, state, 8);
+    							}else{
+    							    if (parentId != "0"){
+    							        //if no relation was defined in file skip relationship creation
+    							        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+    							        getTaxonService().saveOrUpdate(acceptedTaxon);
+    							    }
+    							}
+    						} catch (Exception e) {
+    							String message = "Unhandled exception (%s) occurred during synonym import/update";
+    							message = String.format(message, e.getMessage());
+    							fireWarningEvent(message, state, 10);
+    							state.setUnsuccessfull();
+    						}
+
+    					}else{
+    					    if (parentTaxon != null) {
+                                Taxon taxon = (Taxon)state.getTaxonBase(childId);
+
+                                Reference sourceRef = state.getConfig().getSourceReference();
+                                String microCitation = null;
+                                Taxon childTaxon = taxon;
+                                makeParent(state, parentTaxon, childTaxon, sourceRef, microCitation);
+                                getTaxonService().saveOrUpdate(parentTaxon);
+                                state.putTaxon(parentId, parentTaxon);
+                            } else {
+                                String message = "Taxonomic parent not found for " + taxonNameStr;
+                                logger.warn(message);
+                                fireWarningEvent(message, state, 6);
+                                //state.setUnsuccessfull();
+                            }
+    					}
+
+
+    			}
+    			if (StringUtils.isBlank(taxonNameStr) && acceptedTaxon == null) {
+                    acceptedTaxon = parentTaxon;
+                    nameUsedInSource = null;
+                }
+			}
 			if (acceptedTaxon == null && (StringUtils.isNotBlank(commonNameStr) ||taxonDataHolder.getFeatures().size() > 0 )){
 				String message = "Accepted taxon could not be found. Can't add additional data (common names, descriptive data, ...) to taxon";
 				fireWarningEvent(message, state, 6);
@@ -412,6 +494,30 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 
 
 	/**
+     * @param state
+     * @param taxonBase
+     * @param synonymNameStr
+     */
+    private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase, String synonymNameStr) {
+        NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+        TaxonNameBase name = null;
+        if (nc.isKindOf(NomenclaturalCode.ICZN)){
+            name = ZoologicalName.NewInstance(taxonBase.getName().getRank());
+        }else if (nc.isKindOf(NomenclaturalCode.ICNAFP)){
+            name = BotanicalName.NewInstance(taxonBase.getName().getRank());
+        } else{
+            name = NonViralName.NewInstance(taxonBase.getName().getRank());
+        }
+        name.setTitleCache(synonymNameStr, true);
+        if (name != null){
+            return Synonym.NewInstance(name, null);
+        }
+        logger.debug("The nomenclatural code is not supported.");
+        return null;
+    }
+
+
+    /**
 	 * @param state
 	 * @param taxonDataHolder
 	 * @param acceptedTaxon
@@ -563,35 +669,82 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	 * @return
 	 */
 	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
-			String taxonNameStr, String authorStr, String reference, String date, String nameStatus) {
+	        String familyNameStr, String infraFamilyNameStr, String genusNameStr, String infraGenusNameStr, String speciesNameStr, String infraSpeciesNameStr, String authorStr, String publishingAuthorStr, String basionymAuthorStr,String reference, String date, String nameStatus) {
 		// Create the taxon name object depending on the setting of the nomenclatural code
 		// in the configurator (botanical code, zoological code, etc.)
-		if (StringUtils.isBlank(taxonNameStr)){
-			return null;
-		}
+
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 
 		TaxonBase taxonBase;
+		String nameCache = null;
+		if (rank == null){
+		    System.err.println("bla");
+		}
+		if (rank.isGenus()){
+		    nameCache =genusNameStr;
+		} else if (rank.isInfraGeneric()){
+		    nameCache =CdmUtils.concat(" " +rank.getIdInVocabulary() + " ",genusNameStr,infraGenusNameStr);
 
-		String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+        } else if (rank.isSpecies()){
+            nameCache = CdmUtils.concat(" ", genusNameStr,speciesNameStr);
+        } else if (rank.isInfraSpecific()){
+            nameCache = CdmUtils.concat(" " +rank.getIdInVocabulary() + " ",genusNameStr,infraGenusNameStr);
+        }
 		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isReuseExistingTaxaWhenPossible()){
-			titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
-			taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
+			taxonBase = getTaxonService().findBestMatchingTaxon(nameCache);
 		}else{
-			taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
+			taxonBase = getTaxonService().findBestMatchingSynonym(nameCache);
 			if (taxonBase != null){
-				logger.info("Matching taxon/synonym found for " + titleCache);
+				logger.info("Matching taxon/synonym found for " + nameCache);
 			}
 		}
 		if (taxonBase != null){
-			logger.info("Matching taxon/synonym found for " + titleCache);
+			logger.info("Matching taxon/synonym found for " + nameCache);
 			return null;
 		}else {
-			taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, reference, date, nameStatus, nc);
+			taxonBase = createTaxon(state, rank, nameCache, authorStr, publishingAuthorStr, basionymAuthorStr, reference, date, nameStatus, nc);
 		}
 		return taxonBase;
 	}
 
+	/**
+     * @param state
+     * @param rank
+     * @param taxonNameStr
+     * @param authorStr
+     * @param nameStatus
+     * @param nameStatus2
+     * @return
+     */
+    private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
+            String taxonNameStr, String authorStr, String publishingAuthorStr, String basionymAuthorStr,String reference, String date, String nameStatus) {
+        // Create the taxon name object depending on the setting of the nomenclatural code
+        // in the configurator (botanical code, zoological code, etc.)
+        if (StringUtils.isBlank(taxonNameStr)){
+            return null;
+        }
+        NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
+
+        TaxonBase taxonBase = null;
+
+        String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+        if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isReuseExistingTaxaWhenPossible()){
+            titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+            taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
+        }else if ( state.getConfig().isReuseExistingTaxaWhenPossible()){
+            taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
+            if (taxonBase != null){
+                logger.info("Matching taxon/synonym found for " + titleCache);
+            }
+        }
+        if (taxonBase != null){
+            logger.info("Matching taxon/synonym found for " + titleCache);
+            return null;
+        }else {
+            taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthorStr, basionymAuthorStr, reference, date, nameStatus, nc);
+        }
+        return taxonBase;
+    }
 
 
 
@@ -606,13 +759,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	 * @return
 	 */
 	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr,
-			String authorStr, String reference, String date, String nameStatus, NomenclaturalCode nc) {
+			String authorStr, String publishingAutorStr, String basionymAuthor, String reference, String date, String nameStatus, NomenclaturalCode nc) {
 		TaxonBase<?> taxonBase;
 		NonViralName<?> taxonNameBase = null;
 		if (nc == NomenclaturalCode.ICVCN){
 			logger.warn("ICVCN not yet supported");
 
 		}else{
+		    //String taxonNameStr = titleCache.substring(0, titleCache.indexOf(authorStr));
 			taxonNameBase =(NonViralName<?>) nc.getNewTaxonNameInstance(rank);
 			//NonViralName nonViralName = (NonViralName)taxonNameBase;
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
@@ -645,6 +799,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
                 ref.setProtectedTitleCache(false);
 
 			    taxonNameBase.setNomenclaturalReference(ref);
+			    taxonNameBase.setNomenclaturalMicroReference(state.getCurrentRow().getCollation());
 			}
 		}
 
@@ -671,6 +826,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 			taxonBase = taxon;
 		}
+		taxonBase.getName().addSource(OriginalSourceType.Import, "urn:lsid:ipni.org:names:"+ state.getCurrentRow().getId()+":"+state.getCurrentRow().getVersion(),"TaxonName" ,null, null);
+		taxonBase.addSource(OriginalSourceType.Import, "urn:lsid:ipni.org:names:"+ state.getCurrentRow().getId()+":"+state.getCurrentRow().getVersion(),"TaxonName" ,null, null);
+
 		return taxonBase;
 	}
 

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.excel.common;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -62,8 +64,18 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 			state.setUnsuccessfull();
 			return;
 		}
+		URI source = null;
+
+		ByteArrayInputStream data = null;
 		// read and save all rows of the excel worksheet
-		URI source = state.getConfig().getSource();
+		if (state.getConfig().getSource() != null){
+		    source = state.getConfig().getSource();
+		}else{
+		    data = (ByteArrayInputStream) ((NormalExplicitImportConfigurator)state.getConfig()).getStream();
+		}
+
+
+
 		String sheetName = getWorksheetName();
 		try {
 			recordList = ExcelUtils.parseXLS(source, sheetName);

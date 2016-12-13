@@ -36,7 +36,7 @@ public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfigura
     /** Already processed authors */
 	private Set<String> authors = new HashSet<String>();
 
-	private Map<Integer, TaxonBase> taxonMap= new HashMap<Integer, TaxonBase>();
+	private Map<String, TaxonBase> taxonMap= new HashMap<String, TaxonBase>();
 	private Map<String, TeamOrPersonBase> authorMap= new HashMap<String, TeamOrPersonBase>();
 	private Taxon parent;
 	private Classification classification;
@@ -73,7 +73,7 @@ public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfigura
 	 * @param parentId
 	 * @return
 	 */
-	public TaxonBase getTaxonBase(Integer taxonId) {
+	public TaxonBase getTaxonBase(String taxonId) {
 		return taxonMap.get(taxonId);
 	}
 
@@ -82,7 +82,7 @@ public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfigura
 	 * @param parentId
 	 * @param taxon
 	 */
-	public void putTaxon(Integer taxonId, TaxonBase taxonBase) {
+	public void putTaxon(String taxonId, TaxonBase taxonBase) {
 
 
 	    taxonMap.put(taxonId, taxonBase);

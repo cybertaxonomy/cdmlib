@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.UUID;
 
@@ -32,6 +33,9 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	private UUID parentUUID;
 
 
+	private InputStream stream;
+
+
 	//	@SuppressWarnings("unchecked")
 	@Override
     protected void makeIoClassList() {
@@ -44,6 +48,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 						NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){
 		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
+
 
 
 	/**
@@ -60,6 +65,21 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		setDbSchemaValidation(dbSchemaValidation);
 		setNomenclaturalCode(nomenclaturalCode);
 	}
+
+	/**
+     * @param stream
+     * @param destination
+     */
+    private NormalExplicitImportConfigurator(InputStream stream, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
+        super(null, destination);
+        if (dbSchemaValidation == null){
+            dbSchemaValidation = DbSchemaValidation.CREATE;
+        }
+        setStream(stream);
+        setDestination(destination);
+        setDbSchemaValidation(dbSchemaValidation);
+        setNomenclaturalCode(nomenclaturalCode);
+    }
 
 
 
@@ -99,7 +119,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	}
 
 
-       public UUID getParentUUID(){
+    public UUID getParentUUID(){
         return parentUUID;
     }
 
@@ -108,6 +128,14 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
         this.parentUUID = parentUUID;
     }
 
+    public InputStream getStream(){
+        return stream;
+    }
+
+
+    public void setStream(InputStream stream) {
+        this.stream = stream;
+    }
 
 
 }

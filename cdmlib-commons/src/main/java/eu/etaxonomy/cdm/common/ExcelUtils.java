@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.common;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.Format;
@@ -35,31 +36,49 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public class ExcelUtils {
 	private static final Logger logger = Logger.getLogger(ExcelUtils.class);
-	
+
     /** Reads all rows of an Excel worksheet */
     public static ArrayList<HashMap<String, String>> parseXLS(URI uri) throws FileNotFoundException {
     	return parseXLS(uri, null);
     }
 
-    
+
 	/** Reads all rows of an Excel worksheet */
     public static ArrayList<HashMap<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
-    	
+        InputStream stream;
+        try {
+            stream = UriUtils.getInputStream(uri);
+            return parseXLS(stream, worksheetName);
+        } catch(FileNotFoundException fne) {
+            throw new FileNotFoundException(uri.toString());
+        } catch(Exception ioe) {
+            logger.error("Error reading the Excel file." + uri.toString());
+            ioe.printStackTrace();
+        }
+        return null;
+
+    }
+        /** Reads all rows of an Excel worksheet */
+        public static ArrayList<HashMap<String, String>> parseXLS(InputStream stream, String worksheetName) throws FileNotFoundException {
+
+
     	ArrayList<HashMap<String, String>> recordList = new ArrayList<HashMap<String, String>>();
 
     	try {
 //    		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
 //    		HSSFWorkbook wb = new HSSFWorkbook(fs);
 
-    		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(uri));
+
+    		Workbook wb = WorkbookFactory.create(stream);
+
 
     		Sheet sheet;
     		if (worksheetName == null){
-    			sheet = wb.getSheetAt(0);	
+    			sheet = wb.getSheetAt(0);
     		}else{
     			sheet = wb.getSheet(worksheetName);
     		}
-    		
+
     		if (sheet== null){
     			if (worksheetName != null){
     				logger.debug(worksheetName + " not provided!");
@@ -67,14 +86,14 @@ public class ExcelUtils {
     		}else{
 	    		Row row;
 	    		Cell cell;
-	
+
 	    		int rows; // Number of rows
 	    		rows = sheet.getPhysicalNumberOfRows();
 				if(logger.isDebugEnabled()) { logger.debug("Number of rows: " + rows); }
-	
+
 	    		int cols = 0; // Number of columns
 	    		int tmp = 0;
-	
+
 	    		// This trick ensures that we get the data properly even if it doesn't start from first few rows
 	    		for(int i = 0; i < 10 || i < rows; i++) {
 	    			row = sheet.getRow(i);
@@ -85,8 +104,8 @@ public class ExcelUtils {
 	    				}
 	    			}
 	    		}
-    		
-    		
+
+
 	    		//first row
 	    		ArrayList<String> columns = new ArrayList<String>();
 	    		row = sheet.getRow(0);
@@ -99,7 +118,7 @@ public class ExcelUtils {
 						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
 					}
 	    		}
-	    		
+
 	    		//value rows
 	    		for(int r = 1; r < rows; r++) {
 	    			row = sheet.getRow(r);
@@ -115,7 +134,7 @@ public class ExcelUtils {
 	    							logger.warn(message);
 	    						}else{
 	    							if(logger.isDebugEnabled()) { logger.debug(String.format("Cell #%d: %s", c, cell.toString())); }
-	    							headers.put(columns.get(c), getCellValue(cell));	
+	    							headers.put(columns.get(c), getCellValue(cell));
 	    						}
 	    					} else {
 	    						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
@@ -125,8 +144,7 @@ public class ExcelUtils {
 	    			recordList.add(headers);
 	    		}
     		}
-    	} catch(FileNotFoundException fne) {
-    		throw new FileNotFoundException(uri.toString());
+
     	} catch(Exception ioe) {
     		logger.error("Error reading the Excel file.");
     		ioe.printStackTrace();
@@ -177,7 +195,7 @@ public class ExcelUtils {
 		result = String.format(result, getExcelColString(cell.getColumnIndex()), cell.getRowIndex());
 		return result;
 	}
-	
+
 	private static String getExcelColString(int colNr){
 		int first = colNr / 26;
 		int second = colNr % 26;
@@ -186,7 +204,7 @@ public class ExcelUtils {
 		String secondStr = String.valueOf((char)(second + 64));
 		return firstStr +  secondStr;
 	}
-	
+
 
 	/**
 	 * Returns the numeric cell value. In case the cell is formatted as
@@ -211,7 +229,7 @@ public class ExcelUtils {
 			DateFormat df = DateFormat.getDateInstance(2,locale);
 			String result = df.format(date); //result of type dd.mm.yyyy
 //			String result = date.toString();
-			
+
 			return result;
 		}
 //		System.out.println(d);
@@ -242,5 +260,5 @@ public class ExcelUtils {
 		}
 		return notEmpty;
 	}
-	
+
 }
