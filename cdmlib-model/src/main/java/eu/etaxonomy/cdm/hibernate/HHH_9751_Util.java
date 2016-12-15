@@ -34,7 +34,7 @@ public class HHH_9751_Util {
      */
     static public int removeAllNull(Collection collection) {
 
-        int cnt = collection.size();
+        int cnt = 0;
         try {
 
            if (collection.contains(null)){
@@ -47,7 +47,7 @@ public class HHH_9751_Util {
         } catch (LazyInitializationException e) {
             logger.info("Cannot clean up uninitialized children without a session, skipping.");
         }
-        return cnt - collection.size() ;
+        return cnt ;
     }
 
 }
