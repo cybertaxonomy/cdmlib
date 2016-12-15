@@ -49,9 +49,11 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         PolytomousKeyNode node = dao.findByUuid(nodeUUID);
         node = HibernateProxyHelper.deproxy(node);
         if(node == null) {
-            result.addException(new Exception("The polytomouskey node was already deleted."));;
+           // result.addException(new Exception("The polytomouskey node was already deleted."));;
+            return result;
         }
         List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
+
         node.removeNullValueFromChildren();
         for (PolytomousKeyNode child: node.getChildren()){
             children.add(child);

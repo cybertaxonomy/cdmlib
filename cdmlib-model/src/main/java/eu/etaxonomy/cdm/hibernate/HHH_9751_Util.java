@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.hibernate;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 
 
@@ -35,20 +34,20 @@ public class HHH_9751_Util {
      */
     static public int removeAllNull(Collection collection) {
 
-        int cnt = 0;
+        int cnt = collection.size();
         try {
-           if (Hibernate.isInitialized(collection)){
-               if (collection.contains(null)){
-                    while(collection.contains(null)){
-                        cnt++;
-                        collection.remove(null);
-                    }
+
+           if (collection.contains(null)){
+             while(collection.contains(null)){
+                    cnt++;
+                    collection.remove(null);
                 }
-           }
+            }
+
         } catch (LazyInitializationException e) {
             logger.info("Cannot clean up uninitialized children without a session, skipping.");
         }
-        return cnt;
+        return cnt - collection.size() ;
     }
 
 }
