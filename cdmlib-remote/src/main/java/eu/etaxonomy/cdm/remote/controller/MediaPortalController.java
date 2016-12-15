@@ -38,6 +38,7 @@ public class MediaPortalController extends MediaController
             "rights.type",
             "rights.agent",
             "representations.parts",
+            "allDescriptions"
     });
 
     public MediaPortalController(){
