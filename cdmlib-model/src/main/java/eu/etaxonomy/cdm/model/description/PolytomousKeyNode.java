@@ -480,6 +480,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		updateSortIndex();
 		child.setSortIndex(index);
 		child.setParent(this);
+		//this.removeNullValueFromChildren();
 	}
 
 
@@ -544,7 +545,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private int getMaxNodeNumberFromRoot() {
 		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();
 		int rootNumber = this.getKey().getStartNumber();
-		HHH_9751_Util.removeAllNull(rootKeyNode.getChildren());
+
 		rootKeyNode.updateSortIndex();
 		return getMaxNodeNumber(rootNumber, rootKeyNode);
 	}
@@ -889,14 +890,13 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     }
 
     private void updateSortIndex(){
-        // TODO workaround (see sortIndex doc)
+        HHH_9751_Util.removeAllNull(children);
         for (int i = 0; i < children.size(); i++) {
             children.get(i).setSortIndex(i);
         }
     }
 
     public void removeNullValueFromChildren(){
-        HHH_9751_Util.removeAllNull(children);
         updateSortIndex();
     }
 
