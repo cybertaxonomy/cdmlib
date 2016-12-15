@@ -64,19 +64,29 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 
     protected Class<T> baseClass;
 
+    @SuppressWarnings("unchecked")
     public BaseController (){
 
-        Type superClass = this.getClass().getGenericSuperclass();
-        if(superClass instanceof ParameterizedType){
-            ParameterizedType parametrizedSuperClass = (ParameterizedType) superClass;
-            Type[] typeArguments = parametrizedSuperClass.getActualTypeArguments();
+       Type superClass = this.getClass().getGenericSuperclass();
+       while(true){
+           if(superClass instanceof ParameterizedType){
+               ParameterizedType parametrizedSuperClass = (ParameterizedType) superClass;
+               Type[] typeArguments = parametrizedSuperClass.getActualTypeArguments();
 
-            if(typeArguments.length > 1 && typeArguments[0] instanceof Class<?>){
-                baseClass = (Class<T>) typeArguments[0];
-            } else {
-                logger.error("unable to find baseClass");
-            }
-        }
+               if(typeArguments.length > 1 && typeArguments[0] instanceof Class<?>){
+                   baseClass = (Class<T>) typeArguments[0];
+               } else {
+                   logger.error("unable to find baseClass");
+               }
+               break;
+           } else if(superClass instanceof Class<?>){
+               superClass = ((Class<?>) superClass).getGenericSuperclass();
+           } else {
+               // no point digging deeper if neither Class or ParameterizedType
+               logger.error("unable to find baseClass");
+               break;
+           }
+       }
     }
 
     @InitBinder
