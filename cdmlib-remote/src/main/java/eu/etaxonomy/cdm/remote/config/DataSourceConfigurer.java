@@ -138,8 +138,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     @Bean
     public DataSource dataSource() {
 
-
-
         String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
         String jndiName = null;
         if(this.dataSource == null){

@@ -10,11 +10,14 @@
 package eu.etaxonomy.cdm.remote.config;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -24,6 +27,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class LoggingConfigurer extends AbstractWebApplicationConfigurer implements InitializingBean  {
+
+    @Autowired
+    private DataSourceProperties dataSourceProperties = null;
 
     /**
      *
@@ -35,7 +41,7 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
      */
     private static final String CDM_LOGFILE = "cdm.logfile";
 
-    protected void configureLogFile() {
+    private void configureLogFile() {
         PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
         String logFile = findProperty(CDM_LOGFILE, false);
         if (logFile == null) {
@@ -54,14 +60,39 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
         }
     }
 
+    /**
+     *
+     */
+    private void configureInstanceNamePrefix() {
+        String instanceName = dataSourceProperties.getCurrentDataSourceId();
+        String patternPrefix = "[" + instanceName + "] ";
+
+        @SuppressWarnings("unchecked")
+        Enumeration<Appender> appenders = Logger.getRootLogger().getAllAppenders();
+        while(appenders.hasMoreElements()){
+            Appender appender = appenders.nextElement();
+            if(appender != null){
+                if(appender.getLayout() instanceof PatternLayout){
+                    PatternLayout layout = (PatternLayout)appender.getLayout();
+                    String conversionPattern = layout.getConversionPattern();
+                    if(!conversionPattern.startsWith(patternPrefix)){
+                        layout.setConversionPattern(patternPrefix + conversionPattern);
+                    }
+                }
+            }
+        }
+
+    }
+
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        configureLogFile();
+        // per instance logfiles disabled, see #6249
+        // configureLogFile();
+        configureInstanceNamePrefix();
     }
-
 
 
 }
