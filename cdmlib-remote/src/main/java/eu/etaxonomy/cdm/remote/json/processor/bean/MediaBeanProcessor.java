@@ -1,4 +1,3 @@
-// $Id: TaxonBeanProcessor.java 5561 2009-04-07 12:25:33Z a.kohlbecker $
 /**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy

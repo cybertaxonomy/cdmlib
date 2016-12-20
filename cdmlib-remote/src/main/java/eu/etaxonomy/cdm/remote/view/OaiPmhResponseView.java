@@ -1,4 +1,3 @@
-// $Id: RdfView.java 7281 2009-10-07 12:09:25Z ben.clark $
 package eu.etaxonomy.cdm.remote.view;
 
 import java.util.Enumeration;

@@ -1,4 +1,3 @@
-// $Id: UUIDJSONValueProcessor.java 9436 2010-06-24 09:56:07Z a.kohlbecker $
 /**
  * Copyright (C) 2009 EDIT European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu

@@ -1,4 +1,3 @@
-// $Id: LsidConverter.java 10608 2010-10-20 11:25:00Z a.kohlbecker $
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 

@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2012 EDIT
 * European Distributed Institute of Taxonomy

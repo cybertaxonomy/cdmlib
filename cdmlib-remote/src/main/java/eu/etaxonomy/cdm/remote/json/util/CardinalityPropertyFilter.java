@@ -1,4 +1,3 @@
-// $Id: InitializedHibernatePropertyFilter.java 5473 2009-03-25 13:42:07Z a.kohlbecker $
 /**
  * Copyright (C) 2007 EDIT
  * European Distributed Institute of Taxonomy
