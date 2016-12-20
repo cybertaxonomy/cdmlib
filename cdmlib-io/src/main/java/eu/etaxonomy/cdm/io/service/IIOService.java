@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.service;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -79,5 +80,12 @@ public interface IIOService {
      * @return
      */
     ImportResult updateSortIndex(SortIndexUpdaterConfigurator config);
+
+
+    /**
+     * @param config
+     * @return
+     */
+    ImportResult updateCaches(CacheUpdaterConfigurator config);
 
 }

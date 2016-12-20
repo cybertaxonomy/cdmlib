@@ -24,17 +24,17 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseShortSecCacheStrategy;
 @Component
 public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 	private static final Logger logger = Logger.getLogger(CacheUpdaterWithNewCacheStrategy.class);
-	
+
 	@Override
 	protected void doInvoke(DefaultImportState<CacheUpdaterConfigurator> state) {
 		CacheUpdaterConfigurator config = state.getConfig();
-		
+
 		//handle class list
 		handleClassList(config.getClassList());
-		
+
 		return;
 	}
-	
+
 	private boolean handleClassList(List<Class<? extends IdentifiableEntity>> classList) {
 		boolean result = true;
 		for (Class<? extends IdentifiableEntity> clazz : classList){
@@ -45,8 +45,8 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 		}
 		return result;
 	}
-	
-	
+
+
 	private boolean handleSingleTableClass(Class<? extends IdentifiableEntity> clazz) {
 		logger.warn("Updating class " + clazz.getSimpleName() + " ...");
 		try {
@@ -57,7 +57,7 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 				getFeatureTreeService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 				getVocabularyService().updateTitleCache((Class) clazz, null, null, null);
-			} 
+			}
 			//DescriptionBase
 			else if (DescriptionBase.class.isAssignableFrom(clazz)){
 				getDescriptionService().updateTitleCache((Class) clazz, null, null, null);
@@ -78,7 +78,7 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 			}else if (Reference.class.isAssignableFrom(clazz)){
 				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
-				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
+				getOccurrenceService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//Sequence
 			else if (Sequence.class.isAssignableFrom(clazz)){
@@ -109,5 +109,5 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 			return false;
 		}
 	}
-	
+
 }

@@ -104,26 +104,27 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
                 logger.debug("update all indice with index "+entry.getKey()+ " - " + resultInt);
             }
             //Update childrenCount
-            query = updater.getChildrenCountQuery();
-            sqlQuery = getAgentService().getSession().createSQLQuery(query);
-            data = sqlQuery.list();
-            int realCount;
-            int countChildren;
-            for(Object object : data)
-            {
-               Object[] row = (Object[])object;
-               realCount =  ((Number) row[0]).intValue();
-               countChildren = ((Number) row[1]).intValue();
-               id = ((Number) row[2]).intValue();
+            if (updater.getTableName().equals("TaxonNode")){
+                query = updater.getChildrenCountQuery();
+                sqlQuery = getAgentService().getSession().createSQLQuery(query);
+                data = sqlQuery.list();
+                int realCount;
+                int countChildren;
+                for(Object object : data)
+                {
+                   Object[] row = (Object[])object;
+                   realCount =  ((Number) row[0]).intValue();
+                   countChildren = ((Number) row[1]).intValue();
+                   id = ((Number) row[2]).intValue();
 
-               if (realCount != countChildren){
-                   query = updater.getUpdateChildrenCount(realCount, id);
-                   sqlQuery = getAgentService().getSession().createSQLQuery(query);
-                   int resultInt = sqlQuery.executeUpdate();
-                   logger.debug("update all childrenCount "+ resultInt);
-               }
-             }
-
+                   if (realCount != countChildren){
+                       query = updater.getUpdateChildrenCount(realCount, id);
+                       sqlQuery = getAgentService().getSession().createSQLQuery(query);
+                       int resultInt = sqlQuery.executeUpdate();
+                       logger.debug("update all childrenCount "+ resultInt);
+                   }
+                 }
+            }
               commitTransaction(tx);
         } catch (SQLException e) {
 

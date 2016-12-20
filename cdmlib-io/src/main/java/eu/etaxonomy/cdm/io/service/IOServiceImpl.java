@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
+import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -183,6 +184,17 @@ public class IOServiceImpl implements IIOService {
      */
     @Override
     public ImportResult updateSortIndex(SortIndexUpdaterConfigurator config) {
+        ImportResult result = new ImportResult();
+
+        result = cdmImport.invoke(config);
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportResult updateCaches(CacheUpdaterConfigurator config) {
         ImportResult result = new ImportResult();
 
         result = cdmImport.invoke(config);
