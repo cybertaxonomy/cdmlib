@@ -30,7 +30,14 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
 	private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
 
 	private final String tableName;
-	private final String sortIndexColumn;
+	/**
+     * @return the tableName
+     */
+    public String getTableName() {
+        return tableName;
+    }
+
+    private final String sortIndexColumn;
 	private final String parentColumn;
 	/**
      * @return the parentColumn
