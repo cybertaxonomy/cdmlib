@@ -59,7 +59,6 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author n.hoffmann
  * @created Apr 9, 2010
- * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)
@@ -377,9 +376,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNodes(java.util.List)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config) {
@@ -495,7 +491,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
              }
         }*/
         return result;
-
     }
 
 
@@ -508,7 +503,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         return deleteTaxonNodes(nodes, config);
     }
-
 
 
     @Override
@@ -540,7 +534,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
-
 
 
     	if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.MOVE_TO_PARENT)){
@@ -591,15 +584,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		}
     		return result;
     	}
-
-
-
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
-     */
     @Override
     public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
         return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
