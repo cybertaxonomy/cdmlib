@@ -31,7 +31,9 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -432,6 +434,66 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             result.put(TreeIndex.NewInstance((String)o[0]), new UuidAndTitleCache<>((UUID)o[1], null, (String)o[2]));
         }
         return result;
+    }
+
+
+    @Override
+    public void setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+        //for some reason this does not work, maybe because the listeners are not activated,
+        //but also the first taxon for some reason does not get updated in terms of secundum, but only by the udpate listener
+//        String where = "SELECT t.id FROM TaxonNode tn JOIN tn.taxon t " +
+//                " WHERE tn.treeIndex like '%s%%' ORDER BY t.id";
+//        where = String.format(where, subTreeIndex.toString());
+//        Query query1 = getSession().createQuery(where);
+//        List l = query1.list();
+//
+//        String hql = "UPDATE Taxon SET sec = :newSec, publish=false WHERE id IN (" + where + ")";
+//        Query query = getSession().createQuery(hql);
+//        query.setParameter("newSec", newSec);
+//        int n = query.executeUpdate();
+
+        String where = "SELECT t FROM TaxonNode tn JOIN tn.taxon t " +
+                " WHERE tn.treeIndex like '%s%%' ";
+        if (!overwriteExisting){
+            where += " AND t.sec IS NULL ";
+        }
+        if (!includeSharedTaxa){
+            where += " AND t.taxonNodes.size <= 1  ";
+        }
+
+        where = String.format(where, subTreeIndex.toString());
+        Query query1 = getSession().createQuery(where);
+        @SuppressWarnings("unchecked")
+        List<Taxon> taxonList = query1.list();
+        for (Taxon taxon : taxonList){
+            taxon.setSec(newSec);
+            if (emptyDetail){
+                taxon.setSecMicroReference(null);
+            }
+        }
+
+    }
+
+    @Override
+    public void setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+        String where = "SELECT syn FROM TaxonNode tn JOIN tn.taxon t JOIN t.synonyms syn" +
+                " WHERE tn.treeIndex like '%s%%' ";
+        if (!overwriteExisting){
+            where += " AND syn.sec IS NULL ";
+        }
+        if (!includeSharedTaxa){
+            where += " AND t.taxonNodes.size <= 1  ";
+        }
+        where = String.format(where, subTreeIndex.toString());
+        Query query1 = getSession().createQuery(where);
+        @SuppressWarnings("unchecked")
+        List<Synonym> synonymList = query1.list();
+        for (Synonym taxon : synonymList){
+            taxon.setSec(newSec);
+            if (emptyDetail){
+                taxon.setSecMicroReference(null);
+            }
+        }
     }
 
 

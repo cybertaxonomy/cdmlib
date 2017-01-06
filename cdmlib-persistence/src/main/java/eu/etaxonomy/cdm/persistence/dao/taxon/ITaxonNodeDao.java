@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -120,5 +121,15 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
     Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
+
+    /**
+     * @param ref
+     */
+    public void setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
+
+    /**
+     * @param ref
+     */
+    public void setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
 
 }

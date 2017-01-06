@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -745,6 +747,34 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addException(e);
         }
         result.setCdmEntity(node);
+        return result;
+    }
+
+    @Override
+    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config) {
+        UpdateResult result = new UpdateResult();
+        UUID subtreeUuid = config.getSubtreeUuid();
+        if (subtreeUuid == null){
+            result.setError();
+            result.addException(new NullPointerException("No subtree given"));
+            return result;
+        }
+        TaxonNode subTree = find(subtreeUuid);
+        if (subTree == null){
+            result.setError();
+            result.addException(new NullPointerException("Subtree does not exist"));
+            return result;
+        }
+        TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+
+        Reference ref = config.getNewSecundum();
+        if (config.isIncludeAcceptedTaxa()){
+            dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, ref, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa() ,config.isEmptySecundumDetail());
+        }
+        if (config.isIncludeSynonyms()){
+            dao.setSecundumForSubtreeSynonyms(subTreeIndex, ref, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+        }
+
         return result;
     }
 
