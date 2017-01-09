@@ -1,12 +1,12 @@
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import io.swagger.annotations.Api;
 
 /**
  * Copyright (C) 2009 EDIT European Distributed Institute of Taxonomy
@@ -28,12 +28,11 @@ public class TaxonPortalListController extends TaxonListController {
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            // the name
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
             "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference",
+            "name.nomenclaturalReference.inReference.authorship",
             "taxonNodes.classification",
             });
 
