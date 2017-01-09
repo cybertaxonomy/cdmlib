@@ -201,12 +201,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         list = pager.getRecords();
         assertEquals(1, list.size());
         // pass 2
-//        configurator.setDoTaxaByCommonNames(false);
-//        configurator.setDoMisappliedNames(true);
-//        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
-//        pager = taxonService.findTaxaAndNames(configurator);
-//        list = pager.getRecords();
-//        assertEquals(0, list.size());
+        configurator.setDoTaxaByCommonNames(false);
+        configurator.setDoMisappliedNames(true);
+        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
+        pager = taxonService.findTaxaAndNames(configurator);
+        list = pager.getRecords();
+        assertEquals(0, list.size());
 
     }
 
