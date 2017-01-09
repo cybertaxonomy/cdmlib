@@ -92,7 +92,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param propertyPaths TODO
      * @return list of found taxa
      */
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeAuthors, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas,
             NameSearchOrder order, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -109,7 +109,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param propertyPaths
      * @return
      */
-    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean doIncludeAuthors, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
@@ -369,7 +369,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     public List<TaxonNameBase> findIdenticalNamesNew(List <String> propertyPaths);
 
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames,
+            boolean doMisappliedNames, boolean doCommonNames,
             String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
