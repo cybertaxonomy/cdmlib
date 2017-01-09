@@ -1601,7 +1601,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 " AND " +  String.format(doSearchFieldWhere, "sn");
                 commonNameSubselect = String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
                         " WHERE " + doAreaRestrictionWhere +
-                        "AND " + doCommonNamesRestrictionWhere;
+                        " AND " + doCommonNamesRestrictionWhere;
 
 
             } else {
