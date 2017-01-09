@@ -1534,7 +1534,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     commonNameSubselect =  doCommonNamesJoin +
                             " WHERE " +  doAreaRestrictionWhere + " AND " + doClassificationWhere +
                             " AND " + String.format(doSearchFieldWhere, "n")
-                            + "AND " + doCommonNamesRestrictionWhere;
+                            + " AND " + doCommonNamesRestrictionWhere;
                 } else {
                     taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin +
                     " WHERE " + doClassificationWhere +
@@ -1545,7 +1545,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     commonNameSubselect =String.format(doTaxonSubSelect, "s" )+ doCommonNamesJoin +
                             " WHERE "+ doAreaRestrictionWhere +
                              " AND " + doClassificationWhere +
-                            "AND " + doCommonNamesRestrictionWhere;
+                            " AND " + doCommonNamesRestrictionWhere;
                 }
             }else{ //misappliedNames included
                 if(doAreaRestriction){
@@ -1565,7 +1565,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
                     commonNameSubselect= String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                             " WHERE " + doAreaRestrictionWhere +
-                            " AND "+ doClassificationWhere + "AND " + doCommonNamesRestrictionWhere;
+                            " AND "+ doClassificationWhere + " AND " + doCommonNamesRestrictionWhere;
                 } else {
                     misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin +
                     " WHERE " + String.format(doSearchFieldWhere, "n") +
@@ -1581,7 +1581,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     " AND " +  String.format(doSearchFieldWhere, "sn");
 
                     commonNameSubselect= String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
-                            " WHERE " + doClassificationWhere + "AND " + doCommonNamesRestrictionWhere;
+                            " WHERE " + doClassificationWhere + " AND " + doCommonNamesRestrictionWhere;
 
                 }
             }
