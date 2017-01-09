@@ -28,6 +28,17 @@ public class SetSecundumForSubtreeConfigurator {
     private boolean emptySecundumDetail = true;
     private boolean includeSharedTaxa = true;
 
+
+
+    /**
+     * @param subtreeUuid
+     * @param newSecundum
+     */
+    public SetSecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum) {
+        super();
+        this.subtreeUuid = subtreeUuid;
+        this.newSecundum = newSecundum;
+    }
     /**
      * @return the subtreeUuid
      */

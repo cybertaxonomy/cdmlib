@@ -723,10 +723,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator();
-        config.setSubtreeUuid(subTreeUuid);
-        config.setNewSecundum(newSec);
-        taxonNodeService.setSecundumForSubtree(config);
+        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec);
+        taxonNodeService.setSecundumForSubtree(config, null);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
@@ -758,12 +756,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator();
-        config.setSubtreeUuid(subTreeUuid);
-        config.setNewSecundum(newSec);
+        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec);
         config.setOverwriteExistingAccepted(false);
         config.setOverwriteExistingSynonyms(false);
-        taxonNodeService.setSecundumForSubtree(config);
+        taxonNodeService.setSecundumForSubtree(config, null);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
@@ -795,11 +791,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator();
-        config.setSubtreeUuid(subTreeUuid);
-        config.setNewSecundum(newSec);
+        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec);
         config.setIncludeSynonyms(false);
-        taxonNodeService.setSecundumForSubtree(config);
+        taxonNodeService.setSecundumForSubtree(config, null);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
@@ -829,11 +823,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator();
-        config.setSubtreeUuid(subTreeUuid);
-        config.setNewSecundum(newSec);
+        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec);
         config.setIncludeAcceptedTaxa(false);
-        taxonNodeService.setSecundumForSubtree(config);
+        taxonNodeService.setSecundumForSubtree(config, null);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
         Assert.assertNull(taxonService.find(1).getSec());
@@ -865,11 +857,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator();
-        config.setSubtreeUuid(subTreeUuid);
-        config.setNewSecundum(newSec);
+        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec);
         config.setIncludeSharedTaxa(false);
-        taxonNodeService.setSecundumForSubtree(config);
+        taxonNodeService.setSecundumForSubtree(config, null);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
         Assert.assertNull("Shared taxon must not be set", taxonService.find(1).getSec());

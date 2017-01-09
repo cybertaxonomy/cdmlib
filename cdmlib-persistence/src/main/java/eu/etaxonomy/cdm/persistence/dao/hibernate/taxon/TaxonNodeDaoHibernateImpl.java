@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -437,8 +438,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    //#3465
     @Override
-    public void setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+    public Set<Taxon> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
         //for some reason this does not work, maybe because the listeners are not activated,
         //but also the first taxon for some reason does not get updated in terms of secundum, but only by the udpate listener
 //        String where = "SELECT t.id FROM TaxonNode tn JOIN tn.taxon t " +
@@ -472,10 +477,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             }
         }
 
+        Set<Taxon> result = new HashSet<>(taxonList);
+        return result;
+
     }
 
     @Override
-    public void setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+    public Set<Synonym> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
         String where = "SELECT syn FROM TaxonNode tn JOIN tn.taxon t JOIN t.synonyms syn" +
                 " WHERE tn.treeIndex like '%s%%' ";
         if (!overwriteExisting){
@@ -494,6 +502,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 taxon.setSecMicroReference(null);
             }
         }
+        Set<Synonym> result = new HashSet<>(synonymList);
+        return result;
     }
 
 

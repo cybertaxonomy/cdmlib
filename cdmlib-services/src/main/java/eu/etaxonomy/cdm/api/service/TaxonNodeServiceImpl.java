@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -738,28 +740,35 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config) {
+    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
+        }
         UUID subtreeUuid = config.getSubtreeUuid();
         if (subtreeUuid == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
+            monitor.done();
             return result;
         }
         TaxonNode subTree = find(subtreeUuid);
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
+            monitor.done();
             return result;
         }
         TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
 
         Reference ref = config.getNewSecundum();
         if (config.isIncludeAcceptedTaxa()){
-            dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, ref, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa() ,config.isEmptySecundumDetail());
+            Set<Taxon> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, ref, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa() ,config.isEmptySecundumDetail());
+            result.addUpdatedObjects(updatedTaxa);
         }
         if (config.isIncludeSynonyms()){
-            dao.setSecundumForSubtreeSynonyms(subTreeIndex, ref, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+            Set<Synonym> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, ref, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+            result.addUpdatedObjects(updatedSynonyms);
         }
 
         return result;
