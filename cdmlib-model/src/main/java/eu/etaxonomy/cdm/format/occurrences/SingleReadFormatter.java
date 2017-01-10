@@ -28,6 +28,9 @@ public class SingleReadFormatter extends AbstractCdmFormatter {
         if(singleRead.getPrimer()!=null){
             formatKeyMap.put(FormatKey.SINGLE_READ_PRIMER, singleRead.getPrimer().getLabel());
         }
+        if(singleRead.getPherogram()!=null){
+            formatKeyMap.put(FormatKey.SINGLE_READ_PHEROGRAM_TITLE_CACHE, singleRead.getPherogram().getTitleCache());
+        }
         if(singleRead.getAmplificationResult()!=null &&
                 singleRead.getAmplificationResult().getAmplification()!=null){
             formatKeyMap.put(FormatKey.AMPLIFICATION_LABEL, singleRead.getAmplificationResult().getAmplification().getLabelCache());
