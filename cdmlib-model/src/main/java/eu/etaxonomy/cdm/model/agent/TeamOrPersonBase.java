@@ -87,9 +87,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
         this.nomenclaturalTitle = StringUtils.isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-     */
+
     @Override
     @Transient /*
                 TODO  is the transient annotation still needed, can't we remove this ??

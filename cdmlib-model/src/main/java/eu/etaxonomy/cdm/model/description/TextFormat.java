@@ -97,9 +97,6 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 //********* METHODS **************************************/
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -107,7 +104,7 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<TextFormat> termVocabulary){
-		termMap = new HashMap<UUID, TextFormat>();
+		termMap = new HashMap<>();
 		for (TextFormat term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
