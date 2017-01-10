@@ -21,8 +21,10 @@ public enum UTF8 {
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
 	RIGHT_SINGLE_QUOT("\u2019"), // Right single quotation mark
-	ENGLISH_QUOT_START("\u201e"),  //Left English quotation mark
-	ENGLISH_QUOT_END("\u201f"),  //Right English quotation mark -‟-
+	ENGLISH_QUOT_START("\u201c"),  //Left English quotation mark
+	ENGLISH_QUOT_END("\u201d"),  //Right English quotation mark
+    ENGLISH_QUOT_START_LOW("\u201e"),  //Left English quotation mark Low
+	ENGLISH_QUOT_END_HIGH("\u201f"),  //Right English quotation mark -‟-
 	BLACK_CIRCLE("\u25CF")       //Black circle, symbol for endemic
 
 	;

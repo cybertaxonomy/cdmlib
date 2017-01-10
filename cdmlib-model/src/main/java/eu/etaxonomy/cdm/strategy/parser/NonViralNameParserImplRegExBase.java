@@ -67,7 +67,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     								//+ "(" + month + ")?)" ;                 // optional month
     //!! also used by TimePeriodParser
     public static String incorrectYearPhrase = "(\"" + correctYearPhrase + "\"|" + correctYearPhrase + "|"
-            + UTF8.ENGLISH_QUOT_START + correctYearPhrase + UTF8.ENGLISH_QUOT_END + ")"
+            + UTF8.ENGLISH_QUOT_START_LOW + correctYearPhrase + UTF8.ENGLISH_QUOT_END_HIGH + ")"
 			+ fWs + "\\[" + singleYear + "\\]"  ;
     protected static String yearPhrase = "(" + correctYearPhrase + "|" + incorrectYearPhrase + ")";
 
