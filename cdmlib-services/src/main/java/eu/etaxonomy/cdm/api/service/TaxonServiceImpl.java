@@ -645,14 +645,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoNamesWithoutTaxa() || configurator.isDoTaxaByCommonNames()){
         	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(), configurator.isDoTaxaByCommonNames(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
         }
-//        if (configurator.isDoTaxaByCommonNames()) {
-//            //if(configurator.getPageSize() == null ){
-//                List<UuidAndTitleCache<IdentifiableEntity>> commonNameResults = dao.getTaxaByCommonNameForEditor(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
-//                if(commonNameResults != null){
-//                    results.addAll(commonNameResults);
-//                }
-//           // }
-//        }
+
         return results;
     }
 
@@ -719,24 +712,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
         }
 
-        // Taxa from common names
 
-//        if (configurator.isDoTaxaByCommonNames()) {
-//            taxa = new ArrayList<>();
-//            numberTaxaResults = 0;
-//            if(configurator.getPageSize() != null){// no point counting if we need all anyway
-//                numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
-//            }
-//            if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-//                List<Taxon> commonNameResults = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
-//                taxa.addAll(commonNameResults);
-//            }
-//            if(taxa != null){
-//                results.addAll(taxa);
-//            }
-//            numberOfResults += numberTaxaResults;
-//
-//        }
 
        return new DefaultPagerImpl<>
             (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);

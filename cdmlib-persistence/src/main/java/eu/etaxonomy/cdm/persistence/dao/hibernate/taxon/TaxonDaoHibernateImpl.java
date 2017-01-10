@@ -224,8 +224,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     else {
                         resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
-//                }else if (doTaxa ){
-//                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+
                 }else if (doSynonyms){
                     resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                 }
@@ -304,27 +303,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 selectWhat = (doCount ? "count(t)": "t");
             }
 
-            /*
-             *   String what = "select distinct";
 
-        String hql= what + " from Taxon t " +
-        "join t.descriptions d "+
-        "join d.descriptionElements e " +
-        "join e.feature f " +
-        "where f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
-
-        Query query = getSession().createQuery(hql);
-
-        query.setParameter("queryString", matchMode.queryStringFrom(queryString));
-
-        if(pageSize != null &&  !doCount) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            }
-        }
-        return query;
-             */
 
             String hql = "";
             Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
@@ -1338,12 +1317,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return taxonBase;
     }
 
-    public List<TaxonBase> getTaxaByCommonName(String queryString,
-            Classification classification, MatchMode matchMode,
-            Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber) {
-        logger.warn("getTaxaByCommonName not yet implemented.");
-        return null;
-    }
+
 
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
