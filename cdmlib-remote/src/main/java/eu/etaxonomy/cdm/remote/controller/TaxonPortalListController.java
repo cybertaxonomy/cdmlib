@@ -34,12 +34,21 @@ public class TaxonPortalListController extends TaxonListController {
             "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference.authorship",
             "taxonNodes.classification",
+            "synonym.name.nomenclaturalReference.authorship",
+            "synonym.name.nomenclaturalReference.inReference.authorship",
             });
+
+    public TaxonPortalListController() {
+        super();
+        setInitializationStrategy(SIMPLE_TAXON_INIT_STRATEGY);
+    }
 
     @Override
     protected List<String> getSimpleTaxonInitStrategy() {
         // TODO Auto-generated method stub
         return SIMPLE_TAXON_INIT_STRATEGY;
     }
+
+
 
 }
