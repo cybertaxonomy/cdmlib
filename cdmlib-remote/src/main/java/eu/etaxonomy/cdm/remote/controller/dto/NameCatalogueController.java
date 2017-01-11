@@ -147,16 +147,15 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             "basionymAuthorship.$",
             "exBasionymAuthorship.$",
             "nameCache",
-            "taxonBases",
-            "taxonBases.synonymRelations.type.$"});
+            "taxonBases"});
 
     /** Hibernate accepted name search initialisation strategy */
     private static final List<String> ACC_NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
             "nameCache",
             "taxonBases",
-            "taxonBases.synonymRelations.acceptedTaxon.name.nameCache",
-            "taxonBases.synonymRelations.acceptedTaxon.name.rank.titleCache",
-            "taxonBases.synonymRelations.acceptedTaxon.taxonNodes.classification",
+            "taxonBases.acceptedTaxon.name.nameCache",
+            "taxonBases.acceptedTaxon.name.rank.titleCache",
+            "taxonBases.acceptedTaxon.taxonNodes.classification",
             "taxonBases.taxonNodes.classification",
             "taxonBases.relationsFromThisTaxon.type.$"});
 
@@ -186,16 +185,15 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             "sources.citation.sources.idNamespace",
             "sources.citation.sources.idInSource",
 
-            "synonymRelations.synonym.name.rank.titleCache",
-            "synonymRelations.synonym.sec.updated",
-            "synonymRelations.synonym.sec.titleCache",
-            "synonymRelations.synonym.sources.citation.sources.idNamespace",
-            "synonymRelations.synonym.sources.citation.sources.idInSource",
-            "synonymRelations.acceptedTaxon.name.rank.titleCache",
-            "synonymRelations.acceptedTaxon.sec.titleCache",
-            "synonymRelations.acceptedTaxon.sources.citation.sources.idNamespace",
-            "synonymRelations.acceptedTaxon.sources.citation.sources.idInSource",
-            "synonymRelations.type.inverseRepresentations",
+            "synonyms.name.rank.titleCache",
+            "synonyms.sec.updated",
+            "synonyms.sec.titleCache",
+            "synonyms.sources.citation.sources.idNamespace",
+            "synonyms.sources.citation.sources.idInSource",
+            "acceptedTaxon.name.rank.titleCache",
+            "acceptedTaxon.sec.titleCache",
+            "acceptedTaxon.sources.citation.sources.idNamespace",
+            "acceptedTaxon.sources.citation.sources.idInSource",
 
             "relationsFromThisTaxon.type.inverseRepresentations",
             "relationsFromThisTaxon.toTaxon.name.rank.titleCache",

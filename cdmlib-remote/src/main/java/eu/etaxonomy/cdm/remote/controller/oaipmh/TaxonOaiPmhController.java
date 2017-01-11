@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
-import io.swagger.annotations.Api;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
+import io.swagger.annotations.Api;
 
 @Controller
 @Api("OAI-PMH Taxa")
@@ -40,9 +39,7 @@ public class TaxonOaiPmhController extends AbstractOaiPmhController<TaxonBase, I
         propertyPaths.add("relationsToThisTaxon.fromTaxon");
         propertyPaths.add("relationsToThisTaxon.toTaxon");
         propertyPaths.add("relationsToThisTaxon.type");
-        propertyPaths.add("synonymRelations");
-        propertyPaths.add("synonymRelations.synonym");
-        propertyPaths.add("synonymRelations.type");
+        propertyPaths.add("synonyms");
         propertyPaths.add("descriptions");
         return propertyPaths;
     }
