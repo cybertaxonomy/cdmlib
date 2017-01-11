@@ -107,6 +107,7 @@
           <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
         </field>
         <field>
+          <!-- FIXME: this mapping is no longer valid see issue #6324 -->
           <a>synonymRelations</a>
           <b>hasRelationship</b>
           <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</a-hint>
