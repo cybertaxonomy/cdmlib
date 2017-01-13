@@ -103,10 +103,11 @@ applicationContext.xml
 
 ** Preparing the CDM Library
 
-	Start by checking out the source code from the subversion repository:
+	Start by checking out the source code from the git repository:
 
 ---
-$ svn co http://dev.e-taxonomy.eu/svn/trunk/cdmlib/ .
+$ 	git clone https://dev.e-taxonomy.eu/git/cdmlib.git
+$ 	git clone ssh://git@dev.e-taxonomy.eu/var/git/cdmlib.git
 ---
 
 	Change into the cdmlib directory, compile and install the cdmlib packages in your local repository. This will also download the dependencies into your local repository.
