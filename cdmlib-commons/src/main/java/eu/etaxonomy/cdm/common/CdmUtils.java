@@ -49,37 +49,20 @@ public class CdmUtils {
     /**
      * The per user cdm folder "~/.cdmLibrary"
      */
-    public final static File perUserCdmFolder = new File(userHome + File.separator + ".cdmLibrary" );
-
-
-
+    public final static File perUserCdmFolder = new File(userHome + File.separator + cdmFolderName );
 
     static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
 
     //folder seperator
     static String folderSeperator;
 
-    //TODO refactor to: public static File getUserHomeDir()
-    public static String getHomeDir() throws IOException{
-        //TODO why do we need System.getenv("USERPROFILE")? System.getProperty("user.home") is fully sufficient!!
-        String homeDirString = System.getenv("USERPROFILE") != null ? System.getenv("USERPROFILE") : System.getProperty("user.home");
-
-        if( ! new File(homeDirString).canWrite()){
-            throw new IOException("Can not write to home directory. Assumed path is: " + homeDirString);
-        }
-
-        return homeDirString;
-    }
-
     public static File getCdmHomeDir() {
-        return new File(System.getProperty("user.home")+File.separator+cdmFolderName+File.separator);
+        return new File(perUserCdmFolder + File.separator);
     }
 
 	public static File getCdmSubDir(String dirName) {
 
-		File folder = new File(System.getProperty("user.home") + File.separator
-				+ cdmFolderName + File.separator + dirName + File.separator);
-
+		File folder = new File(getCdmHomeDir(), dirName);
 		// if the directory does not exist, create it
 		if (!folder.exists()) {
 			if (!folder.mkdir()) {
