@@ -375,13 +375,4 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         return null;
     }
 
-    public String cmdServerInstanceName(){
-        // test for if this is an instance running in a cdmserver:
-        if(findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false) != null) {
-            String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
-            cmdServerInstanceName =  beanName;
-        }
-        return cmdServerInstanceName;
-    }
-
 }
