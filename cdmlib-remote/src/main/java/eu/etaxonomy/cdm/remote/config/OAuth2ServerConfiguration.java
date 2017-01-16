@@ -58,7 +58,7 @@ public class OAuth2ServerConfiguration {
             .and() // TODO do we need this?
                 .requestMatchers()
                     .antMatchers(
-                     //   "/manage/**",
+                        //"/manage/**",
                         "/user/**"
                         // "/oauth/users/**",
                         // "/oauth/clients/**")
@@ -71,7 +71,7 @@ public class OAuth2ServerConfiguration {
                     //      or
                     //   org.springframework.security.access.expression.SecurityExpressionRoot
                     // - org.springframework.security.oauth2.provider.expression.OAuth2SecurityExpressionMethods
-                  //  .antMatchers("/manage/**").access("#oauth2.clientHasRole('ROLE_CLIENT') or (!#oauth2.isOAuth() and hasRole('ROLE_ADMIN'))")
+                    //.antMatchers("/manage/**").access("#oauth2.clientHasRole('ROLE_CLIENT') or (!#oauth2.isOAuth() and hasRole('ROLE_ADMIN'))")
                     .antMatchers("/user/me").access("isAuthenticated()")
                     .regexMatchers("/user/.*|/user\\..*").access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MANAGER')")
 
@@ -89,7 +89,7 @@ public class OAuth2ServerConfiguration {
                     // .regexMatchers(HttpMethod.GET, "/oauth/clients/.*")
                     //     .access("#oauth2.clientHasRole('ROLE_CLIENT') and #oauth2.isClient() and #oauth2.hasScope('read')");
                     // ---------------------------
-            ;
+            .and().httpBasic();
             // @formatter:on
         }
 

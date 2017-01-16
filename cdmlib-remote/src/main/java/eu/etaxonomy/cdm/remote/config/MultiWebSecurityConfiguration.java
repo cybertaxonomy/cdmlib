@@ -55,6 +55,14 @@ public class MultiWebSecurityConfiguration {
         }
     }
 
+    /**
+     * Require full authentication on the OAuth2 authorization service
+     * so that the user is requested to provide his credentials.
+     *
+     * @author a.kohlbecker
+     * @date Jan 16, 2017
+     *
+     */
     @Configuration
     @Order(1)
     public static class LoginWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -73,7 +81,11 @@ public class MultiWebSecurityConfiguration {
     }
 
     /**
-     * Allow anonymous authentication for all other services
+     * Allow anonymous authentication for all other services.
+     *
+     * <b>NOTE:</b> Further access restrictions are defined
+     * in the OAuth2ServerConfiguration.
+     *
      * @author a.kohlbecker
      * @date Oct 6, 2016
      *
