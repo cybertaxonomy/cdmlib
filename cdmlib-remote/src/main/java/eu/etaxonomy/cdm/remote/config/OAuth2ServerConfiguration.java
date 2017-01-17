@@ -41,6 +41,13 @@ public class OAuth2ServerConfiguration {
 
     private static final String CDM_RESOURCE_ID = "cdm";
 
+    private static final String ACCEXPR_MANAGE_CLIENT =
+            "#oauth2.clientHasRole('ROLE_CLIENT') "
+          + "or (!#oauth2.isOAuth() and ( "
+          + "      hasRole('ROLE_ADMIN') or hasRole('" + MultiWebSecurityConfiguration.ROLE_MANAGE_CLIENT + "')"
+          + "   )"
+          + ")";
+
     @EnableResourceServer
     protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
@@ -56,15 +63,6 @@ public class OAuth2ServerConfiguration {
                 // Since we want the protected resources to be accessible in the UI as well we need
                 // session creation to be allowed (it's disabled by default in 2.0.6)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            .and() // TODO do we need this?
-                .requestMatchers()
-                    .antMatchers(
-                        "/manage/**",
-                        "/user/**"
-                        // "/oauth/users/**",
-                        // "/oauth/clients/**")
-                        )
-                     //.regexMatchers("/classification/.*|/classification\\..*")
             .and()
                 .authorizeRequests()
                     // see
@@ -72,12 +70,8 @@ public class OAuth2ServerConfiguration {
                     //      or
                     //   org.springframework.security.access.expression.SecurityExpressionRoot
                     // - org.springframework.security.oauth2.provider.expression.OAuth2SecurityExpressionMethods
-                    .antMatchers("/manage/**").access(
-                              "#oauth2.clientHasRole('ROLE_CLIENT') "
-                            + "or (!#oauth2.isOAuth() and ( "
-                            + "      hasRole('ROLE_ADMIN') or hasRole('" + MultiWebSecurityConfiguration.ROLE_MANAGE_CLIENT + "')"
-                            + "   )"
-                            + ")")
+                    .antMatchers("/manage/**").access(ACCEXPR_MANAGE_CLIENT)
+                    .antMatchers("/**description/accumulateDistributions").access(ACCEXPR_MANAGE_CLIENT)
                     .antMatchers("/user/me").access("isAuthenticated()")
                     .regexMatchers("/user/.*|/user\\..*").access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MANAGER')")
 
