@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.EnhancedPatternLayout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
@@ -73,6 +74,13 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
             if(appender != null){
                 if(appender.getLayout() instanceof PatternLayout){
                     PatternLayout layout = (PatternLayout)appender.getLayout();
+                    String conversionPattern = layout.getConversionPattern();
+                    if(!conversionPattern.startsWith(patternPrefix)){
+                        layout.setConversionPattern(patternPrefix + conversionPattern);
+                    }
+                }
+                if(appender.getLayout() instanceof EnhancedPatternLayout){
+                    EnhancedPatternLayout layout = (EnhancedPatternLayout)appender.getLayout();
                     String conversionPattern = layout.getConversionPattern();
                     if(!conversionPattern.startsWith(patternPrefix)){
                         layout.setConversionPattern(patternPrefix + conversionPattern);
