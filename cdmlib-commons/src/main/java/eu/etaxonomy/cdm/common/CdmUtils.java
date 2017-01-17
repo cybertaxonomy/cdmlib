@@ -44,7 +44,7 @@ public class CdmUtils {
      */
     private static final String cdmFolderName = ".cdmLibrary";
 
-    final static String userHome = System.getProperty("user.home");
+    static final String userHome = System.getProperty("user.home");
 
     /**
      * The per user cdm folder "~/.cdmLibrary"
