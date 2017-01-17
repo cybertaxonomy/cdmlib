@@ -55,20 +55,20 @@ public class ProgressMonitorUtil {
         response.setHeader("Location", monitorPath);
         boolean isJSONP = request.getParameter("callback") != null;
 
+        JsonpRedirect jsonpRedirect;
+        if(frontendBaseUrl != null){
+            jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
+        } else {
+            jsonpRedirect = new JsonpRedirect(request, monitorPath);
+        }
 
-            if(isJSONP){
-                JsonpRedirect jsonpRedirect;
-                if(frontendBaseUrl != null){
-                    jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
-                } else {
-                    jsonpRedirect = new JsonpRedirect(request, monitorPath);
-                }
-                mv.addObject(jsonpRedirect);
+        if(isJSONP){
+            mv.addObject(jsonpRedirect);
 
-            } else {
-                RedirectView redirectView = new RedirectView(monitorPath);
-                mv.setView(redirectView);
-            }
+        } else {
+            RedirectView redirectView = new RedirectView(jsonpRedirect.getRedirectURL());
+            mv.setView(redirectView);
+        }
 
         return mv;
     }
@@ -95,7 +95,7 @@ public class ProgressMonitorUtil {
 
         if(monitor.isDone() && !monitor.isCanceled() && !monitor.isFailed()){
             if(downloadUrl != null){
-                response.setHeader("Loaction", downloadUrl);
+                response.setHeader("Location", downloadUrl);
                 RedirectView redirectView = new RedirectView(downloadUrl);
                 mv.setView(redirectView);
                 return mv;
@@ -103,18 +103,19 @@ public class ProgressMonitorUtil {
         }else{
 
             response.setHeader("Location", monitorPath);
+
+            JsonpRedirect jsonpRedirect;
+            if(frontendBaseUrl != null){
+                jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
+            } else {
+                jsonpRedirect = new JsonpRedirect(request, monitorPath);
+            }
+
             boolean isJSONP = request.getParameter("callback") != null;
             if(isJSONP){
-                JsonpRedirect jsonpRedirect;
-                if(frontendBaseUrl != null){
-                    jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
-                } else {
-                    jsonpRedirect = new JsonpRedirect(request, monitorPath);
-                }
                 mv.addObject(jsonpRedirect);
-
             } else {
-                RedirectView redirectView = new RedirectView(monitorPath);
+                RedirectView redirectView = new RedirectView(jsonpRedirect.getRedirectURL());
                 mv.setView(redirectView);
             }
         }
