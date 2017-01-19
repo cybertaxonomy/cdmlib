@@ -371,7 +371,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames,
             String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas);
+            MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);
 

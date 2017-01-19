@@ -147,6 +147,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         String otherClassStr = clazz.getSimpleName();
         String queryStr = " SELECT count(this) FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
             " WHERE this = :referencedObject AND this member of other."+propertyName ;
+
         Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
         @SuppressWarnings("unchecked")
         Integer result =((Number)query.uniqueResult()).intValue();

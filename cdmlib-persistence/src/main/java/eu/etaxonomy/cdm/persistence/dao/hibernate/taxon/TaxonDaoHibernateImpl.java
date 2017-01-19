@@ -183,10 +183,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Override
     @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, boolean doCommonNames, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas) {
+            MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
 //        long zstVorher;
 //        long zstNachher;
-        NameSearchOrder order = NameSearchOrder.ALPHA;  //TODO add to signature
+        if (order == null){
+            order = NameSearchOrder.ALPHA;  //TODO add to signature
+        }
 
         boolean doCount = false;
         boolean includeAuthors = false;
@@ -505,12 +507,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             if(!doCount){
                 String orderBy = " ORDER BY ";
-                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+              // String alphabeticBase = " case when t.name.genusOrUninomial like '\"%\"' then 1 else 0 end, t.name.genusOrUninomial , case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+               String alphabeticBase = " t.name.nameCache";
+
                 if (order == NameSearchOrder.LENGTH_ALPHA_NAME){
                     orderBy += " length(t.name.nameCache), " + alphabeticBase;
                 }else if (order == NameSearchOrder.LENGTH_ALPHA_TITLE){
                     orderBy += " length(t.name.titleCache), " + alphabeticBase;
-                }else{
+                }else {
                     orderBy += alphabeticBase;
                 }
 
@@ -1253,11 +1257,20 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         // StringBuffer excludeUuids = new StringBuffer();
 
          String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
-
          if (pattern != null){
-             pattern = pattern.replace("*", "%");
-             queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
+             if (pattern.equals("?")){
+                 limit = null;
+             } else{
+                 if (!pattern.endsWith("*")){
+                     pattern += "%";
+                 }
+                 pattern = pattern.replace("*", "%");
+                 pattern = pattern.replace("?", "%");
+                 queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
+             }
          }
+
+
 
          Query query = getSession().createQuery(queryString);
 
@@ -1266,7 +1279,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
              query.setMaxResults(limit);
          }
 
-         if (pattern != null){
+         if (pattern != null && !pattern.equals("?")){
              query.setParameter("pattern", pattern);
          }
          @SuppressWarnings("unchecked")

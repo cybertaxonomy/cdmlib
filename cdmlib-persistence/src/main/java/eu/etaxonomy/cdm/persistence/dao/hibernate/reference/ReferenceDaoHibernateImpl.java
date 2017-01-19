@@ -95,9 +95,21 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	}
 
 	@Override
-	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern) {
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType) {
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
+
+		String queryString = "SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ";
+
+		if (refType != null || pattern != null){
+		    queryString += " WHERE ";
+		    if (refType != null){
+		        queryString += "r.type = " ;
+		    }
+		}
+		Reference reference = ReferenceFactory.newArticle();
+
+
 		 Query query;
 		if (pattern != null){
 		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab where r.titleCache like :pattern");
@@ -264,7 +276,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
      * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
      */
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
         Reference ref = ReferenceFactory.newArticle();
 
