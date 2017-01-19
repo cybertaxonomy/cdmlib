@@ -201,12 +201,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         list = pager.getRecords();
         assertEquals(1, list.size());
         // pass 2
-//        configurator.setDoTaxaByCommonNames(false);
-//        configurator.setDoMisappliedNames(true);
-//        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
-//        pager = taxonService.findTaxaAndNames(configurator);
-//        list = pager.getRecords();
-//        assertEquals(0, list.size());
+        configurator.setDoTaxaByCommonNames(false);
+        configurator.setDoMisappliedNames(true);
+        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
+        pager = taxonService.findTaxaAndNames(configurator);
+        list = pager.getRecords();
+        assertEquals(0, list.size());
 
     }
 
@@ -1015,6 +1015,29 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
+    public final void testFindTaxaAndNamesByFullText_PhraseQuery() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "\"Abies alba\"", null, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("doTaxa & doSynonyms with simple phrase query", 1, pager.getCount().intValue());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "\"Abies al*\"", null, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("doTaxa & doSynonyms with complex phrase query", 1, pager.getCount().intValue());
+
+    }
+
+    @Test
+    @DataSet
     public final void testFindTaxaAndNamesByFullText_Sort() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1243,7 +1266,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
 
         //FIXME FAILS: abies balamea is returned twice, see also testFullText_Grouping()
-        pager = taxonService.findByEverythingFullText("Balsam-Tanne", null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Balsam", null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("expecting to find the Abies balsamea via the GERMAN DescriptionElements", 1, pager.getCount().intValue());
 

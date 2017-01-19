@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2012 EDIT
 * European Distributed Institute of Taxonomy
@@ -111,11 +110,13 @@ public class QueryFactory {
 
         String luceneQueryString = fieldName + ":(" + queryString + ")";
         if (isTextField) {
+            queryString = queryString.trim();
+            boolean isComplexPhraseQuery = queryString.matches("^\\\".*[\\*].*\\\"$");
             textFieldNames.add(fieldName);
             // in order to support the full query syntax we must use the parser
             // here
             try {
-                return toolProvider.getQueryParserFor(cdmBaseType).parse(luceneQueryString);
+                return toolProvider.getQueryParserFor(cdmBaseType, isComplexPhraseQuery).parse(luceneQueryString);
             } catch (ParseException e) {
                 logger.error(e);
             }

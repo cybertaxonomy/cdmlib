@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../service/dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">
     <REFERENCE ID="1" UUID="de7d1205-291f-45d9-9059-ca83fc7ade14" PROTECTEDTITLECACHE="false" REFTYPE="GEN" PROTECTEDABBREVTITLECACHE="false" ABBREVTITLECACHE="Sp. Pl." ABBREVTITLE="Sp. Pl." NOMENCLATURALLYRELEVANT="false" PARSINGPROBLEM="0" PROBLEMENDS="-1" PROBLEMSTARTS="-1" />
     <CLASSIFICATION ID="1" UUID="6c2bc8d9-ee62-4222-be89-4a8e31770878"  PROTECTEDTITLECACHE="true" ROOTNODE_ID = "1"/>
    <!-- <CLASSIFICATION_TAXONNODE CLASSIFICATION_ID="1" ROOTNODES_ID="1" SORTINDEX="0"/> --> 

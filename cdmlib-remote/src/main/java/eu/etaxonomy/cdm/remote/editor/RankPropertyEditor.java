@@ -1,4 +1,3 @@
-// $Id: RankPropertyEditor.java 8450 2010-03-19 15:12:17Z a.kohlbecker $
 /**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy 

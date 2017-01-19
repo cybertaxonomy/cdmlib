@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2009 EDIT
 * European Distributed Institute of Taxonomy
@@ -22,7 +21,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.babadshanjan
  * @created 03.03.2009
- * @version 1.0
  */
 public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableEntity> extends Serializable {
 

@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.remote.config;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -39,7 +41,13 @@ public class OAuth2ServerConfiguration {
 
     private static final String CDM_RESOURCE_ID = "cdm";
 
-    // @Configuration
+    private static final String ACCEXPR_MANAGE_CLIENT =
+            "#oauth2.clientHasRole('ROLE_CLIENT') "
+          + "or (!#oauth2.isOAuth() and ( "
+          + "      hasRole('ROLE_ADMIN') or hasRole('" + MultiWebSecurityConfiguration.ROLE_MANAGE_CLIENT + "')"
+          + "   )"
+          + ")";
+
     @EnableResourceServer
     protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
@@ -55,15 +63,6 @@ public class OAuth2ServerConfiguration {
                 // Since we want the protected resources to be accessible in the UI as well we need
                 // session creation to be allowed (it's disabled by default in 2.0.6)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            .and() // TODO do we need this?
-                .requestMatchers()
-                    .antMatchers(
-                        "/manage/**",
-                        "/user/**"
-                        // "/oauth/users/**",
-                        // "/oauth/clients/**")
-                        )
-                     //.regexMatchers("/classification/.*|/classification\\..*")
             .and()
                 .authorizeRequests()
                     // see
@@ -71,7 +70,8 @@ public class OAuth2ServerConfiguration {
                     //      or
                     //   org.springframework.security.access.expression.SecurityExpressionRoot
                     // - org.springframework.security.oauth2.provider.expression.OAuth2SecurityExpressionMethods
-                    .antMatchers("/manage/**").access("#oauth2.clientHasRole('ROLE_CLIENT') or (!#oauth2.isOAuth() and hasRole('ROLE_ADMIN'))")
+                    .antMatchers("/manage/**").access(ACCEXPR_MANAGE_CLIENT)
+                    .antMatchers("/**description/accumulateDistributions").access(ACCEXPR_MANAGE_CLIENT)
                     .antMatchers("/user/me").access("isAuthenticated()")
                     .regexMatchers("/user/.*|/user\\..*").access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MANAGER')")
 
@@ -89,7 +89,7 @@ public class OAuth2ServerConfiguration {
                     // .regexMatchers(HttpMethod.GET, "/oauth/clients/.*")
                     //     .access("#oauth2.clientHasRole('ROLE_CLIENT') and #oauth2.isClient() and #oauth2.hasScope('read')");
                     // ---------------------------
-            ;
+            .and().httpBasic();
             // @formatter:on
         }
 
@@ -106,6 +106,8 @@ public class OAuth2ServerConfiguration {
 
         private static final String CLIENT_ID = "any-client";
 
+        public static final Logger logger = Logger.getLogger(AuthorizationServerConfiguration.class);
+
         @Autowired
         private UserApprovalHandler userApprovalHandler;
 
@@ -120,10 +122,14 @@ public class OAuth2ServerConfiguration {
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+
+            InMemoryClientDetailsServiceBuilder builder = clients.inMemory();
+
             // @formatter:off
-            clients
-            .inMemory()
-            .withClient(CLIENT_ID)
+            /*
+             * Client for 'implicit grant'
+             */
+            builder.withClient(CLIENT_ID)
             //.resourceIds(RESOURCE_ID)
             .authorizedGrantTypes("authorization_code", "refresh_token", "implicit")
             .authorities("ROLE_CLIENT")
@@ -131,7 +137,9 @@ public class OAuth2ServerConfiguration {
             .secret("secret") // secret for login of the client into /oauth/token
             .autoApprove("read");
             // @formatter:on
+
         }
+
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -140,6 +148,7 @@ public class OAuth2ServerConfiguration {
         }
 
     }
+
 
    protected static class CommonBeans {
 

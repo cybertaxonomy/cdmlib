@@ -1,4 +1,3 @@
-// $Id$
 package eu.etaxonomy.cdm.test.integration;
 
 import org.springframework.security.access.AccessDeniedException;

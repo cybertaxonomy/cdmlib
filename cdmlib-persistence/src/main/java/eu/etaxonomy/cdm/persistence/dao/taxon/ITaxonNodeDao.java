@@ -12,10 +12,14 @@ package eu.etaxonomy.cdm.persistence.dao.taxon;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
@@ -120,5 +124,16 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
     Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
+
+    /**
+     * @param ref
+     * @return
+     */
+    public Set<Taxon> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
+
+    /**
+     * @param ref
+     */
+    public  Set<Synonym> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
 
 }

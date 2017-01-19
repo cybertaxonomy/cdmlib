@@ -1,9 +1,8 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,13 +35,13 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * as it does not map to a single attribute
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
-public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
+public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
+        implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
 	private static final Logger logger = Logger.getLogger(DbImportExtensionMapper.class);
-	
+
 //************************** FACTORY METHODS ***************************************************************/
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param uuid
@@ -55,13 +54,13 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	public static DbImportExtensionMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev){
 		return new DbImportExtensionMapper(dbAttributeString, uuid, label, text, labelAbbrev);
 	}
-	
+
 	public static DbImportExtensionMapper NewInstance(String dbAttributeString, ExtensionType extensionType){
 		return new DbImportExtensionMapper(dbAttributeString, extensionType);
 	}
-	
+
 //***************** VARIABLES **********************************************************/
-	
+
 	private ExtensionType extensionType;
 	private String label;
 	private String text;
@@ -83,7 +82,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		this.text = text;
 		this.labelAbbrev = labelAbbrev;
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param extensionType
@@ -92,20 +91,17 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		super(dbAttributeString, dbAttributeString);
 		this.extensionType = extensionType;
 	}
-	
+
 //****************************** METHODS ***************************************************/
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
+
 	@Override
 	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 		CdmImportBase<?, ?> currentImport = state.getCurrentIO();
 		if (currentImport == null){
-			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
+			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !");
 		}
-		
+
 		try {
 			if (  checkDbColumnExists()){
 				if (this.extensionType == null){
@@ -118,7 +114,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			//do nothing  - checkDbColumnExists is not possible
 		}
 	}
-	
+
 
 	/**
 	 * @param valueMap
@@ -130,7 +126,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		String dbValue = dbValueObject == null? null: dbValueObject.toString();
 		return invoke(dbValue, cdmBase);
 	}
-	
+
 	/**
 	 * @param dbValue
 	 * @param cdmBase
@@ -147,17 +143,15 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		}else{
 			throw new IllegalArgumentException("extended object must be of type identifiable entity.");
 		}
-		
+
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public IdentifiableEntity invoke(ResultSet rs, IdentifiableEntity identifiableEntity) throws SQLException {
+
+	@Override
+    public IdentifiableEntity invoke(ResultSet rs, IdentifiableEntity identifiableEntity) throws SQLException {
 		String dbValue = rs.getString(getSourceAttribute());
 		return invoke(dbValue, identifiableEntity);
 	}
-	
+
 	/**
 	 * @param dbValue
 	 * @param identifiableEntity
@@ -175,8 +169,8 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		}
 		return identifiableEntity;
 	}
-	
-	
+
+
 	/**
 	 * @param service
 	 * @param uuid
@@ -211,13 +205,9 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 
 
 	//not used
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
-	public Class<String> getTypeClass(){
+	@Override
+    public Class<String> getTypeClass(){
 		return String.class;
 	}
-
-	
 
 }

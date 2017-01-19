@@ -39,7 +39,7 @@ public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends Spe
 
     private URI sourceUri;
 
-    private boolean getSiblings = true;
+    private boolean getSiblings = false;
 
 
 

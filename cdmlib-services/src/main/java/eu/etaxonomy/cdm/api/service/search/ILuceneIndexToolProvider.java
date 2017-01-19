@@ -1,4 +1,3 @@
-// $Id$
 /**
  * Copyright (C) 2013 EDIT
  * European Distributed Institute of Taxonomy
@@ -33,11 +32,12 @@ public interface ILuceneIndexToolProvider {
      * Either creates a new QueryParser or returns the QueryParser which has
      * been created before for the specified class. The QueryParsers per CdmBase
      * type are cached in a Map.
+     * @param complexPhraseQuery TODO
      *
      * @return the QueryParser suitable for the lucene index of the given
      *         <code>clazz</code>
      */
-    public abstract QueryParser getQueryParserFor(Class<? extends CdmBase> clazz);
+    public abstract QueryParser getQueryParserFor(Class<? extends CdmBase> clazz, boolean complexPhraseQuery);
 
     /**
      * <b>WARING</b> The implementation of this method might return an Analyzer

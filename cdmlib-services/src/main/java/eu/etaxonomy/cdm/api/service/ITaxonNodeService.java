@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy
@@ -15,8 +14,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -32,7 +33,6 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author n.hoffmann
  * @created Apr 9, 2010
- * @version 1.0
  */
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
@@ -242,5 +242,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref);
 
+    /**
+     * Sets the secundum reference for all taxa of the given subtree.
+     * Depending on the configuration, also synonym secundum will be set.
+     * See {@link SetSecundumForSubtreeConfigurator} for further configuration
+     * options.
+     * @param configurator
+     * @return UpdateResult
+     */
+    UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator configurator, IProgressMonitor monitor);
 
 }

@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
  * http://purl.org/dc/elements/1.1/rights  http://dublincore.org/documents/dcmi-
  * terms/
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:49
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -57,7 +56,8 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @Table(name = "RightsInfo")  //to avoid conflicts with reserved database words
 public class Rights extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 4920749849951432284L;
-	private static final Logger logger = Logger.getLogger(Rights.class);
+	@SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(Rights.class);
 
 	//external location of copyright text
 	@XmlElement(name = "URI")
@@ -74,7 +74,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	private RightsType type;
 
-	// owner etc as defined by the rightstype
+	// owner etc as defined by the rights type
 	@XmlElement(name = "Agent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -89,7 +89,6 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	 * @return
 	 */
 	public static Rights NewInstance() {
-		logger.debug("NewInstance");
 		return new Rights();
 	}
 
@@ -100,6 +99,14 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	public static Rights NewInstance(String text, Language language) {
 		return new Rights(text, language);
 	}
+
+	/**
+     * Factory method
+     * @return
+     */
+    public static Rights NewInstance(String text, Language language, RightsType type) {
+        return new Rights(text, language, type);
+    }
 
 //*********************** CONSTRUCTOR *************************/
 
@@ -116,6 +123,14 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	protected Rights(String text, Language language) {
 		super(text, language);
 	}
+
+	/**
+     * Constructor
+     */
+    protected Rights(String text, Language language, RightsType type) {
+        super(text, language);
+        this.setType(type);
+    }
 
 //*********************** GETTER /SETTER *****************************/
 

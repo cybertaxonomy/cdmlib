@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2016 EDIT
 * European Distributed Institute of Taxonomy
@@ -12,7 +11,6 @@ package eu.etaxonomy.cdm.hibernate;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 
 
@@ -37,18 +35,18 @@ public class HHH_9751_Util {
 
         int cnt = 0;
         try {
-           if (Hibernate.isInitialized(collection)){
-               if (collection.contains(null)){
-                    while(collection.contains(null)){
-                        cnt++;
-                        collection.remove(null);
-                    }
+
+           if (collection.contains(null)){
+             while(collection.contains(null)){
+                    cnt++;
+                    collection.remove(null);
                 }
-           }
+            }
+
         } catch (LazyInitializationException e) {
             logger.info("Cannot clean up uninitialized children without a session, skipping.");
         }
-        return cnt;
+        return cnt ;
     }
 
 }

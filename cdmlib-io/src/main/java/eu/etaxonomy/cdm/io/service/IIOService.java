@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2015 EDIT
 * European Distributed Institute of Taxonomy
@@ -12,11 +11,13 @@ package eu.etaxonomy.cdm.io.service;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
@@ -73,5 +74,18 @@ public interface IIOService {
      * @return
      */
     ImportResult importDataFromStream(List<Abcd206ImportConfigurator> configurators);
+
+    /**
+     * @param configurators
+     * @return
+     */
+    ImportResult updateSortIndex(SortIndexUpdaterConfigurator config);
+
+
+    /**
+     * @param config
+     * @return
+     */
+    ImportResult updateCaches(CacheUpdaterConfigurator config);
 
 }

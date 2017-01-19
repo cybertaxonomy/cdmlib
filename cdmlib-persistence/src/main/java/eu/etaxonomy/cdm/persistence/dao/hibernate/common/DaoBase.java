@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,12 @@ public abstract class DaoBase {
         return factory;
     }
     protected Session getSession(){
-        Session session = factory.getCurrentSession();
+        Session session ;
+        try {
+            session = factory.getCurrentSession();
+        } catch (HibernateException e) {
+            session = factory.openSession();
+        }
         return session;
     }
 

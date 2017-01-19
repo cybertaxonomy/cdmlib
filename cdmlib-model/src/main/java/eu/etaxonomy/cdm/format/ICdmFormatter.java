@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2015 EDIT
 * European Distributed Institute of Taxonomy
@@ -11,7 +10,7 @@ package eu.etaxonomy.cdm.format;
 
 /**
  * Implementing classes provide a string representation for a given object.
- * How the the string is built can be configured 
+ * How the the string is built can be configured
  * by using the {@link FormatKey} enum.<br>
  * @author pplitzner
  * @date Nov 30, 2015
@@ -51,6 +50,7 @@ public interface ICdmFormatter {
         SEQUENCE_DNA_MARKER,
         /*single read*/
         SINGLE_READ_PRIMER,
+        SINGLE_READ_PHEROGRAM_TITLE_CACHE,
         AMPLIFICATION_LABEL,
     }
 
@@ -61,13 +61,13 @@ public interface ICdmFormatter {
 	 * <code>
 	 * format(derivedUnit, GATHERING_COUNTRY, COMMA, GATHERING_COLLECTOR, COMMA, OPEN_BRACKET, COLLECTION_CODE, CLOSE_BRACKET
 	 * </code> will result in something like <i>Peru, L. (B)</i>
-	 * 
+	 *
 	 * @param object the object which should be formatted as a string representation
-	 * @param formatKeys a list of enum values specifying the parts of which the string consists 
+	 * @param formatKeys a list of enum values specifying the parts of which the string consists
 	 * @return a string representation of the given object according to the chosen enum values
 	 */
     public String format(Object object, FormatKey... formatKeys);
-    
+
     /**
      * Returns a string representation of the given object.<br>
      * <b>Note:</b> Only use this method if the formatKeys for this

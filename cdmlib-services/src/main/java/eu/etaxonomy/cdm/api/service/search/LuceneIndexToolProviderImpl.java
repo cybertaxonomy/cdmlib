@@ -1,4 +1,3 @@
-// $Id$
 /**
  * Copyright (C) 2013 EDIT
  * European Distributed Institute of Taxonomy
@@ -15,6 +14,7 @@ import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -44,6 +44,7 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
     private SessionFactory sessionFactory;
 
     private final Map<Class<? extends CdmBase>, QueryParser> queryParsers = new HashMap<Class<? extends CdmBase>, QueryParser>();
+    private final Map<Class<? extends CdmBase>, QueryParser> complexPhraseQueryParsers = new HashMap<Class<? extends CdmBase>, QueryParser>();
 
     /**
      * @param sessionfactory
@@ -89,17 +90,27 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
     }
 
     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider#getQueryParserFor(java.lang.Class)
+     * @see eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider#getQueryParserFor(java.lang.Class, boolean complexPhraseQuery)
      */
     @Override
-    public QueryParser getQueryParserFor(Class<? extends CdmBase> clazz) {
-        if(!queryParsers.containsKey(clazz)){
-            Analyzer analyzer = getAnalyzerFor(clazz);
-            QueryParser parser = new QueryParser(DEFAULT_QURERY_FIELD_NAME, analyzer);
-            queryParsers.put(clazz, parser);
+    public QueryParser getQueryParserFor(Class<? extends CdmBase> clazz, boolean complexPhraseQuery) {
+        if(!complexPhraseQuery){
+            if(!queryParsers.containsKey(clazz)){
+                Analyzer analyzer = getAnalyzerFor(clazz);
+                QueryParser parser = new QueryParser(DEFAULT_QURERY_FIELD_NAME, analyzer);
+                queryParsers.put(clazz, parser);
+            }
+            return queryParsers.get(clazz);
+        } else {
+            if(!complexPhraseQueryParsers.containsKey(clazz)){
+                Analyzer analyzer = getAnalyzerFor(clazz);
+                QueryParser parser = new ComplexPhraseQueryParser(DEFAULT_QURERY_FIELD_NAME, analyzer);
+                complexPhraseQueryParsers.put(clazz, parser);
+            }
+            return complexPhraseQueryParsers.get(clazz);
         }
-        return queryParsers.get(clazz);
     }
+
 
     /**
      * <b>WARING</b> This method might return an Analyzer

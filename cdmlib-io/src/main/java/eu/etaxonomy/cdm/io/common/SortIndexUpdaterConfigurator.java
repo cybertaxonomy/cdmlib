@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2016 EDIT
 * European Distributed Institute of Taxonomy
@@ -23,6 +22,8 @@ public class SortIndexUpdaterConfigurator extends ImportConfiguratorBase<Default
     private boolean doTaxonNode = true;
     private boolean doFeatureNode = true;
     private boolean doPolytomousKeyNode = true;
+
+    private String subTreeIndex = null;
 
     private SortIndexUpdaterConfigurator(ICdmDataSource destination){
         super(null);

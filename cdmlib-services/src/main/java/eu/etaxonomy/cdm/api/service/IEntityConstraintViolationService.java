@@ -1,4 +1,3 @@
-// $Id: IEntityConstraintViolationService.java 22374 2014-12-10 23:02:58Z ayco_holleman $
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy

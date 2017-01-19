@@ -101,35 +101,40 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	}
 
 	@Override
-	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
-		Session session = super.getSession();
+    public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
+        Session session = super.getSession();
 
-		Criteria criteria = session.createCriteria(clazz);
-		criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
-		@SuppressWarnings("unchecked")
+      Criteria criteria = session.createCriteria(clazz);
+      criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
+      if (limit != null){
+          criteria.setMaxResults(limit);
+      }
+      //criteria.setReadOnly(true);
         List<CdmBase> result = criteria.list();
-		return result;
+        return result;
 	}
 
 	@Override
     public Integer getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
         Session session = super.getSession();
-        Query query = session.createQuery("SELECT count(*) FROM "+ clazz + " this WHERE this." + propertyName +" = :referencedObject").setEntity("referencedObject", referencedCdmBase);
-
+        Query queryCount = session.createQuery("SELECT count(this) FROM "+ clazz.getSimpleName() + " this WHERE this." + propertyName +" = :referencedObject").setEntity("referencedObject", referencedCdmBase);
 
         @SuppressWarnings("unchecked")
-        Integer result =(Integer) query.uniqueResult();
+        Integer result =((Number)queryCount.uniqueResult()).intValue();
         return result;
     }
 
 	@Override
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item){
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit){
 		Session session = super.getSession();
 		String thisClassStr = itemClass.getSimpleName();
 		String otherClassStr = clazz.getSimpleName();
 		String queryStr = " SELECT other FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
 			" WHERE this = :referencedObject AND this member of other."+propertyName ;
 		Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
+		if (limit != null){
+		    query.setMaxResults(limit);
+		}
 		@SuppressWarnings("unchecked")
 		List<CdmBase> result = query.list();
 		return result;
@@ -140,11 +145,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         Session session = super.getSession();
         String thisClassStr = itemClass.getSimpleName();
         String otherClassStr = clazz.getSimpleName();
-        String queryStr = " SELECT count(*) FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
+        String queryStr = " SELECT count(this) FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
             " WHERE this = :referencedObject AND this member of other."+propertyName ;
+
         Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
         @SuppressWarnings("unchecked")
-        Integer result = (Integer)query.uniqueResult();
+        Integer result =((Number)query.uniqueResult()).intValue();
         return result;
     }
 
@@ -186,8 +192,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 
 			Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
+			Integer count = getReferencingObjectsCount(referencedCdmBase);
 			for (ReferenceHolder refHolder: holderSet){
-				handleReferenceHolder(referencedCdmBase, result, refHolder);
+			    if (count > 100000) {
+                    handleReferenceHolder(referencedCdmBase, result, refHolder, true);
+                }else{
+                    handleReferenceHolder(referencedCdmBase, result, refHolder, false);
+                }
 			}
 			return result;
 		} catch (Exception e) {
@@ -210,7 +221,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
             Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
             for (ReferenceHolder refHolder: holderSet){
-                handleReferenceHolderForCount(referencedCdmBase, result, refHolder);
+                result =+ handleReferenceHolderForCount(referencedCdmBase, result, refHolder);
             }
             return result;
         } catch (Exception e) {
@@ -245,7 +256,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			}
 			Set<CdmBase> resultIdentifiableEntity = new HashSet<CdmBase>();
 			for (ReferenceHolder refHolder: holderSet){
-				handleReferenceHolder(referencedCdmBase, resultIdentifiableEntity, refHolder);
+				handleReferenceHolder(referencedCdmBase, resultIdentifiableEntity, refHolder, false);
 			}
 			result.removeAll(resultIdentifiableEntity);
 
@@ -263,12 +274,22 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	 * @param refHolder
 	 */
 	private void handleReferenceHolder(CdmBase referencedCdmBase,
-			Set<CdmBase> result, ReferenceHolder refHolder) {
+			Set<CdmBase> result, ReferenceHolder refHolder, boolean limited) {
 		boolean isCollection = refHolder.isCollection();
+		Integer count = null;
+
 		if (isCollection){
-			result.addAll(getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase));
+		    if (limited){
+		        result.addAll(getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase, 100));
+		    }else{
+		        result.addAll(getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase, null));
+		    }
 		}else{
-			result.addAll(getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, referencedCdmBase));
+		    if (limited){
+		        result.addAll(getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, referencedCdmBase, 100));
+		    }else{
+		        result.addAll(getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, referencedCdmBase, null));
+		    }
 		}
 	}
 
@@ -277,7 +298,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
      * @param result
      * @param refHolder
      */
-    private void handleReferenceHolderForCount(CdmBase referencedCdmBase,
+    private Integer handleReferenceHolderForCount(CdmBase referencedCdmBase,
             Integer result, ReferenceHolder refHolder) {
         boolean isCollection = refHolder.isCollection();
         if (isCollection){
@@ -285,6 +306,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         }else{
             result += getCountByFieldAndClass(refHolder.otherClass, refHolder.propertyName, referencedCdmBase);
         }
+        return result;
     }
 
 	/**

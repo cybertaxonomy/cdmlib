@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2013 EDIT
 * European Distributed Institute of Taxonomy
@@ -132,50 +131,62 @@ public class BioCaseQueryGenerator {
         elResponseFormat.addContent(abcdSchema);
 
         elSearch.addContent(elFilter);
-        elFilter.addContent(elAnd);
+
 
         if(query.tripleIds!=null ){
             if (query.tripleIds.size() == 1){
                 String unitId[] = query.tripleIds.iterator().next();
-                addEqualsFilter(elAnd, unitId[0], UNIT_ID_PATH_ABCD_2_0);
+                Element elOr = new Element(OR);
+                addEqualsFilter(elOr, unitId[0], ACCESSION_NUMBER_PATH_ABCD_2_0);
+                addEqualsFilter(elOr, unitId[0], CAT_PATH_ABCD_2_0);
+                addEqualsFilter(elOr, unitId[0], UNIT_ID_PATH_ABCD_2_0);
+                elFilter.addContent(elOr);
+                //addEqualsFilter(elAnd, unitId[0], UNIT_ID_PATH_ABCD_2_0);
             }else{
                 Element elOr = new Element(OR);
                 for (String[] unitId: query.tripleIds){
-                    addEqualsFilter(elOr, unitId[0], UNIT_ID_PATH_ABCD_2_0);
+                    Element elOrAccessionNumber = new Element(OR);
+                    addEqualsFilter(elOrAccessionNumber, unitId[0], ACCESSION_NUMBER_PATH_ABCD_2_0);
+                    addEqualsFilter(elOrAccessionNumber, unitId[0], CAT_PATH_ABCD_2_0);
+                    addEqualsFilter(elOrAccessionNumber, unitId[0], UNIT_ID_PATH_ABCD_2_0);
+                    elOr.addContent(elOrAccessionNumber);
+                   //addEqualsFilter(elOr, unitId[0], UNIT_ID_PATH_ABCD_2_0);
                 }
+                elFilter.addContent(elOr);
+            }
+        }else{
+            elFilter.addContent(elAnd);
+
+            if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
+                Element elOr = new Element(OR);
+                addLikeFilter(elOr, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
+                addLikeFilter(elOr, query.accessionNumber, CAT_PATH_ABCD_2_0);
+                addLikeFilter(elOr, query.accessionNumber, UNIT_ID_PATH_ABCD_2_0);
                 elAnd.addContent(elOr);
             }
+            if(query.collector!=null && !query.collector.trim().isEmpty()){
+                addLikeFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
+            }
+            if(query.collectorsNumber!=null && !query.collectorsNumber.trim().isEmpty()){
+                addLikeFilter(elAnd, query.collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);
+            }
+            if(query.country!=null && !query.country.trim().isEmpty()){
+                addLikeFilter(elAnd, query.country, COUNTRY_PATH_ABCD_2_0);
+            }
+            //TODO: implement
+    //        if(query.date!=null){
+    //            addFilter(elFilter, query.date);
+    //        }
+            if(query.herbarium!=null && !query.herbarium.trim().isEmpty()){
+                addLikeFilter(elAnd, query.herbarium, HERBARIUM_PATH_ABCD_2_0);
+            }
+            if(query.locality!=null && !query.locality.trim().isEmpty()){
+                addLikeFilter(elAnd, query.locality, LOCALITY_PATH_ABCD_2_0);
+            }
+            if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
+                addLikeFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
+            }
         }
-        if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
-            Element elOr = new Element(OR);
-            addLikeFilter(elOr, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
-            addLikeFilter(elOr, query.accessionNumber, CAT_PATH_ABCD_2_0);
-            addLikeFilter(elOr, query.accessionNumber, UNIT_ID_PATH_ABCD_2_0);
-            elAnd.addContent(elOr);
-        }
-        if(query.collector!=null && !query.collector.trim().isEmpty()){
-            addLikeFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
-        }
-        if(query.collectorsNumber!=null && !query.collectorsNumber.trim().isEmpty()){
-            addLikeFilter(elAnd, query.collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);
-        }
-        if(query.country!=null && !query.country.trim().isEmpty()){
-            addLikeFilter(elAnd, query.country, COUNTRY_PATH_ABCD_2_0);
-        }
-        //TODO: implement
-//        if(query.date!=null){
-//            addFilter(elFilter, query.date);
-//        }
-        if(query.herbarium!=null && !query.herbarium.trim().isEmpty()){
-            addLikeFilter(elAnd, query.herbarium, HERBARIUM_PATH_ABCD_2_0);
-        }
-        if(query.locality!=null && !query.locality.trim().isEmpty()){
-            addLikeFilter(elAnd, query.locality, LOCALITY_PATH_ABCD_2_0);
-        }
-        if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
-            addLikeFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
-        }
-
         elSearch.addContent(elCount);
         elCount.addContent(FALSE);
 

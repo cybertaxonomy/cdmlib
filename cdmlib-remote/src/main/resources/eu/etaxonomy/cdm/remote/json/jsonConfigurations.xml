@@ -118,6 +118,12 @@
           </property>
         </bean>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.media.Media">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.MediaBeanProcessor">
+            <property name="replaceTitle" value="true" />
+            <property name="replaceDescription" value="true" />
+          </bean>
+        </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor" />
         </entry>

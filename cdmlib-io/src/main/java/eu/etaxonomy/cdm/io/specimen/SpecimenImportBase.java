@@ -116,6 +116,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if(parsedName==null){
                 parsedName = parseScientificName(scientificName, state, state.getReport());
             }
+            atomisedTaxonName = parsedName;
             if(config.isIgnoreAuthorship() && parsedName!=null && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
@@ -156,6 +157,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
         else if(taxonName==null){
             //create new taxon name
+
             if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP)){
                 taxonName = BotanicalName.NewInstance(rank);
             }else if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN)){
@@ -279,7 +281,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            logger.info("settaxonnamebytype " + state.getDataHolder().getNomenclatureCode().toString());
 	        }
 
-	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological")) {
+	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid())) {
 	            NonViralName<ZoologicalName> taxonName = ZoologicalName.NewInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
@@ -338,7 +340,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                return taxonName;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical")) {
+	        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getUuid())) {
 	            BotanicalName taxonName = (BotanicalName) parseScientificName(fullName, state, state.getReport());
 	            if (taxonName != null){
 	                return taxonName;
@@ -398,7 +400,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                return taxonName;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial")) {
+	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNB.getUuid())) {
 	            NonViralName<BacterialName> taxonName = BacterialName.NewInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
@@ -529,7 +531,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            return cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
 	        }else if (cdmBase.isInstanceOf(TaxonNameBase.class)){
 	            return cdmRepository.getNameService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNameBase.class));
-	        }else{
+	        }else if (cdmBase.isInstanceOf(TaxonNode.class)){
+                return cdmRepository.getTaxonNodeService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNode.class));
+            }else{
 	            throw new IllegalArgumentException("Class not supported in save method: " + CdmBase.deproxy(cdmBase, CdmBase.class).getClass().getSimpleName());
 	        }
 
@@ -819,7 +823,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	            else{
 	                node = classification.addParentChild(parent, child, state.getRef(), "");
-	                save(classification, state);
+	                save(node, state);
 	            }
 	        }
 	        else {
@@ -830,7 +834,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	            else{
 	                node = classification.addChildTaxon(child, state.getRef(), null);
-	                save(classification, state);
+	                save(node, state);
 	            }
 	        }
 	        if(node!=null){

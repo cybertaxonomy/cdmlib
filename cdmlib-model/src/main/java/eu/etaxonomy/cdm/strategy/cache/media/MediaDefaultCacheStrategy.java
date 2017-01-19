@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.media;
 
@@ -35,24 +35,25 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 	public static MediaDefaultCacheStrategy NewInstance() {
 		return new MediaDefaultCacheStrategy();
 	}
-	
+
 	@Override
 	protected UUID getUuid() {
-		return uuid; 
+		return uuid;
 	}
-	
-	
-	public String getTitleCache(Media media) {
-		media = (Media) HibernateProxyHelper.deproxy(media, Media.class);
+
+
+	@Override
+    public String getTitleCache(Media media) {
+		media = HibernateProxyHelper.deproxy(media, Media.class);
 		return getTitleCacheByLanguage(media, Language.DEFAULT());
 	}
-	
+
 	public String getTitleCacheByLanguage(Media media, Language lang) {
 		String result;
 		List<Language> languages = Arrays.asList(new Language[]{lang});
 		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllTitles(), languages);
 		result = (languageString != null ? languageString.getText() : "");
-		
+
 		//get first image uri
 		if (StringUtils.isBlank(result)){
 			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
@@ -79,5 +80,5 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 	}
 
 
-	
+
 }

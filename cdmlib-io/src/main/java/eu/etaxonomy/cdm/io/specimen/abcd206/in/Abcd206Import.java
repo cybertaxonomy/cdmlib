@@ -243,7 +243,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());
-
+                int length = unitsList.getLength();
                 for (int i = 0; i < unitsList.getLength(); i++) {
                     if(state.getConfig().getProgressMonitor().isCanceled()){
                         break;

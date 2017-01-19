@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2009 EDIT
 * European Distributed Institute of Taxonomy
@@ -8,8 +7,6 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.remote.controller;
-
-import io.swagger.annotations.Api;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -112,9 +110,9 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
 // TODO
     //@RequestMapping(method = RequestMethod.GET, value = "{uuid}/collectingareas")
-        @RequestMapping(
-            value = {"collectingareas"},
-            method = RequestMethod.GET)
+    @RequestMapping(
+        value = {"collectingareas"},
+        method = RequestMethod.GET)
     public Object doGetCollectingAreas(
             @PathVariable("uuid") UUID occurrenceUuid,
             HttpServletRequest request,
@@ -123,7 +121,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         logger.info("doGetCollectingAreas() - " + request.getRequestURI());
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid,
                 response,
-                Arrays.asList(new String []{"ecology"}));
+                Arrays.asList(new String []{"collectingAreas"}));
         return duf.getCollectingAreas();
     }
 

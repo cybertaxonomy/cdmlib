@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -127,12 +128,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @ManyToMany(fetch = FetchType.LAZY /*, orphanRemoval=false*/)  //#5762 M:N now
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
-    private Set<Rights> rights = new HashSet<Rights>();
+    private Set<Rights> rights = new HashSet<>();
 
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
@@ -142,7 +143,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
-    private List<Credit> credits = new ArrayList<Credit>();
+    private List<Credit> credits = new ArrayList<>();
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
@@ -150,7 +151,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
-    private Set<Extension> extensions = new HashSet<Extension>();
+    private Set<Extension> extensions = new HashSet<>();
 
     @XmlElementWrapper(name = "Identifiers", nillable = true)
     @XmlElement(name = "Identifier")
@@ -159,7 +160,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
-    private List<Identifier> identifiers = new ArrayList<Identifier>();
+    private List<Identifier> identifiers = new ArrayList<>();
 
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
@@ -167,7 +168,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
-    private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
+    private Set<IdentifiableSource> sources = new HashSet<>();
 
     @XmlTransient
     @Transient

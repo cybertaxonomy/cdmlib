@@ -193,6 +193,7 @@ public class Abcd206XMLFieldGetter {
                         try {
                             if (scnames.item(n).hasChildNodes()) {
                                 String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();
+
                                 if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
                                     dataHolder.setNomenclatureCode(tmp.split(prefix)[1]);
                                 }
@@ -206,7 +207,7 @@ public class Abcd206XMLFieldGetter {
                             }
                             dataHolder.setNomenclatureCode("");
                         }
-                        atomised = scnames.item(n).getChildNodes().item(1).getChildNodes();
+                        atomised = scnames.item(n).getChildNodes().item(0).getChildNodes();
                         dataHolder.getAtomisedIdentificationList().add(this.getAtomisedNames(dataHolder.getNomenclatureCode(),atomised));
                     }
                 }

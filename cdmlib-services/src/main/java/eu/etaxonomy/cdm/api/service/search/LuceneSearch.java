@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2011 EDIT
 * European Distributed Institute of Taxonomy
@@ -223,7 +222,7 @@ public class LuceneSearch {
      */
     public Query parse(String luceneQueryString) throws ParseException {
         logger.debug("luceneQueryString to be parsed: " + luceneQueryString);
-        Query luceneQuery = toolProvider.getQueryParserFor(directorySelectClass).parse(luceneQueryString);
+        Query luceneQuery = toolProvider.getQueryParserFor(directorySelectClass, false).parse(luceneQueryString);
         return luceneQuery;
     }
 

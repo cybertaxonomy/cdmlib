@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2012 EDIT
 * European Distributed Institute of Taxonomy
@@ -24,8 +23,8 @@ import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 
 /**
- * @author andreas
- * @date Sep 21, 2012
+ * @author Andreas Kohlbecker
+ * @since Sep 21, 2012
  *
  */
 public class ProgressMonitorUtil {
@@ -50,28 +49,7 @@ public class ProgressMonitorUtil {
      */
     public ModelAndView respondWithMonitor(String frontendBaseUrl, HttpServletRequest request, HttpServletResponse response, String processLabel,
             final UUID monitorUuid) throws IOException {
-
-        ModelAndView mv = new ModelAndView();
-        String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
-        response.setHeader("Location", monitorPath);
-        boolean isJSONP = request.getParameter("callback") != null;
-
-
-            if(isJSONP){
-                JsonpRedirect jsonpRedirect;
-                if(frontendBaseUrl != null){
-                    jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
-                } else {
-                    jsonpRedirect = new JsonpRedirect(request, monitorPath);
-                }
-                mv.addObject(jsonpRedirect);
-
-            } else {
-                RedirectView redirectView = new RedirectView(monitorPath);
-                mv.setView(redirectView);
-            }
-
-        return mv;
+        return respondWithMonitorOrDownload(frontendBaseUrl, null, request, response, processLabel, monitorUuid);
     }
 
 
@@ -79,6 +57,7 @@ public class ProgressMonitorUtil {
      * send redirect "see other"
      *
      * @param frontendBaseUrl
+     * @param downloadUrl can be null
      * @param request
      * @param response
      * @param processLabel
@@ -94,28 +73,24 @@ public class ProgressMonitorUtil {
         String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
         IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(monitorUuid);
 
-        if(monitor.isDone() && !monitor.isCanceled() && !monitor.isFailed()){
-            if(downloadUrl != null){
-                response.setHeader("Loaction", downloadUrl);
-                RedirectView redirectView = new RedirectView(downloadUrl);
-                mv.setView(redirectView);
-                return mv;
+        if(downloadUrl != null && monitor.isDone() && !monitor.isCanceled() && !monitor.isFailed()) {
+            response.setHeader("Location", downloadUrl);
+            RedirectView redirectView = new RedirectView(downloadUrl);
+            mv.setView(redirectView);
+        } else {
+            JsonpRedirect jsonpRedirect;
+            if(frontendBaseUrl != null){
+                jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
+            } else {
+                jsonpRedirect = new JsonpRedirect(request, monitorPath);
             }
-        }else{
 
-            response.setHeader("Location", monitorPath);
             boolean isJSONP = request.getParameter("callback") != null;
             if(isJSONP){
-                JsonpRedirect jsonpRedirect;
-                if(frontendBaseUrl != null){
-                    jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
-                } else {
-                    jsonpRedirect = new JsonpRedirect(request, monitorPath);
-                }
+                response.setHeader("Location", jsonpRedirect.getRedirectURL());
                 mv.addObject(jsonpRedirect);
-
             } else {
-                RedirectView redirectView = new RedirectView(monitorPath);
+                RedirectView redirectView = new RedirectView(jsonpRedirect.getRedirectURL());
                 mv.setView(redirectView);
             }
         }

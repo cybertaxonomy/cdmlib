@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy
@@ -26,17 +25,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -58,7 +61,6 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author n.hoffmann
  * @created Apr 9, 2010
- * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)
@@ -376,9 +378,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNodes(java.util.List)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config) {
@@ -494,7 +493,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
              }
         }*/
         return result;
-
     }
 
 
@@ -507,7 +505,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         return deleteTaxonNodes(nodes, config);
     }
-
 
 
     @Override
@@ -539,7 +536,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
-
 
 
     	if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.MOVE_TO_PARENT)){
@@ -590,15 +586,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		}
     		return result;
     	}
-
-
-
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
-     */
     @Override
     public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
         return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
@@ -746,6 +736,41 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addException(e);
         }
         result.setCdmEntity(node);
+        return result;
+    }
+
+    @Override
+    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config, IProgressMonitor monitor) {
+        UpdateResult result = new UpdateResult();
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
+        }
+        UUID subtreeUuid = config.getSubtreeUuid();
+        if (subtreeUuid == null){
+            result.setError();
+            result.addException(new NullPointerException("No subtree given"));
+            monitor.done();
+            return result;
+        }
+        TaxonNode subTree = find(subtreeUuid);
+        if (subTree == null){
+            result.setError();
+            result.addException(new NullPointerException("Subtree does not exist"));
+            monitor.done();
+            return result;
+        }
+        TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+
+        Reference ref = config.getNewSecundum();
+        if (config.isIncludeAcceptedTaxa()){
+            Set<Taxon> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, ref, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa() ,config.isEmptySecundumDetail());
+            result.addUpdatedObjects(updatedTaxa);
+        }
+        if (config.isIncludeSynonyms()){
+            Set<Synonym> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, ref, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+            result.addUpdatedObjects(updatedSynonyms);
+        }
+
         return result;
     }
 

@@ -138,8 +138,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     @Bean
     public DataSource dataSource() {
 
-
-
         String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
         String jndiName = null;
         if(this.dataSource == null){
@@ -375,15 +373,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
         logger.error("hibernate dialect mapping for "+url+ " not yet implemented or unavailable");
         return null;
-    }
-
-    public String cmdServerInstanceName(){
-        // test for if this is an instance running in a cdmserver:
-        if(findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false) != null) {
-            String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
-            cmdServerInstanceName =  beanName;
-        }
-        return cmdServerInstanceName;
     }
 
 }

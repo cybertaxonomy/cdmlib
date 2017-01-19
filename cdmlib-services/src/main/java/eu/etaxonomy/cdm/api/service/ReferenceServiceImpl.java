@@ -1,4 +1,3 @@
-// $Id$
 /**
  * Copyright (C) 2007 EDIT
  * European Distributed Institute of Taxonomy
@@ -20,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -114,7 +114,15 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
      */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern) {
-        return dao.getUuidAndAbbrevTitleCache(limit, pattern);
+        return dao.getUuidAndAbbrevTitleCache(limit, pattern, null);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IReferenceService#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType type) {
+        return dao.getUuidAndAbbrevTitleCache(limit, pattern, type);
     }
 
 }

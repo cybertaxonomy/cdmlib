@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy
@@ -27,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.sandbox.queries.DuplicateFilter;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
@@ -642,17 +642,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<UuidAndTitleCache<IdentifiableEntity>> results = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
 
 
-        if (configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoNamesWithoutTaxa()){
-        	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(),configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+        if (configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoNamesWithoutTaxa() || configurator.isDoTaxaByCommonNames()){
+        	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(), configurator.isDoTaxaByCommonNames(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getOrder());
         }
-        if (configurator.isDoTaxaByCommonNames()) {
-            //if(configurator.getPageSize() == null ){
-                List<UuidAndTitleCache<IdentifiableEntity>> commonNameResults = dao.getTaxaByCommonNameForEditor(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
-                if(commonNameResults != null){
-                    results.addAll(commonNameResults);
-                }
-           // }
-        }
+
         return results;
     }
 
@@ -673,18 +666,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
 
-       if (configurator.isDoMisappliedNames() || configurator.isDoSynonyms() || configurator.isDoTaxa()){
+       if (configurator.isDoMisappliedNames() || configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoTaxaByCommonNames()){
             if(configurator.getPageSize() != null){ // no point counting if we need all anyway
                 numberTaxaResults =
                     dao.countTaxaByName(configurator.isDoTaxa(),configurator.isDoSynonyms(), configurator.isDoMisappliedNames(),
-                        configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(),
+                        configurator.isDoTaxaByCommonNames(), configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(),
                         configurator.getClassification(), configurator.getMatchMode(),
                         configurator.getNamedAreas());
             }
 
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
                 taxa = dao.getTaxaByName(configurator.isDoTaxa(), configurator.isDoSynonyms(),
-                    configurator.isDoMisappliedNames(), configurator.isDoIncludeAuthors(),
+                    configurator.isDoMisappliedNames(), configurator.isDoTaxaByCommonNames(), configurator.isDoIncludeAuthors(),
                     configurator.getTitleSearchStringSqlized(), configurator.getClassification(),
                     configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getOrder(),
                     configurator.getPageSize(), configurator.getPageNumber(), propertyPath);
@@ -719,24 +712,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
         }
 
-        // Taxa from common names
 
-        if (configurator.isDoTaxaByCommonNames()) {
-            taxa = new ArrayList<>();
-            numberTaxaResults = 0;
-            if(configurator.getPageSize() != null){// no point counting if we need all anyway
-                numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
-            }
-            if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-                List<Taxon> commonNameResults = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
-                taxa.addAll(commonNameResults);
-            }
-            if(taxa != null){
-                results.addAll(taxa);
-            }
-            numberOfResults += numberTaxaResults;
-
-        }
 
        return new DefaultPagerImpl<>
             (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
@@ -1148,7 +1124,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     private boolean checkForPolytomousKeys(Taxon taxon){
         boolean result = false;
-        List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon);
+        List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon, null);
         if (!list.isEmpty()) {
             result = true;
         }
@@ -1764,6 +1740,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
             byCommonNameSearch.setQuery(byCommonNameJoinQuery);
             byCommonNameSearch.setSortFields(sortFields);
+
+            DuplicateFilter df = new DuplicateFilter("inDescription.taxon.id");
+            HashSet<String> results=new HashSet();
+//            ScoreDoc[] hits = searcher.search(tq,df, 1000).scoreDocs;
+//
+//            byCommonNameSearch.setFilter(df);
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             luceneSearches.add(byCommonNameSearch);
@@ -3064,7 +3046,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
-        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
+        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
 
