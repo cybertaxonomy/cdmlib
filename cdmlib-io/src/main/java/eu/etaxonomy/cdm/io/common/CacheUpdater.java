@@ -25,9 +25,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 @Component
-public class CacheUpdater extends
-    CdmImportBase<CacheUpdaterConfigurator, DefaultImportState<CacheUpdaterConfigurator>> {
-	private static final Logger logger = Logger.getLogger(CacheUpdater.class);
+public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, DefaultImportState<CacheUpdaterConfigurator>> {
+
+    private static final long serialVersionUID = -1410600568024821771L;
+
+    private static final Logger logger = Logger.getLogger(CacheUpdater.class);
 
 	@Override
 	protected void doInvoke(DefaultImportState<CacheUpdaterConfigurator> state) {
