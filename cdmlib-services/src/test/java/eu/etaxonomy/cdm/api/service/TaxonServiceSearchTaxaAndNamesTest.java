@@ -391,6 +391,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         t_abies_kawakamii.getTitleCache();
         taxonService.save(t_abies_kawakamii);
 
+
         // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
         Taxon t_abies_kawakamii_sensu_komarov = Taxon.NewInstance(n_abies_kawakamii, sec_sensu);
         taxonService.save(t_abies_kawakamii_sensu_komarov);
@@ -407,6 +408,23 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
         classificationService.saveOrUpdate(europeanAbiesClassification);
         classificationService.saveOrUpdate(alternativeClassification);
+
+        //
+        // Names without taxa
+        //
+        BotanicalName n_abies_borisiiregis = BotanicalName.NewInstance(Rank.SPECIES());
+        n_abies_borisiiregis.setNameCache("Abies borisii-regis", true);
+        nameService.save(n_abies_borisiiregis);
+
+        BotanicalName n_abies_lasio = BotanicalName.NewInstance(Rank.SPECIES());
+        n_abies_lasio.setNameCache("Abies lasio", true);
+        nameService.save(n_abies_lasio);
+
+        // A hybrid name not from Abies
+        BotanicalName n_abies_millefolium_x_Achillea_nobilis = BotanicalName.NewInstance(Rank.SPECIES());
+        n_abies_millefolium_x_Achillea_nobilis.setNameCache("Achillea millefolium × Achillea nobilis", true);
+        Taxon t_abies_millefolium_x_Achillea_nobilis = Taxon.NewInstance(n_abies_millefolium_x_Achillea_nobilis, sec);
+        taxonService.save(t_abies_millefolium_x_Achillea_nobilis);
 
         //
         // Description
