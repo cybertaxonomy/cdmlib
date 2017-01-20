@@ -251,6 +251,28 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
     }
+    /**
+     * Test for all not covered possibilities of searches
+     */
+    @Test
+    @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    public void testGetTaxaByNameVariants(){
+        List<TaxonBase> results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+
+        results = taxonDao.getTaxaByName(false, false, true, true, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+
+        results = taxonDao.getTaxaByName(false, true, true, true, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+
+        results = taxonDao.getTaxaByName(false, true, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+
+        results = taxonDao.getTaxaByName(true, false, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+
+    }
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}.

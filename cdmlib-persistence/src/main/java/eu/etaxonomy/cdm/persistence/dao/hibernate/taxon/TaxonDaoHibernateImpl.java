@@ -491,7 +491,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             String classString;
             if (doTaxa && doSynonyms){
                 classString = "TaxonBase";
-            } else if (doTaxa){
+            } else if (doTaxa || doCommonNames){
                 classString = "Taxon";
             } else if (doSynonyms){
                 classString = "Synonym";
@@ -507,8 +507,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             if(!doCount){
                 String orderBy = " ORDER BY ";
-              // String alphabeticBase = " case when t.name.genusOrUninomial like '\"%\"' then 1 else 0 end, t.name.genusOrUninomial , case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
-               String alphabeticBase = " t.name.nameCache";
+                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
 
                 if (order == NameSearchOrder.LENGTH_ALPHA_NAME){
                     orderBy += " length(t.name.nameCache), " + alphabeticBase;
@@ -536,7 +535,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 if (taxa.size()== 0 && synonyms.size() == 0){
                     return null;
                 }
-            }else if(doTaxa){
+            }else if(doTaxa || doCommonNames || doIncludeMisappliedNames){
                 //find taxa
                 if (taxa.size()>0){
                     query.setParameterList("taxa", taxa );
