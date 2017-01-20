@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
@@ -63,9 +62,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -76,7 +73,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -159,156 +155,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         assertNotNull("nameService should exist", nameService);
     }
 
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
-     */
-    @Test
-    @DataSet
-    public final void testFindTaxaAndNames() {
-
-        // pass 1
-        IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
-        configurator.setTitleSearchString("Abies*");
-        configurator.setMatchMode(MatchMode.BEGINNING);
-
-        configurator.setDoTaxa(true);
-        configurator.setDoSynonyms(true);
-        configurator.setDoNamesWithoutTaxa(true);
-        configurator.setDoTaxaByCommonNames(true);
-        configurator.setDoMisappliedNames(true);
-
-        Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
-
-        logSearchResults(pager, Level.DEBUG);
-        assertEquals(10, pager.getRecords().size());
-
-        configurator.setDoTaxa(true);
-        configurator.setDoSynonyms(true);
-        configurator.setDoNamesWithoutTaxa(true);
-        configurator.setDoTaxaByCommonNames(true);
-        configurator.setDoMisappliedNames(true);
-        pager = taxonService.findTaxaAndNames(configurator);
-
-        assertEquals(10, pager.getRecords().size());
-        // FIXME permutate for all combinations, extra test each, with pager function.
-        // if enabled:
-        // t: taxa
-        // s: synonym
-        // c: common
-        // w: NamesWithoutTaxa
-        // m: setDoMisappliedNames
-        // otherwise _
-    }
-
-    /**
-     * @param pager
-     */
-    protected void logSearchResults(Pager<IdentifiableEntity> pager, Level level) {
-        List<IdentifiableEntity> list = pager.getRecords();
-        logger.debug("number of taxa: " + list.size());
-
-        if (logger.isDebugEnabled()) {
-            for (int i = 0; i < list.size(); i++) {
-                String nameCache = "";
-                if (list.get(i) instanceof NonViralName) {
-                    nameCache = ((NonViralName<?>) list.get(i)).getNameCache();
-                } else if (list.get(i) instanceof TaxonBase) {
-                    TaxonNameBase<?,?> taxonNameBase = ((TaxonBase) list.get(i)).getName();
-                    nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
-                } else {
-                }
-                logger.log(level, list.get(i).getClass() + "(" + i + ")" + ": Name Cache = " + nameCache + ", Title Cache = "
-                        + list.get(i).getTitleCache());
-            }
-        }
-    }
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
-     */
-    @Test
-    @DataSet
-    public final void testFindTaxaAndNames_CommonName() {
-     // pass 1
-        IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
-        configurator.setMatchMode(MatchMode.BEGINNING);
-        configurator.setDoTaxa(true);
-        configurator.setDoSynonyms(true);
-        configurator.setDoNamesWithoutTaxa(true);
-        configurator.setDoTaxaByCommonNames(true);
-        configurator.setTitleSearchString("Balsam-Tanne");
-
-        Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
-        List<IdentifiableEntity> list = pager.getRecords();
-        assertEquals(1, list.size());
-        configurator.setDoTaxaByCommonNames(false);
-        configurator.setDoMisappliedNames(true);
-        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
-        pager = taxonService.findTaxaAndNames(configurator);
-        list = pager.getRecords();
-        assertEquals(0, list.size());
-
-    }
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
-     */
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public final void testFindTaxaAndNamesWithHybridFormula() {
-
-        // pass 1
-        IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
-        configurator.setTitleSearchString("Achillea*");
-        configurator.setMatchMode(MatchMode.BEGINNING);
-        configurator.setDoTaxa(true);
-        configurator.setDoSynonyms(true);
-        configurator.setDoNamesWithoutTaxa(true);
-        configurator.setDoTaxaByCommonNames(true);
-
-        Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
-    //    Assert.assertEquals("Expecting one taxon",1,pager.getRecords().size());
-        List<IdentifiableEntity> list = pager.getRecords();
-    }
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
-     * .
-     */
-    @Test
-    @DataSet
-    public final void testfindTaxaAndNamesForEditor() {
-         IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
-         configurator.setTitleSearchString("Abies bor*");
-         configurator.setMatchMode(MatchMode.BEGINNING);
-         configurator.setDoTaxa(true);
-         configurator.setDoSynonyms(false);
-         configurator.setDoNamesWithoutTaxa(true);
-         configurator.setDoTaxaByCommonNames(false);
-
-        List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
-
-         Assert.assertEquals("Expecting one entity", 1, list.size());
-
-         configurator.setTitleSearchString("silver fir");
-         configurator.setMatchMode(MatchMode.BEGINNING);
-         configurator.setDoTaxa(false);
-         configurator.setDoSynonyms(false);
-         configurator.setDoNamesWithoutTaxa(true);
-         configurator.setDoTaxaByCommonNames(true);
-
-         list = taxonService.findTaxaAndNamesForEditor(configurator);
-
-         Assert.assertEquals("Expecting one entity", 1, list.size());
-
-    }
 
     @SuppressWarnings("rawtypes")
     @Test
