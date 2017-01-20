@@ -258,7 +258,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameVariants(){
         List<TaxonBase> results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
-        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+        Assert.assertEquals("There should be 2 Taxa",2, results.size());
 
         results = taxonDao.getTaxaByName(false, false, true, true, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
@@ -267,11 +267,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
 
         results = taxonDao.getTaxaByName(false, true, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
-        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+        Assert.assertEquals("There should be 2 Taxa", 2, results.size());
 
         results = taxonDao.getTaxaByName(true, false, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        Assert.assertEquals("There should be 2 Taxa", 2, results.size());
+        Classification classification = classificationDao.load(classificationUuid);
+        results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", classification, MatchMode.BEGINNING, null, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
-
+        Set<NamedArea> namedAreas = new HashSet<>();
+        namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
+        results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING, namedAreas, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
     }
 
     /**
@@ -352,6 +358,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
             null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+
+        results = taxonDao.getTaxaByName(false,false, false, true, false,"com*", null, MatchMode.BEGINNING, namedAreas,
+                null, null, null, null);
+            assertNotNull("getTaxaByName should return a List", results);
+            assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 
         // 2. searching for a taxon (Rethera) contained in a specific classification
         results = taxonDao.getTaxaByName(true, false, false, false, false,"Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
@@ -1113,15 +1124,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         assertNotNull("getTaxaByCommonName should return a list", commonNameResults);
         assertFalse("the list should not be empty", commonNameResults.isEmpty());
-        assertEquals("There should be one Taxon with common name", 1,commonNameResults.size());
-        assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
+        assertEquals("There should be two taxa with common name", 2,commonNameResults.size());
 
         List<UuidAndTitleCache<IdentifiableEntity>> list = taxonDao.getTaxaByCommonNameForEditor("common%", null, MatchMode.BEGINNING, null);
 
         assertNotNull("getTaxaByCommonName should return a list", commonNameResults);
         assertFalse("the list should not be empty", commonNameResults.isEmpty());
-        assertEquals("There should be one Taxon with common name", 1,commonNameResults.size());
-        assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
+        assertEquals("There should be two Taxon with common name", 2,commonNameResults.size());
+
     }
 
     @Test

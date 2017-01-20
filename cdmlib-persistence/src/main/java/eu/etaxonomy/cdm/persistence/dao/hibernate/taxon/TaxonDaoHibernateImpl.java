@@ -1486,16 +1486,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 " left join rt.name as n2" +
                 " left join rft.type as rtype";
 
-           String doCommonNamesJoin =   "join t.descriptions d "+
-                   "join d.descriptionElements e " +
-                   "join e.feature f ";
+           String doCommonNamesJoin =   "join t.descriptions as description "+
+                   "left join description.descriptionElements as com " +
+                   "left join com.feature f ";
 
 
            String doClassificationWhere = " tn.classification = :classification";
            String doClassificationForMisappliedNamesWhere = " tn2 .classification = :classification";
 
            String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
-           String doCommonNamesRestrictionWhere = " f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";
+           String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
            String doSearchFieldWhere = "%s." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 
@@ -1529,8 +1529,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     " WHERE " + doClassificationWhere +
                     " AND " + String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
-                            " WHERE "+ doAreaRestrictionWhere +
-                             " AND " + doClassificationWhere +
+                            " WHERE " + doClassificationWhere +
                             " AND " + doCommonNamesRestrictionWhere;
                 }
             }else{ //misappliedNames included
@@ -1585,7 +1584,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
                 " WHERE " +   doAreaRestrictionWhere +
                 " AND " +  String.format(doSearchFieldWhere, "sn");
-                commonNameSubselect = String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
+                commonNameSubselect = String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                         " WHERE " + doAreaRestrictionWhere +
                         " AND " + doCommonNamesRestrictionWhere;
 
