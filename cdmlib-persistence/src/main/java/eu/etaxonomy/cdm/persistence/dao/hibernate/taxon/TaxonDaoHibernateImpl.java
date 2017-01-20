@@ -1518,7 +1518,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     " WHERE " + doAreaRestrictionWhere +
                     " AND " + doClassificationWhere +
                     " AND " + String.format(doSearchFieldWhere, "sn");
-                    commonNameSubselect =  doCommonNamesJoin +
+                    commonNameSubselect =  String.format(doAreaRestrictionSubSelect, "t") + doCommonNamesJoin +
                             " WHERE " +  doAreaRestrictionWhere + " AND " + doClassificationWhere +
                             " AND " + String.format(doSearchFieldWhere, "n")
                             + " AND " + doCommonNamesRestrictionWhere;
@@ -1529,7 +1529,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
                     " WHERE " + doClassificationWhere +
                     " AND " + String.format(doSearchFieldWhere, "sn");
-                    commonNameSubselect =String.format(doTaxonSubSelect, "s" )+ doCommonNamesJoin +
+                    commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
                             " WHERE "+ doAreaRestrictionWhere +
                              " AND " + doClassificationWhere +
                             " AND " + doCommonNamesRestrictionWhere;
