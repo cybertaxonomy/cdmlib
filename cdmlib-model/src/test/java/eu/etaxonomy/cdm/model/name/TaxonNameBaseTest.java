@@ -17,8 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 /**
  * @author a.mueller
  * @created 28.06.2008
- * @version 1.0
  */
 public class TaxonNameBaseTest {
 	private static final Logger logger = Logger.getLogger(TaxonNameBaseTest.class);
@@ -65,26 +62,22 @@ public class TaxonNameBaseTest {
 
 
 	private class TaxonNameBaseTestClass extends TaxonNameBase<TaxonNameBaseTestClass, INameCacheStrategy<TaxonNameBaseTestClass>>{
-		public TaxonNameBaseTestClass(){super();};
-		public TaxonNameBaseTestClass(Rank rank){super(rank);};
-		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);};
-		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(rank, hg);};
+		public TaxonNameBaseTestClass(){super();}
+		public TaxonNameBaseTestClass(Rank rank){super(rank);}
+		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);}
+		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(rank, hg);}
 		@Override
-		public boolean isCodeCompliant(){return false;};
+		public boolean isCodeCompliant(){return false;}
 		@Override
-		public void setCacheStrategy(INameCacheStrategy strategy){};
+		public void setCacheStrategy(INameCacheStrategy strategy){}
 		@Override
-		public INameCacheStrategy getCacheStrategy(){return null;};
+		public INameCacheStrategy getCacheStrategy(){return null;}
 		@Override
-		public NomenclaturalCode getNomenclaturalCode(){return null;};
+		public NomenclaturalCode getNomenclaturalCode(){return null;}
 		@Override
 		public String generateFullTitle(){return null;}
 		@Override
 		public String generateTitle() {
-			return null;
-		}
-		@Override
-		protected Map<String, java.lang.reflect.Field> getAllFields() {
 			return null;
 		}
 
