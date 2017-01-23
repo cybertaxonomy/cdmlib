@@ -282,7 +282,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(8, pager.getRecords().size());
 
-        // FIXME the Synonym Abies subalpina missing in result set
+
         setTaxaAndNamesModes(conf, false, true, true, false, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -352,7 +352,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(5, pager.getRecords().size());
 
-        // FIXME the Synonym Abies subalpina missing in result set
+
         setTaxaAndNamesModes(conf, false, true, true, true, true);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -373,8 +373,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         pager = taxonService.findTaxaAndNames(conf);
         assertEquals(5, pager.getRecords().size());
 
-
-     // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
         setTaxaAndNamesModes(conf, false, true, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
         assertEquals(4, pager.getRecords().size());
@@ -394,7 +392,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         // logSearchResults(pager, Level.DEBUG);
         assertEquals(4, pager.getRecords().size());
 
-        // FIXME the Synonym Abies subalpina missing in result set
+
         setTaxaAndNamesModes(conf, false, true, true, false, true);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -442,7 +440,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(3, pager.getRecords().size());
 
-        // FIXME the Synonym Abies subalpina missing in result set
+
         setTaxaAndNamesModes(conf, false, true, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -465,7 +463,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(3, pager.getRecords().size());
 
-        // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
         setTaxaAndNamesModes(conf, false, true, false, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -490,7 +487,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(2, pager.getRecords().size());
 
-        // FIXME the Synonym Abies subalpina missing in result set
+
         setTaxaAndNamesModes(conf, false, true, true, false, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
