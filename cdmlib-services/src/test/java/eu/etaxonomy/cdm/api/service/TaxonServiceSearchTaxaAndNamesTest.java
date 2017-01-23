@@ -550,7 +550,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
         List<IdentifiableEntity> list = pager.getRecords();
         assertEquals(1, list.size());
-
+        configurator.setTitleSearchString("Abies*");
+        configurator.setDoTaxa(false);
+        configurator.setDoSynonyms(false);
+        configurator.setDoNamesWithoutTaxa(false);
         configurator.setDoTaxaByCommonNames(true);
         configurator.setDoMisappliedNames(true);
         configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
