@@ -167,14 +167,12 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
         setTaxaAndNamesModes(conf, true, true, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
         assertEquals(10, pager.getRecords().size());
 
-
-     // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
         setTaxaAndNamesModes(conf, false, true, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
-        // there are one synonym, two names without taxa and a misapplied name
-        assertEquals(4, pager.getRecords().size());
+        assertEquals("one synonym, two names without taxa and a misapplied name", 4, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -191,7 +189,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         // logSearchResults(pager, Level.DEBUG);
         assertEquals(10, pager.getRecords().size());
 
-        // FIXME the Synonym Abies subalpina missing in result set
         setTaxaAndNamesModes(conf, false, true, true, false, true);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -242,8 +239,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         setTaxaAndNamesModes(conf, false, true, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
-        //There is one synonym and a misapplied name
-        assertEquals(2, pager.getRecords().size());
+        assertEquals("one synonym and a misapplied name", 2, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
@@ -262,7 +258,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(8, pager.getRecords().size());
 
-        // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
         setTaxaAndNamesModes(conf, false, true, false, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
