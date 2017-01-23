@@ -1474,7 +1474,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 if(doAreaRestriction){
                     misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin  +
                     " WHERE " + doAreaRestrictionWhere +
-                    " AND " + String.format(doSearchFieldWhere, "n") +
+                    " AND " + String.format(doSearchFieldWhere, "n2") +
                     " AND " + doClassificationForMisappliedNamesWhere +
                     " AND " + doRelationshipTypeComparison;
 
@@ -1491,7 +1491,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                             " AND "+ doClassificationWhere + " AND " + doCommonNamesRestrictionWhere;
                 } else {
                     misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin +
-                    " WHERE " + String.format(doSearchFieldWhere, "n") +
+                    " WHERE " + String.format(doSearchFieldWhere, "n2") +
                     " AND " + doClassificationForMisappliedNamesWhere +
                     " AND " + doRelationshipTypeComparison;
 

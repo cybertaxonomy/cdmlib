@@ -283,10 +283,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(8, pager.getRecords().size());
 
         // FIXME the Synonym Abies subalpina missing in result set
-//        setTaxaAndNamesModes(conf, false, true, true, false, false);
-//        pager = taxonService.findTaxaAndNames(conf);
-//        logSearchResults(pager, Level.DEBUG);
-//        assertEquals(1, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, true, false, false);
         pager = taxonService.findTaxaAndNames(conf);
@@ -353,10 +353,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(5, pager.getRecords().size());
 
         // FIXME the Synonym Abies subalpina missing in result set
-//        setTaxaAndNamesModes(conf, false, true, true, true, true);
-//        pager = taxonService.findTaxaAndNames(conf);
-//        logSearchResults(pager, Level.DEBUG);
-//        assertEquals(4, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, true, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(4, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, true, true, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -375,9 +375,9 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
 
      // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
-     //   setTaxaAndNamesModes(conf, false, true, false, true, true);
-     //   pager = taxonService.findTaxaAndNames(conf);
-     //   assertEquals(4, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, false, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        assertEquals(4, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -395,10 +395,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(4, pager.getRecords().size());
 
         // FIXME the Synonym Abies subalpina missing in result set
-//        setTaxaAndNamesModes(conf, false, true, true, false, true);
-//        pager = taxonService.findTaxaAndNames(conf);
-//        logSearchResults(pager, Level.DEBUG);
-//        assertEquals(3, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, true, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, true, false, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -443,10 +443,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(3, pager.getRecords().size());
 
         // FIXME the Synonym Abies subalpina missing in result set
-//        setTaxaAndNamesModes(conf, false, true, true, true, false);
-//        pager = taxonService.findTaxaAndNames(conf);
-//        logSearchResults(pager, Level.DEBUG);
-//        assertEquals(2, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
@@ -466,10 +466,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(3, pager.getRecords().size());
 
         // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
-//        setTaxaAndNamesModes(conf, false, true, false, true, false);
-//        pager = taxonService.findTaxaAndNames(conf);
-//        logSearchResults(pager, Level.DEBUG);
-//        assertEquals(2, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, false, true, false);
         pager = taxonService.findTaxaAndNames(conf);
@@ -491,10 +491,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(2, pager.getRecords().size());
 
         // FIXME the Synonym Abies subalpina missing in result set
-//        setTaxaAndNamesModes(conf, false, true, true, false, false);
-//        pager = taxonService.findTaxaAndNames(conf);
-//        logSearchResults(pager, Level.DEBUG);
-//        assertEquals(1, pager.getRecords().size());
+        setTaxaAndNamesModes(conf, false, true, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
 
         setTaxaAndNamesModes(conf, true, false, true, false, false);
         pager = taxonService.findTaxaAndNames(conf);
@@ -547,14 +547,16 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         configurator.setTitleSearchString("Balsam-Tanne");
 
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
+
         List<IdentifiableEntity> list = pager.getRecords();
         assertEquals(1, list.size());
-        configurator.setDoTaxaByCommonNames(false);
+
+        configurator.setDoTaxaByCommonNames(true);
         configurator.setDoMisappliedNames(true);
         configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
         pager = taxonService.findTaxaAndNames(configurator);
         list = pager.getRecords();
-        assertEquals(0, list.size());
+        assertEquals(1, list.size());
 
     }
 
