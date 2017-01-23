@@ -126,14 +126,24 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
      * .
      */
+    /**
+     * This test permutes through all search mode combinations.
+     *
+     * 7 Accepted Taxa
+     * 1 Synonym
+     * 1 misapplied which is also in the set of accepted
+     * 2 Names without taxa
+     *
+     */
     @Test
     @DataSet
     public final void testFindTaxaAndNames() {
 
         IFindTaxaAndNamesConfigurator<?> conf = new FindTaxaAndNamesConfiguratorImpl();
         conf.setTitleSearchString("Abies*");
-        //conf.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
         conf.setMatchMode(MatchMode.BEGINNING);
+
+        // ---------------------------------------------------------
 
         setTaxaAndNamesModes(conf, true, true, true, true, true);
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(conf);
@@ -150,28 +160,68 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
         setTaxaAndNamesModes(conf, false, false, true, true, true);
         pager = taxonService.findTaxaAndNames(conf);
-        logSearchResults(pager, Level.DEBUG);
+        //logSearchResults(pager, Level.DEBUG);
         assertEquals(3, pager.getRecords().size());
+
+        // ---------------------------------------------------------
 
         setTaxaAndNamesModes(conf, true, true, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
         assertEquals(10, pager.getRecords().size());
+
 
      // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
      //   setTaxaAndNamesModes(conf, false, true, false, true, true);
      //   pager = taxonService.findTaxaAndNames(conf);
      //   assertEquals(3, pager.getRecords().size());
 
+        setTaxaAndNamesModes(conf, true, false, false, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        assertEquals(9, pager.getRecords().size());
+
         setTaxaAndNamesModes(conf, false, false, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
         assertEquals(3, pager.getRecords().size());
 
-        // only misapplied names
-        // - Abies kawakamii sec. Komarov, V. L., Flora SSSR 29
-        setTaxaAndNamesModes(conf, false, false, false, true, false);
+        // =========================================================
+
+        setTaxaAndNamesModes(conf, true, true, true, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        // logSearchResults(pager, Level.DEBUG);
+        assertEquals(10, pager.getRecords().size());
+
+        // FIXME the Synonym Abies subalpina missing in result set
+//        setTaxaAndNamesModes(conf, false, true, true, false, true);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(3, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, true, false, true);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
-        assertEquals(1, pager.getRecords().size());
+        assertEquals(9, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(10, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, true, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(9, pager.getRecords().size());
 
         // only names without taxa
         // - Abies borisii-regis
@@ -181,22 +231,306 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(2, pager.getRecords().size());
 
-        setTaxaAndNamesModes(conf, true, true, true, false, true);
+        // =========================================================
+
+        setTaxaAndNamesModes(conf, true, true, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
-        assertEquals(10, pager.getRecords().size());
+        assertEquals(8, pager.getRecords().size());
 
+        setTaxaAndNamesModes(conf, false, true, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
 
-        // FIXME permutate for all combinations, extra test each, with pager function.
-        // if enabled:
-        // t: taxa
-        // s: synonym
-        // c: common
-        // w: NamesWithoutTaxa
-        // m: setDoMisappliedNames
-        // otherwise _
+        setTaxaAndNamesModes(conf, true, false, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(7, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(8, pager.getRecords().size());
+
+        // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
+//        setTaxaAndNamesModes(conf, false, true, false, true, false);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(2, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(7, pager.getRecords().size());
+
+        // only misapplied names
+        // - Abies kawakamii sec. Komarov, V. L., Flora SSSR 29
+        setTaxaAndNamesModes(conf, false, false, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        // =========================================================
+
+        setTaxaAndNamesModes(conf, true, true, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(8, pager.getRecords().size());
+
+        // FIXME the Synonym Abies subalpina missing in result set
+//        setTaxaAndNamesModes(conf, false, true, true, false, false);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(1, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(7, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(0, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(8, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, true, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(7, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(0, pager.getRecords().size());
     }
 
+
+    /**
+     * Test method for
+     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
+     * .
+     */
+    /**
+     * This test permutes through all search mode combinations with classification filter
+     *
+     * 1 accepted taxon
+     * 1 Synonym
+     * 1 misapplied
+     * 2 names without taxa
+     *
+     */
+    @Test
+    @DataSet
+    public final void testFindTaxaAndNames_with_classification() {
+
+        IFindTaxaAndNamesConfigurator<?> conf = new FindTaxaAndNamesConfiguratorImpl();
+        conf.setTitleSearchString("Abies*");
+        conf.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
+        conf.setMatchMode(MatchMode.BEGINNING);
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, true, true, true);
+        Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(5, pager.getRecords().size());
+
+        // FIXME the Synonym Abies subalpina missing in result set
+//        setTaxaAndNamesModes(conf, false, true, true, true, true);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(4, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, true, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        assertEquals(4, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        //logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        assertEquals(5, pager.getRecords().size());
+
+
+     // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
+     //   setTaxaAndNamesModes(conf, false, true, false, true, true);
+     //   pager = taxonService.findTaxaAndNames(conf);
+     //   assertEquals(4, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        assertEquals(4, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, false, true, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        assertEquals(3, pager.getRecords().size());
+
+        // =========================================================
+
+        setTaxaAndNamesModes(conf, true, true, true, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        // logSearchResults(pager, Level.DEBUG);
+        assertEquals(4, pager.getRecords().size());
+
+        // FIXME the Synonym Abies subalpina missing in result set
+//        setTaxaAndNamesModes(conf, false, true, true, false, true);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(3, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, true, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(4, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, true, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        // only names without taxa
+        // - Abies borisii-regis
+        // - Abies lasio
+        setTaxaAndNamesModes(conf, false, false, false, false, true);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        // =========================================================
+
+        setTaxaAndNamesModes(conf, true, true, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        // FIXME the Synonym Abies subalpina missing in result set
+//        setTaxaAndNamesModes(conf, false, true, true, true, false);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(2, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(3, pager.getRecords().size());
+
+        // FIXME org.hibernate.QueryParameterException: could not locate named parameter [taxa]
+//        setTaxaAndNamesModes(conf, false, true, false, true, false);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(2, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        // only misapplied names
+        // - Abies kawakamii sec. Komarov, V. L., Flora SSSR 29
+        setTaxaAndNamesModes(conf, false, false, false, true, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        // =========================================================
+
+        setTaxaAndNamesModes(conf, true, true, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        // FIXME the Synonym Abies subalpina missing in result set
+//        setTaxaAndNamesModes(conf, false, true, true, false, false);
+//        pager = taxonService.findTaxaAndNames(conf);
+//        logSearchResults(pager, Level.DEBUG);
+//        assertEquals(1, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, true, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(0, pager.getRecords().size());
+
+        // ---------------------------------------------------------
+
+        setTaxaAndNamesModes(conf, true, true, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(2, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, true, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, true, false, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(1, pager.getRecords().size());
+
+        setTaxaAndNamesModes(conf, false, false, false, false, false);
+        pager = taxonService.findTaxaAndNames(conf);
+        logSearchResults(pager, Level.DEBUG);
+        assertEquals(0, pager.getRecords().size());
+    }
 
     /**
      * Test method for
@@ -391,7 +725,9 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         t_abies_kawakamii.getTitleCache();
         taxonService.save(t_abies_kawakamii);
 
-
+        //
+        // 1 Misapplied Name
+        //
         // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
         Taxon t_abies_kawakamii_sensu_komarov = Taxon.NewInstance(n_abies_kawakamii, sec_sensu);
         taxonService.save(t_abies_kawakamii_sensu_komarov);
@@ -403,14 +739,14 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
         taxonService.save(t_abies_lasiocarpa);
 
-        // add taxa to classifications
+        // add 3 taxa to classifications
         europeanAbiesClassification.addChildTaxon(t_abies_balsamea, null, null);
         alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
         classificationService.saveOrUpdate(europeanAbiesClassification);
         classificationService.saveOrUpdate(alternativeClassification);
 
         //
-        // Names without taxa
+        // 2 Names without taxa
         //
         BotanicalName n_abies_borisiiregis = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_borisiiregis.setNameCache("Abies borisii-regis", true);
