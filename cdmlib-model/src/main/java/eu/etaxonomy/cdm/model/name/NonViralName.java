@@ -56,10 +56,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 @CorrectEpithetsForRank(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
-public class NonViralName<T extends NonViralName>
-        extends TaxonNameBase<T, INonViralNameCacheStrategy>
-        implements INonViralName<T>{
-
+public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> implements Cloneable{
     private static final long serialVersionUID = 4441110073881088033L;
 
 
