@@ -111,7 +111,7 @@ public class QueryFactory {
         String luceneQueryString = fieldName + ":(" + queryString + ")";
         if (isTextField) {
             queryString = queryString.trim();
-            boolean isComplexPhraseQuery = queryString.matches("^\\\".*[\\*].*\\\"$");
+            boolean isComplexPhraseQuery = queryString.matches("^\\\".*\\s+.*[\\*].*\\\"$");
             textFieldNames.add(fieldName);
             // in order to support the full query syntax we must use the parser
             // here

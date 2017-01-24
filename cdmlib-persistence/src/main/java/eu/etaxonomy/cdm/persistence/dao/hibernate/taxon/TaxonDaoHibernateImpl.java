@@ -404,13 +404,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 taxa.addAll(subCommonNames.list());
             }
 
-            //FIXME : the fourth element of the result should be a boolean, but in the case of a synonym
-            // (which does require a check) a constant boolean (false) value needs to set. It seems that
-            // hql cannot parse a constant boolean value in the select list clause. This implies that the
-            // resulting object could be a Boolean or a String. The workaround for this is to convert the
-            // resutling object into a String (using toString) and then create a new Boolean object from
-            // String.
-            if (doTaxa && doSynonyms){
+
+           // if (doTaxa && doSynonyms){
                 if(synonyms.size()>0 && taxa.size()>0){
                     hql = "select " + selectWhat;
                     // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
@@ -446,54 +441,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 } else{
                     hql = "select " + selectWhat + " from %s t";
                 }
-            } else if(doTaxa || doCommonNames){
-                if  (taxa.size()>0){
-                    hql = "select " + selectWhat;
-                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                    // also return the computed isOrphaned flag
-                    if (doNotReturnFullEntities){
-                        hql += ", 'taxon', " +
-                                " case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                    }
-                    hql +=  " from %s t " +
-                            " where t.id in (:taxa) ";
-
-                }else{
-                    hql = "select " + selectWhat + " from %s t";
-                }
-            } else if(doSynonyms){
-                if (synonyms.size()>0){
-
-                    hql = "select " + selectWhat;
-                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                    // also return the computed isOrphaned flag
-                    if (doNotReturnFullEntities){
-                        hql += ", 'synonym', 'false' ";
-                    }
-                    hql +=  " from %s t " +
-                            " where t.id in (:synonyms) ";
-                }else{
-                    hql = "select " + selectWhat + " from %s t";
-                }
-            } else if (doIncludeMisappliedNames){
-                hql = "select " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                // also return the computed isOrphaned flag
-                if (doNotReturnFullEntities){
-                    hql += ", 'taxon', " +
-                            " case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                }
-                hql +=  " from %s t " +
-                        " where t.id in (:taxa) ";
-
-            }
 
             String classString;
-            if (doTaxa && doSynonyms){
+            if ((doTaxa || doCommonNames || doIncludeMisappliedNames) && doSynonyms){
                 classString = "TaxonBase";
-            } else if (doTaxa){
+            } else if (doTaxa || doCommonNames){
                 classString = "Taxon";
-            } else if (doSynonyms){
+            } else if (doSynonyms && !(doCommonNames|| doTaxa || doIncludeMisappliedNames)){
                 classString = "Synonym";
             } else{//only misappliedNames
                 classString = "Taxon";
@@ -507,8 +461,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             if(!doCount){
                 String orderBy = " ORDER BY ";
-              // String alphabeticBase = " case when t.name.genusOrUninomial like '\"%\"' then 1 else 0 end, t.name.genusOrUninomial , case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
-               String alphabeticBase = " t.name.nameCache";
+                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
 
                 if (order == NameSearchOrder.LENGTH_ALPHA_NAME){
                     orderBy += " length(t.name.nameCache), " + alphabeticBase;
@@ -525,7 +478,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             Query query = getSession().createQuery(hql);
 
 
-            if (doTaxa && doSynonyms){
+            if ((doTaxa || doCommonNames || doIncludeMisappliedNames) ){
                 // find taxa and synonyms
                 if (taxa.size()>0){
                     query.setParameterList("taxa", taxa);
@@ -536,27 +489,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 if (taxa.size()== 0 && synonyms.size() == 0){
                     return null;
                 }
-            }else if(doTaxa){
-                //find taxa
-                if (taxa.size()>0){
-                    query.setParameterList("taxa", taxa );
-                }else{
-                    logger.warn("there are no taxa for the query: " + queryString);
-                    return null;
-                }
-            } else if(doSynonyms){
+            }
+            if(doSynonyms){
                 // find synonyms
                 if (synonyms.size()>0){
                     query.setParameterList("synonyms", synonyms);
-                }else{
-                    return null;
-                }
-            }	else{
-                //only misappliedNames
-                if (taxa.size()>0){
-                    query.setParameterList("taxa", taxa );
-                }else{
-                    return null;
                 }
             }
 
@@ -1487,16 +1424,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 " left join rt.name as n2" +
                 " left join rft.type as rtype";
 
-           String doCommonNamesJoin =   "join t.descriptions d "+
-                   "join d.descriptionElements e " +
-                   "join e.feature f ";
+           String doCommonNamesJoin =   "join t.descriptions as description "+
+                   "left join description.descriptionElements as com " +
+                   "left join com.feature f ";
 
 
            String doClassificationWhere = " tn.classification = :classification";
            String doClassificationForMisappliedNamesWhere = " tn2 .classification = :classification";
 
            String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
-           String doCommonNamesRestrictionWhere = " f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";
+           String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
            String doSearchFieldWhere = "%s." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 
@@ -1518,7 +1455,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     " WHERE " + doAreaRestrictionWhere +
                     " AND " + doClassificationWhere +
                     " AND " + String.format(doSearchFieldWhere, "sn");
-                    commonNameSubselect =  doCommonNamesJoin +
+                    commonNameSubselect =  String.format(doAreaRestrictionSubSelect, "t") + doCommonNamesJoin +
                             " WHERE " +  doAreaRestrictionWhere + " AND " + doClassificationWhere +
                             " AND " + String.format(doSearchFieldWhere, "n")
                             + " AND " + doCommonNamesRestrictionWhere;
@@ -1529,9 +1466,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
                     " WHERE " + doClassificationWhere +
                     " AND " + String.format(doSearchFieldWhere, "sn");
-                    commonNameSubselect =String.format(doTaxonSubSelect, "s" )+ doCommonNamesJoin +
-                            " WHERE "+ doAreaRestrictionWhere +
-                             " AND " + doClassificationWhere +
+                    commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
+                            " WHERE " + doClassificationWhere +
                             " AND " + doCommonNamesRestrictionWhere;
                 }
             }else{ //misappliedNames included
@@ -1586,7 +1522,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
                 " WHERE " +   doAreaRestrictionWhere +
                 " AND " +  String.format(doSearchFieldWhere, "sn");
-                commonNameSubselect = String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
+                commonNameSubselect = String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                         " WHERE " + doAreaRestrictionWhere +
                         " AND " + doCommonNamesRestrictionWhere;
 
