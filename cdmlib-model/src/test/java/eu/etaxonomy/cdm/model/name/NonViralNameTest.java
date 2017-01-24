@@ -389,13 +389,13 @@ public class NonViralNameTest extends EntityTestBase {
 
 		//hybrid parents of clone
 		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getHybridChildRelations().size());
-		Set<TaxonNameBase> parentSet = new HashSet<>();
-		Set<TaxonNameBase> childSet = new HashSet<>();
+		Set<NonViralName> parentSet = new HashSet<NonViralName>();
+		Set<NonViralName> childSet = new HashSet<NonViralName>();
 		for (Object object : clone.getHybridChildRelations()){
 			HybridRelationship childRelation = (HybridRelationship)object;
-			TaxonNameBase<?,?> relatedFrom = childRelation.getRelatedFrom();
+			NonViralName<?> relatedFrom = childRelation.getRelatedFrom();
 			parentSet.add(relatedFrom);
-			TaxonNameBase<?,?> relatedTo = childRelation.getRelatedTo();
+			NonViralName<?> relatedTo = childRelation.getRelatedTo();
 			childSet.add(relatedTo);
 		}
 		Assert.assertTrue("Parent set should contain parent1", parentSet.contains(parent));

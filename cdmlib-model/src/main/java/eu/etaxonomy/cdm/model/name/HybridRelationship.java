@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
+public class HybridRelationship extends RelationshipBase<NonViralName, NonViralName, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
@@ -68,14 +68,14 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase relatedFrom;
+	private NonViralName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase relatedTo;
+	private NonViralName relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
@@ -105,7 +105,7 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	 * @see						#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, Reference, String, String)
 	 * @see						BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(TaxonNameBase hybridName, TaxonNameBase parentName, HybridRelationshipType type, String ruleConsidered) {
+	protected HybridRelationship(NonViralName hybridName, NonViralName parentName, HybridRelationshipType type, String ruleConsidered) {
 		this(hybridName, parentName, type, null, null, ruleConsidered);
 	}
 
@@ -123,7 +123,7 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	 * @see							#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String)
 	 * @see							BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(TaxonNameBase  hybridName, TaxonNameBase parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
+	protected HybridRelationship(NonViralName  hybridName, NonViralName parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
 		super(parentName, hybridName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}
@@ -138,7 +138,7 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
-	public TaxonNameBase getParentName(){
+	public NonViralName getParentName(){
 		return this.getRelatedFrom();
 	}
 	/**
@@ -156,7 +156,7 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
 	@Transient
-	public TaxonNameBase getHybridName(){
+	public NonViralName getHybridName(){
 		return this.getRelatedTo();
 	}
 	/**
@@ -183,12 +183,12 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	}
 
 	@Override
-    protected TaxonNameBase getRelatedFrom() {
+    protected NonViralName getRelatedFrom() {
 		return relatedFrom;
 	}
 
 	@Override
-    protected TaxonNameBase getRelatedTo() {
+    protected NonViralName getRelatedTo() {
 		return relatedTo;
 	}
 
@@ -198,12 +198,18 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	}
 
 	@Override
-    protected void setRelatedFrom(TaxonNameBase relatedFrom) {
+    protected void setRelatedFrom(NonViralName relatedFrom) {
+		/*if (relatedFrom == null){
+			this.deletedObjects.add(this.relatedFrom);
+		}*/
 		this.relatedFrom = relatedFrom;
 	}
 
 	@Override
-    protected void setRelatedTo(TaxonNameBase relatedTo) {
+    protected void setRelatedTo(NonViralName relatedTo) {
+		/*if (relatedTo == null){
+			this.deletedObjects.add(this.relatedTo);
+		}*/
 		this.relatedTo = relatedTo;
 	}
 
@@ -222,8 +228,8 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 		if (compareType != 0){
 			return compareType;
 		}else{
-		    TaxonNameBase<?,?> related1 = this.getRelatedFrom();
-		    TaxonNameBase<?,?> related2 = rel2.getRelatedFrom();
+			NonViralName related1 = this.getRelatedFrom();
+			NonViralName<?> related2 = rel2.getRelatedFrom();
 			if (related1 != related2){
 				related1 = this.getRelatedTo();
 				related2 = rel2.getRelatedTo();
