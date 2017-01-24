@@ -1748,8 +1748,7 @@ public class DerivedUnitFacade {
 	}
 
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
-	    this.derivedUnit.setKindOfUnit(kindOfUnit);
-		//getFieldUnit(true).setKindOfUnit(kindOfUnit);
+	    baseUnit().setKindOfUnit(kindOfUnit);
 	}
 
 

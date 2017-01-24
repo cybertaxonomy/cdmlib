@@ -22,14 +22,15 @@ public class MediaAutoInitializer extends AutoPropertyInitializer<Media> {
     @Override
     public void initialize(Media bean) {
         beanInitializer.initializeInstance(bean.getAllTitles());
+        beanInitializer.initializeInstance(bean.getAllDescriptions());
         for (MediaRepresentation r : bean.getRepresentations()){
             beanInitializer.initializeInstance(r.getParts());
         }
     }
-    
-    
+
+
     @Override
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
-    	return String.format(" LEFT JOIN FETCH %s.representations r LEFT JOIN FETCH r.mediaRepresentationParts ", beanAlias); 
+    	return String.format(" LEFT JOIN FETCH %s.representations LEFT JOIN FETCH %s.titles r LEFT JOIN FETCH r.mediaRepresentationParts ", beanAlias);
     }
 }
