@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -493,8 +494,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}
 
 		//name
-		NonViralName<?> name;
-		INonViralNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
+		INonViralName<?> name;
+		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (StringUtils.isNotBlank(commonDetermination.fullName)){
 			name = parser.parseFullName(commonDetermination.fullName, nc, rank);
@@ -503,7 +504,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			}
 		}else{
 			if (nc != null){
-				name = (NonViralName)nc.getNewTaxonNameInstance(rank);
+				name = nc.getNewTaxonNameInstance(rank);
 			}else{
 				name = NonViralName.NewInstance(rank);
 			}
@@ -564,8 +565,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 
 
-	private void setAuthorship(NonViralName<?> name, String author, INonViralNameParser<NonViralName> parser) {
-		if (name.isInstanceOf(BotanicalName.class) || name.isInstanceOf(ZoologicalName.class)){
+	private void setAuthorship(INonViralName<?> name, String author, INonViralNameParser<NonViralName> parser) {
+		if (name instanceof BotanicalName || name instanceof ZoologicalName){
 			try {
 				parser.parseAuthors(name, author);
 			} catch (StringNotParsableException e) {
@@ -574,9 +575,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}else{
 			name.setAuthorshipCache(author);
 		}
-
 	}
-
 
 
 

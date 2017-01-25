@@ -67,7 +67,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
             json.element("taggedName", bean.getTaggedName(), jsonConfig);
         }
         if(bean instanceof NonViralName){
-            json.element("nameCache", ((NonViralName) bean).getNameCache(), jsonConfig);
+            json.element("nameCache", bean.getNameCache(), jsonConfig);
         }
         return json;
     }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 
@@ -31,13 +32,13 @@ public class DwcaId {
 	private UUID uuidId;
 	private URI uriId;
 	private LSID lsidId;
-	
+
 	private DwcaTaxExportConfigurator config;
-	
+
 	public DwcaId(DwcaTaxExportConfigurator config){
 		this.config = config;
 	}
-	
+
 	public void setId(Integer id){
 		this.intId = id;
 	}
@@ -47,16 +48,16 @@ public class DwcaId {
 	public void setId(LSID lsid){
 		this.lsidId = lsid;
 	}
-	
 
-	public void setId(CdmBase cdmBase) {
+
+	public void setId(ICdmBase cdmBase) {
 		this.setId(cdmBase.getId());
 		this.setId(cdmBase.getUuid());
 		if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
 			this.setId(CdmBase.deproxy(cdmBase,IdentifiableEntity.class).getLsid());
 		}
 	}
-	
+
 	public String getId(){
 		Object object;
 		if (config.isUseIdWherePossible()){
@@ -74,10 +75,10 @@ public class DwcaId {
 		}
 		return nullSafe(object);
 	}
-	
+
 	private String nullSafe(Object o){
 		return o == null ? null : o.toString();
 	}
 
-	
+
 }

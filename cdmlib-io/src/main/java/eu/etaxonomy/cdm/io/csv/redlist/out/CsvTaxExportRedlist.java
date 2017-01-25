@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -108,7 +108,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			for (TaxonNode node : filteredNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				CsvTaxRecordRedlist record = assembleRecord(state);
-				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+				INonViralName<?> name = taxon.getName();
 				Classification classification = node.getClassification();
 				config.setClassificationTitleCache(classification.getTitleCache());
 				if (! this.recordExists(taxon)){
@@ -219,7 +219,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		for (Taxon misappliedName : misappliedNames ){
 //			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
+			INonViralName<?> name = misappliedName.getName();
 
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config);
@@ -244,7 +244,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
-			NonViralName<?> name, Taxon acceptedTaxon, Classification classification,
+			INonViralName<?> name, Taxon acceptedTaxon, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvTaxExportConfiguratorRedlist config) {
 
@@ -278,7 +278,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 
 	private void handleTaxonomicStatus(
 			CsvTaxRecordRedlist record,
-			NonViralName<?> name,
+			INonViralName<?> name,
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
@@ -314,7 +314,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			if (type == null){ // should not happen
 				type = SynonymType.SYNONYM_OF();
 			}
-			NonViralName<?> name = CdmBase.deproxy(synonym.getName(), NonViralName.class);
+			INonViralName<?> name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());
 		}
 		record.setSynonyms(synonymLabels);

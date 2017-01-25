@@ -36,12 +36,10 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -179,7 +177,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
             for (int i = 0; i < results.size(); i++) {
                 String nameCache = "";
                 TaxonNameBase<?,?> taxonNameBase= results.get(i).getName();
-                nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+                nameCache = taxonNameBase.getNameCache();
                 logger.debug(results.get(i).getClass() + "(" + i +")" +
                         ": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
             }

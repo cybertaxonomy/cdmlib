@@ -26,11 +26,11 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -322,7 +322,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			return "";
 		}
 
-		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		INonViralName<?> name = taxon.getName();
 		String strGenusName = name.getGenusOrUninomial();
 
 		String normalized = normalizeKeyString(strGoto, location);
@@ -389,7 +389,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		Taxon taxon = state.getCurrentTaxon();
 		String num = state.getCurrentTaxonNum();
 
-		NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		INonViralName<?> nvn = taxon.getName();
 		String nameString = nvn.getNameCache();
 		nameString = normalizeKeyString(nameString, event.getLocation());
         nameString = removeTrailingDot(nameString);

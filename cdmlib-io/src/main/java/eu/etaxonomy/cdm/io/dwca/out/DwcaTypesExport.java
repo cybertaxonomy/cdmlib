@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -103,7 +103,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 				}
 
 				//type specimen
-				NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+				INonViralName<?> nvn = taxon.getName();
 				handleTypeName(writer, taxon, nvn, metaRecord, config);
 				for (Synonym synonym : taxon.getSynonyms()){
 					handleTypeName(writer, synonym, nvn, metaRecord, config);
@@ -138,7 +138,8 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @param config
 	 * @return
 	 */
-	private Set<TypeDesignationBase> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase, NonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
+	private Set<TypeDesignationBase> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase,
+	        INonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
 		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);

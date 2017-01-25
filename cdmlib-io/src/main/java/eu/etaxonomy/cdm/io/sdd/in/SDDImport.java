@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -1259,7 +1260,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Taxon taxon = null;
 		Element elTaxonName = elScope.getChild("TaxonName", sddNamespace);
 		String ref = elTaxonName.getAttributeValue("ref");
-		NonViralName<?> nonViralName = taxonNameBases.get(ref);
+		INonViralName<?> nonViralName = taxonNameBases.get(ref);
 
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
@@ -1269,7 +1270,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			logger.info("using existing Taxon" + taxon.getTitleCache());
 			if(!nonViralName.getUuid().equals(taxon.getName().getUuid())){
 				logger.warn("TaxonNameBase entity of existing taxon does not match Name in list -> replacing Name in list");
-				nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+				nonViralName = taxon.getName();
 			}
 		} else {
 			logger.info("creating new Taxon from TaxonName '" + nonViralName.getTitleCache()+"'");

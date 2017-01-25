@@ -30,8 +30,8 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -121,7 +121,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 
 				//Name relationship
 				//TODO
-				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+				INonViralName<?> name = taxon.getName();
 				if (name == null){
 					String message = "There is a taxon node without taxon: " + node.getId();
 					logger.warn(message);

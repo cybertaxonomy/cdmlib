@@ -40,7 +40,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -48,7 +47,6 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
@@ -1271,20 +1269,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
-        List<TaxonBase> notInDB = new ArrayList<TaxonBase>();
         //get all taxa, already in db
         Query query = getSession().createQuery("from TaxonNameBase t where t.nameCache IN (:taxonList)");
         query.setParameterList("taxonList", taxonNames);
         List<TaxonNameBase> taxaInDB = query.list();
         //compare the original list with the result of the query
         for (TaxonNameBase taxonName: taxaInDB){
-            if (taxonName.isInstanceOf(NonViralName.class)) {
-                NonViralName nonViralName = CdmBase.deproxy(taxonName, NonViralName.class);
-                String nameCache = nonViralName.getNameCache();
-                if (taxonNames.contains(nameCache)){
-                    taxonNames.remove(nameCache);
-                }
+            String nameCache = taxonName.getNameCache();
+            if (taxonNames.contains(nameCache)){
+                taxonNames.remove(nameCache);
             }
+
         }
 
         return taxonNames;

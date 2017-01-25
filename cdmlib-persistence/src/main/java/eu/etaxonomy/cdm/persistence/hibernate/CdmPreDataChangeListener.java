@@ -112,15 +112,15 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
 
             if (IdentifiableEntity.class.isAssignableFrom(entityClazz)){
                 IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
-                //non-viral-name caches
                 if(NonViralName.class.isAssignableFrom(entityClazz)) {
+                    //non-viral-name caches
                     NonViralName<?> nonViralName = (NonViralName<?>)entity;
                     nonViralName.getAuthorshipCache();
                     nonViralName.getNameCache();
                     nonViralName.getTitleCache();
                     nonViralName.getFullTitleCache();
-                    //team-or-person caches
                 }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
+                    //team-or-person caches
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
                     String nomTitle = teamOrPerson.getNomenclaturalTitle();
                     if (teamOrPerson instanceof Team){

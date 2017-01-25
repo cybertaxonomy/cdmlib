@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.io.common;
 
@@ -42,21 +42,21 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class ImportHelper {
 	private static final Logger logger = Logger.getLogger(ImportHelper.class);
-	
+
 	public static final boolean OVERWRITE = true;
 	public static final boolean  NO_OVERWRITE = false;
-	
+
 	public static final boolean OBLIGATORY = true;
 	public static final boolean  FACULTATIVE = false;
-	
-	
+
+
 
 	public static boolean setOriginalSource(ISourceable sourceable, Reference sourceReference, long sourceId, String namespace){
 		return setOriginalSource(sourceable, sourceReference, String.valueOf(sourceId), namespace);
 	}
-	
+
 	/**
-	 * Adds an original source object to the identifiable entity. 
+	 * Adds an original source object to the identifiable entity.
 	 * @param idEntity
 	 * @param sourceReference
 	 * @param sourceId
@@ -75,15 +75,15 @@ public class ImportHelper {
 		sourceable.addSource(originalSource);
 		return true;
 	}
-	
+
 	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean blankToNull){
 		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, OVERWRITE, blankToNull);
 	}
-	
+
 //	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean overwriteNull){
 //		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
 //	}
-		
+
 	public static boolean addBooleanValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
 		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE, false);
 	}
@@ -105,16 +105,16 @@ public class ImportHelper {
 		}
 
 	}
-	
-	
+
+
 	public static boolean addXmlStringValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName){
 		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, String.class, OVERWRITE);
 	}
-	
+
 	public static boolean addXmlStringValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName, boolean overwriteNull){
 		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, String.class, overwriteNull);
 	}
-		
+
 	public static boolean addXmlBooleanValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName){
 		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, boolean.class, OVERWRITE);
 	}
@@ -129,7 +129,7 @@ public class ImportHelper {
 		strValue = getXmlInputValue(root, xmlElementName, namespace);
 		return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull, obligat);
 	}
-	
+
 	public static boolean addValue(Object sourceValue, CdmBase cdmBase, String cdmAttrName, Class<?> clazz, boolean overwriteNull, boolean obligat){
 		String methodName;
 //		Object strValue;
@@ -167,37 +167,37 @@ public class ImportHelper {
 				return true;
 			}
 		}
-		
+
 	}
 
 	/**
 	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
-	 * @param cdmAttrName 
+	 * @param cdmAttrName
 	 * @return
 //	 * @throws IllegalArgumentException if a clazz is not yet supported
 	 */
 	public static String getSetterMethodName(Class<?> clazz, String cdmAttrName) {
 		return getSetterPutterMethodName(clazz, cdmAttrName, "set");
 	}
-	
+
 	/**
 	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
-	 * @param cdmAttrName 
+	 * @param cdmAttrName
 	 * @return
 //	 * @throws IllegalArgumentException if a clazz is not yet supported
 	 */
 	public static String getPutterMethodName(Class<?> clazz, String cdmAttrName) {
 		return getSetterPutterMethodName(clazz, cdmAttrName, "put");
 	}
-	
+
 	/**
 	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
-	 * @param cdmAttrName 
+	 * @param cdmAttrName
 	 * @return
 //	 * @throws IllegalArgumentException if a clazz is not yet supported
 	 */
 	private static String getSetterPutterMethodName(Class<?> clazz, String cdmAttrName, String prefix) {
-		String methodName; 
+		String methodName;
 		if (clazz == boolean.class || clazz == Boolean.class){
 			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
 				throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters");
@@ -220,24 +220,24 @@ public class ImportHelper {
 		}
 		return true;
 	}
-	
+
 	public static boolean addMultipleValues(List<Object> sourceValues, CdmBase cdmBase, String cdmAttrName, List<Class> classes, boolean overwriteNull, boolean obligat){
 		String methodName;
 //		Object strValue;
 		try {
-			
+
 			if (overwriteNull == NO_OVERWRITE && valuesAreNull(sourceValues)){
 				if (logger.isDebugEnabled()) { logger.debug("no overwrite for NULL-value");}
 				return true;
 			}
 			if (logger.isDebugEnabled()) { logger.debug("addValues: " + sourceValues.toString());}
-			
-			
+
+
 			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
 				throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
 			}
 			methodName = "add" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
-			
+
 			Class<?>[] classArray = classes.toArray(new Class[0]);
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName, classArray);
 			cdmMethod.invoke(cdmBase, sourceValues.toArray());
@@ -266,9 +266,9 @@ public class ImportHelper {
 				return true;
 			}
 		}
-		
+
 	}
-	
+
 	public static boolean addAnnotationFromResultSet(ResultSet rs, String attributeName, AnnotatableEntity cdmBase, Language language){
 		try {
 			String value = rs.getString(attributeName);
@@ -285,19 +285,19 @@ public class ImportHelper {
 			return false;
 		}
 	}
-	
-	
-	
+
+
+
 	public static Object getXmlInputValue(Element root, String xmlElementName, Namespace namespace){
-		Object result = null; 
+		Object result = null;
 		Element child = root.getChild(xmlElementName, namespace);
 		if (child != null){
 			result = child.getText().trim();
 		}
 		return result;
 	}
-	
-	
+
+
 	public static TimePeriod getDatePublished(String refYear){
 		TimePeriod resultNew;
 		try {
@@ -310,15 +310,15 @@ public class ImportHelper {
 	}
 
 	//************** EXPORT *******************/
-	
-	
+
+
 	public static<T extends Object> T getValue(CdmBase cdmBase, String cdmAttrName, boolean isBoolean, boolean obligatory){
 		String methodName;
 		T result;
 		try {
 			methodName = getGetterMethodName(cdmAttrName, isBoolean);
 			if (cdmBase.isInstanceOf(NonViralName.class)){
-				cdmBase = CdmBase.deproxy(cdmBase, NonViralName.class);
+				cdmBase = CdmBase.deproxy(cdmBase);
 			}
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
 			result = (T)cdmMethod.invoke(cdmBase);
@@ -347,7 +347,7 @@ public class ImportHelper {
 				return null;
 			}
 		}
-		
+
 	}
 
 	/**

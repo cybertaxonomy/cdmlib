@@ -75,6 +75,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -1148,7 +1149,7 @@ public abstract class MarkupImportBase  {
 	}
 
 	protected void handleFullName(MarkupImportState state, XMLEventReader reader,
-			NonViralName<?> name, XMLEvent next) throws XMLStreamException {
+			INonViralName<?> name, XMLEvent next) throws XMLStreamException {
 		String fullNameStr;
 		Map<String, Attribute> attrs = getAttributes(next);
 		String rankStr = getAndRemoveRequiredAttributeValue(next,

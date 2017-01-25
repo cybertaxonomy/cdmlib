@@ -265,7 +265,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	                            // TODO Auto-generated catch block
 	                            e1.printStackTrace();
 	                       }
-					   
+
 					}
 				}
 
@@ -768,7 +768,6 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}else{
 		    //String taxonNameStr = titleCache.substring(0, titleCache.indexOf(authorStr));
 			taxonNameBase =(NonViralName<?>) nc.getNewTaxonNameInstance(rank);
-			//NonViralName nonViralName = (NonViralName)taxonNameBase;
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			taxonNameBase = parser.parseFullName(taxonNameStr, nc, rank);
 

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -54,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase implements INonViralNameParser<NonViralName> {
+public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase implements INonViralNameParser<INonViralName> {
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
@@ -151,7 +152,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}
 	}
 
-	private String standardize(NonViralName<?> nameToBeFilled, String fullReferenceString, boolean makeEmpty){
+	private String standardize(INonViralName<?> nameToBeFilled, String fullReferenceString, boolean makeEmpty){
 		//Check null and standardize
 		if (fullReferenceString == null){
 			//return null;
@@ -173,7 +174,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getCodeSpecificFullNameRegEx(NonViralName<?> nameToBeFilledOrig){
+	private String getCodeSpecificFullNameRegEx(INonViralName<?> nameToBeFilledOrig){
 	    NonViralName<?> nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilledOrig, NonViralName.class);
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
@@ -192,7 +193,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getCodeSpecificSimpleNameRegEx(NonViralName<?> nameToBeFilled){
+	private String getCodeSpecificSimpleNameRegEx(INonViralName<?> nameToBeFilled){
 		nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilled, NonViralName.class);
 
 		if (nameToBeFilled instanceof ZoologicalName){
@@ -214,7 +215,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	@Override
-    public void parseReferencedName(NonViralName nameToBeFilled, String fullReferenceStringOrig, Rank rank, boolean makeEmpty) {
+    public void parseReferencedName(INonViralName nameToBeFilled, String fullReferenceStringOrig, Rank rank, boolean makeEmpty) {
 		//standardize
 		String fullReferenceString = standardize(nameToBeFilled, fullReferenceStringOrig, makeEmpty);
 		if (fullReferenceString == null){
@@ -272,7 +273,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		parsable.setProblemEnds(-1);
 	}
 
-	private void makeNoFullRefMatch(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank){
+	private void makeNoFullRefMatch(INonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank){
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 
@@ -306,7 +307,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");
 	}
 
-	private void makeNameWithReference(NonViralName<?> nameToBeFilled,
+	private void makeNameWithReference(INonViralName<?> nameToBeFilled,
 			String fullReferenceString,
 			Matcher nameAndRefSeparatorMatcher,
 			Rank rank,
@@ -387,7 +388,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String
 	 */
-	public String parseNomStatus(String fullString, NonViralName<?> nameToBeFilled, boolean makeEmpty) {
+	public String parseNomStatus(String fullString, INonViralName<?> nameToBeFilled, boolean makeEmpty) {
 		Set<NomenclaturalStatusType> existingStatusTypeSet = new HashSet<NomenclaturalStatusType>();
 		Set<NomenclaturalStatusType> newStatusTypeSet = new HashSet<NomenclaturalStatusType>();
 		for (NomenclaturalStatus existingStatus : nameToBeFilled.getStatus()){
@@ -432,7 +433,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 
-	private void parseReference(NonViralName<?> nameToBeFilled, String strReference, boolean isInReference){
+	private void parseReference(INonViralName<?> nameToBeFilled, String strReference, boolean isInReference){
 
 		INomenclaturalReference ref;
 		String originalStrReference = strReference;
@@ -498,7 +499,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param strReference
 	 * @return
 	 */
-	private Reference makeDetailYearUnparsable(NonViralName<?> nameToBeFilled, String strReference) {
+	private Reference makeDetailYearUnparsable(INonViralName<?> nameToBeFilled, String strReference) {
 		Reference ref;
 
 		ref = ReferenceFactory.newGeneric();
@@ -748,8 +749,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	@Override
-	public void parseFullName(NonViralName nameToBeFilledOrig, String fullNameStringOrig, Rank rank, boolean makeEmpty) {
-	    NonViralName<?> nameToBeFilled = nameToBeFilledOrig;
+	public void parseFullName(INonViralName nameToBeFilledOrig, String fullNameStringOrig, Rank rank, boolean makeEmpty) {
+	    INonViralName<?> nameToBeFilled = nameToBeFilledOrig;
 
 	    //TODO prol. etc.
 		boolean hasCheckRankProblem = false; //was rank guessed in a previous parsing process?
@@ -1017,7 +1018,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
         notToBeDeleted.add(relToKeep);
     }
 
-    private void handleHybridBits(NonViralName<?> nameToBeFilled) {
+    private void handleHybridBits(INonViralName<?> nameToBeFilled) {
 		//uninomial
 		String uninomial = CdmUtils.Nz(nameToBeFilled.getGenusOrUninomial());
 		boolean isUninomialHybrid = uninomial.startsWith(hybridSign);
@@ -1071,11 +1072,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @throws StringNotParsableException
 	 */
 	@Override
-	public void parseAuthors(NonViralName nonViralNameOrig, String authorString) throws StringNotParsableException{
-	    NonViralName<?> nonViralName = nonViralNameOrig;
+	public void parseAuthors(INonViralName nonViralNameOrig, String authorString) throws StringNotParsableException{
+	    INonViralName<?> nonViralName = nonViralNameOrig;
 	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
-		Class<? extends NonViralName> clazz = nonViralName.getClass();
+		Class clazz = nonViralName.getClass();
 		fullAuthors(authorString, authors, years, clazz);
 		nonViralName.setCombinationAuthorship(authors[0]);
 		nonViralName.setExCombinationAuthorship(authors[1]);
@@ -1093,12 +1094,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param fullNameString
 	 * @param authorString
 	 */
-	public void handleAuthors(NonViralName nameToBeFilledOrig, String fullNameString, String authorString) {
-	    NonViralName<?> nameToBeFilled = nameToBeFilledOrig;
-        TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
+	public void handleAuthors(INonViralName<?> nameToBeFilled, String fullNameString, String authorString) {
+	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
 		try {
-			Class<? extends NonViralName> clazz = nameToBeFilled.getClass();
+			Class<? extends INonViralName> clazz = nameToBeFilled.getClass();
 			fullAuthors(authorString, authors, years, clazz);
 		} catch (StringNotParsableException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.UnparsableAuthorPart);
@@ -1124,7 +1124,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @param string
 	 */
-	private Rank guessUninomialRank(NonViralName nameToBeFilled, String uninomial) {
+	private Rank guessUninomialRank(INonViralName nameToBeFilled, String uninomial) {
 		Rank result = Rank.GENUS();
 		if (nameToBeFilled.isInstanceOf(BotanicalName.class)){
 			if (false){
@@ -1182,7 +1182,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return array of Teams containing the Team[0],
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
+	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends INonViralName> clazz)
 			throws StringNotParsableException{
 		if (fullAuthorStringOrig == null || clazz == null){
 			return;
@@ -1399,7 +1399,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 
-	private void makeEmpty(NonViralName<?> nameToBeFilled){
+	private void makeEmpty(INonViralName<?> nameToBeFilled){
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setFullTitleCache(null, false);

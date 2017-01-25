@@ -428,7 +428,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		WriterDataHolder writer = handleWriter(state, reader, next);
 		taxon.addExtension(writer.extension);
 		// TODO what if taxonTitle comes later
-		taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : ((NonViralName)taxon.getName()).getNameCache();
+		taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : taxon.getName().getNameCache();
 		if (writer.extension != null) {
 			if (StringUtils.isBlank(taxonTitle)){
 				fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);

@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
@@ -68,7 +67,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -978,8 +977,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			logger.warn("Parent taxon is null. Missing name parts can not be taken from parent");
 			return;
 		}
-		NonViralName<?> parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
-		NonViralName<?> childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
+		INonViralName<?> parentName = parentTaxon.getName();
+		INonViralName<?> childName = childTaxon.getName();
 		fillMissingEpithets(parentName, childName);
 	}
 
@@ -991,7 +990,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param parentTaxon
 	 * @param childTaxon
 	 */
-	protected void fillMissingEpithets(NonViralName parentName, NonViralName childName) {
+	protected void fillMissingEpithets(INonViralName parentName, INonViralName childName) {
 		if (StringUtils.isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}

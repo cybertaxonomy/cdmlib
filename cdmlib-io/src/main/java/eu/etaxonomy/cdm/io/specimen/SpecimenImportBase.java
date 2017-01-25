@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -100,7 +101,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	protected TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
         TaxonNameBase<?, ?> taxonName = null;
-        SpecimenImportConfiguratorBase config = state.getConfig();
+        SpecimenImportConfiguratorBase<?,?> config = state.getConfig();
 
         //check atomised name data for rank
         //new name will be created
@@ -175,7 +176,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     }
 
 	 protected TaxonNameBase<?, ?> getBestMatchingName(String scientificName, java.util.Collection<TaxonNameBase> names, STATE state){
-	        List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<TaxonNameBase>();
+	        List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<>();
 	        for (TaxonNameBase name : names) {
 	            if(!name.getTaxa().isEmpty()){
 	                namesWithAcceptedTaxa.add(name);
@@ -192,7 +193,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            return namesWithAcceptedTaxa.iterator().next();
 	        }
 	        //no names with accepted taxa found -> check accepted taxa of synonyms
-	        List<Taxon> taxaFromSynonyms = new ArrayList<Taxon>();
+	        List<Taxon> taxaFromSynonyms = new ArrayList<>();
 	        for (TaxonNameBase name : names) {
 	            Set<TaxonBase> taxonBases = name.getTaxonBases();
 	            for (TaxonBase taxonBase : taxonBases) {
@@ -737,7 +738,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state: the ABCD import state
 	     */
 	    protected void addParentTaxon(Taxon taxon, STATE state, boolean preferredFlag, Classification classification){
-	        NonViralName<?>  nvname = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+	        INonViralName<?>  nvname = taxon.getName();
 	        Rank rank = nvname.getRank();
 	        Taxon genus =null;
 	        Taxon subgenus =null;

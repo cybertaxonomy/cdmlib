@@ -167,7 +167,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
 //		assertEquals("Number of synonyms should be 1", 3 /*TODO*/, synonyms.size());
 //		Synonym synonym = synonyms.iterator().next();
-//		assertEquals("Synonym name should be ", "Noctua atlantica", (CdmBase.deproxy(synonym.getName(), NonViralName.class )).getNameCache());
+//		assertEquals("Synonym name should be ", "Noctua atlantica", synonym.getName().getNameCache());
 //		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
 //		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
 //		TaxonDescription taxonDescription = descriptions.iterator().next();

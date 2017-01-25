@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -124,7 +125,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			if (isNotBlank(strType)){
 				if (strType.matches("Botanical Protologue")){
 					if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
-						NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+						INonViralName<?> nvn = taxon.getName();
 						nvn.setNomenclaturalReference(reference);
 						isNomRef = true;
 					}else{
@@ -138,7 +139,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 				//if reference equals in author and year we assume that it is the nom ref
 				//this information is usually only available for ICZN names
 				if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
-					NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+					INonViralName<?> nvn = taxon.getName();
 					String taxonAuthor = nvn.getAuthorshipCache();
 					String refAuthor = reference.getAuthorship().getNomenclaturalTitle();
 					Integer combYear = null;

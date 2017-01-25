@@ -93,17 +93,14 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     @Override
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
 
-
         String result = "";
         if (TaxonNameBase.class.isAssignableFrom(clazz)){
             result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
             result += String.format(" LEFT JOIN FETCH %s.relationsToThisName relTo LEFT JOIN FETCH relTo.relatedFrom ", beanAlias);
-            if (NonViralName.class.isAssignableFrom(clazz)){
-                result += String.format(" LEFT JOIN FETCH %s.combinationAuthorship ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorship ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.basionymAuthorship ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorship ", beanAlias);
-            }
+            result += String.format(" LEFT JOIN FETCH %s.combinationAuthorship ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorship ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.basionymAuthorship ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorship ", beanAlias);
         }
         if (TaxonBase.class.isAssignableFrom(clazz)){
             // TODO with the TaxonBase.getTaggedTtile() this is getting much more complicated

@@ -346,7 +346,7 @@ protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfigurat
                 DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
                 state.setDerivedUnitBase(derivedUnit);
                 derivedUnitFacade = item.getDerivedUnitFacade();
-                List<NonViralName> names = findExistingNames(((NonViralName)item.getScientificName()).getNameCache(), state);
+                List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
                 if (!names.isEmpty()){
                     findBestMatchingName(names, item);
                 }
@@ -656,15 +656,15 @@ private TaxonNameBase findBestMatchingNames(GbifResponse item, SpecimenImportSta
    //TODO
     if (item.getScientificName() != null){
 
-       List<NonViralName> names = findExistingNames(((NonViralName)item.getScientificName()).getNameCache(), state);
+       List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
        if (!names.isEmpty()){
-           NonViralName result = names.get(0);
+           NonViralName<?> result = names.get(0);
            Set<DeterminationEvent> detEvents = item.getDerivedUnitFacade().baseUnit().getDeterminations();
            for (DeterminationEvent event:detEvents){
-               if(((NonViralName)event.getTaxonName()).getNameCache().equals(result.getNameCache()) ){
+               if(event.getTaxonName().getNameCache().equals(result.getNameCache()) ){
                   event.setTaxonName(result);
                } else{
-                   names = findExistingNames(((NonViralName)event.getTaxonName()).getNameCache(), state);
+                   names = findExistingNames(event.getTaxonName().getNameCache(), state);
                    if (!names.isEmpty()){
                        event.setTaxonName(names.get(0));
                    }

@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -504,11 +505,11 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	if(allNodesOfClassification == null || allNodesOfClassification.isEmpty()){
     		return null;
     	}
-    	Map<String, List<TaxonNode>> sortedGenusMap = new HashMap<String, List<TaxonNode>>();
+    	Map<String, List<TaxonNode>> sortedGenusMap = new HashMap<>();
     	for(TaxonNode node:allNodesOfClassification){
     		final TaxonNode tn = node;
     		Taxon taxon = node.getTaxon();
-    		NonViralName name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+    		INonViralName<?> name = taxon.getName();
     		String genusOrUninomial = name.getGenusOrUninomial();
     		//if rank unknown split string and take first word
     		if(genusOrUninomial == null){
@@ -569,8 +570,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     			//take that taxonNode as parent and remove from list with all it possible children
     			//FIXME NPE for name
     			TaxonNameBase name = tNode.getTaxon().getName();
-				NonViralName nonViralName = CdmBase.deproxy(name, NonViralName.class);
-    			if(nonViralName.getNameCache().equalsIgnoreCase(genus)){
+    			if(name.getNameCache().equalsIgnoreCase(genus)){
     				TaxonNode clone = (TaxonNode) tNode.clone();
     				if(!tNode.hasChildNodes()){
     					//FIXME remove classification
@@ -882,26 +882,22 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         TaxonNameBase<?,?> name = taxonBase.getName();
         result.setNameUuid(name.getUuid());
         result.setNameLabel(name.getTitleCache());
-        if (name.isInstanceOf(NonViralName.class)){
-            NonViralName<?> nvn = CdmBase.deproxy(name, NonViralName.class);
+        result.setNameWithoutAuthor(name.getNameCache());
+        result.setGenusOrUninomial(name.getGenusOrUninomial());
+        result.setInfraGenericEpithet(name.getInfraGenericEpithet());
+        result.setSpeciesEpithet(name.getSpecificEpithet());
+        result.setInfraSpecificEpithet(name.getInfraSpecificEpithet());
 
-            result.setNameWithoutAuthor(nvn.getNameCache());
-            result.setGenusOrUninomial(nvn.getGenusOrUninomial());
-            result.setInfraGenericEpithet(nvn.getInfraGenericEpithet());
-            result.setSpeciesEpithet(nvn.getSpecificEpithet());
-            result.setInfraSpecificEpithet(nvn.getInfraSpecificEpithet());
+        result.setAuthorship(name.getAuthorshipCache());
 
-            result.setAuthorship(nvn.getAuthorshipCache());
-
-            Rank rank = name.getRank();
-            if (rank != null){
-                result.setRankUuid(rank.getUuid());
-                String rankLabel = rank.getAbbreviation();
-                if (StringUtils.isBlank(rankLabel)){
-                    rankLabel = rank.getLabel();
-                }
-                result.setRankLabel(rankLabel);
+        Rank rank = name.getRank();
+        if (rank != null){
+            result.setRankUuid(rank.getUuid());
+            String rankLabel = rank.getAbbreviation();
+            if (StringUtils.isBlank(rankLabel)){
+                rankLabel = rank.getLabel();
             }
+            result.setRankLabel(rankLabel);
         }
 
         boolean recursive = false;

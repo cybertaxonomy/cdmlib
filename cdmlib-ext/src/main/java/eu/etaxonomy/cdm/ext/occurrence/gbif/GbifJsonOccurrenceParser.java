@@ -19,9 +19,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
@@ -51,6 +48,8 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Utility class which provides the functionality to convert a JSON response
@@ -284,13 +283,13 @@ public class GbifJsonOccurrenceParser {
                             }
                         }
                         if (record.has(GENUS)){
-                            ((NonViralName)name).setGenusOrUninomial(record.getString(GENUS));
+                            name.setGenusOrUninomial(record.getString(GENUS));
                         }
                         if (record.has(SPECIFIC_EPITHET)){
-                            ((NonViralName)name).setSpecificEpithet(record.getString(SPECIFIC_EPITHET));
+                            name.setSpecificEpithet(record.getString(SPECIFIC_EPITHET));
                         }
                         if (record.has(INFRASPECIFIC_EPITHET)){
-                            ((NonViralName)name).setInfraSpecificEpithet(record.getString(INFRASPECIFIC_EPITHET));
+                            name.setInfraSpecificEpithet(record.getString(INFRASPECIFIC_EPITHET));
                         }
                         if (record.has(SCIENTIFIC_NAME)){
                             name.setTitleCache(record.getString(SCIENTIFIC_NAME), true);

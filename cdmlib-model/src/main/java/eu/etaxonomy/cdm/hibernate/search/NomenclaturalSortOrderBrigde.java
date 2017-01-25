@@ -17,6 +17,7 @@ import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -53,12 +54,9 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
     final static int MAX_FIELD_LENGTH = 50; // used to pab the strings, should be 255 set to 50 for debugging FIXME
     public final static String NAME_SORT_FIELD_NAME = "nomenclaturalOrder__sort";
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.hibernate.search.AbstractClassBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
-     */
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        NonViralName<?> n = null;
+        INonViralName<?> n = null;
 
         if(value instanceof TaxonBase) {
             try {
@@ -72,7 +70,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
             }
 
         }else if(value instanceof TaxonNameBase){
-            n = (NonViralName)value;
+            n = (INonViralName<?>)value;
         }
         if(n == null) {
             logger.error("Unsupported type: " + value.getClass().getName());

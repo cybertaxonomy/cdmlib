@@ -323,6 +323,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
          return HibernateProxyHelper.deproxy(object, clazz);
      }
 
+     @Override
      public boolean isInstanceOf(Class<? extends CdmBase> clazz) throws ClassCastException {
          return HibernateProxyHelper.isInstanceOf(this, clazz);
      }

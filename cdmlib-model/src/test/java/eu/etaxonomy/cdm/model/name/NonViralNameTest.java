@@ -374,7 +374,7 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
 
 
-		NonViralName<?> clone = (NonViralName)nonViralName1.clone();
+		INonViralName<?> clone = (INonViralName)nonViralName1.clone();
 		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
 		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
 		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());

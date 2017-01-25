@@ -438,6 +438,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
+    @Override
     public void addExtension(String value, ExtensionType extensionType){
         Extension.NewInstance(this, value, extensionType);
     }

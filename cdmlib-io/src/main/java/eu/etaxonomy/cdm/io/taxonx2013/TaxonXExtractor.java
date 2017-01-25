@@ -53,9 +53,9 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -770,7 +770,7 @@ public class TaxonXExtractor {
      * @param similarityAuthor
      * @return
      */
-    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
+    protected boolean askIfReuseBestMatchingTaxon(INonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
 
