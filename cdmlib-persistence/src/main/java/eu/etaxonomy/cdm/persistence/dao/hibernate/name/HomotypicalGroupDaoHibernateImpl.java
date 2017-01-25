@@ -32,9 +32,6 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 		super(HomotypicalGroup.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao#getTypeDesignations(eu.etaxonomy.cdm.model.name.HomotypicalGroup, java.lang.Class, eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase, java.lang.Integer, java.lang.Integer, java.util.List)
-	 */
 	@Override
 	public <T extends TypeDesignationBase> List<T> getTypeDesignations(
 			HomotypicalGroup homotypicalGroup, Class<T> type,
@@ -71,7 +68,9 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 				query.setFirstResult(0);
 			}
 		}
-		return defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
+		@SuppressWarnings("unchecked")
+        List<T> result = defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
+		return result;
 	}
 
 
