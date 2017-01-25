@@ -60,10 +60,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	private static final long serialVersionUID = 4516625507432071817L;
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
-//    @XmlTransient
-//    @Transient
-//	protected INameCacheStrategy<ViralName> cacheStrategy;
-
 	@XmlElement(name = "Acronym")
 	@Field
     //TODO Val #3379
@@ -84,7 +80,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
 	 */
-	public ViralName(Rank rank) {
+	private ViralName(Rank rank) {
 		super(rank);
 	}
 
@@ -99,7 +95,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
     	return allFields;
     }
 
-//*************************
 
 	//********* METHODS **************************************/
 
@@ -109,7 +104,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	#ViralName(Rank)
 	 */
-	public static ViralName NewInstance(Rank rank){
+	public static ViralName NewViralInstance(Rank rank){
 		return new ViralName(rank);
 	}
 
@@ -128,24 +123,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	public void setAcronym(String acronym){
 		this.acronym = StringUtils.isBlank(acronym)? null : acronym;
 	}
-
-	/**
-	 * Generates and returns the string with the scientific name of <i>this</i>
-	 * viral taxon name. This string may be stored in the inherited
-	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
-	 * This method overrides the generic and inherited
-	 * method from {@link TaxonNameBase TaxonNameBase} .
-	 *
-	 * @return  the string with the composed name of <i>this</i> viral taxon name with authorship (and maybe year)
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-	 * @see  	TaxonNameBase#generateTitle()
-	 */
-//	@Override
-//	public String generateTitle(){
-//		logger.warn("not yet implemented");
-//		return this.toString();
-//	}
 
 	@Override
 	public String generateFullTitle(){
@@ -187,30 +164,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICVCN;
 	}
-
-
-	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
-	 * several strings corresponding to <i>this</i> viral taxon name.
-	 *
-	 * @return  the cache strategy used for <i>this</i> viral taxon name
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-	 */
-//	@Override
-//	@Transient
-//	public INameCacheStrategy getCacheStrategy() {
-//		return cacheStrategy;
-//	}
-
-
-	/**
-	 * @see  #getCacheStrategy()
-	 */
-//	@Override
-//	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
-//		this.cacheStrategy = cacheStrategy;
-//	}
 
 
 //*********************** CLONE ********************************************************/

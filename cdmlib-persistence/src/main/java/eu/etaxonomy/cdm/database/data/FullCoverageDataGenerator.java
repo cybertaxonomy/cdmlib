@@ -863,7 +863,7 @@ public class FullCoverageDataGenerator {
 				getReference(), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
 
-		ViralName viralName = ViralName.NewInstance(Rank.GENUS());
+		ViralName viralName = ViralName.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
 		handleIdentifiableEntity(viralName);
 
