@@ -73,9 +73,20 @@
         isRunning = true;
 
         var url = $(this).attr('href');
+        tokens = url.match(/(http:\/\/)(.*)(@)(.*$)/)
+        login = null;
+        if(tokens){
+            login = tokens[2];
+            url = tokens[1] + tokens[4];
+        }
         $.ajax({
           url: addFileExtension(url, 'json'),
           dataType: "jsonp",
+          beforeSend: function(xhr) { 
+              if(login){
+                  xhr.setRequestHeader("Authorization", "Basic " + btoa(login));                   
+              }
+          },
           success: function(data){
             monitorProgess(data);
           }
