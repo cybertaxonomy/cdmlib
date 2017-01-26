@@ -44,7 +44,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class BacterialName extends NonViralName<BacterialName> implements Cloneable{
+public class BacterialName
+        extends NonViralName<BacterialName>
+        implements IBacterialName{
 	private static final long serialVersionUID = -7641841279209976443L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BacterialName.class);
@@ -135,14 +137,16 @@ public class BacterialName extends NonViralName<BacterialName> implements Clonea
 	 * @return  the string containing the complete subgenus' authorship
 	 * 			included in <i>this</i> bacterial taxon name
 	 */
-	public String getSubGenusAuthorship(){
+	@Override
+    public String getSubGenusAuthorship(){
 		return this.subGenusAuthorship;
 	}
 
 	/**
 	 * @see  #getSubGenusAuthorship()
 	 */
-	public void setSubGenusAuthorship(String subGenusAuthorship){
+	@Override
+    public void setSubGenusAuthorship(String subGenusAuthorship){
 		this.subGenusAuthorship = subGenusAuthorship;
 	}
 
@@ -162,14 +166,16 @@ public class BacterialName extends NonViralName<BacterialName> implements Clonea
 	 *
 	 * @return  the string with the source of the approbation for <i>this</i> bacterial taxon name
 	 */
-	public String getNameApprobation(){
+	@Override
+    public String getNameApprobation(){
 		return this.nameApprobation;
 	}
 
 	/**
 	 * @see  #getNameApprobation()
 	 */
-	public void setNameApprobation(String nameApprobation){
+	@Override
+    public void setNameApprobation(String nameApprobation){
 		this.nameApprobation = nameApprobation;
 	}
 

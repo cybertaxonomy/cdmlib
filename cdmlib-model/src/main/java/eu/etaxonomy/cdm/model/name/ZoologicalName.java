@@ -60,7 +60,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class ZoologicalName extends NonViralName<ZoologicalName> implements Cloneable{
+public class ZoologicalName
+            extends NonViralName<ZoologicalName>
+            implements IZoologicalName{
 	private static final long serialVersionUID = 845745609734814484L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalName.class);
@@ -293,13 +295,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 *
 	 * @return  the string containing the breed name for <i>this</i> zoological taxon name
 	 */
-	public String getBreed(){
+	@Override
+    public String getBreed(){
 		return this.breed;
 	}
 	/**
 	 * @see  #getBreed()
 	 */
-	public void setBreed(String breed){
+	@Override
+    public void setBreed(String breed){
 		this.breed = StringUtils.isBlank(breed) ? null : breed;
 	}
 
@@ -312,13 +316,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * @return  the integer representing the publication year for <i>this</i> zoological taxon name
 	 * @see  	#getOriginalPublicationYear()
 	 */
-	public Integer getPublicationYear() {
+	@Override
+    public Integer getPublicationYear() {
 		return publicationYear;
 	}
 	/**
 	 * @see  #getPublicationYear()
 	 */
-	public void setPublicationYear(Integer publicationYear) {
+	@Override
+    public void setPublicationYear(Integer publicationYear) {
 		this.publicationYear = publicationYear;
 	}
 
@@ -335,13 +341,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * 			species epithet corresponding to <i>this</i> zoological taxon name
 	 * @see  	#getPublicationYear()
 	 */
-	public Integer getOriginalPublicationYear() {
+	@Override
+    public Integer getOriginalPublicationYear() {
 		return originalPublicationYear;
 	}
 	/**
 	 * @see  #getOriginalPublicationYear()
 	 */
-	public void setOriginalPublicationYear(Integer originalPublicationYear) {
+	@Override
+    public void setOriginalPublicationYear(Integer originalPublicationYear) {
 		this.originalPublicationYear = originalPublicationYear;
 	}
 

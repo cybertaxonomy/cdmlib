@@ -50,7 +50,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class BotanicalName extends NonViralName<BotanicalName> implements Cloneable /*, IMergable*/ {
+public class BotanicalName
+            extends NonViralName<BotanicalName>
+            implements IBotanicalName /*, IMergable*/ {
 	private static final long serialVersionUID = 6818651572463497727L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
@@ -286,6 +288,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 *
 	 * @return  the boolean value of the isAnamorphic flag
 	 */
+	@Override
 	public boolean isAnamorphic(){
 		return this.anamorphic;
 	}
@@ -293,7 +296,8 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	/**
 	 * @see  #isAnamorphic()
 	 */
-	public void setAnamorphic(boolean anamorphic){
+	@Override
+    public void setAnamorphic(boolean anamorphic){
 		this.anamorphic = anamorphic;
 	}
 
