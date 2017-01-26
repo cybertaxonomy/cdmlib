@@ -17,7 +17,7 @@ package eu.etaxonomy.cdm.model.name;
  * @date 26.01.2017
  *
  */
-public interface IZoologicalName extends INonViralName<ZoologicalName> {
+public interface IZoologicalName extends INonViralName {
 
     /**
      * Returns the breed name string for <i>this</i> animal (zoological taxon name).

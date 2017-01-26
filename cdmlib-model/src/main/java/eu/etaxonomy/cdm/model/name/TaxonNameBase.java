@@ -150,7 +150,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
-            implements ITaxonNameBase<T>, INonViralName<T>,
+            implements ITaxonNameBase, INonViralName,
                 IParsable, IRelated, IMatchable, Cloneable {
 
     private static final long serialVersionUID = -4530368639601532116L;
@@ -1848,7 +1848,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  				#addBasionym(TaxonNameBase, String)
      */
     @Override
-    public void addBasionym(T basionym){
+    public void addBasionym(TaxonNameBase basionym){
         addBasionym(basionym, null, null, null);
     }
     /**
@@ -1866,7 +1866,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  					#addBasionym(TaxonNameBase)
      */
     @Override
-    public NameRelationship addBasionym(T basionym, Reference citation, String microcitation, String ruleConsidered){
+    public NameRelationship addBasionym(TaxonNameBase basionym, Reference citation, String microcitation, String ruleConsidered){
         if (basionym != null){
             return basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
         }else{
@@ -1906,7 +1906,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
     @Override
-    public void addReplacedSynonym(T replacedSynonym, Reference citation, String microcitation, String ruleConsidered){
+    public void addReplacedSynonym(TaxonNameBase replacedSynonym, Reference citation, String microcitation, String ruleConsidered){
         if (replacedSynonym != null){
             replacedSynonym.addRelationshipToName(this, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, ruleConsidered);
         }
@@ -3056,7 +3056,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 // ********************** INTERFACES ********************************************/
 
-    public static <U extends TaxonNameBase> TaxonNameBase castAndDeproxy(ITaxonNameBase<U> tnb){
+    public static TaxonNameBase castAndDeproxy(ITaxonNameBase tnb){
         return deproxy(tnb, TaxonNameBase.class);
     }
 

@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.name;
  * @date 26.01.2017
  *
  */
-public interface IBacterialName extends INonViralName<BacterialName> {
+public interface IBacterialName extends INonViralName {
 
     /**
      * Returns the string containing the authorship with the year and details

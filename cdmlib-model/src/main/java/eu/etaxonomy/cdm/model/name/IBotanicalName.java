@@ -18,7 +18,7 @@ package eu.etaxonomy.cdm.model.name;
  * @date 26.01.2017
  *
  */
-public interface IBotanicalName extends INonViralName<BotanicalName> {
+public interface IBotanicalName extends INonViralName {
 
     /**
      * Returns the boolean value of the flag indicating whether the specimen

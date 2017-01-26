@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
  * @date 21.01.2017
  *
  */
-public interface INonViralName<T extends TaxonNameBase<?,?>> extends ITaxonNameBase<T>{
+public interface INonViralName extends ITaxonNameBase{
 
     /**
      * Creates a new {@link HybridRelationship#HybridRelationship(TaxonNameBase, TaxonNameBase, HybridRelationshipType, String) hybrid relationship}

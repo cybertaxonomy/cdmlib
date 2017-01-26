@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  * @date 21.01.2017
  *
  */
-public interface ITaxonNameBase<T extends TaxonNameBase<?,?>>
+public interface ITaxonNameBase
         extends IIdentifiableEntity, IParsable, IRelated, IMatchable, Cloneable{
 
     public String generateFullTitle();
@@ -274,7 +274,7 @@ public interface ITaxonNameBase<T extends TaxonNameBase<?,?>>
      * @see                 #getBasionym()
      * @see                 #addBasionym(TaxonNameBase, String)
      */
-    public void addBasionym(T basionym);
+    public void addBasionym(TaxonNameBase basionym);
 
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -290,7 +290,7 @@ public interface ITaxonNameBase<T extends TaxonNameBase<?,?>>
      * @see                     #getBasionym()
      * @see                     #addBasionym(TaxonNameBase)
      */
-    public NameRelationship addBasionym(T basionym, Reference citation, String microcitation, String ruleConsidered);
+    public NameRelationship addBasionym(TaxonNameBase basionym, Reference citation, String microcitation, String ruleConsidered);
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
@@ -311,7 +311,7 @@ public interface ITaxonNameBase<T extends TaxonNameBase<?,?>>
      * @see                     #addBasionym(TaxonNameBase)
      */
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
-    public void addReplacedSynonym(T replacedSynonym, Reference citation, String microcitation, String ruleConsidered);
+    public void addReplacedSynonym(TaxonNameBase replacedSynonym, Reference citation, String microcitation, String ruleConsidered);
 
     /**
      * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
