@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * This class corresponds to: NameViral according to the ABCD schema.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:07:02
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -56,7 +55,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>> implements Cloneable {
+public class ViralName
+            extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>
+            implements IViralName {
 	private static final long serialVersionUID = 4516625507432071817L;
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
@@ -114,13 +115,15 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 *
 	 * @return  the string containing the accepted acronym of <i>this</i> viral taxon name
 	 */
-	public String getAcronym(){
+	@Override
+    public String getAcronym(){
 		return this.acronym;
 	}
 	/**
 	 * @see  #getAcronym()
 	 */
-	public void setAcronym(String acronym){
+	@Override
+    public void setAcronym(String acronym){
 		this.acronym = StringUtils.isBlank(acronym)? null : acronym;
 	}
 
