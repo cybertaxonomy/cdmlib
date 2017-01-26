@@ -58,7 +58,9 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 @Audited
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
 @BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
-public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> implements Cloneable{
+public class NameRelationship
+            extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType>
+            implements Cloneable{
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);
 
@@ -214,17 +216,11 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 
 	@Override
     protected void setRelatedFrom(TaxonNameBase relatedFrom) {
-		/*if (relatedFrom == null){
-			this.deletedObjects.add(this.relatedFrom);
-		}*/
 		this.relatedFrom = relatedFrom;
 	}
 
 	@Override
     protected void setRelatedTo(TaxonNameBase relatedTo) {
-		/*if (relatedTo == null){
-			this.deletedObjects.add(this.relatedTo);
-		}*/
 		this.relatedTo = relatedTo;
 	}
 

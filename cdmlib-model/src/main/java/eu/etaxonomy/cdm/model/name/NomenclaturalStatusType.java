@@ -816,8 +816,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * Returns the nomenclatural status type identified through its label
 	 * abbreviation. Preliminary implementation for BotanicalNameParser.
 	 *
-	 * @param	statusAbbreviation	the label abbreviation
-	 * @param name
+	 * @param statusAbbreviation	the label abbreviation
+	 * @param name                  the taxon name
 	 * @return  					the nomenclatural status type
 	 *
 	 */
