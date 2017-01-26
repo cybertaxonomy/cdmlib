@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:39
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -53,6 +52,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
+
 @CorrectEpithetsForRank(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
