@@ -39,7 +39,7 @@ public class DatabaseInitialiser {
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
 		IJournal sec = ReferenceFactory.newJournal();
-		INonViralName<?> nvName = BotanicalName.NewInstance(Rank.SPECIES());
+		INonViralName nvName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon tax = Taxon.NewInstance(nvName, (Reference)sec);
 		nvName.setNameCache(speciesname);
 		nvName.setTitleCache(speciesname, true);

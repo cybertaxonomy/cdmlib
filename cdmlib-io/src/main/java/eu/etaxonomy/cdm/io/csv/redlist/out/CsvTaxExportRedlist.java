@@ -108,7 +108,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			for (TaxonNode node : filteredNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				CsvTaxRecordRedlist record = assembleRecord(state);
-				INonViralName<?> name = taxon.getName();
+				INonViralName name = taxon.getName();
 				Classification classification = node.getClassification();
 				config.setClassificationTitleCache(classification.getTitleCache());
 				if (! this.recordExists(taxon)){
@@ -219,7 +219,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		for (Taxon misappliedName : misappliedNames ){
 //			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-			INonViralName<?> name = misappliedName.getName();
+			INonViralName name = misappliedName.getName();
 
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config);
@@ -244,7 +244,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
-			INonViralName<?> name, Taxon acceptedTaxon, Classification classification,
+			INonViralName name, Taxon acceptedTaxon, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvTaxExportConfiguratorRedlist config) {
 
@@ -278,7 +278,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 
 	private void handleTaxonomicStatus(
 			CsvTaxRecordRedlist record,
-			INonViralName<?> name,
+			INonViralName name,
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
@@ -314,7 +314,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			if (type == null){ // should not happen
 				type = SynonymType.SYNONYM_OF();
 			}
-			INonViralName<?> name = synonym.getName();
+			INonViralName name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());
 		}
 		record.setSynonyms(synonymLabels);

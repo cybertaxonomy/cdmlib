@@ -494,7 +494,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}
 
 		//name
-		INonViralName<?> name;
+		INonViralName name;
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (StringUtils.isNotBlank(commonDetermination.fullName)){
@@ -565,7 +565,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 
 
-	private void setAuthorship(INonViralName<?> name, String author, INonViralNameParser<NonViralName> parser) {
+	private void setAuthorship(INonViralName name, String author, INonViralNameParser<NonViralName> parser) {
 		if (name instanceof BotanicalName || name instanceof ZoologicalName){
 			try {
 				parser.parseAuthors(name, author);

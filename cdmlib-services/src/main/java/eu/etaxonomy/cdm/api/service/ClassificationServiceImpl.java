@@ -509,7 +509,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	for(TaxonNode node:allNodesOfClassification){
     		final TaxonNode tn = node;
     		Taxon taxon = node.getTaxon();
-    		INonViralName<?> name = taxon.getName();
+    		INonViralName name = taxon.getName();
     		String genusOrUninomial = name.getGenusOrUninomial();
     		//if rank unknown split string and take first word
     		if(genusOrUninomial == null){

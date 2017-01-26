@@ -96,7 +96,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
 
-				INonViralName<?> name = taxon.getName();
+				INonViralName name = taxon.getName();
 				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
 				Classification classification = node.getClassification();
@@ -142,7 +142,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			if (type == null){ // should not happen
 				type = SynonymType.SYNONYM_OF();
 			}
-			INonViralName<?> name = synonym.getName();
+			INonViralName name = synonym.getName();
 			//????
 			Taxon parent = null;
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
@@ -160,7 +160,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		for (Taxon misappliedName : misappliedNames ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-			INonViralName<?> name = misappliedName.getName();
+			INonViralName name = misappliedName.getName();
 			//????
 			Taxon parent = null;
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
@@ -185,7 +185,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param config
 	 * @param type
 	 */
-	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, INonViralName<?> name,
+	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, INonViralName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, DwcaTaxExportConfigurator config) {
 		record.setId(taxonBase.getId());
@@ -324,7 +324,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param isProParte
 	 */
 	private void handleTaxonomicStatus(DwcaTaxRecord record,
-			INonViralName<?> name, RelationshipTermBase<?> type,
+			INonViralName name, RelationshipTermBase<?> type,
 			boolean isProParte, boolean isPartial) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
@@ -353,7 +353,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param record
 	 * @param name
 	 */
-	private void handleUninomialOrGenus(DwcaTaxRecord record, INonViralName<?> name) {
+	private void handleUninomialOrGenus(DwcaTaxRecord record, INonViralName name) {
 		//epethita
 		String firstEpi = name.getGenusOrUninomial();
 		if (!StringUtils.isBlank(firstEpi)){
@@ -391,7 +391,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param name
 	 */
 	private void handleNomStatus(DwcaTaxRecord record, TaxonBase<?> taxon,
-			INonViralName<?> name) {
+			INonViralName name) {
 		int nStatus = name.getStatus().size();
 		if (nStatus > 0){
 			if (name.getStatus().size()> 1){

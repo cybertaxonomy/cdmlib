@@ -977,8 +977,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			logger.warn("Parent taxon is null. Missing name parts can not be taken from parent");
 			return;
 		}
-		INonViralName<?> parentName = parentTaxon.getName();
-		INonViralName<?> childName = childTaxon.getName();
+		INonViralName parentName = parentTaxon.getName();
+		INonViralName childName = childTaxon.getName();
 		fillMissingEpithets(parentName, childName);
 	}
 

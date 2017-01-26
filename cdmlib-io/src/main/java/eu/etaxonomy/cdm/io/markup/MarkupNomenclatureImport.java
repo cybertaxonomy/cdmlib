@@ -105,7 +105,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			} else if (isEndingElement(next, NAME_TYPE)) {
 				state.setNameType(false);
 			} else if (isStartingElement(next, NOM)) {
-				INonViralName<?> name = handleNom(state, reader, next, homotypicalGroup);
+				INonViralName name = handleNom(state, reader, next, homotypicalGroup);
 				homotypicalGroup = name.getHomotypicalGroup();
 				hasNom = true;
 			} else if (isStartingElement(next, NAME_TYPE)) {
@@ -407,7 +407,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrankStr
 	 */
 	private void makeRankDecision(MarkupImportState state,
-			Map<String, String> nameMap, INonViralName<?> name, XMLEvent event,
+			Map<String, String> nameMap, INonViralName name, XMLEvent event,
 			String infrankStr) {
 		// TODO ranks
 		for (String key : nameMap.keySet()) {
@@ -488,7 +488,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, INonViralName<?> name,
+	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, INonViralName name,
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
@@ -575,7 +575,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void handleCitation(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, INonViralName<?> name, Map<String, String> nameMap) throws XMLStreamException {
+			XMLEvent parentEvent, INonViralName name, Map<String, String> nameMap) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		state.setCitation(true);
@@ -633,7 +633,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	}
 
-	private void doCitation(MarkupImportState state, INonViralName<?> name,
+	private void doCitation(MarkupImportState state, INonViralName name,
 			String classValue, Reference reference, String microCitation,
 			XMLEvent parentEvent) {
 		if (PUBLICATION.equalsIgnoreCase(classValue)) {
@@ -665,7 +665,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void testRankAuthorConsistency(INonViralName<?> name, XMLEvent event,
+	private void testRankAuthorConsistency(INonViralName name, XMLEvent event,
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() == null) {
 			return;

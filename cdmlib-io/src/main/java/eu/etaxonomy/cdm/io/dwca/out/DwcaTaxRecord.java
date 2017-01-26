@@ -409,7 +409,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public String getScientificNameId() {
 		return scientificNameId.getId();
 	}
-	public void setScientificNameId(ITaxonNameBase<?> scientificNameId) {
+	public void setScientificNameId(ITaxonNameBase scientificNameId) {
 		this.scientificNameId.setId(scientificNameId);
 	}
 

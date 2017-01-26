@@ -738,7 +738,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state: the ABCD import state
 	     */
 	    protected void addParentTaxon(Taxon taxon, STATE state, boolean preferredFlag, Classification classification){
-	        INonViralName<?>  nvname = taxon.getName();
+	        INonViralName  nvname = taxon.getName();
 	        Rank rank = nvname.getRank();
 	        Taxon genus =null;
 	        Taxon subgenus =null;

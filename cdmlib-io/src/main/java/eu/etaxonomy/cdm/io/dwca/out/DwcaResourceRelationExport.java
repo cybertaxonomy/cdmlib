@@ -121,7 +121,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 
 				//Name relationship
 				//TODO
-				INonViralName<?> name = taxon.getName();
+				INonViralName name = taxon.getName();
 				if (name == null){
 					String message = "There is a taxon node without taxon: " + node.getId();
 					logger.warn(message);

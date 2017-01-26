@@ -770,7 +770,7 @@ public class TaxonXExtractor {
      * @param similarityAuthor
      * @return
      */
-    protected boolean askIfReuseBestMatchingTaxon(INonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
+    protected boolean askIfReuseBestMatchingTaxon(INonViralName taxonnamebase2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
 

@@ -157,7 +157,7 @@ public class CsvDemoExport extends CsvDemoBase {
         for (TaxonNode node : result){
             Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
             CsvDemoRecord record = assembleRecord(state);
-            INonViralName<?> name = taxon.getName();
+            INonViralName name = taxon.getName();
             config.setClassificationTitleCache(classification.getTitleCache());
             if (! this.recordExists(taxon)){
                 handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
@@ -214,7 +214,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    		for (TaxonNode node : result){
 	    			Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 	    			CsvDemoRecord record = assembleRecord(state);
-	    			INonViralName<?> name = taxon.getName();
+	    			INonViralName name = taxon.getName();
 	    			//	                Classification classification = node.getClassification();
 	    			config.setClassificationTitleCache(classification.getTitleCache());
 	    			if (! this.recordExists(taxon)){
@@ -373,7 +373,7 @@ public class CsvDemoExport extends CsvDemoBase {
 //		for (Taxon misappliedName : misappliedNames ){
 ////			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 //			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-//			INonViralName<?> name = misappliedName.getName();
+//			INonViralName name = misappliedName.getName();
 //
 //			if (! this.recordExists(misappliedName)){
 //				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
@@ -402,7 +402,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvDemoRecord record, TaxonBase<?> taxonBase,
-			INonViralName<?> name, Classification classification,
+			INonViralName name, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 
@@ -522,7 +522,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 */
 	private void handleTaxonomicStatus(
 			CsvDemoRecord record,
-			INonViralName<?> name,
+			INonViralName name,
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
@@ -569,7 +569,7 @@ public class CsvDemoExport extends CsvDemoBase {
 			if (type == null){ // should not happen
 				type = SynonymType.SYNONYM_OF();
 			}
-			INonViralName<?> name = synonym.getName();
+			INonViralName name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());
 		}
 		record.setSynonyms(synonymLabels);

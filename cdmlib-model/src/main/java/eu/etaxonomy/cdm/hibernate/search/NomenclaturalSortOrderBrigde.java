@@ -56,7 +56,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
 
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        INonViralName<?> n = null;
+        INonViralName n = null;
 
         if(value instanceof TaxonBase) {
             try {
@@ -70,7 +70,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
             }
 
         }else if(value instanceof TaxonNameBase){
-            n = (INonViralName<?>)value;
+            n = (INonViralName)value;
         }
         if(n == null) {
             logger.error("Unsupported type: " + value.getClass().getName());

@@ -103,7 +103,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 				}
 
 				//type specimen
-				INonViralName<?> nvn = taxon.getName();
+				INonViralName nvn = taxon.getName();
 				handleTypeName(writer, taxon, nvn, metaRecord, config);
 				for (Synonym synonym : taxon.getSynonyms()){
 					handleTypeName(writer, synonym, nvn, metaRecord, config);
@@ -139,7 +139,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @return
 	 */
 	private Set<TypeDesignationBase> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase,
-	        INonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
+	        INonViralName nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
 		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);

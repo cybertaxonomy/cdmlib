@@ -361,7 +361,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		if (entity instanceof NonViralName ){
 
 			try{
-				INonViralName<?> nvn = (INonViralName<?>) entity;
+				INonViralName nvn = (INonViralName) entity;
 				if (!nvn.isProtectedNameCache()){
 				    nvn.setProtectedNameCache(true);
 					oldNameCache = nvn.getNameCache();
@@ -386,7 +386,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 		setOtherCachesNull(entity);
 		String newTitleCache= null;
-		INonViralName<?> nvn = null; //TODO find better solution
+		INonViralName nvn = null; //TODO find better solution
 		try{
 			if (entity instanceof NonViralName){
 				nvn = (INonViralName) entity;

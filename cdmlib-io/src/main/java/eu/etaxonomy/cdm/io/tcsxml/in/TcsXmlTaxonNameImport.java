@@ -369,7 +369,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			Namespace ns = elCanonicalAuthorship.getNamespace();
 
 			if (name instanceof NonViralName){
-				INonViralName<?> nonViralName = name;
+				INonViralName nonViralName = name;
 
 				String childName = "Simple";
 				boolean obligatory = true;

@@ -322,7 +322,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			return "";
 		}
 
-		INonViralName<?> name = taxon.getName();
+		INonViralName name = taxon.getName();
 		String strGenusName = name.getGenusOrUninomial();
 
 		String normalized = normalizeKeyString(strGoto, location);
@@ -389,7 +389,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		Taxon taxon = state.getCurrentTaxon();
 		String num = state.getCurrentTaxonNum();
 
-		INonViralName<?> nvn = taxon.getName();
+		INonViralName nvn = taxon.getName();
 		String nameString = nvn.getNameCache();
 		nameString = normalizeKeyString(nameString, event.getLocation());
         nameString = removeTrailingDot(nameString);

@@ -1260,7 +1260,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Taxon taxon = null;
 		Element elTaxonName = elScope.getChild("TaxonName", sddNamespace);
 		String ref = elTaxonName.getAttributeValue("ref");
-		INonViralName<?> nonViralName = taxonNameBases.get(ref);
+		INonViralName nonViralName = taxonNameBases.get(ref);
 
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());

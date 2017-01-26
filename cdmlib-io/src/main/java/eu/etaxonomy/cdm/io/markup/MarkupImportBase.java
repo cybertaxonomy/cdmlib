@@ -1149,7 +1149,7 @@ public abstract class MarkupImportBase  {
 	}
 
 	protected void handleFullName(MarkupImportState state, XMLEventReader reader,
-			INonViralName<?> name, XMLEvent next) throws XMLStreamException {
+			INonViralName name, XMLEvent next) throws XMLStreamException {
 		String fullNameStr;
 		Map<String, Attribute> attrs = getAttributes(next);
 		String rankStr = getAndRemoveRequiredAttributeValue(next,
