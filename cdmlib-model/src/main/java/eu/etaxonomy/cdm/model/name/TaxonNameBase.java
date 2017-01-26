@@ -141,7 +141,9 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "hybridFormula",
     "monomHybrid",
     "binomHybrid",
-    "trinomHybrid"
+    "trinomHybrid",
+
+    "acronym"
 })
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
@@ -150,7 +152,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
-            implements ITaxonNameBase, INonViralName,
+            implements ITaxonNameBase, INonViralName, IViralName,
                 IParsable, IRelated, IMatchable, Cloneable {
 
     private static final long serialVersionUID = -4530368639601532116L;
@@ -436,6 +438,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @CacheUpdate("nameCache")
     private boolean trinomHybrid = false;
 
+// ViralName attributes ************************* /
+
+    @XmlElement(name = "Acronym")
+    @Field
+    //TODO Val #3379
+//  @NullOrNotEmpty
+    @Column(length=255)
+    private String acronym;
+
 // *************** FACTORY METHODS ********************************/
 
     /**
@@ -476,6 +487,17 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
         return new NonViralName(rank, homotypicalGroup);
+    }
+
+
+    /**
+     * Creates a new viral taxon name instance only containing its {@link Rank rank}.
+     *
+     * @param   rank  the rank to be assigned to <i>this</i> viral taxon name
+     * @see     #ViralName(Rank)
+     */
+    public static ViralName NewViralInstance(Rank rank){
+        return new ViralName(rank);
     }
 
 // ************* CONSTRUCTORS *************/
@@ -1095,6 +1117,27 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         this.trinomHybrid = trinomHybrid;
     }
 
+    // ****************** VIRAL NAME ******************/
+
+    /**
+     * Returns the accepted acronym (an assigned abbreviation) string for <i>this</i>
+     * viral taxon name. For instance PCV stays for Peanut Clump Virus.
+     *
+     * @return  the string containing the accepted acronym of <i>this</i> viral taxon name
+     */
+    @Override
+    public String getAcronym(){
+        return this.acronym;
+    }
+
+    /**
+     * @see  #getAcronym()
+     */
+    @Override
+    public void setAcronym(String acronym){
+        this.acronym = StringUtils.isBlank(acronym)? null : acronym;
+    }
+
 // **************** ADDER / REMOVE *************************/
 
     /**
@@ -1163,7 +1206,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Override
     public String generateFullTitle(){
         if (cacheStrategy == null){
-            logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
+            logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
             return cacheStrategy.getFullTitleCache(this);
@@ -3166,8 +3209,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             //protectedFullTitleCache, rank
             //basionamyAuthorship, combinationAuthorship, exBasionymAuthorship, exCombinationAuthorship
             //genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
-            //protectedAuthorshipCache, protectedNameCache
+            //protectedAuthorshipCache, protectedNameCache,
             //binomHybrid, monomHybrid, trinomHybrid, hybridFormula,
+            //acronym
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");

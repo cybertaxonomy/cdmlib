@@ -10,26 +10,16 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import java.util.Map;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
@@ -47,28 +37,18 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * @created 08-Nov-2007 13:07:02
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "acronym"
-})
+@XmlType(name = "", propOrder = {})
 @XmlRootElement(name = "ViralName")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
 public class ViralName
-            extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>
-            implements IViralName {
+            extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>> {
 	private static final long serialVersionUID = 4516625507432071817L;
-	private static final Logger logger = Logger.getLogger(ViralName.class);
 
-	@XmlElement(name = "Acronym")
-	@Field
-    //TODO Val #3379
-//	@NullOrNotEmpty
-	@Column(length=255)
-	private String acronym;
 
-	// ************* CONSTRUCTORS *************/
+// ************* CONSTRUCTORS *************/
 
 	protected ViralName(){
 		super();
@@ -81,76 +61,11 @@ public class ViralName
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
 	 */
-	private ViralName(Rank rank) {
+	protected ViralName(Rank rank) {
 		super(rank);
 	}
 
-//***********************
-
-	private static Map<String, java.lang.reflect.Field> allFields = null;
-	@Override
-    protected Map<String, java.lang.reflect.Field> getAllFields(){
-    	if (allFields == null){
-			allFields = CdmUtils.getAllFields(this.getClass(), CdmBase.class, false, false, false, true);
-		}
-    	return allFields;
-    }
-
-
-	//********* METHODS **************************************/
-
-	/**
-	 * Creates a new viral taxon name instance only containing its {@link Rank rank}.
-	 *
-	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
-	 * @see 	#ViralName(Rank)
-	 */
-	public static ViralName NewViralInstance(Rank rank){
-		return new ViralName(rank);
-	}
-
-	/**
-	 * Returns the accepted acronym (an assigned abbreviation) string for <i>this</i>
-	 * viral taxon name. For instance PCV stays for Peanut Clump Virus.
-	 *
-	 * @return  the string containing the accepted acronym of <i>this</i> viral taxon name
-	 */
-	@Override
-    public String getAcronym(){
-		return this.acronym;
-	}
-	/**
-	 * @see  #getAcronym()
-	 */
-	@Override
-    public void setAcronym(String acronym){
-		this.acronym = StringUtils.isBlank(acronym)? null : acronym;
-	}
-
-	@Override
-	public String generateFullTitle(){
-		logger.warn("not yet implemented");
-		return this.toString();
-	}
-
-	/**
-	 * Returns the boolean value "true" if the components of <i>this</i> viral taxon name
-	 * follow the rules of the corresponding
-	 * {@link NomenclaturalCode International Code of Virus Classification and Nomenclature},
-	 * "false" otherwise.
-	 * This method overrides and implements the isCodeCompliant method from
-	 * the abstract {@link TaxonNameBase#isCodeCompliant() TaxonNameBase} class.
-	 *
-	 * @return  the boolean value expressing the compliance of <i>this</i> viral taxon name to its nomenclatural code
-	 * @see	   	TaxonNameBase#isCodeCompliant()
-	 */
-	@Override
-	@Transient
-	public boolean isCodeCompliant() {
-		logger.warn("not yet implemented");
-		return false;
-	}
-
+// ************************* METHODS **************************/
 
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
@@ -182,7 +97,7 @@ public class ViralName
 	@Override
 	public Object clone() {
 		ViralName result = (ViralName)super.clone();
-		//no changes to: acronym
+		//no changes to:
 		return result;
 	}
 }
