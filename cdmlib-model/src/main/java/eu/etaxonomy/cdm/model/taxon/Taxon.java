@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
@@ -157,6 +158,16 @@ public class Taxon
     private Set<TaxonNode> taxonNodes = new HashSet<>();
 
 // ************************* FACTORY METHODS ********************************/
+
+    /**
+     * @see #NewInstance(TaxonNameBase, Reference)
+     * @param taxonNameBase
+     * @param sec
+     * @return
+     */
+    public static Taxon NewInstance(ITaxonNameBase taxonNameBase, Reference sec){
+        return NewInstance(TaxonNameBase.castAndDeproxy(taxonNameBase), sec);
+    }
 
     /**
      * Creates a new (accepted/valid) taxon instance with

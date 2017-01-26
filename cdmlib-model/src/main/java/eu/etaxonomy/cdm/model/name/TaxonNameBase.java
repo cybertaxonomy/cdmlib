@@ -3054,6 +3054,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         return result;
     }
 
+// ********************** INTERFACES ********************************************/
+
+    public static <U extends TaxonNameBase> TaxonNameBase castAndDeproxy(ITaxonNameBase<U> tnb){
+        return deproxy(tnb, TaxonNameBase.class);
+    }
+
+
 //*********************** CLONE ********************************************************/
 
     /**

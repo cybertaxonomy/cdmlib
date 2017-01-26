@@ -821,7 +821,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @return  					the nomenclatural status type
 	 *
 	 */
-	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation, NonViralName<?> name) throws UnknownCdmTypeException{
+	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation, TaxonNameBase name) throws UnknownCdmTypeException{
 		if (statusAbbreviation == null){
 			throw new NullPointerException("Abbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
 		}

@@ -345,7 +345,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void fillName(MarkupImportState state, Map<String, String> nameMap,
-			INonViralName<?> name, XMLEvent event) {
+			TaxonNameBase name, XMLEvent event) {
 
 		// Ranks: family, subfamily, tribus, genus, subgenus, section,
 		// subsection, species, subspecies, variety, subvariety, forma
