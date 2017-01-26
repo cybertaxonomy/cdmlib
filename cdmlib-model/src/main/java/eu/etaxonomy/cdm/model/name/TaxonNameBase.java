@@ -150,7 +150,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
-            implements ITaxonNameBase<T>, IParsable, IRelated, IMatchable, Cloneable {
+            implements ITaxonNameBase<T>, INonViralName<T>,
+                IParsable, IRelated, IMatchable, Cloneable {
 
     private static final long serialVersionUID = -4530368639601532116L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
@@ -705,6 +706,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the boolean value of the protectedNameCache flag
      * @see     #getNameCache()
      */
+    @Override
     public boolean isProtectedNameCache() {
         return protectedNameCache;
     }
@@ -712,6 +714,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see     #isProtectedNameCache()
      */
+    @Override
     public void setProtectedNameCache(boolean protectedNameCache) {
         this.protectedNameCache = protectedNameCache;
     }
@@ -725,6 +728,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string containing the suprageneric name, the genus name or the genus part of <i>this</i> non viral taxon name
      * @see     #getNameCache()
      */
+    @Override
     public String getGenusOrUninomial() {
         return genusOrUninomial;
     }
@@ -732,6 +736,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getGenusOrUninomial()
      */
+    @Override
     public void setGenusOrUninomial(String genusOrUninomial) {
         this.genusOrUninomial = StringUtils.isBlank(genusOrUninomial) ? null : genusOrUninomial;
     }
@@ -745,6 +750,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string containing the infrageneric part of <i>this</i> non viral taxon name
      * @see     #getNameCache()
      */
+    @Override
     public String getInfraGenericEpithet(){
         return this.infraGenericEpithet;
     }
@@ -752,6 +758,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getInfraGenericEpithet()
      */
+    @Override
     public void setInfraGenericEpithet(String infraGenericEpithet){
         this.infraGenericEpithet = StringUtils.isBlank(infraGenericEpithet)? null : infraGenericEpithet;
     }
@@ -764,6 +771,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string containing the species epithet of <i>this</i> non viral taxon name
      * @see     #getNameCache()
      */
+    @Override
     public String getSpecificEpithet(){
         return this.specificEpithet;
     }
@@ -771,6 +779,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getSpecificEpithet()
      */
+    @Override
     public void setSpecificEpithet(String specificEpithet){
         this.specificEpithet = StringUtils.isBlank(specificEpithet) ? null : specificEpithet;
     }
@@ -784,6 +793,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string containing the infraspecific part of <i>this</i> non viral taxon name
      * @see     #getNameCache()
      */
+    @Override
     public String getInfraSpecificEpithet(){
         return this.infraSpecificEpithet;
     }
@@ -791,6 +801,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getInfraSpecificEpithet()
      */
+    @Override
     public void setInfraSpecificEpithet(String infraSpecificEpithet){
         this.infraSpecificEpithet = StringUtils.isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
     }
@@ -803,6 +814,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
+    @Override
     public TeamOrPersonBase<?> getCombinationAuthorship(){
         return this.combinationAuthorship;
     }
@@ -810,6 +822,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getCombinationAuthorship()
      */
+    @Override
     public void setCombinationAuthorship(TeamOrPersonBase<?> combinationAuthorship){
         this.combinationAuthorship = combinationAuthorship;
     }
@@ -837,6 +850,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
+    @Override
     public TeamOrPersonBase<?> getExCombinationAuthorship(){
         return this.exCombinationAuthorship;
     }
@@ -844,6 +858,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getExCombinationAuthorship()
      */
+    @Override
     public void setExCombinationAuthorship(TeamOrPersonBase<?> exCombinationAuthorship){
         this.exCombinationAuthorship = exCombinationAuthorship;
     }
@@ -859,6 +874,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
+    @Override
     public TeamOrPersonBase<?> getBasionymAuthorship(){
         return basionymAuthorship;
     }
@@ -866,6 +882,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getBasionymAuthorship()
      */
+    @Override
     public void setBasionymAuthorship(TeamOrPersonBase<?> basionymAuthorship) {
         this.basionymAuthorship = basionymAuthorship;
     }
@@ -886,6 +903,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
+    @Override
     public TeamOrPersonBase<?> getExBasionymAuthorship(){
         return exBasionymAuthorship;
     }
@@ -893,6 +911,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #getExBasionymAuthorship()
      */
+    @Override
     public void setExBasionymAuthorship(TeamOrPersonBase<?> exBasionymAuthorship) {
         this.exBasionymAuthorship = exBasionymAuthorship;
     }
@@ -905,6 +924,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the boolean value of the protectedAuthorshipCache flag
      * @see     #getAuthorshipCache()
      */
+    @Override
     public boolean isProtectedAuthorshipCache() {
         return protectedAuthorshipCache;
     }
@@ -913,6 +933,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #isProtectedAuthorshipCache()
      * @see     #getAuthorshipCache()
      */
+    @Override
     public void setProtectedAuthorshipCache(boolean protectedAuthorshipCache) {
         this.protectedAuthorshipCache = protectedAuthorshipCache;
     }
@@ -925,6 +946,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    #getChildRelationships()
      * @see    HybridRelationshipType
      */
+    @Override
     public Set<HybridRelationship> getHybridParentRelations() {
         if(hybridParentRelations == null) {
             this.hybridParentRelations = new HashSet<>();
@@ -945,6 +967,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    #getParentRelationships()
      * @see    HybridRelationshipType
      */
+    @Override
     public Set<HybridRelationship> getHybridChildRelations() {
         if(hybridChildRelations == null) {
             this.hybridChildRelations = new HashSet<>();
@@ -980,6 +1003,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #isBinomHybrid()
      * @see     #isTrinomHybrid()
      */
+    @Override
     public boolean isHybridFormula(){
         return this.hybridFormula;
     }
@@ -987,6 +1011,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see  #isHybridFormula()
      */
+    @Override
     public void setHybridFormula(boolean hybridFormula){
         this.hybridFormula = hybridFormula;
     }
@@ -1002,6 +1027,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #isBinomHybrid()
      * @see     #isTrinomHybrid()
      */
+    @Override
     public boolean isMonomHybrid(){
         return this.monomHybrid;
     }
@@ -1011,6 +1037,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #isBinomHybrid()
      * @see  #isTrinomHybrid()
      */
+    @Override
     public void setMonomHybrid(boolean monomHybrid){
         this.monomHybrid = monomHybrid;
     }
@@ -1026,6 +1053,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #isMonomHybrid()
      * @see     #isTrinomHybrid()
      */
+    @Override
     public boolean isBinomHybrid(){
         return this.binomHybrid;
     }
@@ -1035,6 +1063,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #isMonomHybrid()
      * @see  #isTrinomHybrid()
      */
+    @Override
     public void setBinomHybrid(boolean binomHybrid){
         this.binomHybrid = binomHybrid;
     }
@@ -1051,6 +1080,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #isMonomHybrid()
      * @see     #isBinomHybrid()
      */
+    @Override
     public boolean isTrinomHybrid(){
         return this.trinomHybrid;
     }
@@ -1060,6 +1090,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #isBinomHybrid()
      * @see  #isMonomHybrid()
      */
+    @Override
     public void setTrinomHybrid(boolean trinomHybrid){
         this.trinomHybrid = trinomHybrid;
     }
@@ -1105,6 +1136,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @param  relationship  the hybrid relationship which should be deleted from the corresponding sets
      * @see                  #getHybridRelationships()
      */
+    @Override
     public void removeHybridRelationship(HybridRelationship hybridRelation) {
         if (hybridRelation == null) {
             return;
@@ -1154,6 +1186,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
       * Needs to be implemented by those classes that handle autonyms (e.g. botanical names).
       **/
+    @Override
     @Transient
     public boolean isAutonym(){
         return false;
@@ -1222,6 +1255,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string with the concatenated and formated authorteams for <i>this</i> non viral taxon name
      * @see     #generateAuthorship()
      */
+    @Override
     @Transient
     public String getAuthorshipCache() {
         if (protectedAuthorshipCache){
@@ -1263,6 +1297,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @param  authorshipCache  the string which identifies the complete authorship of <i>this</i> non viral taxon name
      * @see    #getAuthorshipCache()
      */
+    @Override
     public void setAuthorshipCache(String authorshipCache) {
         setAuthorshipCache(authorshipCache, true);
     }
@@ -1276,6 +1311,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * the flag is set to <code>false</code>.
      * @see    #getAuthorshipCache()
      */
+    @Override
     public void setAuthorshipCache(String authorshipCache, boolean protectedAuthorshipCache) {
         this.authorshipCache = authorshipCache;
         this.setProtectedAuthorshipCache(protectedAuthorshipCache);
@@ -1290,6 +1326,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string with the concatenated and formatted author teams for <i>this</i> taxon name
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonNameBase)
      */
+    @Override
     public String generateAuthorship(){
         if (cacheStrategy == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
@@ -1305,6 +1342,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Tests if the given name has any authors.
      * @return false if no author ((ex)combination or (ex)basionym) exists, true otherwise
      */
+    @Override
     public boolean hasAuthors() {
         return (this.getCombinationAuthorship() != null ||
                 this.getExCombinationAuthorship() != null ||
@@ -1316,6 +1354,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Shortcut. Returns the combination authors title cache. Returns null if no combination author exists.
      * @return
      */
+    @Override
     public String computeCombinationAuthorNomenclaturalTitle() {
         return computeNomenclaturalTitle(this.getCombinationAuthorship());
     }
@@ -1324,6 +1363,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Shortcut. Returns the basionym authors title cache. Returns null if no basionym author exists.
      * @return
      */
+    @Override
     public String computeBasionymAuthorNomenclaturalTitle() {
         return computeNomenclaturalTitle(this.getBasionymAuthorship());
     }
@@ -1333,6 +1373,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Shortcut. Returns the ex-combination authors title cache. Returns null if no ex-combination author exists.
      * @return
      */
+    @Override
     public String computeExCombinationAuthorNomenclaturalTitle() {
         return computeNomenclaturalTitle(this.getExCombinationAuthorship());
     }
@@ -1341,6 +1382,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Shortcut. Returns the ex-basionym authors title cache. Returns null if no exbasionym author exists.
      * @return
      */
+    @Override
     public String computeExBasionymAuthorNomenclaturalTitle() {
         return computeNomenclaturalTitle(this.getExBasionymAuthorship());
     }
@@ -1670,6 +1712,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  the string which identifies <i>this</i> non viral taxon name (without authors or year)
      * @see     #generateNameCache()
      */
+    @Override
     @Transient
     public String getNameCache() {
         if (protectedNameCache){
@@ -1689,6 +1732,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @param  nameCache  the string which identifies <i>this</i> non viral taxon name (without authors or year)
      * @see    #getNameCache()
      */
+    @Override
     public void setNameCache(String nameCache){
         setNameCache(nameCache, true);
     }
@@ -1702,6 +1746,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * <code>false</code>
      * @see    #getNameCache()
      */
+    @Override
     public void setNameCache(String nameCache, boolean protectedNameCache){
         this.nameCache = nameCache;
         this.setProtectedNameCache(protectedNameCache);
@@ -2470,6 +2515,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * by title cache of the related names.
      * @see #getHybridParentRelations()
      */
+    @Override
     @Transient
     public List<HybridRelationship> getOrderedChildRelationships(){
         List<HybridRelationship> result = new ArrayList<HybridRelationship>();
@@ -2498,6 +2544,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
+    @Override
     public HybridRelationship addHybridParent(NonViralName parentName, HybridRelationshipType type, String ruleConsidered){
         return new HybridRelationship(this, parentName, type, ruleConsidered);
     }
@@ -2519,10 +2566,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
+    @Override
     public HybridRelationship addHybridChild(NonViralName childName, HybridRelationshipType type, String ruleConsidered){
         return new HybridRelationship(childName, this, type, ruleConsidered);
     }
 
+    @Override
     public void removeHybridChild(NonViralName child) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
         hybridRelationships.addAll(this.getHybridChildRelations());
@@ -2535,6 +2584,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
     }
 
+    @Override
     public void removeHybridParent(NonViralName parent) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
         hybridRelationships.addAll(this.getHybridChildRelations());
@@ -2991,6 +3041,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * considering the above order.
      * @return the first not blank name part in reverse order
      */
+    @Override
     public String getLastNamePart() {
         String result =
                 StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
