@@ -143,7 +143,10 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "binomHybrid",
     "trinomHybrid",
 
-    "acronym"
+    "acronym",
+
+    "subGenusAuthorship",
+    "nameApprobation"
 })
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
@@ -152,10 +155,10 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
-            implements ITaxonNameBase, INonViralName, IViralName,
+            implements ITaxonNameBase, INonViralName, IViralName, IBacterialName,
                 IParsable, IRelated, IMatchable, Cloneable {
 
-    private static final long serialVersionUID = -4530368639601532116L;
+    private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
     @XmlElement(name = "FullTitleCache")
@@ -447,6 +450,18 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Column(length=255)
     private String acronym;
 
+// BacterialName attributes ***********************/
+
+    //Author team and year of the subgenus name
+    @XmlElement(name = "SubGenusAuthorship")
+    @Field
+    private String subGenusAuthorship;
+
+    //Approbation of name according to approved list, validation list, or validly published, paper in IJSB after 1980
+    @XmlElement(name = "NameApprobation")
+    @Field
+    private String nameApprobation;
+
 // *************** FACTORY METHODS ********************************/
 
     /**
@@ -498,6 +513,42 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     public static ViralName NewViralInstance(Rank rank){
         return new ViralName(rank);
+    }
+
+    /**
+     * Creates a new bacterial taxon name instance
+     * only containing its {@link Rank rank} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     *
+     * @param  rank  the rank to be assigned to <i>this</i> bacterial taxon name
+     * @see    #NewInstance(Rank, HomotypicalGroup)
+     * @see    #BacterialName(Rank, HomotypicalGroup)
+     * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
+     * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
+     * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+     */
+    public static BacterialName NewBacterialInstance(Rank rank){
+        return new BacterialName(rank, null);
+    }
+
+    /**
+     * Creates a new bacterial taxon name instance
+     * only containing its {@link Rank rank},
+     * its {@link HomotypicalGroup homotypical group} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * The new bacterial taxon name instance will be also added to the set of
+     * bacterial taxon names belonging to this homotypical group.
+     *
+     * @param  rank  the rank to be assigned to <i>this</i> bacterial taxon name
+     * @param  homotypicalGroup  the homotypical group to which <i>this</i> bacterial taxon name belongs
+     * @see    #NewInstance(Rank)
+     * @see    #BacterialName(Rank, HomotypicalGroup)
+     * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
+     * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
+     * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+     */
+    public static BacterialName NewBacterialInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return new BacterialName(rank, homotypicalGroup);
     }
 
 // ************* CONSTRUCTORS *************/
@@ -1136,6 +1187,61 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Override
     public void setAcronym(String acronym){
         this.acronym = StringUtils.isBlank(acronym)? null : acronym;
+    }
+
+    // ****************** BACTERIAL NAME ******************/
+
+    /**
+     * Returns the string containing the authorship with the year and details
+     * of the reference in which the subgenus included in the scientific name
+     * of <i>this</i> bacterial taxon name was published.
+     * For instance if the bacterial taxon name is
+     * 'Bacillus (subgen. Aerobacillus Donker 1926, 128) polymyxa' the subgenus
+     * authorship string is 'Donker 1926, 128'.
+     *
+     * @return  the string containing the complete subgenus' authorship
+     *          included in <i>this</i> bacterial taxon name
+     */
+    @Override
+    public String getSubGenusAuthorship(){
+        return this.subGenusAuthorship;
+    }
+
+    /**
+     * @see  #getSubGenusAuthorship()
+     */
+    @Override
+    public void setSubGenusAuthorship(String subGenusAuthorship){
+        this.subGenusAuthorship = subGenusAuthorship;
+    }
+
+    /**
+     * Returns the string representing the reason for the approbation of <i>this</i>
+     * bacterial taxon name. Bacterial taxon names are valid or approved
+     * according to:
+     * <ul>
+     * <li>the approved list, c.f.r. IJSB 1980 (AL)
+     * <li>the validation list, in IJSB after 1980 (VL)
+     * </ul>
+     * or
+     * <ul>
+     * <li>are validly published as paper in IJSB after 1980 (VP).
+     * </ul>
+     * IJSB is the acronym for International Journal of Systematic Bacteriology.
+     *
+     * @return  the string with the source of the approbation for <i>this</i> bacterial taxon name
+     */
+    @Override
+    public String getNameApprobation(){
+        return this.nameApprobation;
+    }
+
+    /**
+     * @see  #getNameApprobation()
+     */
+    @Override
+    public void setNameApprobation(String nameApprobation){
+        this.nameApprobation = nameApprobation;
     }
 
 // **************** ADDER / REMOVE *************************/
@@ -3212,6 +3318,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             //protectedAuthorshipCache, protectedNameCache,
             //binomHybrid, monomHybrid, trinomHybrid, hybridFormula,
             //acronym
+            //subGenusAuthorship, nameApprobation
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");

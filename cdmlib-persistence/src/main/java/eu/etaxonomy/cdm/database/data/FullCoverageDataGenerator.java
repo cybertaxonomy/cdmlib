@@ -811,7 +811,7 @@ public class FullCoverageDataGenerator {
 
 
 	private void createTaxonName(List<CdmBase> cdmBases) {
-		BacterialName bacName = BacterialName.NewInstance(Rank.GENUS());
+		BacterialName bacName = TaxonNameBase.NewBacterialInstance(Rank.GENUS());
 		bacName.setSubGenusAuthorship("sub Genus author");
 		bacName.setNameApprobation("nameApprobation");
 		handleIdentifiableEntity(bacName);
