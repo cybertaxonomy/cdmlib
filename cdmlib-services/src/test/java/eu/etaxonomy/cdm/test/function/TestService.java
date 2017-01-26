@@ -62,7 +62,7 @@ public class TestService {
 		NonViralName<?> nvn = NonViralName.NewInstance(Rank.SPECIES());
 
 		BotanicalName bn = BotanicalName.NewInstance(Rank.SUBSPECIES());
-		ZoologicalName zn = ZoologicalName.NewInstance(Rank.FAMILY());
+		ZoologicalName zn = TaxonNameBase.NewZoologicalInstance(Rank.FAMILY());
 
 		logger.info("Create reference objects...");
 

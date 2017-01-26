@@ -69,7 +69,7 @@ public class TaxonComparatorTest {
         BotanicalName botName1 =  BotanicalName.NewInstance(null);
         BotanicalName botName2 =  BotanicalName.NewInstance(null);
         BotanicalName botName3 =  BotanicalName.NewInstance(null);
-        ZoologicalName zooName1 = ZoologicalName.NewInstance(null);
+        ZoologicalName zooName1 = TaxonNameBase.NewZoologicalInstance(null);
 
         botName1.setNomenclaturalReference(ref1);
         botName2.setNomenclaturalReference(ref2);

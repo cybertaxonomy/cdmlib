@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -191,7 +192,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
 
         //zool. specific ranks (we don't have markers here therefore no problem should exist
-        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SECTION_ZOOLOGY());
+        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.SECTION_ZOOLOGY());
         zooName.setGenusOrUninomial("Genus");
         zooName.setInfraGenericEpithet("Infragenus");
         Assert.assertEquals("", "Genus", zooName.getNameCache());
@@ -424,7 +425,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
 
         //year
-        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
+        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
         zooName.setGenusOrUninomial("Homo");
         zooName.setSpecificEpithet("sapiens");
         zooName.setBasionymAuthorship(basAuthor);

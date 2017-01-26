@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
@@ -82,7 +83,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
 
-		subGenusName = ZoologicalName.NewInstance(Rank.SUBGENUS());
+		subGenusName = TaxonNameBase.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 

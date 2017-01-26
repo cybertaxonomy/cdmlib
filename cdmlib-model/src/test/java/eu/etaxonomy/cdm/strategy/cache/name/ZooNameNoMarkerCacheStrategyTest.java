@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
-	
+
 	private ZooNameDefaultCacheStrategy strategy;
 	private ZoologicalName familyName;
 	private ZoologicalName genusName;
@@ -44,7 +45,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
 	private TeamOrPersonBase<?> exBasAuthor;
-	
+
 	private final String familyNameString = "Familia";
 	private final String genusNameString = "Genus";
 	private final String speciesNameString = "Abies alba";
@@ -55,11 +56,11 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	private final String exAuthorString = "Exaut.";
 	private final String basAuthorString = "Basio, A.";
 	private final String exBasAuthorString = "ExBas. N.";
-	
+
 	private final Integer publicationYear = 1928;
 	private final Integer originalPublicationYear = 1860;
-	
-	
+
+
 
 	/**
 	 * @throws java.lang.Exception
@@ -78,11 +79,11 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		strategy = ZooNameNoMarkerCacheStrategy.NewInstance();
 		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
-		
-		subGenusName = ZoologicalName.NewInstance(Rank.SUBGENUS());
+
+		subGenusName = TaxonNameBase.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
-		
+
 		speciesName = ZoologicalName.PARSED_NAME(speciesNameString);
 		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameStringToParse);
 		subSpeciesName.setCacheStrategy(strategy);
@@ -96,7 +97,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
 	}
-	
+
 
 /********* TEST *******************************************/
 
@@ -118,12 +119,12 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		subSpeciesName.setPublicationYear(publicationYear);
 		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
-		
+
 		assertEquals("Abies alba beta", strategy.getNameCache(subSpeciesName));
-		
+
 		assertEquals("Abies alba beta" + " (" + exBasAuthorString + " ex " + basAuthorString  + ", " + originalPublicationYear +")" +  " " + exAuthorString + " ex " + authorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
-		
-		//Autonym, 
+
+		//Autonym,
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorship(author);
 		subSpeciesName.setBasionymAuthorship(null);
@@ -135,7 +136,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		//new we now assume that there are no autonyms in zoology (source: they do not exist in Fauna Europaea)
 		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba alba (1860) L., 1928", strategy.getTitleCache(subSpeciesName));
-		
+
 	}
 
 	/**
@@ -150,7 +151,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 
 		subSpeciesName.setExCombinationAuthorship(exAuthor);
 		assertEquals( exAuthorString + " ex " + authorString + ", " + publicationYear , strategy.getAuthorshipCache(subSpeciesName));
-		
+
 		subSpeciesName.setBasionymAuthorship(basAuthor);
 		assertEquals("(" + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
 		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
@@ -158,7 +159,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 
 		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		assertEquals("(" + exBasAuthorString + " ex " +  basAuthorString + ", " + originalPublicationYear  + ")" +  " " + exAuthorString + " ex " + authorString  + ", " + publicationYear   , strategy.getAuthorshipCache(subSpeciesName));
-		
+
 		//cache
 		subSpeciesName.setAuthorshipCache(authorString);
 		assertEquals("AuthorshipCache must be updated", authorString, subSpeciesName.getAuthorshipCache());
@@ -167,11 +168,11 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		//TODO make this not needed
 		subSpeciesName.setTitleCache(null, false);
 		assertEquals("TitleCache must be updated", "Abies alba beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache());
-		
+
 		assertNull("Authorship cache for null must return null", strategy.getAuthorshipCache(null));
-		
+
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
@@ -187,7 +188,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
-		
+
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));
 	}
@@ -208,7 +209,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	public final void testGetInfraSpeciesNameCache() {
 		assertEquals("Abies alba beta", strategy.getNameCache(subSpeciesName));
 	}
-	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
@@ -221,6 +222,6 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba alba L.", strategy.getTitleCache(subSpeciesName));
 	}
-	
+
 
 }

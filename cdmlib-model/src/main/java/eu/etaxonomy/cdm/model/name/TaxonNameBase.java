@@ -31,6 +31,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -146,7 +147,11 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "acronym",
 
     "subGenusAuthorship",
-    "nameApprobation"
+    "nameApprobation",
+
+    "breed",
+    "publicationYear",
+    "originalPublicationYear"
 })
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
@@ -155,7 +160,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
-            implements ITaxonNameBase, INonViralName, IViralName, IBacterialName,
+            implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
+
                 IParsable, IRelated, IMatchable, Cloneable {
 
     private static final long serialVersionUID = -791164269603409712L;
@@ -462,6 +468,27 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Field
     private String nameApprobation;
 
+    //ZOOLOGICAL NAME
+
+    //Name of the breed of an animal
+    @XmlElement(name = "Breed")
+    @Field
+    @NullOrNotEmpty
+    @Column(length=255)
+    private String breed;
+
+    @XmlElement(name = "PublicationYear")
+    @Field(analyze = Analyze.NO)
+    @CacheUpdate(value ="authorshipCache")
+    @Min(0)
+    private Integer publicationYear;
+
+    @XmlElement(name = "OriginalPublicationYear")
+    @Field(analyze = Analyze.NO)
+    @CacheUpdate(value ="authorshipCache")
+    @Min(0)
+    private Integer originalPublicationYear;
+
 // *************** FACTORY METHODS ********************************/
 
     /**
@@ -549,6 +576,74 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     public static BacterialName NewBacterialInstance(Rank rank, HomotypicalGroup homotypicalGroup){
         return new BacterialName(rank, homotypicalGroup);
+    }
+
+
+    /**
+     * Creates a new zoological taxon name instance
+     * only containing its {@link Rank rank} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
+     *
+     * @param   rank    the rank to be assigned to <i>this</i> zoological taxon name
+     * @see             #ZoologicalName(Rank, HomotypicalGroup)
+     * @see             #NewInstance(Rank, HomotypicalGroup)
+     * @see             #NewZoologicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+     * @see             eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
+     */
+    public static ZoologicalName NewZoologicalInstance(Rank rank){
+        return new ZoologicalName(rank, null);
+    }
+
+    /**
+     * Creates a new zoological taxon name instance
+     * only containing its {@link Rank rank},
+     * its {@link HomotypicalGroup homotypical group} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
+     * The new zoological taxon name instance will be also added to the set of
+     * zoological taxon names belonging to the given homotypical group.
+     *
+     * @param  rank  the rank to be assigned to <i>this</i> zoological taxon name
+     * @param  homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
+     * @see    #NewInstance(Rank)
+     * @see    #NewZoologicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+     * @see    #ZoologicalName(Rank, HomotypicalGroup)
+     * @see    eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
+     */
+    public static ZoologicalName NewZoologicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return new ZoologicalName(rank, homotypicalGroup);
+    }
+    /**
+     * Creates a new zoological taxon name instance
+     * containing its {@link Rank rank},
+     * its {@link HomotypicalGroup homotypical group},
+     * its scientific name components, its {@link eu.etaxonomy.cdm.agent.TeamOrPersonBase author(team)},
+     * its {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
+     * The new zoological taxon name instance will be also added to the set of
+     * zoological taxon names belonging to the given homotypical group.
+     *
+     * @param   rank  the rank to be assigned to <i>this</i> zoological taxon name
+     * @param   genusOrUninomial the string for <i>this</i> zoological taxon name
+     *          if its rank is genus or higher or for the genus part
+     *          if its rank is lower than genus
+     * @param   infraGenericEpithet  the string for the first epithet of
+     *          <i>this</i> zoological taxon name if its rank is lower than genus
+     *          and higher than species aggregate
+     * @param   specificEpithet  the string for the first epithet of
+     *          <i>this</i> zoological taxon name if its rank is species aggregate or lower
+     * @param   infraSpecificEpithet  the string for the second epithet of
+     *          <i>this</i> zoological taxon name if its rank is lower than species
+     * @param   combinationAuthorship  the author or the team who published <i>this</i> zoological taxon name
+     * @param   nomenclaturalReference  the nomenclatural reference where <i>this</i> zoological taxon name was published
+     * @param   nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
+     * @param   homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
+     * @see     #NewInstance(Rank)
+     * @see     #NewInstance(Rank, HomotypicalGroup)
+     * @see     #ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+     * @see     eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
+     */
+    public static ZoologicalName NewZoologicalInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        return new ZoologicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
     }
 
 // ************* CONSTRUCTORS *************/
@@ -1242,6 +1337,71 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Override
     public void setNameApprobation(String nameApprobation){
         this.nameApprobation = nameApprobation;
+    }
+
+    //************ Zoological Name
+
+    /**
+     * Returns the breed name string for <i>this</i> animal (zoological taxon name).
+     *
+     * @return  the string containing the breed name for <i>this</i> zoological taxon name
+     */
+    @Override
+    public String getBreed(){
+        return this.breed;
+    }
+    /**
+     * @see  #getBreed()
+     */
+    @Override
+    public void setBreed(String breed){
+        this.breed = StringUtils.isBlank(breed) ? null : breed;
+    }
+
+    /**
+     * Returns the publication year (as an integer) for <i>this</i> zoological taxon
+     * name. If the publicationYear attribute is null and a nomenclatural
+     * reference exists the year could be computed from the
+     * {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference}.
+     *
+     * @return  the integer representing the publication year for <i>this</i> zoological taxon name
+     * @see     #getOriginalPublicationYear()
+     */
+    @Override
+    public Integer getPublicationYear() {
+        return publicationYear;
+    }
+    /**
+     * @see  #getPublicationYear()
+     */
+    @Override
+    public void setPublicationYear(Integer publicationYear) {
+        this.publicationYear = publicationYear;
+    }
+
+    /**
+     * Returns the publication year (as an integer) of the original validly
+     * published species epithet for <i>this</i> zoological taxon name. This only
+     * applies for zoological taxon names that are no {@link TaxonNameBase#isOriginalCombination() original combinations}.
+     * If the originalPublicationYear attribute is null the year could be taken
+     * from the publication year of the corresponding original name (basionym)
+     * or from the {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference} of the basionym
+     * if it exists.
+     *
+     * @return  the integer representing the publication year of the original
+     *          species epithet corresponding to <i>this</i> zoological taxon name
+     * @see     #getPublicationYear()
+     */
+    @Override
+    public Integer getOriginalPublicationYear() {
+        return originalPublicationYear;
+    }
+    /**
+     * @see  #getOriginalPublicationYear()
+     */
+    @Override
+    public void setOriginalPublicationYear(Integer originalPublicationYear) {
+        this.originalPublicationYear = originalPublicationYear;
     }
 
 // **************** ADDER / REMOVE *************************/

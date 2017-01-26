@@ -182,7 +182,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNamesByExample() {
-        ZoologicalName zoologicalName = ZoologicalName.NewInstance(Rank.GENUS());
+        ZoologicalName zoologicalName = TaxonNameBase.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
         Set<String> includedProperties = new HashSet<String>();
         includedProperties.add("genusOrUninomial");
@@ -224,10 +224,10 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         Iterator<TaxonBase> taxa= taxonBases.iterator();
         TaxonBase taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
-        
+
         //int numbOfTaxa = taxonDao.count(TaxonBase.class);
         List<TaxonBase> taxaList = taxonDao.getAllTaxonBases(100, 0);
-      
+
         acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
         taxon = taxonDao.findByUuid(taxonUuid);
         group = homotypicalGroupDao.findByUuid(groupUuid);

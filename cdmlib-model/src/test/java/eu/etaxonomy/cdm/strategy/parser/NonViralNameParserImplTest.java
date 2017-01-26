@@ -1587,7 +1587,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Second member must be 'ten Hagen'", "ten Hagen", team.getTeamMembers().get(1).getTitleCache());
 
         //Crosson du Cormier, 1964
-        ZoologicalName zooName = ZoologicalName.NewInstance(null);
+        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "Crosson du Cormier, 1964");
         Person person = (Person)zooName.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", person);
@@ -1595,7 +1595,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Year must be 1964", Integer.valueOf(1964), zooName.getPublicationYear() );
 
         //(van der Hoeven, 1839)
-        zooName = ZoologicalName.NewInstance(null);
+        zooName = TaxonNameBase.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "(van der Hoeven, 1839)");
         Assert.assertNull("Combination author must be null", zooName.getCombinationAuthorship());
         person = (Person)zooName.getBasionymAuthorship();
@@ -1604,7 +1604,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Year must be 1839", Integer.valueOf(1839), zooName.getOriginalPublicationYear() );
 
         //le Doux, 1931
-        zooName = ZoologicalName.NewInstance(null);
+        zooName = TaxonNameBase.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "le Doux, 1931");
         person = (Person)zooName.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", person);

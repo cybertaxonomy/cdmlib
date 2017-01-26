@@ -2469,7 +2469,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }*/
 
         //create potential combinations...
-        inferredSynName = ZoologicalName.NewInstance(syn.getName().getRank());
+        inferredSynName = TaxonNameBase.NewZoologicalInstance(syn.getName().getRank());
 
         inferredSynName.setGenusOrUninomial(synParentGenus);
         if (zooSynName.isSpecies()){
@@ -2533,7 +2533,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             synonymsEpithet.add(synSpeciesEpithetName);
         }*/
 
-        inferredSynName = ZoologicalName.NewInstance(taxon.getName().getRank());
+        inferredSynName = TaxonNameBase.NewZoologicalInstance(taxon.getName().getRank());
         //TODO:differ between parent is genus and taxon is species, parent is subgenus and taxon is species, parent is species and taxon is subspecies and parent is genus and taxon is subgenus...
 
 
@@ -2624,7 +2624,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             synonymsGenus.put(synGenusName, idInSource);
         }*/
 
-        inferredSynName = ZoologicalName.NewInstance(taxon.getName().getRank());
+        inferredSynName = TaxonNameBase.NewZoologicalInstance(taxon.getName().getRank());
 
         // DEBUG TODO: for subgenus or subspecies the infrageneric or infraspecific epithet should be used!!!
         if (epithetOfTaxon == null && infragenericEpithetOfTaxon == null && infraspecificEpithetOfTaxon == null) {

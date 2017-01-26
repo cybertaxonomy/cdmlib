@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -156,12 +157,12 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
        Reference nomRef = ReferenceFactory.newBook();
        Reference nomRef2 = ReferenceFactory.newBook();
 
-       ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
+       ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
        zooName.setGenusOrUninomial("Aus");
        zooName.setSpecificEpithet("aus");
        zooName.setBasionymAuthorship(author1);
        zooName.setNomenclaturalReference(nomRef);
-       ZoologicalName originalCombination = ZoologicalName.NewInstance(Rank.SPECIES());
+       ZoologicalName originalCombination = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
        originalCombination.setGenusOrUninomial("Aus");
        originalCombination.setSpecificEpithet("aus");
        originalCombination.setCombinationAuthorship(author1);

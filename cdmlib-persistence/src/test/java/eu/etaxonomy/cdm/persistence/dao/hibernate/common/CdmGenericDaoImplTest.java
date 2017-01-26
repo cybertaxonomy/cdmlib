@@ -497,7 +497,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
-		ZoologicalName zooName1 = ZoologicalName.NewInstance(Rank.SPECIES());
+		ZoologicalName zooName1 = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
 		name1.setTitleCache("ZoologicalName1", true);
 
 		Reference article1 = ReferenceFactory.newArticle();

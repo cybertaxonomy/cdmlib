@@ -16,6 +16,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -91,7 +92,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
     @Test
     public void testZooName() {
 
-        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
+        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
 
         zooName.setNomenclaturalReference(null);
         zooName.setPublicationYear(1788);
