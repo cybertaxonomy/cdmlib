@@ -67,8 +67,6 @@ public class TaxonNameBaseTest {
 		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);}
 		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(rank, hg);}
 		@Override
-		public boolean isCodeCompliant(){return false;}
-		@Override
 		public void setCacheStrategy(INameCacheStrategy strategy){}
 		@Override
 		public INameCacheStrategy getCacheStrategy(){return null;}

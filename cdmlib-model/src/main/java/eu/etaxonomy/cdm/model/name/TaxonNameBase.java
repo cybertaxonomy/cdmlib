@@ -1713,25 +1713,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         return false;
     }
 
-
-    /**
-     * Returns the boolean value "false" since the components of <i>this</i> taxon name
-     * cannot follow the rules of a corresponding {@link NomenclaturalCode nomenclatural code}
-     * which is not defined for this class. The nomenclature code depends on
-     * the concrete name subclass ({@link BacterialName BacterialName},
-     * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} or
-     * {@link ZoologicalName ZoologicalName} to which <i>this</i> non taxon name.
-     *
-     * @return  false
-     */
-    @Override
-    @Transient
-    public boolean isCodeCompliant() {
-        //FIXME
-        logger.warn("is CodeCompliant not implemented for TaxonNameBase");
-        return false;
-    }
-
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){

@@ -51,21 +51,6 @@ public interface ITaxonNameBase
     @Transient
     public NomenclaturalCode getNomenclaturalCode();
 
-
-    /**
-     * Returns the boolean value "false" since the components of <i>this</i> taxon name
-     * cannot follow the rules of a corresponding {@link NomenclaturalCode nomenclatural code}
-     * which is not defined for this class. The nomenclature code depends on
-     * the concrete name subclass ({@link BacterialName BacterialName},
-     * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName},
-     * {@link ZoologicalName ZoologicalName} or {@link ViralName ViralName})
-     * to which a taxon name belongs.
-     *
-     * @return  false
-     */
-    @Transient
-    public boolean isCodeCompliant();
-
     public List<TaggedText> getTaggedName();
 
     public void setFullTitleCache(String fullTitleCache);
