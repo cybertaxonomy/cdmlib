@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -78,7 +77,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
-	TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 

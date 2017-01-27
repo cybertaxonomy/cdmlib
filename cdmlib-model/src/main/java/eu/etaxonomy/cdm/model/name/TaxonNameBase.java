@@ -86,6 +86,8 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -152,6 +154,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "breed",
     "publicationYear",
     "originalPublicationYear"
+
+//    "anamorphic",
 })
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
@@ -166,6 +170,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
+
+    static private INonViralNameParser<?> nameParser = new NonViralNameParserImpl();
 
     @XmlElement(name = "FullTitleCache")
     @Column(length=800, name="fullTitleCache")  //see #1592
@@ -489,6 +495,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Min(0)
     private Integer originalPublicationYear;
 
+
 // *************** FACTORY METHODS ********************************/
 
     /**
@@ -644,6 +651,142 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     public static ZoologicalName NewZoologicalInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
         return new ZoologicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+    }
+
+    /**
+     * Creates a new botanical taxon name instance
+     * only containing its {@link Rank rank} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
+     *
+     * @param   rank    the rank to be assigned to <i>this</i> botanical taxon name
+     * @see             #BotanicalName(Rank, HomotypicalGroup)
+     * @see             #NewInstance(Rank, HomotypicalGroup)
+     * @see             #NewBotanicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+     * @see             eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
+     */
+    public static BotanicalName NewBotanicalInstance(Rank rank){
+        return new BotanicalName(rank, null);
+    }
+    /**
+     * Creates a new botanical taxon name instance
+     * only containing its {@link Rank rank},
+     * its {@link HomotypicalGroup homotypical group} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
+     * The new botanical taxon name instance will be also added to the set of
+     * botanical taxon names belonging to this homotypical group.
+     *
+     * @param  rank  the rank to be assigned to <i>this</i> botanical taxon name
+     * @param  homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
+     * @see    #NewInstance(Rank)
+     * @see    #NewBotanicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+     * @see    #BotanicalName(Rank, HomotypicalGroup)
+     * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
+     */
+    public static BotanicalName NewBotanicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return new BotanicalName(rank, homotypicalGroup);
+    }
+    /**
+     * Creates a new botanical taxon name instance
+     * containing its {@link Rank rank},
+     * its {@link HomotypicalGroup homotypical group},
+     * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
+     * its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} and
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
+     * The new botanical taxon name instance will be also added to the set of
+     * botanical taxon names belonging to this homotypical group.
+     *
+     * @param   rank  the rank to be assigned to <i>this</i> botanical taxon name
+     * @param   genusOrUninomial the string for <i>this</i> botanical taxon name
+     *          if its rank is genus or higher or for the genus part
+     *          if its rank is lower than genus
+     * @param   infraGenericEpithet  the string for the first epithet of
+     *          <i>this</i> botanical taxon name if its rank is lower than genus
+     *          and higher than species aggregate
+     * @param   specificEpithet  the string for the first epithet of
+     *          <i>this</i> botanical taxon name if its rank is species aggregate or lower
+     * @param   infraSpecificEpithet  the string for the second epithet of
+     *          <i>this</i> botanical taxon name if its rank is lower than species
+     * @param   combinationAuthorship  the author or the team who published <i>this</i> botanical taxon name
+     * @param   nomenclaturalReference  the nomenclatural reference where <i>this</i> botanical taxon name was published
+     * @param   nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
+     * @param   homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
+     * @see     #NewInstance(Rank)
+     * @see     #NewInstance(Rank, HomotypicalGroup)
+     * @see     ZoologicalName#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+     * @see     eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
+     */
+    public static  BotanicalName NewBotanicalInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        return new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+    }
+
+// *********************** PARSER STATIC *******************************/
+
+
+    /**
+     * Returns a botanical taxon name based on parsing a string representing
+     * all elements (according to the ICBN) of a botanical taxon name (where
+     * the scientific name is an uninomial) including authorship but without
+     * nomenclatural reference. If the {@link Rank rank} is not "Genus" it should be
+     * set afterwards with the {@link TaxonNameBase#setRank(Rank) setRank} methode.
+     *
+     * @param   fullNameString  the string to be parsed
+     * @return                  the new botanical taxon name
+     */
+    public static BotanicalName PARSED_BOTANICAL(String fullNameString){
+        return PARSED_BOTANICAL(fullNameString, Rank.GENUS());
+    }
+
+
+    /**
+     * Returns a botanical taxon name based on parsing a string representing
+     * all elements (according to the ICBN) of a botanical taxon name including
+     * authorship but without nomenclatural reference. The parsing result
+     * depends on the given rank of the botanical taxon name to be created.
+     *
+     * @param   fullNameString  the string to be parsed
+     * @param   rank            the rank of the taxon name
+     * @return                  the new botanical taxon name
+     */
+    public static BotanicalName PARSED_BOTANICAL(String fullNameString, Rank rank){
+        if (nameParser == null){
+            nameParser = new NonViralNameParserImpl();
+        }
+        return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICNAFP,  rank);
+    }
+
+
+    /**
+     * Returns a botanical taxon name based on parsing a string representing
+     * all elements (according to the ICBN) of a botanical taxon name (where
+     * the scientific name is an uninomial) including authorship and
+     * nomenclatural reference. Eventually a new {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference}
+     * instance will also be created. If the {@link Rank rank} is not "Genus" it should be
+     * set afterwards with the {@link TaxonNameBase#setRank(Rank) setRank} methode.
+     *
+     * @param   fullNameAndReferenceString  the string to be parsed
+     * @return                              the new botanical taxon name
+     */
+    public static BotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString){
+        return PARSED_BOTANICAL_REFERENCE(fullNameAndReferenceString, Rank.GENUS());
+    }
+
+    /**
+     * Returns a botanical taxon name based on parsing a string representing
+     * all elements (according to the ICBN) of a botanical taxon name including
+     * authorship and nomenclatural reference. The parsing result depends on
+     * the given rank of the botanical taxon name to be created.
+     * Eventually a new {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference}
+     * instance will also be created.
+     *
+     * @param   fullNameAndReferenceString  the string to be parsed
+     * @param   rank                        the rank of the taxon name
+     * @return                              the new botanical taxon name
+     */
+    public static BotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString, Rank rank){
+        if (nameParser == null){
+            nameParser = new NonViralNameParserImpl();
+        }
+        return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICNAFP, rank);
     }
 
 // ************* CONSTRUCTORS *************/
@@ -1403,6 +1546,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     public void setOriginalPublicationYear(Integer originalPublicationYear) {
         this.originalPublicationYear = originalPublicationYear;
     }
+
 
 // **************** ADDER / REMOVE *************************/
 
@@ -3479,6 +3623,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             //binomHybrid, monomHybrid, trinomHybrid, hybridFormula,
             //acronym
             //subGenusAuthorship, nameApprobation
+            //anamorphic
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");

@@ -98,11 +98,11 @@ public class ClassificationTest {
 		treeName1 = "Greuther, 1993";
 		//refFactory = ReferenceFactory.newInstance();
 		classification1 = Classification.NewInstance(treeName1);
-		taxonName12 = BotanicalName.NewInstance(Rank.SPECIES());
-		taxonName121 = BotanicalName.NewInstance(Rank.SUBSPECIES());
-		taxonName1 = BotanicalName.NewInstance(Rank.GENUS());
+		taxonName12 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		taxonName121 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
+		taxonName1 = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
 		taxonName2 = TaxonNameBase.NewZoologicalInstance(Rank.GENUS());
-		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
+		taxonName3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		ref1 = ReferenceFactory.newJournal();
 		ref2 = ReferenceFactory.newJournal();
 		ref3 = ReferenceFactory.newJournal();
@@ -129,7 +129,7 @@ public class ClassificationTest {
 	 */
 	@Test
 	public void testAddRoot() {
-		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> synonymName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonNode1.setSynonymToBeUsed(synonym);
@@ -230,7 +230,7 @@ public class ClassificationTest {
 	@Test
 	public void testAddParentChild() {
 
-		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> synonymName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
 		rootNode.setSynonymToBeUsed(synonym);
@@ -346,7 +346,7 @@ public class ClassificationTest {
 		//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
 
 
-		BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
+		BotanicalName name = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
 		name.setTitleCache("A dummy name", true);
 		result.add(name);
 		Reference ref = ReferenceFactory.newBook();

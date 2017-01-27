@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -58,9 +59,9 @@ public class TaxonBaseTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		sec= ReferenceFactory.newBook();
 		sec.setTitleCache("Schoenes saftiges Allg�u", true);
-		name1 = ZoologicalName.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
+		name1 = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
+		name2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
 		// taxa
 		taxon1 = Taxon.NewInstance(name1,sec);
 		synonym1 = Synonym.NewInstance(name2,sec);
@@ -143,7 +144,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	public final void testClone(){
 
-		BotanicalName test = BotanicalName.NewInstance(Rank.SPECIES());
+		BotanicalName test = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		String genus = "test";
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);

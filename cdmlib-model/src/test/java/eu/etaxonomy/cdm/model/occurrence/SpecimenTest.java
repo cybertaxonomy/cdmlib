@@ -239,7 +239,7 @@ public class SpecimenTest {
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
-		TaxonNameBase<?, ?> storedUnder = BotanicalName.NewInstance(Rank.GENUS());
+		TaxonNameBase<?, ?> storedUnder = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
 		String titleCache = "title";
 		Calendar updated = Calendar.getInstance();
 		Person updatedBy = Person.NewTitledInstance("updatedPerson");

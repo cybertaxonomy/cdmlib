@@ -30,6 +30,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -57,7 +58,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	public void setUp() {
 
 		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
-		name = BotanicalName.NewInstance(Rank.SPECIES());
+		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 	}
 
 
@@ -175,6 +176,6 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

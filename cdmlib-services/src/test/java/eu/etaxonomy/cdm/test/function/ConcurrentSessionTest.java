@@ -427,7 +427,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         TransactionStatus txStatusOne = conversationHolder1.startTransaction();
         //		Session sessionFirstTransaction = conversationHolder11.getSession();
         TaxonBase taxonBase = taxonService.find(taxonUuid1);
-        TaxonNameBase newTaxonName = BotanicalName.NewInstance(null);
+        TaxonNameBase newTaxonName = TaxonNameBase.NewBotanicalInstance(null);
 
         conversationHolder1.bind();
         newTaxonName.addTaxonBase(taxonBase);

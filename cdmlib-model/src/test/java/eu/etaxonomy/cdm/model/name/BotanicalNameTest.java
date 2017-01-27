@@ -54,7 +54,7 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testPARSED_NAME() {
 		String fullName = "Abies alba subsp. beta (L.) Mill.";
-		BotanicalName name = BotanicalName.PARSED_NAME(fullName);
+		BotanicalName name = TaxonNameBase.PARSED_BOTANICAL(fullName);
 		assertFalse(name.hasProblem());
 		assertEquals("beta", name.getInfraSpecificEpithet());
 	}
@@ -68,11 +68,11 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testBotanicalNameRank() {
 		Rank genus = Rank.GENUS();
-		BotanicalName rankName = BotanicalName.NewInstance(genus);
+		BotanicalName rankName = TaxonNameBase.NewBotanicalInstance(genus);
 		assertNotNull(rankName);
 		assertSame(genus, rankName.getRank());
 		assertTrue(rankName.getRank().isGenus());
-		BotanicalName nullRankName = BotanicalName.NewInstance(null);
+		BotanicalName nullRankName = TaxonNameBase.NewBotanicalInstance(null);
 		assertNotNull(nullRankName);
 		assertNull(nullRankName.getRank());
 	}

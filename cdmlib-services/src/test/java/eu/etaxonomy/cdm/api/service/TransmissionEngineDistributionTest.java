@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -533,31 +534,31 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         //  Sonchella
         //        S. dentata
         //        S. stenoma
-        BotanicalName n_lapsana = BotanicalName.NewInstance(Rank.GENUS());
+        BotanicalName n_lapsana = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
         n_lapsana.setTitleCache("Lapsana", true);
         Taxon t_lapsana = Taxon.NewInstance(n_lapsana, sec);
         t_lapsana.setUuid(T_LAPSANA_UUID);
         taxonService.saveOrUpdate(t_lapsana);
 
-        BotanicalName n_lapsana_communis = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_lapsana_communis = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_lapsana_communis.setTitleCache("L. communis", true);
         Taxon t_lapsana_communis = Taxon.NewInstance(n_lapsana_communis, sec);
         t_lapsana_communis.setUuid(T_LAPSANA_COMMUNIS_UUID);
         taxonService.saveOrUpdate(t_lapsana_communis);
 
-        BotanicalName n_lapsana_communis_communis = BotanicalName.NewInstance(Rank.SUBSPECIES());
+        BotanicalName n_lapsana_communis_communis = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
         n_lapsana_communis_communis.setTitleCache("L. communis subsp. communis", true);
         Taxon t_lapsana_communis_communis = Taxon.NewInstance(n_lapsana_communis_communis, sec);
         t_lapsana_communis_communis.setUuid(T_LAPSANA_COMMUNIS_COMMUNIS_UUID);
         taxonService.saveOrUpdate(t_lapsana_communis_communis);
 
-        BotanicalName n_lapsana_communis_adenophora = BotanicalName.NewInstance(Rank.SUBSPECIES());
+        BotanicalName n_lapsana_communis_adenophora = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
         n_lapsana_communis_adenophora.setTitleCache("L. communis subsp. adenophora", true);
         Taxon t_lapsana_communis_adenophora = Taxon.NewInstance(n_lapsana_communis_adenophora, sec);
         t_lapsana_communis_adenophora.setUuid(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
         taxonService.saveOrUpdate(t_lapsana_communis_adenophora);
 
-        BotanicalName n_lapsana_communis_alpina = BotanicalName.NewInstance(Rank.SUBSPECIES());
+        BotanicalName n_lapsana_communis_alpina = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
         n_lapsana_communis_alpina.setTitleCache("L. communis subsp. alpina", true);
         Taxon t_lapsana_communis_alpina = Taxon.NewInstance(n_lapsana_communis_alpina, sec);
         t_lapsana_communis_alpina.setUuid(T_LAPSANA_COMMUNIS_ALPINA_UUID);

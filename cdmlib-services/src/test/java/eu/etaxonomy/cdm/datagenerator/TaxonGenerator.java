@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -60,7 +61,7 @@ public class TaxonGenerator {
 		citationRef.setTitleCache("Sp. lunarum", true);
 
         //genus taxon with Name, combinationAuthor,
-		BotanicalName botName = BotanicalName.NewInstance(Rank.GENUS());
+		BotanicalName botName = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
         botName.setTitleCache("Hieracium L.", true);
         botName.setGenusOrUninomial("Hieracium");
         botName.setCombinationAuthorship(Person.NewInstance());
@@ -70,7 +71,7 @@ public class TaxonGenerator {
         genusTaxon.setUuid(GENUS_UUID);
 
         //a name that is the basionym of genusTaxon's name
-        BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS());
+        BotanicalName basionym = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
         basionym.setTitleCache("Hieracilla DC.", true);
         basionym.setGenusOrUninomial("Hieracilla");
         basionym.setCombinationAuthorship(deCandolle);
@@ -78,7 +79,7 @@ public class TaxonGenerator {
         botName.addBasionym(basionym, null, null,"216");
 
         //species taxon that is the child of genus taxon
-        BotanicalName botSpecies = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName botSpecies = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         botSpecies.setTitleCache("Hieracium asturianum Pau", true);
         botSpecies.setGenusOrUninomial("Hieracium");
         botSpecies.setSpecificEpithet("asturianum");
@@ -95,7 +96,7 @@ public class TaxonGenerator {
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
 
         //homotypic synonym of childTaxon1
-        BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName botSpecies4= TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         botSpecies4.setTitleCache("Hieracium gueri DC.", true);
         botSpecies4.setGenusOrUninomial("Hieracium");
         botSpecies4.setSpecificEpithet("gueri");
@@ -106,7 +107,7 @@ public class TaxonGenerator {
 
 
         //2nd child species taxon that is the child of genus taxon
-        BotanicalName botSpecies2= BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName botSpecies2= TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
         botSpecies2.setGenusOrUninomial("Hieracium");
         botSpecies2.setSpecificEpithet("wolffii");
@@ -118,7 +119,7 @@ public class TaxonGenerator {
         classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
 
         //heterotypic synonym of childTaxon2
-        BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName botSpecies3= TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         botSpecies3.setTitleCache("Hieracium lupium DC.", true);
         botSpecies3.setGenusOrUninomial("Hieracium");
         botSpecies3.setSpecificEpithet("lupium");
@@ -128,7 +129,7 @@ public class TaxonGenerator {
         childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         //missaplied Name for childTaxon2
-        BotanicalName missName= BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName missName= TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         missName.setTitleCache("Hieracium lupium DC.", true);
         missName.setGenusOrUninomial("Hieracium");
         missName.setSpecificEpithet("lupium");

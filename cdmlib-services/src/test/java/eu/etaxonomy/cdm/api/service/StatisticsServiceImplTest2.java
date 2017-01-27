@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -239,7 +240,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 						+ RandomStringUtils.randomAlphabetic(10);
 
 				// create a name for the taxon
-				BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+				BotanicalName name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 				name.setNameCache(randomName, true);
 
 				// create nomenclatural reference for taxon name (if left)
@@ -350,7 +351,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					randomName = RandomStringUtils.randomAlphabetic(5) + " "
 							+ RandomStringUtils.randomAlphabetic(10);
 					// name for synonym
-					name = BotanicalName.NewInstance(Rank.SPECIES());
+					name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 					name.setNameCache(randomName, true);
 
 					// create nomenclatural reference for synonym name (if left)

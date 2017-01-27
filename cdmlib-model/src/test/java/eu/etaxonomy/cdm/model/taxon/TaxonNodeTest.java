@@ -77,9 +77,9 @@ public class TaxonNodeTest {
 		viewName1 = "Greuther, 1993";
 		classification1 = Classification.NewInstance(viewName1);
 		classification2 = Classification.NewInstance("Test View 2");
-		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
-		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
-		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
+		taxonName1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		taxonName1 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
+		taxonName3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		ref1 = ReferenceFactory.newJournal();
 		ref2 = ReferenceFactory.newBook();
 		ref3 = ReferenceFactory.newGeneric();
@@ -327,14 +327,14 @@ public class TaxonNodeTest {
     	 *   `- Pinus pampa subsp. persicifolia
     	 */
     	Classification classification = Classification.NewInstance("Classification");
-    	BotanicalName pinusName = BotanicalName.NewInstance(null);
+    	BotanicalName pinusName = TaxonNameBase.NewBotanicalInstance(null);
     	pinusName.setGenusOrUninomial("Pinus");
     	Taxon pinus = Taxon.NewInstance(pinusName, null);
-    	BotanicalName pinusPampaName = BotanicalName.NewInstance(null);
+    	BotanicalName pinusPampaName = TaxonNameBase.NewBotanicalInstance(null);
     	pinusPampaName.setGenusOrUninomial("Pinus");
     	pinusPampaName.setSpecificEpithet("pampa");
     	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
-    	BotanicalName pinusPampaSubName = BotanicalName.NewInstance(null);
+    	BotanicalName pinusPampaSubName = TaxonNameBase.NewBotanicalInstance(null);
     	pinusPampaSubName.setGenusOrUninomial("Pinus");
     	pinusPampaSubName.setSpecificEpithet("pampa");
     	pinusPampaSubName.setInfraSpecificEpithet("persicifolia");

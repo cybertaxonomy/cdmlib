@@ -261,9 +261,9 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetBasionym() {
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase basionym1 = BotanicalName.NewInstance(null);
-		TaxonNameBase basionym2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase basionym1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase basionym2 = TaxonNameBase.NewBotanicalInstance(null);
 
 		assertEquals(null, name1.getBasionym());
 		name1.addBasionym(basionym1);
@@ -318,7 +318,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetRank() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
 		assertNull("Rank shall be null", name1.getRank());
 		name1.setRank(Rank.SPECIES());
 		assertNotNull("Rank shall not be null", name1.getRank());
@@ -344,7 +344,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetAppendedPhrase() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
 		String appPhrase = "appPhrase";
 		assertNull(name1.getAppendedPhrase());
 		name1.setAppendedPhrase(appPhrase);
@@ -358,7 +358,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetSetNomenclaturalMicroReference() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
 		String microRef = "micro";
 		assertNull(name1.getNomenclaturalMicroReference());
 		name1.setNomenclaturalMicroReference(microRef);
@@ -372,7 +372,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetSetHasProblem() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
 		name1.setParsingProblem(0);
 		assertFalse(name1.hasProblem());
 		name1.setParsingProblem(1);
@@ -553,10 +553,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testMergeHomotypicGroups() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameBase.NewBotanicalInstance(null);
 
 		assertFalse(name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup()));
 		int numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
@@ -594,10 +594,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testIsBasionymFor() {
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase name2 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameBase.NewBotanicalInstance(null);
 
 		assertFalse(name2.isBasionymFor(name1));
 		assertFalse(name1.isBasionymFor(name2));
@@ -611,10 +611,10 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testIsHomotypic() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameBase.NewBotanicalInstance(null);
 		name1.mergeHomotypicGroups(name2);
 		name2.mergeHomotypicGroups(name4);
 
@@ -628,10 +628,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testMakeGroupsBasionym(){
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameBase.NewBotanicalInstance(null);
 
 		name1.mergeHomotypicGroups(name2);
 		name1.mergeHomotypicGroups(name3);
@@ -648,10 +648,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testIsGroupsBasionym(){
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameBase.NewBotanicalInstance(null);
 
 		assertFalse(name1.isGroupsBasionym());
 
@@ -670,9 +670,9 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testRemoveBasionyms(){
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase basionym = BotanicalName.NewInstance(null);
-		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase basionym = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase name3 = TaxonNameBase.NewBotanicalInstance(null);
 
 		name1.addBasionym(basionym);
 		assertEquals(1, name1.getBasionyms().size());

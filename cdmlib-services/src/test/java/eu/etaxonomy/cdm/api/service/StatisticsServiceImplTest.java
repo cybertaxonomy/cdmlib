@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.api.service;
 
@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -48,7 +49,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author s.buers
- * 
+ *
  */
 @SuppressWarnings({ "rawtypes", "serial" })
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
@@ -214,7 +215,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	/**
 	 * create some testdata
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 
@@ -281,7 +282,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 				MyCounter taxonContextCounter = new MyCounter();
 				// create a name for the taxon
-				BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+				BotanicalName name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 				name.setNameCache(randomName, true);
 
 				// create nomenclatural reference for taxon name (if left)
@@ -389,7 +390,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					randomName = RandomStringUtils.randomAlphabetic(5) + " "
 							+ RandomStringUtils.randomAlphabetic(10);
 					// name for synonym
-					name = BotanicalName.NewInstance(Rank.SPECIES());
+					name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 					name.setNameCache(randomName, true);
 
 					// create nomenclatural reference for synonym name (if left)
@@ -465,7 +466,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					sharedClassification++;
 					classificationService.saveOrUpdate(classifications
 							.get(classiCounter + 1));
-					
+
 					(classificationCounters.get(classiCounter + 1))
 					.addAll(taxonContextCounter);
 				}
@@ -540,7 +541,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	/**
 	 * create and count a new sec Reference
-	 * 
+	 *
 	 * @param classiCounter
 	 * @param taxonCounter
 	 * @return
@@ -634,7 +635,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void print() {
 		for (Classification classification : classifications) {
@@ -714,7 +715,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void createMap_ALL() {
 		typeMap_ALL = new HashMap<String, Long>() {
@@ -850,7 +851,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

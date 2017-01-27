@@ -690,35 +690,35 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         referenceService.save(sec);
         referenceService.save(sec_sensu);
 
-        BotanicalName n_abies = BotanicalName.NewInstance(Rank.GENUS());
+        BotanicalName n_abies = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
         n_abies.setNameCache("Abies", true);
         Taxon t_abies = Taxon.NewInstance(n_abies, sec);
         taxonService.save(t_abies);
 
-        BotanicalName n_abies_alba = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_alba = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_alba.setNameCache("Abies alba", true);
         Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
         t_abies_alba.setUuid(UUID.fromString(ABIES_ALBA_UUID));
         taxonService.save(t_abies_alba);
 
-        BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_subalpina = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_subalpina.setNameCache("Abies subalpina", true);
         Synonym s_abies_subalpina = Synonym.NewInstance(n_abies_subalpina, sec);
         taxonService.save(s_abies_subalpina);
 
-        BotanicalName n_abies_balsamea = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_balsamea = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
         t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF());
         taxonService.save(t_abies_balsamea);
 
-        BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_grandis = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_grandis.setNameCache("Abies grandis", true);
         Taxon t_abies_grandis = Taxon.NewInstance(n_abies_grandis, sec);
         taxonService.save(t_abies_grandis);
 
-        BotanicalName n_abies_kawakamii = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_kawakamii = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_kawakamii.setNameCache("Abies kawakamii", true);
         Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
         t_abies_kawakamii.getTitleCache();
@@ -733,7 +733,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
         taxonService.saveOrUpdate(t_abies_kawakamii_sensu_komarov);
 
-        BotanicalName n_abies_lasiocarpa = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_lasiocarpa = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
         Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
         taxonService.save(t_abies_lasiocarpa);
@@ -747,16 +747,16 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         //
         // 2 Names without taxa
         //
-        BotanicalName n_abies_borisiiregis = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_borisiiregis = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_borisiiregis.setNameCache("Abies borisii-regis", true);
         nameService.save(n_abies_borisiiregis);
 
-        BotanicalName n_abies_lasio = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_lasio = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_lasio.setNameCache("Abies lasio", true);
         nameService.save(n_abies_lasio);
 
         // A hybrid name not from Abies
-        BotanicalName n_abies_millefolium_x_Achillea_nobilis = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName n_abies_millefolium_x_Achillea_nobilis = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         n_abies_millefolium_x_Achillea_nobilis.setNameCache("Achillea millefolium × Achillea nobilis", true);
         Taxon t_abies_millefolium_x_Achillea_nobilis = Taxon.NewInstance(n_abies_millefolium_x_Achillea_nobilis, sec);
         taxonService.save(t_abies_millefolium_x_Achillea_nobilis);

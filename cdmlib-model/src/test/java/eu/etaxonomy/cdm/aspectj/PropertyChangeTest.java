@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 		@Test
 		public void testPropertyChangeBoolean() {
-			BotanicalName b = BotanicalName.NewInstance(Rank.SPECIES());
+			BotanicalName b = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setAnamorphic(true);
 			assertEquals(b.isAnamorphic(), lastPropValue);

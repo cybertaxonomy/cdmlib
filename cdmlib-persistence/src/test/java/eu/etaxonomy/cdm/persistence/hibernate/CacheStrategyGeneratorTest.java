@@ -126,7 +126,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
 		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
 		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
-		BotanicalName name3 = BotanicalName.NewInstance(Rank.GENUS());
+		BotanicalName name3 = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
 		name3.setFullTitleCache("Test: MyBook");
 		name3.setTitleCache("Test", true);
 		cdmEntityDaoBase.saveOrUpdate(name3);

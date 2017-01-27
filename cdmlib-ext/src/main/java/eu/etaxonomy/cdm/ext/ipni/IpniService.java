@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -464,7 +465,7 @@ public class IpniService  implements IIpniService{
 			valueMap.put(parameterMap.get(i), splits[i]);
 		}
 
-		BotanicalName name = BotanicalName.NewInstance(null);
+		BotanicalName name = TaxonNameBase.NewBotanicalInstance(null);
 
 		//caches
 		name.setNameCache(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), true);
@@ -513,12 +514,12 @@ public class IpniService  implements IIpniService{
 		name.addAnnotation(annotation);
 
 		//basionym
-		BotanicalName basionym = BotanicalName.NewInstance(null);
+		BotanicalName basionym = TaxonNameBase.NewBotanicalInstance(null);
 		basionym.setTitleCache(valueMap.get(BASIONYM), true);
 		name.addBasionym(basionym);
 
 		//replaced synonym
-		BotanicalName replacedSynoynm = BotanicalName.NewInstance(null);
+		BotanicalName replacedSynoynm = TaxonNameBase.NewBotanicalInstance(null);
 		replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
 		name.addReplacedSynonym(replacedSynoynm, null, null, null);
 

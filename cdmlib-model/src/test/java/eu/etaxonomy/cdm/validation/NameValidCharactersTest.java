@@ -27,6 +27,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
 /**
@@ -48,7 +49,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		name = BotanicalName.NewInstance(Rank.SPECIES());
+		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
 		name.setNameCache("Abies balsamea");

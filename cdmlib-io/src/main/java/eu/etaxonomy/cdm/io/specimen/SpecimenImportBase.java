@@ -160,7 +160,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             //create new taxon name
 
             if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP)){
-                taxonName = BotanicalName.NewInstance(rank);
+                taxonName = TaxonNameBase.NewBotanicalInstance(rank);
             }else if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN)){
                 taxonName = TaxonNameBase.NewZoologicalInstance(rank);
             }else{
@@ -347,7 +347,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                return taxonName;
 	            }
 	            else{
-	                taxonName = BotanicalName.NewInstance(null);
+	                taxonName = TaxonNameBase.NewBotanicalInstance(null);
 	            }
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));

@@ -80,7 +80,7 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationT
 		INameCacheStrategy zoologicalStrategy = (INameCacheStrategy)acherontiaLachesis.getCacheStrategy();
 		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
 
-		TaxonNameBase cryptocoryneGriffithii = BotanicalName.NewInstance(null);
+		TaxonNameBase cryptocoryneGriffithii = TaxonNameBase.NewBotanicalInstance(null);
 		INameCacheStrategy botanicalStrategy = (INameCacheStrategy)cryptocoryneGriffithii.getCacheStrategy();
 		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
 	}

@@ -273,7 +273,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		termService.save(identifierType2);
 
 
-    	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+    	BotanicalName name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         Taxon tb = Taxon.NewInstance(name, null);
         tb.addIdentifier("ext-1234", identifierType1);
         name.addIdentifier("ext-name12", identifierType2);

@@ -138,7 +138,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // Derived Unit
         MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
         mediaSpecimen.setCollection(collection);
-        BotanicalName storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName storedUnder = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
         mediaSpecimen.setStoredUnder(storedUnder);
         PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
         preservation.setMedium(DefinedTerm.NewDnaMarkerInstance("medium", "medium", "medium"));// dummy
@@ -187,7 +187,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     private Taxon getTaxon() {
         Reference sec = getReference();
-        TaxonNameBase<?, ?> name = BotanicalName.NewInstance(Rank.GENUS());
+        TaxonNameBase<?, ?> name = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
         Taxon taxon = Taxon.NewInstance(name, sec);
         return taxon;
 
@@ -1611,9 +1611,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       occurrenceService.save(fossilTypeDesignation);
 
       //NAMES
-      BotanicalName taxonName = BotanicalName.PARSED_NAME("Campanula patual");
-      BotanicalName synonymName = BotanicalName.PARSED_NAME("Syno nyma");
-      BotanicalName orphanName = BotanicalName.PARSED_NAME("Orphanus lonelia");
+      BotanicalName taxonName = TaxonNameBase.PARSED_BOTANICAL("Campanula patual");
+      BotanicalName synonymName = TaxonNameBase.PARSED_BOTANICAL("Syno nyma");
+      BotanicalName orphanName = TaxonNameBase.PARSED_BOTANICAL("Orphanus lonelia");
       taxonName.setUuid(taxonNameUuid);
       synonymName.setUuid(synonymNameUuid);
       orphanName.setUuid(orphanNameUuid);

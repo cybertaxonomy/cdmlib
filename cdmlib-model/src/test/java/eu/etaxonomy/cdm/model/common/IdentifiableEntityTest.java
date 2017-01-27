@@ -197,7 +197,7 @@ public class IdentifiableEntityTest {
 		assertEquals(compareResult, equalsResult);
 
 		//Abies alba x Pinus beta < Abies alba xinus
-		BotanicalName abiesAlbaXinus = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		BotanicalName abiesAlbaXinus = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
 		abiesAlbaXinus.setGenusOrUninomial("Abies");
 		abiesAlbaXinus.setSpecificEpithet("alba");
 		abiesAlbaXinus.setInfraSpecificEpithet("xinus");

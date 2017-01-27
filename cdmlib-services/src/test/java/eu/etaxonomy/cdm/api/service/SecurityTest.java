@@ -130,7 +130,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @DataSet
     public void testHasPermission(){
 
-        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
+        Taxon taxon = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()),null);
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
         boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.UPDATE);
@@ -215,7 +215,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/3098
     public void testHasPermissions(){
 
-        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
+        Taxon taxon = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()),null);
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
         boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.ALL);
@@ -233,7 +233,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        Taxon expectedTaxon = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.SPECIES()), null);
         expectedTaxon.getName().setTitleCache("Newby admin", true);
         UUID uuid = taxonService.save(expectedTaxon).getUuid();
         commitAndStartNewTransaction(null);
@@ -243,7 +243,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-        expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        expectedTaxon = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null);
         expectedTaxon.getName().setTitleCache("Newby taxonEditor", true);
         uuid = taxonService.saveOrUpdate(expectedTaxon);
         commitAndStartNewTransaction(null);
@@ -1091,7 +1091,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
         context.setAuthentication(authentication);
 
-        Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        Synonym syn = Synonym.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.SPECIES()), null);
         UUID synUuid = UUID.randomUUID();
         syn.setUuid(synUuid);
         try{
@@ -1119,7 +1119,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         // 2) test for denial
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
-        Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        Synonym syn = Synonym.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.SPECIES()), null);
         UUID synUuid = syn.getUuid();
         try{
             taxonService.saveOrUpdate(syn);
@@ -1150,7 +1150,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         // test for success
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
-        TaxonNode acherontia_child_node = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+        TaxonNode acherontia_child_node = acherontia_node.addChildTaxon(Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.SPECIES()), null), null, null);
 
         try{
             taxonNodeService.saveOrUpdate(acherontia_child_node);
@@ -1181,7 +1181,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         // test for denial
         TaxonNode acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
         int numOfChildNodes = acherontiini_node.getCountChildren();
-        acherontiini_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);
+        acherontiini_node.addChildTaxon(Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null), null, null);
 
         try{
             logger.debug("==============================");

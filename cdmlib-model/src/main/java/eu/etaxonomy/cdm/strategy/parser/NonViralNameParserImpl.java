@@ -97,7 +97,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			boolean isCultivatedPlantName = false;
 			if ( (isBotanicalName || isCultivatedPlantName) && ! isZoologicalName && !isBacteriologicalName){
 				if (isBotanicalName){
-					result = BotanicalName.NewInstance(rank);
+					result = TaxonNameBase.NewBotanicalInstance(rank);
 				}else{
 					result = CultivarPlantName.NewInstance(rank);
 				}
@@ -111,7 +111,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		} else {
 			switch (code) {
 			case ICNAFP:
-				result = BotanicalName.NewInstance(rank);
+				result = TaxonNameBase.NewBotanicalInstance(rank);
 				break;
 			case ICZN:
 				result = TaxonNameBase.NewZoologicalInstance(rank);

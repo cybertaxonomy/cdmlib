@@ -1723,9 +1723,9 @@ public class NonViralNameParserImplTest {
 
     @Test
     public final void testNomenclaturalStatus() {
-        BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
+        BotanicalName name = TaxonNameBase.NewBotanicalInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
         name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-        BotanicalName name2 = BotanicalName.NewInstance(Rank.FAMILY());
+        BotanicalName name2 = TaxonNameBase.NewBotanicalInstance(Rank.FAMILY());
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());

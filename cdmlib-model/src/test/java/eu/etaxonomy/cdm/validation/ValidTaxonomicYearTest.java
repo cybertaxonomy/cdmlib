@@ -54,7 +54,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 
-		name = BotanicalName.NewInstance(Rank.SPECIES());
+		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setAuthorshipCache("L.");
 		name.setFullTitleCache("Aus aus L.");

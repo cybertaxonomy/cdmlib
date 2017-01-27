@@ -538,7 +538,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (StringUtils.isNotBlank(commonDetermination.determinedBy)){
 			sec = ReferenceFactory.newGeneric();
 			TeamOrPersonBase<?> determinedBy;
-			BotanicalName dummyName = BotanicalName.NewInstance(Rank.SPECIES());
+			BotanicalName dummyName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 			try {
 				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
 				determinedBy = dummyName.getCombinationAuthorship();
