@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -103,11 +102,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 					result = CultivarPlantName.NewInstance(rank);
 				}
 			}else if ( isZoologicalName /*&& ! isBotanicalName*/ && !isBacteriologicalName && !isCultivatedPlantName){
-				result = ZoologicalName.NewInstance(rank);
+				result = TaxonNameBase.NewZoologicalInstance(rank);
 			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
-				result = BacterialName.NewInstance(rank);
+				result = TaxonNameBase.NewBacterialInstance(rank);
 			}else {
-				result =  NonViralName.NewInstance(rank);
+				result =  TaxonNameBase.NewNonViralInstance(rank);
 			}
 		} else {
 			switch (code) {
@@ -115,7 +114,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				result = BotanicalName.NewInstance(rank);
 				break;
 			case ICZN:
-				result = ZoologicalName.NewInstance(rank);
+				result = TaxonNameBase.NewZoologicalInstance(rank);
 				break;
 			case ICNCP:
 				logger.warn("ICNCP parsing not yet implemented");
@@ -123,7 +122,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				break;
 			case ICNB:
 				logger.warn("ICNB not yet implemented");
-				result = BacterialName.NewInstance(rank);
+				result = TaxonNameBase.NewBacterialInstance(rank);
 				break;
 			case ICVCN:
 				logger.error("Viral name is not a NonViralName !!");

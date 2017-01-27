@@ -47,13 +47,13 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -500,13 +500,13 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
      */
     private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase, String synonymNameStr) {
         NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
-        TaxonNameBase name = null;
+        ITaxonNameBase name = null;
         if (nc.isKindOf(NomenclaturalCode.ICZN)){
-            name = ZoologicalName.NewInstance(taxonBase.getName().getRank());
+            name = TaxonNameBase.NewZoologicalInstance(taxonBase.getName().getRank());
         }else if (nc.isKindOf(NomenclaturalCode.ICNAFP)){
             name = BotanicalName.NewInstance(taxonBase.getName().getRank());
         } else{
-            name = NonViralName.NewInstance(taxonBase.getName().getRank());
+            name = TaxonNameBase.NewNonViralInstance(taxonBase.getName().getRank());
         }
         name.setTitleCache(synonymNameStr, true);
         if (name != null){

@@ -36,15 +36,11 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -253,33 +249,32 @@ public class GbifJsonOccurrenceParser {
                             string = record.getString(NOMENCLATURALCODE);
 
                             if (string.equals(NomenclaturalCode.ICZN.getTitleCache())){
-                                name = ZoologicalName.NewInstance(rank);
+                                name = TaxonNameBase.NewZoologicalInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNAFP.getTitleCache())) {
                                 name = BotanicalName.NewInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
-                                name = BacterialName.NewInstance(rank);
+                                name = TaxonNameBase.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
                                 name = CultivarPlantName.NewInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
-                                name = ViralName.NewInstance(rank);
+                                name = TaxonNameBase.NewViralInstance(rank);
                             } else {
-                                name = NonViralName.NewInstance(rank);
                             }
                         }else {
                             if (record.has(KINGDOM)){
                                 if (record.getString(KINGDOM).equals(PLANTAE)){
                                     name = BotanicalName.NewInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(ANIMALIA)){
-                                    name = ZoologicalName.NewInstance(rank);
+                                    name = TaxonNameBase.NewZoologicalInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(FUNGI)){
-                                    name = NonViralName.NewInstance(rank);
+                                    name = BotanicalName.NewInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(BACTERIA)){
-                                    name = BacterialName.NewInstance(rank);
+                                    name = TaxonNameBase.NewBacterialInstance(rank);
                                 } else{
-                                    name = NonViralName.NewInstance(rank);
+                                    name = TaxonNameBase.NewNonViralInstance(rank);
                                 }
                             } else{
-                                name = NonViralName.NewInstance(rank);
+                                name = TaxonNameBase.NewNonViralInstance(rank);
                             }
                         }
                         if (record.has(GENUS)){

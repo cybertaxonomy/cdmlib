@@ -162,9 +162,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP)){
                 taxonName = BotanicalName.NewInstance(rank);
             }else if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN)){
-                taxonName = ZoologicalName.NewInstance(rank);
+                taxonName = TaxonNameBase.NewZoologicalInstance(rank);
             }else{
-                taxonName = NonViralName.NewInstance(rank);
+                taxonName = TaxonNameBase.NewNonViralInstance(rank);
             }
             taxonName.setFullTitleCache(scientificName,true);
             taxonName.setTitleCache(scientificName, true);
@@ -283,7 +283,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid())) {
-	            NonViralName<ZoologicalName> taxonName = ZoologicalName.NewInstance(null);
+	            NonViralName<ZoologicalName> taxonName = TaxonNameBase.NewZoologicalInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));
@@ -402,7 +402,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNB.getUuid())) {
-	            NonViralName<BacterialName> taxonName = BacterialName.NewInstance(null);
+	            NonViralName<BacterialName> taxonName = TaxonNameBase.NewBacterialInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));
@@ -455,11 +455,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        if (problem) {
 	            logger.info("Problem im setTaxonNameByType ");
-	            NonViralName<?> taxonName = NonViralName.NewInstance(null);
+	            NonViralName<?> taxonName = TaxonNameBase.NewNonViralInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            return taxonName;
 	        }
-	        NonViralName<?> tn = NonViralName.NewInstance(null);
+	        NonViralName<?> tn = TaxonNameBase.NewNonViralInstance(null);
 	        return tn;
 	    }
 
