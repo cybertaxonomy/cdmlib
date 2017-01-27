@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author cmathew
@@ -37,7 +38,7 @@ public class NewEntityListenerTest implements NewEntityListener {
     public void testPropertyChange() {
         CdmBase.setNewEntityListener(this);
 
-        NonViralName<?> b = NonViralName.NewInstance(Rank.SPECIES());
+        NonViralName<?> b = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
         Annotation newAnnotation = Annotation.NewDefaultLanguageInstance("test");
         b.addAnnotation(newAnnotation);
         Assert.assertEquals(newAnnotation, lastPropValue);

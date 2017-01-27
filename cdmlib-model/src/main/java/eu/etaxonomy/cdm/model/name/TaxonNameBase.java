@@ -505,7 +505,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public static NonViralName NewInstance(Rank rank){
+    public static NonViralName NewNonViralInstance(Rank rank){
         return new NonViralName(rank, null);
     }
 
@@ -527,7 +527,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+    public static NonViralName NewNonViralInstance(Rank rank, HomotypicalGroup homotypicalGroup){
         return new NonViralName(rank, homotypicalGroup);
     }
 

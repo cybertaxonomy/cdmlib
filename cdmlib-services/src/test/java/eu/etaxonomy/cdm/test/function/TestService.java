@@ -59,7 +59,7 @@ public class TestService {
 
 	public void testAppController() {
 		logger.info("Create name objects...");
-		NonViralName<?> nvn = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> nvn = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
 
 		BotanicalName bn = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ZoologicalName zn = TaxonNameBase.NewZoologicalInstance(Rank.FAMILY());
@@ -224,10 +224,10 @@ public class TestService {
 			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
 
 
-			TaxonNameBase<?,?> name = NonViralName.NewInstance(null);
+			TaxonNameBase<?,?> name = TaxonNameBase.NewNonViralInstance(null);
 			name.setTitleCache("Abies alba", true);
 
-			TaxonNameBase<?,?> name2 = NonViralName.NewInstance(null);
+			TaxonNameBase<?,?> name2 = TaxonNameBase.NewNonViralInstance(null);
 			name2.setTitleCache("Abies beta", true);
 
 			//appCtr.getNameService().saveTaxonName(name);

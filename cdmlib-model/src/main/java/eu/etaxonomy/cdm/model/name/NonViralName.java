@@ -60,8 +60,7 @@ public class NonViralName<T extends NonViralName>
         extends TaxonNameBase<T, INonViralNameCacheStrategy>
         implements INonViralName{
 
-    private static final long serialVersionUID = 4441110073881088033L;
-
+    private static final long serialVersionUID = -9083811681449792683L;
 
 // ************************** CONSTRUCTORS *************/
 

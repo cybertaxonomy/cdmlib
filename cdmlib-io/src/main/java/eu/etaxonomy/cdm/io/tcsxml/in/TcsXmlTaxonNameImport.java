@@ -290,7 +290,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			if (nomCode != null){
 				nameBase = nomCode.getNewTaxonNameInstance(rank);
 			}else{
-				nameBase = NonViralName.NewInstance(rank);
+				nameBase = TaxonNameBase.NewNonViralInstance(rank);
 			}
 			childName = "Simple";
 			obligatory = true;

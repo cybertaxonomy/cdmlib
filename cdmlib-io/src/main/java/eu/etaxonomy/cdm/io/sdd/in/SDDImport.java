@@ -918,7 +918,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 				NonViralName<?> tnb = null;
 				if (!id.equals("")) {
-					tnb = NonViralName.NewInstance(defaultRank);
+					tnb = TaxonNameBase.NewNonViralInstance(defaultRank);
 					IdentifiableSource source = null;
 					if (isNotBlank(uri)) {
 						//TODO type
@@ -1223,7 +1223,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Taxon handleCDNoScope(Namespace sddNamespace,
 	        SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
-		NonViralName<?> nonViralName = NonViralName.NewInstance(defaultRank);
+		NonViralName<?> nonViralName = TaxonNameBase.NewNonViralInstance(defaultRank);
 		String id = new String("" + taxonNamesCount);
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);

@@ -801,13 +801,13 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testClone(){
-		NonViralName taxonNameBase1 = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> genusName = NonViralName.NewInstance(Rank.GENUS());
+		NonViralName taxonNameBase1 = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		NonViralName<?> genusName = TaxonNameBase.NewNonViralInstance(Rank.GENUS());
 		Taxon taxonBase = Taxon.NewInstance(taxonNameBase1, null);
 
 		//basionym & homonym
-		NonViralName<?> basionym = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> earlierHomonym = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> basionym = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		NonViralName<?> earlierHomonym = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
 		taxonNameBase1.addBasionym(basionym);
 		taxonNameBase1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule");
 		//status

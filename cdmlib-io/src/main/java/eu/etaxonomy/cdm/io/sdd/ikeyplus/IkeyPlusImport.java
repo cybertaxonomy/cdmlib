@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import fr.lis.ikeyplus.IO.SDDSaxParser;
 import fr.lis.ikeyplus.model.DataSet;
 import fr.lis.ikeyplus.model.ICharacter;
@@ -172,7 +173,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
                 pkNode = createPkNode(null, statement);
 
                 //TODO handle rank
-                NonViralName<?> nonViralName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
+                NonViralName<?> nonViralName = TaxonNameBase.NewNonViralInstance(Rank.UNKNOWN_RANK());
                 nonViralName.setTitleCache(taxon.getName(), true);
                 eu.etaxonomy.cdm.model.taxon.Taxon cdmTaxon = eu.etaxonomy.cdm.model.taxon.Taxon.NewInstance(
                         nonViralName, null); //FIXME !!!!!!

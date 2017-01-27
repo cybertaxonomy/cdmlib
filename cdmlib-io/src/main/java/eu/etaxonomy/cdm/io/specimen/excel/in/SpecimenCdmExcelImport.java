@@ -506,7 +506,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			if (nc != null){
 				name = nc.getNewTaxonNameInstance(rank);
 			}else{
-				name = NonViralName.NewInstance(rank);
+				name = TaxonNameBase.NewNonViralInstance(rank);
 			}
 			if (StringUtils.isNotBlank(commonDetermination.genus)){
 				name.setGenusOrUninomial(commonDetermination.genus);
@@ -644,7 +644,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private NonViralName<?> makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
-		NonViralName<?> name = NonViralName.NewInstance(null);
+		NonViralName<?> name = TaxonNameBase.NewNonViralInstance(null);
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (nc != null){
 			name = (NonViralName<?>)nc.getNewTaxonNameInstance(null);

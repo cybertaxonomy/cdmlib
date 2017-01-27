@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -450,7 +451,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = parseScientificName(scientificName);
                 }
                 else{
-                    taxonName = NonViralName.NewInstance(null);
+                    taxonName = TaxonNameBase.NewNonViralInstance(null);
                     taxonName.setTitleCache(scientificName, true);
                 }
                 getNameService().save(taxonName);
@@ -520,7 +521,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
         if(nomenclatureCode == null){
-            taxonName = NonViralName.NewInstance(null);
+            taxonName = TaxonNameBase.NewNonViralInstance(null);
             taxonName.setTitleCache(scientificName, true);
             return taxonName;
         }
@@ -555,7 +556,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         //      }
         //TODO: parsing of ViralNames?
         if(problem){
-            taxonName = NonViralName.NewInstance(null);
+            taxonName = TaxonNameBase.NewNonViralInstance(null);
             taxonName.setTitleCache(scientificName, true);
         }
         return taxonName;

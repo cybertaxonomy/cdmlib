@@ -284,8 +284,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
         Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
 
-        NonViralName hybridName = NonViralName.NewInstance(Rank.SPECIES());
-        NonViralName secondParent = NonViralName.NewInstance(Rank.SPECIES());
+        NonViralName<?> hybridName = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+        NonViralName<?> secondParent = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
 
         secondParent.setTitleCache("Second parent Mill.", true);
         hybridName.addHybridParent(speciesName, HybridRelationshipType.FIRST_PARENT(), null);
@@ -518,7 +518,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testGetInfraGenericNames(){
         String author = "Anyauthor";
-        NonViralName nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
+        NonViralName<?> nonViralName = TaxonNameBase.NewNonViralInstance(Rank.SUBGENUS());
         nonViralName.setGenusOrUninomial("Genus");
         nonViralName.setInfraGenericEpithet("subgenus");
         nonViralName.setAuthorshipCache(author);

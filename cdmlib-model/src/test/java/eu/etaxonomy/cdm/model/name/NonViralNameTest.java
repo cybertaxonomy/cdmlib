@@ -98,7 +98,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testNonViralNameRank() {
-		NonViralName<?> nonViralName = NonViralName.NewInstance(Rank.GENUS());
+		NonViralName<?> nonViralName = TaxonNameBase.NewNonViralInstance(Rank.GENUS());
 		assertNotNull(nonViralName);
 	}
 
@@ -325,7 +325,7 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(0, botanicalName1.getHybridParentRelations().size());
 		assertEquals(0, botanicalName1.getHybridChildRelations().size());
 		BotanicalName femaleParent = BotanicalName.NewInstance(null);
-		NonViralName<?> maleParent = NonViralName.NewInstance(null);
+		NonViralName<?> maleParent = TaxonNameBase.NewNonViralInstance(null);
 		ZoologicalName child = TaxonNameBase.NewZoologicalInstance(null);
 
 		botanicalName1.addHybridParent(femaleParent, HybridRelationshipType.FEMALE_PARENT(), null);
@@ -365,10 +365,10 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.setInfraSpecificEpithet("infrabus");
 		nonViralName1.setBinomHybrid(true);
 
-		NonViralName<?> parent = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> parent2 = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> child = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> child2 = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> parent = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		NonViralName<?> parent2 = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		NonViralName<?> child = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		NonViralName<?> child2 = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
 		nonViralName1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), "parent rule");
 		nonViralName1.addHybridParent(parent2, HybridRelationshipType.SECOND_PARENT(), "parent rule2");
 		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");

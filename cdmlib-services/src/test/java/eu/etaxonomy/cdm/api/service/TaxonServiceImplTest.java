@@ -288,11 +288,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Reference reference = ReferenceFactory.newGeneric();
         String referenceDetail = "test";
 
-        NonViralName<?> t1n = NonViralName.NewInstance(null);
+        NonViralName<?> t1n = TaxonNameBase.NewNonViralInstance(null);
         Taxon t1 = Taxon.NewInstance(t1n, reference);
-        NonViralName<?> t2n = NonViralName.NewInstance(null);
+        NonViralName<?> t2n = TaxonNameBase.NewNonViralInstance(null);
         Taxon t2 = Taxon.NewInstance(t2n, reference);
-        NonViralName<?> s1n = NonViralName.NewInstance(null);
+        NonViralName<?> s1n = TaxonNameBase.NewNonViralInstance(null);
         Synonym s1 = Synonym.NewInstance(s1n, reference);
         t1.addSynonym(s1, heteroTypicSynonymType);
         service.saveOrUpdate(t1);
