@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -70,6 +71,7 @@ public class OAuth2ServerConfiguration {
                     //      or
                     //   org.springframework.security.access.expression.SecurityExpressionRoot
                     // - org.springframework.security.oauth2.provider.expression.OAuth2SecurityExpressionMethods
+                    .antMatchers(HttpMethod.OPTIONS, "/manage/**").permitAll() // see #6393
                     .antMatchers("/manage/**").access(ACCEXPR_MANAGE_CLIENT)
                     .antMatchers("/**description/accumulateDistributions").access(ACCEXPR_MANAGE_CLIENT)
                     .antMatchers("/user/me").access("isAuthenticated()")

@@ -8,8 +8,6 @@
  */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,9 +33,11 @@ import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
+import io.swagger.annotations.Api;
 
 @Controller
 @Api("manage")
+@CrossOrigin(origins="*")
 @RequestMapping(value = { "/manage" })
 public class ManagementController {
     public static final Logger logger = Logger
@@ -117,11 +118,12 @@ public class ManagementController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "reindex" }, method = {RequestMethod.GET, RequestMethod.OPTIONS})
     public synchronized ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
              @RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
              @RequestParam(value = "priority", required = false) Integer priority,
+             @RequestParam(value = "dataRedirect", required = false) boolean dataRedirect,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
@@ -147,8 +149,8 @@ public class ManagementController {
             subThread.start();
         }
         // send redirect "see other"
-        return progressUtil.respondWithMonitor(frontendBaseUrl, request,
-                response, processLabel, indexMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, processLabel,
+                indexMonitorUuid, dataRedirect, request, response);
     }
 
     /**
@@ -183,10 +185,11 @@ public class ManagementController {
     * @return
     * @throws Exception
     */
-   @RequestMapping(value = { "redict" }, method = RequestMethod.GET)
+   @RequestMapping(value = { "redict" }, method = {RequestMethod.GET, RequestMethod.OPTIONS})
     public synchronized ModelAndView doRedict(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
+            @RequestParam(value = "dataRedirect", required = false) boolean dataRedirect,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
@@ -210,8 +213,8 @@ public class ManagementController {
            subThread.start();
        }
        // send redirect "see other"
-        return progressUtil.respondWithMonitor(frontendBaseUrl, request,
-                response, processLabel, indexMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, processLabel,
+                indexMonitorUuid, dataRedirect, request, response);
    }
 
     /**
@@ -222,10 +225,11 @@ public class ManagementController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "purge" }, method = {RequestMethod.GET, RequestMethod.OPTIONS})
     public synchronized ModelAndView doPurge(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
+            @RequestParam(value = "dataRedirect", required = false) boolean dataRedirect,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
@@ -251,8 +255,8 @@ public class ManagementController {
         }
 
         // send redirect "see other"
-        return progressUtil.respondWithMonitor(frontendBaseUrl, request,
-                response, processLabel, indexMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, processLabel,
+                indexMonitorUuid, dataRedirect, request, response);
     }
 
 

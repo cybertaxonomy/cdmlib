@@ -15,16 +15,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.springframework.web.servlet.View;
+
+import eu.etaxonomy.cdm.remote.config.DataSourceProperties;
+import eu.etaxonomy.cdm.remote.json.JsonpUtil;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.xml.XMLSerializer;
-
-import org.apache.log4j.Logger;
-import org.springframework.web.servlet.View;
-
-import eu.etaxonomy.cdm.remote.config.DataSourceProperties;
 
 
 public class JsonView extends BaseView implements View{
@@ -163,7 +163,7 @@ public class JsonView extends BaseView implements View{
         } else {
             // assuming json
             if(jsonpCallback != null){
-                writer.append(jsonpCallback).append("(").append(jsonObj.toString()).append(")");
+               // writer.append(jsonpCallback).append("(").append(jsonObj.toString()).append(");");
             } else {
                 writer.append(jsonObj.toString());
             }
@@ -192,30 +192,12 @@ public class JsonView extends BaseView implements View{
 
         PrintWriter writer = response.getWriter();
 
-        // read jsonp parameter from query string
-        String jsonpCallback = extractJsonpCallback(request);
+        // read jsonp parameter from the request
+        String jsonpCallback = JsonpUtil.readJsonpCallback(request);
 
         // render
         render(entity, writer, jsonpCallback, request, response);
     }
 
-    /**
-     * @param request
-     * @return
-     */
-    private String extractJsonpCallback(HttpServletRequest request) {
-        String jsonpCallback= null;
-        String queryString = request.getQueryString();
-        if(queryString != null){
-            String[] tokens = request.getQueryString().split("&", 0);
-            String jsonpParamName = "callback";
-            for (int i = 0; i < tokens.length; i++) {
-                if(tokens[i].startsWith(jsonpParamName)){
-                    jsonpCallback = tokens[i].substring(jsonpParamName.length() + 1);
-                    break;
-                }
-            }
-        }
-        return jsonpCallback;
-    }
+
 }

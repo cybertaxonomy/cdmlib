@@ -206,7 +206,7 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
         }
 
         // send redirect "see other"
-        return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, transmissionEngineMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, processLabel, transmissionEngineMonitorUuid, false, request, response);
     }
 
     @RequestMapping(value = "namedAreasInUse", method = RequestMethod.GET)

@@ -77,18 +77,37 @@
         login = null;
         if(tokens){
             login = tokens[2];
+            login_base64 = btoa(login);
             url = tokens[1] + tokens[4];
         }
+        var glue = '?'
+        if(/\?\w*?=\w/.test(url)){
+            glue = '&';
+        }
+        url += glue + 'dataRedirect=true';
+        
         $.ajax({
           url: addFileExtension(url, 'json'),
-          dataType: "jsonp",
+          type: 'GET',
+          dataType: 'json', // cannot use jsonp with authentication
           beforeSend: function(xhr) { 
+              // a) requires that the server is accepting 
+              //    HTTP OPTION requests without authentication
+              // b) the service must add CORS access control headers 
+              //    in its response
               if(login){
-                  xhr.setRequestHeader("Authorization", "Basic " + btoa(login));                   
+                  xhr.setRequestHeader("Authorization", "Basic " + login_base64);                   
               }
           },
           success: function(data){
             monitorProgess(data);
+          }, 
+          error: function(xhr, text, error){
+              if(login){
+                  showError('Error: Are your credentials correct?');
+              } else {
+                  console.log(text + ': ' + error);                  
+              }
           }
         });
 
@@ -103,14 +122,19 @@
       }
       $.ajax({
         url: monitorUrl,
-        dataType: "jsonp",
+        dataType: "json",
         success: function(data){
           showProgress(data);
         }
       });
     };
 
+    var showError = function(message){
+        $progress_status.html('<span class="error">' +  message + '</span>');
+    }
+    
     var showProgress = function(monitor){
+        $progress_status.html('');
       $progress_titel.text(monitor.taskName);
       var percentTwoDecimalDigits = Math.round(monitor.percentage * 100) / 100;
       $progress_bar_value.text(percentTwoDecimalDigits + "%");
