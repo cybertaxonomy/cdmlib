@@ -441,7 +441,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Cultivar")) {
-	            CultivarPlantName taxonName = CultivarPlantName.NewInstance(null);
+	            CultivarPlantName taxonName = TaxonNameBase.NewCultivarInstance(null);
 
 	            if (taxonName.hasProblem()) {
 	                logger.info("pb ICNCP");

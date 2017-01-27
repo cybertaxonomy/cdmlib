@@ -36,8 +36,6 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -255,7 +253,7 @@ public class GbifJsonOccurrenceParser {
                             } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
                                 name = TaxonNameBase.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
-                                name = CultivarPlantName.NewInstance(rank);
+                                name = TaxonNameBase.NewCultivarInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
                                 name = TaxonNameBase.NewViralInstance(rank);
                             } else {

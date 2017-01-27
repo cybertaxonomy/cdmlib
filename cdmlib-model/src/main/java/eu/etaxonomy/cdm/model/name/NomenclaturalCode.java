@@ -127,11 +127,11 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * nomenclature code only containing the given {@link Rank rank}.
 	 *
 	 * @param	rank	the rank of the new taxon name instance
-	 * @see 			BotanicalName#NewInstance(Rank)
-	 * @see 			ZoologicalName#NewInstance(Rank)
-	 * @see 			CultivarPlantName#NewInstance(Rank)
-	 * @see 			BacterialName#NewInstance(Rank)
-	 * @see 			ViralName#NewInstance(Rank)
+	 * @see 			TaxonNameBase#NewBotanicalInstance(Rank)
+	 * @see 			TaxonNameBase#NewZoologicalInstance(Rank)
+	 * @see 			TaxonNameBase#NewCultivarInstance(Rank)
+	 * @see 			TaxonNameBase#NewBacterialInstance(Rank)
+	 * @see 			TaxonNameBase#NewViralInstance(Rank)
 	 */
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
@@ -144,7 +144,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 			result = TaxonNameBase.NewZoologicalInstance(rank);
 			break;
 		case ICNCP:
-			result = CultivarPlantName.NewInstance(rank);
+			result = TaxonNameBase.NewCultivarInstance(rank);
 			break;
 		case ICNB:
 			result = TaxonNameBase.NewBacterialInstance(rank);
@@ -165,11 +165,11 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * nomenclature code only containing the given {@link Rank rank}.
 	 *
 	 * @param	rank	the rank of the new taxon name instance
-	 * @see 			BotanicalName#NewInstance(Rank)
-	 * @see 			ZoologicalName#NewInstance(Rank)
-	 * @see 			CultivarPlantName#NewInstance(Rank)
-	 * @see 			BacterialName#NewInstance(Rank)
-	 * @see 			ViralName#NewInstance(Rank)
+     * @see             TaxonNameBase#NewBotanicalInstance(Rank)
+     * @see             TaxonNameBase#NewZoologicalInstance(Rank)
+     * @see             TaxonNameBase#NewCultivarInstance(Rank)
+     * @see             TaxonNameBase#NewBacterialInstance(Rank)
+     * @see             TaxonNameBase#NewViralInstance(Rank)
 	 */
 	@Transient
 	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){

@@ -20,7 +20,7 @@ package eu.etaxonomy.cdm.model.name;
  * @date 26.01.2017
  *
  */
-public interface ICultivarPlantName extends IBotanicalName {
+public interface ICultivarPlantName extends INonViralName {
     /**
      * Returns the characteristical cultivar name part string assigned to <i>this</i>
      * cultivar taxon name. In the scientific name "Clematis alpina 'Ruby'" for

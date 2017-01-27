@@ -816,7 +816,7 @@ public class FullCoverageDataGenerator {
 		bacName.setNameApprobation("nameApprobation");
 		handleIdentifiableEntity(bacName);
 
-		CultivarPlantName botName = CultivarPlantName.NewInstance(Rank.SUBSPECIES());
+		CultivarPlantName botName = TaxonNameBase.NewCultivarInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
 		botName.setCultivarName("cultivarName");
 		botName.setGenusOrUninomial("Genus");
