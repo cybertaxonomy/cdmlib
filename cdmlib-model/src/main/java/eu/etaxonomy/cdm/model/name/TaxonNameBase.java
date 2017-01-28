@@ -833,6 +833,40 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICNAFP, rank);
     }
 
+
+
+
+
+    /**
+     * Returns a zoological taxon name based on parsing a string representing
+     * all elements (according to the {@link NomenclaturalCode#ICZN() ICZN}) of a zoological taxon name (where
+     * the scientific name is an uninomial) including authorship but without
+     * nomenclatural reference.
+     *
+     * @param   fullNameString  the string to be parsed
+     * @return                  the new zoological taxon name
+     */
+    public static ZoologicalName PARSED_ZOOLOGICAL(String fullNameString){
+        return PARSED_ZOOLOGICAL(fullNameString, Rank.GENUS());
+    }
+
+    /**
+     * Returns a zoological taxon name based on parsing a string representing
+     * all elements (according to the {@link NomenclaturalCode#ICZN() ICZN})) of a zoological taxon name including
+     * authorship but without nomenclatural reference. The parsing result
+     * depends on the given rank of the zoological taxon name to be created.
+     *
+     * @param   fullNameString  the string to be parsed
+     * @param   rank            the rank of the taxon name
+     * @return                  the new zoological taxon name
+     */
+    public static ZoologicalName PARSED_ZOOLOGICAL(String fullNameString, Rank rank){
+        if (nameParser == null){
+            nameParser  = new NonViralNameParserImpl();
+        }
+        return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
+    }
+
 // ************* CONSTRUCTORS *************/
     /**
      * Class constructor: creates a new empty taxon name.

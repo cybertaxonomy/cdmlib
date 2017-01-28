@@ -80,16 +80,16 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Before
 	public void setUp() throws Exception {
 		strategy = ZooNameDefaultCacheStrategy.NewInstance();
-		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
-		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
+		familyName = TaxonNameBase.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
+		genusName = TaxonNameBase.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 
 		subGenusName = TaxonNameBase.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
-		speciesName = ZoologicalName.PARSED_NAME(speciesNameString);
-		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameString);
-		speciesNameWithInfrGenEpi = ZoologicalName.PARSED_NAME(speciesNameWithGenusEpiString);
+		speciesName = TaxonNameBase.PARSED_ZOOLOGICAL(speciesNameString);
+		subSpeciesName = TaxonNameBase.PARSED_ZOOLOGICAL(subSpeciesNameString);
+		speciesNameWithInfrGenEpi = TaxonNameBase.PARSED_ZOOLOGICAL(speciesNameWithGenusEpiString);
 		Assert.assertFalse(speciesName.hasProblem());  //guarantee names are well past
 		Assert.assertFalse(speciesNameWithInfrGenEpi.hasProblem());
         Assert.assertFalse(subSpeciesName.hasProblem());

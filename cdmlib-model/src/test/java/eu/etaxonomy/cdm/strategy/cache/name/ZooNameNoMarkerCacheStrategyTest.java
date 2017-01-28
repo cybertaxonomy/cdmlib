@@ -77,15 +77,15 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	@Before
 	public void setUp() throws Exception {
 		strategy = ZooNameNoMarkerCacheStrategy.NewInstance();
-		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
-		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
+		familyName = TaxonNameBase.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
+		genusName = TaxonNameBase.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 
 		subGenusName = TaxonNameBase.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
-		speciesName = ZoologicalName.PARSED_NAME(speciesNameString);
-		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameStringToParse);
+		speciesName = TaxonNameBase.PARSED_ZOOLOGICAL(speciesNameString);
+		subSpeciesName = TaxonNameBase.PARSED_ZOOLOGICAL(subSpeciesNameStringToParse);
 		subSpeciesName.setCacheStrategy(strategy);
 
 		author = Person.NewInstance();
