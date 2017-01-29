@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -658,7 +657,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
                     nameCache = ((NonViralName<?>) list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
                     TaxonNameBase<?,?> taxonNameBase = ((TaxonBase) list.get(i)).getName();
-                    nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+                    nameCache = taxonNameBase.getNameCache();
                 } else {
                 }
                 logger.log(level, list.get(i).getClass() + "(" + i + ")" + ": Name Cache = " + nameCache + ", Title Cache = "

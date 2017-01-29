@@ -53,7 +53,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -105,7 +104,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
         //check atomised name data for rank
         //new name will be created
-        NonViralName<?> atomisedTaxonName = null;
+        TaxonNameBase<?,?> atomisedTaxonName = null;
         if (rank==null && unitIndexInAbcdFile>=0 && ((state.getDataHolder().getAtomisedIdentificationList() != null && !state.getDataHolder().getAtomisedIdentificationList().isEmpty())|| state.getDataHolder().getAtomisedIdentificationList().size() > 0)) {
             atomisedTaxonName = setTaxonNameByType(state.getDataHolder().getAtomisedIdentificationList().get(unitIndexInAbcdFile), scientificName, state);
             if(atomisedTaxonName!=null){
@@ -113,7 +112,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
         }
         if(config.isReuseExistingTaxaWhenPossible()){
-            NonViralName<?> parsedName = atomisedTaxonName;
+            TaxonNameBase<?,?> parsedName = atomisedTaxonName;
             if(parsedName==null){
                 parsedName = parseScientificName(scientificName, state, state.getReport());
             }
@@ -220,9 +219,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param report the import report
 	     * @return a parsed name
 	     */
-	    protected NonViralName<?> parseScientificName(String scientificName, STATE state, SpecimenImportReport report) {
+	    protected TaxonNameBase<?,?> parseScientificName(String scientificName, STATE state, SpecimenImportReport report) {
 	        NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
-	        NonViralName<?> taxonName = null;
+	        TaxonNameBase<?,?> taxonName = null;
 	        boolean problem = false;
 
 	        if(DEBUG){
@@ -275,7 +274,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state
 	     * @return the corresponding Botanical or Zoological or... name
 	     */
-	    protected NonViralName<?> setTaxonNameByType(
+	    protected TaxonNameBase<?,?> setTaxonNameByType(
 	            HashMap<String, String> atomisedMap, String fullName, STATE state) {
 	        boolean problem = false;
 	        if(DEBUG) {
@@ -283,7 +282,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid())) {
-	            NonViralName<ZoologicalName> taxonName = TaxonNameBase.NewZoologicalInstance(null);
+	            TaxonNameBase<?,?> taxonName = TaxonNameBase.NewZoologicalInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));
@@ -455,11 +454,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        if (problem) {
 	            logger.info("Problem im setTaxonNameByType ");
-	            NonViralName<?> taxonName = TaxonNameBase.NewNonViralInstance(null);
+	            TaxonNameBase<?,?> taxonName = TaxonNameBase.NewNonViralInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            return taxonName;
 	        }
-	        NonViralName<?> tn = TaxonNameBase.NewNonViralInstance(null);
+	        TaxonNameBase<?,?> tn = TaxonNameBase.NewNonViralInstance(null);
 	        return tn;
 	    }
 

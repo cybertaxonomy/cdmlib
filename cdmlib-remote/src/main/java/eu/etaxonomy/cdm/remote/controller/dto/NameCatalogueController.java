@@ -676,8 +676,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
-            NonViralName<?> nvn = CdmBase.deproxy(service.load(UUID.fromString(nameUuid),
-                        NAME_INFORMATION_INIT_STRATEGY), NonViralName.class);
+            TaxonNameBase<?,?> nvn = service.load(UUID.fromString(nameUuid),NAME_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
             if (nvn != null) {

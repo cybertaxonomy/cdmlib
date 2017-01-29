@@ -900,7 +900,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param acceptedTaxon: the current accepted Taxon
      * @param refMods: the current reference extracted from the MODS
      */
-    private String extractMaterialsDirect(Node materials, Taxon acceptedTaxon, Reference refMods, String event, NonViralName<?> currentName) {
+    private String extractMaterialsDirect(Node materials, Taxon acceptedTaxon, Reference refMods, String event, TaxonNameBase<?,?> currentName) {
         logger.info("extractMaterialsDirect");
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         String descr="";
@@ -2303,7 +2303,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     s = askSetParent(s);
                     r = askRank(s,rankListStr);
 
-                    NonViralName<?> nameToBeFilled = null;
+                    TaxonNameBase<?,?> nameToBeFilled = null;
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)){
                         nameToBeFilled = TaxonNameBase.NewBotanicalInstance(null);
                     }

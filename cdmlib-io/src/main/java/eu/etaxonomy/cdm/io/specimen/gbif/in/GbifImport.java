@@ -652,13 +652,13 @@ private void handleDeterminations(
  * @param names
  * @param item
  */
-private TaxonNameBase findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
+private TaxonNameBase<?,?> findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
    //TODO
     if (item.getScientificName() != null){
 
        List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
        if (!names.isEmpty()){
-           NonViralName<?> result = names.get(0);
+           TaxonNameBase<?,?> result = names.get(0);
            Set<DeterminationEvent> detEvents = item.getDerivedUnitFacade().baseUnit().getDeterminations();
            for (DeterminationEvent event:detEvents){
                if(event.getTaxonName().getNameCache().equals(result.getNameCache()) ){
