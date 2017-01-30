@@ -1612,9 +1612,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       occurrenceService.save(fossilTypeDesignation);
 
       //NAMES
-      BotanicalName taxonName = TaxonNameBase.PARSED_BOTANICAL("Campanula patual");
-      BotanicalName synonymName = TaxonNameBase.PARSED_BOTANICAL("Syno nyma");
-      BotanicalName orphanName = TaxonNameBase.PARSED_BOTANICAL("Orphanus lonelia");
+      BotanicalName taxonName = TaxonNameFactory.PARSED_BOTANICAL("Campanula patual");
+      BotanicalName synonymName = TaxonNameFactory.PARSED_BOTANICAL("Syno nyma");
+      BotanicalName orphanName = TaxonNameFactory.PARSED_BOTANICAL("Orphanus lonelia");
       taxonName.setUuid(taxonNameUuid);
       synonymName.setUuid(synonymNameUuid);
       orphanName.setUuid(orphanNameUuid);

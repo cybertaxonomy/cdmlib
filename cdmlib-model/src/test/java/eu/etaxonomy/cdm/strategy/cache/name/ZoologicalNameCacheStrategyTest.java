@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
@@ -81,16 +80,16 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Before
 	public void setUp() throws Exception {
 		strategy = ZooNameDefaultCacheStrategy.NewInstance();
-		familyName = TaxonNameBase.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
-		genusName = TaxonNameBase.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
+		familyName = TaxonNameFactory.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
+		genusName = TaxonNameFactory.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 
 		subGenusName = TaxonNameFactory.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
-		speciesName = TaxonNameBase.PARSED_ZOOLOGICAL(speciesNameString);
-		subSpeciesName = TaxonNameBase.PARSED_ZOOLOGICAL(subSpeciesNameString);
-		speciesNameWithInfrGenEpi = TaxonNameBase.PARSED_ZOOLOGICAL(speciesNameWithGenusEpiString);
+		speciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameString);
+		subSpeciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameString);
+		speciesNameWithInfrGenEpi = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameWithGenusEpiString);
 		Assert.assertFalse(speciesName.hasProblem());  //guarantee names are well past
 		Assert.assertFalse(speciesNameWithInfrGenEpi.hasProblem());
         Assert.assertFalse(subSpeciesName.hasProblem());

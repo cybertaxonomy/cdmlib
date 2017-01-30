@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -81,15 +80,15 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	@Before
 	public void setUp() throws Exception {
 		strategy = BotanicNameDefaultCacheStrategy.NewInstance();
-		familyName = TaxonNameBase.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
-		genusName = TaxonNameBase.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
+		familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
+		genusName = TaxonNameFactory.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
 
 		subGenusName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
-		speciesName = TaxonNameBase.PARSED_BOTANICAL(speciesNameString);
-		subSpeciesName = TaxonNameBase.PARSED_BOTANICAL(subSpeciesNameString);
+		speciesName = TaxonNameFactory.PARSED_BOTANICAL(speciesNameString);
+		subSpeciesName = TaxonNameFactory.PARSED_BOTANICAL(subSpeciesNameString);
 
 		author = Person.NewInstance();
 		author.setNomenclaturalTitle(authorString);

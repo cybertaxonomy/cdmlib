@@ -86,8 +86,6 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -173,7 +171,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
-    static private INonViralNameParser<?> nameParser = new NonViralNameParserImpl();
 
     @XmlElement(name = "FullTitleCache")
     @Column(length=800, name="fullTitleCache")  //see #1592
@@ -514,106 +511,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 // *********************** PARSER STATIC *******************************/
 
 
-    /**
-     * Returns a botanical taxon name based on parsing a string representing
-     * all elements (according to the ICBN) of a botanical taxon name (where
-     * the scientific name is an uninomial) including authorship but without
-     * nomenclatural reference. If the {@link Rank rank} is not "Genus" it should be
-     * set afterwards with the {@link TaxonNameBase#setRank(Rank) setRank} methode.
-     *
-     * @param   fullNameString  the string to be parsed
-     * @return                  the new botanical taxon name
-     */
-    public static BotanicalName PARSED_BOTANICAL(String fullNameString){
-        return PARSED_BOTANICAL(fullNameString, Rank.GENUS());
-    }
-
-
-    /**
-     * Returns a botanical taxon name based on parsing a string representing
-     * all elements (according to the ICBN) of a botanical taxon name including
-     * authorship but without nomenclatural reference. The parsing result
-     * depends on the given rank of the botanical taxon name to be created.
-     *
-     * @param   fullNameString  the string to be parsed
-     * @param   rank            the rank of the taxon name
-     * @return                  the new botanical taxon name
-     */
-    public static BotanicalName PARSED_BOTANICAL(String fullNameString, Rank rank){
-        if (nameParser == null){
-            nameParser = new NonViralNameParserImpl();
-        }
-        return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICNAFP,  rank);
-    }
-
-
-    /**
-     * Returns a botanical taxon name based on parsing a string representing
-     * all elements (according to the ICBN) of a botanical taxon name (where
-     * the scientific name is an uninomial) including authorship and
-     * nomenclatural reference. Eventually a new {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference}
-     * instance will also be created. If the {@link Rank rank} is not "Genus" it should be
-     * set afterwards with the {@link TaxonNameBase#setRank(Rank) setRank} methode.
-     *
-     * @param   fullNameAndReferenceString  the string to be parsed
-     * @return                              the new botanical taxon name
-     */
-    public static BotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString){
-        return PARSED_BOTANICAL_REFERENCE(fullNameAndReferenceString, Rank.GENUS());
-    }
-
-    /**
-     * Returns a botanical taxon name based on parsing a string representing
-     * all elements (according to the ICBN) of a botanical taxon name including
-     * authorship and nomenclatural reference. The parsing result depends on
-     * the given rank of the botanical taxon name to be created.
-     * Eventually a new {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference}
-     * instance will also be created.
-     *
-     * @param   fullNameAndReferenceString  the string to be parsed
-     * @param   rank                        the rank of the taxon name
-     * @return                              the new botanical taxon name
-     */
-    public static BotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString, Rank rank){
-        if (nameParser == null){
-            nameParser = new NonViralNameParserImpl();
-        }
-        return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICNAFP, rank);
-    }
-
-
-
-
-
-    /**
-     * Returns a zoological taxon name based on parsing a string representing
-     * all elements (according to the {@link NomenclaturalCode#ICZN() ICZN}) of a zoological taxon name (where
-     * the scientific name is an uninomial) including authorship but without
-     * nomenclatural reference.
-     *
-     * @param   fullNameString  the string to be parsed
-     * @return                  the new zoological taxon name
-     */
-    public static ZoologicalName PARSED_ZOOLOGICAL(String fullNameString){
-        return PARSED_ZOOLOGICAL(fullNameString, Rank.GENUS());
-    }
-
-    /**
-     * Returns a zoological taxon name based on parsing a string representing
-     * all elements (according to the {@link NomenclaturalCode#ICZN() ICZN})) of a zoological taxon name including
-     * authorship but without nomenclatural reference. The parsing result
-     * depends on the given rank of the zoological taxon name to be created.
-     *
-     * @param   fullNameString  the string to be parsed
-     * @param   rank            the rank of the taxon name
-     * @return                  the new zoological taxon name
-     */
-    public static ZoologicalName PARSED_ZOOLOGICAL(String fullNameString, Rank rank){
-        if (nameParser == null){
-            nameParser  = new NonViralNameParserImpl();
-        }
-        return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
-    }
 
 // ************* CONSTRUCTORS *************/
     /**
