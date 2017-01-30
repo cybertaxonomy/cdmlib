@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -506,7 +507,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			if (nc != null){
 				name = nc.getNewTaxonNameInstance(rank);
 			}else{
-				name = TaxonNameBase.NewNonViralInstance(rank);
+				name = TaxonNameFactory.NewNonViralInstance(rank);
 			}
 			if (StringUtils.isNotBlank(commonDetermination.genus)){
 				name.setGenusOrUninomial(commonDetermination.genus);
@@ -644,7 +645,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private NonViralName<?> makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
-		NonViralName<?> name = TaxonNameBase.NewNonViralInstance(null);
+		NonViralName<?> name = TaxonNameFactory.NewNonViralInstance(null);
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (nc != null){
 			name = (NonViralName<?>)nc.getNewTaxonNameInstance(null);

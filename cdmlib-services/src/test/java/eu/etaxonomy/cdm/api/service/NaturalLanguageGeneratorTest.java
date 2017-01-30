@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -50,7 +50,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 	public void setUp() throws Exception {
         // set up your test objects here
 
-		INonViralName tnb = TaxonNameBase.NewNonViralInstance(null);
+		INonViralName tnb = TaxonNameFactory.NewNonViralInstance(null);
 		Taxon taxon = Taxon.NewInstance(tnb, null);
 		description = TaxonDescription.NewInstance(taxon);
 

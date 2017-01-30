@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -77,7 +78,7 @@ public class IdentifiableEntityTest {
 	@Before
 	public void setUp() throws Exception {
 
-		abies = TaxonNameBase.NewNonViralInstance(Rank.GENUS(), null);
+		abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
 		abies.setNameCache("Abies");
 		abies.setTitleCache("Abies", true);
 		Reference sec = ReferenceFactory.newArticle();
@@ -85,24 +86,24 @@ public class IdentifiableEntityTest {
 
 		abiesTaxon = Taxon.NewInstance(abies, sec);
 
-		abiesMill = TaxonNameBase.NewNonViralInstance(Rank.GENUS(), null);
+		abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
 		abiesMill.setNameCache("Abies");
 		abiesMill.setTitleCache("Abies Mill.", true);
 		abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
 
-		abiesAlba = TaxonNameBase.NewNonViralInstance(Rank.SPECIES(), null);
+		abiesAlba = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
 		abiesAlba.setNameCache("Abies alba");
 		abiesAlba.setTitleCache("Abies alba", true);
 
-		abiesAlbaMichx = TaxonNameBase.NewNonViralInstance(Rank.SPECIES(), null);
+		abiesAlbaMichx = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
 		abiesAlbaMichx.setNameCache("Abies alba");
 		abiesAlbaMichx.setTitleCache("Abies alba Michx.", true);
 
-		abiesAlbaMill = TaxonNameBase.NewNonViralInstance(Rank.SPECIES(), null);
+		abiesAlbaMill = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
 		abiesAlbaMill.setNameCache("Abies alba");
 		abiesAlbaMill.setTitleCache("Abies alba Mill.", true);
 
-		abiesAutonym  = TaxonNameBase.NewNonViralInstance(Rank.SECTION_BOTANY());
+		abiesAutonym  = TaxonNameFactory.NewNonViralInstance(Rank.SECTION_BOTANY());
 		abiesAutonym.setGenusOrUninomial("Abies");
 		abiesAutonym.setInfraGenericEpithet("Abies");
 
@@ -110,15 +111,15 @@ public class IdentifiableEntityTest {
 		abiesAutonym.getNameCache();
 		abiesAutonymTaxon = Taxon.NewInstance(abiesAutonym, sec);
 
-		abiesBalsamea  = TaxonNameBase.NewNonViralInstance(Rank.SECTION_BOTANY());
+		abiesBalsamea  = TaxonNameFactory.NewNonViralInstance(Rank.SECTION_BOTANY());
 		abiesBalsamea.setGenusOrUninomial("Abies");
 		abiesBalsamea.setInfraGenericEpithet("Balsamea");
 		abiesBalsamea.getNameCache();
 		abiesBalsamea.setTitleCache("Abies sect. Balsamea L.", true);
 		abiesBalsameaTaxon = Taxon.NewInstance(abiesBalsamea, sec);
 
-		abiesAlbaxPinusBeta = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
-		pinusBeta = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		abiesAlbaxPinusBeta = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+		pinusBeta = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		pinusBeta.setGenusOrUninomial("Pinus");
 		pinusBeta.setSpecificEpithet("beta");
 		abiesAlbaxPinusBeta.setHybridFormula(true);

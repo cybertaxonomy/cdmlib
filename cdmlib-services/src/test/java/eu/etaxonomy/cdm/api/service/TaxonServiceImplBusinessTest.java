@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -72,16 +73,16 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		//service = new TaxonServiceImpl();
 		//nameService = new NameServiceImpl();
 
-		t1n = TaxonNameBase.NewNonViralInstance(null);
+		t1n = TaxonNameFactory.NewNonViralInstance(null);
 		t1 = Taxon.NewInstance(t1n, reference);
 
-		t2n = TaxonNameBase.NewNonViralInstance(null);
+		t2n = TaxonNameFactory.NewNonViralInstance(null);
 		t2 = Taxon.NewInstance(t2n, reference);
 
-		s1n = TaxonNameBase.NewNonViralInstance(null);
+		s1n = TaxonNameFactory.NewNonViralInstance(null);
 		s1 = Synonym.NewInstance(s1n, reference);
 
-		s2n = TaxonNameBase.NewNonViralInstance(null);
+		s2n = TaxonNameFactory.NewNonViralInstance(null);
 		s2 = Synonym.NewInstance(s2n, reference);
 
 		// referencing
@@ -142,9 +143,9 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	@Test
 	public final void testChangeSynonymWithMultipleSynonymsInHomotypicalGroupToAcceptedTaxon() {
 		t1.addSynonym(s1, heteroTypicSynonymType);
-		TaxonNameBase<?,?> otherHeteroSynonymName = TaxonNameBase.NewNonViralInstance(null);
+		TaxonNameBase<?,?> otherHeteroSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		t1.addHeterotypicSynonymName(otherHeteroSynonymName);
-		TaxonNameBase<?,?> homotypicSynonymName = TaxonNameBase.NewNonViralInstance(null);
+		TaxonNameBase<?,?> homotypicSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		Synonym homotypicSynonym = Synonym.NewInstance(homotypicSynonymName, t1.getSec());
 		t1.addHomotypicSynonym(homotypicSynonym);
 
@@ -250,16 +251,16 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		t1.addSynonym(s1, heteroTypicSynonymType);
 
 		//s2 - heterotypic
-		TaxonNameBase otherHeteroSynonymName = TaxonNameBase.NewNonViralInstance(null);
+		TaxonNameBase otherHeteroSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		Synonym s2 = Synonym.NewInstance(otherHeteroSynonymName, t1.getSec());
 		t1.addSynonym(s2, heteroTypicSynonymType);
-		TaxonNameBase<?,?> otherHeteroSynonymNameB = TaxonNameBase.NewNonViralInstance(null);
+		TaxonNameBase<?,?> otherHeteroSynonymNameB = TaxonNameFactory.NewNonViralInstance(null);
 		otherHeteroSynonymName.addBasionym(otherHeteroSynonymNameB);
 		Synonym s2b = Synonym.NewInstance(otherHeteroSynonymNameB, t1.getSec());
 		t1.addSynonym(s2b, heteroTypicSynonymType);
 
 		//homotypic
-		TaxonNameBase<?,?> homotypicSynonymName = TaxonNameBase.NewNonViralInstance(null);
+		TaxonNameBase<?,?> homotypicSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		Synonym homotypicSynonym = Synonym.NewInstance(homotypicSynonymName, t1.getSec());
 		t1.addHomotypicSynonym(homotypicSynonym);
 		t1.getName().addBasionym(homotypicSynonymName);

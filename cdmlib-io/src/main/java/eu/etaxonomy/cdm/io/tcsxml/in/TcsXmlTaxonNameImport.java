@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -290,7 +291,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			if (nomCode != null){
 				nameBase = nomCode.getNewTaxonNameInstance(rank);
 			}else{
-				nameBase = TaxonNameBase.NewNonViralInstance(rank);
+				nameBase = TaxonNameFactory.NewNonViralInstance(rank);
 			}
 			childName = "Simple";
 			obligatory = true;

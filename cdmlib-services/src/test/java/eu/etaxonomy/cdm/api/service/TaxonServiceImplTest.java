@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -288,11 +289,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Reference reference = ReferenceFactory.newGeneric();
         String referenceDetail = "test";
 
-        NonViralName<?> t1n = TaxonNameBase.NewNonViralInstance(null);
+        NonViralName<?> t1n = TaxonNameFactory.NewNonViralInstance(null);
         Taxon t1 = Taxon.NewInstance(t1n, reference);
-        NonViralName<?> t2n = TaxonNameBase.NewNonViralInstance(null);
+        NonViralName<?> t2n = TaxonNameFactory.NewNonViralInstance(null);
         Taxon t2 = Taxon.NewInstance(t2n, reference);
-        NonViralName<?> s1n = TaxonNameBase.NewNonViralInstance(null);
+        NonViralName<?> s1n = TaxonNameFactory.NewNonViralInstance(null);
         Synonym s1 = Synonym.NewInstance(s1n, reference);
         t1.addSynonym(s1, heteroTypicSynonymType);
         service.saveOrUpdate(t1);

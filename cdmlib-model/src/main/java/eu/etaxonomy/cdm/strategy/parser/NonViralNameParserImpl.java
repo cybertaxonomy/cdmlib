@@ -107,7 +107,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
 				result = TaxonNameFactory.NewBacterialInstance(rank);
 			}else {
-				result =  TaxonNameBase.NewNonViralInstance(rank);
+				result =  TaxonNameFactory.NewNonViralInstance(rank);
 			}
 		} else {
 			switch (code) {

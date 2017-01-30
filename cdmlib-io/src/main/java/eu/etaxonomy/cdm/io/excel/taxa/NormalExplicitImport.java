@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -54,6 +53,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -506,7 +506,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
         }else if (nc.isKindOf(NomenclaturalCode.ICNAFP)){
             name = TaxonNameBase.NewBotanicalInstance(taxonBase.getName().getRank());
         } else{
-            name = TaxonNameBase.NewNonViralInstance(taxonBase.getName().getRank());
+            name = TaxonNameFactory.NewNonViralInstance(taxonBase.getName().getRank());
         }
         name.setTitleCache(synonymNameStr, true);
         if (name != null){

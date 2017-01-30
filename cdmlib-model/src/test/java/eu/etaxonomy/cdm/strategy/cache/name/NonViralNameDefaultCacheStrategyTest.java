@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -284,8 +285,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
         Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
 
-        NonViralName<?> hybridName = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
-        NonViralName<?> secondParent = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+        NonViralName<?> hybridName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+        NonViralName<?> secondParent = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 
         secondParent.setTitleCache("Second parent Mill.", true);
         hybridName.addHybridParent(speciesName, HybridRelationshipType.FIRST_PARENT(), null);
@@ -518,7 +519,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testGetInfraGenericNames(){
         String author = "Anyauthor";
-        NonViralName<?> nonViralName = TaxonNameBase.NewNonViralInstance(Rank.SUBGENUS());
+        NonViralName<?> nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SUBGENUS());
         nonViralName.setGenusOrUninomial("Genus");
         nonViralName.setInfraGenericEpithet("subgenus");
         nonViralName.setAuthorshipCache(author);

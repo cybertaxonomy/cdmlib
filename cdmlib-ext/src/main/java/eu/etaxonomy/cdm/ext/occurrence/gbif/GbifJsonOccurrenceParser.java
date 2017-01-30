@@ -270,10 +270,10 @@ public class GbifJsonOccurrenceParser {
                                 } else if (record.getString(KINGDOM).equals(BACTERIA)){
                                     name = TaxonNameFactory.NewBacterialInstance(rank);
                                 } else{
-                                    name = TaxonNameBase.NewNonViralInstance(rank);
+                                    name = TaxonNameFactory.NewNonViralInstance(rank);
                                 }
                             } else{
-                                name = TaxonNameBase.NewNonViralInstance(rank);
+                                name = TaxonNameFactory.NewNonViralInstance(rank);
                             }
                         }
                         if (record.has(GENUS)){

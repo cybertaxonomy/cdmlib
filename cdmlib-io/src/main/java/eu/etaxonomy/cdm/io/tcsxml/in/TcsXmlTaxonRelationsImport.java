@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -213,7 +214,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 
 			} else{
-				basionymName = TaxonNameBase.NewNonViralInstance(name.getRank());
+				basionymName = TaxonNameFactory.NewNonViralInstance(name.getRank());
 				childName = "RelatedName";
 				obligatory = true;
 				Element elName = XmlHelp.getSingleChildElement(success, elBasionym, childName, tcsNamespace, obligatory);
@@ -543,7 +544,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				}else{
 					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
-					TaxonNameBase<?,?> taxonName = TaxonNameBase.NewNonViralInstance(null);
+					TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewNonViralInstance(null);
 					taxonName.setTitleCache(title, true);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){

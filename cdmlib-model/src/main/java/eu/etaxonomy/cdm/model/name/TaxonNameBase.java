@@ -509,46 +509,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 // *************** FACTORY METHODS ********************************/
 
-    /**
-     * Creates a new non viral taxon name instance
-     * only containing its {@link common.Rank rank} and
-      * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
-     * @see    #NewInstance(Rank, HomotypicalGroup)
-     * @see    #NonViralName(Rank, HomotypicalGroup)
-     * @see    #NonViralName()
-     * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-     */
-    public static NonViralName NewNonViralInstance(Rank rank){
-        return new NonViralName(rank, null);
-    }
-
-    /**
-     * Creates a new non viral taxon name instance
-     * only containing its {@link common.Rank rank},
-     * its {@link HomotypicalGroup homotypical group} and
-      * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
-     * The new non viral taxon name instance will be also added to the set of
-     * non viral taxon names belonging to this homotypical group.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
-     * @param  homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
-     * @see    #NewInstance(Rank)
-     * @see    #NonViralName(Rank, HomotypicalGroup)
-     * @see    #NonViralName()
-     * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-     */
-    public static NonViralName NewNonViralInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new NonViralName(rank, homotypicalGroup);
-    }
-
 
     /**
      * Creates a new zoological taxon name instance

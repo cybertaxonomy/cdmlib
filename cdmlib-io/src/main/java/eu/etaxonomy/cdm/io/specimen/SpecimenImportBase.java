@@ -164,7 +164,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }else if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN)){
                 taxonName = TaxonNameBase.NewZoologicalInstance(rank);
             }else{
-                taxonName = TaxonNameBase.NewNonViralInstance(rank);
+                taxonName = TaxonNameFactory.NewNonViralInstance(rank);
             }
             taxonName.setFullTitleCache(scientificName,true);
             taxonName.setTitleCache(scientificName, true);
@@ -455,11 +455,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        if (problem) {
 	            logger.info("Problem im setTaxonNameByType ");
-	            TaxonNameBase<?,?> taxonName = TaxonNameBase.NewNonViralInstance(null);
+	            TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewNonViralInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            return taxonName;
 	        }
-	        TaxonNameBase<?,?> tn = TaxonNameBase.NewNonViralInstance(null);
+	        TaxonNameBase<?,?> tn = TaxonNameFactory.NewNonViralInstance(null);
 	        return tn;
 	    }
 

@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 	public class PropertyChangeTest implements PropertyChangeListener {
 		static Logger logger = Logger.getLogger(PropertyChangeTest.class);
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 		@Test
 		public void testPropertyChange() {
-			NonViralName<?> b = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+			NonViralName<?> b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setGenusOrUninomial("Abies");
 				assertEquals(b.getGenusOrUninomial(), lastPropValue);

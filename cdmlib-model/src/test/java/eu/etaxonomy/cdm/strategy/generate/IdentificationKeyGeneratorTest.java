@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -67,14 +67,14 @@ public class IdentificationKeyGeneratorTest {
 		feature3 = Feature.NewInstance("","Length of wings","");
 		feature4 = Feature.NewInstance("","Colour","");
 
-		INonViralName tn1 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn2 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn3 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn4 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn5 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn6 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn7 = TaxonNameBase.NewNonViralInstance(null);
-		INonViralName tn8 = TaxonNameBase.NewNonViralInstance(null);
+		INonViralName tn1 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn2 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn3 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn4 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn5 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn6 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn7 = TaxonNameFactory.NewNonViralInstance(null);
+		INonViralName tn8 = TaxonNameFactory.NewNonViralInstance(null);
 
 		taxon1 = Taxon.NewInstance(tn1, null);
 		taxon2 = Taxon.NewInstance(tn2, null);

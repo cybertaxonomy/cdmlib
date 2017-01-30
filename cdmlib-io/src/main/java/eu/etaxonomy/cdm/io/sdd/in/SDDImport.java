@@ -83,6 +83,7 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -918,7 +919,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 				NonViralName<?> tnb = null;
 				if (!id.equals("")) {
-					tnb = TaxonNameBase.NewNonViralInstance(defaultRank);
+					tnb = TaxonNameFactory.NewNonViralInstance(defaultRank);
 					IdentifiableSource source = null;
 					if (isNotBlank(uri)) {
 						//TODO type
@@ -1223,7 +1224,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Taxon handleCDNoScope(Namespace sddNamespace,
 	        SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
-		NonViralName<?> nonViralName = TaxonNameBase.NewNonViralInstance(defaultRank);
+		NonViralName<?> nonViralName = TaxonNameFactory.NewNonViralInstance(defaultRank);
 		String id = new String("" + taxonNamesCount);
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);

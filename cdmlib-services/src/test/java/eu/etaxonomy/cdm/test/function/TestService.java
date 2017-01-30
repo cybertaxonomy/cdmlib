@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -59,7 +60,7 @@ public class TestService {
 
 	public void testAppController() {
 		logger.info("Create name objects...");
-		NonViralName<?> nvn = TaxonNameBase.NewNonViralInstance(Rank.SPECIES());
+		NonViralName<?> nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 
 		BotanicalName bn = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
 		ZoologicalName zn = TaxonNameBase.NewZoologicalInstance(Rank.FAMILY());
@@ -224,10 +225,10 @@ public class TestService {
 			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
 
 
-			TaxonNameBase<?,?> name = TaxonNameBase.NewNonViralInstance(null);
+			TaxonNameBase<?,?> name = TaxonNameFactory.NewNonViralInstance(null);
 			name.setTitleCache("Abies alba", true);
 
-			TaxonNameBase<?,?> name2 = TaxonNameBase.NewNonViralInstance(null);
+			TaxonNameBase<?,?> name2 = TaxonNameFactory.NewNonViralInstance(null);
 			name2.setTitleCache("Abies beta", true);
 
 			//appCtr.getNameService().saveTaxonName(name);
