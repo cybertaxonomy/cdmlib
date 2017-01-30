@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -348,7 +348,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				if (taxon.getName().getRank().isHigher(Rank.GENUS())){
 					state.setLatestGenusEpithet(null);
 				}else{
-					state.setLatestGenusEpithet(((NonViralName<?>)taxon.getName()).getGenusOrUninomial());
+					state.setLatestGenusEpithet(taxon.getName().getGenusOrUninomial());
 				}
 				save(taxon, state);
 				return taxon;
@@ -522,7 +522,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 */
 	private Taxon createTaxonAndName(MarkupImportState state,
 			Map<String, Attribute> attributes) {
-		NonViralName<?> name;
+		INonViralName name;
 		Rank rank = null;  //Rank.SPECIES(); // default
 		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");
 		if (isCultivar) {

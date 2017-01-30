@@ -3786,8 +3786,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 			if (newTaxon.isInstanceOf(Synonym.class)){
 				return false;
 			}
-			NonViralName<?> nodeName = CdmBase.deproxy(nodeTaxon.getName(), NonViralName.class);
-			NonViralName<?> newName = CdmBase.deproxy(newTaxon.getName(), NonViralName.class);
+			INonViralName nodeName = nodeTaxon.getName();
+			INonViralName newName = newTaxon.getName();
 			if (nodeTaxon.getName() == null ||  newName == null){
 				return false;
 			}

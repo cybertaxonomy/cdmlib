@@ -522,7 +522,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //        Team team = Team.NewTitledInstance("different author", "different author");
 //        secReference.setAuthorship(team);
 //
-//        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
+//        NonViralName<?> taxonName = TaxonNameFactory.NewNonViralInstance(Rank.VARIETY());
 //        taxonName.setGenusOrUninomial("Campanula");
 //        taxonName.setSpecificEpithet("versicolor");
 //        taxonName.setInfraSpecificEpithet("tomentella");

@@ -1141,10 +1141,9 @@ public abstract class MarkupImportBase  {
 	 * @param rank
 	 * @return
 	 */
-	protected NonViralName<?> createNameByCode(MarkupImportState state, Rank rank) {
-		NonViralName<?> name;
+	protected INonViralName createNameByCode(MarkupImportState state, Rank rank) {
 		NomenclaturalCode nc = makeNomenclaturalCode(state);
-		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
+		INonViralName name = nc.getNewTaxonNameInstance(rank);
 		return name;
 	}
 

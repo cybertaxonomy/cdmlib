@@ -56,12 +56,12 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
 
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        INonViralName n = null;
+        INonViralName nvn = null;
 
         if(value instanceof TaxonBase) {
             try {
-                n = HibernateProxyHelper.deproxy(((TaxonBase) value).getName(), NonViralName.class);
-                if (n == null){
+                nvn = HibernateProxyHelper.deproxy((TaxonBase) value).getName();
+                if (nvn == null){
                 	return;
                 }
             } catch (ClassCastException e) {
@@ -70,9 +70,9 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
             }
 
         }else if(value instanceof TaxonNameBase){
-            n = (INonViralName)value;
+            nvn = (INonViralName)value;
         }
-        if(n == null) {
+        if(nvn == null) {
             logger.error("Unsupported type: " + value.getClass().getName());
             return;
         }
@@ -80,26 +80,26 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
         // compile sort field
         StringBuilder txt = new StringBuilder();
 
-        if(n.isProtectedNameCache()){
-            txt.append(n.getNameCache());
+        if(nvn.isProtectedNameCache()){
+            txt.append(nvn.getNameCache());
         } else {
-            if(StringUtils.isNotBlank(n.getGenusOrUninomial())){
-                txt.append(StringUtils.rightPad(n.getGenusOrUninomial(), MAX_FIELD_LENGTH, PAD_CHAR));
+            if(StringUtils.isNotBlank(nvn.getGenusOrUninomial())){
+                txt.append(StringUtils.rightPad(nvn.getGenusOrUninomial(), MAX_FIELD_LENGTH, PAD_CHAR));
             }
-            if(StringUtils.isNotBlank(n.getSpecificEpithet())){
+            if(StringUtils.isNotBlank(nvn.getSpecificEpithet())){
                 String matchQuotes = "\".*\"";
-                if(n.getSpecificEpithet().matches(matchQuotes)){
+                if(nvn.getSpecificEpithet().matches(matchQuotes)){
                     txt.append("1");
                 } else {
                     txt.append("0");
                 }
-                txt.append(StringUtils.rightPad(n.getSpecificEpithet(), MAX_FIELD_LENGTH, PAD_CHAR));
+                txt.append(StringUtils.rightPad(nvn.getSpecificEpithet(), MAX_FIELD_LENGTH, PAD_CHAR));
             } else {
                 txt.append(StringUtils.rightPad("", MAX_FIELD_LENGTH, PAD_CHAR));
             }
             String rankStr = "99"; // default for no rank
-            if(n.getRank() != null){
-                rankStr = Integer.toString(n.getRank().getOrderIndex());
+            if(nvn.getRank() != null){
+                rankStr = Integer.toString(nvn.getRank().getOrderIndex());
             }
             txt.append(StringUtils.rightPad(rankStr, 2, PAD_CHAR));
         }

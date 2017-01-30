@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -130,7 +131,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			handleNotYetImplementedAttribute(attributes, LOST);
 		}
 
-		NonViralName<?> firstName = null;
+		INonViralName firstName = null;
 		Set<TaxonNameBase> names = homotypicalGroup.getTypifiedNames();
 		if (names.isEmpty()) {
 			String message = "There is no name in a homotypical group. Can't create the specimen type";
@@ -186,7 +187,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 
 	private void makeSpecimenType(MarkupImportState state, DerivedUnitFacade facade, String text, String collectionAndType,
-			NonViralName<?> name, XMLEvent parentEvent) {
+			INonViralName name, XMLEvent parentEvent) {
 		text = text.trim();
 		if (isPunctuation(text)){
 			//do nothing
@@ -232,7 +233,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	 * @param parentEvent
 	 * @return
 	 */
-	private boolean makeFotgSpecimenType(MarkupImportState state, final String collectionAndTypeOrig, DerivedUnitFacade facade, NonViralName<?> name, XMLEvent parentEvent) {
+	private boolean makeFotgSpecimenType(MarkupImportState state, final String collectionAndTypeOrig, DerivedUnitFacade facade, INonViralName name, XMLEvent parentEvent) {
 		String collectionAndType = collectionAndTypeOrig;
 
 		String notDesignatedRE = "not\\s+designated";
@@ -551,8 +552,9 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				handleLocality(state, reader, next, facade);
 			} else if (isStartingElement(next, FULL_NAME)) {
 				Rank defaultRank = Rank.SPECIES(); // can be any
-				NonViralName<?> name = createNameByCode(state, defaultRank);
-				handleFullName(state, reader, name, next);
+				INonViralName nvn = createNameByCode(state, defaultRank);
+				handleFullName(state, reader, nvn, next);
+				TaxonNameBase<?,?> name = TaxonNameBase.castAndDeproxy(nvn);
 				DeterminationEvent.NewInstance(name, facade.innerDerivedUnit() != null ? facade.innerDerivedUnit() : facade.innerFieldUnit());
 			} else if (isStartingElement(next, DATES)) {
 				TimePeriod timePeriod = handleDates(state, reader, next);

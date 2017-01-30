@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
@@ -163,8 +161,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				if (isStartingElement(next, NOM)) {
 					// TODO should we check if the type is always a species, is
 					// this a rule?
-					NonViralName<?> speciesName = handleNom(state, reader,
-							next, null);
+					TaxonNameBase<?,?> speciesName = TaxonNameBase.castAndDeproxy(
+					        handleNom(state, reader, next, null));
 					for (TaxonNameBase<?, ?> name : homotypicalGroup
 							.getTypifiedNames()) {
 						name.addNameTypeDesignation(speciesName, null, null,
@@ -196,13 +194,13 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader,
+	private INonViralName handleNom(MarkupImportState state, XMLEventReader reader,
 			XMLEvent parentEvent, HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		boolean isSynonym = false;
 		boolean isNameType = state.isNameType();
 		// attributes
 		String classValue = getClassOnlyAttribute(parentEvent);
-		NonViralName<?> name;
+		INonViralName name;
 		if (!isNameType && ACCEPTED.equalsIgnoreCase(classValue)) {
 			isSynonym = false;
 			name = createName(state, homotypicalGroup, isSynonym);
@@ -345,7 +343,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void fillName(MarkupImportState state, Map<String, String> nameMap,
-			TaxonNameBase name, XMLEvent event) {
+			INonViralName name, XMLEvent event) {
 
 		// Ranks: family, subfamily, tribus, genus, subgenus, section,
 		// subsection, species, subspecies, variety, subvariety, forma
@@ -382,7 +380,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			try {
 				// TODO handle trim earlier
 				statusStr = statusStr.trim();
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr, name);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
+				        .getNomenclaturalStatusTypeByAbbreviation(statusStr, name);
 				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
 			} catch (UnknownCdmTypeException e) {
 				String message = "Status '%s' could not be recognized";
@@ -553,9 +552,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param isSynonym
 	 * @return
 	 */
-	private NonViralName<?> createName(MarkupImportState state,
+	private INonViralName createName(MarkupImportState state,
 			HomotypicalGroup homotypicalGroup, boolean isSynonym) {
-		NonViralName<?> name;
+		INonViralName name;
 		Taxon taxon = state.getCurrentTaxon();
 		if (isSynonym) {
 			Rank defaultRank = Rank.SPECIES(); // can be any
@@ -567,9 +566,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 			}
-			taxon.addSynonymName(name, synonymType);
+			taxon.addSynonymName(TaxonNameBase.castAndDeproxy(name), synonymType);
 		} else {
-			name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			name = taxon.getName();
 		}
 		return name;
 	}

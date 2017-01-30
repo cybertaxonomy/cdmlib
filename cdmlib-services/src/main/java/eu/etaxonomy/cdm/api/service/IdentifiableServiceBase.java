@@ -39,7 +39,9 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.ITaxonName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -388,16 +390,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		String newTitleCache= null;
 		INonViralName nvn = null; //TODO find better solution
 		try{
-			if (entity instanceof NonViralName){
-				nvn = (INonViralName) entity;
+			if (entity instanceof TaxonNameBase){
+				nvn = (ITaxonName) entity;
 				newTitleCache = entityCacheStrategy.getTitleCache(nvn);
 			} else{
 				 newTitleCache = entityCacheStrategy.getTitleCache(entity);
 			}
 		}catch (ClassCastException e){
-			nvn = HibernateProxyHelper.deproxy(entity, NonViralName.class);
+			nvn = HibernateProxyHelper.deproxy(entity, TaxonNameBase.class);
 			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
-			//System.out.println("titleCache: " +entity.getTitleCache());
 		}
 
 		if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){

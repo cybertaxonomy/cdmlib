@@ -591,7 +591,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private Taxon findBestMatchingTaxon(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, boolean createIfNotExists) {
-		NonViralName<?> name = makeTaxonName(state, determinationLight);
+		INonViralName name = makeTaxonName(state, determinationLight);
 
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
@@ -627,7 +627,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight,
-				NonViralName<?> name) {
+				INonViralName name) {
 		String titleCache = determinationLight.fullName;
 		if (! state.getConfig().isPreferNameCache() || StringUtils.isBlank(titleCache) ){
 			String computedTitleCache = name.getTitleCache();

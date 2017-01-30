@@ -310,11 +310,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 //    public void guessAndSetBasionym(){
 //         Map<String, NonViralName<?>> candidates = new HashMap<NonViralName<?>>();
 //         for (TaxonNameBase<?,?> typifiedName : this.typifiedNames){
-//             if (typifiedName.isInstanceOf(NonViralName.class)){
-//                 NonViralName<?> nvn = CdmBase.deproxy(typifiedName, NonViralName.class);
-//                 if (! nvn.protectedAuthorshipCache && nvn.getBasionymAuthorship() == null){
-//                    candidates.add(nvn);
-//                 }
+//             if (! typifiedName.protectedAuthorshipCache && nvn.getBasionymAuthorship() == null){
+//                 candidates.add(typifiedName);
 //             }
 //         }
 //         if (candidates.size() == 1){

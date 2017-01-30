@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -259,7 +258,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 
 		taxonNotExists = taxonNotExists || (isBlank(num) && state.isOnlyNumberedTaxaExist());
 		if (taxonNotExists){
-			NonViralName<?> name = createNameByCode(state, Rank.UNKNOWN_RANK());
+			INonViralName name = createNameByCode(state, Rank.UNKNOWN_RANK());
 			Taxon taxon = Taxon.NewInstance(name, null);
 			taxon.getName().setTitleCache(taxonKeyStr, true);
 			node.setTaxon(taxon);

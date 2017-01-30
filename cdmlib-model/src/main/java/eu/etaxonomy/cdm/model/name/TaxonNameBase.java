@@ -3074,9 +3074,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Returns null as the {@link NomenclaturalCode nomenclatural code} that governs
      * the construction of <i>this</i> taxon name since there is no specific
      * nomenclatural code defined. The real implementention takes place in the
-     * subclasses {@link BacterialName BacterialName},
-     * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
-     * {@link ZoologicalName ZoologicalName}. Each taxon name is governed by one
+     * subclasses {@link IBacterialName BacterialName},
+     * {@link IBotanicalName BotanicalName}, {@link ICultivarPlantName CultivarPlantName} and
+     * {@link IZoologicalName ZoologicalName}. Each taxon name is governed by one
      * and only one nomenclatural code.
      *
      * @return  null
@@ -3360,5 +3360,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             return null;
         }
 
+    }
+    /**
+     * @param namesToSave
+     * @return
+     */
+    public static Set<TaxonNameBase> castAndDeproxy(Set<ITaxonNameBase> namesToSave) {
+        Set<TaxonNameBase> result = new HashSet<>();
+        for (ITaxonNameBase nameToSave : namesToSave){
+            result.add(castAndDeproxy(nameToSave));
+        }
+        return result;
     }
 }
