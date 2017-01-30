@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -43,22 +43,22 @@ public class TaxonNodeByNameComparatorTest {
 
         Reference sec = ReferenceFactory.newBook();
 
-        BotanicalName botname_1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
         botname_1.setNameCache(nameCache_1, true);
         Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
 
-        BotanicalName botname_2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
         botname_2.setNameCache(nameCache_2, true);
         Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
 
-        BotanicalName botname_3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_3 = "Epilobium lamyi";
         botname_3.setNameCache(nameCache_3, true);
         Taxon taxon_3 = Taxon.NewInstance(botname_3, sec);
 
-        BotanicalName botname_4 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_4 = "Epilobium tournefortii";
         botname_4.setNameCache(nameCache_4, true);
         Taxon taxon_4 = Taxon.NewInstance(botname_4, sec);
@@ -111,12 +111,12 @@ public class TaxonNodeByNameComparatorTest {
 
         Reference sec = ReferenceFactory.newBook();
 
-        BotanicalName botname_1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
         botname_1.setNameCache(nameCache_1, true);
         Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
 
-        BotanicalName botname_2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
         botname_2.setNameCache(nameCache_2, true);
         Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
@@ -150,27 +150,27 @@ public class TaxonNodeByNameComparatorTest {
 
         Reference sec = ReferenceFactory.newBook();
 
-        BotanicalName botname_1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
         botname_1.setNameCache(nameCache_1, true);
         Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
 
-        BotanicalName botname_2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
         botname_2.setNameCache(nameCache_2, true);
         Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
 
-        BotanicalName botname_3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_3 = "Epilobium lamyi";
         botname_3.setNameCache(nameCache_3, true);
         Taxon taxon_3 = Taxon.NewInstance(botname_3, sec);
 
-        BotanicalName botname_4 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_4 = "Epilobium tournefortii";
         botname_4.setNameCache(nameCache_4, true);
         Taxon taxon_4 = Taxon.NewInstance(botname_4, sec);
 
-        BotanicalName botname_5 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName botname_5 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_5= "Epilobium hirsutum L.";
         botname_5.setNameCache(nameCache_5, true);
         Taxon taxon_5 = Taxon.NewInstance(botname_5, sec);

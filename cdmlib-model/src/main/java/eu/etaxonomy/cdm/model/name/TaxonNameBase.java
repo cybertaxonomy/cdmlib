@@ -509,74 +509,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 // *************** FACTORY METHODS ********************************/
 
-
-
-    /**
-     * Creates a new botanical taxon name instance
-     * only containing its {@link Rank rank} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
-     *
-     * @param   rank    the rank to be assigned to <i>this</i> botanical taxon name
-     * @see             #BotanicalName(Rank, HomotypicalGroup)
-     * @see             #NewInstance(Rank, HomotypicalGroup)
-     * @see             #NewBotanicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-     * @see             eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
-     */
-    public static BotanicalName NewBotanicalInstance(Rank rank){
-        return new BotanicalName(rank, null);
-    }
-    /**
-     * Creates a new botanical taxon name instance
-     * only containing its {@link Rank rank},
-     * its {@link HomotypicalGroup homotypical group} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
-     * The new botanical taxon name instance will be also added to the set of
-     * botanical taxon names belonging to this homotypical group.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> botanical taxon name
-     * @param  homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
-     * @see    #NewInstance(Rank)
-     * @see    #NewBotanicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-     * @see    #BotanicalName(Rank, HomotypicalGroup)
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
-     */
-    public static BotanicalName NewBotanicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new BotanicalName(rank, homotypicalGroup);
-    }
-    /**
-     * Creates a new botanical taxon name instance
-     * containing its {@link Rank rank},
-     * its {@link HomotypicalGroup homotypical group},
-     * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
-     * its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
-     * The new botanical taxon name instance will be also added to the set of
-     * botanical taxon names belonging to this homotypical group.
-     *
-     * @param   rank  the rank to be assigned to <i>this</i> botanical taxon name
-     * @param   genusOrUninomial the string for <i>this</i> botanical taxon name
-     *          if its rank is genus or higher or for the genus part
-     *          if its rank is lower than genus
-     * @param   infraGenericEpithet  the string for the first epithet of
-     *          <i>this</i> botanical taxon name if its rank is lower than genus
-     *          and higher than species aggregate
-     * @param   specificEpithet  the string for the first epithet of
-     *          <i>this</i> botanical taxon name if its rank is species aggregate or lower
-     * @param   infraSpecificEpithet  the string for the second epithet of
-     *          <i>this</i> botanical taxon name if its rank is lower than species
-     * @param   combinationAuthorship  the author or the team who published <i>this</i> botanical taxon name
-     * @param   nomenclaturalReference  the nomenclatural reference where <i>this</i> botanical taxon name was published
-     * @param   nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
-     * @param   homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
-     * @see     #NewInstance(Rank)
-     * @see     #NewInstance(Rank, HomotypicalGroup)
-     * @see     ZoologicalName#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-     * @see     eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
-     */
-    public static  BotanicalName NewBotanicalInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        return new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
-    }
-
+    //see TaxonNameFactory
 
 // *********************** PARSER STATIC *******************************/
 

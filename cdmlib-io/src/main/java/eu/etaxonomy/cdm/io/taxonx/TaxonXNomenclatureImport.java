@@ -133,7 +133,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
-//		result =  Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(null), null);
+//		result =  Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null);
 		//ICommonService commonService =config.getCdmAppController().getCommonService();
 		ICommonService commonService = getCommonService();
 		String originalSourceId = config.getOriginalSourceId();

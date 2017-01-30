@@ -29,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 //import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -77,9 +78,9 @@ public class TaxonNodeTest {
 		viewName1 = "Greuther, 1993";
 		classification1 = Classification.NewInstance(viewName1);
 		classification2 = Classification.NewInstance("Test View 2");
-		taxonName1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-		taxonName1 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
-		taxonName3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		taxonName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		taxonName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+		taxonName3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		ref1 = ReferenceFactory.newJournal();
 		ref2 = ReferenceFactory.newBook();
 		ref3 = ReferenceFactory.newGeneric();
@@ -315,9 +316,9 @@ public class TaxonNodeTest {
 		assertEquals("Number of all nodes should be 2", 2, allNodes.size());
 		assertTrue("Taxonomic view should include child", allNodes.contains(child));
 	}
-	
 
-    
+
+
     @Test
     public void testGetAncestors(){
     	/*
@@ -327,14 +328,14 @@ public class TaxonNodeTest {
     	 *   `- Pinus pampa subsp. persicifolia
     	 */
     	Classification classification = Classification.NewInstance("Classification");
-    	BotanicalName pinusName = TaxonNameBase.NewBotanicalInstance(null);
+    	BotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(null);
     	pinusName.setGenusOrUninomial("Pinus");
     	Taxon pinus = Taxon.NewInstance(pinusName, null);
-    	BotanicalName pinusPampaName = TaxonNameBase.NewBotanicalInstance(null);
+    	BotanicalName pinusPampaName = TaxonNameFactory.NewBotanicalInstance(null);
     	pinusPampaName.setGenusOrUninomial("Pinus");
     	pinusPampaName.setSpecificEpithet("pampa");
     	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
-    	BotanicalName pinusPampaSubName = TaxonNameBase.NewBotanicalInstance(null);
+    	BotanicalName pinusPampaSubName = TaxonNameFactory.NewBotanicalInstance(null);
     	pinusPampaSubName.setGenusOrUninomial("Pinus");
     	pinusPampaSubName.setSpecificEpithet("pampa");
     	pinusPampaSubName.setInfraSpecificEpithet("persicifolia");
@@ -344,16 +345,16 @@ public class TaxonNodeTest {
     	TaxonNode pinusPampaNode = classification.addParentChild(pinus, pinusPampa, null, null);
     	TaxonNode pinusPampaSubNode = classification.addParentChild(pinusPampa, pinusPampaSub, null, null);
     	TaxonNode rootNode = classification.getRootNode();
-    	
+
     	Set<TaxonNode> ancestors = pinusPampaSubNode.getAncestors();
     	assertEquals(3, ancestors.size());
     	assertTrue(ancestors.contains(pinusPampaNode));
     	assertTrue(ancestors.contains(pinusNode));
     	assertTrue(ancestors.contains(rootNode));
-    	
+
     	Set<TaxonNode> rootAncestors = rootNode.getAncestors();
     	assertTrue(rootAncestors.isEmpty());
-    	
+
     }
 
     @Test

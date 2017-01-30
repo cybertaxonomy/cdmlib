@@ -283,7 +283,7 @@ public class NonViralNameTest extends EntityTestBase {
 		NonViralName<?> nonViralName1 = new NonViralName();
 		assertEquals(0, nonViralName1.getHybridParentRelations().size());
 		assertEquals(0, nonViralName1.getHybridChildRelations().size());
-		BotanicalName femaleParent = TaxonNameBase.NewBotanicalInstance(null);
+		BotanicalName femaleParent = TaxonNameFactory.NewBotanicalInstance(null);
 		HybridRelationship hybridRelationship = new HybridRelationship(nonViralName1, femaleParent, HybridRelationshipType.FEMALE_PARENT(), null );
 		assertEquals(1, nonViralName1.getHybridChildRelations().size());
 		assertEquals(hybridRelationship, nonViralName1.getHybridChildRelations().iterator().next());
@@ -295,8 +295,8 @@ public class NonViralNameTest extends EntityTestBase {
 		NonViralName<?> nonViralName1 = new NonViralName();
 		assertEquals(0, nonViralName1.getHybridParentRelations().size());
 		assertEquals(0, nonViralName1.getHybridChildRelations().size());
-		BotanicalName femaleParent = TaxonNameBase.NewBotanicalInstance(null);
-		BotanicalName maleParent = TaxonNameBase.NewBotanicalInstance(null);
+		BotanicalName femaleParent = TaxonNameFactory.NewBotanicalInstance(null);
+		BotanicalName maleParent = TaxonNameFactory.NewBotanicalInstance(null);
 
 		nonViralName1.addHybridParent(femaleParent, HybridRelationshipType.MALE_PARENT(), null);
 		nonViralName1.addHybridParent(maleParent, HybridRelationshipType.MALE_PARENT(), null);
@@ -324,7 +324,7 @@ public class NonViralNameTest extends EntityTestBase {
 		NonViralName<?> botanicalName1 = new NonViralName();
 		assertEquals(0, botanicalName1.getHybridParentRelations().size());
 		assertEquals(0, botanicalName1.getHybridChildRelations().size());
-		BotanicalName femaleParent = TaxonNameBase.NewBotanicalInstance(null);
+		BotanicalName femaleParent = TaxonNameFactory.NewBotanicalInstance(null);
 		NonViralName<?> maleParent = TaxonNameFactory.NewNonViralInstance(null);
 		ZoologicalName child = TaxonNameFactory.NewZoologicalInstance(null);
 

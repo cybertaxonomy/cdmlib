@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 
 
@@ -47,7 +47,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");

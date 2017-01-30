@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -83,7 +84,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		familyName = TaxonNameBase.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
 		genusName = TaxonNameBase.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
 
-		subGenusName = TaxonNameBase.NewBotanicalInstance(Rank.SUBGENUS());
+		subGenusName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 

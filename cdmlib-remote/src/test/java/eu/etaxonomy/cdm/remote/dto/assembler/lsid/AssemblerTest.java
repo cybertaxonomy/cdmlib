@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -103,7 +103,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         authorship.setTitleCache("authorship.titleCache", true);
         authorship.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
 
-        name = TaxonNameBase.NewBotanicalInstance(null);
+        name = TaxonNameFactory.NewBotanicalInstance(null);
         name.setNameCache("nameCache");
         INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
         nomenclaturalReference.setTitleCache("nomenclaturalReference", true);

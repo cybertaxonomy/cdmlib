@@ -49,8 +49,8 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -427,7 +427,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         TransactionStatus txStatusOne = conversationHolder1.startTransaction();
         //		Session sessionFirstTransaction = conversationHolder11.getSession();
         TaxonBase taxonBase = taxonService.find(taxonUuid1);
-        TaxonNameBase newTaxonName = TaxonNameBase.NewBotanicalInstance(null);
+        TaxonNameBase newTaxonName = TaxonNameFactory.NewBotanicalInstance(null);
 
         conversationHolder1.bind();
         newTaxonName.addTaxonBase(taxonBase);

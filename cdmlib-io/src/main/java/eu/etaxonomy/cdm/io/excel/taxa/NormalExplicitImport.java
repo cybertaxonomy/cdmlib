@@ -504,7 +504,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
         if (nc.isKindOf(NomenclaturalCode.ICZN)){
             name = TaxonNameFactory.NewZoologicalInstance(taxonBase.getName().getRank());
         }else if (nc.isKindOf(NomenclaturalCode.ICNAFP)){
-            name = TaxonNameBase.NewBotanicalInstance(taxonBase.getName().getRank());
+            name = TaxonNameFactory.NewBotanicalInstance(taxonBase.getName().getRank());
         } else{
             name = TaxonNameFactory.NewNonViralInstance(taxonBase.getName().getRank());
         }

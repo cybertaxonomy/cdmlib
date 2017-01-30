@@ -40,15 +40,15 @@ public class CdmPermissionClassTest {
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONNAMEBASE,
-                CdmPermissionClass.getValueOf(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()))
+                CdmPermissionClass.getValueOf(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONBASE,
-                CdmPermissionClass.getValueOf(Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null))
+                CdmPermissionClass.getValueOf(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONBASE,
-                CdmPermissionClass.getValueOf(Synonym.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null))
+                CdmPermissionClass.getValueOf(Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.DESCRIPTIONBASE,

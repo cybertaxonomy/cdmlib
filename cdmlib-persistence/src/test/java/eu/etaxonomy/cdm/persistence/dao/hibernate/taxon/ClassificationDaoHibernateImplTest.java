@@ -20,7 +20,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -201,33 +201,33 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	    referenceDao.save(sec_sensu);
 
 
-	    BotanicalName n_abies_alba = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+	    BotanicalName n_abies_alba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 	    n_abies_alba.setNameCache("Abies alba", true);
 	    Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
 	    taxonDao.save(t_abies_alba);
 
-	    BotanicalName n_abies_grandis = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+	    BotanicalName n_abies_grandis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 	    n_abies_grandis.setNameCache("Abies grandis", true);
 	    Taxon t_abies_grandis = Taxon.NewInstance(n_abies_grandis, sec);
 	    taxonDao.save(t_abies_grandis);
 
-	    BotanicalName n_abies_kawakamii = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+	    BotanicalName n_abies_kawakamii = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 	    n_abies_kawakamii.setNameCache("Abies kawakamii", true);
 	    Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
 	    taxonDao.save(t_abies_kawakamii);
 
-//	    BotanicalName n_abies_lasiocarpa = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+//	    BotanicalName n_abies_lasiocarpa = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 //	    n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
 //	    Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
 //	    taxonDao.save(t_abies_lasiocarpa);
 
-	    BotanicalName n_abies = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
+	    BotanicalName n_abies = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 	    n_abies.setNameCache("Abies", true);
 	    Taxon t_abies = Taxon.NewInstance(n_abies, sec);
 	    t_abies.setUuid(UUID_ABIES);
 	    taxonDao.save(t_abies);
 
-	    BotanicalName n_pinaceae = TaxonNameBase.NewBotanicalInstance(Rank.FAMILY());
+	    BotanicalName n_pinaceae = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY());
 	    n_pinaceae.setNameCache("Pinaceae", true);
 	    Taxon t_pinaceae = Taxon.NewInstance(n_pinaceae, sec);
 	    t_pinaceae.setUuid(UUID_PINACEAE);

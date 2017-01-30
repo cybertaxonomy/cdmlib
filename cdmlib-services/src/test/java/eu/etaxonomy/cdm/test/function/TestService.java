@@ -62,7 +62,7 @@ public class TestService {
 		logger.info("Create name objects...");
 		NonViralName<?> nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 
-		BotanicalName bn = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
+		BotanicalName bn = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
 		ZoologicalName zn = TaxonNameFactory.NewZoologicalInstance(Rank.FAMILY());
 
 		logger.info("Create reference objects...");
@@ -106,7 +106,7 @@ public class TestService {
 
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
@@ -150,7 +150,7 @@ public class TestService {
 
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
@@ -174,7 +174,7 @@ public class TestService {
 
 	public void testTransientRank(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(transientRank);
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(transientRank);
 		Reference ref =  ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 

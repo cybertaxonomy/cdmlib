@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -63,7 +63,7 @@ public class MarkerTest extends EntityTestBase {
 		flag1 = true;
 		markerType1 = MarkerType.TO_BE_CHECKED();
 		marker1 = Marker.NewInstance(markerType1 ,  flag1);
-		annotatedObject1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		annotatedObject1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		annotatedObject1.addMarker(marker1);
 	}
 

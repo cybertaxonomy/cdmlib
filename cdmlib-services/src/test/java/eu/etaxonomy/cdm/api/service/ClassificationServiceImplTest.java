@@ -31,7 +31,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -437,42 +437,42 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         sec.setTitleCache("Sp. Pl.", true);
         referenceDao.save(sec);
 
-        BotanicalName acacia_n = TaxonNameBase.NewBotanicalInstance(Rank.GENUS(), "Acacia", null, null, null, null, sec, null, null);
+        BotanicalName acacia_n = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Acacia", null, null, null, null, sec, null, null);
         acacia_n.setAuthorshipCache("N.Jacobsen, Bastm. & Yuji Sasaki", true);
         Taxon acacia_t = Taxon.NewInstance(acacia_n, sec);
         acacia_t.setUuid(UUID.fromString("2fc779ee-7a9d-4586-92ba-1cd774ac77f0"));
 
-        BotanicalName acacia_subg_aculeiferum_n = TaxonNameBase.NewBotanicalInstance(Rank.SUBGENUS(), "Acacia", "Aculeiferum", null, null, null, sec, null, null);
+        BotanicalName acacia_subg_aculeiferum_n = TaxonNameFactory.NewBotanicalInstance(Rank.SUBGENUS(), "Acacia", "Aculeiferum", null, null, null, sec, null, null);
         acacia_subg_aculeiferum_n.setAuthorshipCache("Pedley", true);
         Taxon acacia_subg_aculeiferum_t = Taxon.NewInstance(acacia_subg_aculeiferum_n, sec);
         acacia_subg_aculeiferum_t.setUuid(UUID.fromString("169fea08-6b7a-4315-b111-a774c7fafe30"));
 
-        BotanicalName acacia_subg_phyllodineae_n = TaxonNameBase.NewBotanicalInstance(Rank.SUBGENUS(), "Acacia", "Phyllodineae", null, null, null, sec, null, null);
+        BotanicalName acacia_subg_phyllodineae_n = TaxonNameFactory.NewBotanicalInstance(Rank.SUBGENUS(), "Acacia", "Phyllodineae", null, null, null, sec, null, null);
         acacia_subg_phyllodineae_n.setAuthorshipCache("N.Jacobsen, Bastm. & Yuji Sasaki", true);
         Taxon acacia_subg_phyllodineae_t = Taxon.NewInstance(acacia_subg_phyllodineae_n, sec);
         acacia_subg_phyllodineae_t.setUuid(UUID.fromString("a9da5d43-517e-4ca5-a490-b6a5cd637e9e"));
 
-        BotanicalName acacia_setc_botrycephalae_n = TaxonNameBase.NewBotanicalInstance(Rank.SECTION_BOTANY(), "Acacia", "Botrycephalae", null, null, null, sec, null, null);
+        BotanicalName acacia_setc_botrycephalae_n = TaxonNameFactory.NewBotanicalInstance(Rank.SECTION_BOTANY(), "Acacia", "Botrycephalae", null, null, null, sec, null, null);
         acacia_setc_botrycephalae_n.setAuthorshipCache("Yuji Sasaki", true);
         Taxon acacia_sect_botrycephalae_t = Taxon.NewInstance(acacia_setc_botrycephalae_n, sec);
         acacia_sect_botrycephalae_t.setUuid(acacia_sect_botrycephalae_uuid);
 
-        BotanicalName acacia_cuspidifolia_n = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(), "Acacia", null,"cuspidifolia", null, null, sec, null, null);
+        BotanicalName acacia_cuspidifolia_n = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Acacia", null,"cuspidifolia", null, null, sec, null, null);
         acacia_cuspidifolia_n.setAuthorshipCache("Maslin", true);
         Taxon acacia_cuspidifolia_t = Taxon.NewInstance(acacia_cuspidifolia_n, sec);
         acacia_cuspidifolia_t.setUuid(acacia_cuspidifolia_uuid);
 
-        BotanicalName acacia_mearnsii_n = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(), "Acacia", null,"mearnsii", null, null, sec, null, null);
+        BotanicalName acacia_mearnsii_n = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Acacia", null,"mearnsii", null, null, sec, null, null);
         acacia_mearnsii_n.setAuthorshipCache("Benth", true);
         Taxon acacia_mearnsii_t = Taxon.NewInstance(acacia_mearnsii_n, sec);
         acacia_mearnsii_t.setUuid(UUID.fromString("2e55dc01-71f5-4d42-9bb0-a2448e46dd18"));
 
-        BotanicalName acacia_acicularis_n = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(), "Acacia", null,"acicularis", null, null, sec, null, null);
+        BotanicalName acacia_acicularis_n = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Acacia", null,"acicularis", null, null, sec, null, null);
         acacia_acicularis_n.setAuthorshipCache("Willd.", true);
         Taxon acacia_acicularis_t = Taxon.NewInstance(acacia_acicularis_n, sec);
         acacia_acicularis_t.setUuid(acacia_acicularis_uuid);
 
-        BotanicalName xacacia_acicularis_n = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES(), "Acacia", null,"acicularis", "acicularis", null, sec, null, null);
+        BotanicalName xacacia_acicularis_n = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES(), "Acacia", null,"acicularis", "acicularis", null, sec, null, null);
         xacacia_acicularis_n.setAuthorshipCache("Willd.", true);
         xacacia_acicularis_n.setMonomHybrid(true);
         System.out.println(xacacia_acicularis_n.getTitleCache());

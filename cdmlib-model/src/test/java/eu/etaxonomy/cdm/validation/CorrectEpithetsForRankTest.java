@@ -24,7 +24,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.validation.constraint.CorrectEpithetsForRankValidator;
 
 
@@ -49,7 +49,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setAuthorshipCache("L.");
 		name.setFullTitleCache("Aus aus L.");

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -132,7 +132,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         taxNode = HibernateProxyHelper.deproxy(taxNode, TaxonNode.class);
         taxNode2 = HibernateProxyHelper.deproxy(taxNode2, TaxonNode.class);
         TaxonNode rootNode = HibernateProxyHelper.deproxy(classification.getRootNode(), TaxonNode.class);
-        TaxonNode newNode = rootNode.addChildTaxon(Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null), null, null);
+        TaxonNode newNode = rootNode.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null), null, null);
         taxonNodeDao.saveOrUpdate(newNode);
         taxonNodeDao.delete(taxNode3, true);
 
@@ -192,9 +192,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         TaxonNode taxNode2 = taxonNodeDao.load(uuid2,TAXONNODE_INIT_STRATEGY);
 
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
-        Taxon taxon = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null);
-        Taxon taxon1 = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null);
-        Taxon taxon2 = Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()), null);
+        Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
+        Taxon taxon1 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
+        Taxon taxon2 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
         TaxonNode child = taxNode.addChildTaxon(taxon, null, null);
         UUID childUuid = taxonNodeDao.saveOrUpdate(child);
         child = taxonNodeDao.load(childUuid);

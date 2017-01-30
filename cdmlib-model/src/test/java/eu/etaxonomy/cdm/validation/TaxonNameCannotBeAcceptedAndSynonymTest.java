@@ -22,7 +22,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -55,9 +55,9 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		name1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-		name2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-		name3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 
 		sec1 = ReferenceFactory.newGeneric();
 		sec2 = ReferenceFactory.newGeneric();

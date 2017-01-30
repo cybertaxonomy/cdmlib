@@ -62,7 +62,7 @@ public class TaxonBaseTest extends EntityTestBase {
 		sec.setTitleCache("Schoenes saftiges Allg�u", true);
 		name1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		name2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
 		// taxa
 		taxon1 = Taxon.NewInstance(name1,sec);
 		synonym1 = Synonym.NewInstance(name2,sec);
@@ -145,7 +145,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	public final void testClone(){
 
-		BotanicalName test = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		BotanicalName test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		String genus = "test";
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);

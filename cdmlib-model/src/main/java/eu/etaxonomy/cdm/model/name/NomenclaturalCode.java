@@ -138,7 +138,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
 		switch (this){
 		case ICNAFP:
-			result = TaxonNameBase.NewBotanicalInstance(rank);
+			result = TaxonNameFactory.NewBotanicalInstance(rank);
 			break;
 		case ICZN:
 			result = TaxonNameFactory.NewZoologicalInstance(rank);

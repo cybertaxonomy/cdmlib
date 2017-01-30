@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -138,7 +139,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // Derived Unit
         MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
         mediaSpecimen.setCollection(collection);
-        BotanicalName storedUnder = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        BotanicalName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         mediaSpecimen.setStoredUnder(storedUnder);
         PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
         preservation.setMedium(DefinedTerm.NewDnaMarkerInstance("medium", "medium", "medium"));// dummy
@@ -187,7 +188,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     private Taxon getTaxon() {
         Reference sec = getReference();
-        TaxonNameBase<?, ?> name = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
+        TaxonNameBase<?, ?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         Taxon taxon = Taxon.NewInstance(name, sec);
         return taxon;
 

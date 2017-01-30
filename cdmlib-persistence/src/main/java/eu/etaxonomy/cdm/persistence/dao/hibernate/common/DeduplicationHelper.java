@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl.ReferenceHolder;
 import eu.etaxonomy.cdm.strategy.merge.ConvertMergeStrategy;
@@ -263,7 +264,7 @@ public class DeduplicationHelper {
 		//TODO cast
 		getCollectionRoles(clazz, sessionFactory);
 
-		TaxonNameBase name1 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.getTaxonBases();
 
 		Type propType = sessionFactory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "taxonBases");

@@ -30,7 +30,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -58,7 +58,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	public void setUp() {
 
 		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
-		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 	}
 
 

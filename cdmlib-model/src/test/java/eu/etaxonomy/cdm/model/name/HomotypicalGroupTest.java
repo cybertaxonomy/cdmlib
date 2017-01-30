@@ -59,10 +59,10 @@ public class HomotypicalGroupTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		name1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-		name2 = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
-		name3 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
-		name4 = TaxonNameBase.NewBotanicalInstance(Rank.VARIETY());
+		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+		name4 = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
 	}
 
 	/**

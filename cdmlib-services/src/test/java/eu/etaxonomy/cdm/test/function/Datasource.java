@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -214,7 +215,7 @@ public class Datasource {
 
 	private void insertSomeData(CdmApplicationController appCtr) {
 		Classification cl = Classification.NewInstance("myClass");
-		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(TaxonNameBase.NewBotanicalInstance(null), null), null, null);
+		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null), null, null);
 		appCtr.getClassificationService().save(cl);
 
 		Taxon t2 = Taxon.NewInstance(null, null);
@@ -292,7 +293,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase<?,?> tn = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -312,7 +313,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase<?,?> tn = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -352,7 +353,7 @@ public class Datasource {
 
 		boolean exists = appCtr.getUserService().userExists("admin");
 		try {
-			BotanicalName name = TaxonNameBase.NewBotanicalInstance(null);
+			BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
 			String nameCache = "testName";
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
@@ -428,9 +429,9 @@ public class Datasource {
 //			 CdmPersistentDataSource.NewInstance("localH2");
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 		try {
-			BotanicalName botName1 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-			BotanicalName botName2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-			BotanicalName hybridName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+			BotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			BotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
 			UUID uuid1 = botName1.getUuid();
 			UUID uuid2 = botName2.getUuid();

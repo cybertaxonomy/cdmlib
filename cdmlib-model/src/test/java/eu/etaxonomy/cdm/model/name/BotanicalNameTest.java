@@ -68,11 +68,11 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testBotanicalNameRank() {
 		Rank genus = Rank.GENUS();
-		BotanicalName rankName = TaxonNameBase.NewBotanicalInstance(genus);
+		BotanicalName rankName = TaxonNameFactory.NewBotanicalInstance(genus);
 		assertNotNull(rankName);
 		assertSame(genus, rankName.getRank());
 		assertTrue(rankName.getRank().isGenus());
-		BotanicalName nullRankName = TaxonNameBase.NewBotanicalInstance(null);
+		BotanicalName nullRankName = TaxonNameFactory.NewBotanicalInstance(null);
 		assertNotNull(nullRankName);
 		assertNull(nullRankName.getRank());
 	}

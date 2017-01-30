@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -88,11 +88,11 @@ public class HomotypicGroupTaxonComparatorTest {
         ref2.setDatePublished(TimePeriod.NewInstance(cal2));
         ref3.setDatePublished(TimePeriod.NewInstance(cal3));
 
-        botName1 =  TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-        botName2 =  TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-        botName3 =  TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-        botName4 =  TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
-        botName5 =  TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        botName1 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        botName2 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        botName3 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        botName4 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        botName5 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 
         setNameParts(botName1, "Aaa", "aaa");
         setNameParts(botName2, "Bbb", "bbb");

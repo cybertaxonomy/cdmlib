@@ -1972,7 +1972,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 fullname =  getFullReference(name,nameTBF.getParsingProblems());
             }
             if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)){
-                nameTBF = TaxonNameBase.NewBotanicalInstance(null);
+                nameTBF = TaxonNameFactory.NewBotanicalInstance(null);
             }
             if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
                 nameTBF = ZoologicalName.NewInstance(null);
@@ -2305,7 +2305,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                     TaxonNameBase<?,?> nameToBeFilled = null;
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)){
-                        nameToBeFilled = TaxonNameBase.NewBotanicalInstance(null);
+                        nameToBeFilled = TaxonNameFactory.NewBotanicalInstance(null);
                     }
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
                         nameToBeFilled = ZoologicalName.NewInstance(null);

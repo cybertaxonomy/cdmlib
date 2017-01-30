@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -85,7 +85,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     public final void createTestDataSet() {
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");
         combAuthor.addTeamMember(Person.NewTitledInstance("Iron Man"));
-        BotanicalName name = TaxonNameBase.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
+        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
         name.setCombinationAuthorship(combAuthor);
         Taxon taxon = Taxon.NewInstance(name, null);
         UUID taxonUuid = taxonService.save(taxon).getUuid();
@@ -273,7 +273,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         combAuthor.addTeamMember(Person.NewTitledInstance("Wolverine"));
 
 
-        BotanicalName name = TaxonNameBase.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
+        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
         name.setCombinationAuthorship(combAuthor);
 
         Taxon taxon = Taxon.NewInstance(name, null);
@@ -368,7 +368,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Test
     public final void testTaxonDescriptionMerge() {
 
-        BotanicalName name = TaxonNameBase.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
+        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
         Taxon taxon = Taxon.NewInstance(name, null);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
 

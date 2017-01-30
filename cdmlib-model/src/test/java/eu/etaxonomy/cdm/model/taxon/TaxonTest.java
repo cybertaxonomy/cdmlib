@@ -73,9 +73,9 @@ public class TaxonTest extends EntityTestBase {
 		misSec.setTitleCache("Stupid book", true);
 
 		name1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
-		name2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
-		name3 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
-		name4 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,linne,null,"p.14", null);
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
+		name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
+		name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,linne,null,"p.14", null);
 		rootT = Taxon.NewInstance(name1,sec);
 		freeT = Taxon.NewInstance(name4,sec);
 		// taxonomic children
@@ -187,9 +187,9 @@ public class TaxonTest extends EntityTestBase {
 
     @Test
     public void testAddHomotypicSynonymName(){
-        TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(null);
+        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
-        TaxonNameBase<?,?> synonymName1 = TaxonNameBase.NewBotanicalInstance(null);
+        TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
         // add a synonym to the taxon
         Synonym synonym1 = taxon.addHomotypicSynonymName(synonymName1);
         // get the homotypic group of that synonym
@@ -200,9 +200,9 @@ public class TaxonTest extends EntityTestBase {
     }
     @Test
     public void testAddHomotypicSynonym(){
-        TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(null);
+        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
-        TaxonNameBase<?,?> synonymName1 = TaxonNameBase.NewBotanicalInstance(null);
+        TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
         Synonym synonym = Synonym.NewInstance(synonymName1, null);
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
@@ -217,10 +217,10 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddRemoveSynonymInSameGroup(){
-		TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
 		Taxon taxon = Taxon.NewInstance(taxonName, null);
-		TaxonNameBase<?,?> synonymName1 = TaxonNameBase.NewBotanicalInstance(null);
-		TaxonNameBase<?,?> synonymName2 = TaxonNameBase.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> synonymName2 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		// add a synonym to the taxon
 		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1);

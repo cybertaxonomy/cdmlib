@@ -57,14 +57,14 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");
 		author1 = Person.NewTitledInstance("Person");
 		name.setBasionymAuthorship(author1);
 
 		author2 = Person.NewTitledInstance("Person2");
-		basionymName = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		basionymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		basionymName.setGenusOrUninomial("Aus");
 		basionymName.setSpecificEpithet("aus");
         basionymName.setCombinationAuthorship(author1);

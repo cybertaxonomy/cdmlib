@@ -389,7 +389,7 @@ public class FullCoverageDataGenerator {
 		textData.setTimeperiod(TimePeriodParser.parseString("1970-1980"));
 		Reference ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
-		source.setNameUsedInSource(TaxonNameBase.NewBotanicalInstance(Rank.GENUS()));
+		source.setNameUsedInSource(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()));
 		handleAnnotatableEntity(source);
 
 		taxonDescription.addDescriptionSource(ref);
@@ -402,7 +402,7 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(specDesc);
 
 		//Name description
-		TaxonNameBase<?,?> name = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
+		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		TaxonNameDescription nameDesc = TaxonNameDescription.NewInstance(name);
 		cdmBases.add(name);
 		handleAnnotatableEntity(nameDesc);
@@ -627,11 +627,11 @@ public class FullCoverageDataGenerator {
 
 	private void createTaxon(List<CdmBase> cdmBases) {
 		Reference sec = getReference();
-		TaxonNameBase<?,?> name = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
+		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		handleIdentifiableEntity(taxon);
 
-		TaxonNameBase<?,?> synName = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
+		TaxonNameBase<?,?> synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
 		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 		taxon.setDoubtful(true);
@@ -765,7 +765,7 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setAccessionNumber("accessionNumber");
 //		mediaSpecimen.setCollectorsNumber("collectorsNumber");
 		mediaSpecimen.setBarcode("barcode");
-		BotanicalName storedUnder = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		BotanicalName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);
 		mediaSpecimen.setStoredUnder(storedUnder);
 		mediaSpecimen.setExsiccatum("exsiccatum");
@@ -834,7 +834,7 @@ public class FullCoverageDataGenerator {
 		botName.setExBasionymAuthorship(exBasionymAuthorship);
 		handleIdentifiableEntity(botName);
 		handleAnnotatableEntity(botName.getHomotypicalGroup());
-		BotanicalName botName2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
 		hybridRel.setCitation(ReferenceFactory.newBook());
 		hybridRel.setCitationMicroReference("p. 123");
@@ -951,7 +951,7 @@ public class FullCoverageDataGenerator {
 
 	private Taxon getTaxon() {
 		Reference sec = getReference();
-		TaxonNameBase<?,?> name = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
+		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		return taxon;
 

@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -114,7 +115,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     String accessionNumber = "888462535";
     String catalogNumber = "UU879873590";
-    TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(Rank.GENUS(), "Abies",
+    TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies",
             null, null, null, null, null, null, null);
     String collectorsNumber = "234589913A34";
     Collection collection = Collection.NewInstance();
@@ -1580,7 +1581,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Collection newCollection = Collection.NewInstance();
         String catalogNumber = "1234890";
         String accessionNumber = "345345";
-        TaxonNameBase<?,?> storedUnder = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+        TaxonNameBase<?,?> storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
         DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
 				catalogNumber, accessionNumber, storedUnder,

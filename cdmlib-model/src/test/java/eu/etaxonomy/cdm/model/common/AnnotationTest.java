@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -69,7 +69,7 @@ public class AnnotationTest extends EntityTestBase {
 		commentator.setTitleCache("automatic importer", true);
 		annotation1 = Annotation.NewInstance("anno1", Language.DEFAULT());
 		annotation1.setCommentator(commentator);
-		annotatedObject = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		annotatedObject = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		annotatedObject.addAnnotation(annotation1);
 		linkbackUri = new URI("http://www.abc.de");
         annotation1.setLinkbackUri(linkbackUri);

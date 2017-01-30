@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -68,7 +68,7 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		name = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("alba");
 		Person combinationAuthor = Person.NewInstance();
@@ -168,7 +168,7 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		System.out.println(taxonBase.generateTitle());
 		assertEquals("Abies alba (L.) Mill. \u0026 L. sec. Sp.Pl.", taxonBase.generateTitle());
 
-		name = TaxonNameBase.NewBotanicalInstance(null);
+		name = TaxonNameFactory.NewBotanicalInstance(null);
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());

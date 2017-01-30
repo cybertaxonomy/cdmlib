@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -104,7 +105,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
     private final String exsiccatum = "Greuter, Pl. Dahlem. 456";
     private final String accessionNumber = "8909756";
     private final String catalogNumber = "UU879873590";
-    private final TaxonNameBase<?,?> taxonName = TaxonNameBase.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+    private final TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
     private final String collectorsNumber = "234589913A34";
     private final Collection collection = Collection.NewInstance();
 
