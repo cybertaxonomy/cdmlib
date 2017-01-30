@@ -812,7 +812,7 @@ public class FullCoverageDataGenerator {
 
 
 	private void createTaxonName(List<CdmBase> cdmBases) {
-		BacterialName bacName = TaxonNameBase.NewBacterialInstance(Rank.GENUS());
+		BacterialName bacName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
 		bacName.setSubGenusAuthorship("sub Genus author");
 		bacName.setNameApprobation("nameApprobation");
 		handleIdentifiableEntity(bacName);
@@ -864,7 +864,7 @@ public class FullCoverageDataGenerator {
 				getReference(), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
 
-		ViralName viralName = ViralName.NewViralInstance(Rank.GENUS());
+		ViralName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
 		handleIdentifiableEntity(viralName);
 

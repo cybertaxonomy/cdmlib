@@ -402,7 +402,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNB.getUuid())) {
-	            NonViralName<BacterialName> taxonName = TaxonNameBase.NewBacterialInstance(null);
+	            NonViralName<BacterialName> taxonName = TaxonNameFactory.NewBacterialInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));

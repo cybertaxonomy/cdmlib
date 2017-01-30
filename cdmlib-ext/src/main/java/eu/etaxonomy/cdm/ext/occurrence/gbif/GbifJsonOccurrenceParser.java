@@ -252,11 +252,11 @@ public class GbifJsonOccurrenceParser {
                             } else if (string.equals(NomenclaturalCode.ICNAFP.getTitleCache())) {
                                 name = TaxonNameBase.NewBotanicalInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
-                                name = TaxonNameBase.NewBacterialInstance(rank);
+                                name = TaxonNameFactory.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
                                 name = TaxonNameFactory.NewCultivarInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
-                                name = TaxonNameBase.NewViralInstance(rank);
+                                name = TaxonNameFactory.NewViralInstance(rank);
                             } else {
                             }
                         }else {
@@ -268,7 +268,7 @@ public class GbifJsonOccurrenceParser {
                                 } else if (record.getString(KINGDOM).equals(FUNGI)){
                                     name = TaxonNameBase.NewBotanicalInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(BACTERIA)){
-                                    name = TaxonNameBase.NewBacterialInstance(rank);
+                                    name = TaxonNameFactory.NewBacterialInstance(rank);
                                 } else{
                                     name = TaxonNameBase.NewNonViralInstance(rank);
                                 }

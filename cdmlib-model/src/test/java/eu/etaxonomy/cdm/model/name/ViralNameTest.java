@@ -37,7 +37,7 @@ public class ViralNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		viralName1 = ViralName.NewViralInstance(Rank.SPECIES());
+		viralName1 = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
 	}
 
 //****************** TESTS ******************************************/

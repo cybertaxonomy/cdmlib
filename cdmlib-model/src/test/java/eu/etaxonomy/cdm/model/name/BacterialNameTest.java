@@ -37,7 +37,7 @@ public class BacterialNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		bacterialName1 = TaxonNameBase.NewBacterialInstance(Rank.SPECIES());
+		bacterialName1 = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
 	}
 
 //****************** TESTS ******************************************/

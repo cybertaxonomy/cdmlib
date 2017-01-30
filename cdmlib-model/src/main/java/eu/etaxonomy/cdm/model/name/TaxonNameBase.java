@@ -551,53 +551,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
     /**
-     * Creates a new viral taxon name instance only containing its {@link Rank rank}.
-     *
-     * @param   rank  the rank to be assigned to <i>this</i> viral taxon name
-     * @see     #ViralName(Rank)
-     */
-    public static ViralName NewViralInstance(Rank rank){
-        return new ViralName(rank);
-    }
-
-    /**
-     * Creates a new bacterial taxon name instance
-     * only containing its {@link Rank rank} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> bacterial taxon name
-     * @see    #NewInstance(Rank, HomotypicalGroup)
-     * @see    #BacterialName(Rank, HomotypicalGroup)
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-     */
-    public static BacterialName NewBacterialInstance(Rank rank){
-        return new BacterialName(rank, null);
-    }
-
-    /**
-     * Creates a new bacterial taxon name instance
-     * only containing its {@link Rank rank},
-     * its {@link HomotypicalGroup homotypical group} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
-     * The new bacterial taxon name instance will be also added to the set of
-     * bacterial taxon names belonging to this homotypical group.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> bacterial taxon name
-     * @param  homotypicalGroup  the homotypical group to which <i>this</i> bacterial taxon name belongs
-     * @see    #NewInstance(Rank)
-     * @see    #BacterialName(Rank, HomotypicalGroup)
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-     * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-     */
-    public static BacterialName NewBacterialInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new BacterialName(rank, homotypicalGroup);
-    }
-
-
-    /**
      * Creates a new zoological taxon name instance
      * only containing its {@link Rank rank} and
      * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.

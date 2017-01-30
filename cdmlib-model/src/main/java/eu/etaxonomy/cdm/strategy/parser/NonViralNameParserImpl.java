@@ -105,7 +105,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}else if ( isZoologicalName /*&& ! isBotanicalName*/ && !isBacteriologicalName && !isCultivatedPlantName){
 				result = TaxonNameBase.NewZoologicalInstance(rank);
 			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
-				result = TaxonNameBase.NewBacterialInstance(rank);
+				result = TaxonNameFactory.NewBacterialInstance(rank);
 			}else {
 				result =  TaxonNameBase.NewNonViralInstance(rank);
 			}
@@ -123,7 +123,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				break;
 			case ICNB:
 				logger.warn("ICNB not yet implemented");
-				result = TaxonNameBase.NewBacterialInstance(rank);
+				result = TaxonNameFactory.NewBacterialInstance(rank);
 				break;
 			case ICVCN:
 				logger.error("Viral name is not a NonViralName !!");

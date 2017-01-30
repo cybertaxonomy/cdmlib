@@ -147,10 +147,10 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 			result = TaxonNameFactory.NewCultivarInstance(rank);
 			break;
 		case ICNB:
-			result = TaxonNameBase.NewBacterialInstance(rank);
+			result = TaxonNameFactory.NewBacterialInstance(rank);
 			break;
 		case ICVCN:
-			result = TaxonNameBase.NewViralInstance(rank);
+			result = TaxonNameFactory.NewViralInstance(rank);
 			break;
 		default:
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
