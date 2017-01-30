@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -182,7 +183,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNamesByExample() {
-        ZoologicalName zoologicalName = TaxonNameBase.NewZoologicalInstance(Rank.GENUS());
+        ZoologicalName zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
         Set<String> includedProperties = new HashSet<String>();
         includedProperties.add("genusOrUninomial");

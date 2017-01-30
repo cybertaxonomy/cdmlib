@@ -21,8 +21,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
@@ -76,7 +76,7 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationT
 
 	@Test
 	public void testNewEntities() {
-		TaxonNameBase acherontiaLachesis = TaxonNameBase.NewZoologicalInstance(null);
+		TaxonNameBase acherontiaLachesis = TaxonNameFactory.NewZoologicalInstance(null);
 		INameCacheStrategy zoologicalStrategy = (INameCacheStrategy)acherontiaLachesis.getCacheStrategy();
 		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
 

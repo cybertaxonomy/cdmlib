@@ -130,6 +130,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -497,7 +498,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		BotanicalName name2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
-		ZoologicalName zooName1 = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
+		ZoologicalName zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		name1.setTitleCache("ZoologicalName1", true);
 
 		Reference article1 = ReferenceFactory.newArticle();

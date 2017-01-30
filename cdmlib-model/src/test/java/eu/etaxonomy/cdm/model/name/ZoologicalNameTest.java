@@ -37,7 +37,7 @@ public class ZoologicalNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		zooName1 = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES(), "Aus", null, "bus", "infracus", null, null, null, null);
+		zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(), "Aus", null, "bus", "infracus", null, null, null, null);
 	}
 
 //****************** TESTS ******************************************/

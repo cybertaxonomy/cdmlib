@@ -193,7 +193,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
 
         //zool. specific ranks (we don't have markers here therefore no problem should exist
-        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.SECTION_ZOOLOGY());
+        ZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SECTION_ZOOLOGY());
         zooName.setGenusOrUninomial("Genus");
         zooName.setInfraGenericEpithet("Infragenus");
         Assert.assertEquals("", "Genus", zooName.getNameCache());
@@ -426,7 +426,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
 
         //year
-        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
+        ZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
         zooName.setGenusOrUninomial("Homo");
         zooName.setSpecificEpithet("sapiens");
         zooName.setBasionymAuthorship(basAuthor);

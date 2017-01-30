@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
@@ -36,7 +36,7 @@ public class CdmPermissionClassTest {
     public void testCdmPermissionClass(){
         Assert.assertEquals(
                 CdmPermissionClass.TAXONNAMEBASE,
-                CdmPermissionClass.getValueOf(TaxonNameBase.NewZoologicalInstance(Rank.GENUS()))
+                CdmPermissionClass.getValueOf(TaxonNameFactory.NewZoologicalInstance(Rank.GENUS()))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONNAMEBASE,

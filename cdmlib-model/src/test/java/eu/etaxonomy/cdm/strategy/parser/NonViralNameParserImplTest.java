@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -393,7 +394,7 @@ public class NonViralNameParserImplTest {
         assertTrue("Basionym author team should have more authors", ((Team)authorname.getCombinationAuthorship()).isHasMoreMembers()  );
 
         //et al.
-        NonViralName<?> nvn = TaxonNameBase.NewZoologicalInstance(null);
+        NonViralName<?> nvn = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(nvn, "Eckweiler, Hand et al., 2003");
         Team team = (Team)nvn.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", team);
@@ -463,7 +464,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Second team member should be Schwedt", "Schwedt", team.getTeamMembers().get(2).getTitleCache());
 
         //et al.
-        NonViralName<?> nvn = TaxonNameBase.NewZoologicalInstance(null);
+        NonViralName<?> nvn = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseReferencedName (nvn, "Marmota marmota Eckweiler, Hand et al., 2003", Rank.SPECIES(),true);
         assertTrue("Combination author should be a team", nvn.getCombinationAuthorship() instanceof Team);
         team = (Team)nvn.getCombinationAuthorship();
@@ -1579,7 +1580,7 @@ public class NonViralNameParserImplTest {
      */
     @Test
     public final void testParseAuthorsTaxonNameString() throws StringNotParsableException {
-        NonViralName<?> nvn = TaxonNameBase.NewZoologicalInstance(null);
+        NonViralName<?> nvn = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(nvn, "Eckweiler & ten Hagen, 2003");
         Team team = (Team)nvn.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", team);
@@ -1587,7 +1588,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Second member must be 'ten Hagen'", "ten Hagen", team.getTeamMembers().get(1).getTitleCache());
 
         //Crosson du Cormier, 1964
-        ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(null);
+        ZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "Crosson du Cormier, 1964");
         Person person = (Person)zooName.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", person);
@@ -1595,7 +1596,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Year must be 1964", Integer.valueOf(1964), zooName.getPublicationYear() );
 
         //(van der Hoeven, 1839)
-        zooName = TaxonNameBase.NewZoologicalInstance(null);
+        zooName = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "(van der Hoeven, 1839)");
         Assert.assertNull("Combination author must be null", zooName.getCombinationAuthorship());
         person = (Person)zooName.getBasionymAuthorship();
@@ -1604,7 +1605,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Year must be 1839", Integer.valueOf(1839), zooName.getOriginalPublicationYear() );
 
         //le Doux, 1931
-        zooName = TaxonNameBase.NewZoologicalInstance(null);
+        zooName = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "le Doux, 1931");
         person = (Person)zooName.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", person);

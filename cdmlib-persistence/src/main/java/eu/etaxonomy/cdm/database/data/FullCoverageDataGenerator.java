@@ -840,7 +840,7 @@ public class FullCoverageDataGenerator {
 		hybridRel.setCitationMicroReference("p. 123");
 		handleAnnotatableEntity(hybridRel);
 
-		ZoologicalName zooName = TaxonNameBase.NewZoologicalInstance(Rank.GENUS());
+		ZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
 		zooName.setBreed("breed");
 		zooName.setPublicationYear(1922);
 		zooName.setOriginalPublicationYear(1987);
@@ -856,7 +856,7 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(zooName);
 
 		//TypeDesignation
-		ZoologicalName speciesZooName = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES());
+		ZoologicalName speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		NameTypeDesignation nameDesig = zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
 		handleAnnotatableEntity(nameDesig);

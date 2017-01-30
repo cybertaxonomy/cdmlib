@@ -162,7 +162,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP)){
                 taxonName = TaxonNameBase.NewBotanicalInstance(rank);
             }else if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN)){
-                taxonName = TaxonNameBase.NewZoologicalInstance(rank);
+                taxonName = TaxonNameFactory.NewZoologicalInstance(rank);
             }else{
                 taxonName = TaxonNameFactory.NewNonViralInstance(rank);
             }
@@ -283,7 +283,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid())) {
-	            TaxonNameBase<?,?> taxonName = TaxonNameBase.NewZoologicalInstance(null);
+	            TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewZoologicalInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));

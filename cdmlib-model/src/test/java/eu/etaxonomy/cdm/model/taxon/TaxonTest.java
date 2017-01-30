@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -71,7 +72,7 @@ public class TaxonTest extends EntityTestBase {
 		misSec = ReferenceFactory.newBook();
 		misSec.setTitleCache("Stupid book", true);
 
-		name1 = TaxonNameBase.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
+		name1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
 		name2 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
 		name3 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
 		name4 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,linne,null,"p.14", null);

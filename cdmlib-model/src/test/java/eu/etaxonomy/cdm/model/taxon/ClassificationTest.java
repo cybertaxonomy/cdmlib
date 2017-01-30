@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 //import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -101,7 +102,7 @@ public class ClassificationTest {
 		taxonName12 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		taxonName121 = TaxonNameBase.NewBotanicalInstance(Rank.SUBSPECIES());
 		taxonName1 = TaxonNameBase.NewBotanicalInstance(Rank.GENUS());
-		taxonName2 = TaxonNameBase.NewZoologicalInstance(Rank.GENUS());
+		taxonName2 = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
 		taxonName3 = TaxonNameBase.NewBotanicalInstance(Rank.SPECIES());
 		ref1 = ReferenceFactory.newJournal();
 		ref2 = ReferenceFactory.newJournal();
