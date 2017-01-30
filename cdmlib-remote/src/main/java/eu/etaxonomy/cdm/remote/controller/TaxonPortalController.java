@@ -502,37 +502,6 @@ public class TaxonPortalController extends TaxonController
         return descriptions;
     }
 
-    @RequestMapping(value = "useDescriptions", method = RequestMethod.GET)
-    public List<TaxonDescription> doGetUseDescriptions(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElements() - " + requestPathAndQuery(request));
-
-        //ModelAndView mv = new ModelAndView();
-        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-
-       //MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
-        MarkerType useMarkerType = (MarkerType) termService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
-
-       //find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
-       Set<MarkerType> markerTypes =  new HashSet<MarkerType>();
-       markerTypes.add(useMarkerType);
-       List<TaxonDescription> descriptionElements = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
-        //getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths)  load(uuid);
-
-        /*if(!(description instanceof TaxonDescription)){
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            // will terminate thread
-        }*/
-
-        //boolean hasStructuredData = service.        hasStructuredData(description);
-
-        //mv.addObject(hasStructuredData);
-
-        return descriptionElements;
-    }
-
     @RequestMapping(value = "descriptions/elementsByType/{classSimpleName}", method = RequestMethod.GET)
     public ModelAndView doGetDescriptionElementsByType(
             @PathVariable("uuid") UUID uuid,
