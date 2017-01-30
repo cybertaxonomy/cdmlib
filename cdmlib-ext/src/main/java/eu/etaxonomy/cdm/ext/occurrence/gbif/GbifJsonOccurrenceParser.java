@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -253,7 +254,7 @@ public class GbifJsonOccurrenceParser {
                             } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
                                 name = TaxonNameBase.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
-                                name = TaxonNameBase.NewCultivarInstance(rank);
+                                name = TaxonNameFactory.NewCultivarInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
                                 name = TaxonNameBase.NewViralInstance(rank);
                             } else {

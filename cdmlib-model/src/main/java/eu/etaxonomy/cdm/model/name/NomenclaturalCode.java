@@ -144,7 +144,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 			result = TaxonNameBase.NewZoologicalInstance(rank);
 			break;
 		case ICNCP:
-			result = TaxonNameBase.NewCultivarInstance(rank);
+			result = TaxonNameFactory.NewCultivarInstance(rank);
 			break;
 		case ICNB:
 			result = TaxonNameBase.NewBacterialInstance(rank);

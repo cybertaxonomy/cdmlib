@@ -39,7 +39,7 @@ public class CultivarPlantNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		name1 = TaxonNameBase.NewCultivarInstance(Rank.SPECIES());
+		name1 = TaxonNameFactory.NewCultivarInstance(Rank.SPECIES());
 		name1.setGenusOrUninomial("Aus");
 		name1.setSpecificEpithet("bus");
 		name1.setCultivarName("cultivarus");

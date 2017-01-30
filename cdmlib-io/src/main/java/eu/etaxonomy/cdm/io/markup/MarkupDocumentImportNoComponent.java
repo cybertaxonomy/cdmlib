@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -526,7 +526,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		Rank rank = null;  //Rank.SPECIES(); // default
 		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");
 		if (isCultivar) {
-			name = TaxonNameBase.NewCultivarInstance(rank);
+			name = TaxonNameFactory.NewCultivarInstance(rank);
 		} else {
 			name = createNameByCode(state, rank);
 		}

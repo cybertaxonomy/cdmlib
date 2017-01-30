@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -440,7 +441,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Cultivar")) {
-	            CultivarPlantName taxonName = TaxonNameBase.NewCultivarInstance(null);
+	            CultivarPlantName taxonName = TaxonNameFactory.NewCultivarInstance(null);
 
 	            if (taxonName.hasProblem()) {
 	                logger.info("pb ICNCP");

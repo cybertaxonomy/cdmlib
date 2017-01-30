@@ -731,38 +731,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     }
 
 
-    /**
-     * Creates a new cultivar taxon name instance
-     * only containing its {@link Rank rank} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
-     *
-     * @param   rank    the rank to be assigned to <i>this</i> cultivar taxon name
-     * @see             #CultivarPlantName(Rank, HomotypicalGroup)
-     * @see             #NewInstance(Rank, HomotypicalGroup)
-     * @see             eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
-     */
-    public static CultivarPlantName NewCultivarInstance(Rank rank){
-        return new CultivarPlantName(rank, null);
-    }
-
-    /**
-     * Creates a new cultivar taxon name instance
-     * only containing its {@link Rank rank},
-     * its {@link HomotypicalGroup homotypical group} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
-     * The new cultivar taxon name instance will be also added to the set of
-     * cultivar taxon names belonging to this homotypical group.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> cultivar taxon name
-     * @param  homotypicalGroup  the homotypical group to which <i>this</i> cultivar taxon name belongs
-     * @see    #NewInstance(Rank)
-     * @see    #CultivarPlantName(Rank, HomotypicalGroup)
-     * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
-     */
-    public static CultivarPlantName NewCultivarInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new CultivarPlantName(rank, homotypicalGroup);
-    }
-
 // *********************** PARSER STATIC *******************************/
 
 

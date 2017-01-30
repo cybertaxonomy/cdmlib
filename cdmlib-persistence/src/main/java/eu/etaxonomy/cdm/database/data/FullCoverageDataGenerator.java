@@ -109,6 +109,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -816,7 +817,7 @@ public class FullCoverageDataGenerator {
 		bacName.setNameApprobation("nameApprobation");
 		handleIdentifiableEntity(bacName);
 
-		CultivarPlantName botName = TaxonNameBase.NewCultivarInstance(Rank.SUBSPECIES());
+		CultivarPlantName botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
 		botName.setCultivarName("cultivarName");
 		botName.setGenusOrUninomial("Genus");

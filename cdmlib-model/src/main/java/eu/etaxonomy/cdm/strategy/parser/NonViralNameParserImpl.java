@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -99,7 +100,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				if (isBotanicalName){
 					result = TaxonNameBase.NewBotanicalInstance(rank);
 				}else{
-					result = TaxonNameBase.NewCultivarInstance(rank);
+					result = TaxonNameFactory.NewCultivarInstance(rank);
 				}
 			}else if ( isZoologicalName /*&& ! isBotanicalName*/ && !isBacteriologicalName && !isCultivatedPlantName){
 				result = TaxonNameBase.NewZoologicalInstance(rank);
@@ -118,7 +119,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				break;
 			case ICNCP:
 				logger.warn("ICNCP parsing not yet implemented");
-				result = TaxonNameBase.NewCultivarInstance(rank);
+				result = TaxonNameFactory.NewCultivarInstance(rank);
 				break;
 			case ICNB:
 				logger.warn("ICNB not yet implemented");
