@@ -139,9 +139,10 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
                     Reference ref = (Reference)entity;
                     ref.getAbbrevTitleCache();
                     ref.getTitleCache();
-                }else { //any other
-                    //title cache
-                    identifiableEntity.getTitleCache();
+                }else{ //any other
+
+                    identifiableEntity.setTitleCache(identifiableEntity.generateTitle(), identifiableEntity.isProtectedTitleCache());
+                   // identifiableEntity.getTitleCache();
                 }
                 //titleCache should never be empty, even if protected #5763, #5849
                 if (identifiableEntity.isProtectedTitleCache() && identifiableEntity.hasEmptyTitleCache()){
