@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -139,10 +140,13 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
                     Reference ref = (Reference)entity;
                     ref.getAbbrevTitleCache();
                     ref.getTitleCache();
-                }else{ //any other
+                }else if (SpecimenOrObservationBase.class.isAssignableFrom(entityClazz)){
+                    SpecimenOrObservationBase specimen = (SpecimenOrObservationBase)entity;
+                    specimen.setTitleCache(specimen.generateTitle(), specimen.isProtectedTitleCache());
+                }   else{ //any other
 
-                    identifiableEntity.setTitleCache(identifiableEntity.generateTitle(), identifiableEntity.isProtectedTitleCache());
-                   // identifiableEntity.getTitleCache();
+                   // identifiableEntity.setTitleCache(identifiableEntity.generateTitle(), identifiableEntity.isProtectedTitleCache());
+                    identifiableEntity.getTitleCache();
                 }
                 //titleCache should never be empty, even if protected #5763, #5849
                 if (identifiableEntity.isProtectedTitleCache() && identifiableEntity.hasEmptyTitleCache()){
