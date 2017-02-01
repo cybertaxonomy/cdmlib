@@ -26,10 +26,10 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermBaseTest.class);
 
-	private OrderedTermBase<?> otb1;
-	private OrderedTermBase<?> otb2;
-	private OrderedTermBase<?> otb3;
-	private OrderedTermBase<?> otb4;
+	private OrderedTermBase otb1;
+	private OrderedTermBase otb2;
+	private OrderedTermBase otb3;
+	private OrderedTermBase otb4;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -81,7 +81,7 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	public final void testCompareTo() {
 		//since an exception is thrown when comparing OrderedTermBase that do not belong
 		//to the same vocabulary this dummy vocabulary is added
-		OrderedTermVocabulary voc = new OrderedTermVocabulary();
+		OrderedTermVocabulary<OrderedTermBase<?>> voc = new OrderedTermVocabulary();
 		otb1.vocabulary = voc;
 		otb2.vocabulary = voc;
 		otb3.vocabulary = voc;
