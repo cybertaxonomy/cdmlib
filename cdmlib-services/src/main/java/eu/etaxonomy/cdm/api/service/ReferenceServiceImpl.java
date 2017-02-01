@@ -140,11 +140,9 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
             inReferenceType = ReferenceType.Journal;
         } else if (type.equals(ReferenceType.BookSection)){
             inReferenceType = ReferenceType.Book;
-        } else if (type.equals(ReferenceType.InProceedings)){
+        } else if (type.equals(ReferenceType.InProceedings) ){
             inReferenceType = ReferenceType.Proceedings;
-        } else if (type.equals(ReferenceType.Book)){
-            inReferenceType = ReferenceType.PrintSeries;
-        } else if (type.equals(ReferenceType.Proceedings)){
+        } else if (type.equals(ReferenceType.Book) || type.equals(ReferenceType.Proceedings)){
             inReferenceType = ReferenceType.PrintSeries;
         } else if (type.equals(ReferenceType.Generic)){
             inReferenceType = ReferenceType.Generic;
