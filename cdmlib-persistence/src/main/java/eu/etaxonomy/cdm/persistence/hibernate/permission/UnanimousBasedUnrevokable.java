@@ -56,10 +56,10 @@ public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
 
         int grant = 0;
         int abstain = 0;
-        List<ConfigAttribute> singleAttributeList = new ArrayList<ConfigAttribute>(1);
+        List<ConfigAttribute> singleAttributeList = new ArrayList<>(1);
         singleAttributeList.add(null);
 
-        Map<AccessDecisionVoter<CdmBase>, Integer> voteMap = new HashMap<AccessDecisionVoter<CdmBase>, Integer>();
+        Map<AccessDecisionVoter<CdmBase>, Integer> voteMap = new HashMap<>();
 
         for (ConfigAttribute attribute : attributes) {
             singleAttributeList.set(0, attribute);

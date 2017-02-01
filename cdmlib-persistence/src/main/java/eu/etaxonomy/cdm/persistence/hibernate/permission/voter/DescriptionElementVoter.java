@@ -44,7 +44,7 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
             }
 
             if ( !ap.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch && isPropertyMatch){
-                logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
+                logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
                 return ACCESS_GRANTED;
             }
             if ( vr.isUuidMatch  && vr.isClassMatch && vr.isPermissionMatch && isPropertyMatch){
