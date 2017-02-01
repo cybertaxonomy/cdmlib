@@ -142,40 +142,40 @@ public class IdentifiableEntityTest {
 		int result = 0;
 
 		// "Abies" < "Abies Mill."
-		result = abies.compareTo(abiesMill);
+		result = abies.compareToEntity(abiesMill);
 		assertTrue(result < 0);
 
 		abiesTaxon = abies.getTaxa().iterator().next();
 
-		assertTrue(abiesTaxon.compareTo(abiesTaxon) == 0);
+		assertTrue(abiesTaxon.compareToEntity(abiesTaxon) == 0);
 
-		assertTrue(abiesMillTaxon.compareTo(abiesTaxon) > 0);
+		assertTrue(abiesMillTaxon.compareToEntity(abiesTaxon) > 0);
 
-		assertTrue(abiesTaxon.compareTo(abiesMillTaxon) < 0);
+		assertTrue(abiesTaxon.compareToEntity(abiesMillTaxon) < 0);
 
 		// "Abies Mill." > "Abies"
-		result = abiesMill.compareTo(abies);
+		result = abiesMill.compareToEntity(abies);
 		assertTrue(result > 0);
 
 		// "Abies" < "Abies alba"
-		result = abies.compareTo(abiesAlba);
+		result = abies.compareToEntity(abiesAlba);
 		assertTrue(result < 0);
 
 		// "Abies alba" > "Abies"
-		result = abiesAlba.compareTo(abies);
+		result = abiesAlba.compareToEntity(abies);
 		assertTrue(result > 0);
 
 		// "Abies Mill." < "Abies alba Michx."
-		result = abiesMill.compareTo(abiesAlbaMichx);
+		result = abiesMill.compareToEntity(abiesAlbaMichx);
 		assertTrue(result < 0);
 
 		// "Abies alba Michx." > "Abies Mill."
-		result = abiesAlbaMichx.compareTo(abiesMill);
+		result = abiesAlbaMichx.compareToEntity(abiesMill);
 		assertTrue(result > 0);
 
 		//Autonym should sorted without the authorstring
 
-		result = abiesAutonym.compareTo(abiesBalsamea);
+		result = abiesAutonym.compareToEntity(abiesBalsamea);
 		assertTrue(result < 0);
 	    // Test consistency of compareTo() with equals():
 		// Is consistent if and only if for every e1 and e2 of class C
@@ -184,15 +184,15 @@ public class IdentifiableEntityTest {
 		boolean compareResult = false;
 		boolean equalsResult = false;
 
-		compareResult = (abies.compareTo(abies) == 0);
+		compareResult = (abies.compareToEntity(abies) == 0);
 		equalsResult = abies.equals(abies);
 		assertEquals(compareResult, equalsResult);
 
-		compareResult = (abies.compareTo(abiesAlba) == 0);
+		compareResult = (abies.compareToEntity(abiesAlba) == 0);
 		equalsResult = abies.equals(abiesAlba);
 		assertEquals(compareResult, equalsResult);
 
-		compareResult = (abiesMill.compareTo(abies) == 0);
+		compareResult = (abiesMill.compareToEntity(abies) == 0);
 		equalsResult = abiesMill.equals(abies);
 		assertEquals(compareResult, equalsResult);
 
@@ -201,7 +201,7 @@ public class IdentifiableEntityTest {
 		abiesAlbaXinus.setGenusOrUninomial("Abies");
 		abiesAlbaXinus.setSpecificEpithet("alba");
 		abiesAlbaXinus.setInfraSpecificEpithet("xinus");
-		result = abiesAlbaxPinusBeta.compareTo(abiesAlbaXinus);
+		result = abiesAlbaxPinusBeta.compareToEntity(abiesAlbaXinus);
 		assertTrue(result < 0);
 	}
 
