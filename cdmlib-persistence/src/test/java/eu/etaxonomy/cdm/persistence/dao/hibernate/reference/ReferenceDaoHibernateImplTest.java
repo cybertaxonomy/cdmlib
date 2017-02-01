@@ -26,8 +26,10 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -150,6 +152,15 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		titles.add(coveredTaxa.get(1).getName().getTitleCache());
 		return titles;
 	}
+
+	@Test
+	public void testUUIDAndTitleCacheWithReferenceType(){
+	    List<UuidAndTitleCache<Reference>> referenceUuidAndTitleCacheList = referenceDao.getUuidAndTitleCache(100, "Better Testing*", ReferenceType.Article);
+	    assertEquals(1, referenceUuidAndTitleCacheList.size());
+	    referenceUuidAndTitleCacheList = referenceDao.getUuidAndTitleCache(100, "Better Testing*", ReferenceType.Book);
+	    assertEquals(0, referenceUuidAndTitleCacheList.size());
+	}
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()

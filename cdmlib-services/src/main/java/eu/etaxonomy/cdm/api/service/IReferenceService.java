@@ -92,7 +92,13 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      * @param type
      * @return
      */
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType type);
-
+   public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType type);
+   /**
+    * @param limit
+    * @param pattern
+    * @param type
+    * @return
+    */
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type);
 
 }
