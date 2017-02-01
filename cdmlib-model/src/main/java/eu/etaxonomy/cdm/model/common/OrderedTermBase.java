@@ -176,7 +176,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
      * @deprecated To be used only by OrderedTermVocabulary
      **/
     @Deprecated
-    protected boolean decreaseIndex(OrderedTermVocabulary<T> vocabulary){
+    protected boolean decreaseIndex(OrderedTermVocabulary vocabulary){
         if (vocabulary.indexChangeAllowed(this) == true){
             orderIndex--;
             return true;
@@ -189,7 +189,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
      * @deprecated To be used only by OrderedTermVocabulary
      **/
     @Deprecated
-    protected boolean incrementIndex(OrderedTermVocabulary<T> vocabulary){
+    protected boolean incrementIndex(OrderedTermVocabulary vocabulary){
         if (vocabulary.indexChangeAllowed(this) == true){
             orderIndex++;
             return true;

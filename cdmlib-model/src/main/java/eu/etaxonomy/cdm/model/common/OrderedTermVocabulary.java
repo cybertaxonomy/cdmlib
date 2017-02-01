@@ -37,7 +37,7 @@ import org.hibernate.envers.Audited;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
 @Audited
-public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
+public class OrderedTermVocabulary<T extends OrderedTermBase<?>> extends TermVocabulary<T> {
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
@@ -275,7 +275,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	private T toBeChangedByObject;
 
-	public boolean indexChangeAllowed(OrderedTermBase<T> orderedTermBase){
+	public boolean indexChangeAllowed(OrderedTermBase orderedTermBase){
 		return orderedTermBase == toBeChangedByObject ;
 	}
 

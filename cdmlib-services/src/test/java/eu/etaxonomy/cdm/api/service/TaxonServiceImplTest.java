@@ -1081,7 +1081,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonNode node = child1.getTaxonNodes().iterator().next();
         child1.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Import));
 
-        SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
+        SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<?>> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
         DeterminationEvent.NewInstance(child1, identifiedUnit);
         //UUID eventUUID = eventService.save(determinationEvent);
         UUID identifiedUnitUUID = occurenceService.save(identifiedUnit).getUuid();

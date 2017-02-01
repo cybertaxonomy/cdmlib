@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Table(appliesTo="AgentBase", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMergable, IMatchable, Cloneable{
+public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy<?>> extends IdentifiableMediaEntity<S> implements IMergable, IMatchable, Cloneable{
 	private static final long serialVersionUID = 7732768617469448829L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentBase.class);

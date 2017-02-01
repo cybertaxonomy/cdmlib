@@ -46,7 +46,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 
-    private NonViralNameDefaultCacheStrategy<NonViralName> strategy;
+    private NonViralNameDefaultCacheStrategy<NonViralName<?>> strategy;
 
     private static final String familyNameString = "Familia";
     private static final String genusNameString = "Genus";
