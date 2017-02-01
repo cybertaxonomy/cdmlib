@@ -24,7 +24,7 @@
   </modules>
   <properties>    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.codelevel>1.7</java.codelevel>
+    <java.codelevel>1.8</java.codelevel>
     <spring.version>4.2.4.RELEASE</spring.version>
     <spring-security.version>4.0.3.RELEASE</spring-security.version>
     <spring-security-oauth2.version>2.0.11.RELEASE</spring-security-oauth2.version>
@@ -287,11 +287,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.6.1</version>
         <configuration>
           <source>${java.codelevel}</source>
           <target>${java.codelevel}</target>
           <encoding>UTF-8</encoding>  <!-- necessary? should be covered by project. properties source encoding -->
+          <!-- fork has to be true to allow to set the compile args 
+          see #6401-->
+          <fork>true</fork>
+          <compilerArgs>
+            <arg>-J-Xss4M</arg><!-- Increase stack size to avoid StackOverflow during parsing of large java classes-->
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
