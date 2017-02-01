@@ -41,22 +41,15 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 
 	private UUID firstBookUuid;
 	private UUID firstJournalUuid;
-	private UUID genericUuid;
 	private UUID proceedingsUuid;
 	private UUID bookSectionUuid;
 	private UUID nomenclaturalReferenceBookUuid;
-
-	private final String firstPublisherName ="First Publisher";
-	private final String secondPublisherName ="Second Publisher";
-	private final String thirdPublisherName ="Third Publisher";
-	private final String fourthPublisherName ="Fourth Publisher";
 
 
 	@Before
 	public void setUp() {
 		firstBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
 	    firstJournalUuid = UUID.fromString("ad4322b7-4b05-48af-be70-f113e46c545e");
-	    genericUuid = UUID.fromString("bd4822b7-4b05-4eaf-be70-f113446c585e");
 	    proceedingsUuid = UUID.fromString("596b1327-be50-4b0a-9aa2-3ecd610215f2");
 	    bookSectionUuid = UUID.fromString("596b1327-be51-4b0a-9aa2-3ecd610215f1");
 	    nomenclaturalReferenceBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f3");
@@ -70,18 +63,6 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	public void testGetPublishers() {
 		IJournal firstJournal = referenceDao.findByUuid(firstJournalUuid);
 		assert firstJournal!= null : "journal must exist";
-
-//		List<Publisher> publishers = firstJournal.getPublishers();
-//
-//		assertNotNull("getPublishers should return a list", publishers);
-//		assertFalse("the list should not be empty", publishers.isEmpty());
-//		assertEquals("getPublishers should return 4 Publisher instances",4,publishers.size());
-//		assertEquals("first publisher should come first",firstPublisherName,publishers.get(0).getPublisherName());
-//		assertEquals("second publisher should come second",secondPublisherName,publishers.get(1).getPublisherName());
-//		assertEquals("third publisher should come third",thirdPublisherName,publishers.get(2).getPublisherName());
-//		assertEquals("fourth publisher should come fourth",fourthPublisherName,publishers.get(3).getPublisherName());
-
-
 	}
 
 	@Test
@@ -143,11 +124,10 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
 		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
 		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
-
 	}
 
 	private Set<String> makeTitleCacheSet(List<TaxonBase> coveredTaxa) {
-		Set<String> titles = new HashSet<String>();
+		Set<String> titles = new HashSet<>();
 		titles.add(coveredTaxa.get(0).getName().getTitleCache());
 		titles.add(coveredTaxa.get(1).getName().getTitleCache());
 		return titles;
@@ -162,14 +142,8 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 
 }

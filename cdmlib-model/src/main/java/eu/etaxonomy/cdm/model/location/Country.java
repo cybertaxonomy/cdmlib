@@ -656,7 +656,7 @@ public class Country extends NamedArea {
 					//ALL terms in the terms set:
 					//NamedArea continent = (NamedArea)terms.get(uuidContinent)
 					if (continent == null){
-						throw new RuntimeException("Contient referenced by a country could not be found: " + continentStr);
+						throw new RuntimeException("Continent referenced by a country could not be found: " + continentStr);
 					}
 					newInstance.addContinent(continent);
 				}

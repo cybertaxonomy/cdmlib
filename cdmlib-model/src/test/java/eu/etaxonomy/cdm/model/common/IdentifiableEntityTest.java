@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -54,7 +53,7 @@ public class IdentifiableEntityTest {
 
 	private NonViralName<?> abiesBalsamea;
 	private Taxon abiesBalsameaTaxon;
-	private Taxon abiesAlbaxPinusBetaTaxon;
+//	private Taxon abiesAlbaxPinusBetaTaxon;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -252,7 +251,7 @@ public class IdentifiableEntityTest {
 
 	@Test
 	public void testClone(){
-		IdentifiableEntity clone = (IdentifiableEntity)abies.clone();
+		IdentifiableEntity<?> clone = (IdentifiableEntity<?>)abies.clone();
 		assertNotNull(clone);
 		assertEquals(clone.annotations, abies.annotations);
 		assertEquals(clone.markers, abies.markers);

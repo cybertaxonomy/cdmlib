@@ -37,7 +37,7 @@ import org.hibernate.envers.Audited;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
 @Audited
-public class OrderedTermVocabulary<T extends OrderedTermBase<?>> extends TermVocabulary<T> {
+public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
@@ -111,7 +111,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase<?>> extends TermVoc
 	}
 
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
+		SortedSet<T> result = new TreeSet<>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
 		result.addAll( sortedSet.tailSet(otb));
 		return result;

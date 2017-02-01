@@ -26,7 +26,8 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
 public class OrderedTermVocabularyTest extends EntityTestBase {
-	private static Logger logger = Logger.getLogger(OrderedTermVocabularyTest.class);
+	@SuppressWarnings("unused")
+    private static Logger logger = Logger.getLogger(OrderedTermVocabularyTest.class);
 
 	private OrderedTermBase<?> otb1;
 	private OrderedTermBase<?> otb2;
@@ -42,7 +43,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "middel", null);
 		otb3 = new DerivedOrderedTermBase(TermType.Unknown, "otb3", "low", null);
 		otbFree = new DerivedOrderedTermBase();
-		oVoc1 = new OrderedTermVocabulary<OrderedTermBase<?>>();
+		oVoc1 = new OrderedTermVocabulary<>();
 		oVoc1.addTerm(otb1);
 		oVoc1.addTerm(otb2);
 		oVoc1.addTerm(otb3);
