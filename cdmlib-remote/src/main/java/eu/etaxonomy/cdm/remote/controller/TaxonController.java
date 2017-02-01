@@ -325,7 +325,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     // TODO ================================================================================ //
-    // move all description and descriptionElement releated methods into the according
+    // move all description and descriptionElement related methods into the according
     // Description Controllers
 
     /**
@@ -356,7 +356,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         Set<MarkerType> markerTypesSet = new HashSet<MarkerType>();
-        if (markerTypes == null) {
+        if (markerTypes != null) {
             markerTypesSet.addAll(markerTypes);
         }
 
