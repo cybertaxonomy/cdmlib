@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * A default cache strategy for institutions.
  * TODO This is a preliminary implementation to have at least one default cache strategy.
- * Maybe it will need improvement later on. 
+ * Maybe it will need improvement later on.
  * @author a.mueller
  * @date 07.04.2010
  *
@@ -30,10 +30,10 @@ public class InstitutionDefaultCacheStrategy extends StrategyBase implements IId
 	private static final long serialVersionUID = 4586884860596045736L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Collection.class);
-	
+
 	public static UUID uuid = UUID.fromString("20a61a6f-aac9-422e-a95f-20dfacd35b65");
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
 	 */
@@ -45,7 +45,8 @@ public class InstitutionDefaultCacheStrategy extends StrategyBase implements IId
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
 	 */
-	public String getTitleCache(Institution institution) {
+	@Override
+    public String getTitleCache(Institution institution) {
 		if (institution == null){
 			return null;
 		}else{

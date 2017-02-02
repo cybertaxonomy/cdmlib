@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @date 24.06.2009
  *
  */
-//@Component
 public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNode> implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
 
     private static final String HYBRID_SIGN = "\u00D7";

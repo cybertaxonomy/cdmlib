@@ -13,9 +13,9 @@ import eu.etaxonomy.cdm.validation.Level2;
 /**
  * A Mock class for testing entity validation tasks. DO NOT MODIFY UNLESS YOU ALSO MODIFY
  * THE UNIT TESTS MAKING USE OF THIS CLASS!
- * 
+ *
  * @author ayco_holleman
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class Address extends CdmBase {
@@ -33,7 +33,7 @@ public class Address extends CdmBase {
 		this.street = street;
 	}
 
-
+	@Override
 	public boolean equals(Object obj){
 		if (this == obj) {
 			return true;
@@ -45,7 +45,8 @@ public class Address extends CdmBase {
 	}
 
 
-	public int hashCode(){
+	@Override
+    public int hashCode(){
 		return street.hashCode();
 	}
 

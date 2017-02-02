@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,29 +16,27 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @date 25.07.2011
- *
  */
 public class SpecimenTypeParser {
-
 
 	public static class TypeInfo{
 		public SpecimenTypeDesignationStatus status;
 		public String collectionString;
 		public boolean notDesignated;
 	}
-	
+
 	/**
 	 * see also CentralAfricaFernsTaxonParser#handleTypeLocationPart
 	 */
 	public static final String typeTypePattern = "(?i)(holo|lecto|iso|isolecto|syn|isosyn|neo|isoneo|type)\\.?";
 	public static final String collectionPattern = "^[A-Z]+(\\-[A-Z]+)?";
-	
-	
-	
+
+
+
 	public static SpecimenTypeDesignationStatus parseSpecimenTypeStatus(String type) throws UnknownCdmTypeException {
 		//TODO also compare with NameTypeParser
 		//TODO further types
-		
+
 		if (StringUtils.isBlank(type)){
 			return null;
 		}else if (type.endsWith("type") && ! type.equalsIgnoreCase("type")){
@@ -46,8 +44,8 @@ public class SpecimenTypeParser {
 		}else if (type.endsWith("types") && ! type.equalsIgnoreCase("types")){
 			type = type.substring(0, type.length() -5 );
 		}
-		
-		SpecimenTypeDesignationStatus status; 
+
+		SpecimenTypeDesignationStatus status;
 		if (type.equalsIgnoreCase("iso")){
 			status = SpecimenTypeDesignationStatus.ISOTYPE();
 		}else if (type.equalsIgnoreCase("isolecto")){

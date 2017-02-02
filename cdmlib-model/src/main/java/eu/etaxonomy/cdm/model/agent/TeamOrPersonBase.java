@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
  * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
  *
  * @author a.mueller
- * @version 1.0
  * @created 17-APR-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)

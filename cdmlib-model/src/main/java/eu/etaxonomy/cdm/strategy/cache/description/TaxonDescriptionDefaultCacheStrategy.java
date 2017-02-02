@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.description;
 
@@ -23,15 +23,16 @@ public class TaxonDescriptionDefaultCacheStrategy extends StrategyBase implement
 		IIdentifiableEntityCacheStrategy<TaxonDescription> {
 
 	final static UUID uuid = UUID.fromString("0517ae48-597d-4d6b-9f18-8752d689720d");
-	
+
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	public String getTitleCache(TaxonDescription taxonDescription) {
+	@Override
+    public String getTitleCache(TaxonDescription taxonDescription) {
 		String title;
-		Taxon taxon = taxonDescription.getTaxon(); 
+		Taxon taxon = taxonDescription.getTaxon();
 		if (taxon == null){
 			title = getFirstPart(taxonDescription);
 			title = title.replace(" for ", "");
@@ -45,7 +46,7 @@ public class TaxonDescriptionDefaultCacheStrategy extends StrategyBase implement
 		}
 		return title;
 	}
-	
+
 	private String getFirstPart(TaxonDescription taxonDescription){
 		Set<Marker> markers = taxonDescription.getMarkers();
 		MarkerType markerType = MarkerType.USE();
@@ -54,7 +55,7 @@ public class TaxonDescriptionDefaultCacheStrategy extends StrategyBase implement
 			if(marker.getMarkerType().equals(markerType)) {
 				isUseDescription = true;
 			}
-		} 
+		}
 		if (taxonDescription.isImageGallery()){
 			return "Image gallery for " ;
 		} else if (isUseDescription) {

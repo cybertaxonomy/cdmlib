@@ -1,6 +1,3 @@
-package eu.etaxonomy.cdm.strategy.cache.taxon;
-
-
 /**
 * Copyright (C) 2015 EDIT
 * European Distributed Institute of Taxonomy
@@ -10,7 +7,7 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-
+package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationDaoHiberna
     )
 public class TestsShouldNotFailInSuite_2 {
 
+    @SuppressWarnings("unused")
     private static final  Logger logger = Logger.getLogger(TestsShouldNotFailInSuite_2.class);
 
     // the class remains completely empty,

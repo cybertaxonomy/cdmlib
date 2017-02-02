@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,25 +19,24 @@ import org.apache.log4j.Logger;
 /**
  * @author a.mueller
  * @created 07.08.2009
- * @version 1.0
  */
 public class Matching {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Matching.class);
-	
+
 	private SortedMap<String, FieldMatcher> fieldMatchers = new TreeMap<String, FieldMatcher>();
 	private SortedMap<String, FieldMatcher> tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
 	private List<CacheMatcher> cacheMatchers = new ArrayList<CacheMatcher>();
-	
+
 
 	public Matching setFieldMatcher(FieldMatcher fieldMatcher){
 		return setFieldMatcher(fieldMatcher, false);
 	}
-	
+
 	public Matching setFieldMatcher(FieldMatcher fieldMatcher,boolean temporary){
 		String propertyName = fieldMatcher.getPropertyName();
 		if (temporary && ! fieldMatchers.containsKey(propertyName)){
-			tmpFieldMatchers.put(propertyName, fieldMatcher);	
+			tmpFieldMatchers.put(propertyName, fieldMatcher);
 		}else{
 			fieldMatchers.put(propertyName, fieldMatcher);
 		}
@@ -60,18 +59,18 @@ public class Matching {
 		if (includeTemporary){
 			for (FieldMatcher fieldMatcher : tmpFieldMatchers.values()){
 				result.add(fieldMatcher);
-			}	
+			}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @return the fieldMatchers
 	 */
 	public FieldMatcher getFieldMatcher(String propertyName) {
 		return fieldMatchers.get(propertyName);
 	}
-	
+
 	public boolean exists(String propertyName){
 		return getFieldMatcher(propertyName) != null;
 	}
@@ -86,6 +85,6 @@ public class Matching {
 	public void deleteTemporaryMatchers(){
 		tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
 	}
-	
-	
+
+
 }

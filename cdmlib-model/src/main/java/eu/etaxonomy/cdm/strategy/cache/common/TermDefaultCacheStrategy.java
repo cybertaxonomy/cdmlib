@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,16 +23,13 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  *
  */
 public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEntityDefaultCacheStrategy<T> implements IIdentifiableEntityCacheStrategy<T> {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7687293307791110547L;
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermDefaultCacheStrategy.class);
-	
+
 	final static UUID uuid = UUID.fromString("9cdf52c1-bac4-4b6c-a7f9-1a87401bd8f9");
-	
+
 	@Override
 	protected UUID getUuid() {
 		return uuid;

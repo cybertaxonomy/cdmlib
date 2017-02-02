@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,18 +21,18 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class NameTypeParser {
 
 	private static final String desigPattern =  "\\sdesig(\\.|nation)?";
-	
+
 	/**
 	 * see also CentralAfricaFernsTaxonParser#handleTypeLocationPart
 	 */
-	public static final String typeTypePattern = "("+ 
+	public static final String typeTypePattern = "("+
 			"lecto(\\.|type)?+" +
 			"(original|present|subsequent)"+ desigPattern +
-			"(subsequent monotypy|tautonomy)" + 
+			"(subsequent monotypy|tautonomy)" +
 			")";
-	
-	
-	
+
+
+
 	public static NameTypeDesignationStatus parseNameTypeStatus(String type) throws UnknownCdmTypeException {
 		if (StringUtils.isBlank(type)){
 			return null;
@@ -45,7 +45,7 @@ public class NameTypeParser {
 			}else if (type.matches("(?i)subsequent" + desigPattern)){
 				return NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION();
 			}
-			
+
 		}else if(type.matches("(?i)subsequent monotypy")){
 			return NameTypeDesignationStatus.SUBSEQUENT_MONOTYPY();
 		}else if(type.matches("(?i)monotypy")){
@@ -61,6 +61,6 @@ public class NameTypeParser {
 		}
 		String message = "Type Status not supported: " + type;
 		throw new UnknownCdmTypeException(message);
-		
+
 	}
 }

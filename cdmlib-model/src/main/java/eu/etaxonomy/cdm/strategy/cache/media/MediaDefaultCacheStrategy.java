@@ -27,7 +27,9 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Media> {
-	protected static final  Logger logger = Logger.getLogger(MediaDefaultCacheStrategy.class);
+    private static final long serialVersionUID = 7246846028810250751L;
+
+    protected static final  Logger logger = Logger.getLogger(MediaDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("0517ae48-597d-4d6b-9f18-8752d689720d");
 
