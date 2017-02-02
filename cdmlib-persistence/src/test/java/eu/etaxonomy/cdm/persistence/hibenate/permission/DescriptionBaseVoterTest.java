@@ -101,7 +101,7 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
     }
 
     /**
-     * Deletion of orphan objects is always allowed and insufficient CRUD properties will not
+     * Deletion of orphan objects is always allowed and insufficient CRUD operation will not
      * influence the result.
      */
     @Test

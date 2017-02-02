@@ -59,6 +59,8 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
         }
 
         // nothing to do here since the CdmAuthority has no property naming a feature
+        // this case however should never ever happen if the implementation of the CdmPermissionVoter
+        // works correctly.
         return ACCESS_ABSTAIN;
     }
 

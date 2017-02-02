@@ -17,11 +17,11 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
+import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
@@ -96,6 +96,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
         }
 
         int fallThroughVote = ACCESS_DENIED;
+        boolean deniedByPreviousFurtherVoting = false;
 
         // loop over all attributes = permissions of which at least one must match
         // usually there is only one element in the collection!
@@ -160,9 +161,21 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 // subclasses will cast votes for specific Cdm Types
                 //
                 Integer furtherVotingResult = furtherVotingDescisions(auth, object, attributes, vr);
-                if(furtherVotingResult != null && furtherVotingResult != ACCESS_ABSTAIN){
+                if(furtherVotingResult != null){
                     logger.debug("furtherVotingResult => " + furtherVotingResult);
-                    return furtherVotingResult;
+                    switch(furtherVotingResult){
+                        case ACCESS_GRANTED:
+                            // no further check needed
+                            return ACCESS_GRANTED;
+                        case ACCESS_DENIED:
+                            // remember the DENIED vote in case none of
+                            // potentially following furtherVotes are
+                            // GRANTED
+                            deniedByPreviousFurtherVoting = true;
+                        //$FALL-THROUGH$
+                        case ACCESS_ABSTAIN: /* nothing to do */
+                            default: /* nothing to do */
+                    }
                 }
 
             } // END Authorities loop
@@ -170,7 +183,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
 
         // the value of fallThroughVote depends on whether the authority had an property or not, see above
         logger.debug("fallThroughVote => " + fallThroughVote);
-        return fallThroughVote;
+        return deniedByPreviousFurtherVoting ? ACCESS_DENIED : fallThroughVote;
     }
 
     /**

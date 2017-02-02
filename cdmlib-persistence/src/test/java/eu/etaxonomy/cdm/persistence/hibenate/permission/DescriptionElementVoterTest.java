@@ -38,6 +38,7 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
 
     private DescriptionElementBase textDataEco = null;
     private Feature ecology = Feature.NewInstance(null, "ecology", null);
+    private Feature morphology = Feature.NewInstance(null, "morphology", null);
 
     @Before
     public void setup() {
@@ -92,6 +93,54 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
                 textDataEco,
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
+    }
+
+    @Test
+    public void test_UC_morphology_DENIED(){
+        int vote = voter.vote(
+                authentication(
+                        // combined
+                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, morphology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        ),
+                textDataEco,
+                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+        assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
+    }
+
+    @Test
+    public void test_UC_noFeature_DENIED(){
+        int vote = voter.vote(
+                authentication(
+                        // combined
+                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        ),
+                new TextData(),
+                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+        assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
+    }
+
+    @Test
+    public void test_UC_noMatchingClass_DENIED(){
+        int vote = voter.vote(
+                authentication(
+                        // combined
+                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        ),
+                new TextData(),
+                Arrays.asList(new CdmAuthority(CdmPermissionClass.TAXONBASE, null, EnumSet.of(CRUD.CREATE), null)));
+        assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
+    }
+
+    @Test
+    public void test_RU_ecology(){
+        int vote = voter.vote(
+                authentication(
+                        // combined
+                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.READ, CRUD.UPDATE), null)
+                        ),
+                textDataEco,
+                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+        assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 
 }
