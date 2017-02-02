@@ -37,9 +37,12 @@ used with JMX monitors.
 -->
 <ehcache>
   <!--
-    diskStore: see http://www.ehcache.org/documentation/user-guide/storage-options#ltdiskstoregt-configuration-element
+    This configuration is loaded by the default cache configuration. 
+    
+    The store location is set dynamically.
+    Therefore you MUST NEVER define the store location in here.
   -->
-  <diskStore path="user.home/.cdm-server-ehcache" />
+  <!-- the defaultCache element below is most probably never used, see CdmCacher -->
   <defaultCache maxElementsInMemory="10" eternal="false"
     timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" />
   <cache

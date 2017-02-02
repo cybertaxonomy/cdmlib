@@ -109,11 +109,12 @@
     <property name="cacheName"
       value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
   </bean>
-
+ 
+ <!-- now provided through java configuration class EhCacheManagerConfiguration
   <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
     <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml"/>
     <property name="shared" value="true"/>
-  </bean>
+  </bean> -->
 
   <bean id="serializableFactory"
     class="org.springmodules.cache.serializable.XStreamSerializableFactory"/>

@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.api.cache;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.ehcache.Cache;
@@ -22,9 +24,10 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 public abstract class CdmCacher implements ICdmUuidCacher {
 
+    @Autowired
+    public CacheManager cacheManager;
 
-
-    public static final String DEFAULT_CACHE_NAME = "defaultCache";
+    public static final String DEFAULT_CACHE_NAME = "defaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     /**
      * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
@@ -47,13 +50,15 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Returns the singleton default cache manager.
+     * @param conf
      *
      * @return
      */
-    public static CacheManager getDefaultCacheManager() {
-        // this ensures a singleton cache manager
-        return CacheManager.create();
-    }
+//    public static CacheManager getDefaultCacheManager() {
+//        // this ensures a singleton cache manager
+//
+//        return CacheManager.create();
+//    }
 
     /**
      * Returns the default cache configuration.
@@ -64,7 +69,8 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         CacheEventListenerFactoryConfiguration factory;
         // For a better understanding on how to size caches, refer to
         // http://ehcache.org/documentation/configuration/cache-size
-        return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
+
+        CacheConfiguration cc = new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
                 .eternal(false)
                 // default ttl and tti set to 2 hours
@@ -72,9 +78,8 @@ public abstract class CdmCacher implements ICdmUuidCacher {
                 .timeToIdleSeconds(60*60*2)
                 .statistics(true);
 
+        return cc;
     }
-
-
 
     /**
      * Returns the default cache
@@ -82,15 +87,14 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      * @return
      */
     public Cache getDefaultCache() {
-        Cache defaultCache = getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
+        Cache defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);
         if(defaultCache == null) {
-            defaultCache = new Cache(getDefaultCacheConfiguration());
             // Create default cache
-            getDefaultCacheManager().addCache(defaultCache);
+            cacheManager.addCache(DEFAULT_CACHE_NAME);
+            //FIXME write test to check if default config as defined in EhCacheConfiguration is being used
         }
         return defaultCache;
     }
-
 
     /**
      * Gets the cache element corresponding to the given {@link java.util.UUID}
