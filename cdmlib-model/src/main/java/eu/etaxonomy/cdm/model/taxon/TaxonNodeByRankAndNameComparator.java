@@ -48,7 +48,7 @@ public class TaxonNodeByRankAndNameComparator implements Serializable, Comparato
 		}else if (rankTax1 == null && rankTax2 == null || rankTax1.equals(rankTax2)) {
 			if (name1 != null && name2 != null){
 				//same rank, order by name
-				int result = name1.compareToEntity(name2);
+				int result = name1.compareToName(name2);
 				if (result == 0){
 					return taxon1.getUuid().compareTo(taxon2.getUuid());
 				}else{

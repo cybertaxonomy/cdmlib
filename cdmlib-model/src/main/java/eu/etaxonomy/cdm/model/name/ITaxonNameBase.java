@@ -36,6 +36,10 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  * <li> ScientificName according to the ABCD schema
  * </ul>
  *
+ * ITaxonNameBase and it's extensions should only be used for type safety
+ * of {@link TaxonNameBase} instances. It should not be used to interface
+ * instances of any other class
+ *
  * @author a.mueller
  * @date 21.01.2017
  *
@@ -778,6 +782,17 @@ public interface ITaxonNameBase
      * @param basionymName
      */
     public void removeAsGroupsBasionym();
+
+    /**
+     * This method compares 2 taxa on it's name titles and caches.
+     * If both are equal it compares on the secundum titleCache as well.
+     *
+     * @see TaxonNameBase#compareToName(TaxonNameBase)
+     * @param otherTaxon
+     * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
+     * @throws NullPointerException if otherTaxon is <code>null</code>
+     */
+    public int compareToName(TaxonNameBase<?,?> otherName);
 
 
 }

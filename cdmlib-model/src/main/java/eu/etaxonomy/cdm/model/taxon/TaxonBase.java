@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -371,6 +372,51 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
         return name == null ? null : name.getRank();
     }
 
+    /**
+     * This method compares 2 taxa on it's name titles and caches.
+     * If both are equal it compares on the secundum titleCache as well.
+     *
+     * @see ITaxonNameBase#compareToName(TaxonNameBase)
+     * @param otherTaxon
+     * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
+     * @throws NullPointerException if otherTaxon is <code>null</code>
+     */
+    public int compareToTaxon(TaxonBase otherTaxon){
+
+        int result = 0;
+
+        if (otherTaxon == null) {
+            throw new NullPointerException("Cannot compare to null.");
+        }
+
+        otherTaxon = deproxy(otherTaxon);
+
+        String otherReferenceTitleCache = "";
+        String thisReferenceTitleCache = "";
+
+        TaxonNameBase<?,?> otherName = deproxy(otherTaxon.getName());
+        ITaxonNameBase thisName = this.getName();
+        if (otherName == null || this.name == null){
+            //TODO
+        }
+        result = thisName.compareToName(otherName);
+        if (result == 0){
+            Reference otherRef = deproxy(otherTaxon.getSec());
+            if (otherRef != null) {
+                otherReferenceTitleCache = otherRef.getTitleCache();
+            }
+            Reference thisRef = deproxy(this.getSec());
+            if (thisRef != null) {
+                thisReferenceTitleCache = thisRef.getTitleCache();
+            }
+            if ((CdmUtils.isNotBlank(otherReferenceTitleCache) || CdmUtils.isNotBlank(thisReferenceTitleCache))) {
+                result = thisReferenceTitleCache.compareTo(otherReferenceTitleCache);
+            }
+        }
+
+        return result;
+    }
+
 //*********************** CLONE ********************************************************/
 
     /**
@@ -382,9 +428,9 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
      */
     @Override
     public Object clone() {
-        TaxonBase result;
+        TaxonBase<?> result;
         try {
-            result = (TaxonBase)super.clone();
+            result = (TaxonBase<?>)super.clone();
             result.setSec(null);
 
             return result;

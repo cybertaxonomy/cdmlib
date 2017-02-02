@@ -49,17 +49,11 @@ import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -528,128 +522,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
 
-    public int compareToEntity(IdentifiableEntity identifiableEntity){
-
-        int result = 0;
-
-        if (identifiableEntity == null) {
-            throw new NullPointerException("Cannot compare to null.");
-        }
-
-        // First, compare the name cache.
-        // TODO: Avoid using instanceof operator
-        // Use Class.getDeclaredMethod() instead to find out whether class has getNameCache() method?
-
-        String specifiedNameCache = "";
-        String thisNameCache = "";
-        String specifiedTitleCache = "";
-        String thisTitleCache = "";
-        String specifiedReferenceTitleCache = "";
-        String thisReferenceTitleCache = "";
-        String thisGenusString = "";
-        String specifiedGenusString = "";
-        int thisrank_order = 0;
-        final String HYBRID_SIGN = "\u00D7";
-        final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
-        //TODO we can remove all the deproxies here except for the first one
-        identifiableEntity = CdmBase.deproxy(identifiableEntity, IdentifiableEntity.class);
-        if(identifiableEntity instanceof NonViralName) {
-            specifiedNameCache = ((NonViralName)identifiableEntity).getNameCache();
-            specifiedTitleCache = identifiableEntity.getTitleCache();
-           if (identifiableEntity instanceof BotanicalName){
-                if (((BotanicalName)identifiableEntity).isAutonym()){
-                    boolean isProtected = false;
-                    String oldNameCache = ((BotanicalName) identifiableEntity).getNameCache();
-                    if ( ((BotanicalName)identifiableEntity).isProtectedNameCache()){
-                        isProtected = true;
-                    }
-                    ((BotanicalName)identifiableEntity).setProtectedNameCache(false);
-                    ((BotanicalName)identifiableEntity).setNameCache(null, false);
-                    specifiedNameCache = ((BotanicalName) identifiableEntity).getNameCache();
-                    ((BotanicalName)identifiableEntity).setNameCache(oldNameCache, isProtected);
-
-                }
-            }
-
-        } else if(identifiableEntity instanceof TaxonBase) {
-            TaxonBase<?> taxonBase = (TaxonBase)identifiableEntity;
-
-            TaxonNameBase<?,?> taxonNameBase = taxonBase.getName();
-
-
-            INonViralName nonViralName = CdmBase.deproxy(taxonNameBase);
-            specifiedNameCache = nonViralName.getNameCache();
-            specifiedTitleCache = taxonNameBase.getTitleCache();
-
-            specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
-            Reference reference = taxonBase.getSec();
-            if (reference != null) {
-                reference = HibernateProxyHelper.deproxy(reference, Reference.class);
-                specifiedReferenceTitleCache = reference.getTitleCache();
-            }
-        }
-
-        if(this.isInstanceOf(NonViralName.class)) {
-            INonViralName nvn = CdmBase.deproxy(this, TaxonNameBase.class);
-            thisNameCache = nvn.getNameCache();
-            thisTitleCache = getTitleCache();
-
-            if (this instanceof BotanicalName){
-                if (((BotanicalName)this).isAutonym()){
-                    boolean isProtected = false;
-                    String oldNameCache = ((BotanicalName) this).getNameCache();
-                    if ( ((BotanicalName)this).isProtectedNameCache()){
-                        isProtected = true;
-                    }
-                    ((BotanicalName)this).setProtectedNameCache(false);
-                    ((BotanicalName)this).setNameCache(null, false);
-                    thisNameCache = ((BotanicalName) this).getNameCache();
-                    ((BotanicalName)this).setNameCache(oldNameCache, isProtected);
-                }
-            }
-        } else if(this.isInstanceOf(TaxonBase.class)) {
-            //TODO also handle viral names
-            INonViralName taxonName = CdmBase.deproxy(this, TaxonBase.class).getName();
-            thisNameCache = taxonName.getNameCache();
-            thisTitleCache = taxonName.getTitleCache();
-            thisReferenceTitleCache = ((TaxonBase)this).getSec().getTitleCache();
-            thisGenusString = taxonName.getGenusOrUninomial();
-        }
-
-        // Compare name cache of taxon names
-
-        if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
-
-            thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
-            thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
-
-
-            specifiedNameCache = specifiedNameCache.replaceAll(HYBRID_SIGN, "");
-            specifiedNameCache = specifiedNameCache.replaceAll(QUOT_SIGN, "");
-
-
-            result = thisNameCache.compareTo(specifiedNameCache);
-        }
-
-        // Compare title cache of taxon names
-
-        if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
-            thisTitleCache = thisTitleCache.replaceAll(HYBRID_SIGN, "");
-            thisTitleCache = thisTitleCache.replaceAll(QUOT_SIGN, "");
-
-            specifiedTitleCache = specifiedTitleCache.replaceAll(HYBRID_SIGN, "");
-            specifiedTitleCache = specifiedTitleCache.replaceAll(QUOT_SIGN, "");
-            result = thisTitleCache.compareTo(specifiedTitleCache);
-        }
-
-        // Compare title cache of taxon references
-
-        if ((result == 0) && (!specifiedReferenceTitleCache.equals("") || !thisReferenceTitleCache.equals(""))) {
-            result = thisReferenceTitleCache.compareTo(specifiedReferenceTitleCache);
-        }
-
-        return result;
-    }
 
 
     /**

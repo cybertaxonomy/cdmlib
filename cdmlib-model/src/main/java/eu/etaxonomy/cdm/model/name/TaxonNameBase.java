@@ -61,6 +61,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -3235,10 +3236,118 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         return result;
     }
 
+    @Override
+    public int compareToName(TaxonNameBase<?,?> otherName){
+
+        int result = 0;
+
+        if (otherName == null) {
+            throw new NullPointerException("Cannot compare to null.");
+        }
+        otherName = deproxy(otherName);
+
+        String otherNameCache = "";
+        String thisNameCache = "";
+        String otherTitleCache = "";
+        String thisTitleCache = "";
+
+        otherNameCache = otherName.getNameCache();
+        otherTitleCache = otherName.getTitleCache();
+        if (otherName instanceof BotanicalName){
+            if (otherName.isAutonym()){
+                boolean isProtected = false;
+                String oldNameCache = otherName.getNameCache();
+                if ( otherName.isProtectedNameCache()){
+                    isProtected = true;
+                }
+                otherName.setProtectedNameCache(false);
+                otherName.setNameCache(null, false);
+                otherNameCache = otherName.getNameCache();
+                otherName.setNameCache(oldNameCache, isProtected);
+            }
+        }
+
+        if(this.isInstanceOf(NonViralName.class)) {
+            thisNameCache = this.getNameCache();
+            thisTitleCache = this.getTitleCache();
+
+            if (this instanceof BotanicalName){
+                if (this.isAutonym()){
+                    boolean isProtected = false;
+                    String oldNameCache = this.getNameCache();
+                    if (this.isProtectedNameCache()){
+                        isProtected = true;
+                    }
+                    this.setProtectedNameCache(false);
+                    this.setNameCache(null, false);
+                    thisNameCache = this.getNameCache();
+                    this.setNameCache(oldNameCache, isProtected);
+                }
+            }
+        }
+
+        // Compare name cache of taxon names
+        if (!otherNameCache.equals("") && !thisNameCache.equals("")) {
+            thisNameCache = normalizeName(thisNameCache);
+            otherNameCache = normalizeName(otherNameCache);
+            result = thisNameCache.compareTo(otherNameCache);
+        }
+
+        // Compare title cache of taxon names
+        if ((result == 0) && (!otherTitleCache.equals("") || !thisTitleCache.equals(""))) {
+            thisTitleCache = normalizeName(thisTitleCache);
+            otherTitleCache = normalizeName(otherTitleCache);
+            result = thisTitleCache.compareTo(otherTitleCache);
+        }
+
+        return result;
+    }
+
+    static final String HYBRID_SIGN = UTF8.HYBRID.toString();
+    static final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
+
+    /**
+     * @param thisNameCache
+     * @param HYBRID_SIGN
+     * @param QUOT_SIGN
+     * @return
+     */
+    private String normalizeName(String thisNameCache) {
+        thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
+        thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
+        return thisNameCache;
+    }
+
 // ********************** INTERFACES ********************************************/
 
-    public static TaxonNameBase castAndDeproxy(ITaxonNameBase tnb){
-        return deproxy(tnb, TaxonNameBase.class);
+    /**
+     * Method to cast a interfaced name to a concrete name.
+     * The method includes a deproxy to guarantee that no
+     * class cast exception is thrown.
+     *
+     * @see #castAndDeproxy(Set)
+     * @param interfacedName
+     * @return
+     */
+    public static TaxonNameBase castAndDeproxy(ITaxonNameBase interfacedName){
+        return deproxy(interfacedName, TaxonNameBase.class);
+    }
+
+    /**
+     * Method to cast a set of interfaced names to concrete namex.
+     * The method includes a deproxy to guarantee that no
+     * class cast exception is thrown.
+     *
+     * @see #castAndDeproxy(ITaxonNameBase)
+     * @param naminterfacedNames
+     * @return
+     */
+    public static Set<TaxonNameBase> castAndDeproxy(Set<ITaxonNameBase> naminterfacedNames) {
+        Set<TaxonNameBase> result = new HashSet<>();
+        for (ITaxonNameBase naminterfacedName : naminterfacedNames){
+            result.add(castAndDeproxy(naminterfacedName));
+        }
+        return result;
     }
 
 
@@ -3304,8 +3413,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
             //type designations
             result.typeDesignations = new HashSet<TypeDesignationBase>();
-            for (TypeDesignationBase typeDesignation : getTypeDesignations()){
-                TypeDesignationBase newDesignation = (TypeDesignationBase)typeDesignation.clone();
+            for (TypeDesignationBase<?> typeDesignation : getTypeDesignations()){
+                TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
                 result.typeDesignations.add(newDesignation);
                 newDesignation.addTypifiedName(result);
             }
@@ -3361,15 +3470,5 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
 
     }
-    /**
-     * @param namesToSave
-     * @return
-     */
-    public static Set<TaxonNameBase> castAndDeproxy(Set<ITaxonNameBase> namesToSave) {
-        Set<TaxonNameBase> result = new HashSet<>();
-        for (ITaxonNameBase nameToSave : namesToSave){
-            result.add(castAndDeproxy(nameToSave));
-        }
-        return result;
-    }
+
 }
