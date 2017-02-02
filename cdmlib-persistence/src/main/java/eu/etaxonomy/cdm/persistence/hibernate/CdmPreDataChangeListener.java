@@ -141,7 +141,7 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
                     ref.getAbbrevTitleCache();
                     ref.getTitleCache();
                 }else if (SpecimenOrObservationBase.class.isAssignableFrom(entityClazz)){
-                    SpecimenOrObservationBase specimen = (SpecimenOrObservationBase)entity;
+                    SpecimenOrObservationBase<?> specimen = (SpecimenOrObservationBase<?>)entity;
                     if (!specimen.isProtectedTitleCache()){
                         specimen.setTitleCache(specimen.generateTitle(), specimen.isProtectedTitleCache());
                     }

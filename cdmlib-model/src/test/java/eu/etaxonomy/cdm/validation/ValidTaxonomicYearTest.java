@@ -16,7 +16,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -106,9 +105,5 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 
         zooName.setNomenclaturalReference(beforeLineeRef);
         validateHasConstraint(zooName, validatorClass, group);
-
-
     }
-
-
 }
