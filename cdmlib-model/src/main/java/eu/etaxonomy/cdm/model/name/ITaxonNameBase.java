@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 
@@ -784,10 +786,18 @@ public interface ITaxonNameBase
     public void removeAsGroupsBasionym();
 
     /**
-     * This method compares 2 taxa on it's name titles and caches.
-     * If both are equal it compares on the secundum titleCache as well.
+     * This method compares 2 taxon names on it's name titles and caches.
+     * Maybe in future more parts will be added.
+     * It is not fully clear/defined how this method relates to
+     * explicit comparators like {@link TaxonNameComparator}.
+     * Historically it was a compareTo method in {@link IdentifiableEntity}
+     * but did not fulfill the {@link Comparable} contract.
+     *
+     * https://dev.e-taxonomy.eu/redmine/issues/6311
      *
      * @see TaxonNameBase#compareToName(TaxonNameBase)
+     * @see TaxonNameComparator
+     * @see TaxonComparator
      * @param otherTaxon
      * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
      * @throws NullPointerException if otherTaxon is <code>null</code>

@@ -458,6 +458,23 @@ public class CdmUtils {
         return (obj1.equals(obj2));
     }
 
+
+    /**
+     * Compares 2 strings with defined values for <code>null</code>
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static int nullSafeCompareTo(String str1, String str2) {
+        if (str1 == null){
+            return str2 == null ? 0 : -1;
+        }else if (str2 == null){
+            return 1;
+        }else{
+            return (str1.compareTo(str2));
+        }
+    }
+
     /**
      * Returns false if string is null, "" or string.trim() is ""
      * Else true.
@@ -546,4 +563,5 @@ public class CdmUtils {
         }
         return text;
     }
+
 }

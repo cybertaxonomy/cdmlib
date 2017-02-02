@@ -3236,6 +3236,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         return result;
     }
 
+// ***************** COMPARE ********************************/
+
     @Override
     public int compareToName(TaxonNameBase<?,?> otherName){
 
@@ -3244,60 +3246,49 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         if (otherName == null) {
             throw new NullPointerException("Cannot compare to null.");
         }
+
+        //other
         otherName = deproxy(otherName);
-
-        String otherNameCache = "";
-        String thisNameCache = "";
-        String otherTitleCache = "";
-        String thisTitleCache = "";
-
-        otherNameCache = otherName.getNameCache();
-        otherTitleCache = otherName.getTitleCache();
-        if (otherName instanceof BotanicalName){
-            if (otherName.isAutonym()){
-                boolean isProtected = false;
-                String oldNameCache = otherName.getNameCache();
-                if ( otherName.isProtectedNameCache()){
-                    isProtected = true;
-                }
-                otherName.setProtectedNameCache(false);
-                otherName.setNameCache(null, false);
-                otherNameCache = otherName.getNameCache();
-                otherName.setNameCache(oldNameCache, isProtected);
-            }
+        String otherNameCache = otherName.getNameCache();
+        String otherTitleCache = otherName.getTitleCache();
+        //TODO is this really necessary, is it not the normal way how name cache is filled for autonyms?
+        if (otherName.isAutonym()){
+            boolean isProtected = otherName.isProtectedNameCache();
+            String oldNameCache = otherName.getNameCache();
+            otherName.setProtectedNameCache(false);
+            otherName.setNameCache(null, false);
+            otherNameCache = otherName.getNameCache();
+            otherName.setNameCache(oldNameCache, isProtected);
         }
 
-        if(this.isInstanceOf(NonViralName.class)) {
+        //this
+        String thisNameCache = this.getNameCache();
+        String thisTitleCache = this.getTitleCache();
+
+        if (this.isAutonym()){
+            boolean isProtected = this.isProtectedNameCache();
+            String oldNameCache = this.getNameCache();
+            this.setProtectedNameCache(false);
+            this.setNameCache(null, false);
             thisNameCache = this.getNameCache();
-            thisTitleCache = this.getTitleCache();
-
-            if (this instanceof BotanicalName){
-                if (this.isAutonym()){
-                    boolean isProtected = false;
-                    String oldNameCache = this.getNameCache();
-                    if (this.isProtectedNameCache()){
-                        isProtected = true;
-                    }
-                    this.setProtectedNameCache(false);
-                    this.setNameCache(null, false);
-                    thisNameCache = this.getNameCache();
-                    this.setNameCache(oldNameCache, isProtected);
-                }
-            }
+            this.setNameCache(oldNameCache, isProtected);
         }
+
 
         // Compare name cache of taxon names
-        if (!otherNameCache.equals("") && !thisNameCache.equals("")) {
+        if (CdmUtils.isNotBlank(otherNameCache) && CdmUtils.isNotBlank(thisNameCache)) {
             thisNameCache = normalizeName(thisNameCache);
             otherNameCache = normalizeName(otherNameCache);
             result = thisNameCache.compareTo(otherNameCache);
         }
 
         // Compare title cache of taxon names
-        if ((result == 0) && (!otherTitleCache.equals("") || !thisTitleCache.equals(""))) {
-            thisTitleCache = normalizeName(thisTitleCache);
-            otherTitleCache = normalizeName(otherTitleCache);
-            result = thisTitleCache.compareTo(otherTitleCache);
+        if (result == 0){
+            if ( (CdmUtils.isNotBlank(otherTitleCache) || CdmUtils.isNotBlank(thisTitleCache))) {
+                thisTitleCache = normalizeName(thisTitleCache);
+                otherTitleCache = normalizeName(otherTitleCache);
+                result = CdmUtils.nullSafeCompareTo(thisTitleCache, otherTitleCache);
+            }
         }
 
         return result;

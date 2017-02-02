@@ -375,12 +375,23 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     /**
      * This method compares 2 taxa on it's name titles and caches.
      * If both are equal it compares on the secundum titleCache as well.
+     * It is not fully clear/defined how this method relates to
+     * explicit comparators like {@link TaxonComparator}. The later
+     * currently uses this method.
+     * Historically it was a compareTo method in {@link IdentifiableEntity}
+     * but did not fulfill the {@link Comparable} contract.
      *
+     * https://dev.e-taxonomy.eu/redmine/issues/6311
      * @see ITaxonNameBase#compareToName(TaxonNameBase)
+     * @see TaxonComparator
+     * @see TaxonNaturalComparator
+     * @see TaxonNodeByNameComparator
+     * @see TaxonNodeByRankAndNameComparator
      * @param otherTaxon
      * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
      * @throws NullPointerException if otherTaxon is <code>null</code>
      */
+    //TODO handling of protected titleCache
     public int compareToTaxon(TaxonBase otherTaxon){
 
         int result = 0;
@@ -391,16 +402,20 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
         otherTaxon = deproxy(otherTaxon);
 
-        String otherReferenceTitleCache = "";
-        String thisReferenceTitleCache = "";
-
         TaxonNameBase<?,?> otherName = deproxy(otherTaxon.getName());
         ITaxonNameBase thisName = this.getName();
-        if (otherName == null || this.name == null){
-            //TODO
+        if ((otherName == null || thisName == null)){
+            if (otherName != thisName){
+                result = thisName == null ? -1 : 1;
+            }
+        }else{
+            result = thisName.compareToName(otherName);
         }
-        result = thisName.compareToName(otherName);
+
         if (result == 0){
+            String otherReferenceTitleCache = "";
+            String thisReferenceTitleCache = "";
+
             Reference otherRef = deproxy(otherTaxon.getSec());
             if (otherRef != null) {
                 otherReferenceTitleCache = otherRef.getTitleCache();
