@@ -792,8 +792,9 @@ public interface ITaxonNameBase
      * explicit comparators like {@link TaxonNameComparator}.
      * Historically it was a compareTo method in {@link IdentifiableEntity}
      * but did not fulfill the {@link Comparable} contract.
-     *
-     * https://dev.e-taxonomy.eu/redmine/issues/6311
+     * <BR><BR>
+     * {@link  https://dev.e-taxonomy.eu/redmine/issues/922}<BR>
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/6311}
      *
      * @see TaxonNameBase#compareToName(TaxonNameBase)
      * @see TaxonNameComparator

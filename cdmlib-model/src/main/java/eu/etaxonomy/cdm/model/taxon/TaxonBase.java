@@ -380,8 +380,10 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
      * currently uses this method.
      * Historically it was a compareTo method in {@link IdentifiableEntity}
      * but did not fulfill the {@link Comparable} contract.
+     * <BR><BR>
+     * {@link  https://dev.e-taxonomy.eu/redmine/issues/922}<BR>
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/6311}
      *
-     * https://dev.e-taxonomy.eu/redmine/issues/6311
      * @see ITaxonNameBase#compareToName(TaxonNameBase)
      * @see TaxonComparator
      * @see TaxonNaturalComparator
