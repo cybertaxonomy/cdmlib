@@ -10,7 +10,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
@@ -21,10 +24,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -38,6 +44,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IGroupService {
 
     protected IUserDao userDao;
+
+    protected IGrantedAuthorityDao grantedAuthorityDao;
 
     @Override
     public List<String> findAllGroups() {
@@ -167,6 +175,12 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         this.userDao = userDao;
     }
 
+    @Autowired
+    public void setGrantedAuthorityDao(IGrantedAuthorityDao grantedAuthorityDao){
+        this.grantedAuthorityDao = grantedAuthorityDao;
+    }
+
+
     @Override
     @Transactional(readOnly = true)
     public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -210,4 +224,28 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return new DeleteResult();
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public MergeResult<Group> merge(Group newInstance, boolean returnTransientEntity) {
+
+        Set<GrantedAuthority> newAuthorities = newInstance.getGrantedAuthorities();
+        Map<GrantedAuthority, GrantedAuthority> mapOfAlreadyExistingAuthorities = new HashMap<GrantedAuthority, GrantedAuthority>();
+        GrantedAuthorityImpl alreadyInDB;
+        for (GrantedAuthority authority: newAuthorities){
+            if (authority instanceof GrantedAuthorityImpl){
+                alreadyInDB = grantedAuthorityDao.findAuthorityString(authority.getAuthority());
+                if (alreadyInDB != null){
+                    if (alreadyInDB.getId() != ((GrantedAuthorityImpl)authority).getId()){
+                        mapOfAlreadyExistingAuthorities.put(authority,alreadyInDB);
+                    }
+                }
+            }
+        }
+        for (GrantedAuthority authority : mapOfAlreadyExistingAuthorities.keySet()){
+            newInstance.removeGrantedAuthority(authority);
+            newInstance.addGrantedAuthority(mapOfAlreadyExistingAuthorities.get(authority));
+        }
+
+        return dao.merge(newInstance, returnTransientEntity);
+    }
 }
