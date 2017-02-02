@@ -287,18 +287,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-<!--		<version>3.6,1</version>  -->
+		<version>2.3.2</version> 
         <configuration>
           <source>${java.codelevel}</source>
           <target>${java.codelevel}</target>
           <encoding>UTF-8</encoding>  <!-- necessary? should be covered by project. properties source encoding -->
-          <!-- fork has to be true to allow to set the compile args 
-          see #6401-->
-          <fork>true</fork>
-          <compilerArgs>
-            <arg>-J-Xss4M</arg><!-- Increase stack size to avoid StackOverflow during parsing of large java classes-->
-          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
