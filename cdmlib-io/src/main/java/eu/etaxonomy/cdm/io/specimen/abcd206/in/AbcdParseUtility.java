@@ -60,7 +60,7 @@ public class AbcdParseUtility {
 
     public static String parseFirstTextContent(NodeList nodeList, boolean cleanUpWhiteSpaces){
         String string = null;
-        if(nodeList.getLength()>0){
+        if(nodeList!=null && nodeList.getLength()>0){
             string = nodeList.item(0).getTextContent();
             if(cleanUpWhiteSpaces){
                 string = string.replace("\n", "").replaceAll("( )+", " ").trim();
