@@ -23,6 +23,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -31,7 +32,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.babadshanjan
  * @created 02.02.2009
- * @version 1.0
  */
 public class IdentifiableEntityTest {
 

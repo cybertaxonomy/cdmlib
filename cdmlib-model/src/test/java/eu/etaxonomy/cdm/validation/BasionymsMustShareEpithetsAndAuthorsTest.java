@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -68,11 +69,8 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 		basionymName.setSpecificEpithet("aus");
         basionymName.setCombinationAuthorship(author1);
 
-
         name.addBasionym(basionymName);
-
 	}
-
 
 /****************** TESTS *****************************/
 

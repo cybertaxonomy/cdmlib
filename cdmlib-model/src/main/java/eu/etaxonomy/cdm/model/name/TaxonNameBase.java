@@ -2891,9 +2891,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
                 return false;
         }
 
-        boolean isBasionymToAll = true;
-
-        for (TaxonNameBase taxonName : typifiedNames) {
+        for (TaxonNameBase<?,?> taxonName : typifiedNames) {
                 if (!taxonName.equals(this)) {
                         if (! isBasionymFor(taxonName)) {
                                 return false;
