@@ -49,8 +49,6 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 public interface ITaxonNameBase
         extends IIdentifiableEntity, IParsable, IRelated, IMatchable, Cloneable{
 
-    public int compareTo(IdentifiableEntity identifiableEntity);
-
     public Object clone();
 
     public String generateFullTitle();
