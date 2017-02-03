@@ -52,7 +52,6 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     private static final String genusNameString = "Genus";
     private static final String speciesNameString = "Abies alba";
     private static final String subSpeciesNameString = "Abies alba subsp. beta";
-    private static final String appendedPhraseString = "app phrase";
 
     private static final String authorString = "L.";
     private static final String exAuthorString = "Exaut.";

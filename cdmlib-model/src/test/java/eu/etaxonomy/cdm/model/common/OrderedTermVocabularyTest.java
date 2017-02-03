@@ -35,7 +35,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	private OrderedTermBase<?> otbFree;
 	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc1;
 	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc2;
-	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc3;
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,7 +50,8 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 
 	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{
-		private DerivedOrderedTermBase(){
+        private static final long serialVersionUID = -6661559531712274867L;
+        private DerivedOrderedTermBase(){
 			super(TermType.Unknown);
 		}
 		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev){
@@ -60,7 +60,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		@Override
 		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}
 		@Override
-		public void resetTerms() {};
+		public void resetTerms() {}
 	}
 
 
@@ -123,7 +123,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testOrderedTermVocabularyStringStringString() {
-		oVoc2 = new OrderedTermVocabulary<OrderedTermBase<?>>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
+		oVoc2 = new OrderedTermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("label", oVoc2.getLabel());
 	}
 
@@ -225,7 +225,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testSize() {
 		assertEquals(3, oVoc1.size());
-		oVoc2 = new OrderedTermVocabulary<OrderedTermBase<?>>();
+		oVoc2 = new OrderedTermVocabulary<>();
 		assertEquals(0, oVoc2.size());
 	}
 }

@@ -128,7 +128,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
+		SortedSet<T> result = new TreeSet<>();
 		result = getLowerTerms(otb);
 		/*SortedSet<T> sortedSet = getSortedSetOfTerms();
 
@@ -157,7 +157,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 
 	public SortedSet<T> getEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
+		SortedSet<T> result = new TreeSet<>();
 		for (T setObject : terms){
 			if (setObject.compareTo(otb) == 0){
 				result.add(setObject);

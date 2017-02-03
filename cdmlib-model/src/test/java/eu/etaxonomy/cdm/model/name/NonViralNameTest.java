@@ -110,7 +110,7 @@ public class NonViralNameTest extends EntityTestBase {
 		Team agent = Team.NewInstance();
 		INomenclaturalReference article = ReferenceFactory.newArticle();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		NonViralName<?> nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
+		NonViralName<?> nonViralName = new NonViralName<>(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
 		assertEquals("infraGen", nonViralName.getInfraGenericEpithet());
 		assertEquals("species", nonViralName.getSpecificEpithet() );
@@ -280,7 +280,7 @@ public class NonViralNameTest extends EntityTestBase {
 
 	@Test
 	public final void testGetChildAndParentRelationships() {
-		NonViralName<?> nonViralName1 = new NonViralName();
+		NonViralName<?> nonViralName1 = new NonViralName<>();
 		assertEquals(0, nonViralName1.getHybridParentRelations().size());
 		assertEquals(0, nonViralName1.getHybridChildRelations().size());
 		BotanicalName femaleParent = TaxonNameFactory.NewBotanicalInstance(null);

@@ -246,7 +246,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
                 e.printStackTrace();
             }
         } catch (ClassNotFoundException e) {
-            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<SpecimenOrObservationBase>();
+            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<>();
         }
     }
 //

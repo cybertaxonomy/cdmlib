@@ -145,7 +145,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 2)
     @NotNull
-    private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
+    private Set<DeterminationEvent> determinations = new HashSet<>();
 
     @XmlElement(name = "Sex")
     @XmlIDREF

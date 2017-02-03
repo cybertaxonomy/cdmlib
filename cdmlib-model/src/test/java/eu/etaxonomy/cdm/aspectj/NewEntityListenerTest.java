@@ -38,9 +38,9 @@ public class NewEntityListenerTest implements NewEntityListener {
     public void testPropertyChange() {
         CdmBase.setNewEntityListener(this);
 
-        NonViralName<?> b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+        NonViralName<?> nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         Annotation newAnnotation = Annotation.NewDefaultLanguageInstance("test");
-        b.addAnnotation(newAnnotation);
+        nvn.addAnnotation(newAnnotation);
         Assert.assertEquals(newAnnotation, lastPropValue);
     }
 

@@ -57,7 +57,7 @@ public class TermVocabularyTest extends EntityTestBase {
 		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", "m");
 		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", "l");
 		dtbFree = new DerivedDefinedTermBase();
-		voc1 = new TermVocabulary<DefinedTermBase>();
+		voc1 = new TermVocabulary<>();
 		voc1.addTerm(dtb1);
 		voc1.addTerm(dtb2);
 		voc1.addTerm(dtb3);
@@ -68,7 +68,8 @@ public class TermVocabularyTest extends EntityTestBase {
 	}
 
 	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
-		private DerivedDefinedTermBase(){
+        private static final long serialVersionUID = 280869784120656292L;
+        private DerivedDefinedTermBase(){
 			super(TermType.Unknown);
 		}
 		private DerivedDefinedTermBase(TermType type, String term, String label, String labelAbbrev){
@@ -77,7 +78,7 @@ public class TermVocabularyTest extends EntityTestBase {
 		@Override
 		protected void setDefaultTerms(TermVocabulary<DerivedDefinedTermBase> termVocabulary) {}
 		@Override
-		public void resetTerms() {};
+		public void resetTerms() {}
 	}
 
 /****************** TESTS ****************************************/
@@ -180,7 +181,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTermSourceUri() {
 		assertEquals(null, voc1.getTermSourceUri());
-		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("http://term.Source.Uri", voc2.getTermSourceUri().toString());
 	}
 
