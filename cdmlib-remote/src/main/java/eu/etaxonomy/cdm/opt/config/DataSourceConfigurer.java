@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.api.config;
+package eu.etaxonomy.cdm.opt.config;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

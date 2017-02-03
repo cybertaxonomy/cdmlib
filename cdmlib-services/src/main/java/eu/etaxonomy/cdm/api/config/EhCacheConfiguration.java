@@ -42,13 +42,14 @@ public class EhCacheConfiguration implements DisposableBean {
 
         net.sf.ehcache.config.Configuration conf = new net.sf.ehcache.config.Configuration();
         if(diskStoreConfiguration != null){
+            logger.debug("creating CacheManager with disk store");
             conf.addDiskStore(diskStoreConfiguration);
         }
         conf.addDefaultCache(getDefaultCacheConfiguration());
 
         // creates a singleton
         cacheManager = CacheManager.create(conf);
-
+        logger.debug("CacheManager created");
         return cacheManager;
     }
 

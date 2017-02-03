@@ -59,6 +59,12 @@
   <!-- bootstrap the Web Configuration -->
   <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration">
   </bean>
+  
+  <bean class="eu.etaxonomy.cdm.opt.config.LoggingConfigurer">
+  </bean>
+  
+  <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration">
+  </bean>
 
   <!-- OAI-PMH TODO externalize? -->
   <bean name="taxonOaiPmhController"

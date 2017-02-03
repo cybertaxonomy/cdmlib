@@ -10,7 +10,7 @@
     <!-- enable processing of annotations such as @Autowired and @Configuration -->
     <context:annotation-config/>
 
-    <bean class="eu.etaxonomy.cdm.api.config.DataSourceConfigurer" >
+    <bean class="eu.etaxonomy.cdm.opt.config.DataSourceConfigurer" >
     </bean>
 
     <bean id="jndiHibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">

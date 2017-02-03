@@ -2,6 +2,8 @@ The package eu.etaxonomy.cdm.api.config contains spring configurations
 which are to be loaded into the *root WebApplicationContext* loaded via 
 *Spring's ContextLoaderListener*.
 
+Further configurations are found in  eu.etaxonomy.cdm.opt.config
+
 The root WebApplicationContext contains beans such for MVC specific configuration
 
 The same package exists in the cdmlib-services project where further 
