@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ValidTypeDesignation(groups=Level2.class)
-public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
+public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>> extends ReferencedEntityBase implements ITypeDesignation {
     private static final long serialVersionUID = 8622351017235131355L;
 
     @SuppressWarnings("unused")

@@ -33,13 +33,12 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TermVocabularyTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(TermVocabularyTest.class);
 
-	private DefinedTermBase dtb1;
-	private DefinedTermBase dtb2;
-	private DefinedTermBase dtb3;
-	private DefinedTermBase dtbFree;
-	private TermVocabulary<DefinedTermBase> voc1;
-	private TermVocabulary<DefinedTermBase> voc2;
-	private TermVocabulary<DefinedTermBase> voc3;
+	private DefinedTermBase<?> dtb1;
+	private DefinedTermBase<?> dtb2;
+	private DefinedTermBase<?> dtb3;
+	private DefinedTermBase<?> dtbFree;
+	private TermVocabulary<DefinedTermBase<?>> voc1;
+	private TermVocabulary<DefinedTermBase<?>> voc2;
 
 
 	@BeforeClass
@@ -102,20 +101,20 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testTermVocabularyStringStringString() {
-		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("label", voc2.getLabel());
 	}
 
 	@Test
     public final void testTermIdInVocabularyComparator() {
         assertNotNull(voc1);
-        Set<DefinedTermBase> terms = voc1.getTerms();
-        TermIdInVocabularyComparator comp = new TermIdInVocabularyComparator();
-        int res = comp.compare(dtb1, dtb2);
-        int res2 = comp.compare(dtb2, dtb1);
+        Set<DefinedTermBase<?>> terms = voc1.getTerms();
+        TermIdInVocabularyComparator<DefinedTermBase<?>> comparator = new TermIdInVocabularyComparator<>();
+        int res = comparator.compare(dtb1, dtb2);
+        int res2 = comparator.compare(dtb2, dtb1);
         assertEquals(res, -res2);
-        SortedSet<DefinedTermBase> result = new TreeSet(comp);
-        for (DefinedTermBase term:terms){
+        SortedSet<DefinedTermBase<?>> result = new TreeSet<>(comparator);
+        for (DefinedTermBase<?> term:terms){
             result.add(term);
         }
        assertEquals(result.first(), dtb3);
@@ -198,7 +197,7 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testIterator() {
-		Iterator<DefinedTermBase> it = voc1.iterator();
+		Iterator<DefinedTermBase<?>> it = voc1.iterator();
 		int i = 0;
 		while (it.hasNext()){
 			i++;

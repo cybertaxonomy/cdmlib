@@ -106,8 +106,9 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }),
         @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnNames = { "identityCache" }) })
-public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<?>> extends IdentifiableEntity<S>
-                implements IMultiLanguageTextHolder, IDescribable, IPublishable  {
+public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<? extends SpecimenOrObservationBase<S>>>
+                extends IdentifiableEntity<S>
+                implements IMultiLanguageTextHolder, IDescribable<DescriptionBase<S>>, IPublishable  {
     private static final long serialVersionUID = 6932680139334408031L;
     private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 
@@ -136,7 +137,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
-    private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
+    private Set<DescriptionBase<S>> descriptions = new HashSet<>();
 
 
     @XmlElementWrapper(name = "Determinations")
@@ -333,9 +334,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * @return
      */
     @Override
-    public Set<DescriptionBase> getDescriptions() {
+    public Set<DescriptionBase<S>> getDescriptions() {
         if(descriptions == null) {
-            this.descriptions = new HashSet<DescriptionBase>();
+            this.descriptions = new HashSet<>();
         }
         return this.descriptions;
     }
@@ -542,7 +543,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 
     public boolean hasCharacterData() {
-        Set<DescriptionBase> descriptions = this.getDescriptions();
+        Set<DescriptionBase<S>> descriptions = this.getDescriptions();
         for (DescriptionBase<?> descriptionBase : descriptions) {
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
@@ -564,7 +565,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Transient
     public Collection<DescriptionElementBase> characterData() {
         Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
-        Set<DescriptionBase> descriptions = this.getDescriptions();
+        Set<DescriptionBase<S>> descriptions = this.getDescriptions();
         for (DescriptionBase<?> descriptionBase : descriptions) {
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
@@ -590,8 +591,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        SpecimenOrObservationBase result = null;
-        result = (SpecimenOrObservationBase)super.clone();
+        SpecimenOrObservationBase<S> result = (SpecimenOrObservationBase<S>)super.clone();
 
         //defininion (description, languageString)
         result.definition = cloneLanguageString(this.definition);
@@ -602,7 +602,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         result.setLifeStage(this.lifeStage);
 
         //Descriptions
-        for(DescriptionBase description : this.descriptions) {
+        for(DescriptionBase<S> description : this.descriptions) {
             result.addDescription(description);
         }
 
