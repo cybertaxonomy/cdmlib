@@ -38,6 +38,7 @@
      -->
      
     <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/config"/>
 
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>

@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.config;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,11 +27,15 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  *
  */
 @Configuration
-@EnableCaching
-public class EhCacheConfiguration {
+// @EnableCaching // for future use
+public class EhCacheConfiguration implements DisposableBean {
 
-    @Autowired(required = true)
+    public static final Logger logger = Logger.getLogger(EhCacheConfiguration.class);
+
+    @Autowired(required = false)
     public DiskStoreConfiguration diskStoreConfiguration = null;
+
+    private CacheManager cacheManager = null;
 
     @Bean
     public CacheManager cacheManager(){
@@ -42,9 +47,9 @@ public class EhCacheConfiguration {
         conf.addDefaultCache(getDefaultCacheConfiguration());
 
         // creates a singleton
-        CacheManager mgr = CacheManager.create(conf);
+        cacheManager = CacheManager.create(conf);
 
-        return mgr;
+        return cacheManager;
     }
 
 
@@ -69,6 +74,15 @@ public class EhCacheConfiguration {
                 .statistics(true);
 
         return cc;
+    }
+
+
+    @Override
+    public void destroy() {
+        if (cacheManager != null) {
+            logger.info("Shutting down EhCache CacheManager");
+            this.cacheManager.shutdown();
+        }
     }
 
 }

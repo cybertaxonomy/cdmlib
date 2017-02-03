@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.View;
 
-import eu.etaxonomy.cdm.remote.config.DataSourceProperties;
+import eu.etaxonomy.cdm.api.config.DataSourceProperties;
 import eu.etaxonomy.cdm.remote.json.JsonpUtil;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
