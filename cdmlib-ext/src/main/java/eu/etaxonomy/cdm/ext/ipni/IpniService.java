@@ -43,10 +43,12 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -260,11 +262,8 @@ public class IpniService  implements IIpniService{
                                                      serviceUrl.getPath()
                                                      + "?" + request);
 
-
             URI newUri = newUrl.toURI();
-
             logger.info("Firing request for URI: " + newUri);
-
             HttpResponse response = UriUtils.getResponse(newUri, null);
 
             int responseCode = response.getStatusLine().getStatusCode();
@@ -434,9 +433,9 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private List<BotanicalName> buildNameList( InputStream content, ICdmApplicationConfiguration appConfig, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<TaxonNameBase<?,?>> buildNameList( InputStream content, ICdmApplicationConfiguration appConfig, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceNamesConfigurator config = (IpniServiceNamesConfigurator)iConfig;
-		List<BotanicalName> result = new ArrayList<BotanicalName>();
+		List<TaxonNameBase<?,?>> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
@@ -445,7 +444,7 @@ public class IpniService  implements IIpniService{
 		String line = reader.readLine();
 		while (StringUtils.isNotBlank(line)){
 
-			BotanicalName name = getNameFromLine(line,parameterMap, appConfig);
+		    TaxonNameBase<?,?> name = (TaxonNameBase<?,?>)getNameFromLine(line,parameterMap, appConfig);
 			result.add(name);
 			line = reader.readLine();
 
@@ -456,7 +455,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private BotanicalName getNameFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig) {
+	private IBotanicalName getNameFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig) {
 		//Id%Version%Standard form%Default author forename%Default author surname%Taxon groups%Dates%Alternative names
 		String[] splits = line.split("%");
 		Map<String, String> valueMap = new HashMap<String, String>();
@@ -465,7 +464,7 @@ public class IpniService  implements IIpniService{
 			valueMap.put(parameterMap.get(i), splits[i]);
 		}
 
-		BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
+		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
 
 		//caches
 		name.setNameCache(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), true);
@@ -514,12 +513,12 @@ public class IpniService  implements IIpniService{
 		name.addAnnotation(annotation);
 
 		//basionym
-		BotanicalName basionym = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> basionym = TaxonNameFactory.NewBotanicalInstance(null);
 		basionym.setTitleCache(valueMap.get(BASIONYM), true);
 		name.addBasionym(basionym);
 
 		//replaced synonym
-		BotanicalName replacedSynoynm = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> replacedSynoynm = TaxonNameFactory.NewBotanicalInstance(null);
 		replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
 		name.addReplacedSynonym(replacedSynoynm, null, null, null);
 

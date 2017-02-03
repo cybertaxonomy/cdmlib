@@ -119,6 +119,8 @@ import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -411,7 +413,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
 	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
 	public void testGetReferencingObjectsCdmBase() {
-		BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
 		Reference ref1 = ReferenceFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
@@ -492,13 +494,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 //	@Ignore
 	public void testMergeCdmBaseReferenceAndIdentifiable() throws MergeException {
 
-		BotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
-		BotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
-		ZoologicalName zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		name1.setTitleCache("ZoologicalName1", true);
 
 		Reference article1 = ReferenceFactory.newArticle();
@@ -622,13 +624,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 //	@Ignore
 	public void testMergeTaxonNameAndTaxon() throws MergeException {
-		BotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+	    TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
-		BotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
-		BotanicalName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name3.setTitleCache("BotanicalName3", true);
 
 		Reference database = ReferenceFactory.newDatabase();
@@ -659,10 +661,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	public void testMergeAuthors() throws MergeException {
 
-		BotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
-		BotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
 		IBook book1 = ReferenceFactory.newBook();
@@ -828,7 +830,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	public void testReallocatePersonTeam() throws MergeException {
 
-		BotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+	    TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
 		IBook book1 = ReferenceFactory.newBook();

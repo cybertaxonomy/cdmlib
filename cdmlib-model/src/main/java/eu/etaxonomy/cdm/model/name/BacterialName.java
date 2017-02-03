@@ -84,7 +84,7 @@ public class BacterialName
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> bacterial taxon name, that is the
 	 * International Code of Nomenclature of Bacteria. This method overrides
-	 * the getNomenclaturalCode method from {@link NonViralName NonViralName}.
+	 * the getNomenclaturalCode method from {@link INonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for bacteria
 	 * @see  	NonViralName#isCodeCompliant()

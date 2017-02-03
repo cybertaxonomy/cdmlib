@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -223,7 +224,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			}
 
 			if (nameBase instanceof NonViralName){
-				NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
+				INonViralName nonViralName = nameBase;
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"genusPart");
 				String strGenusPart;
 				try{
@@ -432,7 +433,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			}
 
 			if (nameBase instanceof NonViralName){
-				NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
+				INonViralName nonViralName = nameBase;
 				String strGenusPart =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "genusPart", rdfNamespace);
 
 				//for names of rank genus the uninomial property should be used
@@ -608,7 +609,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			}
 
 			if (nameBase instanceof NonViralName){
-				NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
+				INonViralName nonViralName = nameBase;
 				String strGenusPart =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "genusPart", rdfNamespace);
 
 				//for names of rank genus the uninomial property should be used

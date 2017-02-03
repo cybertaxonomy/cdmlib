@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Audited
 @Configurable
 public class ViralName
-            extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>> {
+            extends TaxonNameBase<ViralName, INameCacheStrategy> {
     private static final long serialVersionUID = -6201649691028218290L;
 
 // ************* CONSTRUCTORS *************/

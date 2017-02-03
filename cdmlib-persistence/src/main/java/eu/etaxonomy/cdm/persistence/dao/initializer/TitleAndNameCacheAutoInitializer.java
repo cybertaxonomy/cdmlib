@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -42,7 +43,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         // to avoid too much casting
         if(bean instanceof NonViralName){
             // ---> NonViralName
-            NonViralName<?> n = (NonViralName<?>)bean;
+            INonViralName n = (INonViralName)bean;
             if(!n.isProtectedFullTitleCache())  {
                 n.getFullTitleCache();
             } else if(!bean.isProtectedTitleCache()){

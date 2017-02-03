@@ -20,19 +20,19 @@ package eu.etaxonomy.cdm.model.name;
  */
 public interface IBotanicalName extends INonViralName {
 
-    /**
-     * Returns the boolean value of the flag indicating whether the specimen
-     * type of <i>this</i> botanical taxon name for a fungus is asexual (true) or not
-     * (false). This applies only in case of fungi. The Article 59 of the ICBN
-     * permits mycologists to give asexually reproducing fungi (anamorphs)
-     * separate names from their sexual states (teleomorphs).
-     *
-     * @return  the boolean value of the isAnamorphic flag
-     */
-    public boolean isAnamorphic();
-
-    /**
-     * @see  #isAnamorphic()
-     */
-    public void setAnamorphic(boolean anamorphic);
+//    /**
+//     * Returns the boolean value of the flag indicating whether the specimen
+//     * type of <i>this</i> botanical taxon name for a fungus is asexual (true) or not
+//     * (false). This applies only in case of fungi. The Article 59 of the ICBN
+//     * permits mycologists to give asexually reproducing fungi (anamorphs)
+//     * separate names from their sexual states (teleomorphs).
+//     *
+//     * @return  the boolean value of the isAnamorphic flag
+//     */
+//    public boolean isAnamorphic();
+//
+//    /**
+//     * @see  #isAnamorphic()
+//     */
+//    public void setAnamorphic(boolean anamorphic);
 }

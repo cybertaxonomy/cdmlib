@@ -95,7 +95,6 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -111,7 +110,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -765,7 +763,7 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setAccessionNumber("accessionNumber");
 //		mediaSpecimen.setCollectorsNumber("collectorsNumber");
 		mediaSpecimen.setBarcode("barcode");
-		BotanicalName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);
 		mediaSpecimen.setStoredUnder(storedUnder);
 		mediaSpecimen.setExsiccatum("exsiccatum");
@@ -834,13 +832,13 @@ public class FullCoverageDataGenerator {
 		botName.setExBasionymAuthorship(exBasionymAuthorship);
 		handleIdentifiableEntity(botName);
 		handleAnnotatableEntity(botName.getHomotypicalGroup());
-		BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
 		hybridRel.setCitation(ReferenceFactory.newBook());
 		hybridRel.setCitationMicroReference("p. 123");
 		handleAnnotatableEntity(hybridRel);
 
-		ZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
+		TaxonNameBase<?,?> zooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
 		zooName.setBreed("breed");
 		zooName.setPublicationYear(1922);
 		zooName.setOriginalPublicationYear(1987);
@@ -856,7 +854,7 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(zooName);
 
 		//TypeDesignation
-		ZoologicalName speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		NameTypeDesignation nameDesig = zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
 		handleAnnotatableEntity(nameDesig);

@@ -39,7 +39,7 @@ public interface INonViralName extends ITaxonNameBase{
      * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public HybridRelationship addHybridChild(NonViralName childName, HybridRelationshipType type, String ruleConsidered);
+    public HybridRelationship addHybridChild(INonViralName childName, HybridRelationshipType type, String ruleConsidered);
 
     /**
      * Creates a new {@link HybridRelationship#HybridRelationship(TaxonNameBase, TaxonNameBase, HybridRelationshipType, String) hybrid relationship}
@@ -58,7 +58,7 @@ public interface INonViralName extends ITaxonNameBase{
      * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public HybridRelationship addHybridParent(NonViralName parentName, HybridRelationshipType type, String ruleConsidered);
+    public HybridRelationship addHybridParent(INonViralName parentName, HybridRelationshipType type, String ruleConsidered);
 
     /**
      * Shortcut. Returns the basionym authors title cache. Returns null if no basionym author exists.
@@ -365,9 +365,9 @@ public interface INonViralName extends ITaxonNameBase{
     */
    public boolean isProtectedNameCache();
 
-   public void removeHybridChild(NonViralName child);
+   public void removeHybridChild(INonViralName child);
 
-   public void removeHybridParent(NonViralName parent);
+   public void removeHybridParent(INonViralName parent);
 
    /**
     * Removes one {@link HybridRelationship hybrid relationship} from the set of

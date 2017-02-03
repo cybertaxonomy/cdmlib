@@ -1300,12 +1300,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
 
+        @SuppressWarnings("unchecked")
         List<TaxonNameBase> zooNames = query.list();
 
         TaxonNameComparator taxComp = new TaxonNameComparator();
         Collections.sort(zooNames, taxComp);
 
-        for (TaxonNameBase taxonNameBase: zooNames){
+        for (TaxonNameBase<?,?> taxonNameBase: zooNames){
             defaultBeanInitializer.initialize(taxonNameBase, propertyPaths);
         }
 

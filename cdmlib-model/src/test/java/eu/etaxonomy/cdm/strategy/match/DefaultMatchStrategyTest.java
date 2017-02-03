@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -216,8 +217,8 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
 
 		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
-		BotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
-		BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		IBotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		IBotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Assert.assertNotNull("Rank should not be null", botName1.getRank());
 
 		botName1.setGenusOrUninomial("Genus1");
@@ -347,7 +348,7 @@ public class DefaultMatchStrategyTest {
 
 		BotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		BotanicalName botName3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName botName3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 
 		Assert.assertFalse("Names without title should not match", matchStrategy.invoke(botName1, botName2));
 

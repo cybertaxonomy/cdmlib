@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -100,7 +101,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
 
             if (name instanceof NonViralName){
                 if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
-                NonViralName<?> nonViralName = (NonViralName<?>)name;
+                INonViralName nonViralName = name;
                 if (nonViralName.getGenusOrUninomial() != null){
                     titleCache = nonViralName.getGenusOrUninomial();
                     if (name.isSpecies() && nonViralName.getSpecificEpithet() != null){

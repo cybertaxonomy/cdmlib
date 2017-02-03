@@ -799,13 +799,13 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testClone(){
-		NonViralName taxonNameBase1 = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-		NonViralName<?> genusName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS());
-		Taxon taxonBase = Taxon.NewInstance(taxonNameBase1, null);
+	    TaxonNameBase<?,?> taxonNameBase1 = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+	    TaxonNameBase<?,?> genusName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS());
+        Taxon.NewInstance(taxonNameBase1, null);
 
 		//basionym & homonym
-		NonViralName<?> basionym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-		NonViralName<?> earlierHomonym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> basionym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> earlierHomonym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		taxonNameBase1.addBasionym(basionym);
 		taxonNameBase1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule");
 		//status
@@ -828,8 +828,8 @@ public class TaxonNameBaseTest {
 		description.addElement(textData);
 
 		//CLONE
-		TaxonNameBase<?,?> clone = (TaxonNameBase)taxonNameBase1.clone();
-		TaxonNameBase<?,?> genusClone = (TaxonNameBase)genusName.clone();
+		TaxonNameBase<?,?> clone = (TaxonNameBase<?,?>)taxonNameBase1.clone();
+		TaxonNameBase<?,?> genusClone = (TaxonNameBase<?,?>)genusName.clone();
 		assertSame("Rank should be same", taxonNameBase1.getRank(), clone.getRank());
 		assertTrue("TaxonBases should not be cloned", clone.getTaxonBases().isEmpty());
 		assertEquals("TaxonBases of original name should not be empty", 1, taxonNameBase1.getTaxonBases().size());

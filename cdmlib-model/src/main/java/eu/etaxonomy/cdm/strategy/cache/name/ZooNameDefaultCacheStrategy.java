@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,10 +16,12 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrategy<ZoologicalName> implements  INonViralNameCacheStrategy<ZoologicalName> {
+public class ZooNameDefaultCacheStrategy
+            extends NonViralNameDefaultCacheStrategy<IZoologicalName> {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = 6640953957903705560L;
@@ -27,13 +29,13 @@ public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrateg
 	final static UUID uuid = UUID.fromString("950c4236-8156-4675-b866-785df33bc4d9");
 
 	protected String AuthorYearSeperator = ", ";
-	
+
 	@Override
 	public UUID getUuid(){
 		return uuid;
 	}
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -41,7 +43,7 @@ public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrateg
 	public static ZooNameDefaultCacheStrategy NewInstance(){
 		return new ZooNameDefaultCacheStrategy();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -63,12 +65,9 @@ public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrateg
 	public void setAuthorYearSeperator(String authorYearSeperator) {
 		AuthorYearSeperator = authorYearSeperator;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNonCacheAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)
-	 */
+
 	@Override
-	protected String getNonCacheAuthorshipCache(ZoologicalName nonViralName) {
+	protected String getNonCacheAuthorshipCache(IZoologicalName nonViralName) {
 		if (nonViralName == null){
 			return null;
 		}
@@ -100,10 +99,10 @@ public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrateg
 		}
 		return result;
 	}
-	
+
 
 	@Override
-	protected List<TaggedText> getInfraSpeciesTaggedNameCache(ZoologicalName nonViralName){
+	protected List<TaggedText> getInfraSpeciesTaggedNameCache(IZoologicalName nonViralName){
 		boolean includeMarker = ! (nonViralName.isAutonym());
 		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
 	}

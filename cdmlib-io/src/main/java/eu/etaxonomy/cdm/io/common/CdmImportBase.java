@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -925,7 +926,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
+	public void addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable<?>)cdmBase;

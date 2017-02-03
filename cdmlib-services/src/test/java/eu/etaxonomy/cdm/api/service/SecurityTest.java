@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -259,7 +258,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        ZoologicalName newName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+        TaxonNameBase<?,?> newName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
         newName.setTitleCache("Newby taxonEditor", true);
         UUID uuid = nameService.saveOrUpdate(newName);
         commitAndStartNewTransaction(null);

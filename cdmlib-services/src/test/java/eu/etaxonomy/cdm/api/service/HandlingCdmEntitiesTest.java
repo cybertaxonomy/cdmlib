@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -157,7 +158,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have values of
         // initialized=false and session=null
 
-        NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+        INonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
         // normally this call should throw a lazy loading exception since
         // the combinationAuthorship object is not initialized, but
@@ -222,7 +223,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have a new
         // session attached implying that all the following calls will succeed
 
-        NonViralName nvn =  CdmBase.deproxy(taxon.getName(),NonViralName.class);
+        INonViralName nvn =  CdmBase.deproxy(taxon.getName());
         Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
         taxonService.update(taxon);
 
@@ -234,8 +235,8 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have a new
         // session attached implying that all the following calls will succeed
 
-        nvn =  CdmBase.deproxy(taxon.getName(),NonViralName.class);
-        team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
+        nvn =  CdmBase.deproxy(taxon.getName());
+        team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
         taxonService.update(taxon);
 
         // ---- loading taxon with findTaxonByUuid ----
@@ -286,8 +287,8 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
 
-        NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
+        INonViralName nvn = CdmBase.deproxy(taxon.getName());
+        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
         team.setProtectedTitleCache(false);
 
         try {
@@ -344,7 +345,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have values of
         // initialized=false and session=null
 
-        NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+        INonViralName nvn = CdmBase.deproxy(taxon.getName());
 
         // normally this call should throw a lazy loading exception since
         // the combinationAuthorship object is not initialized, but

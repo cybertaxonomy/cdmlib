@@ -21,10 +21,10 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAuthorsValidator;
@@ -157,17 +157,17 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
        Reference nomRef = ReferenceFactory.newBook();
        Reference nomRef2 = ReferenceFactory.newBook();
 
-       ZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+       IZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
        zooName.setGenusOrUninomial("Aus");
        zooName.setSpecificEpithet("aus");
        zooName.setBasionymAuthorship(author1);
        zooName.setNomenclaturalReference(nomRef);
-       ZoologicalName originalCombination = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+       IZoologicalName originalCombination = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
        originalCombination.setGenusOrUninomial("Aus");
        originalCombination.setSpecificEpithet("aus");
        originalCombination.setCombinationAuthorship(author1);
        originalCombination.setNomenclaturalReference(nomRef);
-       zooName.addBasionym(originalCombination);
+       zooName.addBasionym(TaxonNameBase.castAndDeproxy(originalCombination));
 
 
        Assert.assertEquals(1, zooName.getNameRelations().size());

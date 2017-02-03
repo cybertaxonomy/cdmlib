@@ -420,7 +420,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public Pager<HybridRelationship> getHybridNames(NonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<HybridRelationship> getHybridNames(INonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countHybridNames(name, type);
 
         List<HybridRelationship> results = new ArrayList<HybridRelationship>();
@@ -446,7 +446,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 
     protected LuceneSearch prepareFindByFuzzyNameSearch(Class<? extends CdmBase> clazz,
-            NonViralName nvn,
+            INonViralName nvn,
             float accuracy,
             int maxNoOfResults,
             List<Language> languages,
@@ -592,7 +592,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         logger.info("Name to fuzzy search for : " + name);
         // parse the input name
         NonViralNameParserImpl parser = new NonViralNameParserImpl();
-        NonViralName nvn = parser.parseFullName(name);
+        INonViralName nvn = parser.parseFullName(name);
         if(name != null && !name.equals("") && nvn == null) {
             throw new ParseException("Could not parse name " + name);
         }
@@ -627,7 +627,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         logger.info("Name to fuzzy search for : " + name);
         // parse the input name
         NonViralNameParserImpl parser = new NonViralNameParserImpl();
-        NonViralName nvn = parser.parseFullName(name);
+        INonViralName nvn = parser.parseFullName(name);
         if(name != null && !name.equals("") && nvn == null) {
             throw new ParseException("Could not parse name " + name);
         }

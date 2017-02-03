@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
 public class NonViralName<T extends NonViralName<?>>
-        extends TaxonNameBase<T, INonViralNameCacheStrategy<T>>{
+        extends TaxonNameBase<T, INameCacheStrategy>{
 
     private static final long serialVersionUID = -9083811681449792683L;
 
@@ -81,7 +81,7 @@ public class NonViralName<T extends NonViralName<?>>
 
     @Override
     public Object clone() {
-        NonViralName<?> result = (NonViralName<?>)super.clone();
+        INonViralName result = (INonViralName)super.clone();
 
         //no changes to:
         return result;

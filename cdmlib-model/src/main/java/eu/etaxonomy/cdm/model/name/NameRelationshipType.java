@@ -313,7 +313,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * {@link Rank ranks}) must be (almost) identical, so one could be mistaken for
 	 * the other one. The first taxon name is "illegitimate" and the second one
 	 * is "legitimate" (this corresponds to "invalid" and "valid" in case of
-	 * {@link ZoologicalName zoological names}).<BR>
+	 * {@link IZoologicalName zoological names}).<BR>
 	 * For instance <i>Astragalus rhizanthus</i> Boiss. is a later homonym of
 	 * <i>Astragalus rhizanthus</i> Royle.<BR>
 	 * This type is not symmetric but transitive.
@@ -335,7 +335,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * {@link Rank#isInfraSpecific() infraspecific ranks} and {@link NonViralName#getAuthorshipCache() authorship}) must be
 	 * almost identical (so one could be mistaken for the other). The first
 	 * taxon name is "illegitimate" and the second one is "legitimate" (this
-	 * corresponds to "invalid" and "valid" in case of {@link ZoologicalName zoological names}).<BR>
+	 * corresponds to "invalid" and "valid" in case of {@link IZoologicalName zoological names}).<BR>
 	 * This type is not symmetric but transitive.
 	 *
 	 * @see	#LATER_HOMONYM()
@@ -433,7 +433,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * Competent authorities decided, regardless of the general
 	 * nomenclatural rules, to handle the first one as the "legitimate"
 	 * one and the second taxon name as "illegitimate" (this corresponds to
-	 * "valid" and "invalid" in case of {@link ZoologicalName zoological names}).<BR>
+	 * "valid" and "invalid" in case of {@link IZoologicalName zoological names}).<BR>
 	 * For instance <i>Cephaloziella</i> (Spruce) Schiffn. is conserved against
 	 * <i>Dichiton</i> Mont.<BR>
 	 * This type is neither symmetric nor transitive.

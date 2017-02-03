@@ -23,9 +23,10 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
  * @author a.mueller
@@ -36,11 +37,10 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
 
 	private ZooNameDefaultCacheStrategy strategy;
-	private ZoologicalName familyName;
-	private ZoologicalName genusName;
-	private ZoologicalName subGenusName;
-	private ZoologicalName speciesName;
-	private ZoologicalName subSpeciesName;
+	private IZoologicalName familyName;
+	private IZoologicalName subGenusName;
+	private IZoologicalName speciesName;
+	private TaxonNameBase<?,ZooNameDefaultCacheStrategy> subSpeciesName;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
@@ -78,14 +78,13 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	public void setUp() throws Exception {
 		strategy = ZooNameNoMarkerCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
-		genusName = TaxonNameFactory.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 
 		subGenusName = TaxonNameFactory.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
 		speciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameString);
-		subSpeciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameStringToParse);
+		subSpeciesName =(TaxonNameBase) TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameStringToParse);
 		subSpeciesName.setCacheStrategy(strategy);
 
 		author = Person.NewInstance();

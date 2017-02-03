@@ -158,7 +158,7 @@ public class BotanicalName
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> botanical taxon name, that is the
 	 * International Code of Botanical Nomenclature. This method overrides
-	 * the getNomenclaturalCode method from {@link NonViralName NonViralName}.
+	 * the getNomenclaturalCode method from {@link INonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for plants
 	 * @see  	NonViralName#isCodeCompliant()
@@ -202,7 +202,7 @@ public class BotanicalName
 	 */
 	@Override
 	public Object clone() {
-		BotanicalName result = (BotanicalName)super.clone();
+		IBotanicalName result = (IBotanicalName)super.clone();
 		//no changes to:
 		return result;
 	}

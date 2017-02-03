@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -44,7 +45,7 @@ public class TaxonGenerator {
 		citationRef.setTitleCache("Sp. lunarum", true);
 
         //genus taxon with Name, combinationAuthor,
-		BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         botName.setTitleCache("Hieracium L.", true);
         botName.setGenusOrUninomial("Hieracium");
         botName.setCombinationAuthorship(Person.NewInstance());

@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -115,7 +115,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 
 
 	private int  parseIt(String fullRef1){
-		NonViralName<?> nvName = TaxonNameFactory.NewZoologicalInstance(null);
+	    INonViralName nvName = TaxonNameFactory.NewZoologicalInstance(null);
 		NonViralNameParserImpl parser = new NonViralNameParserImpl();
 
 		//parser.parseFullName(strNameAbiesBasionymAuthorUe, null);

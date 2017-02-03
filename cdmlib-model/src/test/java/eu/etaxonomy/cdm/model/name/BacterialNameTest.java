@@ -23,7 +23,7 @@ public class BacterialNameTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BacterialNameTest.class);
 
-	private BacterialName bacterialName1;
+	private IBacterialName bacterialName1;
 
 	/**
 	 * @throws java.lang.Exception
@@ -49,7 +49,7 @@ public class BacterialNameTest {
 	public void testClone() {
 		bacterialName1.setSubGenusAuthorship("Bacter.");
 		bacterialName1.setNameApprobation("approb");
-		BacterialName clone = (BacterialName)bacterialName1.clone();
+		IBacterialName clone = (IBacterialName)bacterialName1.clone();
 		Assert.assertEquals("SubGenusAuthorship should be equal", "Bacter.", clone.getSubGenusAuthorship());
 		Assert.assertEquals("Name approbation should be equal", "approb", clone.getNameApprobation());
 	}

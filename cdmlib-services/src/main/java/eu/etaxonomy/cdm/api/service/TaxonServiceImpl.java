@@ -96,6 +96,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -2140,11 +2141,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List <Synonym> inferredSynonyms = new ArrayList<>();
         List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<>();
 
-        HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<>();
+        HashMap <UUID, IZoologicalName> zooHashMap = new HashMap<>();
 
 
         UUID nameUuid= taxon.getName().getUuid();
-        ZoologicalName taxonName = getZoologicalName(nameUuid, zooHashMap);
+        IZoologicalName taxonName = getZoologicalName(nameUuid, zooHashMap);
         String epithetOfTaxon = null;
         String infragenericEpithetOfTaxon = null;
         String infraspecificEpithetOfTaxon = null;
@@ -2166,10 +2167,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (node.getClassification().equals(classification)){
                 if (!node.isTopmostNode()){
                     TaxonNode parent = node.getParent();
-                    parent = HibernateProxyHelper.deproxy(parent);
+                    parent = CdmBase.deproxy(parent);
                     TaxonNameBase<?,?> parentName =  parent.getTaxon().getName();
-                    ZoologicalName zooParentName = HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
-                    Taxon parentTaxon = HibernateProxyHelper.deproxy(parent.getTaxon());
+                    IZoologicalName zooParentName = CdmBase.deproxy(parentName);
+                    Taxon parentTaxon = CdmBase.deproxy(parent.getTaxon());
                     Rank rankOfTaxon = taxonName.getRank();
 
 
@@ -2210,7 +2211,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                         synonymRelationOfParent);
 
                                 inferredSynonyms.add(inferredEpithet);
-                                zooHashMap.put(inferredEpithet.getName().getUuid(), (ZoologicalName)inferredEpithet.getName());
+                                zooHashMap.put(inferredEpithet.getName().getUuid(), inferredEpithet.getName());
                                 taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
                             }
 
@@ -2227,14 +2228,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                              misappliedName);
 
                                     inferredSynonyms.add(inferredEpithet);
-                                    zooHashMap.put(inferredEpithet.getName().getUuid(), (ZoologicalName)inferredEpithet.getName());
+                                    zooHashMap.put(inferredEpithet.getName().getUuid(), inferredEpithet.getName());
                                      taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
                                 }
                             }
 
                             if (!taxonNames.isEmpty()){
                             List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
-                            ZoologicalName name;
+                            IZoologicalName name;
                             if (!synNotInCDM.isEmpty()){
                                 inferredSynonymsToBeRemoved.clear();
 
@@ -2256,14 +2257,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         for (Synonym synonymRelationOfTaxon:synonymsOfTaxon){
                             TaxonNameBase synName;
-                            ZoologicalName inferredSynName;
+                            IZoologicalName inferredSynName;
 
                             inferredGenus = createInferredGenus(taxon,
                                     zooHashMap, taxonName, epithetOfTaxon,
                                     genusOfTaxon, taxonNames, zooParentName, synonymRelationOfTaxon);
 
                             inferredSynonyms.add(inferredGenus);
-                            zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
+                            zooHashMap.put(inferredGenus.getName().getUuid(), inferredGenus.getName());
                             taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
 
 
@@ -2276,7 +2277,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 inferredGenus = createInferredGenus(taxon, zooHashMap, taxonName, infraspecificEpithetOfTaxon, genusOfTaxon, taxonNames, zooParentName,  misappliedName);
 
                                 inferredSynonyms.add(inferredGenus);
-                                zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
+                                zooHashMap.put(inferredGenus.getName().getUuid(), inferredGenus.getName());
                                  taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
                             }
                         }
@@ -2284,7 +2285,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         if (!taxonNames.isEmpty()){
                             List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
-                            ZoologicalName name;
+                            IZoologicalName name;
                             if (!synNotInCDM.isEmpty()){
                                 inferredSynonymsToBeRemoved.clear();
 
@@ -2305,7 +2306,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }else if (type.equals(SynonymType.POTENTIAL_COMBINATION_OF())){
 
                         Reference sourceReference = null; // TODO: Determination of sourceReference is redundant
-                        ZoologicalName inferredSynName;
+                        IZoologicalName inferredSynName;
                         //for all synonyms of the parent...
                         for (Synonym synonymRelationOfParent:synonyMsOfParent){
                             TaxonNameBase synName;
@@ -2319,7 +2320,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             // Determine the idInSource
                             String idInSourceParent = getIdInSource(synonymRelationOfParent);
 
-                            ZoologicalName parentSynZooName = getZoologicalName(synName.getUuid(), zooHashMap);
+                            IZoologicalName parentSynZooName = getZoologicalName(synName.getUuid(), zooHashMap);
                             String synParentGenus = parentSynZooName.getGenusOrUninomial();
                             String synParentInfragenericName = null;
                             String synParentSpecificEpithet = null;
@@ -2339,7 +2340,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                             for (Synonym synonymRelationOfTaxon:synonymsOfTaxon){
 
-                                ZoologicalName zooSynName = getZoologicalName(synonymRelationOfTaxon.getName().getUuid(), zooHashMap);
+                                IZoologicalName zooSynName = getZoologicalName(synonymRelationOfTaxon.getName().getUuid(), zooHashMap);
                                 potentialCombination = createPotentialCombination(idInSourceParent, parentSynZooName, zooSynName,
                                         synParentGenus,
                                         synParentInfragenericName,
@@ -2347,7 +2348,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                 taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF());
                                 inferredSynonyms.add(potentialCombination);
-                                zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
+                                zooHashMap.put(potentialCombination.getName().getUuid(), potentialCombination.getName());
                                  taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
 
                             }
@@ -2372,7 +2373,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 // Determine the idInSource
                                 String idInSourceParent = getIdInSource(misappliedParent);
 
-                                ZoologicalName parentSynZooName = getZoologicalName(misappliedParentName.getUuid(), zooHashMap);
+                                IZoologicalName parentSynZooName = getZoologicalName(misappliedParentName.getUuid(), zooHashMap);
                                 String synParentGenus = parentSynZooName.getGenusOrUninomial();
                                 String synParentInfragenericName = null;
                                 String synParentSpecificEpithet = null;
@@ -2387,7 +2388,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                 for (TaxonRelationship taxonRelationship: taxonRelListTaxon){
                                     Taxon misappliedName = taxonRelationship.getFromTaxon();
-                                    ZoologicalName zooMisappliedName = getZoologicalName(misappliedName.getName().getUuid(), zooHashMap);
+                                    IZoologicalName zooMisappliedName = getZoologicalName(misappliedName.getName().getUuid(), zooHashMap);
                                     potentialCombination = createPotentialCombination(
                                             idInSourceParent, parentSynZooName, zooMisappliedName,
                                             synParentGenus,
@@ -2397,7 +2398,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                     taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF());
                                     inferredSynonyms.add(potentialCombination);
-                                    zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
+                                    zooHashMap.put(potentialCombination.getName().getUuid(), potentialCombination.getName());
                                      taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
                                 }
                             }
@@ -2405,12 +2406,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         if (!taxonNames.isEmpty()){
                             List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
-                            ZoologicalName name;
+                            IZoologicalName name;
                             if (!synNotInCDM.isEmpty()){
                                 inferredSynonymsToBeRemoved.clear();
                                 for (Synonym syn :inferredSynonyms){
                                     try{
-                                        name = (ZoologicalName) syn.getName();
+                                        name = syn.getName();
                                     }catch (ClassCastException e){
                                         name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
                                     }
@@ -2438,12 +2439,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     private Synonym createPotentialCombination(String idInSourceParent,
-            ZoologicalName parentSynZooName, 	ZoologicalName zooSynName, String synParentGenus,
+            IZoologicalName parentSynZooName, 	IZoologicalName zooSynName, String synParentGenus,
             String synParentInfragenericName, String synParentSpecificEpithet,
-            TaxonBase syn, HashMap<UUID, ZoologicalName> zooHashMap) {
+            TaxonBase syn, HashMap<UUID, IZoologicalName> zooHashMap) {
         Synonym potentialCombination;
         Reference sourceReference;
-        ZoologicalName inferredSynName;
+        IZoologicalName inferredSynName;
         HibernateProxyHelper.deproxy(syn);
 
         // Set sourceReference
@@ -2508,14 +2509,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     private Synonym createInferredGenus(Taxon taxon,
-            HashMap<UUID, ZoologicalName> zooHashMap, ZoologicalName taxonName,
+            HashMap<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
             String epithetOfTaxon, String genusOfTaxon,
-            List<String> taxonNames, ZoologicalName zooParentName,
+            List<String> taxonNames, IZoologicalName zooParentName,
             TaxonBase syn) {
 
         Synonym inferredGenus;
         TaxonNameBase synName;
-        ZoologicalName inferredSynName;
+        IZoologicalName inferredSynName;
         synName =syn.getName();
         HibernateProxyHelper.deproxy(syn);
 
@@ -2528,7 +2529,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         //logger.warn(sourceReference.getTitleCache());
 
         synName = syn.getName();
-        ZoologicalName synZooName = getZoologicalName(synName.getUuid(), zooHashMap);
+        IZoologicalName synZooName = getZoologicalName(synName.getUuid(), zooHashMap);
         String synSpeciesEpithetName = synZooName.getSpecificEpithet();
                      /* if (synonymsEpithet != null && !synonymsEpithet.contains(synSpeciesEpithetName)){
             synonymsEpithet.add(synSpeciesEpithetName);
@@ -2586,14 +2587,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     private Synonym createInferredEpithets(Taxon taxon,
-            HashMap<UUID, ZoologicalName> zooHashMap, ZoologicalName taxonName,
+            HashMap<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
             String epithetOfTaxon, String infragenericEpithetOfTaxon,
             String infraspecificEpithetOfTaxon, List<String> taxonNames,
             TaxonNameBase parentName, TaxonBase syn) {
 
         Synonym inferredEpithet;
         TaxonNameBase<?,?> synName;
-        ZoologicalName inferredSynName;
+        IZoologicalName inferredSynName;
         HibernateProxyHelper.deproxy(syn);
 
         // Determine the idInSource
@@ -2608,7 +2609,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         synName = syn.getName();
-        ZoologicalName zooSynName = getZoologicalName(synName.getUuid(), zooHashMap);
+        IZoologicalName zooSynName = getZoologicalName(synName.getUuid(), zooHashMap);
         String synGenusName = zooSynName.getGenusOrUninomial();
         String synInfraGenericEpithet = null;
         String synSpecificEpithet = null;
@@ -2680,14 +2681,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     /**
-     * Returns an existing ZoologicalName or extends an internal hashmap if it does not exist.
+     * Returns an existing IZoologicalName or extends an internal hashmap if it does not exist.
      * Very likely only useful for createInferredSynonyms().
      * @param uuid
      * @param zooHashMap
      * @return
      */
-    private ZoologicalName getZoologicalName(UUID uuid, HashMap <UUID, ZoologicalName> zooHashMap) {
-        ZoologicalName taxonName =nameDao.findZoologicalNameByUUID(uuid);
+    private IZoologicalName getZoologicalName(UUID uuid, HashMap <UUID, IZoologicalName> zooHashMap) {
+        IZoologicalName taxonName =nameDao.findZoologicalNameByUUID(uuid);
         if (taxonName == null) {
             taxonName = zooHashMap.get(uuid);
         }

@@ -26,7 +26,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -60,10 +60,10 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	private Reference reference;
 	private SynonymType homoTypicSynonymType;
 	private SynonymType heteroTypicSynonymType;
-	private NonViralName<?> s1n;
-	private NonViralName<?> t2n;
-	private NonViralName<?> t1n;
-	private NonViralName<?> s2n;
+	private INonViralName s1n;
+	private INonViralName t2n;
+	private INonViralName t1n;
+	private TaxonNameBase<?,?> s2n;
 
 	/**
 	 * @throws java.lang.Exception

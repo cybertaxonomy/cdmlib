@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 		@Test
 		public void testPropertyChange() {
-			NonViralName<?> b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-			b.addPropertyChangeListener(this);
+		    INonViralName b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+			((TaxonNameBase<?,?>)b).addPropertyChangeListener(this);
 			b.setGenusOrUninomial("Abies");
 				assertEquals(b.getGenusOrUninomial(), lastPropValue);
 			b.setGenusOrUninomial("Picea");

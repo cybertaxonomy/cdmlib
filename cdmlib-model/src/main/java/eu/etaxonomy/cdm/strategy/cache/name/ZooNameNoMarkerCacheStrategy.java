@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -51,7 +51,7 @@ public class ZooNameNoMarkerCacheStrategy extends ZooNameDefaultCacheStrategy {
 
 
 	@Override
-	protected List<TaggedText> getInfraSpeciesTaggedNameCache(ZoologicalName nonViralName){
+	protected List<TaggedText> getInfraSpeciesTaggedNameCache(IZoologicalName nonViralName){
 		boolean includeMarker = false;
 		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
 	}

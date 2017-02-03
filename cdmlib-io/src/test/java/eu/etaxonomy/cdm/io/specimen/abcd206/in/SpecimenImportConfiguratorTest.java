@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -283,10 +282,10 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(2, derivedUnit.getDeterminations().size());
 	    for(DeterminationEvent determinationEvent:derivedUnit.getDeterminations()){
 	        if(determinationEvent.getPreferredFlag()){
-	            assertEquals(preferredNameCache,((NonViralName<?>) determinationEvent.getTaxonName()).getNameCache());
+	            assertEquals(preferredNameCache,determinationEvent.getTaxonName().getNameCache());
 	        }
 	        else{
-	            assertEquals(nonPreferredNameCache,((NonViralName<?>) determinationEvent.getTaxonName()).getNameCache());
+	            assertEquals(nonPreferredNameCache,determinationEvent.getTaxonName().getNameCache());
 	        }
 	    }
 
@@ -522,7 +521,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //        Team team = Team.NewTitledInstance("different author", "different author");
 //        secReference.setAuthorship(team);
 //
-//        NonViralName<?> taxonName = TaxonNameFactory.NewNonViralInstance(Rank.VARIETY());
+//        INonViralName taxonName = TaxonNameFactory.NewNonViralInstance(Rank.VARIETY());
 //        taxonName.setGenusOrUninomial("Campanula");
 //        taxonName.setSpecificEpithet("versicolor");
 //        taxonName.setInfraSpecificEpithet("tomentella");

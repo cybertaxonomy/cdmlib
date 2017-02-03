@@ -111,7 +111,7 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
     	Map<String, Taxon> map = new HashMap<String, Taxon>();
     	for(String strName : stringTaxonNames){
     		NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-    		TaxonNameBase<?, ?> nameBase = parser.parseFullName(strName);
+    		TaxonNameBase<?,?> nameBase = (TaxonNameBase<?,?>)parser.parseFullName(strName);
     		Taxon taxon = Taxon.NewInstance(nameBase, null);
     		map.put(strName, taxon);
     	}

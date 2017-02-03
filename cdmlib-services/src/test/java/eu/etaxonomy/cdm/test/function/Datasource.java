@@ -45,8 +45,8 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -353,7 +353,7 @@ public class Datasource {
 
 		boolean exists = appCtr.getUserService().userExists("admin");
 		try {
-			BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
+			IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
 			String nameCache = "testName";
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
@@ -429,14 +429,14 @@ public class Datasource {
 //			 CdmPersistentDataSource.NewInstance("localH2");
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 		try {
-			BotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-			BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-			BotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		    TaxonNameBase<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			TaxonNameBase<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			IBotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
 			UUID uuid1 = botName1.getUuid();
 			UUID uuid2 = botName2.getUuid();
 			try {
-				Logger loggerTrace = logger.getLogger("org.hibernate.type");
+				Logger loggerTrace = Logger.getLogger("org.hibernate.type");
 				loggerTrace.setLevel(Level.TRACE);
 				System.out.println(logger.getName());
 

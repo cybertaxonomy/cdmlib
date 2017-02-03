@@ -65,4 +65,5 @@ public interface IZoologicalName extends INonViralName {
      * @see  #getPublicationYear()
      */
     public void setPublicationYear(Integer publicationYear);
+
 }

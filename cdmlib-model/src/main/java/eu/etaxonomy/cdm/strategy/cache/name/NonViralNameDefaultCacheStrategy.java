@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * existing methods, e.g. a CacheStrategy for zoological names should overwrite getAuthorAndExAuthor
  * @author a.mueller
  */
-public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
+public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         extends NameCacheStrategyBase<T>
         implements INonViralNameCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
@@ -86,7 +86,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * Factory method
      * @return NonViralNameDefaultCacheStrategy A new instance of  NonViralNameDefaultCacheStrategy
      */
-    public static <T extends NonViralName<?>> NonViralNameDefaultCacheStrategy<T> NewInstance(Class<T> clazz){
+    public static <T extends INonViralName> NonViralNameDefaultCacheStrategy<T> NewInstance(Class<T> clazz){
         return new NonViralNameDefaultCacheStrategy<T>();
     }
 
@@ -302,7 +302,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected boolean nameIncludesAuthorship(NonViralName<?> nonViralName){
+    protected boolean nameIncludesAuthorship(INonViralName nonViralName){
         Rank rank = nonViralName.getRank();
         if (rank != null && rank.isSpeciesAggregate()){
             return false;
@@ -573,7 +573,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getRanklessTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getRanklessTaggedNameCache(INonViralName nonViralName){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
         String speciesEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
         if (StringUtils.isNotBlank(speciesEpi)){
@@ -616,7 +616,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getGenusOrUninomialTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getGenusOrUninomialTaggedNameCache(INonViralName nonViralName){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
         addAppendedTaggedPhrase(tags, nonViralName);
         return tags;
@@ -752,7 +752,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param includeMarker
      * @return
      */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName, boolean includeMarker){
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(INonViralName nonViralName, boolean includeMarker){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
         if (includeMarker || nonViralName.isTrinomHybrid()){
             String marker = (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");

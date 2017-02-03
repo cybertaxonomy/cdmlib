@@ -26,7 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -328,14 +328,14 @@ public class TaxonNodeTest {
     	 *   `- Pinus pampa subsp. persicifolia
     	 */
     	Classification classification = Classification.NewInstance("Classification");
-    	BotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(null);
+    	IBotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(null);
     	pinusName.setGenusOrUninomial("Pinus");
     	Taxon pinus = Taxon.NewInstance(pinusName, null);
-    	BotanicalName pinusPampaName = TaxonNameFactory.NewBotanicalInstance(null);
+    	IBotanicalName pinusPampaName = TaxonNameFactory.NewBotanicalInstance(null);
     	pinusPampaName.setGenusOrUninomial("Pinus");
     	pinusPampaName.setSpecificEpithet("pampa");
     	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
-    	BotanicalName pinusPampaSubName = TaxonNameFactory.NewBotanicalInstance(null);
+    	IBotanicalName pinusPampaSubName = TaxonNameFactory.NewBotanicalInstance(null);
     	pinusPampaSubName.setGenusOrUninomial("Pinus");
     	pinusPampaSubName.setSpecificEpithet("pampa");
     	pinusPampaSubName.setInfraSpecificEpithet("persicifolia");

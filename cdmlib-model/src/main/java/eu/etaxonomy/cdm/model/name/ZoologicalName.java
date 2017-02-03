@@ -128,7 +128,7 @@ public class ZoologicalName
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> zoological taxon name, that is the
 	 * International Code of Zoological Nomenclature. This method overrides
-	 * the getNomenclaturalCode method from {@link NonViralName NonViralName}.
+	 * the getNomenclaturalCode method from {@link INonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for animals
 	 * @see  	NonViralName#isCodeCompliant()
@@ -153,7 +153,7 @@ public class ZoologicalName
 	 */
 	@Override
 	public Object clone() {
-		ZoologicalName result = (ZoologicalName)super.clone();
+		IZoologicalName result = (IZoologicalName)super.clone();
 		//no changes to: breed, publicationYear, originalPublicationYear
 		return result;
 	}

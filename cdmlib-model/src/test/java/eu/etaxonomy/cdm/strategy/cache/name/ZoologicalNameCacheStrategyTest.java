@@ -25,9 +25,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
  * @author a.mueller
@@ -38,12 +38,12 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
 	private ZooNameDefaultCacheStrategy strategy;
-	private ZoologicalName familyName;
-	private ZoologicalName genusName;
-	private ZoologicalName subGenusName;
-	private ZoologicalName speciesName;
-	private ZoologicalName subSpeciesName;
-	private ZoologicalName speciesNameWithInfrGenEpi;
+	private IZoologicalName familyName;
+	private IZoologicalName genusName;
+	private IZoologicalName subGenusName;
+	private IZoologicalName speciesName;
+	private IZoologicalName subSpeciesName;
+	private IZoologicalName speciesNameWithInfrGenEpi;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;

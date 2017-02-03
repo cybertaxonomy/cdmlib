@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -599,8 +598,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     		if(parentNode == null){
     			//if no match found in list, create parentNode
     			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-    			NonViralName nonViralName = parser.parseFullName(genus);
-    			TaxonNameBase taxonNameBase = nonViralName;
+    			TaxonNameBase<?,?> taxonNameBase = (TaxonNameBase<?,?>)parser.parseFullName(genus);
     			//TODO Sec via configurator
     			Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
     			parentNode = newClassification.addChildTaxon(taxon, 0, null, null);

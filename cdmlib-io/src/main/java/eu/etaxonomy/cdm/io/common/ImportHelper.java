@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -84,11 +85,11 @@ public class ImportHelper {
 //		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
 //	}
 
-	public static boolean addBooleanValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
+	public static boolean addBooleanValue(ResultSet rs, ICdmBase cdmBase, String dbAttrName, String cdmAttrName){
 		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE, false);
 	}
 
-	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull, boolean blankToNull){
+	public static boolean addValue(ResultSet rs, ICdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull, boolean blankToNull){
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);
@@ -130,7 +131,7 @@ public class ImportHelper {
 		return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull, obligat);
 	}
 
-	public static boolean addValue(Object sourceValue, CdmBase cdmBase, String cdmAttrName, Class<?> clazz, boolean overwriteNull, boolean obligat){
+	public static boolean addValue(Object sourceValue, ICdmBase cdmBase, String cdmAttrName, Class<?> clazz, boolean overwriteNull, boolean obligat){
 		String methodName;
 //		Object strValue;
 		try {

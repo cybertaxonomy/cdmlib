@@ -13,8 +13,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -57,7 +57,7 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 		Taxon taxon = Taxon.NewInstance(null, null);
 		DeterminationEvent detWithTaxonOnlyAndNoName = DeterminationEvent.NewInstance(taxon, unit);
 
-		BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Taxon taxon2 = Taxon.NewInstance(name, null);
 		DeterminationEvent detWithTaxonOnlyAndNameOnTaxon = DeterminationEvent.NewInstance(taxon2, unit);
 

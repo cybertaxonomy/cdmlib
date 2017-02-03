@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -247,7 +247,7 @@ public class StatisticsDaoHibernateImplTest
 						+ RandomStringUtils.randomAlphabetic(10);
 
 				// create a name for the taxon
-				BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+				IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 				name.setNameCache(randomName, true);
 
 				// create nomenclatural reference for taxon name (if left)

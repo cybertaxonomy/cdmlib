@@ -21,9 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -37,21 +35,21 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class IdentifiableEntityTest {
 
-	private NonViralName<?> abies;
-	private NonViralName<?> abiesMill;
-	private NonViralName<?> abiesAlba;
-	private NonViralName<?> abiesAlbaMichx;
-	private NonViralName<?> abiesAlbaMill;
-	private NonViralName<?> abiesAlbaxPinusBeta;
-	private NonViralName<?> pinusBeta;
+	private TaxonNameBase<?,?> abies;
+	private TaxonNameBase<?,?> abiesMill;
+	private TaxonNameBase<?,?> abiesAlba;
+	private TaxonNameBase<?,?> abiesAlbaMichx;
+	private TaxonNameBase<?,?> abiesAlbaMill;
+	private TaxonNameBase<?,?> abiesAlbaxPinusBeta;
+	private TaxonNameBase<?,?> pinusBeta;
 
 	private Taxon abiesTaxon;
 	private Taxon abiesMillTaxon;
 
-	private NonViralName<?> abiesAutonym;
+	private TaxonNameBase<?,?> abiesAutonym;
 	private Taxon abiesAutonymTaxon;
 
-	private NonViralName<?> abiesBalsamea;
+	private TaxonNameBase<?,?> abiesBalsamea;
 	private Taxon abiesBalsameaTaxon;
 //	private Taxon abiesAlbaxPinusBetaTaxon;
 	/**
@@ -197,7 +195,7 @@ public class IdentifiableEntityTest {
 		assertEquals(compareResult, equalsResult);
 
 		//Abies alba x Pinus beta < Abies alba xinus
-		BotanicalName abiesAlbaXinus = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+		TaxonNameBase<?,?> abiesAlbaXinus = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
 		abiesAlbaXinus.setGenusOrUninomial("Abies");
 		abiesAlbaXinus.setSpecificEpithet("alba");
 		abiesAlbaXinus.setInfraSpecificEpithet("xinus");

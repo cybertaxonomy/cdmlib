@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroupComparator;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -226,7 +227,7 @@ public class CsvNameExport extends CsvNameExportBase {
 
 
 
-    private String createSynonymNameString(BotanicalName synonymName, boolean isInvalid) {
+    private String createSynonymNameString(IBotanicalName synonymName, boolean isInvalid) {
         String synonymString = null;
 
         synonymString= createTaggedNameString(synonymName, isInvalid);

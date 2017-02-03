@@ -15,7 +15,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.NewEntityListener;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
@@ -38,9 +38,9 @@ public class NewEntityListenerTest implements NewEntityListener {
     public void testPropertyChange() {
         CdmBase.setNewEntityListener(this);
 
-        NonViralName<?> nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+        INonViralName b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         Annotation newAnnotation = Annotation.NewDefaultLanguageInstance("test");
-        nvn.addAnnotation(newAnnotation);
+        b.addAnnotation(newAnnotation);
         Assert.assertEquals(newAnnotation, lastPropValue);
     }
 

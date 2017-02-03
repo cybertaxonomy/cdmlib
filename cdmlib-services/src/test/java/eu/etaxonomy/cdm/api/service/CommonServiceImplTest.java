@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -79,7 +79,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	@DataSet
 	@Ignore
 	public final void testGetReferencingObjects() {
-		BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
 		Reference ref1 = ReferenceFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);

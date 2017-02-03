@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -39,6 +38,8 @@ import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -88,7 +89,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public int countHybridNames(NonViralName name, HybridRelationshipType type) {
+    public int countHybridNames(INonViralName name, HybridRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Query query = null;
@@ -264,7 +265,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public List<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<HybridRelationship> getHybridNames(INonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(HybridRelationship.class);
@@ -791,7 +792,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
 
     @Override
-    public ZoologicalName findZoologicalNameByUUID(UUID uuid){
+    public IZoologicalName findZoologicalNameByUUID(UUID uuid){
         Criteria criteria = getSession().createCriteria(type);
         if (uuid != null) {
             criteria.add(Restrictions.eq("uuid", uuid));
@@ -800,12 +801,13 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             return null;
         }
 
+        @SuppressWarnings("unchecked")
         List<? extends TaxonNameBase<?,?>> results = criteria.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, null);
             TaxonNameBase<?, ?> taxonName = results.iterator().next();
             if (taxonName.isInstanceOf(ZoologicalName.class)) {
-                ZoologicalName zoologicalName = CdmBase.deproxy(taxonName, ZoologicalName.class);
+                IZoologicalName zoologicalName = taxonName;
                 return zoologicalName;
             } else {
                 logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");

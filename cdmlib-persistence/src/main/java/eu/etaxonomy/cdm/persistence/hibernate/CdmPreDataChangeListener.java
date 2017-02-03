@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -115,7 +116,7 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
                 IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
                 if(NonViralName.class.isAssignableFrom(entityClazz)) {
                     //non-viral-name caches
-                    NonViralName<?> nonViralName = (NonViralName<?>)entity;
+                    INonViralName nonViralName = (INonViralName)entity;
                     nonViralName.getAuthorshipCache();
                     nonViralName.getNameCache();
                     nonViralName.getTitleCache();

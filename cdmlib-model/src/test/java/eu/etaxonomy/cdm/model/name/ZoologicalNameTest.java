@@ -23,7 +23,7 @@ public class ZoologicalNameTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalNameTest.class);
 
-	private ZoologicalName zooName1;
+	private IZoologicalName zooName1;
 
 	/**
 	 * @throws java.lang.Exception
@@ -50,7 +50,7 @@ public class ZoologicalNameTest {
 		zooName1.setBreed("breed");
 		zooName1.setPublicationYear(1956);
 		zooName1.setOriginalPublicationYear(1867);
-		ZoologicalName clone = (ZoologicalName)zooName1.clone();
+		IZoologicalName clone = (IZoologicalName)zooName1.clone();
 		Assert.assertEquals("Breed should be equal", "breed", clone.getBreed());
 		Assert.assertEquals("Publication year should be equal", Integer.valueOf(1956), clone.getPublicationYear());
 		Assert.assertEquals("Original publication year should be equal", Integer.valueOf(1867), clone.getOriginalPublicationYear());

@@ -25,9 +25,9 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
@@ -109,7 +109,7 @@ public class HomotypicGroupTaxonComparatorTest {
 
     }
 
-    private void setNameParts(NonViralName<?> name, String genus, String speciesEpi) {
+    private void setNameParts(INonViralName name, String genus, String speciesEpi) {
         name.setGenusOrUninomial(genus);
         name.setSpecificEpithet(speciesEpi);
         name.getTitleCache();

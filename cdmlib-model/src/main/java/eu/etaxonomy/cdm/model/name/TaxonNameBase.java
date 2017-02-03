@@ -166,7 +166,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
-                ICultivarPlantName,
+                IBotanicalName, ICultivarPlantName,
                 IParsable, IRelated, IMatchable, Cloneable {
 
     private static final long serialVersionUID = -791164269603409712L;
@@ -301,7 +301,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @IndexedEmbedded
     private Reference nomenclaturalReference;
 
-//****** NonViralName attributes ***************************************/
+//****** Non-ViralName attributes ***************************************/
 
     @XmlElement(name = "NameCache")
     @Fields({
@@ -2727,7 +2727,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see                   #addNameRelationship(NameRelationship)
      */
     @Override
-    public HybridRelationship addHybridParent(NonViralName parentName, HybridRelationshipType type, String ruleConsidered){
+    public HybridRelationship addHybridParent(INonViralName parentName, HybridRelationshipType type, String ruleConsidered){
         return new HybridRelationship(this, parentName, type, ruleConsidered);
     }
 
@@ -2749,12 +2749,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see                   #addNameRelationship(NameRelationship)
      */
     @Override
-    public HybridRelationship addHybridChild(NonViralName childName, HybridRelationshipType type, String ruleConsidered){
+    public HybridRelationship addHybridChild(INonViralName childName, HybridRelationshipType type, String ruleConsidered){
         return new HybridRelationship(childName, this, type, ruleConsidered);
     }
 
     @Override
-    public void removeHybridChild(NonViralName child) {
+    public void removeHybridChild(INonViralName child) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
         hybridRelationships.addAll(this.getHybridChildRelations());
         hybridRelationships.addAll(this.getHybridParentRelations());
@@ -2767,7 +2767,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     }
 
     @Override
-    public void removeHybridParent(NonViralName parent) {
+    public void removeHybridParent(INonViralName parent) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
         hybridRelationships.addAll(this.getHybridChildRelations());
         hybridRelationships.addAll(this.getHybridParentRelations());
@@ -3364,7 +3364,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             result = (TaxonNameBase)super.clone();
 
             //taxonBases -> empty
-            result.taxonBases = new HashSet<TaxonBase>();
+            result.taxonBases = new HashSet<>();
 
             //empty caches
             if (! protectedFullTitleCache){
@@ -3372,14 +3372,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             }
 
             //descriptions
-            result.descriptions = new HashSet<TaxonNameDescription>();
+            result.descriptions = new HashSet<>();
             for (TaxonNameDescription taxonNameDescription : getDescriptions()){
                 TaxonNameDescription newDescription = (TaxonNameDescription)taxonNameDescription.clone();
                 result.descriptions.add(newDescription);
             }
 
             //status
-            result.status = new HashSet<NomenclaturalStatus>();
+            result.status = new HashSet<>();
             for (NomenclaturalStatus nomenclaturalStatus : getStatus()){
                 NomenclaturalStatus newStatus = (NomenclaturalStatus)nomenclaturalStatus.clone();
                 result.status.add(newStatus);
@@ -3387,7 +3387,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
             //To Relations
-            result.relationsToThisName = new HashSet<NameRelationship>();
+            result.relationsToThisName = new HashSet<>();
             for (NameRelationship toRelationship : getRelationsToThisName()){
                 NameRelationship newRelationship = (NameRelationship)toRelationship.clone();
                 newRelationship.setRelatedTo(result);
@@ -3395,7 +3395,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             }
 
             //From Relations
-            result.relationsFromThisName = new HashSet<NameRelationship>();
+            result.relationsFromThisName = new HashSet<>();
             for (NameRelationship fromRelationship : getRelationsFromThisName()){
                 NameRelationship newRelationship = (NameRelationship)fromRelationship.clone();
                 newRelationship.setRelatedFrom(result);
@@ -3403,7 +3403,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             }
 
             //type designations
-            result.typeDesignations = new HashSet<TypeDesignationBase>();
+            result.typeDesignations = new HashSet<>();
             for (TypeDesignationBase<?> typeDesignation : getTypeDesignations()){
                 TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
                 result.typeDesignations.add(newDesignation);

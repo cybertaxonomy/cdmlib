@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -145,7 +146,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 					Integer combYear = null;
 					Integer origYear = null;
 					if (nvn.isInstanceOf(ZoologicalName.class)){
-						ZoologicalName zooName = CdmBase.deproxy(nvn, ZoologicalName.class);
+						IZoologicalName zooName = CdmBase.deproxy(nvn, ZoologicalName.class);
 						combYear = zooName.getPublicationYear();
 						origYear = zooName.getOriginalPublicationYear();
 					}

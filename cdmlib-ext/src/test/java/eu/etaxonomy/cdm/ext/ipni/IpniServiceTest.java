@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -110,11 +111,11 @@ public class IpniServiceTest {
 
 		if (testInternetConnectivity(nameList)){
 			Assert.assertEquals("There should be exactly 1 result for 'Abies albertiana'", 1, nameList.size());
-			BotanicalName name = nameList.get(0);
+			IBotanicalName name = nameList.get(0);
 			//title cache
 			Assert.assertEquals("Title Cache for Abies albertiana should be 'Abies albertiana'", "Abies albertiana A.Murray bis", name.getTitleCache());
 
-//			for (BotanicalName listName : nameList){
+//			for (IBotanicalName listName : nameList){
 //				System.out.println(name.getFullTitleCache());
 //			}
 		}
@@ -150,11 +151,11 @@ public class IpniServiceTest {
 		if (testInternetConnectivity(nameList)){
 
 			Assert.assertEquals("There should be exactly 1 result for 'Abies', 'alba', 'B*', Infraspecific ", 1, nameList.size());
-			BotanicalName name = nameList.get(0);
+			IBotanicalName name = nameList.get(0);
 			//title cache
 			Assert.assertEquals("Title Cache for 'Abies', 'alba', 'ap*' should be 'Abies alba subsp. apennina Brullo, Scelsi & Spamp.'", "Abies alba subsp. apennina Brullo, Scelsi & Spamp.", name.getTitleCache());
 
-	//		for (BotanicalName listName : nameList){
+	//		for (IBotanicalName listName : nameList){
 	//			System.out.println(name.getFullTitleCache());
 	//		}
 		}

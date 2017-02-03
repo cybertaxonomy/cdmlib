@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -421,7 +422,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertNull(t1);
 		Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
 		assertNull(newTaxon);
-		BotanicalName name = (BotanicalName)nameService.load(nameUUID);
+		IBotanicalName name = nameService.load(nameUUID);
 		assertNull(name);
 
 
@@ -528,22 +529,22 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	 *  `- Pinus pampa
     	 */
     	Classification classification = Classification.NewInstance("Classification");
-    	BotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+    	IBotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
     	abiesName.setGenusOrUninomial("Abies");
     	Taxon abies = Taxon.NewInstance(abiesName, null);
-    	BotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+    	IBotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	abiesAlbaName.setGenusOrUninomial("Abies");
     	abiesAlbaName.setSpecificEpithet("alba");
     	Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
-    	BotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+    	IBotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
     	pinusName.setGenusOrUninomial("Pinus");
     	Taxon pinus = Taxon.NewInstance(pinusName, null);
-    	BotanicalName pinusPampaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+    	IBotanicalName pinusPampaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	pinusPampaName.setGenusOrUninomial("Pinus");
     	pinusPampaName.setSpecificEpithet("pampa");
     	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
 
-        BotanicalName abiesBalsameaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName abiesBalsameaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesBalsameaName.setGenusOrUninomial("Abies");
         abiesBalsameaName.setSpecificEpithet("balsamea");
         Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiableEntityCacheStrategy<T> {
+public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifiableEntityCacheStrategy<T> {
 
     /**
      * Returns a list of name typified tokens that together make up the name (including authorship etc.).

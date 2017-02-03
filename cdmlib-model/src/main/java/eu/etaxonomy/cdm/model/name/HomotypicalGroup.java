@@ -308,7 +308,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 //       * Open: All types of relationships to replaced synonyms
 //     */
 //    public void guessAndSetBasionym(){
-//         Map<String, NonViralName<?>> candidates = new HashMap<NonViralName<?>>();
+//         Map<String, INonViralName> candidates = new HashMap<>();
 //         for (TaxonNameBase<?,?> typifiedName : this.typifiedNames){
 //             if (! typifiedName.protectedAuthorshipCache && nvn.getBasionymAuthorship() == null){
 //                 candidates.add(typifiedName);

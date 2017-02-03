@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
+public class HybridRelationship extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
@@ -68,14 +68,14 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase relatedFrom;
+	private TaxonNameBase<?,?> relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase relatedTo;
+	private TaxonNameBase<?,?> relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
@@ -103,9 +103,9 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	 * @param type				the relationship type to be assigned to the new hybrid relationship
 	 * @param ruleConsidered	the string indicating the article of the ICBN for the hybrid taxon name
 	 * @see						#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, Reference, String, String)
-	 * @see						BotanicalName#addHybridRelationship(HybridRelationship)
+	 * @see						TaxonNameBase#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(TaxonNameBase hybridName, TaxonNameBase parentName, HybridRelationshipType type, String ruleConsidered) {
+	protected HybridRelationship(INonViralName hybridName, INonViralName parentName, HybridRelationshipType type, String ruleConsidered) {
 		this(hybridName, parentName, type, null, null, ruleConsidered);
 	}
 
@@ -121,9 +121,9 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param ruleConsidered		the string indicating the article of the ICBN for the hybrid taxon name
 	 * @see							#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String)
-	 * @see							BotanicalName#addHybridRelationship(HybridRelationship)
+	 * @see							TaxonNameBase#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(TaxonNameBase  hybridName, TaxonNameBase parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
+	protected HybridRelationship(INonViralName  hybridName, INonViralName parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
 		super(parentName, hybridName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}
@@ -198,13 +198,13 @@ public class HybridRelationship extends RelationshipBase<TaxonNameBase, TaxonNam
 	}
 
 	@Override
-    protected void setRelatedFrom(TaxonNameBase relatedFrom) {
-		this.relatedFrom = relatedFrom;
+    protected void setRelatedFrom(INonViralName relatedFrom) {
+		this.relatedFrom = TaxonNameBase.castAndDeproxy(relatedFrom);
 	}
 
 	@Override
-    protected void setRelatedTo(TaxonNameBase relatedTo) {
-		this.relatedTo = relatedTo;
+    protected void setRelatedTo(INonViralName relatedTo) {
+		this.relatedTo = TaxonNameBase.castAndDeproxy(relatedTo);
 	}
 
 	@Override

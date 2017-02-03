@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -183,14 +182,14 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNamesByExample() {
-        ZoologicalName zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
+        TaxonNameBase<?,?> zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
         Set<String> includedProperties = new HashSet<String>();
         includedProperties.add("genusOrUninomial");
         includedProperties.add("specificEpithet");
         includedProperties.add("infraSpecificEpithet");
         includedProperties.add("rank");
-        int count = taxonNameDao.count(zoologicalName,includedProperties);
+        int count = taxonNameDao.count(zoologicalName, includedProperties);
 
         assertEquals("countNames should return 3",3,count);
     }

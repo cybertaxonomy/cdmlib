@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -187,7 +188,7 @@ public class TaxonXAddSources {
      * @param refMods
      * @param nameToBeFilled
      */
-    protected void addSource(Reference refMods, TaxonNameBase<?,?> nameToBeFilled) {
+    protected void addSource(Reference refMods, ITaxonNameBase nameToBeFilled) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);

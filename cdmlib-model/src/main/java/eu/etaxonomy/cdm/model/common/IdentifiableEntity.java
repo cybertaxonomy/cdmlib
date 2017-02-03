@@ -48,6 +48,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
+ 
 
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
@@ -520,8 +521,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return result;
     }
-
-
 
 
     /**

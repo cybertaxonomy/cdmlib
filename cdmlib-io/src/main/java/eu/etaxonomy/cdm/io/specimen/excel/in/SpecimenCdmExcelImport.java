@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -539,7 +540,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (StringUtils.isNotBlank(commonDetermination.determinedBy)){
 			sec = ReferenceFactory.newGeneric();
 			TeamOrPersonBase<?> determinedBy;
-			BotanicalName dummyName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			IBotanicalName dummyName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			try {
 				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
 				determinedBy = dummyName.getCombinationAuthorship();
@@ -644,11 +645,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @param determinationLight
 	 * @return
 	 */
-	private NonViralName<?> makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
-		NonViralName<?> name = TaxonNameFactory.NewNonViralInstance(null);
+	private INonViralName makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
+		INonViralName name = TaxonNameFactory.NewNonViralInstance(null);
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (nc != null){
-			name = (NonViralName<?>)nc.getNewTaxonNameInstance(null);
+			name = nc.getNewTaxonNameInstance(null);
 		}
 		name.setGenusOrUninomial(determinationLight.genus);
 		name.setSpecificEpithet(determinationLight.speciesEpi);
@@ -686,7 +687,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 	private TaxonNameBase findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
 
-		NonViralName<?> name = makeTaxonName(state, determinationLight);
+		INonViralName name = makeTaxonName(state, determinationLight);
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
 		//TODO
@@ -832,7 +833,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 
-	private TaxonNameBase<?, ?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
+	private TaxonNameBase<?,?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
 		TaxonNameBase<?,?> result = null;
 		result = state.getName(name);
 		if (result != null){
@@ -846,7 +847,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (result == null){
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
-			result = parser.parseFullName(name, code, null);
+			result = (TaxonNameBase<?,?>)parser.parseFullName(name, code, null);
 
 		}
 		if (result != null){

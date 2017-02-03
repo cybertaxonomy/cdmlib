@@ -107,7 +107,7 @@ public class CultivarPlantName
 	 */
 	@Override
 	public Object clone() {
-		BotanicalName result = (BotanicalName)super.clone();
+		CultivarPlantName result = (CultivarPlantName)super.clone();
 		//no changes to:
 		return result;
 	}

@@ -508,7 +508,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
 		if (strScientificName != null){
-			name = parser.parseFullName(strScientificName, nomCode, rank);
+			name = (TaxonNameBase<?,?>)parser.parseFullName(strScientificName, nomCode, rank);
 			if ( rank != null && name != null && name.getRank() != null &&  ! rank.equals(name.getRank())){
 				if (config.isValidateRankConsistency()){
 					String message = "Parsed rank %s (%s) differs from rank %s given by fields 'taxonRank' or 'verbatimTaxonRank'";
@@ -610,7 +610,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
-	private void checkAuthorship(TaxonNameBase nameBase, StreamItem item) {
+	private void checkAuthorship(TaxonNameBase<?,?> nameBase, StreamItem item) {
 		if (!nameBase.isInstanceOf(NonViralName.class)){
 			return;
 		}

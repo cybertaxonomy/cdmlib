@@ -29,12 +29,12 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -60,10 +60,10 @@ public class TestService {
 
 	public void testAppController() {
 		logger.info("Create name objects...");
-		NonViralName<?> nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+		INonViralName nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 
-		BotanicalName bn = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
-		ZoologicalName zn = TaxonNameFactory.NewZoologicalInstance(Rank.FAMILY());
+		IBotanicalName bn = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+		IZoologicalName zn = TaxonNameFactory.NewZoologicalInstance(Rank.FAMILY());
 
 		logger.info("Create reference objects...");
 

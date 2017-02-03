@@ -433,8 +433,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
 		name.setFullTitleCache(simple, cacheProtected);
 
-		if (name instanceof NonViralName<?>){
-			NonViralName<?> nonViralName = (NonViralName<?>)name;
+		if (name instanceof NonViralName){
+			INonViralName nonViralName = name;
 			childName = "Uninomial";
 			obligatory = false;
 			Element elUninomial = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);

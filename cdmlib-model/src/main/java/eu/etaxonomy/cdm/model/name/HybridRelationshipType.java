@@ -124,7 +124,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	/**
 	 * Returns the "first parent" hybrid relationship type. The elements of the
-	 * {@link NonViralName non-viral taxon name} used as "first parent" affect the
+	 * {@link INonViralName non-viral taxon name} used as "first parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
 	 *
 	 * @see	#SECOND_PARENT()
@@ -139,7 +139,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	/**
 	 * Returns the "second parent" hybrid relationship type. The elements of the
-	 * {@link NonViralName non-viral taxon name} used as "second parent" affect the
+	 * {@link INonViralName non-viral taxon name} used as "second parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
 	 *
 	 * @see	#FIRST_PARENT()
@@ -152,7 +152,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	/**
 	 * Returns the "third parent" hybrid relationship type. The elements of the
-	 * {@link NonViralName non viral taxon name} used as "third parent" affect the
+	 * {@link INonViralName non viral taxon name} used as "third parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
 	 *
 	 * @see	#FIRST_PARENT()
@@ -163,7 +163,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	/**
 	 * Returns the "fourth parent" hybrid relationship type. The elements of the
-	 * {@link NonViralName non viral taxon name} used as "third parent" affect the
+	 * {@link INonViralName non viral taxon name} used as "third parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
 	 *
 	 * @see	#FIRST_PARENT()
@@ -175,7 +175,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	/**
 	 * Returns the "female parent" hybrid relationship type. The taxon the name
 	 * of which plays the female parent role is the genetic mother of the taxon
-	 * which is the hybrid (and has the hybrid {@link NonViralName non-viral taxon name})<BR>
+	 * which is the hybrid (and has the hybrid {@link INonViralName non-viral taxon name})<BR>
 	 * For nomenclature purposes a "female parent" is also a "first parent".
 	 *
 	 * @see	#MALE_PARENT()
@@ -188,7 +188,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	/**
 	 * Returns the "male parent" hybrid relationship type. The taxon the name
 	 * of which plays the male parent role is the genetic father of the taxon
-	 * which is the hybrid (and has the hybrid {@link NonViralName non-viral taxon name}).<BR>
+	 * which is the hybrid (and has the hybrid {@link INonViralName non-viral taxon name}).<BR>
 	 * For nomenclature purposes a "male parent" is also a "second parent".
 	 *
 	 * @see	#MALE_PARENT()

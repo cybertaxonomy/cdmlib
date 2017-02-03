@@ -27,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import io.swagger.annotations.Api;
@@ -106,8 +105,7 @@ public class NameController extends AbstractIdentifiableController<TaxonNameBase
 
         logger.info("doGetNameCache()" + request.getRequestURI());
         TaxonNameBase<?,?> tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
-        NonViralName<?> nvn = (NonViralName<?>) tnb;
-        String nameCacheString = nvn.getNameCache();
+        String nameCacheString = tnb.getNameCache();
         List<String> result = new ArrayList<>();
         result.add(nameCacheString);
         return result;

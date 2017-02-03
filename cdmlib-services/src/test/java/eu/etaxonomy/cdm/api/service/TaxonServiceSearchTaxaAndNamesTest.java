@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -655,7 +656,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
             for (int i = 0; i < list.size(); i++) {
                 String nameCache = "";
                 if (list.get(i) instanceof NonViralName) {
-                    nameCache = ((NonViralName<?>) list.get(i)).getNameCache();
+                    nameCache = ((INonViralName) list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
                     TaxonNameBase<?,?> taxonNameBase = ((TaxonBase) list.get(i)).getName();
                     nameCache = taxonNameBase.getNameCache();

@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -100,7 +101,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 
 	protected TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
-        TaxonNameBase<?, ?> taxonName = null;
+        TaxonNameBase<?,?> taxonName = null;
         SpecimenImportConfiguratorBase<?,?> config = state.getConfig();
 
         //check atomised name data for rank
@@ -115,13 +116,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if(config.isReuseExistingTaxaWhenPossible()){
             TaxonNameBase<?,?> parsedName = atomisedTaxonName;
             if(parsedName==null){
-                parsedName = parseScientificName(scientificName, state, state.getReport());
+                parsedName = (TaxonNameBase<?,?>)parseScientificName(scientificName, state, state.getReport());
             }
             atomisedTaxonName = parsedName;
             if(config.isIgnoreAuthorship() && parsedName!=null && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
-                String nameCache = parsedName.getNameCache();
+                String nameCache = TaxonNameBase.castAndDeproxy(parsedName).getNameCache();
                 List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
                 if (!names.isEmpty()){
                      return getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names), state);
@@ -220,9 +221,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param report the import report
 	     * @return a parsed name
 	     */
-	    protected TaxonNameBase<?,?> parseScientificName(String scientificName, STATE state, SpecimenImportReport report) {
+	    protected ITaxonNameBase parseScientificName(String scientificName, STATE state, SpecimenImportReport report) {
 	        NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
-	        TaxonNameBase<?,?> taxonName = null;
+	        ITaxonNameBase taxonName = null;
 	        boolean problem = false;
 
 	        if(DEBUG){

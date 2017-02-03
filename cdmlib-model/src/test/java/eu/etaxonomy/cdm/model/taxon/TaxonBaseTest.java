@@ -23,9 +23,9 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -39,7 +39,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
 
 	private Reference sec;
-	private ZoologicalName name1;
+	private IZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
 	private Taxon taxon1;
@@ -144,7 +144,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	public final void testClone(){
 
-		BotanicalName test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		String genus = "test";
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);
