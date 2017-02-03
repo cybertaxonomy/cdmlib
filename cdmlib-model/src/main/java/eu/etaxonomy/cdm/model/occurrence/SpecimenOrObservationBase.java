@@ -106,7 +106,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }),
         @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnNames = { "identityCache" }) })
-public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<? extends SpecimenOrObservationBase<S>>>
+public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<?>>
                 extends IdentifiableEntity<S>
                 implements IMultiLanguageTextHolder, IDescribable<DescriptionBase<S>>, IPublishable  {
     private static final long serialVersionUID = 6932680139334408031L;
