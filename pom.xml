@@ -292,6 +292,7 @@
           <source>${java.codelevel}</source>
           <target>${java.codelevel}</target>
           <encoding>UTF-8</encoding>  <!-- necessary? should be covered by project. properties source encoding -->
+		  <!-- to increase stacksize see #6404 -->
         </configuration>
       </plugin>
       <plugin>
