@@ -189,7 +189,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	private void makeSpecimenType(MarkupImportState state, DerivedUnitFacade facade, String text, String collectionAndType,
 			INonViralName name, XMLEvent parentEvent) {
 		text = text.trim();
-		if (isPunctuation(text)){
+		if (isBlank(text) || isPunctuation(text)){
 			//do nothing
 		}else{
 			String message = "Text '%s' not handled for <SpecimenType>";
@@ -205,18 +205,23 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				collectionAndType = collectionAndType.substring(1, collectionAndType.length() - 1);
 			}
 
-			String[] split = collectionAndType.split("[;,]");
-			for (String str : split) {
-				str = str.trim();
-				boolean addToAllNamesInGroup = true;
-				TypeInfo typeInfo = makeSpecimenTypeTypeInfo(str, parentEvent);
-				SpecimenTypeDesignationStatus typeStatus = typeInfo.status;
-				Collection collection = this.getCollection(state, typeInfo.collectionString);
+			String[] splitsSemi = collectionAndType.split("[;]");
+            for (String splitSemi : splitsSemi) {
+                String[] splitKomma = splitSemi.split("[,]");
+                TypeInfo lastTypeInfo = null;
+                for (String str : splitKomma) {
+                    str = str.trim();
+        			boolean addToAllNamesInGroup = true;
+        			TypeInfo typeInfo = makeSpecimenTypeTypeInfo(state, str, lastTypeInfo, parentEvent);
+        			SpecimenTypeDesignationStatus typeStatus = typeInfo.status;
+        			Collection collection = this.getCollection(state, typeInfo.collectionString);
 
-				// TODO improve cache strategy handling
-				DerivedUnit typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
-				typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
-				name.addSpecimenTypeDesignation(typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
+        			// TODO improve cache strategy handling
+        			DerivedUnit typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
+        			typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
+        			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
+        			lastTypeInfo = typeInfo;
+                }
 			}
 		}
 
@@ -473,13 +478,21 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	}
 
 
-	private TypeInfo makeSpecimenTypeTypeInfo(String originalString, XMLEvent event) {
+	private TypeInfo makeSpecimenTypeTypeInfo(MarkupImportState state, String originalString, TypeInfo lastTypeInfo, XMLEvent event) {
 		TypeInfo result = new TypeInfo();
-		String[] split = originalString.split("\\s+");
 		if ("not designated".equals(originalString)){
 			result.notDesignated = true;
 			return result;
 		}
+		List<String> knownCollections = state.getConfig().getKnownCollections();
+		for (String knownCollection:knownCollections){
+		    if (originalString.contains(knownCollection)){
+		        result.collectionString = knownCollection;
+		        originalString = originalString.replace(knownCollection, "").trim();
+		        break;
+		    }
+		}
+		String[] split = originalString.split("\\s+");
 
 		for (String str : split) {
 			if (str.matches(SpecimenTypeParser.typeTypePattern)) {
@@ -491,13 +504,25 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					fireWarningEvent(String.format(message, str), event, 4);
 					status = null;
 				}
+                if (result.status != null){
+                    String message = "More than 1 status string found: " + originalString;
+                    fireWarningEvent(message, event, 4);
+                }
 				result.status = status;
 			} else if (str.matches(SpecimenTypeParser.collectionPattern)) {
-				result.collectionString = str;
+				if (result.collectionString != null){
+				    String message = "More than 1 collection string found: " + originalString;
+                    fireWarningEvent(message, event, 4);
+				}
+			    result.collectionString = str;
 			} else {
 				String message = "Type part '%s' could not be recognized";
 				fireWarningEvent(String.format(message, str), event, 2);
 			}
+			if (result.status == null && lastTypeInfo != null && lastTypeInfo.status != null){
+			    result.status = lastTypeInfo.status;
+			}
+
 		}
 
 		return result;
@@ -699,6 +724,9 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				return result;
 			} else if (isStartingElement(next, FULL_DATE)) {
 				String fullDate = getCData(state, reader, next, true);
+				if (fullDate.endsWith(".")){
+				    fullDate = fullDate.substring(0, fullDate.length()-1);
+				}
 				result = TimePeriodParser.parseString(fullDate);
 				if (result.getFreeText() != null){
 					fireWarningEvent(String.format(parseMessage, FULL_DATE, fullDate), parent, 1);

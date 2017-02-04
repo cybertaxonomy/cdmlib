@@ -21,6 +21,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -706,10 +707,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String publocation = getAndRemoveMapKey(refMap, PUBLOCATION);
 		String publisher = getAndRemoveMapKey(refMap, PUBLISHER);
 		String appendix = getAndRemoveMapKey(refMap, APPENDIX);
+		String issue = getAndRemoveMapKey(refMap, ISSUE);
 
 		if (state.isCitation()) {
 			reference = handleCitationSpecific(state, type, authorStr,
-					titleStr, titleCache, volume, edition, editors, pubName, pages, appendix, refMap, parentEvent);
+					titleStr, titleCache, volume, issue, edition, editors, pubName, pages, appendix, refMap, parentEvent);
 
 		} else { // no citation
 			reference = handleNonCitationSpecific(type, authorStr, titleStr,
@@ -736,7 +738,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 
 		// TODO
-		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS };
+		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, NOTES, STATUS };
 		for (String unhandled : unhandledList) {
 			String value = getAndRemoveMapKey(refMap, unhandled);
 			if (isNotBlank(value)) {
@@ -761,13 +763,20 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 */
 	private Reference handleCitationSpecific(MarkupImportState state,
 			String type, String authorStr, String titleStr, String titleCache,
-			String volume, String edition, String editors, String pubName,
+			String volume, String issue, String edition, String editors, String pubName,
 			String pages, String appendix, Map<String, String> refMap, XMLEvent parentEvent) {
 
 		if (titleStr != null){
 			String message = "Currently it is not expected that a titleStr exists in a citation";
 			fireWarningEvent(message, parentEvent, 4);
 		}
+		if (isBlank(volume) && isNotBlank(issue)){
+		    String message = "Issue ('"+issue+"') exists but no volume";
+            fireWarningEvent(message, parentEvent, 4);
+		}
+		//this is correct at least for Nepenthes; maybe needs to be configurable later
+		volume = CdmUtils.concat(", ", volume, issue);
+
 
 		RefType refType = defineRefTypeForCitation(type, volume, editors, authorStr, pubName, parentEvent);
 		Reference reference;
