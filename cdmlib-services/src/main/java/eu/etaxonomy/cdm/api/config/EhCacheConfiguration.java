@@ -22,6 +22,7 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
+ *
  * @author a.kohlbecker
  * @date Feb 1, 2017
  *
@@ -34,6 +35,14 @@ public class EhCacheConfiguration implements DisposableBean {
 
     @Autowired(required = false)
     public DiskStoreConfiguration diskStoreConfiguration = null;
+
+    /**
+     * The DiskStoreConfiguration can either be autowired or set explicite
+     * @param diskStoreConfiguration the diskStoreConfiguration to set
+     */
+    public void setDiskStoreConfiguration(DiskStoreConfiguration diskStoreConfiguration) {
+        this.diskStoreConfiguration = diskStoreConfiguration;
+    }
 
     private CacheManager cacheManager = null;
 
