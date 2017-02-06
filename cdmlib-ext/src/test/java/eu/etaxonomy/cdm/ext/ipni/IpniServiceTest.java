@@ -11,6 +11,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -22,6 +24,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -62,14 +65,22 @@ public class IpniServiceTest {
 	}
 
 	@Test
+	 @DataSets({
+	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+	        })
 	public void testGetAuthors(){
 		ICdmApplicationConfiguration services = null;
 		IpniServiceAuthorConfigurator config = new IpniServiceAuthorConfigurator();
 		config.setFormat(DelimitedFormat.EXTENDED);
 		List<Person> authorList = service1.getAuthors(null, "Greuter", null, null, services, config);
+		//List<Person> authorList = service1.getAuthors(null, "Greu*", null, null, null, config);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
-
+		if(authorList == null){
+            Assert.fail("No results.");
+		}
 		if (testInternetConnectivity(authorList)){
+
 			Assert.assertEquals("There should be exactly 1 result for 'Greuter'", 1, authorList.size());
 			Person author = authorList.get(0);
 			//title cache
@@ -88,7 +99,11 @@ public class IpniServiceTest {
 			//29367-1%1.1%Greuet%Claude%Greuet%A%%>Greuet, Claude
 			//20000981-1%1.1%Greuning%J.V. van%Greuning%M%1993%>Greuning, J.V. van
 			//3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
-			Assert.assertEquals("There should be exactly 3 result for 'Greu*'. But maybe this changes over time", 3, authorList.size());
+			if(authorList == null){
+			    Assert.fail("No results.");
+			}else{
+			    Assert.assertEquals("There should be exactly 3 result for 'Greu*'. But maybe this changes over time", 3, authorList.size());
+			}
 	//			for (Person person : authorList){
 	//			System.out.println(person.getTitleCache() + ";  " + person.getNomenclaturalTitle());
 	//		}
@@ -103,6 +118,10 @@ public class IpniServiceTest {
 
 
 	@Test
+	@DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
 	public void testGetNamesSimple(){
 		ICdmApplicationConfiguration services = null;
 		IpniServiceNamesConfigurator config = null;
@@ -110,6 +129,9 @@ public class IpniServiceTest {
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 
 		if (testInternetConnectivity(nameList)){
+		    if(nameList == null){
+                Assert.fail("No results.");
+            }
 			Assert.assertEquals("There should be exactly 1 result for 'Abies albertiana'", 1, nameList.size());
 			IBotanicalName name = nameList.get(0);
 			//title cache
@@ -123,6 +145,10 @@ public class IpniServiceTest {
 	}
 
 	@Test
+	@DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
 	public void testGetNamesAdvanced(){
 		ICdmApplicationConfiguration services = null;
 		IpniServiceNamesConfigurator config = new IpniServiceNamesConfigurator();
@@ -149,7 +175,9 @@ public class IpniServiceTest {
 
 
 		if (testInternetConnectivity(nameList)){
-
+		    if(nameList == null){
+                Assert.fail("No results.");
+            }
 			Assert.assertEquals("There should be exactly 1 result for 'Abies', 'alba', 'B*', Infraspecific ", 1, nameList.size());
 			IBotanicalName name = nameList.get(0);
 			//title cache
@@ -162,6 +190,10 @@ public class IpniServiceTest {
 	}
 
 	@Test
+	@DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
 	public void testPublications(){
 		ICdmApplicationConfiguration services = null;
 		IpniServicePublicationConfigurator config = null;
@@ -169,7 +201,9 @@ public class IpniServiceTest {
 		//20009158-1%1.2%Pinaceae%%N%Abies%%N%alba%apennina%subsp.%Brullo, Scelsi & Spamp.%%Brullo, Scelsi & Spamp.%Abies alba subsp. apennina%Vegetaz. Aspromonte%41 (2001)%2001%%%%%%Italy%tax. nov.
 
 		if (testInternetConnectivity(refList)){
-
+		    if (refList == null){
+	            Assert.fail("The list is empty, maybe the ipni service is not available.");
+	        }
 			Assert.assertEquals("There should be exactly 1 result for 'Species Plantarum, Edition 3'", 1, refList.size());
 			Reference ref = refList.get(0);
 			//title cache
@@ -178,9 +212,15 @@ public class IpniServiceTest {
 
 
 			refList = service1.getPublications("Flora of Macar", null, services, config);
+			if (refList == null){
+                Assert.fail("The list is empty, maybe the ipni service is not available.");
+            }
 			Assert.assertNotNull("Empty resultset should not throw exception and should not be null", refList);
 
 			refList = service1.getPublications("Flora Europaea [ed. 2]", null, services, config);
+			if (refList == null){
+			    Assert.fail("The list is empty, maybe the ipni service is not available.");
+			}
 			Assert.assertEquals("There should be exactly 1 result for 'Flora Europaea [ed. 2]'", 1, refList.size());
 			ref = refList.get(0);
 			Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorship().getTitleCache());

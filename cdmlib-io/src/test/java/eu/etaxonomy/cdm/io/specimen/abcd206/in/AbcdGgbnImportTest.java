@@ -121,6 +121,14 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
          *   - Campanula glomerata
          *   - Campanula bononiensis
          */
+        List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, 100, 0, null, null);
+        for (TaxonNode node: nodes){
+            if (node.getTaxon() != null){
+                System.out.println(node.getTaxon().getTitleCache() + " - ");
+            } else{
+                System.out.println("no taxon..." + node.getClassification().getId());
+            }
+        }
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());

@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Identification;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -67,10 +68,10 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -101,12 +102,12 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 
 	protected TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
-        TaxonNameBase<?,?> taxonName = null;
+	    TaxonNameBase<?, ?> taxonName = null;
         SpecimenImportConfiguratorBase<?,?> config = state.getConfig();
 
         //check atomised name data for rank
         //new name will be created
-        TaxonNameBase<?,?> atomisedTaxonName = null;
+        ITaxonNameBase atomisedTaxonName = null;
         if (rank==null && unitIndexInAbcdFile>=0 && ((state.getDataHolder().getAtomisedIdentificationList() != null && !state.getDataHolder().getAtomisedIdentificationList().isEmpty())|| state.getDataHolder().getAtomisedIdentificationList().size() > 0)) {
             atomisedTaxonName = setTaxonNameByType(state.getDataHolder().getAtomisedIdentificationList().get(unitIndexInAbcdFile), scientificName, state);
             if(atomisedTaxonName!=null){
@@ -114,19 +115,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
         }
         if(config.isReuseExistingTaxaWhenPossible()){
-            TaxonNameBase<?,?> parsedName = atomisedTaxonName;
+            ITaxonNameBase parsedName = atomisedTaxonName;
             if(parsedName==null){
-                parsedName = (TaxonNameBase<?,?>)parseScientificName(scientificName, state, state.getReport());
+
+                parsedName = parseScientificName(scientificName, state, state.getReport(), rank);
+
             }
             atomisedTaxonName = parsedName;
-            if(config.isIgnoreAuthorship() && parsedName!=null && preferredFlag){
+            if(config.isIgnoreAuthorship() && parsedName!=null){// && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
                 String nameCache = TaxonNameBase.castAndDeproxy(parsedName).getNameCache();
                 List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
                 if (!names.isEmpty()){
-                     return getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names), state);
+                     taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names), state);
                 }
+                if (taxonName == null && !names.isEmpty()){
+                    taxonName = names.get(0);
+                }
+
             } else {
                 //search for existing names
                 List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
@@ -147,7 +154,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if(taxonName==null && atomisedTaxonName!=null){
-            taxonName = atomisedTaxonName;
+            taxonName = (TaxonNameBase<?, ?>) atomisedTaxonName;
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
             if(taxonName.hasProblem()){
@@ -177,16 +184,42 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     }
 
 	 protected TaxonNameBase<?, ?> getBestMatchingName(String scientificName, java.util.Collection<TaxonNameBase> names, STATE state){
-	        List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<>();
+	        Set<TaxonNameBase> namesWithAcceptedTaxa = new HashSet<TaxonNameBase>();
+	        List<TaxonNameBase> namesWithAcceptedTaxaInClassification = new ArrayList<TaxonNameBase>();
 	        for (TaxonNameBase name : names) {
 	            if(!name.getTaxa().isEmpty()){
-	                namesWithAcceptedTaxa.add(name);
+	                Set<Taxon> taxa = name.getTaxa();
+	                for (Taxon taxon:taxa){
+	                    if (!taxon.getTaxonNodes().isEmpty()){
+	                        //use only taxa included in a classification
+	                        for (TaxonNode node:taxon.getTaxonNodes()){
+	                            if (state.getClassification() != null && node.getClassification().equals(state.getClassification())){
+	                                namesWithAcceptedTaxaInClassification.add(name);
+	                            }else {
+	                                namesWithAcceptedTaxa.add(name);
+	                            }
+	                        }
+
+	                    }
+	                }
+
 	            }
 	        }
-	        String message = "More than one taxon name was found for "+scientificName+"!";
-	        //check for names with accepted taxa
+	        String message = String.format("More than one taxon name was found for %s, maybe in other classifications!", scientificName);
+	        //check for names with accepted taxa in classification
+	        if(namesWithAcceptedTaxaInClassification.size()>0){
+                if(namesWithAcceptedTaxaInClassification.size()>1){
+
+                    state.getReport().addInfoMessage(message);
+                    logger.warn(message);
+                    return null;
+                }
+                return namesWithAcceptedTaxaInClassification.iterator().next();
+            }
+	      //check for any names with accepted taxa
 	        if(namesWithAcceptedTaxa.size()>0){
 	            if(namesWithAcceptedTaxa.size()>1){
+
 	                state.getReport().addInfoMessage(message);
 	                logger.warn(message);
 	                return null;
@@ -212,7 +245,12 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	            return taxaFromSynonyms.iterator().next().getName();
 	        }
-	        return null;
+	        //no accepted and no synonyms -> return one of the names and create a new taxon
+	        if (names.isEmpty()){
+	            return null;
+	        }else{
+	            return names.iterator().next();
+	        }
 	    }
 	 /**
 	     * Parse automatically the scientific name
@@ -221,7 +259,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param report the import report
 	     * @return a parsed name
 	     */
-	    protected ITaxonNameBase parseScientificName(String scientificName, STATE state, SpecimenImportReport report) {
+
+	    protected ITaxonNameBase parseScientificName(String scientificName, STATE state, SpecimenImportReport report, Rank rank) {
+
 	        NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 	        ITaxonNameBase taxonName = null;
 	        boolean problem = false;
@@ -231,25 +271,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICZN, null);
+	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICZN, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, null);
+	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, null);
+	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Cultivar") || state.getDataHolder().getNomenclatureCode().toString().contains("ICNCP")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, null);
+	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
@@ -343,7 +383,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getUuid())) {
-	            BotanicalName taxonName = (BotanicalName) parseScientificName(fullName, state, state.getReport());
+	            BotanicalName taxonName = (BotanicalName) parseScientificName(fullName, state, state.getReport(), null);
 	            if (taxonName != null){
 	                return taxonName;
 	            }
@@ -751,6 +791,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                String genusOrUninomial = nvname.getGenusOrUninomial();
 	                TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(genusOrUninomial, Rank.GENUS(), preferredFlag, state, -1);
 	                genus = getOrCreateTaxonForName(taxonName, state);
+	                if (genus == null){
+	                    logger.debug("The genus should not be null " + taxonName);
+	                }
 	                if (preferredFlag) {
 	                    parent = linkParentChildNode(null, genus, classification, state);
 	                }
@@ -799,7 +842,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                }
 	            }
 	        }
-	        if (preferredFlag && parent!=taxon) {
+	        if (preferredFlag && parent!=taxon ) {
 	            linkParentChildNode(parent, taxon, classification, state);
 	        }
 	    }
@@ -829,6 +872,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else {
+	            if (child == null){
+	                logger.debug("The child should not be null!");
+	            }
 	            child = (Taxon) getTaxonService().find(child.getUuid());
 	            //do not add child node if it already exists
 	            if(hasTaxonNodeInClassification(child, classification)){
@@ -850,44 +896,47 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    }
 
 	    protected Taxon getOrCreateTaxonForName(TaxonNameBase<?, ?> taxonNameBase, STATE state){
+	        if (taxonNameBase != null){
+    	        Set<Taxon> acceptedTaxa = taxonNameBase.getTaxa();
+    	        if(acceptedTaxa.size()>0){
+    	            Taxon firstAcceptedTaxon = acceptedTaxa.iterator().next();
+    	            if(acceptedTaxa.size()>1){
+    	                String message = "More than one accepted taxon was found for taxon name: "
+    	                        + taxonNameBase.getTitleCache() + "!\n" + firstAcceptedTaxon + "was chosen for "+state.getDerivedUnitBase();
+    	                state.getReport().addInfoMessage(message);
+    	                logger.warn(message);
+    	            }
+    	            else{
+    	                return firstAcceptedTaxon;
+    	            }
+    	        }
+    	        else{
+    	            Set<TaxonBase> taxonAndSynonyms = taxonNameBase.getTaxonBases();
+    	            for (TaxonBase taxonBase : taxonAndSynonyms) {
+    	                if(taxonBase.isInstanceOf(Synonym.class)){
+    	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
+    	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();
+    	                    if(acceptedTaxonOfSynonym == null){
+    	                        String message = "No accepted taxon could be found for taxon name: "
+    	                                + taxonNameBase.getTitleCache()
+    	                                + "!";
+    	                        state.getReport().addInfoMessage(message);
+    	                        logger.warn(message);
+    	                    }
+    	                    else{
+    	                        return acceptedTaxonOfSynonym;
+    	                    }
+    	                }
+    	            }
+    	        }
+    	        Taxon taxon = Taxon.NewInstance(taxonNameBase, state.getRef());
+    	        save(taxon, state);
+    	        state.getReport().addTaxon(taxon);
+    	        logger.info("Created new taxon "+ taxon);
+    	        return taxon;
+	        }
+	        return null;
 
-	        Set<Taxon> acceptedTaxa = taxonNameBase.getTaxa();
-	        if(acceptedTaxa.size()>0){
-	            Taxon firstAcceptedTaxon = acceptedTaxa.iterator().next();
-	            if(acceptedTaxa.size()>1){
-	                String message = "More than one accepted taxon was found for taxon name: "
-	                        + taxonNameBase.getTitleCache() + "!\n" + firstAcceptedTaxon + "was chosen for "+state.getDerivedUnitBase();
-	                state.getReport().addInfoMessage(message);
-	                logger.warn(message);
-	            }
-	            else{
-	                return firstAcceptedTaxon;
-	            }
-	        }
-	        else{
-	            Set<TaxonBase> taxonAndSynonyms = taxonNameBase.getTaxonBases();
-	            for (TaxonBase taxonBase : taxonAndSynonyms) {
-	                if(taxonBase.isInstanceOf(Synonym.class)){
-	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
-	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();
-	                    if(acceptedTaxonOfSynonym == null){
-	                        String message = "No accepted taxon could be found for taxon name: "
-	                                + taxonNameBase.getTitleCache()
-	                                + "!";
-	                        state.getReport().addInfoMessage(message);
-	                        logger.warn(message);
-	                    }
-	                    else{
-	                        return acceptedTaxonOfSynonym;
-	                    }
-	                }
-	            }
-	        }
-	        Taxon taxon = Taxon.NewInstance(taxonNameBase, state.getRef());
-	        save(taxon, state);
-	        state.getReport().addTaxon(taxon);
-	        logger.info("Created new taxon "+ taxon);
-	        return taxon;
 	    }
 
 	    private boolean hasTaxonNodeInClassification(Taxon taxon, Classification classification){
@@ -927,11 +976,12 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            scientificName = identification.getScientificName().replaceAll(" et ", " & ");
 
 	            String preferred = identification.getPreferred();
-	            if (preferred.equals("1") || preferred.toLowerCase().indexOf("true") != -1 || state.getDataHolder().getIdentificationList().size()==1) {
-	                preferredFlag = true;
-	            }
-	            else {
-	                preferredFlag = false;
+	            preferredFlag = false;
+	            if (preferred != null){
+    	            if (preferred.equals("1") || preferred.toLowerCase().indexOf("true") != -1 || state.getDataHolder().getIdentificationList().size()==1) {
+    	                preferredFlag = true;
+    	            }
+
 	            }
 	            if (identification.getCode() != null){
     	            if (identification.getCode().indexOf(':') != -1) {
@@ -944,7 +994,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(scientificName, null, preferredFlag, state, i);
 	            Taxon taxon = getOrCreateTaxonForName(taxonName, state);
 	            addTaxonNode(taxon, state,preferredFlag);
-	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade);
+	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate());
 	        }
 	    }
 
@@ -981,19 +1031,27 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 cdmAppController = this;
             }
             if (classification != null){
-    	        List<UuidAndTitleCache<TaxonNode>> uuidAndTitleCacheOfAllTaxa = cdmAppController.getClassificationService().getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification.getUuid());
-    	        if (uuidAndTitleCacheOfAllTaxa != null){
-        	        for (UuidAndTitleCache p : uuidAndTitleCacheOfAllTaxa){
-        	            try{
-        	                if(p.getTitleCache().equals(taxon.getTitleCache())) {
-        	                    exist = true;
-        	                }
-        	            }
-        	            catch(Exception e){
-        	                logger.warn("TaxonNode doesn't seem to have a taxon");
-        	            }
-        	        }
-    	        }
+                if (!taxon.getTaxonNodes().isEmpty()){
+                    for (TaxonNode node:taxon.getTaxonNodes()){
+                        if (node.getClassification().equals(classification)){
+                            return true;
+                        }
+                    }
+                }
+// we do not need this because we already searched for taxa in db in the previous steps
+//    	        List<UuidAndTitleCache<TaxonNode>> uuidAndTitleCacheOfAllTaxa = cdmAppController.getClassificationService().getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification.getUuid());
+//    	        if (uuidAndTitleCacheOfAllTaxa != null){
+//        	        for (UuidAndTitleCache p : uuidAndTitleCacheOfAllTaxa){
+//        	            try{
+//        	                if(p.getTitleCache().equals(taxon.getTitleCache())) {
+//        	                    exist = true;
+//        	                }
+//        	            }
+//        	            catch(Exception e){
+//        	                logger.warn("TaxonNode doesn't seem to have a taxon");
+//        	            }
+//        	        }
+//    	        }
             }
 	        return exist;
 	    }
@@ -1006,7 +1064,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param derivedFacade : the derived Unit Facade
 	     */
 	    @SuppressWarnings("rawtypes")
-        protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade) {
+        protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade, String identifierStr, String dateStr) {
 	        SpecimenImportConfiguratorBase config = state.getConfig();
 	        if(DEBUG){
 	            logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
@@ -1016,7 +1074,17 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        determinationEvent.setTaxonName(taxon.getName());
 	        determinationEvent.setPreferredFlag(preferredFlag);
 
+
 	        determinationEvent.setIdentifiedUnit(state.getDerivedUnitBase());
+	        if (state.getPersonStore().get(identifierStr) != null){
+	            determinationEvent.setActor((AgentBase)state.getPersonStore().get(identifierStr));
+	        } else if (identifierStr != null){
+	            Person identifier = Person.NewTitledInstance(identifierStr);
+	            determinationEvent.setActor(identifier);
+	        }
+	        if (dateStr != null){
+	            determinationEvent.setTimeperiod(TimePeriodParser.parseString(dateStr));
+	        }
 	        state.getDerivedUnitBase().addDetermination(determinationEvent);
 
 	        if(DEBUG){

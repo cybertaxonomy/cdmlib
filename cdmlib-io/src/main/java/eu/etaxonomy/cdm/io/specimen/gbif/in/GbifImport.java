@@ -642,7 +642,7 @@ private void handleDeterminations(
         }
         if (taxon != null){
             addTaxonNode(taxon, state,preferredFlag);
-            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade);
+            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, null, null);
         }
     }
 

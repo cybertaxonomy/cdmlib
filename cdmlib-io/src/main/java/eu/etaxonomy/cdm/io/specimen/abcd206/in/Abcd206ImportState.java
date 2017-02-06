@@ -17,9 +17,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.mueller
@@ -32,7 +30,7 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
 
 
 	private String prefix;
-	MapWrapper<TeamOrPersonBase<?>> personStore;
+
 
 	private List<String> associatedUnitIds = new ArrayList<String>();
 
@@ -47,19 +45,9 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
 
 //****************** CONSTRUCTOR ***************************************************/
 
-	/**
-     * @return the personStore
-     */
-    public MapWrapper<TeamOrPersonBase<?>> getPersonStore() {
-        return personStore;
-    }
 
-    /**
-     * @param personStore the personStore to set
-     */
-    public void setPersonStore(MapWrapper<TeamOrPersonBase<?>> personStore) {
-        this.personStore = personStore;
-    }
+
+
 
     public Abcd206ImportState(Abcd206ImportConfigurator config) {
 		super(config);

@@ -35,7 +35,7 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
     //per unit
 
-    private List<HashMap<String, String>> atomisedIdentificationList;
+
 
 
 

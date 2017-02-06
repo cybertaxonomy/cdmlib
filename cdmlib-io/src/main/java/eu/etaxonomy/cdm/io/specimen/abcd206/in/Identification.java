@@ -19,21 +19,28 @@ public class Identification {
     private final String identifier;
     private final String preferred;
     private final String code;
+    private final String date;
 
-    public Identification(String taxonName, String preferred) {
-        this(taxonName, preferred, null, null);
+    public Identification(String taxonName, String preferred, String date) {
+        this(taxonName, preferred, null, null, date);
     }
 
-    public Identification(String scientificName, String preferred, String code, String identifier) {
+    public Identification(String scientificName, String preferred, String code, String identifier, String date) {
         super();
         this.scientificName = scientificName.trim();
-        this.preferred = preferred.trim();
+        if (preferred != null){
+            this.preferred = preferred.trim();
+        }else{
+            this.preferred = null;
+        }
         this.code = code;
         if (identifier != null){
             this.identifier = identifier.trim();
         } else{
             this.identifier = null;
         }
+
+        this.date = date;
     }
 
     /**
@@ -70,6 +77,13 @@ public class Identification {
      */
     public String getIdentifier() {
         return identifier;
+    }
+
+    /**
+     * @return the identifier
+     */
+    public String getDate() {
+        return date;
     }
 
 }
