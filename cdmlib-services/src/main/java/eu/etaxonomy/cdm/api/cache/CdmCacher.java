@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.api.cache;
 
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
@@ -23,6 +24,8 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  */
 
 public abstract class CdmCacher implements ICdmUuidCacher {
+
+    public static final Logger logger = Logger.getLogger(CdmCacher.class);
 
     @Autowired
     public CacheManager cacheManager;
@@ -54,11 +57,14 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      *
      * @return
      */
-//    public static CacheManager getDefaultCacheManager() {
-//        // this ensures a singleton cache manager
-//
-//        return CacheManager.create();
-//    }
+    public void addCacheManager(CacheManager cacheManager) {
+
+        if(this.cacheManager == null){
+            this.cacheManager = cacheManager;
+        } else {
+            logger.error("There is already a CacheManager configured.");
+        }
+    }
 
     /**
      * Returns the default cache configuration.
@@ -91,6 +97,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         if(defaultCache == null) {
             // Create default cache
             cacheManager.addCache(DEFAULT_CACHE_NAME);
+            defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);
             //FIXME write test to check if default config as defined in EhCacheConfiguration is being used
         }
         return defaultCache;
