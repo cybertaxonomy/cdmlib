@@ -27,6 +27,9 @@ public class HomotypicalGroupComparator implements
 	public int compare(HomotypicalGroup group1, HomotypicalGroup group2) {
 		TaxonBase<?> firstTypified1 = null;
 		TaxonBase<?> firstTypified2 = null;
+		if (group1.equals(group2)){
+		    return 0;
+		}
 		TaxonComparator taxComparator = new HomotypicGroupTaxonComparator(null);
 		Set<TaxonNameBase> typifiedNames1 = group1.getTypifiedNames();
 		List<TaxonBase> taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();

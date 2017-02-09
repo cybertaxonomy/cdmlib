@@ -167,7 +167,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             List<TaxonBase> results = query.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
-            //TaxonComparatorSearch comp = new TaxonComparatorSearch();
+
             //Collections.sort(results, comp);
             return results;
         }
@@ -646,6 +646,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         taxonBase.removeSources();
 
+
         if (taxonBase instanceof Taxon){ // is Taxon
             Taxon taxon = ((Taxon)taxonBase);
             Set<Synonym> syns = new HashSet<>(taxon.getSynonyms());
@@ -1037,7 +1038,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         @Override
         public int compare(TaxonRelationship o1, TaxonRelationship o2) {
-            return o1.getFromTaxon().getTitleCache().compareTo(o2.getFromTaxon().getTitleCache());
+            if (o1.equals(o2)){
+                return 0;
+            }
+            int result = o1.getFromTaxon().getTitleCache().compareTo(o2.getFromTaxon().getTitleCache());
+            if (result == 0 ){
+                result = o1.getUuid().compareTo(o2.getUuid());
+            }
+            return result;
         }
 
     }
