@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:tx="http://www.springframework.org/schema/tx"
   xmlns:context="http://www.springframework.org/schema/context"
   xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-    ">
+">
     
   <!-- 
     NOTE: 
@@ -25,20 +26,14 @@
 
   <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
   <context:component-scan base-package="eu/etaxonomy/cdm/io">
-    <context:exclude-filter type="regex"
-      expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
-    <context:exclude-filter type="regex"
-      expression="eu\.etaxonomy\.cdm\.io\.faunaEuropaea.*" />
-    <context:exclude-filter type="regex"
-      expression="eu\.etaxonomy\.cdm\.io\.erms.*" />
-    <context:exclude-filter type="regex"
-      expression="eu\.etaxonomy\.cdm\.io\.eflora.*" />
-    <context:exclude-filter type="regex"
-      expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
+    <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
+    <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.faunaEuropaea.*" />
+    <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.erms.*" />
+    <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.eflora.*" />
+    <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
   </context:component-scan>
 
-  <bean
-    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="properties">
       <props>
         <prop key="eu.etaxonomy.cdm.base.path">${user.home}/.cdmLibrary/</prop>
@@ -53,18 +48,15 @@
   <!-- import additional beans into the root context -->
   <import resource="applicationContext.views.xml" />
 
-  <!-- CONFIGURE WEB APPLICATION HERE -->
+  <!-- import configuration of the datasource bean -->
   <import resource="datasources/configurable.xml" />
   
   <!-- bootstrap the Web Configuration -->
-  <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration">
-  </bean>
+  <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration" />
   
-  <bean class="eu.etaxonomy.cdm.opt.config.LoggingConfigurer">
-  </bean>
+  <bean class="eu.etaxonomy.cdm.opt.config.LoggingConfigurer" />
   
-  <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration">
-  </bean>
+  <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration" />
 
   <!-- OAI-PMH TODO externalize? -->
   <bean name="taxonOaiPmhController"
@@ -78,8 +70,7 @@
       value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken" />
   </bean>
 
-  <bean id="serializableFactory"
-    class="org.springmodules.cache.serializable.XStreamSerializableFactory" />
+  <bean id="serializableFactory" class="org.springmodules.cache.serializable.XStreamSerializableFactory" />
 
   <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
     <!-- 
