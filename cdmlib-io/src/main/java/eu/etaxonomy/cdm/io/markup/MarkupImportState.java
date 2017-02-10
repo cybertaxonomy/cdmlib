@@ -79,12 +79,12 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	private String baseMediaUrl = null;
 
-	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<String, FootnoteDataHolder>();
+	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<>();
 
-	private Map<String, Media> figureRegister = new HashMap<String, Media>();
+	private Map<String, Media> figureRegister = new HashMap<>();
 
-	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
-	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<>();
+	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<>();
 
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
 

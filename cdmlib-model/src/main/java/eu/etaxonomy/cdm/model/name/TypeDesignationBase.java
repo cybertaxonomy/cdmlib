@@ -79,7 +79,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+    private Set<TaxonNameBase> typifiedNames = new HashSet<>();
 
     @XmlElement(name = "TypeStatus")
     @XmlIDREF

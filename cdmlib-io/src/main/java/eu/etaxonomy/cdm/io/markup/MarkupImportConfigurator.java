@@ -68,14 +68,13 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		};
 	};
 
+// ******************** CONSTRUCTOR ************************/
+
 	protected MarkupImportConfigurator() {
 		super(defaultTransformer);
 	}
 
 
-	/**
-	 *
-	 */
 	protected MarkupImportConfigurator(IInputTransformer transformer) {
 		super(transformer);
 	}
@@ -101,10 +100,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		setDestination(destination);
 	}
 
+// *************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
     public MarkupImportState getNewState() {
 		if (this.isReuseExistingState() == true){
@@ -121,10 +118,6 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -239,6 +232,7 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	}
 
 	boolean useFotGSpecimenTypeCollectionAndTypeOnly = false;
+
 
 	public boolean isUseFotGSpecimenTypeCollectionAndTypeOnly() {
 		return useFotGSpecimenTypeCollectionAndTypeOnly;

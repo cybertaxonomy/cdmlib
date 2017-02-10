@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,22 +21,21 @@ import org.apache.log4j.Logger;
 /**
  * @author a.mueller
  * @date 28.06.2011
- *
  */
 public class LookAheadEventReader implements XMLEventReader {
 	private static final Logger logger = Logger.getLogger(LookAheadEventReader.class);
 
 	private XMLEventReader reader;
-	
-	private List<XMLEvent> cachedEvents = new ArrayList<XMLEvent>();
-	
-	private List<XMLEvent> usedEvents = new ArrayList<XMLEvent>();
-	
+
+	private List<XMLEvent> cachedEvents = new ArrayList<>();
+
+	private List<XMLEvent> usedEvents = new ArrayList<>();
+
 	public LookAheadEventReader(StartElement startElement, XMLEventReader parentReader) throws XMLStreamException{
 		int depth = 0;
 		this.reader = parentReader;
 		XMLEvent next = parentReader.nextEvent();
-		while (! next.isEndElement() || 
+		while (! next.isEndElement() ||
 				 ! next.asEndElement().getName().equals(startElement.getName()) ||
 				 depth > 0){
 			cachedEvents.add(next);
@@ -49,7 +48,7 @@ public class LookAheadEventReader implements XMLEventReader {
 		}
 		cachedEvents.add(next);
 	}
-	
+
 	@Override
 	public Object next() {
 		throw new RuntimeException("Iterator methods are not supported by this EventReader");
@@ -111,12 +110,12 @@ public class LookAheadEventReader implements XMLEventReader {
 	public boolean previousWasEnd(String name){
 		return hasStartElement(name, -1, 0);
 	}
-	
+
 	public boolean nextIsStart(String name){
 		return hasStartElement(name, 0, 1);
 	}
 
-	
+
 	public boolean hasStartElement(String name, int start, int end){
 		if (start < 0 ){
 			start = 0;
@@ -125,7 +124,7 @@ public class LookAheadEventReader implements XMLEventReader {
 			end = cachedEvents.size();
 		}
 		for (int i = start; i < end; i++){
-			
+
 			XMLEvent ev = cachedEvents.get(i);
 			if (ev.isStartElement() && ev.asStartElement().getName().getLocalPart().equals(name)){
 				return true;
@@ -133,7 +132,7 @@ public class LookAheadEventReader implements XMLEventReader {
 		}
 		return false;
 	}
-	
+
 	public boolean hasEndElement(String name, int start, int end){
 		if (end > 0 ){
 			end = 0;
@@ -142,7 +141,7 @@ public class LookAheadEventReader implements XMLEventReader {
 			start = -cachedEvents.size();
 		}
 		for (int i = start; i < end; i++){
-			
+
 			XMLEvent ev = cachedEvents.get( cachedEvents.size() + i );
 			if (ev.isEndElement() && ev.asEndElement().getName().getLocalPart().equals(name)){
 				return true;
