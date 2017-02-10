@@ -16,6 +16,15 @@
   -->
   
   <context:annotation-config />
+  
+  <!-- 
+    The package eu.etaxonomy.cdm.addon.config is an extension point where
+    addon-modules can place their Spring configuration classes. 
+    This component scan will find them.
+    
+    This is currently used by cdm-vaadin 
+   -->
+  <context:component-scan base-package="eu/etaxonomy/cdm/addon/config" />
 
   <!-- include default application context and customization -->
   <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml" />

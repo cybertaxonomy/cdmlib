@@ -1,0 +1,6 @@
+The package eu.etaxonomy.cdm.addon.config is an extension point where
+addon-modules can place their Spring configuration classes. 
+A component scan defined in cdmlib-remote-webapp will find them:
+  
+  <context:component-scan base-package="eu/etaxonomy/cdm/addon/config" />
+  
