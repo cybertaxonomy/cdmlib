@@ -1004,6 +1004,10 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	}
 
 
+	/**
+	 * Returns all the included text and tags as string. The result should look
+	 * similar to the original xml part.
+	 */
 	private String getTaggedCData(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
@@ -1016,7 +1020,8 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			} else if (next.isStartElement()) {
 				text += getTaggedCData(state, reader, next);
 			} else if (next.isEndElement()) {
-				text += getTaggedCData(state, reader, next);
+				//is this needed?
+			    text += getTaggedCData(state, reader, next);
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {

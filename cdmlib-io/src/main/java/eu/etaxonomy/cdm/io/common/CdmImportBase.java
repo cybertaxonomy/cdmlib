@@ -84,9 +84,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @created 01.07.2008
  */
-public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
-    private static final long serialVersionUID = 8730012744209195616L;
+public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
+            extends CdmIoBase<STATE>
+            implements ICdmImport<CONFIG, STATE>{
 
+    private static final long serialVersionUID = 8730012744209195616L;
     private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
 	protected static final boolean CREATE = true;
@@ -1127,6 +1129,18 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         return result;
     }
 
+    /**
+     * Returns the taxon description with marked as <code>true</code> with the given marker type.
+     * If createNewIfNotExists a new description is created if it does not yet exist.
+     * For the new description the source and the title are set if not <code>null</code>.
+     * @param taxon
+     * @param markerType
+     * @param isImageGallery
+     * @param createNewIfNotExists
+     * @param source
+     * @param title
+     * @return the existing or new taxon description
+     */
    public TaxonDescription getMarkedTaxonDescription(Taxon taxon, MarkerType markerType, boolean isImageGallery,
             boolean createNewIfNotExists, Reference source, String title) {
         TaxonDescription result = null;

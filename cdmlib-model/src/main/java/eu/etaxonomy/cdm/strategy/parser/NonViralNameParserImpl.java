@@ -1077,7 +1077,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    INonViralName nonViralName = nonViralNameOrig;
 	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
-		Class clazz = nonViralName.getClass();
+		Class<? extends INonViralName> clazz = nonViralName.getClass();
 		fullAuthors(authorString, authors, years, clazz);
 		nonViralName.setCombinationAuthorship(authors[0]);
 		nonViralName.setExCombinationAuthorship(authors[1]);
@@ -1183,7 +1183,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return array of Teams containing the Team[0],
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends INonViralName> clazz)
+	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors,
+	        Integer[] years, Class<? extends INonViralName> clazz)
 			throws StringNotParsableException{
 		if (fullAuthorStringOrig == null || clazz == null){
 			return;
@@ -1249,7 +1250,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
 	protected void authorsAndEx (String authorShipStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
-		//TODO noch allgemeiner am anfang durch Replace etc.
+		//TODO noch allgemeiner am Anfang durch Replace etc.
 		String authorShipString = authorShipStringOrig.trim();
 		authorShipString = authorShipString.replaceFirst(oWs + "ex" + oWs, " ex. " );
 
@@ -1293,12 +1294,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 
 	/**
-	 * Parses an authorTeam String and returns the Team
+	 * Parses an authorTeam String and returns the team.
 	 * !!! TODO (atomization not yet implemented)
-	 * @param authorTeamString String representing the author team
+	 * @param authorString String representing the author
 	 * @return an Team
 	 */
-	protected TeamOrPersonBase<?> author (String authorString){
+	public TeamOrPersonBase<?> author (String authorString){
 		if (authorString == null){
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){

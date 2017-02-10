@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @created 03.08.2009
- * @version 1.0
  */
 public class DefaultMatchStrategyTest {
 	@SuppressWarnings("unused")
@@ -164,7 +163,7 @@ public class DefaultMatchStrategyTest {
 	public void testGetMatchMode() {
 		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, matchStrategy.getMatchMode("isbn"));
-		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
+		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL_REQUIRED", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
 	}
 
 	/**

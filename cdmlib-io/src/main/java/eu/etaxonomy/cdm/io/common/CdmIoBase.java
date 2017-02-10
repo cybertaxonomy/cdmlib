@@ -35,8 +35,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @created 01.07.2008
  */
-public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmRepository
+public abstract class CdmIoBase<STATE extends IoStateBase> 
+	extends CdmRepository
         implements ICdmIO<STATE>, IIoObservable {
+
+    private static final long serialVersionUID = -2216451655392574659L;
     private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
     private final Set<IIoObserver> observers = new HashSet<IIoObserver>();

@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * as creators of pictures or field collectors or administrators of collections.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -235,8 +234,5 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy<? ext
 	public void removeUrl(URI url) {
 		getNewOrExistingContact(false).removeUrl(url);
 	}
-
-
-
 
 }

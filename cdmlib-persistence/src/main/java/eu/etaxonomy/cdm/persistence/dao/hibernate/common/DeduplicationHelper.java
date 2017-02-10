@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.naming.Reference;
@@ -71,11 +70,8 @@ public class DeduplicationHelper {
 		this.genericDao = genericDao;
 	}
 
-	public <T extends CdmBase>  boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
-		Class<T> clazz = (Class<T>)cdmBase1.getClass();
-		Class<T> clazz2 = (Class<T>)cdmBase2.getClass();
+	public <T extends CdmBase>  boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) {
 
-		SessionFactory sessionFactory = session.getSessionFactory();
 		if (mergeStrategy == null){
 			mergeStrategy = DefaultMergeStrategy.NewInstance(cdmBase1.getClass());
 		}
@@ -128,7 +124,7 @@ public class DeduplicationHelper {
 				session.saveOrUpdate(cdmBase2);
 				session.flush();
 				//rearrange references pointing to cdmBase2 to cdmBase1 in future
-				reallocateReferences(cdmBase1, cdmBase2, sessionFactory, clazz2, cloneSet);
+				reallocateReferences(cdmBase1, cdmBase2, clazz2, cloneSet);
 			}
 
 			//remove deleted objects
@@ -259,23 +255,23 @@ public class DeduplicationHelper {
 
 		SessionFactoryImpl sessionFactory = (SessionFactoryImpl) session.getSessionFactory();
 
-		Map<String, ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
+//		Map<String, ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
 
 		//TODO cast
 		getCollectionRoles(clazz, sessionFactory);
 
-		TaxonNameBase name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.getTaxonBases();
 
 		Type propType = sessionFactory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "taxonBases");
-		Map collMetadata = sessionFactory.getAllCollectionMetadata();
+//		Map<?,?> collMetadata = sessionFactory.getAllCollectionMetadata();
 		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
 		CollectionPersister collPersister;
 		try {
 			collPersister = sessionFactory.getCollectionPersister(TaxonNameBase.class.getCanonicalName()+".annotations");
 		} catch (MappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    // TODO Auto-generated catch block
+            e.printStackTrace();
 		}
 //		Statistics statistics = sessionFactory.getStatistics();
 		logger.debug("");
@@ -353,7 +349,7 @@ public class DeduplicationHelper {
 		AnnotatableEntity annotatableEntity1 = (AnnotatableEntity)cdmBase1;
 		AnnotatableEntity annotatableEntity2 = (AnnotatableEntity)cdmBase2;
 		//annotations
-		List<Annotation> removeListAnnotation = new ArrayList<Annotation>();
+		List<Annotation> removeListAnnotation = new ArrayList<>();
 		for (Annotation annotation : annotatableEntity2.getAnnotations()){
 			Annotation clone = null;
 			try {
@@ -370,7 +366,7 @@ public class DeduplicationHelper {
 		}
 
 		//marker
-		List<Marker> removeListMarker = new ArrayList<Marker>();
+		List<Marker> removeListMarker = new ArrayList<>();
 		for (Marker marker : annotatableEntity2.getMarkers()){
 			Marker clone = null;
 			try {
@@ -398,20 +394,19 @@ public class DeduplicationHelper {
 	//TODO Why do we not handle credits, rights and sources here
 	private <T> void copyIdentifiableExtensions(T cdmBase1, T cdmBase2,
 			Session session) {
-		IdentifiableEntity identifiableEntity1 = (IdentifiableEntity)cdmBase1;
-		IdentifiableEntity identifiableEntity2 = (IdentifiableEntity)cdmBase2;
+		IdentifiableEntity<?> identifiableEntity1 = (IdentifiableEntity<?>)cdmBase1;
+		IdentifiableEntity<?> identifiableEntity2 = (IdentifiableEntity<?>)cdmBase2;
 
 		//extensions
-		List<Extension> removeListExtension = new ArrayList<Extension>();
-		for (Extension changeObject : (Set<Extension>)identifiableEntity2.getExtensions()){
+		List<Extension> removeListExtension = new ArrayList<>();
+		for (Extension changeObject : identifiableEntity2.getExtensions()){
 			try {
 				Extension clone = (Extension)changeObject.clone();
 				identifiableEntity1.addExtension(clone);
 				removeListExtension.add(changeObject);
 			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
+				throw new RuntimeException("Clone is not yet supported for class " + changeObject.getClass().getName() + " but should.");
 			}
-
 		}
 		for (Extension removeObject : removeListExtension){
 			identifiableEntity2.removeExtension(removeObject);
@@ -419,24 +414,24 @@ public class DeduplicationHelper {
 		}
 
 		//identifiers
-		List<Identifier> removeListIdentifier = new ArrayList<Identifier>();
-		for (Identifier<?> changeObject : (List<Identifier>)identifiableEntity2.getIdentifiers()){
+		List<Identifier<?>> removeListIdentifier = new ArrayList<>();
+		for (Identifier<?> changeObject : identifiableEntity2.getIdentifiers()){
 			try {
-				Identifier<?> clone = (Identifier)changeObject.clone();
+				Identifier<?> clone = (Identifier<?>)changeObject.clone();
 				identifiableEntity1.addIdentifier(clone);
 				removeListIdentifier.add(changeObject);
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
 		}
-		for (Identifier removeObject : removeListIdentifier){
+		for (Identifier<?> removeObject : removeListIdentifier){
 			identifiableEntity2.removeIdentifier(removeObject);
 			session.delete(removeObject);
 		}
 
 	}
 
-	private void reallocateReferences(CdmBase cdmBase1, CdmBase cdmBase2, SessionFactory sessionFactory, Class clazz, Set<ICdmBase> cloneSet){
+	private void reallocateReferences(CdmBase cdmBase1, CdmBase cdmBase2, Class clazz, Set<ICdmBase> cloneSet){
 		try {
 			Set<ReferenceHolder> holderSet = genericDao.getOrMakeHolderSet(clazz);
 			for (ReferenceHolder refHolder: holderSet){
@@ -486,7 +481,7 @@ public class DeduplicationHelper {
 	}
 
 	private boolean reallocateCollectionPossible(CdmBase cdmBase1, CdmBase cdmBase2,
-			ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws MergeException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+			ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws SecurityException, IllegalArgumentException {
 		Class<?> targetClass = refHolder.targetClass;
 		Class<?> clazz1 = cdmBase1.getClass();
 		if (! targetClass.isAssignableFrom(clazz1)){
@@ -563,11 +558,11 @@ public class DeduplicationHelper {
 		session.flush();
 	}
 
-	private Field getFieldRecursive(Class clazz, String propertyName) throws NoSuchFieldException{
+	private Field getFieldRecursive(Class<?> clazz, String propertyName) throws NoSuchFieldException{
 		try {
 			return clazz.getDeclaredField(propertyName);
 		} catch (NoSuchFieldException e) {
-			Class superClass = clazz.getSuperclass();
+			Class<?> superClass = clazz.getSuperclass();
 			if (CdmBase.class.isAssignableFrom(superClass)){
 				return getFieldRecursive(superClass, propertyName);
 			}else{
@@ -633,7 +628,7 @@ public class DeduplicationHelper {
 				//Field field = clazz.getField(propertyName);
 				EntityType entityType = (EntityType)propertyType;
 				String associatedEntityName = entityType.getAssociatedEntityName();
-				Class entityClass = Class.forName(associatedEntityName);
+				Class<?> entityClass = Class.forName(associatedEntityName);
 //				 Type refPropType = sessionFactory.getReferencedPropertyType(entityClass.getCanonicalName(), propertyName);
 				Set<String> collectionRoles = getCollectionRoles(clazz, sessionFactory);
 				for (String collectionRole : collectionRoles){
@@ -663,7 +658,7 @@ public class DeduplicationHelper {
 					field.setAccessible(true);
 					try {
 						if (collectionType instanceof SetType){
-							Set set2 = (Set)field.get(cdmBase2);
+							Set<?> set2 = (Set<?>)field.get(cdmBase2);
 							Set<Object> set1 = (Set<Object>)field.get(cdmBase1);
 							for (Object obj2: set2){
 								set1.add(obj2);

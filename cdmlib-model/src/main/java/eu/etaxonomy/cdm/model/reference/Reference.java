@@ -300,7 +300,8 @@ public class Reference
 	@Type(type="uriUserType")
 	private URI uri;
 
-	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
+	//flag to subselect only references that could be useful for nomenclatural citations.
+	//If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
 	@XmlElement(name = "IsNomenclaturallyRelevant")
 	@Merge(MergeMode.OR)

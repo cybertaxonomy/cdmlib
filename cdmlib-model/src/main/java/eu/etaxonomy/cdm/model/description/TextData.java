@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -83,7 +84,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     @Field(name="text", store=Store.YES)
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     @NotNull
-    private Map<Language, LanguageString> multilanguageText = new HashMap<Language,LanguageString>();
+    private Map<Language, LanguageString> multilanguageText = new HashMap<>();
 
     @XmlElement(name = "Format")
     @XmlIDREF
@@ -189,7 +190,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     public Map<Language, LanguageString> getMultilanguageText() {
         fixHashMapHibernateBug();
 
-//    	HashMap<Language, LanguageString> result = new HashMap<Language, LanguageString>();
+//    	HashMap<Language, LanguageString> result = new HashMap<>();
 //		result.putAll(multilanguageText);
 //		return result;
         return multilanguageText;
@@ -271,7 +272,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     private void fixHashMapHibernateBug() {
         //workaround for key problem
         if(! isHashMapHibernateBugFixed){
-            HashMap<Language, LanguageString> tmp = new HashMap<Language, LanguageString>();
+            HashMap<Language, LanguageString> tmp = new HashMap<>();
             tmp.putAll(multilanguageText);
             multilanguageText.clear();
             multilanguageText.putAll(tmp);
@@ -401,7 +402,26 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     }
 
 
+
+
 //*********************************** CLONE *****************************************/
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        Map<Language, LanguageString> multiLangText = getMultilanguageText();
+        if (multiLangText.isEmpty()){
+            return super.toString();
+        }else{
+            String result = null;
+            for(LanguageString ls : multiLangText.values()){
+                result = CdmUtils.concat(";", result, ls.toString());
+            }
+            return "[" + result + "]";
+        }
+    }
 
     /**
      * Clones <i>this</i> text data. This is a shortcut that enables to create

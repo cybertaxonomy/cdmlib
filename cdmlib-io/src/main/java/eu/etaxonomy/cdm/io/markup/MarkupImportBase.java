@@ -316,13 +316,14 @@ public abstract class MarkupImportBase  {
 	 * @return
 	 */
 	protected Map<String, Attribute> getAttributes(XMLEvent event) {
-		Map<String, Attribute> result = new HashMap<String, Attribute>();
+		Map<String, Attribute> result = new HashMap<>();
 		if (!event.isStartElement()){
 			fireWarningEvent("Event is not an startElement. Can't check attributes", makeLocationStr(event.getLocation()), 1, 1);
 			return result;
 		}
 		StartElement element = event.asStartElement();
-		Iterator<Attribute> attributes = element.getAttributes();
+		@SuppressWarnings("unchecked")
+        Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()){
 			Attribute attribute = attributes.next();
 			//TODO namespaces
@@ -801,7 +802,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Returns true if the "next" event is the ending tag for the "parent" event.
+	 * Returns <code>true</code> if the "next" event is the ending tag for the "parent" event.
 	 * @param next end element to test, must not be null
 	 * @param parentEvent start element to test
 	 * @return true if the "next" event is the ending tag for the "parent" event.
@@ -1011,6 +1012,18 @@ public abstract class MarkupImportBase  {
         return docImport.getDefaultTaxonDescription(taxon, isImageGallery, createNewIfNotExists, source);
     }
 
+    /**
+     * Returns the taxon description with marked as <code>true</code> with the given marker type.
+     * If createNewIfNotExists a new description is created if it does not yet exist.
+     * For the new description the source and the title are set if not <code>null</code>.
+     * @param taxon
+     * @param markerType
+     * @param isImageGallery
+     * @param createNewIfNotExists
+     * @param source
+     * @param title
+     * @return the existing or new taxon description
+     */
     protected TaxonDescription getMarkedTaxonDescription(Taxon taxon, MarkerType markerType, boolean isImageGallery, boolean createNewIfNotExists, Reference source, String title) {
         return docImport.getMarkedTaxonDescription(taxon, markerType, isImageGallery, createNewIfNotExists, source, title);
     }
@@ -1425,7 +1438,7 @@ public abstract class MarkupImportBase  {
 		String text = "";
 		checkNoAttributes(parentEvent);
 		WriterDataHolder dataHolder = new WriterDataHolder();
-		List<FootnoteDataHolder> footnotes = new ArrayList<FootnoteDataHolder>();
+		List<FootnoteDataHolder> footnotes = new ArrayList<>();
 
 		// TODO handle attributes
 		while (reader.hasNext()) {
@@ -1489,7 +1502,7 @@ public abstract class MarkupImportBase  {
 		} else {
 			Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.ref);
 			if (demands == null) {
-				demands = new HashSet<AnnotatableEntity>();
+				demands = new HashSet<>();
 				state.putFootnoteDemands(footnote.ref, demands);
 			}
 			demands.add(entity);
@@ -1851,7 +1864,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Handle string
+	 * Handle < string > .
 	 * @param state
 	 * @param reader
 	 * @param parentEvent
@@ -1869,7 +1882,7 @@ public abstract class MarkupImportBase  {
 		boolean isHabitat = false;
 
 		// subheadings
-		Map<String, String> subHeadingMap = new HashMap<String, String>();
+		Map<String, String> subHeadingMap = new HashMap<>();
 		String currentSubheading = null;
 
 		boolean isTextMode = true;
@@ -1979,8 +1992,9 @@ public abstract class MarkupImportBase  {
 
 
     /**
-     * @param currentSubheading
-     * @return
+     *Is heading an "habitat" type heading
+     * @param heading
+     * @return true if heading matches something like Eco(logy), Habitat(s) or Habitat & Ecology
      */
     private boolean isHabitatHeading(String heading) {
         return heading.trim().matches("(Ecol(ogy)?|Habitat|Habitat\\s&\\sEcology)\\.?");
@@ -2075,7 +2089,7 @@ public abstract class MarkupImportBase  {
 					}
 
 					NamedArea higherArea = null;
-					List<NamedArea> areas = new ArrayList<NamedArea>();
+					List<NamedArea> areas = new ArrayList<>();
 
 					String patSingleArea = "([^,\\(]{3,})";
 					String patSeparator = "(,|\\sand\\s)";

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -18,18 +18,17 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * Enumeration for matching modes.
  * @author a.mueller
  * @created 31.07.2009
- * @version 1.0
  */
 public enum MatchMode {
 	EQUAL_REQUIRED,  //parameters must be equal and not null
 	EQUAL,			 //parameters must be equal or both null
 	EQUAL_OR_ONE_NULL,   //parameters must be equal at least one parameter is null
 	EQUAL_OR_SECOND_NULL,
-	IGNORE,			//matches allways
+	IGNORE,			//matches always
 	MATCH_REQUIRED,
 	MATCH_OR_ONE_NULL,
 	MATCH_OR_SECOND_NULL,
-	MATCH,//matches if parameter mach (parameters must implement IMatchable)
+	MATCH,//matches if parameter match (parameters must implement IMatchable)
 	CACHE
 	;
 	private static final Logger logger = Logger.getLogger(MatchMode.class);
@@ -60,14 +59,14 @@ public enum MatchMode {
 		}
 	}
 
-	
-	
+
+
 	/**
 	 * @param obj1
 	 * @param obj2
-	 * @param matchStrategy 
+	 * @param matchStrategy
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean matchesMatchRequired(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
 		if (obj1 == null || obj2 == null ){
@@ -88,7 +87,7 @@ public enum MatchMode {
 	 * @param obj1
 	 * @param obj2
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean matchesMatchOrOneNull(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
 		if (obj1 == null || obj2 == null ){
@@ -102,7 +101,7 @@ public enum MatchMode {
 	 * @param obj1
 	 * @param obj2
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean matchesMatchOrSecondNull(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
 		if (obj1 == null ){
@@ -112,13 +111,13 @@ public enum MatchMode {
 		}
 	}
 
-	
+
 	/**
 	 * @param obj1
 	 * @param obj2
-	 * @param matchStrategy 
+	 * @param matchStrategy
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean matchesMatch(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
 		if (obj1 == null && obj2 == null ){
@@ -127,7 +126,7 @@ public enum MatchMode {
 			return matchesMatchRequired(obj1, obj2, matchStrategy);
 		}
 	}
-	
+
 	/**
 	 * @param obj1
 	 * @param obj2
@@ -151,7 +150,7 @@ public enum MatchMode {
 		}
 	}
 
-	
+
 	/**
 	 * @param obj1
 	 * @param obj2
@@ -164,8 +163,8 @@ public enum MatchMode {
 			return matchesEqualRequired(obj1, obj2);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param obj1
 	 * @param obj2
@@ -178,7 +177,7 @@ public enum MatchMode {
 			return matchesEqual(obj1, obj2);
 		}
 	}
-	
+
 
 	/**
 	 * @param obj1
@@ -192,18 +191,18 @@ public enum MatchMode {
 			return matchesEqualRequired(obj1, obj2);
 		}
 	}
-	
+
 	//not needed?
 	public boolean allowsSecondNull(Object first){
 		if (isRequired()){
 			return false;
 		}else if(first == null){
-			return true; 
+			return true;
 		}else {
-			return allowsExactlyOneNull(); 
+			return allowsExactlyOneNull();
 		}
 	}
-	
+
 	/**
 	 * Returns true is this match mode can be ignored for retrieving
 	 * matching objects
@@ -219,7 +218,7 @@ public enum MatchMode {
 			return false;
 		}
 	}
-		
+
 	/**
 	 * Returns true if a non-null value is required for finding
 	 * matching objects
@@ -232,9 +231,9 @@ public enum MatchMode {
 		}else{
 			return ! allowsExactlyOneNull() ;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Returns true if a null value is required for retrieveing
 	 * matching objects
@@ -247,11 +246,11 @@ public enum MatchMode {
 			return false;
 		}else if (isRequired()){
 			throw new MatchException("MatchMode " + this + " does not allow (null)");
-		}else{ 
+		}else{
 			return ! isXOrOneNull();
 		}
 	}
-	
+
 	/**
 	 * Returns true if a non-null value is required, independent from the first value
 	 * @return
@@ -259,7 +258,7 @@ public enum MatchMode {
 	public boolean isRequired(){
 		return ((this == EQUAL_REQUIRED) || (this == MATCH_REQUIRED));
 	}
-	
+
 	/**
 	 * Returns true, if this match mode allows that one value is null and the other is not null.
 	 * @return
@@ -269,7 +268,7 @@ public enum MatchMode {
 				(this == EQUAL_OR_SECOND_NULL)|| (this == MATCH_OR_SECOND_NULL) ||
 				(this == IGNORE));
 	}
-	
+
 	/**
 	 * Returns true, if this match mode is of type MATCHXXX
 	 * @return
@@ -279,7 +278,7 @@ public enum MatchMode {
 				(this == MATCH)|| (this == MATCH_OR_SECOND_NULL) ||
 				(this == MATCH_OR_ONE_NULL));
 	}
-	
+
 	/**
 	 * Returns true, if this match mode is of type EQUALXXX
 	 * @return
@@ -289,13 +288,13 @@ public enum MatchMode {
 				(this == EQUAL)|| (this == EQUAL_OR_SECOND_NULL) ||
 				(this == EQUAL_OR_ONE_NULL));
 	}
-	
+
 	/**
 	 * Returns true, if this match mode is of type XXX_OR_ONE_NULL
 	 * @return
 	 */
 	public boolean isXOrOneNull(){
-		return (this == EQUAL_OR_ONE_NULL) || (this == MATCH_OR_ONE_NULL);	
-		
-	}	
+		return (this == EQUAL_OR_ONE_NULL) || (this == MATCH_OR_ONE_NULL);
+
+	}
 }

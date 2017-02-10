@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  *
  * @author a.mueller
  * @created 21.05.2008
- * @version 1.0
  */
 @Component
 public class CdmRepository implements ICdmRepository, ApplicationContextAware {
