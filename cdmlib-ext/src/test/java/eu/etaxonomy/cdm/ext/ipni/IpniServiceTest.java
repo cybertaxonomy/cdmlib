@@ -4,10 +4,12 @@
 package eu.etaxonomy.cdm.ext.ipni;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +52,12 @@ public class IpniServiceTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		service1 = new IpniService();
+
+	    // run the tests only when the server is available
+	    Assume.assumeTrue(UriUtils.isServiceAvailable(new URI("http://www.uk.ipni.org/ipni/simplePlantNameSearch.do?find_wholeName=Abies+albertiana&output_format=delimited-short"), 1000));
+
+	    service1 = new IpniService();
+
 	}
 
 // ******************************* TESTS ******************************************************/
