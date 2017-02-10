@@ -52,6 +52,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	protected static final String MODS_DATE_ISSUED ="dateIssued";
 	protected static final String MODS_PLACE ="place";
 	protected static final String MODS_EDITION ="edition";
+	protected static final String MODS_COPYRIGHT_DATE = "copyrightDate";
 
 
 	public MarkupModsImport(MarkupDocumentImport docImport) {
@@ -122,7 +123,9 @@ public class MarkupModsImport extends MarkupImportBase {
 					fireWarningEvent("Multiple edition infos given. Concat by ;", next, 2);
 				}
 				modsRef.setEdition(CdmUtils.concat(";", modsRef.getEdition(), edition));
-			} else {
+			}else if (isStartingElement(next, MODS_COPYRIGHT_DATE)) {
+                this.handleNotYetImplementedElement(next);
+            } else {
 				handleUnexpectedElement(next);
 			}
 		}
@@ -195,7 +198,7 @@ public class MarkupModsImport extends MarkupImportBase {
 
 		String description = null;
 		String namePart = null;
-		String partNumber = null;
+
 		String affiliation = null;
 
 		while (reader.hasNext()) {
@@ -211,6 +214,7 @@ public class MarkupModsImport extends MarkupImportBase {
 						modsRef.setAuthorship(person);
 					}else if (author.isInstanceOf(Person.class)){
 						Team team = Team.NewInstance();
+						team.addTeamMember(CdmBase.deproxy(author, Person.class));
 						team.addTeamMember(person);
 						modsRef.setAuthorship(team);
 					}else {

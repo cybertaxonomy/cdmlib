@@ -141,6 +141,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		}
 
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+		state.setFirstSpecimenInFacade(true);
 		String text = "";
 		state.resetCollectionAndType();
 		state.setSpecimenType(true);
@@ -154,6 +155,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				}
 				state.setSpecimenType(false);
 				state.resetCollectionAndType();
+				state.setFirstSpecimenInFacade(false);
 				return;
 			} else if (isStartingElement(next, FULL_TYPE)) {
 				handleAmbigousManually(state, reader, next.asStartElement());
@@ -217,7 +219,14 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
         			Collection collection = this.getCollection(state, typeInfo.collectionString);
 
         			// TODO improve cache strategy handling
-        			DerivedUnit typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
+        			DerivedUnit typeSpecimen;
+        			if (state.isFirstSpecimenInFacade()){
+        			    state.setFirstSpecimenInFacade(false);
+        			    typeSpecimen = facade.innerDerivedUnit();
+        			    typeSpecimen.setCollection(collection);
+        			}else{
+        			    typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
+        			}
         			typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
         			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
         			lastTypeInfo = typeInfo;
@@ -792,7 +801,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		String classValue = getClassOnlyAttribute(parentEvent);
 		boolean isLocality = false;
 		NamedAreaLevel areaLevel = null;
-		if ("locality".equalsIgnoreCase(classValue)) {
+		if ("locality".equalsIgnoreCase(classValue)||state.getConfig().isIgnoreLocalityClass()) {
 			isLocality = true;
 		} else {
 			areaLevel = makeNamedAreaLevel(state, classValue, parentEvent);
@@ -804,7 +813,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				if (StringUtils.isNotBlank(text)) {
-					text = normalize(text);
+					text = normalize(text);text = removeTrailingPunctuation(text);
 					if (isLocality) {
 						facade.setLocality(text, getDefaultLanguage(state));
 					} else {
@@ -834,7 +843,19 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 
 
-	private TeamOrPersonBase<?> createCollector(String collectorStr) {
+	/**
+     * @param text
+     * @return
+     */
+    private String removeTrailingPunctuation(String text) {
+        while (isPunctuation(text.substring(text.length()-1))){
+            text = text.substring(0, text.length()-1).trim();
+        }
+        return text;
+    }
+
+
+    private TeamOrPersonBase<?> createCollector(String collectorStr) {
 		return createAuthor(collectorStr);
 	}
 

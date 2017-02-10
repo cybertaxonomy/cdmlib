@@ -92,9 +92,12 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
 	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
-	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
-	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<>();  //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<>(); //keep in multiple imports
 
+    private String collectionAndType = "";
+
+    private boolean firstSpecimenInFacade;
 
 	/**
 	 * This method resets all those variables that should not be reused from one import to another.
@@ -440,7 +443,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	}
 
 
-	String collectionAndType = "";
+
 	public void addCollectionAndType(String txt) {
 		collectionAndType = CdmUtils.concat("@", collectionAndType, txt);
 	}
@@ -459,6 +462,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
         this.currentTaxonExcluded = currentTaxonExcluded;
     }
 
-
+    public boolean isFirstSpecimenInFacade() {
+        return firstSpecimenInFacade;
+    }
+    public void setFirstSpecimenInFacade(boolean firstSpecimenInFacade) {
+        this.firstSpecimenInFacade = firstSpecimenInFacade;
+    }
 
 }

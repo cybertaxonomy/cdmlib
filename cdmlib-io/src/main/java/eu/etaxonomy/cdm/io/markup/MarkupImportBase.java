@@ -1004,8 +1004,16 @@ public abstract class MarkupImportBase  {
 	}
 
 	protected TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
-		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);
+		return docImport.getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
 	}
+
+    protected TaxonDescription getDefaultTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists, Reference source) {
+        return docImport.getDefaultTaxonDescription(taxon, isImageGallery, createNewIfNotExists, source);
+    }
+
+    protected TaxonDescription getMarkedTaxonDescription(Taxon taxon, MarkerType markerType, boolean isImageGallery, boolean createNewIfNotExists, Reference source, String title) {
+        return docImport.getMarkedTaxonDescription(taxon, markerType, isImageGallery, createNewIfNotExists, source, title);
+    }
 
 
 	/**
@@ -2035,7 +2043,7 @@ public abstract class MarkupImportBase  {
 			if (isMyEndingElement(next, parentEvent)) {
 				if (StringUtils.isNotBlank(text)) {
 					String label = CdmUtils.removeTrailingDot(normalize(text));
-					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+					TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, ref);
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
 
 					//status

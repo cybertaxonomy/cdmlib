@@ -1069,8 +1069,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * If a new description is created the given reference will be added as a source.
 	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
+	 * @see #getDefaultTaxonDescription(Taxon, boolean, boolean, Reference)
 	 */
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery,
+	        boolean createNewIfNotExists) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descriptions= taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
@@ -1090,6 +1092,66 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return result;
 	}
+
+	/**
+	 * Returns the default taxon description. If no default taxon description exists,
+	 * a new one is created, the default flag is set to true and, if a source is passed,
+	 * it is added to the new description. Otherwise source has no influence.
+	 * @param taxon
+	 * @param isImageGallery
+	 * @param createNewIfNotExists
+	 * @param source
+	 * @return the default description
+	 * @see #getTaxonDescription(Taxon, Reference, boolean, boolean)
+	 */
+	public TaxonDescription getDefaultTaxonDescription(Taxon taxon, boolean isImageGallery,
+            boolean createNewIfNotExists, Reference source) {
+        TaxonDescription result = null;
+        Set<TaxonDescription> descriptions= taxon.getDescriptions();
+        for (TaxonDescription description : descriptions){
+            if (description.isImageGallery() == isImageGallery){
+                if (description.isDefault()){
+                    result = description;
+                    break;
+                }
+            }
+        }
+        if (result == null && createNewIfNotExists){
+            result = TaxonDescription.NewInstance(taxon);
+            result.setImageGallery(isImageGallery);
+            result.setDefault(true);
+            if (source != null){
+                result.addImportSource(null, null, source, null);
+            }
+        }
+        return result;
+    }
+
+   public TaxonDescription getMarkedTaxonDescription(Taxon taxon, MarkerType markerType, boolean isImageGallery,
+            boolean createNewIfNotExists, Reference source, String title) {
+        TaxonDescription result = null;
+        Set<TaxonDescription> descriptions= taxon.getDescriptions();
+        for (TaxonDescription description : descriptions){
+            if (description.isImageGallery() == isImageGallery){
+                if (description.hasMarker(markerType, true)){
+                    result = description;
+                    break;
+                }
+            }
+        }
+        if (result == null && createNewIfNotExists){
+            result = TaxonDescription.NewInstance(taxon);
+            result.setImageGallery(isImageGallery);
+            result.addMarker(Marker.NewInstance(markerType, true));
+            if (source != null){
+                result.addImportSource(null, null, source, null);
+            }
+            if (isNotBlank(title)){
+                result.setTitleCache(title, true);
+            }
+        }
+        return result;
+    }
 
 
 	/**

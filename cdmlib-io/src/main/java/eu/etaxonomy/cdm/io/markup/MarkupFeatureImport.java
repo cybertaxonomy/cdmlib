@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -65,20 +66,36 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		this.featureImport = this;
 	}
 
-	public void handleFeature(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+	public void handleFeature(MarkupImportState state, XMLEventReader readerOrig, XMLEvent parentEvent) throws XMLStreamException {
 		Map<String, Attribute> attrs = getAttributes(parentEvent);
 		Boolean isFreetext = getAndRemoveBooleanAttributeValue(parentEvent, attrs, IS_FREETEXT, false);
 		String classValue =getAndRemoveRequiredAttributeValue(parentEvent, attrs, CLASS);
 		checkNoAttributes(attrs, parentEvent);
 
-
 		Feature feature = makeFeature(classValue, state, parentEvent, null);
 		Taxon taxon = state.getCurrentTaxon();
-		TaxonDescription taxonDescription = getTaxonDescription(taxon, state.getConfig().getSourceReference(), NO_IMAGE_GALLERY, CREATE_NEW);
+		TaxonDescription taxonDescription = getDefaultTaxonDescription(taxon, NO_IMAGE_GALLERY, CREATE_NEW, state.getConfig().getSourceReference());
+		if (!taxonDescription.isDefault()){
+		    taxonDescription.setDefault(true);
+		}
 		// TextData figureHolderTextData = null; //for use with one TextData for
 		// all figure only
 
+
+		TaxonDescription structuredDescription = null;
+
 		boolean isDescription = feature.equals(Feature.DESCRIPTION());
+
+		XMLEventReader reader;
+		if (isDescription){
+		    LookAheadEventReader lookAhead = new LookAheadEventReader(parentEvent.asStartElement(), readerOrig);
+		    String descriptionText = makeFullDescriptionText(lookAhead.getCachedEvents(true));
+		    taxonDescription.addElement(TextData.NewInstance(Feature.DESCRIPTION(), descriptionText, getDefaultLanguage(state),null));
+		    reader = lookAhead;
+		}else{
+		    reader = readerOrig;
+		}
+
 		DescriptionElementBase lastDescriptionElement = null;
 
 		CharOrder charOrder= new CharOrder();
@@ -110,10 +127,21 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				}
 				handleHabitat(state, reader, next);
 			} else if (isStartingElement(next, CHAR)) {
-				List<TextData> textDataList = handleChar(state, reader, next, null, charOrder);
+			    if (structuredDescription == null){
+			        MarkerType descriptionMarker;
+			        try {
+			            descriptionMarker = getMarkerType(state, state.getTransformer().getMarkerTypeUuid("structured description"),
+			                    "Structured Descriptions", "Marker to mark descriptions used for more structured descriptions", null, null);
+			        } catch (UndefinedTransformerMethodException e) {
+			            throw new RuntimeException(e);
+			        }
+			        String title = "Structured descriptive data for " + taxon.getName().getTitleCache();
+			        structuredDescription = getMarkedTaxonDescription(taxon, descriptionMarker, NO_IMAGE_GALLERY, CREATE_NEW, state.getConfig().getSourceReference(), title);
+			    }
+			    List<TextData> textDataList = handleChar(state, reader, next, null, charOrder);
 				charOrder = charOrder.next();
 				for (TextData textData : textDataList){
-					taxonDescription.addElement(textData);
+				    structuredDescription.addElement(textData);
 				}
 			} else if (isStartingElement(next, STRING)) {
 				lastDescriptionElement = makeFeatureString(state, reader,feature, taxonDescription, lastDescriptionElement,next, isFreetext);
@@ -126,7 +154,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				if (!refs.isEmpty()) {
 					// TODO
 					Reference descriptionRef = state.getConfig().getSourceReference();
-					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
+					TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, descriptionRef);
 					TextData featurePlaceholder = docImport.getFeaturePlaceholder(state, description, feature, true);
 					for (Reference citation : refs) {
 						featurePlaceholder.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, null);
@@ -147,6 +175,20 @@ public class MarkupFeatureImport extends MarkupImportBase {
 
 
 	/**
+     * Creates a full description text from the mark
+     * @param cachedEvents
+     * @return
+     */
+    private String makeFullDescriptionText(List<XMLEvent> events) {
+        String result = "";
+        for (XMLEvent event : events){
+            String text = normalize(event.asCharacters().getData());
+            result = CdmUtils.concat(" ", result, text);
+        }
+        return result;
+    }
+
+    /**
 	 * @param state
 	 * @param reader
 	 * @param taxonDescription
@@ -503,8 +545,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		if (isNotBlank(writer.writer)) {
 			// TODO
 			Reference ref = state.getConfig().getSourceReference();
-			TaxonDescription description = getTaxonDescription(taxon, ref,
-					false, true);
+			TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, ref);
 			TextData featurePlaceholder = docImport.getFeaturePlaceholder(state,
 					description, feature, true);
 			featurePlaceholder.addAnnotation(writer.annotation);
@@ -528,8 +569,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				TaxonDescription description = getTaxonDescription(taxon, ref,
-						false, true);
+				TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, ref);
 				UUID uuidExtractedHabitat = MarkupTransformer.uuidExtractedHabitat;
 				Feature feature = getFeature(
 						state,

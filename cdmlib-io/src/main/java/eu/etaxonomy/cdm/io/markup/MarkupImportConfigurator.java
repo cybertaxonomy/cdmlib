@@ -49,10 +49,14 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	private String sourceReferenceTitle = "E-Flora";
 	private UUID defaultLanguageUuid;
 
-
     private List<String> knownCollections = new ArrayList<>();
 
-	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
+    private boolean ignoreLocalityClass = false;
+
+    private boolean handleWriterManually = false;
+
+
+    //TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
 	//from the one import to another import in case I run 2 imports in line
 	private UUID lastTaxonUuid;
 
@@ -248,6 +252,20 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
     }
     public List<String> getKnownCollections(){
         return this.knownCollections;
+    }
+
+    public boolean isIgnoreLocalityClass() {
+        return this.ignoreLocalityClass;
+    }
+    public void setIgnoreLocalityClass(boolean ignoreLocalityClass) {
+        this.ignoreLocalityClass = ignoreLocalityClass;
+    }
+
+    public boolean isHandleWriterManually() {
+        return this.handleWriterManually;
+    }
+    public void setHandleWriterManually(boolean handleWriterManually) {
+        this.handleWriterManually = handleWriterManually;
     }
 
 }

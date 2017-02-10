@@ -150,4 +150,14 @@ public class LookAheadEventReader implements XMLEventReader {
 		return false;
 	}
 
+	public List<XMLEvent> getCachedEvents(boolean onlyCharData){
+	    List<XMLEvent> result = new ArrayList<>();
+	    for (XMLEvent event: cachedEvents){
+	        if (!onlyCharData || event.isCharacters()){
+	            result.add(event);
+	        }
+	    }
+	    return result;
+	}
+
 }

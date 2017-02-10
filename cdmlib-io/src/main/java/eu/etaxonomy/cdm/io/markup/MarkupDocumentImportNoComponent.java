@@ -379,7 +379,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 						Feature feature = getFeature(state, notesUuid, "Notes",	"Notes", "note", null);
 						TextData textData = TextData.NewInstance(feature);
 						textData.putText(getDefaultLanguage(state), note);
-						TaxonDescription description = getTaxonDescription(taxon, descriptionReference, false, true);
+						TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, descriptionReference);
 						description.addElement(textData);
 					} catch (UndefinedTransformerMethodException e) {
 						String message = "getFeatureUuid method not yet implemented";
@@ -426,24 +426,28 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 */
 	private void makeKeyWriter(MarkupImportState state, XMLEventReader reader, Taxon taxon, String taxonTitle, XMLEvent next) throws XMLStreamException {
 		WriterDataHolder writer = handleWriter(state, reader, next);
-		taxon.addExtension(writer.extension);
-		// TODO what if taxonTitle comes later
-		taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : taxon.getName().getNameCache();
-		if (writer.extension != null) {
-			if (StringUtils.isBlank(taxonTitle)){
-				fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);
-				taxonTitle = null;
-			}
-			Reference sec = ReferenceFactory.newBookSection();
-			sec.setTitle(taxonTitle);
-			TeamOrPersonBase<?> author = createAuthor(writer.writer);
-			sec.setAuthorship(author);
-			sec.setInReference(state.getConfig().getSourceReference());
-			taxon.setSec(sec);
-			registerFootnotes(state, sec, writer.footnotes);
-		} else {
-			String message = "There is no writer extension defined";
-			fireWarningEvent(message, next, 6);
+		if (state.getConfig().isHandleWriterManually()){
+		    fireWarningEvent("<Writer> is expected to be handled manually", next, 1);
+		}else{
+		    taxon.addExtension(writer.extension);
+	        // TODO what if taxonTitle comes later
+	        taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : taxon.getName().getNameCache();
+	        if (writer.extension != null) {
+	            if (StringUtils.isBlank(taxonTitle)){
+	                fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);
+	                taxonTitle = null;
+	            }
+	            Reference sec = ReferenceFactory.newBookSection();
+	            sec.setTitle(taxonTitle);
+	            TeamOrPersonBase<?> author = createAuthor(writer.writer);
+	            sec.setAuthorship(author);
+	            sec.setInReference(state.getConfig().getSourceReference());
+	            taxon.setSec(sec);
+	            registerFootnotes(state, sec, writer.footnotes);
+	        } else {
+	            String message = "There is no writer extension defined";
+	            fireWarningEvent(message, next, 6);
+	        }
 		}
 	}
 
