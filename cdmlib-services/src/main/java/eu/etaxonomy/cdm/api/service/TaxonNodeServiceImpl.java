@@ -740,6 +740,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
+    @Transactional
     public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
         if (monitor == null){
