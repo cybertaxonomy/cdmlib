@@ -6,6 +6,3 @@ This package must not be covered by a component scan the bean in here should be 
 individually to the context. 
 
 The root WebApplicationContext contains beans such for MVC specific configuration
-
-The same package exists in the cdmlib-services project where further 
-configuration classes are found. 
