@@ -23,7 +23,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @created 01.07.2008
  */
-public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration
+public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmRepository
         implements ICdmIO<STATE>, IIoObservable {
     private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
