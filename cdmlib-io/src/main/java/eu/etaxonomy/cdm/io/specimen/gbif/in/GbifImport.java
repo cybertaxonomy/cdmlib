@@ -23,7 +23,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifQueryServiceWrapper;
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifResponse;
@@ -303,7 +303,7 @@ protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfigurat
         logger.info("handleSingleUnit "+state.getRef());
     }
 
-        ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+        ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
         if(cdmAppController==null){
             cdmAppController = this;
         }

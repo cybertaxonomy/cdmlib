@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.ext.ipni.IIpniService;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 
@@ -46,7 +46,7 @@ public class BciServiceTest {
 	@Test
 	@Ignore // service is under refactoring 
 	public void testGetCollectionsByCode(){
-		ICdmApplicationConfiguration config = null;
+		ICdmRepository config = null;
 		List<Collection> collectionList = service1.getCollectionsByCode("BG", config);
 		//expected web service result: urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
 

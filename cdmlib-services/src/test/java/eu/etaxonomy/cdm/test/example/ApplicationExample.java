@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.test.example;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -36,7 +36,7 @@ public class ApplicationExample {
 		String username = "sa";
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa");
 
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
+		ICdmRepository app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		app.getTaxonService().save(taxon);
 	}
@@ -50,7 +50,7 @@ public class ApplicationExample {
 		//password will be asked for in console and stored in your home directory
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
+		ICdmRepository app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		app.getTaxonService().save(taxon);
 	}

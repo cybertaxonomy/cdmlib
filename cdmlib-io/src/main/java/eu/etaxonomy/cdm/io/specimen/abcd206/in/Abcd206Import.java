@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -365,7 +365,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             logger.info("handleSingleUnit "+state.getRef());
         }
         try {
-            ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+            ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
             if(cdmAppController==null){
                 cdmAppController = this;
             }

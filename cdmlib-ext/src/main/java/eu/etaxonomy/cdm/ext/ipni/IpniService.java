@@ -28,7 +28,7 @@ import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -218,7 +218,7 @@ public class IpniService  implements IIpniService{
 	 * @see eu.etaxonomy.cdm.ext.ipni.IIpniService#getAuthors(java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration, eu.etaxonomy.cdm.ext.ipni.IpniServiceAuthorConfigurator)
 	 */
 	@Override
-    public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmApplicationConfiguration services, IpniServiceAuthorConfigurator config){
+    public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmRepository services, IpniServiceAuthorConfigurator config){
 		//config
 		if (config == null){
 			config = new IpniServiceAuthorConfigurator();
@@ -249,7 +249,7 @@ public class IpniService  implements IIpniService{
 	 * @param restRequest
 	 * @return
 	*/
-	private List<? extends IdentifiableEntity> queryService(String request, ICdmApplicationConfiguration services, URL serviceUrl, IIpniServiceConfigurator config, ServiceType serviceType){
+	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository services, URL serviceUrl, IIpniServiceConfigurator config, ServiceType serviceType){
 		if (config == null){
 			throw new NullPointerException("Ipni service configurator should not be null");
 		}
@@ -333,7 +333,7 @@ public class IpniService  implements IIpniService{
 
 
 
-	private List<Reference> buildPublicationList( InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<Reference> buildPublicationList( InputStream content, ICdmRepository services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServicePublicationConfigurator config = (IpniServicePublicationConfigurator)iConfig;
 
 		List<Reference> result = new ArrayList<Reference>();
@@ -360,7 +360,7 @@ public class IpniService  implements IIpniService{
 	 * @param config
 	 * @return
 	 */
-	private Reference getPublicationFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig, IpniServicePublicationConfigurator config) {
+	private Reference getPublicationFromLine(String line, Map<Integer, String> parameterMap, ICdmRepository appConfig, IpniServicePublicationConfigurator config) {
 		//fill value map
 		String[] splits = line.split("%");
 
@@ -433,7 +433,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private List<TaxonNameBase<?,?>> buildNameList( InputStream content, ICdmApplicationConfiguration appConfig, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<TaxonNameBase<?,?>> buildNameList( InputStream content, ICdmRepository appConfig, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceNamesConfigurator config = (IpniServiceNamesConfigurator)iConfig;
 		List<TaxonNameBase<?,?>> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
@@ -455,7 +455,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private IBotanicalName getNameFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig) {
+	private IBotanicalName getNameFromLine(String line, Map<Integer, String> parameterMap, ICdmRepository appConfig) {
 		//Id%Version%Standard form%Default author forename%Default author surname%Taxon groups%Dates%Alternative names
 		String[] splits = line.split("%");
 		Map<String, String> valueMap = new HashMap<String, String>();
@@ -662,7 +662,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private List<Person> buildAuthorList(InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<Person> buildAuthorList(InputStream content, ICdmRepository services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceAuthorConfigurator config = (IpniServiceAuthorConfigurator)iConfig;
 		List<Person> result = new ArrayList<Person>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
@@ -696,7 +696,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private Person getAuthorFromLine(String line, Map<Integer, String> categoryMap, ICdmApplicationConfiguration appConfig, IpniServiceAuthorConfigurator config) {
+	private Person getAuthorFromLine(String line, Map<Integer, String> categoryMap, ICdmRepository appConfig, IpniServiceAuthorConfigurator config) {
 		//Id%Version%Standard form%Default author forename%Default author surname%Taxon groups%Dates%Alternative names
 		String[] splits = line.split("%");
 		Map<String, String> valueMap = new HashMap<String, String>();
@@ -738,7 +738,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private Reference getIpniCitation(ICdmApplicationConfiguration appConfig) {
+	private Reference getIpniCitation(ICdmRepository appConfig) {
 		Reference ipniReference;
 		if (appConfig != null){
 			ipniReference = appConfig.getReferenceService().find(uuidIpni);
@@ -783,7 +783,7 @@ public class IpniService  implements IIpniService{
 			Rank rankInRangeToReturn,
 			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmApplicationConfiguration services){
+			ICdmRepository services){
 		IpniRank ipniRank = IpniRank.valueOf(rankInRangeToReturn);
 		return getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, includePublicationAuthors, includeBasionymAuthors, publicationTitle, isAPNIRecord, isGCIRecord, isIKRecord, ipniRank, sortByFamily, config, services);
 	}
@@ -799,7 +799,7 @@ public class IpniService  implements IIpniService{
 			IpniRank rankToReturn,
 			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmApplicationConfiguration services) {
+			ICdmRepository services) {
 
 //		find_rankToReturn=all&output_format=normal&find_sortByFamily=on&find_sortByFamily=off&query_type=by_query&back_page=plantsearch
 
@@ -860,7 +860,7 @@ public class IpniService  implements IIpniService{
 	 * @see eu.etaxonomy.cdm.ext.IIpniService#getNamesSimple(java.lang.String, eu.etaxonomy.cdm.ext.IIpniService.DelimitedFormat, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
 	 */
 	@Override
-    public List<BotanicalName> getNamesSimple(String wholeName, ICdmApplicationConfiguration services, IpniServiceNamesConfigurator config){
+    public List<BotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config){
 		if (config == null){
 			config = new IpniServiceNamesConfigurator();
 		}
@@ -882,7 +882,7 @@ public class IpniService  implements IIpniService{
 	 * @see eu.etaxonomy.cdm.ext.IIpniService#getPublications(java.lang.String, java.lang.String, boolean, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
 	 */
 	@Override
-    public List<Reference> getPublications(String title, String abbreviation, ICdmApplicationConfiguration services, IpniServicePublicationConfigurator config){
+    public List<Reference> getPublications(String title, String abbreviation, ICdmRepository services, IpniServicePublicationConfigurator config){
 //		http://www.uk.ipni.org/ipni/advPublicationSearch.do?find_title=Spe*plant*&find_abbreviation=&output_format=normal&query_type=by_query&back_page=publicationsearch
 //		http://www.uk.ipni.org/ipni/advPublicationSearch.do?find_title=*Hortus+Britannicus*&find_abbreviation=&output_format=delimited-classic&output_format=delimited
 

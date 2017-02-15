@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -550,7 +550,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state
 	     */
 	    protected UUID save(CdmBase cdmBase, SpecimenImportStateBase state) {
-	        ICdmApplicationConfiguration cdmRepository = state.getConfig().getCdmAppController();
+	        ICdmRepository cdmRepository = state.getConfig().getCdmAppController();
 	        if (cdmRepository == null){
 	            cdmRepository = this;
 	        }
@@ -583,7 +583,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 
 	    protected SpecimenOrObservationBase findExistingSpecimen(String unitId, SpecimenImportStateBase state){
-	        ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+	        ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
 	        if(cdmAppController==null){
 	            cdmAppController = this;
 	        }
@@ -1026,7 +1026,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	    private boolean existsInClassification(Taxon taxon, Classification classification, STATE state){
 	        boolean exist = false;
-	        ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+	        ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
             if(cdmAppController==null){
                 cdmAppController = this;
             }
@@ -1096,7 +1096,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                    logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
 	                }
 
-	                ICdmApplicationConfiguration cdmAppController = config.getCdmAppController();
+	                ICdmRepository cdmAppController = config.getCdmAppController();
 	                if(cdmAppController == null){
 	                    cdmAppController = this;
 	                }

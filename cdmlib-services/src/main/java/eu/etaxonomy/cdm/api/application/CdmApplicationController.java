@@ -81,13 +81,13 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
 /**
  * @author a.mueller
  */
-public class CdmApplicationController implements ICdmApplicationConfiguration {
+public class CdmApplicationController implements ICdmRepository {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 
 	public AbstractApplicationContext applicationContext;
-	protected ICdmApplicationConfiguration configuration;
+	protected ICdmRepository configuration;
 	private final Resource applicationContextResource;
 
 	private final IProgressMonitor progressMonitor;
@@ -403,7 +403,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 				logger.info(beanName);
 			}
 		}
-		configuration = (ICdmApplicationConfiguration) applicationContext.getBean("cdmApplicationDefaultConfiguration");
+		configuration = (ICdmRepository) applicationContext.getBean("cdmApplicationDefaultConfiguration");
 		try {
 			//FIXME:Remoting catching exection to allow for remoting
 			getDatabaseService().setApplicationController(this);

@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -107,7 +107,7 @@ public interface IIpniService {
 	 * @param appConfig
 	 * @return
 	 */
-	public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmApplicationConfiguration appConfig, IpniServiceAuthorConfigurator config);
+	public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmRepository appConfig, IpniServiceAuthorConfigurator config);
 
 
 	/**
@@ -125,7 +125,7 @@ public interface IIpniService {
 	 * @param appConfig
 	 * @return
 	 */
-	public List<BotanicalName> getNamesSimple(String wholeName, ICdmApplicationConfiguration services, IpniServiceNamesConfigurator config);
+	public List<BotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config);
 	
 	/**
 	 * Returns the name matching the id parameter according to the IPNI Quick search function.
@@ -193,10 +193,10 @@ public interface IIpniService {
 			IpniRank ipniRankToReturn,
 			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmApplicationConfiguration appConfig);
+			ICdmRepository appConfig);
 
 	/**
-	 * As {@link #getNamesAdvanced(String, String, String, String, String, String, String, Boolean, Boolean, String, Boolean, Boolean, Boolean, IpniRank, Boolean, IpniServiceNamesConfigurator, ICdmApplicationConfiguration)}
+	 * As {@link #getNamesAdvanced(String, String, String, String, String, String, String, Boolean, Boolean, String, Boolean, Boolean, Boolean, IpniRank, Boolean, IpniServiceNamesConfigurator, ICdmRepository)}
 	 * but using CDM Rank instead of IpniRank. The CDM Rank is transformed into an IpniRank so it returns all
 	 * names that are in the same IpniRange as the CDM rank. Therefore when using CDM rank 'variety' also a 
 	 * 'subspecies' may be returned as 'variety' and 'subspecies' are within the same IpniRange 'Infraspecific'.  
@@ -230,7 +230,7 @@ public interface IIpniService {
 			Rank rankRangeToReturn,
 			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmApplicationConfiguration appConfig);
+			ICdmRepository appConfig);
 	
 	/**
 	 * Returns a list of publications matching the title and/or the abbreviation parameter according to the IPNI Publication search function.
@@ -246,7 +246,7 @@ public interface IIpniService {
 	 * @param config for finetuning, maybe null
 	 * @return
 	 */
-	public List<Reference> getPublications(String title, String abbreviation, ICdmApplicationConfiguration services, IpniServicePublicationConfigurator config);
+	public List<Reference> getPublications(String title, String abbreviation, ICdmRepository services, IpniServicePublicationConfigurator config);
 
 	public URL getServiceUrl(String url);
 }

@@ -18,7 +18,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 
@@ -35,9 +35,9 @@ public class UnitAssociationParser {
 
     private final SpecimenImportReport report;
 
-    private final ICdmApplicationConfiguration cdmAppController;
+    private final ICdmRepository cdmAppController;
 
-    public UnitAssociationParser(String prefix, SpecimenImportReport report, ICdmApplicationConfiguration cdmAppController) {
+    public UnitAssociationParser(String prefix, SpecimenImportReport report, ICdmRepository cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;

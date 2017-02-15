@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.validation;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
@@ -23,9 +23,9 @@ class Level3TransactionalValidationEventListener extends Level3ValidationEventLi
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Level3TransactionalValidationEventListener.class);
 
-	private final ICdmApplicationConfiguration repository;
+	private final ICdmRepository repository;
 
-	public Level3TransactionalValidationEventListener(ICdmApplicationConfiguration repository, IEntityValidationCrud dao){
+	public Level3TransactionalValidationEventListener(ICdmRepository repository, IEntityValidationCrud dao){
         super(dao);
         this.repository = repository;
     }

@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.ipni.IIpniService.DelimitedFormat;
 import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
@@ -70,7 +70,7 @@ public class IpniServiceTest {
 	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
 	        })
 	public void testGetAuthors(){
-		ICdmApplicationConfiguration services = null;
+		ICdmRepository services = null;
 		IpniServiceAuthorConfigurator config = new IpniServiceAuthorConfigurator();
 		config.setFormat(DelimitedFormat.EXTENDED);
 		List<Person> authorList = service1.getAuthors(null, "Greuter", null, null, services, config);
@@ -123,7 +123,7 @@ public class IpniServiceTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
         })
 	public void testGetNamesSimple(){
-		ICdmApplicationConfiguration services = null;
+		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = null;
 		List<BotanicalName> nameList = service1.getNamesSimple("Abies albertiana", services, config);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
@@ -150,7 +150,7 @@ public class IpniServiceTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
         })
 	public void testGetNamesAdvanced(){
-		ICdmApplicationConfiguration services = null;
+		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = new IpniServiceNamesConfigurator();
 
 		//http://www.uk.ipni.org/ipni/advPlantNameSearch.do?find_family=&find_genus=Abies&find_species=alba&find_infrafamily=&find_infragenus=&find_infraspecies=&find_authorAbbrev=B*&find_includePublicationAuthors=on&find_includePublicationAuthors=off&find_includeBasionymAuthors=on&find_includeBasionymAuthors=off&find_publicationTitle=&find_isAPNIRecord=on&find_isAPNIRecord=false&find_isGCIRecord=on&find_isGCIRecord=false&find_isIKRecord=on&find_isIKRecord=false&find_rankToReturn=infraspec&output_format=normal&find_sortByFamily=on&find_sortByFamily=off&query_type=by_query&back_page=plantsearch
@@ -195,7 +195,7 @@ public class IpniServiceTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
         })
 	public void testPublications(){
-		ICdmApplicationConfiguration services = null;
+		ICdmRepository services = null;
 		IpniServicePublicationConfigurator config = null;
 		List<Reference> refList = service1.getPublications("Species Plantarum, Edition 3", "Sp. Pl.", services, config);
 		//20009158-1%1.2%Pinaceae%%N%Abies%%N%alba%apennina%subsp.%Brullo, Scelsi & Spamp.%%Brullo, Scelsi & Spamp.%Abies alba subsp. apennina%Vegetaz. Aspromonte%41 (2001)%2001%%%%%%Italy%tax. nov.
@@ -235,7 +235,7 @@ public class IpniServiceTest {
 
 	@Test
 	public void testNameID(){
-		ICdmApplicationConfiguration services = null;
+		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = null;
 		InputStream content = service1.getNamesById("416415-1");
 

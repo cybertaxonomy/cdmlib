@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdTransformer;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
@@ -36,7 +36,7 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
 
 
 
-    private ICdmApplicationConfiguration cdmRepository;
+    private ICdmRepository cdmRepository;
 
     private String prefix;
 
@@ -93,13 +93,13 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
 
 
     @Override
-    public ICdmApplicationConfiguration getCdmRepository() {
+    public ICdmRepository getCdmRepository() {
         return cdmRepository;
     }
 
 
     @Override
-    public void setCdmRepository(ICdmApplicationConfiguration cdmRepository) {
+    public void setCdmRepository(ICdmRepository cdmRepository) {
         this.cdmRepository = cdmRepository;
     }
 

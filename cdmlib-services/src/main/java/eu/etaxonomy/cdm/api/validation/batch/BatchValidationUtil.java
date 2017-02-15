@@ -19,7 +19,7 @@ import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -70,7 +70,7 @@ class BatchValidationUtil {
     // parameter arguments (e.g. the AgentBase in IAgentService<AgentBase>).
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T extends ICdmBase, S extends T> List<EntityValidationUnit<T, S>> getAvailableServices(
-            ICdmApplicationConfiguration appConfig) {
+            ICdmRepository appConfig) {
         List<EntityValidationUnit<T, S>> services = new ArrayList<EntityValidationUnit<T, S>>();
         services.add(new EntityValidationUnit(AgentBase.class, appConfig.getAgentService()));
         services.add(new EntityValidationUnit(Amplification.class, appConfig.getAmplificationService()));

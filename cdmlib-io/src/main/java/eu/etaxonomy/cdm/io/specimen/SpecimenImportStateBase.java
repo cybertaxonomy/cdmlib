@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -48,7 +48,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
 
     private TransactionStatus tx;
 
-    private ICdmApplicationConfiguration cdmRepository;
+    private ICdmRepository cdmRepository;
     private Classification classification = null;
     private Classification defaultClassification = null;
     private Reference ref = null;
@@ -173,11 +173,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.tx = tx;
     }
 
-    public ICdmApplicationConfiguration getCdmRepository() {
+    public ICdmRepository getCdmRepository() {
         return cdmRepository;
     }
 
-    public void setCdmRepository(ICdmApplicationConfiguration cdmRepository) {
+    public void setCdmRepository(ICdmRepository cdmRepository) {
         this.cdmRepository = cdmRepository;
     }
 

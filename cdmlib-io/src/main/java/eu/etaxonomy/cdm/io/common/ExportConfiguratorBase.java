@@ -9,7 +9,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
@@ -151,7 +151,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
 	 * @return
 	 */
-	public ICdmApplicationConfiguration getNewCdmAppController(){
+	public ICdmRepository getNewCdmAppController(){
 		return getCdmAppController(true, false);
 	}
 
@@ -161,7 +161,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	 * been created before a new controller is returned.
 	 * @return
 	 */
-	public ICdmApplicationConfiguration getCdmAppController(boolean createNew){
+	public ICdmRepository getCdmAppController(boolean createNew){
 		return getCdmAppController(createNew, false);
 	}
 
@@ -172,7 +172,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	 * been created before a new controller is returned.
 	 * @return
 	 */
-	public ICdmApplicationConfiguration getCdmAppController(boolean createNew, boolean omitTermLoading){
+	public ICdmRepository getCdmAppController(boolean createNew, boolean omitTermLoading){
 		if (cdmApp == null || createNew == true){
 			cdmApp = CdmApplicationController.NewInstance(this.getSource(), this.getDbSchemaValidation(), omitTermLoading);
 		}

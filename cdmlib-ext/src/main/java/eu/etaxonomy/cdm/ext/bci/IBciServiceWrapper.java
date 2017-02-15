@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 
 
@@ -41,7 +41,7 @@ public interface IBciServiceWrapper {
 	 * @param appConfig
 	 * @return
 	 */
-	public List<Collection> getCollectionsByCode(String code, ICdmApplicationConfiguration appConfig);
+	public List<Collection> getCollectionsByCode(String code, ICdmRepository appConfig);
 	
 	public URL getServiceUrl(String url);
 

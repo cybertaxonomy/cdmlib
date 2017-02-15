@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  * @version 1.0
  */
 @Component
-public class CdmRepository implements ICdmApplicationConfiguration, ApplicationContextAware {
+public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(CdmRepository.class);
 
 	protected ApplicationContext applicationContext;

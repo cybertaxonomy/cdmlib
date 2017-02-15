@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.validation.batch.BatchValidator;
 import eu.etaxonomy.cdm.api.validation.batch.ValidationScheduler;
 import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl;
@@ -59,7 +59,7 @@ public class ValidationManager {
 
     @Autowired
     @Qualifier("cdmApplicationDefaultConfiguration")
-    private ICdmApplicationConfiguration cdmApplicationDefaultConfiguration;
+    private ICdmRepository cdmApplicationDefaultConfiguration;
 
     @Autowired
 //    IEntityValidationService validationService;
