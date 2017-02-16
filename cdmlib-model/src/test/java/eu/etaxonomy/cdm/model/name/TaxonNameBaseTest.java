@@ -914,4 +914,101 @@ public class TaxonNameBaseTest {
 		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
 	}
 
+
+   /*
+    * Moved from IdentifiableEntityTest to here due to #922
+    */
+   @Test
+   public void testCompareTo() {
+       TaxonNameBase<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+       abies.setNameCache("Abies");
+       abies.setTitleCache("Abies", true);
+
+       TaxonNameBase<?,?> abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+       abiesMill.setNameCache("Abies");
+       abiesMill.setTitleCache("Abies Mill.", true);
+
+       TaxonNameBase<?,?> abiesAlba = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
+       abiesAlba.setNameCache("Abies alba");
+       abiesAlba.setTitleCache("Abies alba", true);
+
+       TaxonNameBase<?,?> abiesAlbaMichx = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
+       abiesAlbaMichx.setNameCache("Abies alba");
+       abiesAlbaMichx.setTitleCache("Abies alba Michx.", true);
+
+       TaxonNameBase<?,?> abiesAutonym  = TaxonNameFactory.NewNonViralInstance(Rank.SECTION_BOTANY());
+       abiesAutonym.setGenusOrUninomial("Abies");
+       abiesAutonym.setInfraGenericEpithet("Abies");
+
+       abiesAutonym.setTitleCache("Abies Mill. sect. Abies", true);
+       abiesAutonym.getNameCache();
+
+       TaxonNameBase<?,?> abiesBalsamea  = TaxonNameFactory.NewNonViralInstance(Rank.SECTION_BOTANY());
+       abiesBalsamea.setGenusOrUninomial("Abies");
+       abiesBalsamea.setInfraGenericEpithet("Balsamea");
+       abiesBalsamea.getNameCache();
+       abiesBalsamea.setTitleCache("Abies sect. Balsamea L.", true);
+
+       TaxonNameBase<?,?> abiesAlbaxPinusBeta = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+       abiesAlbaxPinusBeta.setHybridFormula(true);
+       abiesAlbaxPinusBeta.addHybridParent(abiesAlba, HybridRelationshipType.FIRST_PARENT(), null);
+
+       int result = 0;
+
+       // "Abies" < "Abies Mill."
+       result = abies.compareToName(abiesMill);
+       assertTrue(result < 0);
+
+       // "Abies Mill." > "Abies"
+       result = abiesMill.compareToName(abies);
+       assertTrue(result > 0);
+
+       // "Abies" < "Abies alba"
+       result = abies.compareToName(abiesAlba);
+       assertTrue(result < 0);
+
+       // "Abies alba" > "Abies"
+       result = abiesAlba.compareToName(abies);
+       assertTrue(result > 0);
+
+       // "Abies Mill." < "Abies alba Michx."
+       result = abiesMill.compareToName(abiesAlbaMichx);
+       assertTrue(result < 0);
+
+       // "Abies alba Michx." > "Abies Mill."
+       result = abiesAlbaMichx.compareToName(abiesMill);
+       assertTrue(result > 0);
+
+       //Autonym should be sorted without the author string
+
+       result = abiesAutonym.compareToName(abiesBalsamea);
+       assertTrue(result < 0);
+       // Test consistency of compareTo() with equals():
+       // Is consistent if and only if for every e1 and e2 of class C
+       // e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2)
+
+       boolean compareResult = false;
+       boolean equalsResult = false;
+
+       compareResult = (abies.compareToName(abies) == 0);
+       equalsResult = abies.equals(abies);
+       assertEquals(compareResult, equalsResult);
+
+       compareResult = (abies.compareToName(abiesAlba) == 0);
+       equalsResult = abies.equals(abiesAlba);
+       assertEquals(compareResult, equalsResult);
+
+       compareResult = (abiesMill.compareToName(abies) == 0);
+       equalsResult = abiesMill.equals(abies);
+       assertEquals(compareResult, equalsResult);
+
+       //Abies alba x Pinus beta < Abies alba xinus
+       TaxonNameBase<?,?> abiesAlbaXinus = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+       abiesAlbaXinus.setGenusOrUninomial("Abies");
+       abiesAlbaXinus.setSpecificEpithet("alba");
+       abiesAlbaXinus.setInfraSpecificEpithet("xinus");
+       result = abiesAlbaxPinusBeta.compareToName(abiesAlbaXinus);
+       assertTrue(result < 0);
+   }
+
 }

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -158,4 +159,40 @@ public class TaxonBaseTest extends EntityTestBase {
 		assertNull(clone.getSec());
 		assertSame(freeT.getName(), clone.getName());
 	}
+
+	  /*
+	    * Moved from IdentifiableEntityTest to here due to #922
+	    */
+	   @Test
+	   public void testCompareTo() {
+
+	       TaxonNameBase<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       abies.setNameCache("Abies");
+	       abies.setTitleCache("Abies", true);
+	       Reference sec = ReferenceFactory.newArticle();
+	       sec.setTitle("Abies alba Ref");
+
+	       Taxon abiesTaxon = Taxon.NewInstance(abies, sec);
+
+	       TaxonNameBase<?,?> abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       abiesMill.setNameCache("Abies");
+	       abiesMill.setTitleCache("Abies Mill.", true);
+	       Taxon abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
+
+	       int result = 0;
+
+	       // "Abies" < "Abies Mill."
+	       result = abies.compareToName(abiesMill);
+	       assertTrue(result < 0);
+
+	       abiesTaxon = abies.getTaxa().iterator().next();
+
+	       assertTrue(abiesTaxon.compareToTaxon(abiesTaxon) == 0);
+
+	       assertTrue(abiesMillTaxon.compareToTaxon(abiesTaxon) > 0);
+
+	       assertTrue(abiesTaxon.compareToTaxon(abiesMillTaxon) < 0);
+
+
+	   }
 }
