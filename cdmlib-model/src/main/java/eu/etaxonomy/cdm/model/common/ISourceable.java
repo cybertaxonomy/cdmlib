@@ -54,7 +54,8 @@ public interface ISourceable<T extends IOriginalSource> {
 	public void removeSource(T source);
 
     /**
-     * Adds a {@link IOriginalSource source} of {@link OriginalSourceType type} Import to this description element.
+     * Adds a {@link IOriginalSource source} of type {@link OriginalSourceType#Import}
+     * to this object.
      *
      * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
@@ -62,5 +63,23 @@ public interface ISourceable<T extends IOriginalSource> {
      * @param microReference the details (e.g. page number) in the reference
      */
 	public T addImportSource(String id, String idNamespace, Reference citation, String microCitation);
+
+    /**
+     * Adds a {@link IOriginalSource source} of type {@link OriginalSourceType#PrimaryTaxonomicSource}
+     * to this object.
+     *
+     * @param citation the source as a {@link Reference reference}
+     * @param microReference the details (e.g. page number) in the reference
+     */
+	public T addPrimaryTaxonomicSource(Reference citation, String microCitation);
+
+    /**
+     * Adds a {@link IOriginalSource source} of type
+     * {@link OriginalSourceType#PrimaryTaxonomicSource}
+     * to this object.
+     *
+     * @param citation the source as a {@link Reference reference}
+     */
+	public T addPrimaryTaxonomicSource(Reference citation);
 
 }

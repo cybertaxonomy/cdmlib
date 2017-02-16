@@ -502,6 +502,21 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return source;
     }
 
+    @Override
+    public IdentifiableSource addPrimaryTaxonomicSource(Reference citation, String microCitation) {
+        if (citation == null && microCitation == null){
+            return null;
+        }
+        IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(citation, microCitation);
+        addSource(source);
+        return source;
+    }
+
+    @Override
+    public IdentifiableSource addPrimaryTaxonomicSource(Reference citation) {
+        return addPrimaryTaxonomicSource(citation, null);
+    }
+
 
     @Override
     public void removeSource(IdentifiableSource source) {
@@ -558,28 +573,28 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         IdentifiableEntity<?> result = (IdentifiableEntity<?>)super.clone();
 
         //Extensions
-        result.extensions = new HashSet<Extension>();
+        result.extensions = new HashSet<>();
         for (Extension extension : getExtensions() ){
             Extension newExtension = (Extension)extension.clone();
             result.addExtension(newExtension);
         }
 
         //Identifier
-        result.identifiers = new ArrayList<Identifier>();
+        result.identifiers = new ArrayList<>();
         for (Identifier<?> identifier : getIdentifiers() ){
         	Identifier<?> newIdentifier = (Identifier<?>)identifier.clone();
             result.addIdentifier(newIdentifier);
         }
 
         //OriginalSources
-        result.sources = new HashSet<IdentifiableSource>();
+        result.sources = new HashSet<>();
         for (IdentifiableSource source : getSources()){
             IdentifiableSource newSource = (IdentifiableSource)source.clone();
             result.addSource(newSource);
         }
 
         //Rights
-        result.rights = new HashSet<Rights>();
+        result.rights = new HashSet<>();
         for(Rights rights : getRights()) {
             Rights newRights = (Rights)rights.clone();
             result.addRights(newRights);
@@ -587,7 +602,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
         //Credits
-        result.credits = new ArrayList<Credit>();
+        result.credits = new ArrayList<>();
         for(Credit credit : getCredits()) {
             Credit newCredit = (Credit)credit.clone();
             result.addCredit(newCredit);
