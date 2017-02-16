@@ -138,13 +138,6 @@ public class MarkupDocumentImport
 		getReferenceService().saveOrUpdate(sourceReference);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common
-	 * .IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(MarkupImportState state) {
 		return !state.getConfig().isDoTaxa();
@@ -153,10 +146,6 @@ public class MarkupDocumentImport
 
 // ************************* OPEN AFTER REFACTORING ****************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#fireWarningEvent(java.lang.String, java.lang.String, java.lang.Integer)
-	 */
 	@Override
     public void fireWarningEvent(String message, String dataLocation, Integer severity) {
 		super.fireWarningEvent(message, dataLocation, severity, 1);
@@ -240,7 +229,7 @@ public class MarkupDocumentImport
 	}
 
 	public boolean getReadMediaData(){
-		return this.READ_MEDIA_DATA;
+		return READ_MEDIA_DATA;
 	}
 
 	@Override
@@ -251,8 +240,5 @@ public class MarkupDocumentImport
 	public IEditGeoService getEditGeoService() {
 		return editGeoService;
 	}
-
-
-
 
 }
