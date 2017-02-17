@@ -15,13 +15,13 @@
             <item name="Getting started" href="getting-started.html"/>
             <item name="Writing Templates" href="writing-templates.html"/>
             <item name="Troubleshooting" href="troubleshooting.html"/>
-            <item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/PrintPublisher"/>
+            <item name="Wiki" href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/PrintPublisher"/>
         </menu>
         <menu name="Project">
             <item name="Mailing Lists" href="mail-lists.html"/>
             <item name="Project Team" href="team-list.html"/>
             <item name="Continuous Integration" href="integration.html"/>
-            <item name="Issue Tracking" href="http://dev.e-taxonomy.eu/trac/"/>
+            <item name="Issue Tracking" href="https://dev.e-taxonomy.eu/redmine/projects/edit"/>
             <item name="Source Repository" href="source-repository.html"/>
             <item name="License" href="license.html"/>
         </menu>
