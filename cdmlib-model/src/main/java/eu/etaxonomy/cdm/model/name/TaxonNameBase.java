@@ -3241,8 +3241,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     @Override
     public boolean isHybridName() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.isMonomHybrid() || this.isBinomHybrid() || this.isTrinomHybrid();
     }
 
 // ***************** COMPARE ********************************/
