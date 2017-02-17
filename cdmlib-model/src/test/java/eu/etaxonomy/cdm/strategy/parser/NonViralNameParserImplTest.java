@@ -27,6 +27,7 @@ import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
@@ -796,21 +797,19 @@ public class NonViralNameParserImplTest {
 
     }
 
-//    @Test
-//    public final void testTemp(){
-////        String nalata = "N. alata";
-////        if (! nalata.matches(NonViralNameParserImplRegExBase.abbrevHybridSecondPart)){
-////            throw new RuntimeException();
-////        }
+    @Test
+    public final void testTemp(){
+//        String nalata = "N. alata";
+//        if (! nalata.matches(NonViralNameParserImplRegExBase.abbrevHybridSecondPart)){
+//            throw new RuntimeException();
+//        }
 //
-//        //abbreviated hybrid formula #6410
-//        String nameStr = "Orchis morio subsp. syriaca \u00D7 papilionacea subsp. schirvanica";
-//        INonViralName name1 = parser.parseFullName(nameStr, botanicCode, null);
-//        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
-//        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
-//        //could also be N. or no genus at all, depends on formatter
-//        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis papilionacea subsp. schirvanica", name1.getTitleCache());
-//    }
+//        //#6100  jun.
+//        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+//        INonViralName name = parser.parseFullName(nameStr, botanicCode, null);
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+    }
 
 
     @Test
@@ -2156,14 +2155,13 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
 
-        //test case disabled, would fail! Is due to '´t'
-        // ´t
-//        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
-//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        //´t
+        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
 
         //#6100  jun.
-        String nameStr = "Swida x friedlanderi (W.H.Wagner jun.) Holub";
-        name = parser.parseFullName(nameStr);
+        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+        name = parser.parseFullName(nameStr, botanicCode, null);  //fails with missing botanicCode, see open issues
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
 
@@ -2219,6 +2217,30 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards", "Thiede & ´t Hart", name.getCombinationAuthorship().getTitleCache());
 
+        //Man in 't Veld  #6100
+        nameStr = "Phytophthora multivesiculata Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters", name.getCombinationAuthorship().getTitleCache());
+
+        nameStr = "Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("De la Torre, Vicedo, Alonso & Paya", name.getCombinationAuthorship().getTitleCache());
+
+    }
+
+    @Test
+    @Ignore
+    public final void openIssues(){
+        //#6100  jun.
+        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+        INonViralName name = parser.parseFullName(nameStr, botanicCode, null);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+        name = parser.parseFullName(nameStr);  //fails for some reasons without botanicCode given, as anyBotanicFullName is not recognized, strange because other very similar names such as Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya do not fail
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
     }
 
 }
