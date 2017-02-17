@@ -975,7 +975,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		    //hybrid bits
 		    handleHybridBits(nameToBeFilled);
 		    if (!nameToBeFilled.isHybridFormula()){
-		        Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
+		        Set<HybridRelationship> hybridChildRelations = new HashSet<>();
 		        hybridChildRelations.addAll(nameToBeFilled.getHybridChildRelations());
 
 		        for (HybridRelationship hybridRelationship: hybridChildRelations){
