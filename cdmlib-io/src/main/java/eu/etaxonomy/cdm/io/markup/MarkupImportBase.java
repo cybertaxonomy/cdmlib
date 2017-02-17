@@ -2000,8 +2000,9 @@ public abstract class MarkupImportBase  {
      * @param reader
      * @param next
      * @return
+     * @throws XMLStreamException
      */
-    private List<Reference> handleStringReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) {
+    private List<Reference> handleStringReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
         checkNoAttributes(parentEvent);
         List<Reference> result = new ArrayList<>();
         while (reader.hasNext()) {
@@ -2019,7 +2020,8 @@ public abstract class MarkupImportBase  {
                     handleUnexpectedElement(end);
                 }
             } else if (isStartingElement(next, REFERENCE)) {
-                xx;
+                //TODO FIXME
+                handleNotYetImplementedElement(next);
             } else {
                 handleUnexpectedElement(next);
             }

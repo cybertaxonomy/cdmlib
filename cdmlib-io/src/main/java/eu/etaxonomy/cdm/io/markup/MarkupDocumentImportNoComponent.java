@@ -496,7 +496,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 * @throws XMLStreamException
 	 */
 	private String makeNotesString(MarkupImportState state,	XMLEventReader reader, String text, XMLEvent next) throws XMLStreamException {
-		Map<String, String> stringMap = handleString(state, reader,	next, null);
+		Map<String, SubheadingResult> stringMap = handleString(state, reader,	next, null);
 		if (stringMap.size() == 0){
 			String message = "No text available in <notes>";
 			fireWarningEvent(message, next, 4);
