@@ -909,8 +909,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 		     //hybrid formula
 			 else if (hybridFormulaPattern.matcher(fullNameString).matches()){
-				 Set<HybridRelationship> existingRelations = new HashSet<HybridRelationship>();
-				 Set<HybridRelationship> notToBeDeleted = new HashSet<HybridRelationship>();
+				 Set<HybridRelationship> existingRelations = new HashSet<>();
+				 Set<HybridRelationship> notToBeDeleted = new HashSet<>();
 
 				 for ( HybridRelationship rel : nameToBeFilled.getHybridChildRelations()){
 				     existingRelations.add(rel);
@@ -928,10 +928,15 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 						 secondNameString += " " + str;
 					 }
 				 }
+				 firstNameString = firstNameString.trim();
+				 secondNameString = secondNameString.trim();
 				 nameToBeFilled.setHybridFormula(true);
 				 NomenclaturalCode code = nameToBeFilled.getNomenclaturalCode();
-				 INonViralName firstName = this.parseFullName(firstNameString.trim(), code, rank);
-				 INonViralName secondName = this.parseFullName(secondNameString.trim(), code, rank);
+				 INonViralName firstName = this.parseFullName(firstNameString, code, rank);
+				 if (secondNameString.matches(abbrevHybridSecondPart)){
+				     secondNameString = extendSecondHybridPart(firstName, secondNameString);
+				 }
+				 INonViralName secondName = this.parseFullName(secondNameString, code, rank);
 				 HybridRelationship firstRel = nameToBeFilled.addHybridParent(firstName, HybridRelationshipType.FIRST_PARENT(), null);
 				 HybridRelationship second = nameToBeFilled.addHybridParent(secondName, HybridRelationshipType.SECOND_PARENT(), null);
 				 checkRelationExist(firstRel, existingRelations, notToBeDeleted);
@@ -941,7 +946,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				 Rank firstRank = firstName.getRank();
 				 Rank secondRank = secondName.getRank();
 
-				 if (firstRank == null || firstRank.isHigher(secondRank)){
+				 if (firstRank == null || (secondRank != null && firstRank.isHigher(secondRank))){
 					 newRank = secondRank;
 				 }else{
 					 newRank = firstRank;
@@ -996,6 +1001,27 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	/**
+     * @param firstName
+     * @param secondNameString
+     * @return
+     */
+    private String extendSecondHybridPart(INonViralName firstName, String secondNameString) {
+        //first letter of genus given
+        if (secondNameString.matches("^" + abbrevHybridGenus + ".*")){
+            if (StringUtils.isNotBlank(firstName.getGenusOrUninomial())){
+                if (secondNameString.substring(0,1).equals(firstName.getGenusOrUninomial().substring(0, 1))){
+                    secondNameString = secondNameString.replaceAll("^" + abbrevHybridGenus, firstName.getGenusOrUninomial() + " ");
+                }
+            }
+        }else if (secondNameString.matches(abbrevHybridSecondPartOnlyInfraSpecies)){
+            secondNameString = CdmUtils.concat(" " , firstName.getGenusOrUninomial(), firstName.getSpecificEpithet(), secondNameString);
+        }else if (true){  //there will be further alternatives in future maybe
+            secondNameString = CdmUtils.concat(" " , firstName.getGenusOrUninomial(), secondNameString);
+        }
+        return secondNameString;
+    }
+
+    /**
      * Checks if a hybrid relation exists in the Set of existing relations
      * and <BR>
      *  if it does not adds it to relations not to be deleted <BR>

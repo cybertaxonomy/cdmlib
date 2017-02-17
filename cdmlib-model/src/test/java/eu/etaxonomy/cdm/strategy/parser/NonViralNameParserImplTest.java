@@ -673,7 +673,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus var. beta", name1.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
 
-        //hybrids with authors
+        //hybrids with authors  //happens but questionable
         name1 = parser.parseFullName("Abies alba L. \u00D7 Pinus bus Mill.", botanicCode, null);
         assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
         assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
@@ -686,7 +686,132 @@ public class NonViralNameParserImplTest {
         assertEquals("Name must have Pinus bus Mill. as second hybrid parent", "Pinus bus Mill.", secondParent.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
 
+        //abbreviated genus hybrid formula #6410 / #5983
+        String nameStr = "Nepenthes mirabilis \u00D7 N. alata";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Nepenthes mirabilis \u00D7 Nepenthes alata", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        //to be discussed as usually they should be ordered alphabetically
+        assertEquals("Name must have Nepenthes mirabilis as first hybrid parent", "Nepenthes mirabilis", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Nepenthes alata as second hybrid parent", "Nepenthes alata", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+
+        //missing genus hybrid formula #5983
+        nameStr = "Nepenthes mirabilis \u00D7 alata";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Nepenthes mirabilis \u00D7 Nepenthes alata", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        //to be discussed as usually they should be ordered alphabetically
+        assertEquals("Name must have Nepenthes mirabilis as first hybrid parent", "Nepenthes mirabilis", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Nepenthes alata as second hybrid parent", "Nepenthes alata", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+
+        //#5983 subsp. with species and missing genus
+        nameStr = "Orchis coriophora subsp. fragrans \u00D7 sancta";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis coriophora subsp. fragrans \u00D7 Orchis sancta", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis coriophora subsp. fragrans as first hybrid parent", "Orchis coriophora subsp. fragrans", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis sancta as second hybrid parent", "Orchis sancta", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+        //2 subspecies with missing genus part #5983
+        nameStr = "Orchis morio subsp. syriaca \u00D7 papilionacea subsp. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis papilionacea subsp. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis papilionacea subsp. schirvanica as second hybrid parent", "Orchis papilionacea subsp. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+        //subspecies and variety with missing genus part
+        nameStr = "Orchis morio subsp. syriaca \u00D7 papilionacea var. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis papilionacea var. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis papilionacea var. schirvanica as second hybrid parent", "Orchis papilionacea var. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
+
+        //2 subspecies with missing genus and species part #5983
+        nameStr = "Orchis morio subsp. syriaca \u00D7 subsp. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis morio subsp. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis morio subsp. schirvanica as second hybrid parent", "Orchis morio subsp. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+        //subspecies and variety with missing genus and species part #5983
+        nameStr = "Orchis morio subsp. syriaca \u00D7 var. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis morio var. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis morio subsp. schirvanica as second hybrid parent", "Orchis morio var. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
+
+
     }
+
+//    @Test
+//    public final void testTemp(){
+////        String nalata = "N. alata";
+////        if (! nalata.matches(NonViralNameParserImplRegExBase.abbrevHybridSecondPart)){
+////            throw new RuntimeException();
+////        }
+//
+//        //abbreviated hybrid formula #6410
+//        String nameStr = "Orchis morio subsp. syriaca \u00D7 papilionacea subsp. schirvanica";
+//        INonViralName name1 = parser.parseFullName(nameStr, botanicCode, null);
+//        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+//        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+//        //could also be N. or no genus at all, depends on formatter
+//        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis papilionacea subsp. schirvanica", name1.getTitleCache());
+//    }
+
 
     @Test
     public final void testHybridsRemoval(){

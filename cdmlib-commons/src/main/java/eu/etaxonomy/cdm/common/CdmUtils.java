@@ -240,7 +240,7 @@ public class CdmUtils {
      * @param seperator
      * @return String
      */
-    static public String concat(CharSequence separator, String[] strings){
+    static public String concat(CharSequence separator, String... strings){
         String result = "";
         boolean allNull = true;
         for (String string : strings){

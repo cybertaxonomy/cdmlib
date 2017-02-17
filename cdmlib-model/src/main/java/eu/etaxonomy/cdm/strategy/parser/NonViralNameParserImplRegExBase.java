@@ -87,7 +87,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     //marker
     protected static String InfraGenusMarker = "(n|notho)?(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
-    protected static String infraSpeciesMarker = "(n|notho)?(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String infraSpeciesMarkerNoNotho = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
     protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
@@ -287,7 +288,13 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
     protected static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     protected static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
-    protected static String hybridFullName = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")" + hybridFormularSeparator + "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")";
+    protected static String abbrevHybridGenus = "([A-Z](\\.\\s*|\\s+))";
+    protected static String abbrevHybridSecondPartWithSpecies = abbrevHybridGenus + "?" + nonCapitalEpiWord + "(" + oWs + infraSpeciesMarkerNoNotho + oWs + nonCapitalEpiWord + ")?";  //#5983 first step but still to strict
+    protected static String abbrevHybridSecondPartOnlyInfraSpecies = infraSpeciesMarkerNoNotho + oWs + nonCapitalEpiWord;
+    protected static String abbrevHybridSecondPart = "(" + abbrevHybridSecondPartWithSpecies + "|" + abbrevHybridSecondPartOnlyInfraSpecies + ")";
+
+    protected static String hybridSecondPart = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + "|" + abbrevHybridSecondPart + ")";
+    protected static String hybridFullName = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")" + hybridFormularSeparator + hybridSecondPart ;
 
     //Pattern
     protected static Pattern oWsPattern = Pattern.compile(oWs);
