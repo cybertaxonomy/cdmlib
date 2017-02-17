@@ -19,7 +19,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -477,7 +477,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
         this.firstSpecimenInFacade = firstSpecimenInFacade;
     }
 
-    public DeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmApplicationConfiguration repository) {
+    public DeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmRepository repository) {
         if (this.deduplicationHelper == null){
             this.deduplicationHelper = new DeduplicationHelper<>(repository);
         }

@@ -215,7 +215,7 @@ public class IpniService  implements IIpniService{
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.ipni.IIpniService#getAuthors(java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration, eu.etaxonomy.cdm.ext.ipni.IpniServiceAuthorConfigurator)
+	 * @see eu.etaxonomy.cdm.ext.ipni.IIpniService#getAuthors(java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.api.application.ICdmRepository, eu.etaxonomy.cdm.ext.ipni.IpniServiceAuthorConfigurator)
 	 */
 	@Override
     public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmRepository services, IpniServiceAuthorConfigurator config){
@@ -857,7 +857,7 @@ public class IpniService  implements IIpniService{
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.IIpniService#getNamesSimple(java.lang.String, eu.etaxonomy.cdm.ext.IIpniService.DelimitedFormat, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
+	 * @see eu.etaxonomy.cdm.ext.IIpniService#getNamesSimple(java.lang.String, eu.etaxonomy.cdm.ext.IIpniService.DelimitedFormat, eu.etaxonomy.cdm.api.application.ICdmRepository)
 	 */
 	@Override
     public List<BotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config){
@@ -879,7 +879,7 @@ public class IpniService  implements IIpniService{
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.IIpniService#getPublications(java.lang.String, java.lang.String, boolean, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
+	 * @see eu.etaxonomy.cdm.ext.IIpniService#getPublications(java.lang.String, java.lang.String, boolean, eu.etaxonomy.cdm.api.application.ICdmRepository)
 	 */
 	@Override
     public List<Reference> getPublications(String title, String abbreviation, ICdmRepository services, IpniServicePublicationConfigurator config){

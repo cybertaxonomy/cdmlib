@@ -65,7 +65,7 @@ class BatchValidationUtil {
     private static final Logger logger = Logger.getLogger(BatchValidationUtil.class);
 
     // Ideally retrieved dynamically through reflection, but got stuck on
-    // getXXXService methods in ICdmApplicationConfiguration returning proxies
+    // getXXXService methods in ICdmRepository returning proxies
     // (com.sun.proxy.$Proxy), which is a dead end when attempting to infer
     // parameter arguments (e.g. the AgentBase in IAgentService<AgentBase>).
     @SuppressWarnings({ "unchecked", "rawtypes" })

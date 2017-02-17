@@ -59,7 +59,7 @@ public class PubTest {
 		///Resource resource =  new ClassPathResource(CdmDefaultIOBase.DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
 		Resource resource =  new ClassPathResource(DEFAULT_PRINT_APPLICATION_CONTEXT_RESOURCE);
 		ICdmRepository app = CdmIoApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
-		//ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
+		//ICdmRepository app = CdmApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
 		//configurator = PublishConfigurator.NewLocalInstance(CdmStore.getCurrentApplicationConfiguration());//from taxeditor GeneratePdfHandler
 		configurator = PublishConfigurator.NewLocalInstance(app);
 

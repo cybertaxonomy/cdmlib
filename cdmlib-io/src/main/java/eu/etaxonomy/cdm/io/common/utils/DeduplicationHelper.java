@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchException;
 public class DeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private static final Logger logger = Logger.getLogger(DeduplicationHelper.class);
 
-    private ICdmApplicationConfiguration repository;
+    private ICdmRepository repository;
 
 
     boolean referenceMapIsInitialized;
@@ -61,7 +61,7 @@ public class DeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     /**
      *
      */
-    public DeduplicationHelper(ICdmApplicationConfiguration repository) {
+    public DeduplicationHelper(ICdmRepository repository) {
         this.repository = repository;
         if (repository == null){
             throw new NullPointerException("Repository must not be null");
