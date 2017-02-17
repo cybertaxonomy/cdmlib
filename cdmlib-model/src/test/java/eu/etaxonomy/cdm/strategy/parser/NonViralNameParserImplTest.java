@@ -2161,11 +2161,22 @@ public class NonViralNameParserImplTest {
 //        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
 
-        //#6100
+        //#6100  jun.
         String nameStr = "Swida x friedlanderi (W.H.Wagner jun.) Holub";
         name = parser.parseFullName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+
+        //#6100 bis /ter
+        nameStr = "Schistidium aquaticum (R.Br.ter) Ochyra";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "R.Br.ter", name.getBasionymAuthorship().getTitleCache());
+
+        nameStr = "Grimmia mitchellii R.Br.bis";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "R.Br.bis", name.getCombinationAuthorship().getTitleCache());
 
 
     }
