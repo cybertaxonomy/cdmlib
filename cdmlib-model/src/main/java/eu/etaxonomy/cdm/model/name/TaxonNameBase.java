@@ -1039,6 +1039,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #isTrinomHybrid()
      */
     @Override
+    @Transient
+    @java.beans.Transient
     public boolean isHybridFormula(){
         return this.hybridFormula;
     }
@@ -3232,6 +3234,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
                     this.getInfraGenericEpithet():
                 this.getGenusOrUninomial();
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isHybridName() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 // ***************** COMPARE ********************************/

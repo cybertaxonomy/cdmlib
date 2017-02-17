@@ -300,7 +300,8 @@ public interface INonViralName extends ITaxonNameBase{
     * @see     #isMonomHybrid()
     * @see     #isBinomHybrid()
     * @see     #isTrinomHybrid()
-    */
+    * @see     #isHybridName()
+   */
    public boolean isHybridFormula();
 
    /**
@@ -313,6 +314,7 @@ public interface INonViralName extends ITaxonNameBase{
     * @see     #isHybridFormula()
     * @see     #isBinomHybrid()
     * @see     #isTrinomHybrid()
+    * @see     #isHybridName()
     */
    public boolean isMonomHybrid();
 
@@ -326,6 +328,7 @@ public interface INonViralName extends ITaxonNameBase{
     * @see     #isHybridFormula()
     * @see     #isMonomHybrid()
     * @see     #isTrinomHybrid()
+    * @see     #isHybridName()
     */
    public boolean isBinomHybrid();
 
@@ -340,8 +343,25 @@ public interface INonViralName extends ITaxonNameBase{
     * @see     #isHybridFormula()
     * @see     #isMonomHybrid()
     * @see     #isBinomHybrid()
+    * @see     #isHybridName()
     */
    public boolean isTrinomHybrid();
+
+   /**
+     * Computes if this name is a hybrid name. <code>true</code> if any of the monon, binom or trinom
+     * hybrid flags is set. <code>false</code> if neither of these flags is set.
+     * Note: usually <code>false</code> if the hybrid formula flag is set as a name is
+     * either a hybrid name or a hybrid formula or none of them, but never both.
+     *
+     * @return the boolean value indicating if this is a hybrid name
+     * @see     #isHybridFormula()
+     * @see     #isMonomHybrid()
+     * @see     #isBinomHybrid()
+     * @see     #isTrinomHybrid()
+     */
+   @Transient
+   @java.beans.Transient
+   public boolean isHybridName();
 
 
    /**
