@@ -49,8 +49,8 @@
   </properties>
   
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib.git</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
   </scm>
   
@@ -185,7 +185,7 @@
     </contributors -->
   <issueManagement>
     <system>Trac</system>
-    <url>http://dev.e-taxonomy.eu/trac/</url>
+    <url>https://dev.e-taxonomy.eu/redmine/projects/edit</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
@@ -329,7 +329,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.0</version>
+        <version>3.3</version>
         <configuration>
           <locales>en</locales>
           <outputEncoding>UTF-8</outputEncoding>
