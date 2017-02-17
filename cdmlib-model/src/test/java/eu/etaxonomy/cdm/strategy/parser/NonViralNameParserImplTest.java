@@ -2228,6 +2228,13 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya", name.getCombinationAuthorship().getTitleCache());
 
+        //Sant'Anna
+        nameStr = "Coelosphaerium evidenter-marginatum M.T.P.Azevedo & Sant'Anna";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("M.T.P.Azevedo & Sant'Anna", name.getCombinationAuthorship().getTitleCache());
+
+
     }
 
     @Test
