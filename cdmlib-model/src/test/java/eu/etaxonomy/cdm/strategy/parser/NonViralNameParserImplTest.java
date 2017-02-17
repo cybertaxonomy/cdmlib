@@ -2178,6 +2178,27 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "R.Br.bis", name.getCombinationAuthorship().getTitleCache());
 
+        //forma #6100
+        nameStr = "Xerocomus parasiticus forma piperatoides (J. Blum) R. Mazza";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "piperatoides", name.getInfraSpecificEpithet());
+        assertEquals( Rank.FORM(), name.getRank());
+
+        //subgen. #6100
+        nameStr = "Aliciella subgen. Gilmania (H.Mason & A.D.Grant) J.M.Porter";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "Gilmania", name.getInfraGenericEpithet());
+        assertEquals( Rank.SUBGENUS(), name.getRank());
+
+        //subgen. #6100
+        nameStr = "Aliciella subgen. Gilmania J.M.Porter";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "Gilmania", name.getInfraGenericEpithet());
+        assertEquals( Rank.SUBGENUS(), name.getRank());
+        assertEquals( "J.M.Porter", name.getCombinationAuthorship().getTitleCache());
 
     }
 
