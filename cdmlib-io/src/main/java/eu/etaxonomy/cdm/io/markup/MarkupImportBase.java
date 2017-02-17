@@ -394,9 +394,10 @@ public abstract class MarkupImportBase  {
 
 	/**
 	 * Returns the value of a given attribute name and removes the attribute from the attributes map.
-	 * @param attributes
-	 * @param attrName
-	 * @return
+	 * Returns <code>null</code> if attribute does not exist.
+	 * @param attributes the list of all attributes
+	 * @param attrName the requested attribute name
+	 * @return the value for the attribute
 	 */
 	protected String getAndRemoveAttributeValue(Map<String, Attribute> attributes, String attrName) {
 		return getAndRemoveAttributeValue(null, attributes, attrName, false, 1);
@@ -1170,25 +1171,37 @@ public abstract class MarkupImportBase  {
 	}
 
 	protected void handleFullName(MarkupImportState state, XMLEventReader reader,
-			INonViralName name, XMLEvent next) throws XMLStreamException {
+			INonViralName name, XMLEvent event) throws XMLStreamException {
 		String fullNameStr;
-		Map<String, Attribute> attrs = getAttributes(next);
-		String rankStr = getAndRemoveRequiredAttributeValue(next,
-				attrs, "rank");
+		Map<String, Attribute> attrs = getAttributes(event);
+		String rankStr = getAndRemoveRequiredAttributeValue(event, attrs, "rank");
+		String hybridClass = getAndRemoveAttributeValue(attrs, "hybridClass");
+
 		Rank rank = makeRank(state, rankStr, false);
 		name.setRank(rank);
 		if (rank == null) {
 			String message = "Rank was computed as null. This must not be.";
-			fireWarningEvent(message, next, 6);
+			fireWarningEvent(message, event, 6);
 			name.setRank(Rank.UNKNOWN_RANK());
 		}
 		if (!attrs.isEmpty()) {
-			handleUnexpectedAttributes(next.getLocation(), attrs);
+			handleUnexpectedAttributes(event.getLocation(), attrs);
 		}
-//		next = readNoWhitespace(reader);
-		fullNameStr = getCData(state, reader, next, false);
+		fullNameStr = getCData(state, reader, event, false);
 		NonViralNameParserImpl.NewInstance().parseFullName(name, fullNameStr, rank, false);
-//		name.setTitleCache(fullNameStr, true);
+		if (hybridClass != null ){
+		    if ("hybrid formula".equals(hybridClass)){
+		        if (!name.isHybridFormula()){
+		            fireWarningEvent("Hybrid formula is not set though requested: " + fullNameStr, event, 4);
+		        }
+		    }else if ("hybrid".equals(hybridClass)){
+                if (!name.isHybridName()){
+                    fireWarningEvent("Hybrid name is recognized: " + fullNameStr, event, 4);
+                }
+            }else{
+                handleNotYetImplementedAttributeValue(event, "hybridClass", hybridClass);
+            }
+		}
 	}
 
 
