@@ -142,7 +142,7 @@ public class Reference
 	@Column(length=4096, name="title")
 	@Lob
 	@Field
-	@Match(MatchMode.EQUAL_REQUIRED)
+	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore
     //TODO Val #3379
 //	@NullOrNotEmpty
 	private String title;
