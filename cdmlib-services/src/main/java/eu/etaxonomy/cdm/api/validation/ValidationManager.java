@@ -58,8 +58,8 @@ public class ValidationManager {
     private BatchValidator batchValidator;
 
     @Autowired
-    @Qualifier("cdmApplicationDefaultConfiguration")
-    private ICdmRepository cdmApplicationDefaultConfiguration;
+    @Qualifier("cdmRepository")
+    private ICdmRepository cdmRepository;
 
     @Autowired
 //    IEntityValidationService validationService;
@@ -113,7 +113,7 @@ public class ValidationManager {
                 l2Listener.setValidationExecutor(validationExecutor);
 
                 //level3
-                l3Listener = new Level3TransactionalValidationEventListener(cdmApplicationDefaultConfiguration, validationDao);
+                l3Listener = new Level3TransactionalValidationEventListener(cdmRepository, validationDao);
                 l3Listener.setValidationExecutor(validationExecutor);
 
                 // prepend to register before or append to register after
