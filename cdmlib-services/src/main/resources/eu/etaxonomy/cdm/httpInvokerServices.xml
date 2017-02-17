@@ -273,6 +273,16 @@
       <value>eu.etaxonomy.cdm.api.service.ITermService</value>
     </property>
   </bean>
+  
+   <bean id="httpRightsService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="rightsServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IRightsService</value>
+    </property>
+  </bean>
 
   <bean id="httpEntityValidationService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">

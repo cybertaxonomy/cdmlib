@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author k.luther
@@ -16,5 +19,12 @@ import eu.etaxonomy.cdm.model.media.Rights;
  *
  */
 public interface IRightsService extends IAnnotatableService<Rights>{
+
+    /**
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<Rights>> getUuidAndLabelText(Integer limit, String pattern);
 
 }

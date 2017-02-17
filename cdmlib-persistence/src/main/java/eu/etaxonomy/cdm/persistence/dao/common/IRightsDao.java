@@ -8,13 +8,23 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author k.luther
  * @date 15.02.2017
  *
  */
-public interface IRightsDao extends IAnnotatableDao<Rights> {
+public interface IRightsDao extends ILanguageStringBaseDao<Rights> {
+
+    /**
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<Rights>> getUuidAndTitleCache(Integer limit, String pattern);
 
 }
