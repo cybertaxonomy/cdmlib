@@ -2155,10 +2155,6 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
 
-        //´t
-        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
-        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-
         //#6100  jun.
         String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
         name = parser.parseFullName(nameStr, botanicCode, null);  //fails with missing botanicCode, see open issues
@@ -2211,11 +2207,12 @@ public class NonViralNameParserImplTest {
         assertEquals("I (=Yi) should be an accepted ending", "C.I Peng", name.getCombinationAuthorship().getTitleCache());
         assertEquals("I (=Yi) should be an accepted ending", "P.I Mao", name.getBasionymAuthorship().getTitleCache());
 
-        //I = Yi #6100
-        nameStr = "Sedum decipiens (Baker) Thiede & ´t Hart";
+        //´t Hart #6100
+        nameStr = "Sedum decipiens (Baker) Thiede & \u00B4t Hart";   //still does not work with "´", don't know what the difference is, see openIssues()
         name = parser.parseFullName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards", "Thiede & ´t Hart", name.getCombinationAuthorship().getTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
+                "Thiede & \u00B4t Hart", name.getCombinationAuthorship().getTitleCache());
 
         //Man in 't Veld  #6100
         nameStr = "Phytophthora multivesiculata Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters";
@@ -2248,6 +2245,19 @@ public class NonViralNameParserImplTest {
         name = parser.parseFullName(nameStr);  //fails for some reasons without botanicCode given, as anyBotanicFullName is not recognized, strange because other very similar names such as Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya do not fail
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+
+        //´t Hart #6100
+        nameStr = "Sedum decipiens (Baker) Thiede & \u00B4t Hart";   //still does not work with "´" if compiled by maven, don't know what the difference is
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
+                "Thiede & \u00B4t Hart", name.getCombinationAuthorship().getTitleCache());
+        nameStr = "Sedum decipiens (Baker) Thiede & ´t Hart";   //does not work if compiled with maven
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
+                "Thiede & ´t Hart", name.getCombinationAuthorship().getTitleCache());
+
     }
 
 }
