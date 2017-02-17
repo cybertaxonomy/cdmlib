@@ -2200,6 +2200,25 @@ public class NonViralNameParserImplTest {
         assertEquals( Rank.SUBGENUS(), name.getRank());
         assertEquals( "J.M.Porter", name.getCombinationAuthorship().getTitleCache());
 
+        //la Croix #6100
+        nameStr = "Eulophia ovalis var. bainesii (Rolfe) P.J.Cribb & la Croix";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "P.J.Cribb & la Croix", name.getCombinationAuthorship().getTitleCache());
+
+        //I = Yi #6100
+        nameStr = "Parasenecio hwangshanicus (P.I Mao) C.I Peng";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("I (=Yi) should be an accepted ending", "C.I Peng", name.getCombinationAuthorship().getTitleCache());
+        assertEquals("I (=Yi) should be an accepted ending", "P.I Mao", name.getBasionymAuthorship().getTitleCache());
+
+        //I = Yi #6100
+        nameStr = "Sedum decipiens (Baker) Thiede & ´t Hart";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards", "Thiede & ´t Hart", name.getCombinationAuthorship().getTitleCache());
+
     }
 
 }
