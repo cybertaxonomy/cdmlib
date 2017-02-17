@@ -2439,23 +2439,26 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
+
+		//FM
 		}else if (key.equalsIgnoreCase("Kalimantan")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR-KA");
 		}else if (key.equalsIgnoreCase("Borneo")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR");
 		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MLY-PM");
 			}else if (key.equalsIgnoreCase("Malay Peninsula")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MLY-PM");
-		}else if (key.equalsIgnoreCase("Java")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("JAW-OO");
-		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BIS-OO");
-		}else if (key.equalsIgnoreCase("Sumatra")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUM-OO");
+		}else if (key.equalsIgnoreCase("Java")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("JAW");
+		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BIS");
+		}else if (key.equalsIgnoreCase("Sumatra")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUM");
 		}else if (key.equalsIgnoreCase("Sabah")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR-SB");
 			}else if (key.equalsIgnoreCase("North Borneo")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR-SB");
 
+		}else if (key.equalsIgnoreCase("Thailand")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("THA");
 		}else if (key.equalsIgnoreCase("Bali")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("LSI-BA");
-		}else if (key.equalsIgnoreCase("Moluccas")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MOL-OO");
+		}else if (key.equalsIgnoreCase("Moluccas")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MOL");
 
 		}else if (key.equalsIgnoreCase("Indochina")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("41");
 		}else if (key.equalsIgnoreCase("Lesser Sunda Islands")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("LSI");
-		}else if (key.equalsIgnoreCase("Sulawesi")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUL-OO");
-			}else if (key.equalsIgnoreCase("Celebes")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUL-OO");
+		}else if (key.equalsIgnoreCase("Sulawesi")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUL");
+			}else if (key.equalsIgnoreCase("Celebes")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUL");
 
 		}else if (key.equalsIgnoreCase("south-east United States")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("78");
 		}else if (key.equalsIgnoreCase("West Indies")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("81");

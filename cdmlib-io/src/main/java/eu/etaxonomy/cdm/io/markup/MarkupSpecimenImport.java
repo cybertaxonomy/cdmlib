@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -115,20 +116,25 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		String destroyed = getAndRemoveAttributeValue(attributes, DESTROYED);
 		String lost = getAndRemoveAttributeValue(attributes, LOST);
 		checkNoAttributes(attributes, parentEvent);
-		if (StringUtils.isNotEmpty(typeStatus)) {
+		if (isNotBlank(typeStatus)) {
 			// TODO
 			// currently not needed
 			fireWarningEvent("Type status not yet used", parentEvent, 4);
-		} else if (StringUtils.isNotEmpty(notSeen)) {
-			handleNotYetImplementedAttribute(attributes, NOT_SEEN);
-		} else if (StringUtils.isNotEmpty(unknown)) {
-			handleNotYetImplementedAttribute(attributes, UNKNOWN);
-		} else if (StringUtils.isNotEmpty(notFound)) {
-			handleNotYetImplementedAttribute(attributes, NOT_FOUND);
-		} else if (StringUtils.isNotEmpty(destroyed)) {
-			handleNotYetImplementedAttribute(attributes, DESTROYED);
-		} else if (StringUtils.isNotEmpty(lost)) {
-			handleNotYetImplementedAttribute(attributes, LOST);
+		}
+		if (isNotBlank(notSeen)) {
+			handleNotYetImplementedAttribute(attributes, NOT_SEEN, parentEvent);
+		}
+		if (isNotBlank(unknown)) {
+			handleNotYetImplementedAttribute(attributes, UNKNOWN, parentEvent);
+		}
+		if (isNotBlank(notFound)) {
+			handleNotYetImplementedAttribute(attributes, NOT_FOUND, parentEvent);
+		}
+		if (isNotBlank(destroyed)) {
+			handleNotYetImplementedAttribute(attributes, DESTROYED, parentEvent);
+		}
+		if (isNotBlank(lost)) {
+			handleNotYetImplementedAttribute(attributes, LOST, parentEvent);
 		}
 
 		INonViralName firstName = null;
@@ -228,16 +234,38 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
         			    typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
         			}
         			typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
-        			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
+        			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus,
+        			        null, null, null, typeInfo.notDesignated, addToAllNamesInGroup);
+        			handleNotSeen(state, typeSpecimen, typeInfo);
         			lastTypeInfo = typeInfo;
                 }
 			}
 		}
-
 	}
 
 
-	private Pattern fotgTypePattern = null;
+	/**
+     * @param state
+     * @param typeSpecimen
+     * @param typeInfo
+     */
+    private void handleNotSeen(MarkupImportState state, DerivedUnit typeSpecimen, TypeInfo typeInfo) {
+        if (typeInfo.notSeen){
+            String text = "n.v. for " + state.getConfig().getSourceReference().getAbbrevTitleCache();
+            typeSpecimen.addAnnotation(Annotation.NewInstance(text, AnnotationType.EDITORIAL(), getDefaultLanguage(state)));
+            if(state.getConfig().getSpecimenNotSeenMarkerTypeUuid() != null){
+                UUID uuidNotSeenMarker = state.getConfig().getSpecimenNotSeenMarkerTypeUuid();
+                String markerTypeNotSeenLabel = state.getConfig().getSpecimenNotSeenMarkerTypeLabel();
+                markerTypeNotSeenLabel = markerTypeNotSeenLabel == null ? "Not seen" : markerTypeNotSeenLabel;
+                MarkerType notSeenMarkerType = getMarkerType(state, uuidNotSeenMarker, markerTypeNotSeenLabel, markerTypeNotSeenLabel, null, null);
+                Marker marker = Marker.NewInstance(notSeenMarkerType, true);
+                typeSpecimen.addMarker(marker);
+            }
+        }
+    }
+
+
+    private Pattern fotgTypePattern = null;
 	/**
 	 * Implemented for Flora of the Guyanas this may include duplicated code from similar places
 	 * @param state
@@ -267,6 +295,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		Matcher matcher = fotgTypePattern.matcher(collectionAndType);
 
 		if (matcher.matches()){
+		    fireWarningEvent("Try to synchronize type handling (at least creation) with standard type handling. E.g. use TypeInfo and according algorithms", parentEvent, 2);
 			if (collectionAndType.matches(notDesignatedRE)){
 				SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
 				desig.setNotDesignated(true);
@@ -465,24 +494,27 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	 */
 	private void handleSpecimenTypeAddInfo(MarkupImportState state, boolean notSeen, boolean destroyed,
 			boolean presumedDestroyed, SpecimenTypeDesignation desig) {
-		if (notSeen){
-			UUID uuidNotSeenMarker = MarkupTransformer.uuidNotSeen;
+		DerivedUnit specimen = desig.getTypeSpecimen();
+		AnnotatableEntity annotEntity = specimen != null ? specimen : desig;
+
+	    if (notSeen){
+			UUID uuidNotSeenMarker = MarkupTransformer.uuidMarkerNotSeen;
 			MarkerType notSeenMarkerType = getMarkerType(state, uuidNotSeenMarker, "Not seen", "Not seen", null, null);
 			Marker marker = Marker.NewInstance(notSeenMarkerType, true);
-			desig.addMarker(marker);
+			annotEntity.addMarker(marker);
 			fireWarningEvent("not seen not yet implemented", "handleSpecimenTypeAddInfo", 4);
 		}
 		if (destroyed){
-			UUID uuidDestroyedMarker = MarkupTransformer.uuidDestroyed;
+			UUID uuidDestroyedMarker = MarkupTransformer.uuidMarkerDestroyed;
 			MarkerType destroyedMarkerType = getMarkerType(state, uuidDestroyedMarker, "Destroyed", "Destroyed", null, null);
 			Marker marker = Marker.NewInstance(destroyedMarkerType, true);
-			desig.addMarker(marker);
+			annotEntity.addMarker(marker);
 			fireWarningEvent("'destroyed' not yet fully implemented", "handleSpecimenTypeAddInfo", 4);
 		}
 		if (presumedDestroyed){
 			Annotation annotation = Annotation.NewInstance("presumably destroyed", Language.ENGLISH());
 			annotation.setAnnotationType(AnnotationType.EDITORIAL());
-			desig.addAnnotation(annotation);
+			annotEntity.addAnnotation(annotation);
 		}
 	}
 
@@ -501,9 +533,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		        break;
 		    }
 		}
-		String[] split = originalString.split("\\s+");
 
+		String[] split = originalString.split("(?<!not)\\s+");
+
+		String unrecognizedTypeParts = null;
 		for (String str : split) {
+		    //holo/lecto/iso ...
 			if (str.matches(SpecimenTypeParser.typeTypePattern)) {
 				SpecimenTypeDesignationStatus status;
 				try {
@@ -524,16 +559,23 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
                     fireWarningEvent(message, event, 4);
 				}
 			    result.collectionString = str;
-			} else {
-				String message = "Type part '%s' could not be recognized";
-				fireWarningEvent(String.format(message, str), event, 2);
+			} else if (str.matches(SpecimenTypeParser.notSeen)) {
+                if (result.notSeen){
+                    String message = "More than 1 'not seen' string found: " + originalString;
+                    fireWarningEvent(message, event, 4);
+                }
+                result.notSeen = true;
+            } else {
+                unrecognizedTypeParts = CdmUtils.concat(" ", unrecognizedTypeParts, str);
 			}
 			if (result.status == null && lastTypeInfo != null && lastTypeInfo.status != null){
 			    result.status = lastTypeInfo.status;
 			}
-
 		}
-
+		if(isNotBlank(unrecognizedTypeParts)){
+		    String message = "Type parts '%s' could not be recognized";
+            fireWarningEvent(String.format(message, unrecognizedTypeParts), event, 2);
+		}
 		return result;
 	}
 
@@ -561,7 +603,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			}else if (isStartingElement(next, COLLECTOR)) {
 				hasCollector = true;
 				String collectorStr = getCData(state, reader, next);
-				TeamOrPersonBase<?> collector = createCollector(collectorStr);
+				TeamOrPersonBase<?> collector = createCollector(state, collectorStr);
 				facade.setCollector(collector);
 				state.setCurrentCollector(collector);
 			} else if (isStartingElement(next, ALTERNATIVE_COLLECTOR)) {
@@ -855,8 +897,8 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
     }
 
 
-    private TeamOrPersonBase<?> createCollector(String collectorStr) {
-		return createAuthor(collectorStr);
+    private TeamOrPersonBase<?> createCollector(MarkupImportState state, String collectorStr) {
+		return createAuthor(state, collectorStr);
 	}
 
 
@@ -898,6 +940,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					specimen = facade.innerFieldUnit();
 				}
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
+				individualsAssociation.addPrimaryTaxonomicSource(state.getConfig().getSourceReference());
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
 				result.add(individualsAssociation);
 			} else if (isStartingElement(next, GATHERING_GROUP)) {
@@ -955,6 +998,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				}
 				if (td == null){
 					TaxonDescription desc = TaxonDescription.NewInstance(state.getCurrentTaxon());
+					desc.addPrimaryTaxonomicSource(state.getConfig().getSourceReference(), null);
 					desc.addGeoScope(area);
 					if (doubtful != null){
 						desc.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), doubtful));
@@ -983,6 +1027,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					specimen = facade.innerFieldUnit();
 				}
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
+				individualsAssociation.addPrimaryTaxonomicSource(state.getConfig().getSourceReference());
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
 				result.add(individualsAssociation);
 

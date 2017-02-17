@@ -65,7 +65,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		this.specimenImport = new MarkupSpecimenImport(docImport);
 		this.nomenclatureImport = new MarkupNomenclatureImport(docImport, specimenImport);
 		this.modsImport = new MarkupModsImport(docImport);
-		this.featureImport = new MarkupFeatureImport(docImport, specimenImport, nomenclatureImport);
+		this.featureImport = new MarkupFeatureImport(docImport, specimenImport, nomenclatureImport, keyImport);
 	}
 
 	public void doInvoke(MarkupImportState state) throws XMLStreamException {
@@ -319,7 +319,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private Taxon handleTaxon(MarkupImportState state, XMLEventReader reader, StartElement parentEvent) throws XMLStreamException {
 		// TODO progress monitoring
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		Taxon taxon = createTaxonAndName(state, attributes);
+		Taxon taxon = createTaxonAndName(state, attributes, parentEvent);
 		state.setCurrentTaxon(taxon);
 		state.addNewFeatureSorterLists(taxon.getUuid().toString());
 
@@ -327,7 +327,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		boolean hasNomenclature = false;
 		String taxonTitle = null;
 
-		Reference descriptionReference = state.getConfig().getSourceReference();
+		Reference sourceReference = state.getConfig().getSourceReference();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -378,8 +378,9 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 						notesUuid = state.getTransformer().getFeatureUuid("notes");
 						Feature feature = getFeature(state, notesUuid, "Notes",	"Notes", "note", null);
 						TextData textData = TextData.NewInstance(feature);
+						textData.addPrimaryTaxonomicSource(sourceReference);
 						textData.putText(getDefaultLanguage(state), note);
-						TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, descriptionReference);
+						TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, sourceReference);
 						description.addElement(textData);
 					} catch (UndefinedTransformerMethodException e) {
 						String message = "getFeatureUuid method not yet implemented";
@@ -388,14 +389,15 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				} else if (isStartingElement(next, REFERENCES)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, FIGURE_REF)) {
-					TaxonDescription desc = getTaxonDescription(taxon, state.getConfig().getSourceReference(), IMAGE_GALLERY, CREATE_NEW);
+					TaxonDescription desc = getTaxonDescription(taxon, sourceReference, IMAGE_GALLERY, CREATE_NEW);
 					TextData textData;
 					if (desc.getElements().isEmpty()){
 						textData = TextData.NewInstance(Feature.IMAGE());
+						textData.addPrimaryTaxonomicSource(sourceReference);
 						desc.addElement(textData);
 					}
 					textData = (TextData)desc.getElements().iterator().next();
-					featureImport.makeFeatureFigureRef(state, reader, desc, false, textData, next);
+					featureImport.makeFeatureFigureRef(state, reader, desc, false, textData, sourceReference, next);
 				} else if (isStartingElement(next, FIGURE)) {
 					handleFigure(state, reader, next, specimenImport, nomenclatureImport);
 				} else if (isStartingElement(next, FOOTNOTE)) {
@@ -439,7 +441,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	            }
 	            Reference sec = ReferenceFactory.newBookSection();
 	            sec.setTitle(taxonTitle);
-	            TeamOrPersonBase<?> author = createAuthor(writer.writer);
+	            TeamOrPersonBase<?> author = createAuthor(state, writer.writer);
 	            sec.setAuthorship(author);
 	            sec.setInReference(state.getConfig().getSourceReference());
 	            taxon.setSec(sec);
@@ -523,9 +525,10 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	/**
 	 * @param state
 	 * @param attributes
+	 * @param event
 	 */
 	private Taxon createTaxonAndName(MarkupImportState state,
-			Map<String, Attribute> attributes) {
+			Map<String, Attribute> attributes, StartElement event) {
 		INonViralName name;
 		Rank rank = null;  //Rank.SPECIES(); // default
 		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");
@@ -541,7 +544,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			state.setCurrentTaxonExcluded(true);
 		}
 		// TODO insufficient, new, expected
-		handleNotYetImplementedAttribute(attributes, CLASS);
+		handleNotYetImplementedAttribute(attributes, CLASS, event);
 		// From old version
 		// MarkerType markerType = getMarkerType(state, attrValue);
 		// if (markerType == null){

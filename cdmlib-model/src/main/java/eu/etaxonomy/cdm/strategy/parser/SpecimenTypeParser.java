@@ -23,6 +23,7 @@ public class SpecimenTypeParser {
 		public SpecimenTypeDesignationStatus status;
 		public String collectionString;
 		public boolean notDesignated;
+		public boolean notSeen;
 	}
 
 	/**
@@ -30,6 +31,7 @@ public class SpecimenTypeParser {
 	 */
 	public static final String typeTypePattern = "(?i)(holo|lecto|iso|isolecto|syn|isosyn|neo|isoneo|type)\\.?";
 	public static final String collectionPattern = "^[A-Z]+(\\-[A-Z]+)?";
+	public static final String notSeen = "(n\\.v\\.|not\\s+seen)";
 
 
 

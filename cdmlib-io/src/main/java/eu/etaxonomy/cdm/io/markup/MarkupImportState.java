@@ -19,9 +19,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.common.utils.DeduplicationHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -43,13 +45,15 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
 
+	private DeduplicationHelper<MarkupImportState> deduplicationHelper;
+
 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>
 
 	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
 
-	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
+	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<>();
 
 	private PolytomousKey currentKey;
 
@@ -78,6 +82,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 
 	private String baseMediaUrl = null;
+
+	private String nameStatus;
+
 
 	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<>();
 
@@ -434,7 +441,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	//or do we need to make this a uuid?
 	private Map<String, Collection> collectionMap = new HashMap<String, Collection>();
-	public Collection getCollectionByCode(String code) {
+
+    public Collection getCollectionByCode(String code) {
 		return collectionMap.get(code);
 	}
 
@@ -467,6 +475,23 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
     }
     public void setFirstSpecimenInFacade(boolean firstSpecimenInFacade) {
         this.firstSpecimenInFacade = firstSpecimenInFacade;
+    }
+
+    public DeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmApplicationConfiguration repository) {
+        if (this.deduplicationHelper == null){
+            this.deduplicationHelper = new DeduplicationHelper<>(repository);
+        }
+        return deduplicationHelper;
+    }
+    public void setDeduplicationHelper(DeduplicationHelper<MarkupImportState> deduplicationHelper) {
+        this.deduplicationHelper = deduplicationHelper;
+    }
+
+    public void setNameStatus(String nameStatus) {
+        this.nameStatus = nameStatus;
+    }
+    public String getNameStatus() {
+        return nameStatus;
     }
 
 }

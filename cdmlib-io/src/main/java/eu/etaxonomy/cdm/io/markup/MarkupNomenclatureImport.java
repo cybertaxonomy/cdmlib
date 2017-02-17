@@ -234,6 +234,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String text = "";
 
 		boolean nameFilled = false;
+		state.setNameStatus(null);
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -243,7 +244,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				}
 				handleNomText(state, parentEvent, text, isNameType);
 				state.getDeduplicationHelper(docImport).replaceAuthorNamesAndNomRef(state, name);
-				return name;
+				handleNameStatus(state, name, next);
+				state.setNameStatus(null);
+		        return name;
 			} else if (isEndingElement(next, ANNOTATION)) {
 				// NOT YET IMPLEMENTED //TODO test
 				// handleSimpleAnnotation
@@ -277,6 +280,26 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	/**
+     * @param state
+     * @param name
+     * @param next
+     */
+    private void handleNameStatus(MarkupImportState state, INonViralName name, XMLEvent next) {
+        if (isNotBlank(state.getNameStatus())){
+            String nameStatus = state.getNameStatus().trim();
+            try {
+                NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
+                        .getNomenclaturalStatusTypeByAbbreviation(nameStatus, name);
+                name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
+            } catch (UnknownCdmTypeException e) {
+                String message = "Status '%s' could not be recognized";
+                message = String.format(message, nameStatus);
+                fireWarningEvent(message, next, 4);
+            }
+        }
+    }
+
+    /**
 	 * Handles appearance of text within <nom> tags.
 	 * Usually this is not expected except for some information that is already handled
 	 * elsewhere, e.g. the string Nametype is holding information that is available already
@@ -392,7 +415,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		// status
 		// TODO handle pro parte, pro syn. etc.
-		if (StringUtils.isNotBlank(statusStr)) {
+		if (isNotBlank(statusStr)) {
 			String proPartePattern = "(pro parte|p.p.)";
 			if (statusStr.matches(proPartePattern)) {
 				state.setProParte(true);
@@ -419,6 +442,19 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	/**
+     * @param statusStr
+     * @return
+     */
+    private String normalizeStatus(String statusStr) {
+        if (statusStr == null){
+            return null;
+        }else if (statusStr.equals("nomen")){
+            statusStr = "nom. nud.";
+        }
+        return statusStr.trim();
+    }
+
+    /**
 	 * @param state
 	 * @param nameMap
 	 * @param name
@@ -595,9 +631,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void handleCitation(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, INonViralName name, TaxonRelationship misappliedRel) throws XMLStreamException {
+			XMLEvent parentEvent, INonViralName nvn, TaxonRelationship misappliedRel) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
+		TaxonNameBase<?,?> name = TaxonNameBase.castAndDeproxy(nvn);
 		state.setCitation(true);
 		boolean hasRefPart = false;
 		Map<String, String> refMap = new HashMap<>();
@@ -654,10 +691,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	}
 
-	private void doCitation(MarkupImportState state, INonViralName name,
+	private void doCitation(MarkupImportState state, TaxonNameBase<?,?> name,
 			String classValue, TaxonRelationship misappliedRel,
 			Reference reference, String microCitation,
 			XMLEvent parentEvent) {
+	    reference = state.getDeduplicationHelper(docImport).getExistingReference(state, reference);
 	    if (misappliedRel != null){
 	        if (!PUBLICATION.equalsIgnoreCase(classValue)){
                 fireWarningEvent("'Usage' not handled correctly for misidentifications", parentEvent, 4);
@@ -675,7 +713,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			TaxonDescription td = getDefaultTaxonDescription(taxon, false, true, state.getConfig().getSourceReference());
 			TextData citation = TextData.NewInstance(Feature.CITATION());
 			// TODO name used in source
-			citation.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, reference, microCitation);
+			citation.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, reference, microCitation, name, null);
 			td.addElement(citation);
 		} else if (TYPE.equalsIgnoreCase(classValue)) {
 			handleNotYetImplementedAttributeValue(parentEvent, CLASS, classValue);
@@ -739,6 +777,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String publisher = getAndRemoveMapKey(refMap, PUBLISHER);
 		String appendix = getAndRemoveMapKey(refMap, APPENDIX);
 		String issue = getAndRemoveMapKey(refMap, ISSUE);
+        String nameStatus = getAndRemoveMapKey(refMap, NAME_STATUS);
 
 		if (state.isCitation()) {
 			reference = handleCitationSpecific(state, type, authorStr,
@@ -759,13 +798,17 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		//Quickfix for these 2 attributes used in feature.references
 		Reference inRef = reference.getInReference() == null ? reference : reference.getInReference();
 		//publocation
-		if (StringUtils.isNotEmpty(publisher)){
+		if (isNotBlank(publisher)){
 			inRef.setPublisher(publisher);
 		}
 
 		//publisher
-		if (StringUtils.isNotEmpty(publocation)){
+		if (isNotBlank(publocation)){
 			inRef.setPlacePublished(publocation);
+		}
+
+		if (isNotBlank(nameStatus)){
+		    state.setNameStatus(nameStatus);
 		}
 
 		// TODO

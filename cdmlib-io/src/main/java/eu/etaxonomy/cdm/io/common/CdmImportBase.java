@@ -466,7 +466,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}else if (list.size() == 1){
 			return list.get(0);
 		}else if (list.size() > 1){
-			List<NamedArea> preferredList = new ArrayList<NamedArea>();
+			List<NamedArea> preferredList = new ArrayList<>();
 			for (TermVocabulary<NamedArea> voc: vocabularyPreference){
 				for (NamedArea area : list){
 					if (voc.equals(area.getVocabulary())){
@@ -478,7 +478,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 			}
 			if (preferredList.size() > 1 ){
-				preferredList = getLowestLevelAreas(preferredList);
+				preferredList = getHighestLevelAreas(preferredList);
 			}else if (preferredList.size() == 0 ){
 				preferredList = list;
 			}
@@ -495,22 +495,21 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 
-	private List<NamedArea> getLowestLevelAreas(List<NamedArea> preferredList) {
-		List<NamedArea> result = new ArrayList<NamedArea>();
+	private List<NamedArea> getHighestLevelAreas(List<NamedArea> preferredList) {
+		List<NamedArea> result = new ArrayList<>();
 		for (NamedArea area : preferredList){
 			if (result.isEmpty()){
 				result.add(area);
 			}else {
 				int compare = compareAreaLevel(area, result.get(0));
-				if (compare < 0){
-					result = new ArrayList<NamedArea>();
+				if (compare > 0){
+					result = new ArrayList<>();
 					result.add(area);
 				}else if (compare == 0){
 					result.add(area);
 				}else{
 					//do nothing
 				}
-
 			}
 		}
 
@@ -1228,7 +1227,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected TextData getFeaturePlaceholder(STATE state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {
-		UUID featurePlaceholderUuid = MarkupTransformer.uuidFeaturePlaceholder;
+		UUID featurePlaceholderUuid = MarkupTransformer.uuidMarkerFeaturePlaceholder;
 		for (DescriptionElementBase element : description.getElements()){
 			if (element.isInstanceOf(TextData.class)){
 				TextData textData = CdmBase.deproxy(element, TextData.class);

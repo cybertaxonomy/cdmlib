@@ -61,6 +61,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		state.setOnlyNumberedTaxaExist(onlyNumberedTaxaExist);
 
 		PolytomousKey key = PolytomousKey.NewInstance();
+		key.addPrimaryTaxonomicSource(state.getConfig().getSourceReference(), null);
 		key.addTaxonomicScope(state.getCurrentTaxon());
 		state.setCurrentKey(key);
 

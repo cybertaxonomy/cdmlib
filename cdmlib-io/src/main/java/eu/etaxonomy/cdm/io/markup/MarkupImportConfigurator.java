@@ -26,7 +26,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupImportState> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(MarkupImportConfigurator.class);
+    private static final long serialVersionUID = 779807547137921079L;
+
+    private static final Logger logger = Logger.getLogger(MarkupImportConfigurator.class);
 
 	public static MarkupImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new MarkupImportConfigurator(uri, destination);
@@ -54,6 +56,10 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
     private boolean ignoreLocalityClass = false;
 
     private boolean handleWriterManually = false;
+
+
+    private UUID specimenNotSeenMarkerTypeUuid = MarkupTransformer.uuidMarkerNotSeen;
+    private String specimenNotSeenMarkerTypeLabel;
 
 
     //TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
@@ -266,6 +272,20 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
     }
     public void setHandleWriterManually(boolean handleWriterManually) {
         this.handleWriterManually = handleWriterManually;
+    }
+
+    public UUID getSpecimenNotSeenMarkerTypeUuid() {
+        return specimenNotSeenMarkerTypeUuid;
+    }
+    public void setSpecimenNotSeenMarkerTypeUuid(UUID specimenNotSeenMarkerTypeUuid) {
+        this.specimenNotSeenMarkerTypeUuid = specimenNotSeenMarkerTypeUuid;
+    }
+
+    public String getSpecimenNotSeenMarkerTypeLabel() {
+        return specimenNotSeenMarkerTypeLabel;
+    }
+    public void setSpecimenNotSeenMarkerTypeLabel(String specimenNotSeenMarkerTypeLabel) {
+        this.specimenNotSeenMarkerTypeLabel = specimenNotSeenMarkerTypeLabel;
     }
 
 }
