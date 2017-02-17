@@ -404,7 +404,7 @@ public class CdmApplicationController implements ICdmRepository {
 				logger.info(beanName);
 			}
 		}
-		configuration = (ICdmRepository) applicationContext.getBean("cdmApplicationDefaultConfiguration");
+		configuration = (ICdmRepository) applicationContext.getBean("cdmRepository");
 		try {
 			//FIXME:Remoting catching exection to allow for remoting
 			getDatabaseService().setApplicationController(this);
