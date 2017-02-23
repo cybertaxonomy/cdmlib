@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 
-import java.io.InputStream;
 import java.net.URI;
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	private UUID parentUUID;
 
 
-	private InputStream stream;
+	private byte[] stream;
 
 
 	//	@SuppressWarnings("unchecked")
@@ -70,7 +69,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
      * @param stream
      * @param destination
      */
-    private NormalExplicitImportConfigurator(InputStream stream, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
+    private NormalExplicitImportConfigurator(byte[] stream, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
         super(null, destination);
         if (dbSchemaValidation == null){
             dbSchemaValidation = DbSchemaValidation.CREATE;
@@ -128,12 +127,12 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
         this.parentUUID = parentUUID;
     }
 
-    public InputStream getStream(){
+    public byte[] getStream(){
         return stream;
     }
 
 
-    public void setStream(InputStream stream) {
+    public void setStream(byte[] stream) {
         this.stream = stream;
     }
 

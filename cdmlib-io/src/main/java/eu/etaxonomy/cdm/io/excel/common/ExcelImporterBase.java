@@ -66,26 +66,38 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		}
 		URI source = null;
 
-		ByteArrayInputStream data = null;
+		byte[] data = null;
 		// read and save all rows of the excel worksheet
-		if (state.getConfig().getSource() != null){
+		if (state.getConfig() instanceof NormalExplicitImportConfigurator && ((NormalExplicitImportConfigurator)state.getConfig()).getStream() != null){
+		    data =  ((NormalExplicitImportConfigurator)state.getConfig()).getStream();
+		} else{
 		    source = state.getConfig().getSource();
-		}else{
-		    data = (ByteArrayInputStream) ((NormalExplicitImportConfigurator)state.getConfig()).getStream();
 		}
 
 
 
 		String sheetName = getWorksheetName();
-		try {
-			recordList = ExcelUtils.parseXLS(source, sheetName);
-		} catch (FileNotFoundException e) {
-			String message = "File not found: " + source;
-			warnProgress(state, message, e);
-			logger.error(message);
-			state.setUnsuccessfull();
-			return;
-		}
+
+
+		if (data != null){
+            try {
+                ByteArrayInputStream stream = new ByteArrayInputStream(data);
+                recordList = ExcelUtils.parseXLS(stream, sheetName);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }else{
+    		try {
+    			recordList = ExcelUtils.parseXLS(source, sheetName);
+    		} catch (FileNotFoundException e) {
+    			String message = "File not found: " + source;
+    			warnProgress(state, message, e);
+    			logger.error(message);
+    			state.setUnsuccessfull();
+    			return;
+    		}
+        }
 
     	handleRecordList(state, source);
     	logger.debug("End excel data import");

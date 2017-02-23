@@ -146,7 +146,7 @@ public class IOServiceImpl implements IIOService {
         try {
             if (config instanceof NormalExplicitImportConfigurator){
                 NormalExplicitImportConfigurator excelConfig = (NormalExplicitImportConfigurator)config;
-                excelConfig.setStream(new ByteArrayInputStream(importData));
+                excelConfig.setStream(importData);
             }else{
                 config.setSource(new ByteArrayInputStream(importData));
             }
