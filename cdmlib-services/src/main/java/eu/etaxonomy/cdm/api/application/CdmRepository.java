@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -172,6 +173,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private IEntityValidationService entityValidationService;
 	@Autowired
     private IPreferenceService preferenceService;
+	@Autowired
+    private IRightsService rightsService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
@@ -474,4 +477,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 	}
+
+
+    @Override
+    public IRightsService getRightsService() {
+
+        return rightsService;
+    }
 }

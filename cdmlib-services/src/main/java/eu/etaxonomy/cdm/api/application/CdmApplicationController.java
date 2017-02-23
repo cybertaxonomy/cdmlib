@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -711,6 +712,15 @@ public class CdmApplicationController implements ICdmRepository {
 		txManager.commit(txStatus);
 		return;
 	}
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRightsService getRightsService() {
+        return configuration.getRightsService();
+    }
 
 }
 
