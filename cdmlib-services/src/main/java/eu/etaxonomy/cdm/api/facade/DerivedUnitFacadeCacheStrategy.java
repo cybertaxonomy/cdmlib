@@ -65,7 +65,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 			//Herbarium & identifier
 			String code = getCode(facade);
-			String identifier = facade.getAccessionNumber();
+			String identifier = getUnitNumber(facade /*, code*/);
             String collectionData = CdmUtils.concat(" ", code, identifier);
 			if (StringUtils.isNotBlank(collectionData)) {
 				result = (result + " (" +  collectionData + ")").trim();
@@ -82,6 +82,26 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 		return result;
 	}
+
+
+    /**
+     * Computes the unit number which might be an accession number, barcode, catalogue number, ...
+     * In future if the unit number starts with the same string as the barcode
+     * it might be replaced.
+     * @param facade the derived unit facade
+     */
+    private String getUnitNumber(DerivedUnitFacade facade) {
+        String result;
+        if (isNotBlank(facade.getAccessionNumber())){
+            result = facade.getAccessionNumber();
+        }else if (isNotBlank(facade.getBarcode())){
+            result = facade.getBarcode();
+        }else{
+            result = facade.getCatalogNumber();
+        }
+        return result;
+
+    }
 
 
 	/**

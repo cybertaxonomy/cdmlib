@@ -78,6 +78,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
+	String barcode = "B12345678";
 	TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
@@ -105,9 +106,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 //		new DefaultTermInitializer().initialize();
 //	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -148,6 +146,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
+		specimen.setBarcode(barcode);
 		specimen.setStoredUnder(taxonName);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
@@ -186,7 +185,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
 	}
 
-	   /**
+	/**
      * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
      */
     @Test
@@ -196,6 +195,22 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
         specimenFacade.setEcology(ecology);
         specimenFacade.setPlantDescription(plantDescription);
         collection.setCode("B");
+        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+    }
+
+    //#6381
+    @Test
+    public void testGetTitleCacheAccessionBarcodeCatalogNumber() {
+        //Note: Collection Code B might be deduplicated in future
+        specimenFacade.setPlantDescription(plantDescription);
+        collection.setCode("B");
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+        specimenFacade.setAccessionNumber(null);
+        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B B12345678); flowers blue.";
+        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+        specimenFacade.setBarcode(null);
+        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B UU879873590); flowers blue.";
         Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
     }
 
