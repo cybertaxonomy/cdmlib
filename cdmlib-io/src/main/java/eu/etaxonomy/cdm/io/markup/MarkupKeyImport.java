@@ -123,7 +123,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 
 	private void handleCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode parentNode) throws XMLStreamException {
 		String num = getOnlyAttribute(parentEvent, NUM, true);
-		List<PolytomousKeyNode> childList = new ArrayList<PolytomousKeyNode>();
+		List<PolytomousKeyNode> childList = new ArrayList<>();
 
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);

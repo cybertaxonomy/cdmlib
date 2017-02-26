@@ -532,6 +532,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		INonViralName name;
 		Rank rank = null;  //Rank.SPECIES(); // default
 		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");
+
 		if (isCultivar) {
 			name = TaxonNameFactory.NewCultivarInstance(rank);
 		} else {

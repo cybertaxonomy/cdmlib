@@ -130,7 +130,7 @@ public class UnmatchedLeads {
 	public void addKey(UnmatchedLeadsKey key, PolytomousKeyNode node){
 		Set<PolytomousKeyNode> nodes = map.get(key);
 		if (nodes == null){
-			nodes = new HashSet<PolytomousKeyNode>();
+			nodes = new HashSet<>();
 			map.put(key, nodes);
 		}else{
 			String message = "A key node for this key does already exist: %s";
@@ -141,7 +141,7 @@ public class UnmatchedLeads {
 	}
 
 	public Set<PolytomousKeyNode> getNodes(UnmatchedLeadsKey key){
-		Set<PolytomousKeyNode> result = new HashSet<PolytomousKeyNode>();
+		Set<PolytomousKeyNode> result = new HashSet<>();
 		Set<PolytomousKeyNode> nodes = map.get(key);
 		if (nodes != null){
 			result.addAll(nodes);

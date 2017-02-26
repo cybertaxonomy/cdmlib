@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchException;
  * @date 11.02.2017
  *
  */
-public class DeduplicationHelper<STATE extends ImportStateBase<?,?>> {
-    private static final Logger logger = Logger.getLogger(DeduplicationHelper.class);
+public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
+    private static final Logger logger = Logger.getLogger(ImportDeduplicationHelper.class);
 
     private ICdmRepository repository;
 
@@ -61,7 +61,7 @@ public class DeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     /**
      *
      */
-    public DeduplicationHelper(ICdmRepository repository) {
+    public ImportDeduplicationHelper(ICdmRepository repository) {
         this.repository = repository;
         if (repository == null){
             throw new NullPointerException("Repository must not be null");

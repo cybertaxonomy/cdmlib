@@ -1219,6 +1219,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * sources need to be added to the description itself.
 	 * Currently a feature placeholder is marked by a marker of type 'feature placeholder'. Maybe in future
 	 * there will be a boolean marker in the TextData class itself.
+	 *
 	 * @param state
 	 * @param feature
 	 * @param taxon

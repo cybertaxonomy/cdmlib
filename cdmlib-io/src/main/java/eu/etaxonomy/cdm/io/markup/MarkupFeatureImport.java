@@ -277,7 +277,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			return lastDescriptionElement;
 		}else if (feature.equals(Feature.COMMON_NAME()) && (isFreetext == null || !isFreetext)){
 			List<DescriptionElementBase> commonNames = makeCommonNameString(state, reader, next);
-			//NODE: we do also have the old version makeVernacular, which was called from "others" below
+			//NOTE: we do also have the old version makeVernacular, which was called from "others" below
 			for (DescriptionElementBase commonName : commonNames){
 				taxonDescription.addElement(commonName);
 				lastDescriptionElement = commonName;
