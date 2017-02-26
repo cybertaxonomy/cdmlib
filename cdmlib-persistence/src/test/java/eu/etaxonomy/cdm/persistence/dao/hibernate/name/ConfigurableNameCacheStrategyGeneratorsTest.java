@@ -85,12 +85,6 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationT
 		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

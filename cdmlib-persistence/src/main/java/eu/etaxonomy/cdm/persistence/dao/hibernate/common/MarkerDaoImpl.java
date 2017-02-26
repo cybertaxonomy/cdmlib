@@ -51,7 +51,8 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		}
 
 		addOrder(criteria, orderHints);
-		List<Marker> results = criteria.list();
+		@SuppressWarnings("unchecked")
+        List<Marker> results = criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
@@ -86,7 +87,8 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		}
 
 		addOrder(criteria, orderHints);
-		List<Marker> results = criteria.list();
+		@SuppressWarnings("unchecked")
+        List<Marker> results = criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
