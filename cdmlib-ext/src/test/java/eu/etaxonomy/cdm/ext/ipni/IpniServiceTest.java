@@ -125,7 +125,7 @@ public class IpniServiceTest {
 	public void testGetNamesSimple(){
 		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = null;
-		List<BotanicalName> nameList = service1.getNamesSimple("Abies albertiana", services, config);
+		List<IBotanicalName> nameList = service1.getNamesSimple("Abies albertiana", services, config);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 
 		if (testInternetConnectivity(nameList)){

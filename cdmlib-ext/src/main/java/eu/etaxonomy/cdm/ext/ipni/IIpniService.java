@@ -120,41 +120,41 @@ public interface IIpniService {
 	 * <BR/>
 	 * Please be aware that not all data returned by IPNI are transformed into CDM data as some of the data types are not available in the
 	 * CDM and some types are just not yet implemented.
-	 *  
+	 *
 	 * @param wholeName
 	 * @param format
 	 * @param appConfig
 	 * @return
 	 */
-	public List<BotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config);
-	
+	public List<IBotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config);
+
 	/**
 	 * Returns the name matching the id parameter according to the IPNI Quick search function.
 	 * See {@link http://www.uk.ipni.org/sample_searches.html#name_quick} for further explanation about the IPNI Quick search.
 	 * <BR/><BR/>
-	 * 
+	 *
 	 * Please be aware that not all data returned by IPNI are transformed into CDM data as some of the data types are not available in the
 	 * CDM and some types are just not yet implemented.
-	 *  
+	 *
 	 * @param id
 	 * @return
 	 */
 	public InputStream getNamesById(String id);
-	
-	
+
+
 	/**
 	 * Returns the publication matching the id parameter according to the IPNI Quick search function.
 	 * See {@link http://www.uk.ipni.org/sample_searches.html#name_quick} for further explanation about the IPNI Quick search.
 	 * <BR/><BR/>
-	 * 
+	 *
 	 * Please be aware that not all data returned by IPNI are transformed into CDM data as some of the data types are not available in the
 	 * CDM and some types are just not yet implemented.
-	 *  
+	 *
 	 * @param id
 	 * @return
 	 */
 	public InputStream getPublicationsById(String id);
-	
+
 	/**
 	 * Returns a list of names matching the relevant parameters according to the IPNI full search function.
 	 * See {http://www.uk.ipni.org/sample_searches.html#name_full} for further explanation about the IPNI Full search.

@@ -856,11 +856,8 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.IIpniService#getNamesSimple(java.lang.String, eu.etaxonomy.cdm.ext.IIpniService.DelimitedFormat, eu.etaxonomy.cdm.api.application.ICdmRepository)
-	 */
 	@Override
-    public List<BotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config){
+    public List<IBotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config){
 		if (config == null){
 			config = new IpniServiceNamesConfigurator();
 		}
