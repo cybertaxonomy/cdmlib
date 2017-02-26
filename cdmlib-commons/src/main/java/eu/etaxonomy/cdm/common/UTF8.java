@@ -27,7 +27,7 @@ public enum UTF8 {
 	ENGLISH_QUOT_END_HIGH("\u201f"),  //Right English quotation mark -‟-
 	ACUTE_ACCENT("\u00B4"),     //Acute Accent, looks a bit similar to th single quotation mark
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
-
+	DEGREE_SIGN("\u00B0"),      //°
 	;
 
 	private String value;

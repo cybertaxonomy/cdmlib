@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 /**
  * @author a.mueller
  * @date 07.06.2010
@@ -33,8 +35,8 @@ public class CoordinateConverter {
     //Patterns
     private List<CoordinatePattern> patterns;
 
-    private static String minuteUtf8 = "\u02B9|\u00B4|\u02CA|\u0301|\u0374";
-    private static String secondUtf8 = "\u02BA|\u030B|\u2033|\u00B4\u00B4";
+    private static String minuteUtf8 = "\u02B9|\u00B4|\u02CA|\u0301|\u0374|\u2019";
+    private static String secondUtf8 = "\u02BA|\u030B|\u2033|\u00B4\u00B4|\u201D";
 
 
     private class CoordinatePattern{
@@ -556,7 +558,7 @@ public class CoordinateConverter {
             if (ddmmss.length > 2){//Seconds
                 //check if the string is not empty
                 if (ddmmss[2] != "") {
-                	ss = Integer.valueOf(ddmmss[2]);
+                	ss = Integer.valueOf(Nz(ddmmss[2]).trim());
                 }
             }
             if (decimalBit.length > 1) { //DecimalSeconds
@@ -830,6 +832,15 @@ public class CoordinateConverter {
 
 
 	/**
+     * @param string
+     * @return
+     */
+    private String Nz(String string) {
+        return CdmUtils.Nz(string);
+    }
+
+
+    /**
 	 * @param sign
 	 * @param dd
 	 * @param mm
