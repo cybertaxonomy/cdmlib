@@ -3244,6 +3244,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         return this.isMonomHybrid() || this.isBinomHybrid() || this.isTrinomHybrid();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isHybrid() {
+        return this.isHybridName() || this.isHybridFormula();
+    }
+
 // ***************** COMPARE ********************************/
 
     @Override

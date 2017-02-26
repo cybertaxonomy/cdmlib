@@ -13,6 +13,9 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -82,7 +85,8 @@ public class IntextReference extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private Reference reference;
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private Reference reference;
 
     @XmlElement(name = "Media")
     @XmlIDREF
@@ -108,6 +112,28 @@ public class IntextReference extends VersionableEntity {
 
 	private int endPos;
 
+
+    private enum CDM_INTEXT_CLASS{
+        REFERENCE("reference"),
+        TAXONNAME("name"),
+        AGENT("agent"),
+        MEDIA("media"),
+        OCCURRENCE("occurrence"),
+        TAXON("taxon")
+        ;
+        String tag;
+
+         private CDM_INTEXT_CLASS(String tag) {
+            this.tag = tag;
+        }
+
+        public String tag(){
+            return this.tag;
+        }
+    }
+
+
+
 // ***************** FACTORY METHOD ***********************************
 
 	public static IntextReference NewTaxonNameInstance(TaxonNameBase<?,?> taxonName, LanguageStringBase languageString, int start, int end){
@@ -130,7 +156,7 @@ public class IntextReference extends VersionableEntity {
 		return new IntextReference(null, null, null, null, reference, null, languageString, start, end);
 	}
 
-	public static IntextReference NewReferenceInstance(Media media, LanguageStringBase languageString, int start, int end){
+	public static IntextReference NewMediaInstance(Media media, LanguageStringBase languageString, int start, int end){
 		return new IntextReference(null, null, null, null, null, media, languageString, start, end);
 	}
 
@@ -151,6 +177,7 @@ public class IntextReference extends VersionableEntity {
 			this.occurrence = occurrence;
 			this.agent = agent;
 			this.reference = reference;
+			this.media = media;
 			if (languageString != null && languageString.isInstanceOf(LanguageString.class)){
 				this.languageString = CdmBase.deproxy(languageString, LanguageString.class);
 				this.languageString.addIntextReference(this);
@@ -162,6 +189,42 @@ public class IntextReference extends VersionableEntity {
 			this.endPos = end;
 	}
 
+
+   private CDM_INTEXT_CLASS myClass(){
+        if (agent != null){
+            return CDM_INTEXT_CLASS.AGENT;
+        }else if (media != null){
+            return CDM_INTEXT_CLASS.MEDIA;
+        }else if (taxonName != null){
+            return CDM_INTEXT_CLASS.TAXONNAME;
+        }else if (taxon != null){
+            return CDM_INTEXT_CLASS.TAXON;
+        }else if (reference != null){
+            return CDM_INTEXT_CLASS.REFERENCE;
+        }else if (occurrence != null){
+            return CDM_INTEXT_CLASS.OCCURRENCE;
+        }else{
+            throw new IllegalStateException("Intext reference has no target object defined");
+        }
+    }
+
+   private IdentifiableEntity<?> myEntity(){
+       if (agent != null){
+           return agent;
+       }else if (media != null){
+           return media;
+       }else if (taxonName != null){
+           return taxonName;
+       }else if (taxon != null){
+           return taxon;
+       }else if (reference != null){
+           return reference;
+       }else if (occurrence != null){
+           return occurrence;
+       }else{
+           throw new IllegalStateException("Intext reference has no target object defined");
+       }
+   }
 
 // ****************    GETTER / SETTER ******************************************/
 
@@ -238,5 +301,29 @@ public class IntextReference extends VersionableEntity {
 	public void setEndPos(int endPos) {
 		this.endPos = endPos;
 	}
+
+	private static final String CDM_PREFIX = "cdm:";
+	public String toInlineString(String innerText){
+	    String tag = CDM_PREFIX + myClass().tag();
+	    IdentifiableEntity<?> entity = myEntity();
+	    String attributes = " cdmId='" + entity.getUuid() + "' intextId='" + this.getUuid() + "'" + otherAttributes(entity);
+	    String result;
+	    if (StringUtils.isNotEmpty(innerText)){
+	        result = "<" + tag + attributes + ">" + innerText + "</" + tag + ">";
+	    }else{
+            result = "<" + tag + attributes + "/>";
+	    }
+	    return result;
+	}
+
+    /**
+     * Entity class dependent attributes
+     * @param entity
+     * @return
+     */
+    private String otherAttributes(IdentifiableEntity<?> entity) {
+        return "";
+    }
+
 
 }

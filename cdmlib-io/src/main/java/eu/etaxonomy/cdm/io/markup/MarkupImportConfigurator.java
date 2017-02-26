@@ -57,6 +57,9 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 
     private boolean handleWriterManually = false;
 
+    private boolean doExtensionForTaxonTitle = true;
+
+
 
     private UUID specimenNotSeenMarkerTypeUuid = MarkupTransformer.uuidMarkerNotSeen;
     private String specimenNotSeenMarkerTypeLabel;
@@ -244,7 +247,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	boolean useFotGSpecimenTypeCollectionAndTypeOnly = false;
 
 
-	public boolean isUseFotGSpecimenTypeCollectionAndTypeOnly() {
+
+    public boolean isUseFotGSpecimenTypeCollectionAndTypeOnly() {
 		return useFotGSpecimenTypeCollectionAndTypeOnly;
 	}
 
@@ -286,6 +290,15 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
     }
     public void setSpecimenNotSeenMarkerTypeLabel(String specimenNotSeenMarkerTypeLabel) {
         this.specimenNotSeenMarkerTypeLabel = specimenNotSeenMarkerTypeLabel;
+    }
+
+
+    public boolean isDoExtensionForTaxonTitle() {
+        return doExtensionForTaxonTitle;
+    }
+
+    public void setDoExtensionForTaxonTitle(boolean doExtensionForTaxonTitle) {
+        this.doExtensionForTaxonTitle = doExtensionForTaxonTitle;
     }
 
 }

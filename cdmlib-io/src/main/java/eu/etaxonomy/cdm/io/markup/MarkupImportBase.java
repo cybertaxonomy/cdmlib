@@ -58,10 +58,12 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -79,12 +81,19 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -1806,7 +1815,7 @@ public abstract class MarkupImportBase  {
 				} else if (isStartingElement(next, GATHERING)) {
 					text += specimenImport.handleInLineGathering(state, reader, next);
 				} else if (isStartingElement(next, REFERENCES)) {
-					text += " " + handleInLineReferences(state, reader, next, nomenclatureImport)+ " ";
+					text += " " + handleInLineReferences(state, reader, next, nomenclatureImport) + " ";
 				} else if (isStartingElement(next, BR)) {
 					text += "<br/>";
 					isTextMode = false;
@@ -1850,7 +1859,8 @@ public abstract class MarkupImportBase  {
 	}
 
 
-	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
+	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent,
+	        MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		boolean hasReference = false;
@@ -1872,15 +1882,16 @@ public abstract class MarkupImportBase  {
 
 	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport)throws XMLStreamException {
 		Reference reference = nomenclatureImport.handleReference(state, reader, parentEvent);
-		String result = "<cdm:ref uuid='%s'>%s</ref>";
-		result = String.format(result, reference.getUuid(), reference.getTitleCache());
+		fireWarningEvent("Check correct usage of inline reference", parentEvent, 3);
+		IntextReference intext = IntextReference.NewReferenceInstance(reference, null, 0, 0);
 		save(reference, state);
-		return result;
+		return intext.toInlineString(reference.getTitleCache());
 	}
 
 	protected class SubheadingResult{
 	    String text;
-	    List<Reference> references;
+	    StringReferences references;
+        List<IntextReference> inlineReferences;
 	}
 
 	/**
@@ -1907,20 +1918,30 @@ public abstract class MarkupImportBase  {
 
 		boolean isTextMode = true;
 		String text = "";
-		List<Reference> references = null;
+		StringReferences currentReferences = null;
+		List<IntextReference> inlineReferences = new ArrayList<>();
+		boolean lastWasReference = false;
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				putCurrentSubheading(subHeadingMap, currentSubheading, text, references);
-				//Not needed anymore since we import both now full text ecology as well as parts as extracted features.
-//				if (isHabitat){
-//				    if (currentSubheading != null && ! isHabitatHeading(currentSubheading) || ! isBlankOrPunctuation(text)){
-//				        String message = "String is habitat but currentSubHeading or text is not blank: " + CdmUtils.concat(": ", currentSubheading, text);
-//				        fireWarningEvent(message, next, 4);
-//				    }
-//				}
+				putCurrentSubheading(subHeadingMap, currentSubheading, text, currentReferences, inlineReferences);
 				return subHeadingMap;
-			} else if (isStartingElement(next, BR)) {
+			}
+			//check if last event was reference
+			if (lastWasReference && !isStartingElement(next, BR) && !isEndingElement(next, BR)
+			        && !isStartingElement(next, SUB_HEADING)){
+			    for (LabeledReference labeledRef : currentReferences.content){
+			        if (labeledRef.ref != null){
+			            IntextReference intext = IntextReference.NewReferenceInstance(labeledRef.ref, null, 0, 0);
+			            inlineReferences.add(intext);
+			            text += intext.toInlineString(labeledRef.label);
+			        }else{
+			            text += labeledRef.label;
+			        }
+			    }
+			    lastWasReference = false;
+			}
+			if (isStartingElement(next, BR)) {
 				text += "<br/>";
 				isTextMode = false;
 			} else if (isEndingElement(next, BR)) {
@@ -1928,8 +1949,10 @@ public abstract class MarkupImportBase  {
 			} else if (isHtml(next)) {
 				text += getXmlTag(next);
 			} else if (isStartingElement(next, SUB_HEADING)) {
-				text = putCurrentSubheading(subHeadingMap,currentSubheading, text, references);
-				references = null;
+				text = putCurrentSubheading(subHeadingMap, currentSubheading, text, currentReferences, inlineReferences);
+				currentReferences = null;
+				inlineReferences = new ArrayList<>();
+				lastWasReference = false;
 				// TODO footnotes
 				currentSubheading = getCData(state, reader, next).trim();
 			} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
@@ -1964,10 +1987,11 @@ public abstract class MarkupImportBase  {
 				//TODO
 				handleNotYetImplementedElement(next);
 			}else if (isStartingElement(next, REFERENCES)) {
-				if (references != null){
+				if (currentReferences != null){
 				    fireWarningEvent("References do already exist", next, 2);
 				}
-			    references = handleStringReferences(state, reader, next);
+			    currentReferences = handleStringReferences(state, reader, next);
+			    lastWasReference = true;
 			}else if (isStartingElement(next, REFERENCE)) {
                 //TODO
                 handleNotYetImplementedElement(next);
@@ -2008,33 +2032,55 @@ public abstract class MarkupImportBase  {
 	}
 
 
-    /**
-     * @param state
-     * @param reader
-     * @param next
-     * @return
-     * @throws XMLStreamException
-     */
-    private List<Reference> handleStringReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+	/**
+	 * container class more or less representing a list of labeled references
+	 */
+	protected class StringReferences{
+	    String subheading;
+	    List<LabeledReference> content = new ArrayList<>() ; //either String or LabeledReference
+	    @Override
+        public String toString(){
+	        String result = null;
+	        for (LabeledReference labRef : content){
+	            result = CdmUtils.concat("", labRef.label);
+	        }
+	        return result;
+	    }
+        public List<LabeledReference> getReferences() {
+            List<LabeledReference> result = new ArrayList<>();
+            for (LabeledReference labRef : content){
+                if (labRef.ref != null){
+                    result.add(labRef);
+                }
+            }
+            return result;
+        }
+	}
+
+	protected class LabeledReference{
+	    public LabeledReference(Reference ref, String detail, String label) {
+            this.ref = ref; this.detail = detail; this.label = label;
+        }
+	    protected Reference ref;  //if null, this LabeledReference represents only a string in between references
+	    protected String detail; //micro reference
+	    protected String label;
+	}
+
+    private StringReferences handleStringReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
         checkNoAttributes(parentEvent);
-        List<Reference> result = new ArrayList<>();
+        StringReferences result = new StringReferences();
         while (reader.hasNext()) {
             XMLEvent next = readNoWhitespace(reader);
             if (isMyEndingElement(next, parentEvent)) {
                 return result;
             } else if (isStartingElement(next, SUB_HEADING)) {
-                XMLEvent subHeadingEvent = readNoWhitespace(reader);
-                String subheading = subHeadingEvent.asCharacters().getData();
-                if (!subheading.matches("(Reference|Literature);?")){
-                    fireWarningEvent("Subheading for references not recognized: " + subheading, subHeadingEvent, 4);
+                String subheading = getCData(state, reader, next);
+                if (!subheading.matches("(References?|Literature):?")){
+                    fireWarningEvent("Subheading for references not recognized: " + subheading, next, 4);
                 }
-                XMLEvent end = reader.nextEvent();
-                if (!isEndingElement(end, SUB_HEADING)){
-                    handleUnexpectedElement(end);
-                }
+                result.subheading = subheading;
             } else if (isStartingElement(next, REFERENCE)) {
-                //TODO FIXME
-                handleNotYetImplementedElement(next);
+                handleInlineReference(state, reader, next, result);
             } else {
                 handleUnexpectedElement(next);
             }
@@ -2042,11 +2088,246 @@ public abstract class MarkupImportBase  {
         throw new IllegalStateException("<References> has no closing tag");
     }
 
+    private void handleInlineReference(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
+            StringReferences result) throws XMLStreamException {
+        checkNoAttributes(parentEvent);
+        boolean hasRefPart = false;
+        Map<String, String> refMap = new HashMap<>();
+        String label = "";
+        while (reader.hasNext()) {
+            XMLEvent next = readNoWhitespace(reader);
+            if (isMyEndingElement(next, parentEvent)) {
+                checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
+                String details = refMap.get(DETAILS);
+//              String label = makeLabel(state, refMap, next);
+                Reference ref = createReference(state, refMap, next);
+                ref = state.getDeduplicationHelper(docImport).getExistingReference(state, ref);
+
+                String label2 = ref.getTitleCache(); //TODO preliminary for debugging and testing
+                result.content.add(new LabeledReference(ref, details, label));
+                return;
+            } else if (isStartingElement(next, REF_PART)) {
+                String classValue = handleRefPart(state, reader, next, refMap);
+                String text = refMap.get(classValue);
+                if (classValue.equals(YEAR)){
+                    text = "("+text+")";
+                }
+                hasRefPart = true;
+                label = CdmUtils.concat(" ", label, text);
+            } else {
+                handleUnexpectedElement(next);
+            }
+        }
+        throw new IllegalStateException("<References> has no closing tag");
+
+    }
+
+
+//    this is more or less a duplicate Nomenclature import, maybe merge later
+    private Reference createReference(MarkupImportState state,
+            Map<String, String> refMap, XMLEvent parentEvent) {
+
+        Reference reference;
+
+        String type = getAndRemoveMapKey(refMap, PUBTYPE);
+        String authorStr = getAndRemoveMapKey(refMap, AUTHOR);
+        String titleStr = getAndRemoveMapKey(refMap, PUBTITLE);
+        String titleCache = getAndRemoveMapKey(refMap, PUBFULLNAME);
+        String volume = getAndRemoveMapKey(refMap, VOLUME);
+        String edition = getAndRemoveMapKey(refMap, EDITION);
+        String editors = getAndRemoveMapKey(refMap, EDITORS);
+        String year = getAndRemoveMapKey(refMap, YEAR);
+        String pubName = getAndRemoveMapKey(refMap, PUBNAME);
+        String pages = getAndRemoveMapKey(refMap, PAGES);
+        String publication = getAndRemoveMapKey(refMap, PUBLOCATION);
+        String publisher = getAndRemoveMapKey(refMap, PUBLISHER);
+        String appendix = getAndRemoveMapKey(refMap, APPENDIX);
+        String issue = getAndRemoveMapKey(refMap, ISSUE);
+
+        reference = handleNonCitationSpecific(state, type, authorStr, titleStr,
+                    titleCache, volume, issue, edition, editors, pubName, appendix, pages, parentEvent);
+
+        //year
+        TimePeriod timeperiod = TimePeriodParser.parseString(year);
+        if (reference.getType().equals(ReferenceType.BookSection)){
+            reference.getInBook().setDatePublished(timeperiod);
+        }
+        reference.setDatePublished(timeperiod);
+
+        //Quickfix for these 2 attributes (publication, publisher) used in feature.references
+        Reference inRef = reference.getInReference() == null ? reference : reference.getInReference();
+        //publication
+        if (isNotBlank(publisher)){
+            inRef.setPublisher(publisher);
+        }
+
+        //publisher
+        if (isNotBlank(publication)){
+            inRef.setPlacePublished(publication);
+        }
+
+        // TODO
+        String[] unhandledList = new String[] { ALTERNATEPUBTITLE, NOTES, STATUS };
+        for (String unhandled : unhandledList) {
+            String value = getAndRemoveMapKey(refMap, unhandled);
+            if (isNotBlank(value)) {
+                this.handleNotYetImplementedAttributeValue(parentEvent, CLASS, unhandled);
+            }
+        }
+
+        for (String key : refMap.keySet()) {
+            if (!DETAILS.equalsIgnoreCase(key)) {
+                this.fireUnexpectedAttributeValue(parentEvent, CLASS, key);
+            }
+        }
+
+        return reference;
+    }
+
 
     /**
-     * @param text2
+     * Create reference for non nomenclatural references
      * @return
      */
+    protected Reference handleNonCitationSpecific(MarkupImportState state, String type, String authorStr,
+            String titleStr, String titleCache, String volume, String issue, String edition,
+            String editors, String pubName, String appendix, String pages, XMLEvent parentEvent) {
+
+        Reference reference;
+
+        //volume / issue
+        if (isBlank(volume) && isNotBlank(issue)){
+            String message = "Issue ('"+issue+"') exists but no volume";
+            fireWarningEvent(message, parentEvent, 4);
+            volume = issue;
+        }else if (isNotBlank(issue)){
+            volume = volume + "("+ issue + ")";
+        }
+
+        //pubName / appendix
+        if (isNotBlank(appendix)){
+            pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
+        }
+
+        if (isArticleNonCitation(type, pubName, volume, editors)) {
+            IArticle article = ReferenceFactory.newArticle();
+            if (pubName != null) {
+                IJournal journal = ReferenceFactory.newJournal();
+                journal.setTitle(pubName);
+                article.setInJournal(journal);
+            }else{
+                fireWarningEvent("Article has no journal", parentEvent, 4);
+            }
+            reference = (Reference) article;
+        } else {
+            if (isBookSection(type, authorStr, titleStr, editors, pubName, volume)){
+                IBookSection bookSection = ReferenceFactory.newBookSection();
+                if (pubName != null) {
+                    IBook book = ReferenceFactory.newBook();
+                    book.setTitle(pubName);
+                    bookSection.setInBook(book);
+                }
+                reference = (Reference)bookSection;
+            }else{
+                //??
+                Reference bookOrPartOf = ReferenceFactory.newGeneric();
+                if (pubName != null && titleStr != null) {
+                    Reference inReference = ReferenceFactory.newGeneric();
+                    inReference.setTitle(pubName);
+                    bookOrPartOf.setInReference(inReference);
+                }
+                reference = bookOrPartOf;
+            }
+        }
+
+        //author
+        TeamOrPersonBase<?> author = createAuthor(state, authorStr);
+        reference.setAuthorship(author);
+
+        //title
+        reference.setTitle(titleStr);
+        if (StringUtils.isNotBlank(titleCache)) {
+            reference.setTitleCache(titleCache, true);
+        }
+
+        //edition
+        if(reference.getInReference() != null){
+            reference.getInReference().setEdition(edition);
+            reference.getInReference().setEditor(editors);
+        }else{
+            //edition
+            reference.setEdition(edition);
+            reference.setEditor(editors);
+        }
+
+        //volume
+        reference.setVolume(volume);
+
+        //pages
+        reference.setPages(pages);
+
+        return reference;
+    }
+
+    private boolean isBookSection(String type, String authorStr, String pubTitle,
+            String editors, String pubName, String volume) {
+        //type not yet handled
+        if (authorStr != null && editors != null
+                && pubTitle != null && pubName != null){
+            return true;
+        }else if (pubTitle != null && pubName != null && volume == null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    private boolean isArticleNonCitation(String type, String pubName, String volume, String editors) {
+        if ("journal".equalsIgnoreCase(type)){
+            return true;
+        }else if (volume != null && editors == null){
+            if (pubName != null && IJournal.guessIsJournalName(pubName)){
+                return true;
+            }else{
+                return false;  //unclear
+            }
+        }else{
+            return false;
+        }
+    }
+
+    protected String handleRefPart(MarkupImportState state, XMLEventReader reader,
+            XMLEvent parentEvent, Map<String, String> refMap)
+            throws XMLStreamException {
+        String classValue = getClassOnlyAttribute(parentEvent);
+
+        String text = "";
+        while (reader.hasNext()) {
+            XMLEvent next = readNoWhitespace(reader);
+            if (isMyEndingElement(next, parentEvent)) {
+                refMap.put(classValue, text);
+                return classValue;
+            } else if (next.isStartElement()) {
+                if (isStartingElement(next, ANNOTATION)) {
+                    handleNotYetImplementedElement(next); // TODO test handleSimpleAnnotation
+                } else if (isStartingElement(next, ITALICS)) {
+                    handleNotYetImplementedElement(next);
+                } else if (isStartingElement(next, BOLD)) {
+                    handleNotYetImplementedElement(next);
+                } else {
+                    handleUnexpectedStartElement(next.asStartElement());
+                }
+            } else if (next.isCharacters()) {
+                text += next.asCharacters().getData();
+            } else {
+                handleUnexpectedEndElement(next.asEndElement());
+            }
+        }
+        throw new IllegalStateException("RefPart has no closing tag");
+    }
+
+
     private boolean isBlankOrPunctuation(String text) {
         if (text == null){
             return true;
@@ -2066,19 +2347,15 @@ public abstract class MarkupImportBase  {
     }
 
 
-    /**
-	 * @param subHeadingMap
-	 * @param currentSubheading
-	 * @param text
-     * @param references
-	 * @return
-	 */
-	private String putCurrentSubheading(Map<String, SubheadingResult> subHeadingMap, String currentSubheading, String text, List<Reference> references) {
-		if (isNotBlank(text) || isNotEmptyCollection(references)) {
+	private String putCurrentSubheading(Map<String, SubheadingResult> subHeadingMap, String currentSubheading,
+	        String text, StringReferences fullReferences, List<IntextReference> inlineReferences) {
+		if (isNotBlank(text) || (fullReferences != null && isNotEmptyCollection(fullReferences.content))
+		        ||isNotEmptyCollection(inlineReferences)) {
 			SubheadingResult result = new SubheadingResult();
 			text = removeStartingMinus(text);
 			result.text = text.trim();
-			result.references = references;
+			result.references = fullReferences == null ? new StringReferences() : fullReferences;
+			result.inlineReferences = inlineReferences;
             subHeadingMap.put(currentSubheading, result);
 		}
 		return "";
@@ -2134,7 +2411,7 @@ public abstract class MarkupImportBase  {
 			if (isMyEndingElement(next, parentEvent)) {
 				if (StringUtils.isNotBlank(text)) {
 					String label = CdmUtils.removeTrailingDot(normalize(text));
-					TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, sourceReference);
+					TaxonDescription description = getExtractedMarkupMarkedDescription(state, taxon, sourceReference);
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
 
 					//status
@@ -2222,113 +2499,22 @@ public abstract class MarkupImportBase  {
 		throw new IllegalStateException("<DistributionLocality> has no closing tag");
 	}
 
-
-//********************************************** OLD *************************************
-
-//	protected boolean testAdditionalElements(Element parentElement, List<String> excludeList){
-//		boolean result = true;
-//		List<Element> list = parentElement.getChildren();
-//		for (Element element : list){
-//			if (! excludeList.contains(element.getName())){
-//				logger.warn("Unknown element (" + element.getName() + ") in parent element (" + parentElement.getName() + ")");
-//				result = false;
-//			}
-//		}
-//		return result;
-//	}
-//
-//
-//	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
-//		T result = null;
-//		String linkType = element.getAttributeValue("linkType");
-//		String ref = element.getAttributeValue("ref");
-//		if(ref == null && linkType == null){
-//			result = getInstance(clazz);
-//			if (result != null){
-//				String title = element.getTextNormalize();
-//				result.setTitleCache(title, true);
-//			}
-//		}else if (linkType == null || linkType.equals("local")){
-//			//TODO
-//			result = objectMap.get(ref);
-//			if (result == null){
-//				logger.warn("Object (ref = " + ref + ")could not be found in WrapperMap");
-//			}
-//		}else if(linkType.equals("external")){
-//			logger.warn("External link types not yet implemented");
-//		}else if(linkType.equals("other")){
-//			logger.warn("Other link types not yet implemented");
-//		}else{
-//			logger.warn("Unknown link type or missing ref");
-//		}
-//		if (result == null){
-//			success.setValue(false);
-//		}
-//		return result;
-//	}
-//
-//
-//	protected Reference makeAccordingTo(Element elAccordingTo, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
-//		Reference result = null;
-//		if (elAccordingTo != null){
-//			String childName = "AccordingToDetailed";
-//			boolean obligatory = false;
-//			Element elAccordingToDetailed = XmlHelp.getSingleChildElement(success, elAccordingTo, childName, elAccordingTo.getNamespace(), obligatory);
-//
-//			childName = "Simple";
-//			obligatory = true;
-//			Element elSimple = XmlHelp.getSingleChildElement(success, elAccordingTo, childName, elAccordingTo.getNamespace(), obligatory);
-//
-//			if (elAccordingToDetailed != null){
-//				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
-//			}else{
-//				result = ReferenceFactory.newGeneric();
-//				String title = elSimple.getTextNormalize();
-//				result.setTitleCache(title, true);
-//			}
-//		}
-//		return result;
-//	}
-//
-//
-//	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
-//		Reference result = null;
-//		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
-//		if (elAccordingToDetailed != null){
-//			//AuthorTeam
-//			String childName = "AuthorTeam";
-//			boolean obligatory = false;
-//			Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-//			makeAccordingToAuthorTeam(elAuthorTeam, success);
-//
-//			//PublishedIn
-//			childName = "PublishedIn";
-//			obligatory = false;
-//			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-//			result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
-//
-//			//MicroReference
-//			childName = "MicroReference";
-//			obligatory = false;
-//			Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-//			String microReference = elMicroReference.getTextNormalize();
-//			if (CdmUtils.Nz(microReference).equals("")){
-//				//TODO
-//				logger.warn("MicroReference not yet implemented for AccordingToDetailed");
-//			}
-//		}
-//		return result;
-//	}
-//
-//	private Team makeAccordingToAuthorTeam(Element elAuthorTeam, ResultWrapper<Boolean> succes){
-//		Team result = null;
-//		if (elAuthorTeam != null){
-//			//TODO
-//			logger.warn("AuthorTeam not yet implemented for AccordingToDetailed");
-//		}
-//		return result;
-//	}
-
-
+	   /**
+     * @param state
+     * @param taxon
+     * @param ref
+     * @return
+     */
+    protected TaxonDescription getExtractedMarkupMarkedDescription(MarkupImportState state, Taxon taxon, Reference sourceReference) {
+        MarkerType markerType = getMarkerType(
+                state,
+                MarkupTransformer.uuidMarkerExtractedMarkupData,
+                "Extracted factual data", "Marker type for factual data imported from markup where the markup for this data was included in parent markup that was also imported including the text from this markup.",
+                "Extr. data",
+                null);
+        String title = "Extracted markup data for " + taxon.getName().getTitleCache();
+        TaxonDescription description = getMarkedTaxonDescription(taxon, markerType, false, true, sourceReference, title);
+        return description;
+    }
 
 }

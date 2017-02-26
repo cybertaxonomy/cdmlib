@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.common.utils.DeduplicationHelper;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -45,7 +45,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
 
-	private DeduplicationHelper<MarkupImportState> deduplicationHelper;
+	private ImportDeduplicationHelper<MarkupImportState> deduplicationHelper;
 
 
 	private UnmatchedLeads unmatchedLeads;
@@ -79,6 +79,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private boolean currentTaxonExcluded = false;
 
 	private boolean isSpecimenType = false;
+
+	private boolean taxonIsHybrid = false;
+
 
 
 	private String baseMediaUrl = null;
@@ -477,13 +480,13 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
         this.firstSpecimenInFacade = firstSpecimenInFacade;
     }
 
-    public DeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmRepository repository) {
+    public ImportDeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmRepository repository) {
         if (this.deduplicationHelper == null){
-            this.deduplicationHelper = new DeduplicationHelper<>(repository);
+            this.deduplicationHelper = new ImportDeduplicationHelper<>(repository);
         }
         return deduplicationHelper;
     }
-    public void setDeduplicationHelper(DeduplicationHelper<MarkupImportState> deduplicationHelper) {
+    public void setDeduplicationHelper(ImportDeduplicationHelper<MarkupImportState> deduplicationHelper) {
         this.deduplicationHelper = deduplicationHelper;
     }
 
@@ -492,6 +495,13 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
     }
     public String getNameStatus() {
         return nameStatus;
+    }
+
+    public boolean isTaxonIsHybrid() {
+        return taxonIsHybrid;
+    }
+    public void setTaxonIsHybrid(boolean taxonIsHybrid) {
+        this.taxonIsHybrid = taxonIsHybrid;
     }
 
 }

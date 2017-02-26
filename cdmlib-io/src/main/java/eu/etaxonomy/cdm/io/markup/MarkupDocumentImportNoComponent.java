@@ -341,6 +341,11 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					fireWarningEvent(warning, next, 12);
 					taxon.getName().setRank(Rank.UNKNOWN_RANK());
 				}
+				//hybrid
+				if (state.isTaxonIsHybrid() && !taxon.getName().isHybrid()){
+				    fireWarningEvent("Taxon is hybrid but name is not a hybrid name", next, 4);
+				}
+				state.setTaxonIsHybrid(false);
 
 				keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
 				state.setCurrentTaxon(null);
@@ -544,6 +549,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		} else if (checkAndRemoveAttributeValue(attributes, CLASS, "excluded")) {
 			state.setCurrentTaxonExcluded(true);
 		}
+        state.setTaxonIsHybrid(checkAndRemoveAttributeValue(attributes, CLASS, "hybrid"));
+
 		// TODO insufficient, new, expected
 		handleNotYetImplementedAttribute(attributes, CLASS, event);
 		// From old version
@@ -577,7 +584,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				if (isMyEndingElement(next, parentEvent)) {
 					Taxon taxon = state.getCurrentTaxon();
 					String titleText = null;
-					if (checkMandatoryText(text, parentEvent)) {
+					if (state.getConfig().isDoExtensionForTaxonTitle() && checkMandatoryText(text, parentEvent)) {
 						titleText = normalize(text);
 						UUID uuidTitle = MarkupTransformer.uuidTaxonTitle;
 						ExtensionType titleExtension = this.getExtensionType(state, uuidTitle, "Taxon Title ","taxon title", "title");

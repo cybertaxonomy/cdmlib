@@ -29,7 +29,9 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -150,13 +152,12 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				}
 			} else if (isStartingElement(next, STRING)) {
 				lastDescriptionElement = makeFeatureString(state, reader, feature,
-				        taxonDescription, lastDescriptionElement,next, isFreetext);
+				        taxonDescription, lastDescriptionElement, next, isFreetext);
 			} else if (isStartingElement(next, FIGURE_REF)) {
 				lastDescriptionElement = makeFeatureFigureRef(state, reader,
 				        taxonDescription, isDescription, lastDescriptionElement, sourceReference, next);
 			} else if (isStartingElement(next, REFERENCES)) {
-				// TODO details/microcitation ??
-
+				fireWarningEvent("Check correct handling of feature references", next, 4);
 				List<Reference> refs = handleReferences(state, reader, next);
 				if (!refs.isEmpty()) {
 					// TODO
@@ -302,17 +303,21 @@ public class MarkupFeatureImport extends MarkupImportBase {
 //					}
 				}else {
 					TextData textData = TextData.NewInstance(subheadingFeature);
-					SubheadingResult subheadResult = subheadingMap.get(subheading);
-					textData.putText(getDefaultLanguage(state), subheadResult.text);
-					if (isNotEmptyCollection(subheadResult.references)){
-					    for (Reference reference : subheadResult.references){
-					        textData.addPrimaryTaxonomicSource(reference);
+					SubheadingResult subHeadingResult = subheadingMap.get(subheading);
+					LanguageString languageString = textData.putText(getDefaultLanguage(state), subHeadingResult.text);
+					if (isNotEmptyCollection(subHeadingResult.references.getReferences())){
+					    for (LabeledReference reference : subHeadingResult.references.getReferences()){
+					        textData.addPrimaryTaxonomicSource(reference.ref, reference.detail);
 					    }
                         textData.addImportSource(null, null, state.getConfig().getSourceReference(), null);
 					}else{
 					    textData.addPrimaryTaxonomicSource(state.getConfig().getSourceReference());
 					}
-					taxonDescription.addElement(textData);
+					//intext references
+				    for (IntextReference intext : subHeadingResult.inlineReferences){
+				        languageString.addIntextReference(intext);
+                    }
+                	taxonDescription.addElement(textData);
 					lastDescriptionElement = textData;
 					// TODO how to handle figures when these data are split in
 					// subheadings
@@ -689,23 +694,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	        throw new IllegalStateException("<Habitat> has no closing tag");
 	    }
 
-    /**
-     * @param state
-     * @param taxon
-     * @param ref
-     * @return
-     */
-    private TaxonDescription getExtractedMarkupMarkedDescription(MarkupImportState state, Taxon taxon, Reference ref) {
-        MarkerType markerType = getMarkerType(
-                state,
-                MarkupTransformer.uuidMarkerExtractedMarkupData,
-                "Extracted factual data", "Marker type for factual data imported from markup where the markup for this data was included in parent markup that was also imported including the text from this markup.",
-                "Extr. data",
-                null);
-        String title = "Extracted markup data for " + taxon.getName().getTitleCache();
-        TaxonDescription description = getMarkedTaxonDescription(taxon, markerType, false, true, ref, title);
-        return description;
-    }
+
 
 
 	private FigureDataHolder handleFigureRef(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)

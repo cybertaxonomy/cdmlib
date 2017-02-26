@@ -21,7 +21,6 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -659,37 +658,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	}
 
-	private void handleRefPart(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, Map<String, String> refMap)
-			throws XMLStreamException {
-		String classValue = getClassOnlyAttribute(parentEvent);
-
-		String text = "";
-		while (reader.hasNext()) {
-			XMLEvent next = readNoWhitespace(reader);
-			if (isMyEndingElement(next, parentEvent)) {
-				refMap.put(classValue, text);
-				return;
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next); // TODO test
-															// handleSimpleAnnotation
-				} else if (isStartingElement(next, ITALICS)) {
-					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, BOLD)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next.asStartElement());
-				}
-			} else if (next.isCharacters()) {
-				text += next.asCharacters().getData();
-			} else {
-				handleUnexpectedEndElement(next.asEndElement());
-			}
-		}
-		throw new IllegalStateException("RefPart has no closing tag");
-
-	}
 
 	private void doCitation(MarkupImportState state, TaxonNameBase<?,?> name,
 			String classValue, TaxonRelationship misappliedRel,
@@ -785,7 +753,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		} else { // no citation
 			reference = handleNonCitationSpecific(state, type, authorStr, titleStr,
-					titleCache, volume, edition, editors, pubName, appendix);
+					titleCache, volume, issue, edition, editors, pubName, appendix, pages, parentEvent);
 		}
 
 		//year
@@ -847,9 +815,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (isBlank(volume) && isNotBlank(issue)){
 		    String message = "Issue ('"+issue+"') exists but no volume";
             fireWarningEvent(message, parentEvent, 4);
-		}
-		//this is correct at least for Nepenthes; maybe needs to be configurable later
-		volume = CdmUtils.concat(", ", volume, issue);
+            volume = issue;
+		}else if (isNotBlank(issue)){
+            volume = volume + "("+ issue + ")";
+        }
+
 
 		RefType refType = defineRefTypeForCitation(type, volume, editors, authorStr, pubName, parentEvent);
 		Reference reference;
@@ -1008,6 +978,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 					return RefType.LatestUsed;
 				}else if (volume == null){
 					return RefType.Book;  //Book must not have in-authors
+				}else if (IJournal.guessIsJournalName(pubName)){
+				    return RefType.Article;
 				}else{
 					return RefType.Generic;
 				}
@@ -1025,76 +997,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
-
-	private boolean isArticle(String type, String volume, String editors) {
-		if ("journal".equalsIgnoreCase(type)){
-			return true;
-		}else if (volume != null && editors == null){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	/**
-	 * in work
-	 * @param appendix
-	 * @return
-	 */
-	private Reference handleNonCitationSpecific(MarkupImportState state, String type, String authorStr,
-			String titleStr, String titleCache, String volume, String edition,
-			String editors, String pubName, String appendix) {
-
-	    Reference reference;
-
-	    if (isNotBlank(appendix)){
-	        pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
-	    }
-
-	    if (isArticle(type, volume, editors)) {
-			IArticle article = ReferenceFactory.newArticle();
-			if (pubName != null) {
-				IJournal journal = ReferenceFactory.newJournal();
-				journal.setTitle(pubName);
-				article.setInJournal(journal);
-			}
-			reference = (Reference) article;
-
-		} else {
-			Reference bookOrPartOf = ReferenceFactory.newGeneric();
-			reference = bookOrPartOf;
-		}
-
-		// TODO type
-		TeamOrPersonBase<?> author = createAuthor(state, authorStr);
-		reference.setAuthorship(author);
-
-		//title
-		reference.setTitle(titleStr);
-		if (StringUtils.isNotBlank(titleCache)) {
-			reference.setTitleCache(titleCache, true);
-		}
-
-		//edition
-		reference.setEdition(edition);
-		reference.setEditor(editors);
-
-		//pubName
-		if (pubName != null) {
-			Reference inReference;
-			if (reference.getType().equals(ReferenceType.Article)) {
-				inReference = ReferenceFactory.newJournal();
-			} else {
-				inReference = ReferenceFactory.newGeneric();
-			}
-			inReference.setTitle(pubName);
-			reference.setInReference(inReference);
-		}
-
-		//volume
-		reference.setVolume(volume);
-		return reference;
-	}
 
 	private void handlePages(MarkupImportState state,
 			Map<String, String> refMap, XMLEvent parentEvent,
