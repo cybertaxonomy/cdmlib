@@ -2231,6 +2231,15 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals("M.T.P.Azevedo & Sant'Anna", name.getCombinationAuthorship().getTitleCache());
 
+        //Heft
+        nameStr = "Nepenthes deaniana Macfarl. in Engl., Mein Pflanzenr. IV. 111 (Heft 36): 57. 1908.";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference ref = (Reference)name.getNomenclaturalReference();
+        Assert.assertFalse("Reference should be parsable", ref.hasProblem());
+        //or even better IV. 111 (Heft 36), but this is currently not implemented
+        assertEquals("111 (Heft 36)", ref.getInReference().getVolume());
+
 
     }
 
