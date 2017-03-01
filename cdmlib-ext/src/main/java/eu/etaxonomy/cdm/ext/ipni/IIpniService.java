@@ -184,16 +184,11 @@ public interface IIpniService {
 	 * @return List of botanical names returned by the IPNI web service.
 	 */
 	public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
-			String infraGenus, String infraSpecies, String authorAbbrev, Boolean includePublicationAuthors,
-			Boolean includeBasionymAuthors,
+			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
-			Boolean isAPNIRecord,
-			Boolean isGCIRecord,
-			Boolean isIKRecord,
 			IpniRank ipniRankToReturn,
-			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmRepository appConfig);
+			ICdmRepository repository);
 
 	/**
 	 * As {@link #getNamesAdvanced(String, String, String, String, String, String, String, Boolean, Boolean, String, Boolean, Boolean, Boolean, IpniRank, Boolean, IpniServiceNamesConfigurator, ICdmRepository)}
@@ -221,16 +216,11 @@ public interface IIpniService {
 	 * @return List of botanical names returned by the IPNI web service.
 	 */
 	public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
-			String infraGenus, String infraSpecies, String authorAbbrev, Boolean includePublicationAuthors,
-			Boolean includeBasionymAuthors,
+			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
-			Boolean isAPNIRecord,
-			Boolean isGCIRecord,
-			Boolean isIKRecord,
 			Rank rankRangeToReturn,
-			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmRepository appConfig);
+			ICdmRepository repository);
 
 	/**
 	 * Returns a list of publications matching the title and/or the abbreviation parameter according to the IPNI Publication search function.

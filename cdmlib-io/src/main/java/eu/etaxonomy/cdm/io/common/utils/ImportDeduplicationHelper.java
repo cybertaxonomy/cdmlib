@@ -58,13 +58,30 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     //using titleCache
     private Map<String, INonViralName> nameMap = new HashMap<>();
 
+    public static ImportDeduplicationHelper<?> NewInstance(ICdmRepository repository){
+        return new ImportDeduplicationHelper<>(repository);
+    }
+
+    public static ImportDeduplicationHelper<?> NewStandaloneInstance(){
+        return new ImportDeduplicationHelper<>(null);
+    }
+
+    /**
+     * @param repository
+     * @param state not used, only for correct casting of generics
+     * @return
+     */
+    public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper<STATE> NewInstance(ICdmRepository repository, STATE state){
+        return new ImportDeduplicationHelper<>(repository);
+    }
+
     /**
      *
      */
     public ImportDeduplicationHelper(ICdmRepository repository) {
         this.repository = repository;
         if (repository == null){
-            throw new NullPointerException("Repository must not be null");
+            logger.warn("Repository is null. Deduplication does not work agains database");
         }
     }
 
@@ -178,7 +195,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
      */
     @SuppressWarnings("rawtypes")
     private void initAgentMap(STATE state) {
-        if (!agentMapIsInitialized){
+        if (!agentMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
             List<TeamOrPersonBase> existingAgents = repository.getAgentService().list(null, null, null, null, propertyPaths);
             for (TeamOrPersonBase agent : existingAgents){
@@ -203,7 +220,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                 putAgentBase(person.getTitleCache(), person);
             }
         }
-
     }
 
     /**
@@ -236,7 +252,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     * @param state
     */
    private void initRerenceMap(STATE state) {
-       if (!referenceMapIsInitialized){
+       if (!referenceMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
            List<Reference> existingReferences = repository.getReferenceService().list(null, null, null, null, propertyPaths);
            for (Reference ref : existingReferences){

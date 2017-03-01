@@ -151,7 +151,7 @@ public class IpniServiceTest {
         })
 	public void testGetNamesAdvanced(){
 		ICdmRepository services = null;
-		IpniServiceNamesConfigurator config = new IpniServiceNamesConfigurator();
+		IpniServiceNamesConfigurator config = IpniServiceNamesConfigurator.NewInstance();
 
 		//http://www.uk.ipni.org/ipni/advPlantNameSearch.do?find_family=&find_genus=Abies&find_species=alba&find_infrafamily=&find_infragenus=&find_infraspecies=&find_authorAbbrev=B*&find_includePublicationAuthors=on&find_includePublicationAuthors=off&find_includeBasionymAuthors=on&find_includeBasionymAuthors=off&find_publicationTitle=&find_isAPNIRecord=on&find_isAPNIRecord=false&find_isGCIRecord=on&find_isGCIRecord=false&find_isIKRecord=on&find_isIKRecord=false&find_rankToReturn=infraspec&output_format=normal&find_sortByFamily=on&find_sortByFamily=off&query_type=by_query&back_page=plantsearch
 		String family = "";
@@ -161,16 +161,10 @@ public class IpniServiceTest {
 		String infraGenus = "";
 		String infraSpecies = "";
 		String authorAbbrev = "B*";
-		Boolean includePublicationAuthors = null;
-		Boolean includeBasionymAuthors = null;
 		String publicationTitle = "";
-		Boolean isAPNIRecord = null;
-		Boolean isGCIRecord = null;
-		Boolean isIKRecord = null;
 		IpniRank rankToReturn = IpniRank.valueOf(Rank.SUBSPECIES());
-		Boolean sortByFamily = null;
 
-		List<BotanicalName> nameList = service1.getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, includePublicationAuthors, includeBasionymAuthors, publicationTitle, isAPNIRecord, isGCIRecord, isIKRecord, rankToReturn, sortByFamily, config, services);
+		List<BotanicalName> nameList = service1.getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, publicationTitle, rankToReturn, config, services);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 
 
