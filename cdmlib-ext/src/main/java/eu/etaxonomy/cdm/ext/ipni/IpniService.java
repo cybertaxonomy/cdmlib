@@ -130,6 +130,7 @@ public class IpniService  implements IIpniService{
 	public static final String INFRA_GENUS = "Infra genus";
 	public static final String SPECIES = "Species";
 	public static final String INFRA_SPECIFIC = "Infra species";
+	public static final String HYBRID = "Hybrid";
 	public static final String RANK = "Rank";
 	public static final String BASIONYM_AUTHOR = "Basionym author";
 	public static final String PUBLISHING_AUTHOR = "Publishing author";
@@ -518,6 +519,13 @@ public class IpniService  implements IIpniService{
         }
         if (!Nz(valueMap.get(AUTHORS)).equals(name.getAuthorshipCache())) {
             name.setAuthorshipCache(valueMap.get(AUTHORS), true);
+        }
+        if ("Y".equals(valueMap.get(HYBRID))){
+            if (!name.isHybrid()){
+                //Is there a concrete way to include the hybrid flag info? As it does not say which type of hybrid it seems
+                //to be best to handle hybrids via parsing. But there might be a better errror handling possible.
+                logger.warn("Name is flagged as hybrid at IPNI but CDM name has no hybrid flag set: " + name.getTitleCache());
+            }
         }
 
 		//publication
