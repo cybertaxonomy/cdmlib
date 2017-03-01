@@ -176,9 +176,9 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 
 	@Override
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException {
-		Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
+		Set<ICdmBase> deleteSet = new HashSet<>();
 		if (clonedObjects == null){
-			clonedObjects = new HashSet<ICdmBase>();
+			clonedObjects = new HashSet<>();
 		}
 		deleteSet.add(mergeSecond);
 		try {

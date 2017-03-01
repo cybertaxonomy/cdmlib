@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
@@ -76,7 +75,7 @@ public class DeduplicationHelper {
 			mergeStrategy = DefaultMergeStrategy.NewInstance(cdmBase1.getClass());
 		}
 		try {
-			testMergeValid(cdmBase1, cdmBase2, mergeStrategy);
+			checkMergeValid(cdmBase1, cdmBase2, mergeStrategy);
 			return true;
 		} catch (IllegalArgumentException e) {
 			return false;
@@ -92,20 +91,20 @@ public class DeduplicationHelper {
 		@SuppressWarnings("unchecked")
 		Class<T> clazz2 = (Class<T>)cdmBase2.getClass();
 
-		SessionFactory sessionFactory = session.getSessionFactory();
+//		SessionFactory sessionFactory = session.getSessionFactory();
 		if (mergeStrategy == null){
 			mergeStrategy = DefaultMergeStrategy.NewInstance(cdmBase1.getClass());
 		}
 		try {
-			//test null and types
-			testMergeValid(cdmBase1, cdmBase2, mergeStrategy);
+			//check null and types
+			checkMergeValid(cdmBase1, cdmBase2, mergeStrategy);
 
 			//merge objects
 			//externel impl
 			//internal impl
 
-			Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
-			Set<ICdmBase> cloneSet = new HashSet<ICdmBase>();
+			Set<ICdmBase> deleteSet = new HashSet<>();
+			Set<ICdmBase> cloneSet = new HashSet<>();
 			if (cdmBase1 instanceof IMergable){
 				IMergable mergable1 = (IMergable)cdmBase1;
 				IMergable mergable2 = (IMergable)cdmBase2;
@@ -164,7 +163,7 @@ public class DeduplicationHelper {
 	 * @throws NullPointerException
 	 */
 
-	private <T extends CdmBase> void testMergeValid(T cdmBase1, T cdmBase2, IMergeStrategy strategy)throws IllegalArgumentException, NullPointerException{
+	private <T extends CdmBase> void checkMergeValid(T cdmBase1, T cdmBase2, IMergeStrategy strategy)throws IllegalArgumentException, NullPointerException{
 		if (cdmBase1 == null || cdmBase2 == null){
 			throw new NullPointerException("Merge arguments must not be (null)");
 		}
@@ -173,13 +172,13 @@ public class DeduplicationHelper {
 
 
 		if (cdmBase1.getClass() != cdmBase2.getClass()){
-			boolean reallocationPossible = testOnlyReallocationAllowed(cdmBase1.getClass(), cdmBase2.getClass());
+			boolean reallocationPossible = checkOnlyReallocationAllowed(cdmBase1.getClass(), cdmBase2.getClass());
 			if (! reallocationPossible){
 				String msg = "Merge not possible for objects of type %s and type %s";
 				msg = String.format(msg, cdmBase1.getClass().getSimpleName(), cdmBase2.getClass().getSimpleName());
 				throw new IllegalArgumentException("Merge not possible for objects of type %s and type %s");
 			}else{
-				if (! testInstancesMergeable(cdmBase1, cdmBase2, strategy)){
+				if (! checkInstancesMergeable(cdmBase1, cdmBase2, strategy)){
 					throw new IllegalArgumentException("Object can not be merged into new object as it is referenced in a way that does not allow merging");
 				}
 			}
@@ -187,7 +186,7 @@ public class DeduplicationHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends CdmBase> boolean testInstancesMergeable(T cdmBase1, T cdmBase2, IMergeStrategy strategy){
+	private <T extends CdmBase> boolean checkInstancesMergeable(T cdmBase1, T cdmBase2, IMergeStrategy strategy){
 		Class<T> clazz2 = (Class<T>)cdmBase2.getClass();
 		//FIXME do we need to compute the cloneSet? See #reallocateReferences for comparison
 		//this is only a copy from there. Maybe we do not need the cloneSet at all here
@@ -212,12 +211,17 @@ public class DeduplicationHelper {
 	}
 
 	/**
-	 * Test if 2 classes
+	 * Checks if 2 can be merged and reallocation of referencing objects is allowed.
+	 * This is <code>true</code> if
+	 * classes are same or for some explicit cases like both
+	 * inherit form {@link TeamOrPersonBase} or from {@link TaxonNameBase}.
+	 * Necessary condition is that both classes are mapped to the same table.
+	 *
 	 * @param class1
 	 * @param class2
-	 * @return
+	 * @return true if mer
 	 */
-	private boolean  testOnlyReallocationAllowed(Class<? extends CdmBase> class1,
+	private boolean  checkOnlyReallocationAllowed(Class<? extends CdmBase> class1,
 			Class<? extends CdmBase> class2) {
 		if (class1 == class2){
 			return true;
@@ -384,7 +388,7 @@ public class DeduplicationHelper {
 	}
 
 	/**
-	 * Clones all extensions   of cdmBase2 and
+	 * Clones all extensions of cdmBase2 and
 	 * attaches the clones to cdmBase1.
 	 * Finally removes all annotations and markers from cdmBase2.
 	 * @param cdmBase1
@@ -431,7 +435,7 @@ public class DeduplicationHelper {
 
 	}
 
-	private void reallocateReferences(CdmBase cdmBase1, CdmBase cdmBase2, Class clazz, Set<ICdmBase> cloneSet){
+	private void reallocateReferences(CdmBase cdmBase1, CdmBase cdmBase2, Class<? extends CdmBase> clazz, Set<ICdmBase> cloneSet){
 		try {
 			Set<ReferenceHolder> holderSet = genericDao.getOrMakeHolderSet(clazz);
 			for (ReferenceHolder refHolder: holderSet){
@@ -439,7 +443,6 @@ public class DeduplicationHelper {
 			}
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}

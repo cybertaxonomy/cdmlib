@@ -29,15 +29,15 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * we may also only need 1 single cache strategy. However, care must be taken as the formatting
  * differs dependent on the type an the in-reference structure.
  *
- * Generally the cache strategy computes allows 3 formattings:
+ * Generally the cache strategy computes allows 3 formattings:<BR>
  *
- *  1.) for bibliographic references (stored in {@link Reference#getTitleCache() titleCache}).
+ *  1.) for bibliographic references (stored in {@link Reference#getTitleCache() titleCache}).<BR>
  *
  *  2.) for nomenclatural references (stored in {@link Reference#getAbbrevTitleCache() abbrevTitleCache}),
- *      but without micro reference (detail).
+ *      but without micro reference (detail).<BR>
  *
  *  3.) for nomenclatural references with micro reference, but not stored anywhere as the micro reference
- *      is part of the name, not of the reference
+ *      is part of the name, not of the reference<BR>
  *
  *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference)}
  *

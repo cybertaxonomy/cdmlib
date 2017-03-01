@@ -1362,8 +1362,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             String newSecundumDetail,
             boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
 
-        Synonym synonym = (Synonym) dao.load(oldSynonym.getUuid());
-        Taxon oldTaxon = (Taxon) dao.load(synonym.getAcceptedTaxon().getUuid());
+        Synonym synonym = CdmBase.deproxy(dao.load(oldSynonym.getUuid()), Synonym.class);
+        Taxon oldTaxon = CdmBase.deproxy(dao.load(synonym.getAcceptedTaxon().getUuid()), Taxon.class);
         //TODO what if there is no name ?? Concepts may be cached (e.g. via TCS import)
         TaxonNameBase<?,?> synonymName = synonym.getName();
         TaxonNameBase<?,?> fromTaxonName = oldTaxon.getName();
@@ -3115,7 +3115,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
 
 	    UpdateResult result = new UpdateResult();
-		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
+		Taxon newTaxon = CdmBase.deproxy(dao.load(newTaxonUUID),Taxon.class);
 		result = moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup, newSynonymType,
 		        newSecundum, newSecundumDetail, keepSecundumIfUndefined);
 

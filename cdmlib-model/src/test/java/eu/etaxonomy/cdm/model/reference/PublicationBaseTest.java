@@ -21,10 +21,13 @@ import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
 /**
+ * Originally tested the PublicationBase class.
+ * Now this class was merged into {@link Reference}
+ * therefore this class is a special test for
+ * {@link Reference}.
  * @author a.mueller
  * @created 23.03.2009
  */
-//@Ignore
 public class PublicationBaseTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
