@@ -37,11 +37,11 @@ public class IpniServiceNamesConfigurator extends IpniServiceConfiguratorBase im
     public boolean isSortByFamily() {return sortByFamily;}
     public void setSortByFamily(boolean sortByFamily){this.sortByFamily = sortByFamily;}
 
-    boolean includePublicationAuthors;
+    boolean includePublicationAuthors = true;
     public boolean isIncludePublicationAuthors() {return includePublicationAuthors;}
     public void setIncludePublicationAuthors(boolean includePublicationAuthors){this.includePublicationAuthors = includePublicationAuthors;}
 
-    boolean includeBasionymAuthors;
+    boolean includeBasionymAuthors = true;
     public boolean isIncludeBasionymAuthors() {return includeBasionymAuthors;}
     public void setIncludeBasionymAuthors(boolean includeBasionymAuthors){this.includeBasionymAuthors = includeBasionymAuthors;}
 

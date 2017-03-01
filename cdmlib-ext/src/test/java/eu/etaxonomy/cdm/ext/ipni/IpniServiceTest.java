@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.ipni.IIpniService.DelimitedFormat;
 import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -41,6 +42,11 @@ public class IpniServiceTest {
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		internetIsAvailable = true;
+		//for standalone
+		if (Rank.SUBSPECIES() == null){
+		    DefaultTermInitializer termInit = new DefaultTermInitializer();
+		    termInit.initialize();
+		}
 	}
 
 

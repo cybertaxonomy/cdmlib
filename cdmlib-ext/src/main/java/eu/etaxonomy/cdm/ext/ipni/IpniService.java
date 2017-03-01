@@ -490,12 +490,15 @@ public class IpniService  implements IIpniService{
 		//rank
 		try {
 			String rankStr = nomalizeRank(valueMap.get(RANK));
-			name.setRank(Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICNAFP, true));
+			Rank rank = Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICNAFP, true);
+			name.setRank(rank);
 		} catch (UnknownCdmTypeException e) {
 			logger.warn("Rank was unknown");
 		}
         //caches
-        if (!Nz(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS)).equals(name.getNameCache())) {
+		String pureName = valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS);
+        String nameCache = name.getNameCache();
+		if (!Nz(pureName).equals(nameCache)) {
             nvnParser.parseSimpleName(name, valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), name.getRank(), true);
 //            name.setNameCache(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), true);
         }
