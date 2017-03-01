@@ -745,7 +745,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         this.getParent().updateSortIndex(index);
         //only for debugging
         if (! this.getSortIndex().equals(index)){
-        	logger.warn("index and sortindex are not equal");
+        	logger.warn("index and sortindex are not equal: "+  this.getSortIndex() +";" + index);
         }
 
         // update the children count

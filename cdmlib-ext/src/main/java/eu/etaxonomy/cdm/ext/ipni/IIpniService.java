@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 * Services are available for the plant name index, the autor index and the publication index.
 * @author a.mueller
 * @created Aug 16, 2010
-* @version 1.0
  */
 public interface IIpniService {
 
@@ -251,3 +250,4 @@ public interface IIpniService {
 
 	public URL getServiceUrl(String url);
 }
+

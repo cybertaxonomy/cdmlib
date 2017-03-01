@@ -113,7 +113,7 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
             Class<?> entityClazz = entity.getClass();
 
             if (IdentifiableEntity.class.isAssignableFrom(entityClazz)){
-                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
+                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>)entity;
                 if(NonViralName.class.isAssignableFrom(entityClazz)) {
                     //non-viral-name caches
                     INonViralName nonViralName = (INonViralName)entity;
@@ -126,7 +126,7 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
                     String nomTitle = teamOrPerson.getNomenclaturalTitle();
                     if (teamOrPerson instanceof Team){
-                        Team team =CdmBase.deproxy(teamOrPerson, Team.class);
+                        Team team = (Team)teamOrPerson;
                         team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
                     }else{
                         teamOrPerson.setNomenclaturalTitle(nomTitle);

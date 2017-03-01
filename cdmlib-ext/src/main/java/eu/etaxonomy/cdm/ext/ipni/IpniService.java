@@ -66,7 +66,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 @Component
 public class IpniService  implements IIpniService{
-	private static final String EAST_OR_WEST = "East or west";
+    private static final Logger logger = Logger.getLogger(IpniService.class);
+
+
+    //TYPE
+    private static final String EAST_OR_WEST = "East or west";
 
 	private static final String NORTH_OR_SOUTH = "North or south";
 
@@ -98,7 +102,6 @@ public class IpniService  implements IIpniService{
 
 	private static final String TYPE_REMARKS = "Type remarks";
 
-	private static final Logger logger = Logger.getLogger(IpniService.class);
 
 	// GENERAL
 	public static String ID = "Id";
@@ -213,10 +216,6 @@ public class IpniService  implements IIpniService{
 
 // ****************************** METHODS ****************************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.ipni.IIpniService#getAuthors(java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.api.application.ICdmRepository, eu.etaxonomy.cdm.ext.ipni.IpniServiceAuthorConfigurator)
-	 */
 	@Override
     public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmRepository services, IpniServiceAuthorConfigurator config){
 		//config
@@ -243,13 +242,15 @@ public class IpniService  implements IIpniService{
 
 
 	/**
-	 *	FIXME rewrote this method to rely on {@link UriUtils}. The whole class should be adjusted to reflect this change.
+	 *	FIXME rewrote this method to rely on {@link UriUtils}. The whole class should be
+	 *  adjusted to reflect this change.
 	 *	Also see comments in the class' documentation block.
 	 *
 	 * @param restRequest
 	 * @return
 	*/
-	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository services, URL serviceUrl, IIpniServiceConfigurator config, ServiceType serviceType){
+	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository repository, URL serviceUrl,
+	            IIpniServiceConfigurator config, ServiceType serviceType){
 		if (config == null){
 			throw new NullPointerException("Ipni service configurator should not be null");
 		}
@@ -271,13 +272,13 @@ public class IpniService  implements IIpniService{
             // get the content at the resource
             InputStream content = response.getEntity().getContent();
             // build the result
-            List<? extends IdentifiableEntity> result;
+            List<? extends IdentifiableEntity<?>> result;
             if (serviceType.equals(ServiceType.AUTHOR)){
-            	result = buildAuthorList(content, services, config);
+            	result = buildAuthorList(content, repository, config);
             }else if (serviceType.equals(ServiceType.NAME)){
-            	result = buildNameList(content, services, config);
+            	result = buildNameList(content, repository, config);
             }else {
-            	result = buildPublicationList(content, services, config);
+            	result = buildPublicationList(content, repository, config);
             }
             if(responseCode == HttpURLConnection.HTTP_OK){
                     return result;
@@ -336,14 +337,14 @@ public class IpniService  implements IIpniService{
 	private List<Reference> buildPublicationList( InputStream content, ICdmRepository services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServicePublicationConfigurator config = (IpniServicePublicationConfigurator)iConfig;
 
-		List<Reference> result = new ArrayList<Reference>();
+		List<Reference> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
 		Map<Integer, String> parameterMap = getParameterMap(headerLine);
 
 		String line = reader.readLine();
-		while (StringUtils.isNotBlank(line)){
+		while (isNotBlank(line)){
 			Reference reference = getPublicationFromLine(line, parameterMap, services, config);
 			result.add(reference);
 			line = reader.readLine();
@@ -414,7 +415,7 @@ public class IpniService  implements IIpniService{
 
 
 		//source
-		Reference citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(repository);
 		ref.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
 
 
@@ -656,15 +657,9 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private String nomalizeRank(String string) {
-		String result = string.replace("spec.", "sp.");
-		return result;
-	}
-
-
-	private List<Person> buildAuthorList(InputStream content, ICdmRepository services, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<Person> buildAuthorList(InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceAuthorConfigurator config = (IpniServiceAuthorConfigurator)iConfig;
-		List<Person> result = new ArrayList<Person>();
+		List<Person> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
@@ -672,8 +667,8 @@ public class IpniService  implements IIpniService{
 			Map<Integer, String> parameterMap = getParameterMap(headerLine);
 
 			String line = reader.readLine();
-			while (StringUtils.isNotBlank(line)){
-				Person author = getAuthorFromLine(line,parameterMap, services, config);
+			while (isNotBlank(line)){
+				Person author = getAuthorFromLine(line,parameterMap, repository, config);
 				result.add(author);
 				line = reader.readLine();
 			}
@@ -711,7 +706,7 @@ public class IpniService  implements IIpniService{
 		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
 		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 
-		Reference citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(repository);
 
 		//id, version
 		person.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
@@ -722,7 +717,7 @@ public class IpniService  implements IIpniService{
 
 		//alternative_names
 		String alternativeNames = valueMap.get(ALTERNATIVE_NAMES);
-		if (StringUtils.isNotBlank(alternativeNames)){
+		if (isNotBlank(alternativeNames)){
 			String[] alternativeNameSplits = alternativeNames.split("%");
 			for (String alternativeName : alternativeNameSplits){
 				if (alternativeName.startsWith(">")){
@@ -857,11 +852,11 @@ public class IpniService  implements IIpniService{
 
 
 	@Override
-    public List<IBotanicalName> getNamesSimple(String wholeName, ICdmRepository services, IpniServiceNamesConfigurator config){
+    public List<IBotanicalName> getNamesSimple(String wholeName, ICdmRepository repository,
+            IpniServiceNamesConfigurator config){
 		if (config == null){
 			config = new IpniServiceNamesConfigurator();
 		}
-
 
 //		query_type=by_query&back_page=query_ipni.html
 
@@ -899,15 +894,6 @@ public class IpniService  implements IIpniService{
 	}
 
 
-
-	/**
-	 * @return
-	 */
-	private DelimitedFormat getDefaultFormat() {
-		return DelimitedFormat.SHORT;
-	}
-
-
 	/**
 	 * The service url
 	 *
@@ -927,22 +913,48 @@ public class IpniService  implements IIpniService{
 
 	@Override
 	public InputStream getNamesById(String id) {
-
-
 		String request = "id="+id + "&output_format=lsid-metadata";
 		return queryServiceForID(request, getServiceUrl(IIpniService.ID_NAMESEARCH_SERVICE_URL));
-
 	}
 
 	@Override
 	public InputStream getPublicationsById(String id) {
-
-
 		String request = "id="+id ;
 		return queryServiceForID(request, getServiceUrl(IIpniService.ID_PUBLICATION_SERVICE_URL));
-
 	}
 
+
+    /**
+     * @param parameter
+     */
+    private String normalizeParameter(String parameter) {
+        String result = CdmUtils.Nz(parameter).replace(" ", "+");
+        return result;
+    }
+
+    private String nomalizeRank(String string) {
+        if (string == null){
+            return null;
+        }
+        String result = string.replace("spec.", "sp.");
+        return result;
+    }
+
+    /**
+     * @return
+     */
+    private DelimitedFormat getDefaultFormat() {
+        return DelimitedFormat.SHORT;
+    }
+
+    private boolean isNotBlank(String line) {
+        return StringUtils.isNotBlank(line);
+    }
+
+    @NotNull
+    private String Nz(String string) {
+        return CdmUtils.Nz(string);
+    }
 
 
 }

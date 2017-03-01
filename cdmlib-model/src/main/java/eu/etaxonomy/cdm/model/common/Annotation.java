@@ -85,7 +85,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     @OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //  @Merge(MergeMode.ADD_CLONE)
-    private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
+    private Set<IntextReference> intextReferences = new HashSet<>();
 
 	//Human annotation
 	@XmlElement(name = "Commentator")

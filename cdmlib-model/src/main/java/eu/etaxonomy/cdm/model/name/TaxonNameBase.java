@@ -190,7 +190,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
+    private Set<TaxonNameDescription> descriptions = new HashSet<>();
 
     @XmlElement(name = "AppendedPhrase")
     @Field
