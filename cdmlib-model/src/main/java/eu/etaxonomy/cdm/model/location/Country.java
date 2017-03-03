@@ -77,7 +77,7 @@ public class Country extends NamedArea {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_Continent")
-	private final Set<NamedArea> continents = new HashSet<NamedArea>();
+	private final Set<NamedArea> continents = new HashSet<>();
 
 	protected static Map<UUID, NamedArea> termMap = null;
 	protected static Map<String, UUID> labelMap = null;
