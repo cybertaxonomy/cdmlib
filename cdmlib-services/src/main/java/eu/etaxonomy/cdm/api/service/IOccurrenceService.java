@@ -22,6 +22,7 @@ import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
@@ -574,6 +575,10 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 
     /**
      * Returns the number of specimens that match the given parameters
+     * <br>
+     * <b>NOTE - issue #6484:</b> the parameters {@link FindOccurrencesConfigurator#getAssignmentStatus()}
+     * and {@link FindOccurrencesConfigurator#isRetrieveIndirectlyAssociatedSpecimens()} are not evaluated
+     * in the count method
      * @param clazz the class to match
      * @param queryString the queryString to match
      * @param type the {@link SpecimenOrObservationType} to match
