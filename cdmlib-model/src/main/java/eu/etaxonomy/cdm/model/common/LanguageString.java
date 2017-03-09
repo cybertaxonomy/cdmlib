@@ -63,10 +63,30 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
     private void setIntextReferences(Set<IntextReference> intextReferences){
         this.intextReferences = intextReferences;
     }
+
+
+    public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end){
+        IntextReference intextReference = IntextReference.NewInstance(target, this, 0, 0);
+        setText(start + intextReference.toInlineString(inner) + end);
+        getIntextReferences().add(intextReference);
+        return intextReference;
+    }
+    public IntextReference addIntextReference(IIntextReferenceTarget target, int start, int end){
+        if (start < 0 || end < 0 || start > end || end > text.length()){
+            throw new IndexOutOfBoundsException("Start and end must be within bounds");
+        }
+        IntextReference intextReference = IntextReference.NewInstance(target, this, 0, 0);
+        String text = this.getText();
+        setText(text.substring(0, start) + intextReference.toInlineString(text.substring(start,end))
+            + text.substring(end));
+        getIntextReferences().add(intextReference);
+        return intextReference;
+    }
+
 	@Override
     public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
-			intextReference.setLanguageString(this);
+			intextReference.setReferencedEntity(this);
 			getIntextReferences().add(intextReference);
 		}
 	}
@@ -75,7 +95,7 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
     public void removeIntextReference(IntextReference intextReference){
 		if(getIntextReferences().contains(intextReference)) {
 			getIntextReferences().remove(intextReference);
-			intextReference.setLanguageString(null);
+			intextReference.setReferencedEntity(null);
 		}
 	}
 

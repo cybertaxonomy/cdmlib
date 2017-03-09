@@ -40,8 +40,10 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IIntextReferencable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -425,7 +427,7 @@ public class DeduplicationHelper {
 				identifiableEntity1.addIdentifier(clone);
 				removeListIdentifier.add(changeObject);
 			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
+			    throw new RuntimeException(e);
 			}
 		}
 		for (Identifier<?> removeObject : removeListIdentifier){
@@ -549,13 +551,33 @@ public class DeduplicationHelper {
 			if (!cloneSet.contains(referencingObject)){
 		        String className = refHolder.otherClass.getSimpleName();
 	            String propertyName = refHolder.propertyName;
-		        String hql = "UPDATE " + className + " c SET c."+propertyName+" = :newValue WHERE c.id = :id";
+		        String hql = " UPDATE " + className + " c "
+		                + " SET c."+propertyName+" = :newValue "
+		                + " WHERE c.id = :id ";
 		        Query query = session.createQuery(hql);
 		        query.setEntity("newValue", cdmBase1);
 		        query.setInteger("id",referencingObject.getId());
 		        int rowCount = query.executeUpdate();
-		        logger.debug("Rows affected: " + rowCount);
+		        if (logger.isDebugEnabled()){logger.debug("Rows affected: " + rowCount);}
 		        session.refresh(referencingObject);
+		        if (refHolder.otherClass == IntextReference.class){
+		            IntextReference intextRef = CdmBase.deproxy(referencingObject, IntextReference.class);
+		            IIntextReferencable refEnt = intextRef.getReferencedEntity();
+		            if (refEnt != null) {
+                        String newText = refEnt.getText() == null? null: refEnt.getText().replace(cdmBase2.getUuid().toString(), cdmBase1.getUuid().toString());
+                        refEnt.setText(newText);
+                        session.saveOrUpdate(refEnt);
+                    }
+
+		            //TODO
+		            /*
+		             * UPDATE LanguageString
+		             * SET text = Replace(text, cdmBase2.getUuuid(), cdmBase1.getUuid)
+		             * WHERE id IN (SELECT * FROM IntextReference
+		             *
+		             */
+		            System.out.println("IntextReference found");
+		        }
 	        }
 	    }
 		session.flush();

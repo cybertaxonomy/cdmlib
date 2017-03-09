@@ -157,10 +157,11 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     public Set<IntextReference> getIntextReferences(){
 		return this.intextReferences;
 	}
+
 	@Override
     public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
-			intextReference.setAnnotation(this);
+			intextReference.setReferencedEntity(this);
 			getIntextReferences().add(intextReference);
 		}
 	}
@@ -169,7 +170,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     public void removeIntextReference(IntextReference intextReference){
 		if(getIntextReferences().contains(intextReference)) {
 			getIntextReferences().remove(intextReference);
-			intextReference.setAnnotation((Annotation)null);
+			intextReference.setReferencedEntity((Annotation)null);
 		}
 	}
 

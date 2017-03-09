@@ -340,7 +340,7 @@ public class FullCoverageDataGenerator {
 
 		Taxon referencedTaxon = getTaxon();
 		cdmBases.add(referencedTaxon);
-		languageString.addIntextReference(IntextReference.NewTaxonInstance(referencedTaxon, languageString, 2, 5));
+		languageString.addIntextReference(IntextReference.NewInstance(referencedTaxon, languageString, 2, 5));
 		textData.putModifyingText(eng, "nice diagnosis");
 		handleAnnotatableEntity(textData);
 		handleAnnotatableEntity(languageString);

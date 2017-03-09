@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -167,7 +168,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             extends IdentifiableEntity<S>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
                 IBotanicalName, ICultivarPlantName,
-                IParsable, IRelated, IMatchable, Cloneable {
+                IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable {
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);

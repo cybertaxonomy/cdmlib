@@ -120,7 +120,6 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
-import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -162,6 +161,7 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
@@ -193,6 +193,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private IAgentDao agentDao;
+
+    @SpringBeanByType
+    private IReferenceDao referenceDao;
 
 	/**
 	 * @throws java.lang.Exception
@@ -821,7 +824,47 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    @Test
+    public void testReallocateIntextReference() throws MergeException {
+        UUID uuidRef1 = UUID.fromString("41743cec-b893-4e8b-b06c-91f9b9ba8fee");
+        UUID uuidRef2 = UUID.fromString("8fd56b43-7cca-4c3b-bb90-7576da81c072");
 
+        Reference ref1 = ReferenceFactory.newGeneric();
+        ref1.setTitle("Reference1");
+        ref1.setUuid(uuidRef1);
+        Reference ref2 = ReferenceFactory.newGeneric();
+        ref2.setTitle("Reference2");
+        ref2.setUuid(uuidRef2);
+        referenceDao.save(ref2);
+
+        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name1.setTitleCache("BotanicalName1", true);
+        Taxon taxon = Taxon.NewInstance(name1, null);
+        TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+        Language language = Language.DEFAULT();
+        TextData textData = TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null);
+        LanguageString languageString = textData.getLanguageText(language);
+        IntextReference intextRef = languageString.addIntextReference(ref1, 4, 8);
+        String uuidIntextRef = intextRef.getUuid().toString();
+        desc.addElement(textData);
+        Assert.assertEquals("And <cdm:reference cdmId='"+ref1.getUuid()+"' intextId='"+uuidIntextRef+"'>here</cdm:reference> is a citation",
+                    languageString.getText());
+        taxonDao.save(taxon);
+
+        commitAndStartNewTransaction(null);
+        DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(Reference.class);
+
+        ref1 = referenceDao.findByUuid(ref1.getUuid());
+        ref2 = referenceDao.findByUuid(ref2.getUuid());
+        cdmGenericDao.merge(ref2, ref1, strategy);
+
+        taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
+        textData = (TextData)taxon.getDescriptions().iterator().next().getElements().iterator().next();
+        languageString = textData.getLanguageText(language);
+        Assert.assertEquals("And <cdm:reference cdmId='"+ref2.getUuid()+"' intextId='"+uuidIntextRef+"'>here</cdm:reference> is a citation",
+                languageString.getText());
+
+    }
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.

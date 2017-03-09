@@ -1883,7 +1883,7 @@ public abstract class MarkupImportBase  {
 	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport)throws XMLStreamException {
 		Reference reference = nomenclatureImport.handleReference(state, reader, parentEvent);
 		fireWarningEvent("Check correct usage of inline reference", parentEvent, 3);
-		IntextReference intext = IntextReference.NewReferenceInstance(reference, null, 0, 0);
+		IntextReference intext = IntextReference.NewInstance(reference, null, 0, 0);
 		save(reference, state);
 		return intext.toInlineString(reference.getTitleCache());
 	}
@@ -1932,7 +1932,7 @@ public abstract class MarkupImportBase  {
 			        && !isStartingElement(next, SUB_HEADING)){
 			    for (LabeledReference labeledRef : currentReferences.content){
 			        if (labeledRef.ref != null){
-			            IntextReference intext = IntextReference.NewReferenceInstance(labeledRef.ref, null, 0, 0);
+			            IntextReference intext = IntextReference.NewInstance(labeledRef.ref, null, 0, 0);
 			            inlineReferences.add(intext);
 			            text += intext.toInlineString(labeledRef.label);
 			        }else{
