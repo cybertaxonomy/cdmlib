@@ -1412,6 +1412,32 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
+    public Integer countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+        if (config instanceof FindOccurrencesConfigurator) {
+            FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
+            Taxon taxon = null;
+            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                if(taxonBase.isInstanceOf(Taxon.class)){
+                    taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                }
+            }
+            TaxonNameBase taxonName = null;
+            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
+                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
+            }
+            return dao.countOccurrences(occurrenceConfig.getClazz(),
+                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+        }
+        else{
+            return dao.countByTitle(config.getTitleSearchString());
+        }
+
+    }
+
+    @Override
     public Pager<SpecimenOrObservationBase> findByTitle(
             IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
         if (config instanceof FindOccurrencesConfigurator) {
@@ -1452,8 +1478,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
             // indirectly associated specimens
-            List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+                List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
                 for (SpecimenOrObservationBase specimen : occurrences) {
                     List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
                     for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
@@ -1508,7 +1534,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
-        return findByTitle(config).getRecords().size();
+        return countByTitle(config);
     }
 
 }
