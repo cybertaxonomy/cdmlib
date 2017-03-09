@@ -191,6 +191,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             "synonyms.sec.titleCache",
             "synonyms.sources.citation.sources.idNamespace",
             "synonyms.sources.citation.sources.idInSource",
+            "synonyms.type.inverseRepresentations",
             "acceptedTaxon.name.rank.titleCache",
             "acceptedTaxon.sec.titleCache",
             "acceptedTaxon.sources.citation.sources.idNamespace",
