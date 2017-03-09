@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -108,7 +109,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
         @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnNames = { "identityCache" }) })
 public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<?>>
                 extends IdentifiableEntity<S>
-                implements IMultiLanguageTextHolder, IDescribable<DescriptionBase<S>>, IPublishable  {
+                implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<DescriptionBase<S>>, IPublishable  {
     private static final long serialVersionUID = 6932680139334408031L;
     private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 
