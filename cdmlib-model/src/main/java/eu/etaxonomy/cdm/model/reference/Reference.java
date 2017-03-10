@@ -368,6 +368,8 @@ public class Reference
 
 //*************************** GETTER / SETTER ******************************************/
 
+
+
     // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
     @Override
     public String getTitleCache(){
@@ -733,6 +735,13 @@ public class Reference
 
 
 //****************************************************  /
+
+	@Transient
+	@Override
+	public void setTitleCaches(String cache){
+	    this.setAbbrevTitleCache(cache, true);
+	    this.setTitleCache(cache, true);
+	}
 
 
 	/**

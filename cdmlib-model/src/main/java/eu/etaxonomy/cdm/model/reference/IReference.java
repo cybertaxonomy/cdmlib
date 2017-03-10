@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.beans.Transient;
 import java.net.URI;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -136,5 +137,25 @@ public interface IReference
 	 * @return
 	 */
 	public Object clone();
+
+    /**
+     * Sets both caches and protects them.
+     * This is a convenience method to avoid
+     * references with only one cache protected
+     * leading to strange results in case the other
+     * cache is used.
+     *
+     * https://dev.e-taxonomy.eu/redmine/issues/6449
+     *
+     * @see #setTitleCache(String)
+     * @see #setTitleCache(String, boolean)
+     * @see #setProtectedTitleCache(boolean)
+     * @see #setAbbrevTitleCache(String)
+     * @see #setAbbrevTitleCache(String, boolean)
+     * @see #setProtectedAbbrevTitleCache(boolean)
+     */
+	@Transient
+	@javax.persistence.Transient
+    void setTitleCaches(String cache);
 
 }
