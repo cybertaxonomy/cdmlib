@@ -28,6 +28,11 @@ public class DistributionNodeByAreaLabelComparator implements Comparator<TreeNod
         if (StringUtils.isBlank(label2)){
             label2 = node2.getNodeId().getUuid().toString();
         }
-        return label1.compareTo(label2);
+        int result = label1.compareTo(label2);
+
+        if (result == 0){
+            result = node1.getNodeId().getUuid().compareTo(node2.getNodeId().getUuid());
+        }
+        return result;
     }
 }
