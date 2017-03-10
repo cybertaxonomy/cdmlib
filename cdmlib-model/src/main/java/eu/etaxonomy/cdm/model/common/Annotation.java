@@ -159,6 +159,15 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	}
 
 	@Override
+    public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end){
+        return IntextReferenceHelper.addIntextReference(target, this, start, inner, end);
+    }
+    @Override
+    public IntextReference addIntextReference(IIntextReferenceTarget target, int start, int end){
+        return IntextReferenceHelper.addIntextReference(target, this, start, end);
+    }
+
+	@Override
     public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
 			intextReference.setReferencedEntity(this);

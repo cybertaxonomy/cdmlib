@@ -24,4 +24,28 @@ public interface IIntextReferencable {
      * @param text the new referenced text
      */
     public void setText(String text);
+
+    /**
+     * Adds an {@link IntextReference} and
+     * sets the text of the referenced entity.<BR>
+     *
+     * NOTE: this will override any existing
+     * text.
+     *
+     * @param target
+     * @param start
+     * @param inner
+     * @param end
+     * @return
+     */
+    public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end);
+
+    /**
+     * Adds an
+     * @param target
+     * @param start
+     * @param end
+     * @return
+     */
+    public IntextReference addIntextReference(IIntextReferenceTarget target, int start, int end);
 }

@@ -825,9 +825,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testReallocateIntextReference() throws MergeException {
+    public void testReallocateIntextReferenceForReferenceAndLanguageString() throws MergeException {
         UUID uuidRef1 = UUID.fromString("41743cec-b893-4e8b-b06c-91f9b9ba8fee");
         UUID uuidRef2 = UUID.fromString("8fd56b43-7cca-4c3b-bb90-7576da81c072");
+
+        // CREATE DATA
 
         Reference ref1 = ReferenceFactory.newGeneric();
         ref1.setTitle("Reference1");
@@ -836,34 +838,76 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         ref2.setTitle("Reference2");
         ref2.setUuid(uuidRef2);
         referenceDao.save(ref2);
+        Taxon taxon = Taxon.NewInstance(null, null);
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        name1.setTitleCache("BotanicalName1", true);
-        Taxon taxon = Taxon.NewInstance(name1, null);
         TaxonDescription desc = TaxonDescription.NewInstance(taxon);
         Language language = Language.DEFAULT();
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null);
         LanguageString languageString = textData.getLanguageText(language);
-        IntextReference intextRef = languageString.addIntextReference(ref1, 4, 8);
-        String uuidIntextRef = intextRef.getUuid().toString();
+        IntextReference intextRefRef = languageString.addIntextReference(ref1, 4, 8);
+        String uuidIntextRefRef = intextRefRef.getUuid().toString();
         desc.addElement(textData);
-        Assert.assertEquals("And <cdm:reference cdmId='"+ref1.getUuid()+"' intextId='"+uuidIntextRef+"'>here</cdm:reference> is a citation",
+        Assert.assertEquals("And <cdm:reference cdmId='"+uuidRef1+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
                     languageString.getText());
+
+        //SAVE AND COMMIT
         taxonDao.save(taxon);
-
         commitAndStartNewTransaction(null);
-        DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(Reference.class);
 
-        ref1 = referenceDao.findByUuid(ref1.getUuid());
-        ref2 = referenceDao.findByUuid(ref2.getUuid());
+        //MERGE
+        DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(Reference.class);
+        ref1 = referenceDao.findByUuid(uuidRef1);
+        ref2 = referenceDao.findByUuid(uuidRef2);
         cdmGenericDao.merge(ref2, ref1, strategy);
 
         taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
         textData = (TextData)taxon.getDescriptions().iterator().next().getElements().iterator().next();
         languageString = textData.getLanguageText(language);
-        Assert.assertEquals("And <cdm:reference cdmId='"+ref2.getUuid()+"' intextId='"+uuidIntextRef+"'>here</cdm:reference> is a citation",
+        Assert.assertEquals("And <cdm:reference cdmId='"+uuidRef2+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
                 languageString.getText());
 
+    }
+
+    @Test
+    public void testReallocateIntextReferenceForNameAndAnnotation() throws MergeException {
+        UUID uuidPinusAlba = UUID.fromString("52743cec-b893-4e8b-b06c-91f9b9ba8fee");
+        UUID uuidAbiesAlba = UUID.fromString("6ed56b43-7cca-4c3b-bb90-7576da81c072");
+
+        // CREATE DATA
+        TaxonNameBase<?,?> pinusAlba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        pinusAlba.setTitleCache("BotanicalName1", true);
+        pinusAlba.setUuid(uuidPinusAlba);
+
+        TaxonNameBase<?,?> abiesAlba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        abiesAlba.setTitleCache("Abies alba", true);
+        abiesAlba.setUuid(uuidAbiesAlba);
+
+        Taxon taxon = Taxon.NewInstance(null, null);
+
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("My annotation on Abies alba and its habit.");
+        taxon.addAnnotation(annotation);
+        IntextReference intextRefName = annotation.addIntextReference(abiesAlba, "My annotation on ", "Abies alba", " and its habit.");
+        String uuidIntextRefName = intextRefName.getUuid().toString();
+        Assert.assertEquals("My annotation on <cdm:name cdmId='"+uuidAbiesAlba+"' intextId='"+uuidIntextRefName+"'>Abies alba</cdm:name> and its habit.",
+                annotation.getText());
+
+        //SAVE AND COMMIT
+        taxonDao.save(taxon);
+        nameDao.save(abiesAlba);
+        nameDao.save(pinusAlba);
+        commitAndStartNewTransaction(null);
+
+        //MERGE
+        DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TaxonNameBase.class);
+        abiesAlba = nameDao.findByUuid(uuidAbiesAlba);
+        pinusAlba = nameDao.findByUuid(uuidPinusAlba);
+        cdmGenericDao.merge(pinusAlba, abiesAlba, strategy);
+
+        taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
+        annotation = taxon.getAnnotations().iterator().next();
+
+        Assert.assertEquals("My annotation on <cdm:name cdmId='"+uuidPinusAlba+"' intextId='"+uuidIntextRefName+"'>Abies alba</cdm:name> and its habit.",
+                annotation.getText());
     }
 
 	/**
