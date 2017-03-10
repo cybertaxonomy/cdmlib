@@ -114,6 +114,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * @author a.babadshanjan
@@ -462,7 +463,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         // assemble citation
         String citation = fieldUnit.getTitleCache();
-        if((CdmUtils.isBlank(citation) || citation.contains("title cache generation not implemented"))
+        if((CdmUtils.isBlank(citation) || citation.equals(IdentifiableEntityDefaultCacheStrategy.TITLE_CACHE_GENERATION_NOT_IMPLEMENTED))
                 && !fieldUnit.isProtectedTitleCache()){
             fieldUnit.setTitleCache(null);
             citation = fieldUnit.getTitleCache();

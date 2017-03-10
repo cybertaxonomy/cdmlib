@@ -17,6 +17,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 public class IdentifiableEntityDefaultCacheStrategy<T extends IdentifiableEntity> extends StrategyBase implements IIdentifiableEntityCacheStrategy<T> {
+
+    public static final String TITLE_CACHE_GENERATION_NOT_IMPLEMENTED = "-title cache generation not implemented-";
+
     private static final long serialVersionUID = -6358630407241112369L;
 
     @SuppressWarnings("unused")
@@ -26,7 +29,7 @@ public class IdentifiableEntityDefaultCacheStrategy<T extends IdentifiableEntity
 
 	@Override
     public String getTitleCache(T object) {
-		return "-title cache generation not implemented-";
+		return TITLE_CACHE_GENERATION_NOT_IMPLEMENTED;
 	}
 
 	@Override
