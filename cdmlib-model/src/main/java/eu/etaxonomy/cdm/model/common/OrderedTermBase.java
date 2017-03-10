@@ -123,7 +123,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
     protected int performCompareTo(T orderedTerm, boolean skipVocabularyCheck) {
 
     	OrderedTermBase<?> orderedTermLocal = CdmBase.deproxy(orderedTerm, OrderedTermBase.class);
-        if(!skipVocabularyCheck){
+    	if(!skipVocabularyCheck){
             if (this.vocabulary == null || orderedTermLocal.vocabulary == null){
                 throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTermLocal.toString() + ") of class " + this.getClass() + " or " + orderedTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
@@ -145,7 +145,11 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
         }else if (orderThis < orderThat){
             return 1;
         }else {
-            return 0;
+            if (skipVocabularyCheck){
+                return this.getVocabulary().getUuid().compareTo(orderedTermLocal.vocabulary.getUuid());
+            }else{
+                return 0;
+            }
         }
     }
 
