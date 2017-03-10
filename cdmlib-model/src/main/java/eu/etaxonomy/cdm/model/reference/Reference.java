@@ -368,10 +368,31 @@ public class Reference
 
 //*************************** GETTER / SETTER ******************************************/
 
+    // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
+    @Override
+    public String getTitleCache(){
+        String result = super.getTitleCache();
+        if (isBlank(result)){
+            this.titleCache = this.getAbbrevTitleCache(true);
+        }
+        return titleCache;
+    }
 
 	@Override
 	public String getAbbrevTitleCache() {
-		if (protectedAbbrevTitleCache){
+		return getAbbrevTitleCache(false);
+	}
+
+	/**
+	 * Implements {@link #getAbbrevTitleCache()} but allows to
+	 * avoid never ending recursions if both caches are empty
+	 * avoidRecursion should only be <code>true</code> if called
+	 * by {@link #getTitleCache()}
+	 * @param avoidRecursion
+	 * @return
+	 */
+	private String getAbbrevTitleCache(boolean avoidRecursion) {
+        if (protectedAbbrevTitleCache){
             return this.abbrevTitleCache;
         }
         // is reference dirty, i.e. equal NULL?
@@ -379,10 +400,14 @@ public class Reference
             this.abbrevTitleCache = generateAbbrevTitle();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
         }
+        if (isBlank(abbrevTitleCache) && !avoidRecursion){
+            this.abbrevTitleCache = this.getTitleCache();
+        }
         return abbrevTitleCache;
-	}
+    }
 
-	@Override
+
+    @Override
 	@Deprecated
 	public void setAbbrevTitleCache(String abbrevTitleCache) {
 		this.abbrevTitleCache = abbrevTitleCache;
