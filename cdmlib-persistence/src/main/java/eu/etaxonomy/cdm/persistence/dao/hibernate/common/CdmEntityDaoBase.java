@@ -435,6 +435,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     @Override
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
+        if (uuids == null || uuids.isEmpty()){
+            return new ArrayList<>();
+        }
+
         Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
 
         @SuppressWarnings("unchecked")
