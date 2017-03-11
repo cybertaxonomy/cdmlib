@@ -144,7 +144,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0],(Integer)object[1], referenceTitle));
 			}else{
-				logger.error("title cache of reference is null. UUID: " + object[0]);
+				logger.warn("Title cache of reference is null. This should not happen. Please fix data. UUID: " + object[0]);
 			}
 		}
 
