@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
@@ -547,6 +548,48 @@ public class DefaultReferenceCacheStrategyTest {
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("My title: sine no. 1883-1884", generic1.getNomenclaturalCitation(detail));
     }
+
+    //#4338
+    @Test
+    public void testGenericMissingVolume(){
+        generic1.setTitle("My generic");
+        generic1.setAuthorship(genericTeam1);
+        generic1.setDatePublished(TimePeriodParser.parseString("1883-1884"));
+        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
+        Assert.assertEquals("My generic: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+        generic1.setVolume("7");
+        Assert.assertEquals("My generic 7: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+        Assert.assertEquals("Authorteam, My generic 7. 1883-1884", generic1.getTitleCache());
+        Assert.assertEquals("AT., My generic 7. 1883-1884", generic1.getAbbrevTitleCache());
+
+        //inRef
+        Reference generic2 = ReferenceFactory.newGeneric();
+        generic2.setTitle("My InRef");
+        Person person2 = Person.NewTitledInstance("InRefAuthor");
+        generic2.setAuthorship(person2);
+        generic2.setDatePublished(TimePeriodParser.parseString("1885"));
+        generic1.setInReference(generic2);
+
+        //only reference has a volume
+        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+//        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getTitleCache());
+//        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getAbbrevTitleCache());
+
+        //both have a volume
+        generic2.setVolume("9");  //still unclear what should happen if you have such dirty data
+//        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+//        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getTitleCache());
+//        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getAbbrevTitleCache());
+
+        //only inref has volume
+        generic1.setVolume(null);
+        Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getTitleCache());
+        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getAbbrevTitleCache());
+
+
+
+   }
 
 // ********************************** WEB PAGE ********************************************/
 
