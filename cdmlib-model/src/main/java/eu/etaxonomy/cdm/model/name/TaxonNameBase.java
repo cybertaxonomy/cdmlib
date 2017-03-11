@@ -91,6 +91,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 
@@ -164,6 +165,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
+@NameMustFollowCode
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
