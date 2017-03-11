@@ -744,7 +744,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria.setMaxResults(limit);
         }
 
-        addOrder(criteria,orderHints);
+        addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
 		List<S> results = criteria.list();

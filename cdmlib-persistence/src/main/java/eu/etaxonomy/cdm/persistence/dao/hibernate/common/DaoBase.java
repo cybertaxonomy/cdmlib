@@ -62,9 +62,9 @@ public abstract class DaoBase {
         if(orderHints != null){
             Collections.sort(orderHints, new OrderHintComparator());
 
-            Map<String,Criteria> criteriaMap = new HashMap<String,Criteria>();
+            Map<String,Criteria> criteriaMap = new HashMap<>();
             for(OrderHint orderHint : orderHints){
-                orderHint.add(criteria,criteriaMap);
+                orderHint.add(criteria, criteriaMap);
             }
         }
     }

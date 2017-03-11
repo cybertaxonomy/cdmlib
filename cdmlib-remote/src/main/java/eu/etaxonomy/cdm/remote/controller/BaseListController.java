@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  * @param <T>
  * @param <SERVICE>
- *
  */
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
