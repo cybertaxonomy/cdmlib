@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.ICdDvd;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
@@ -586,9 +588,71 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getTitleCache());
         Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getAbbrevTitleCache());
+   }
+
+    //#3532
+    @Test
+    public void testUnexpectedNomenclaturalReferences(){
+        Reference reference;
+
+        //database
+        IDatabase database1 = ReferenceFactory.newDatabase();
+        reference = (Reference)database1;
+
+        database1.setTitle("My database");
+        //maybe we should have a trailing dot here
+        Assert.assertEquals("My database: 55", reference.getNomenclaturalCitation(detail1));
+        database1.setDatePublished(TimePeriodParser.parseString("1998"));
+        Assert.assertEquals("My database: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+        database1.setTitleCache("Your database", true);
+        Assert.assertEquals("My database: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+        //unclear if it is wanted that the year is shown, though the abbrev cache is protected, probably not
+        reference.setAbbrevTitleCache("You. Db.", true);
+        Assert.assertEquals("You. Db.: 55. 1998", reference.getNomenclaturalCitation(detail1));
 
 
+        //CD/DVD
+        ICdDvd cdDvd = ReferenceFactory.newCdDvd();
+        reference= (Reference)cdDvd;
+        cdDvd.setTitle("My Cd/Dvd");
+        //maybe we should have a trailing dot here
+        Assert.assertEquals("My Cd/Dvd: 55", reference.getNomenclaturalCitation(detail1));
+        cdDvd.setDatePublished(TimePeriodParser.parseString("1998"));
+        Assert.assertEquals("My Cd/Dvd: 55. 1998", reference.getNomenclaturalCitation(detail1));
 
+        cdDvd.setTitleCache("Your Cd/Dvd", true);
+        Assert.assertEquals("My Cd/Dvd: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+        //unclear if it is wanted that the year is shown, though the abbrev cache is protected, probably not
+        reference.setAbbrevTitleCache("You. Cd.", true);
+        Assert.assertEquals("You. Cd.: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+
+        //WebSite
+        IWebPage webPage = ReferenceFactory.newWebPage();
+        reference= (Reference)webPage;
+        webPage.setTitle("My WebPage");
+        //maybe we should have a trailing dot here
+        Assert.assertEquals("My WebPage: 55", reference.getNomenclaturalCitation(detail1));
+        webPage.setDatePublished(TimePeriodParser.parseString("1998"));
+        Assert.assertEquals("My WebPage: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+        webPage.setTitleCache("Your WebPage", true);
+        Assert.assertEquals("My WebPage: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+        //unclear if it is wanted that the year is shown, though the abbrev cache is protected, probably not
+        reference.setAbbrevTitleCache("You. WP.", true);
+        Assert.assertEquals("You. WP.: 55. 1998", reference.getNomenclaturalCitation(detail1));
+
+        //uri
+        webPage = ReferenceFactory.newWebPage();
+        reference= (Reference)webPage;
+        webPage.setUri(URI.create("http://www.abc.de"));
+        Assert.assertEquals("http://www.abc.de: 55", reference.getNomenclaturalCitation(detail1));
+
+        //TBC
    }
 
 // ********************************** WEB PAGE ********************************************/
