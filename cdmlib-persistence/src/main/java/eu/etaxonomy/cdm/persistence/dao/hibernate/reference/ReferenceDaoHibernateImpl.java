@@ -99,25 +99,20 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 		Session session = getSession();
 
-		String queryString = "SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ";
+		String queryString = "SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache "
+		        + " FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ";
 
 		if (refType != null || pattern != null){
-		    queryString += " WHERE ";
+		    queryString += " WHERE (1=1) ";
 		    if (refType != null ){
-		        queryString += " (r.type = :type OR r.type = :genericType) " ;
-
-		    }
-		    if (pattern != null && refType != null){
-		        queryString += " AND ";
+		        queryString += " AND (r.type = :type OR r.type = :genericType) " ;
 		    }
 		    if (pattern != null){
-		        queryString += " r.titleCache LIKE :pattern";
+		        queryString += " AND (r.titleCache LIKE :pattern) ";
 		    }
 		}
 
-
-
-		 Query query;
+		Query query;
 		//if (pattern != null){
 		    query = session.createQuery(queryString);
 //		}else{
