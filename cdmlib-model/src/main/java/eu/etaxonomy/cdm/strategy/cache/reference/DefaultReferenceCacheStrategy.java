@@ -111,6 +111,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }else if(isNomRef(type)){
             //all Non-InRef NomRefs
             result =  getTitleWithoutYearAndAuthor(reference, isNotAbbrev);
+            result = addPages(result, reference);
             result = addYear(result, reference, false);
             TeamOrPersonBase<?> team = reference.getAuthorship();
 
@@ -136,6 +137,33 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
             result = titleCacheDefaultReference(reference, isNotAbbrev);
         }
         return result;
+    }
+
+
+    /**
+     * @param result
+     * @param reference
+     * @return
+     */
+    private String addPages(String result, Reference reference) {
+        //pages
+        if (isNotBlank(reference.getPages())){
+            //Removing trailing added just in case, maybe not necessary
+            result = RemoveTrailingDot(Nz(result)).trim() + ": " + reference.getPages();
+        }
+        return result;
+    }
+
+
+    /**
+     * @param nz
+     * @return
+     */
+    private static String RemoveTrailingDot(String str) {
+        if (str != null && str.endsWith(".")){
+            str = str.substring(0, str.length()-1);
+        }
+        return str;
     }
 
 
