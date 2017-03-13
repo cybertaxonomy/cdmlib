@@ -46,14 +46,14 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -265,7 +265,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	                            // TODO Auto-generated catch block
 	                            e1.printStackTrace();
 	                       }
-					   
+
 					}
 				}
 
@@ -500,13 +500,13 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
      */
     private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase, String synonymNameStr) {
         NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
-        TaxonNameBase name = null;
+        ITaxonNameBase name = null;
         if (nc.isKindOf(NomenclaturalCode.ICZN)){
-            name = ZoologicalName.NewInstance(taxonBase.getName().getRank());
+            name = TaxonNameFactory.NewZoologicalInstance(taxonBase.getName().getRank());
         }else if (nc.isKindOf(NomenclaturalCode.ICNAFP)){
-            name = BotanicalName.NewInstance(taxonBase.getName().getRank());
+            name = TaxonNameFactory.NewBotanicalInstance(taxonBase.getName().getRank());
         } else{
-            name = NonViralName.NewInstance(taxonBase.getName().getRank());
+            name = TaxonNameFactory.NewNonViralInstance(taxonBase.getName().getRank());
         }
         name.setTitleCache(synonymNameStr, true);
         if (name != null){
@@ -761,14 +761,13 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr,
 			String authorStr, String publishingAutorStr, String basionymAuthor, String reference, String date, String nameStatus, NomenclaturalCode nc) {
 		TaxonBase<?> taxonBase;
-		NonViralName<?> taxonNameBase = null;
+		INonViralName taxonNameBase = null;
 		if (nc == NomenclaturalCode.ICVCN){
 			logger.warn("ICVCN not yet supported");
 
 		}else{
 		    //String taxonNameStr = titleCache.substring(0, titleCache.indexOf(authorStr));
-			taxonNameBase =(NonViralName<?>) nc.getNewTaxonNameInstance(rank);
-			//NonViralName nonViralName = (NonViralName)taxonNameBase;
+			taxonNameBase = nc.getNewTaxonNameInstance(rank);
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			taxonNameBase = parser.parseFullName(taxonNameStr, nc, rank);
 

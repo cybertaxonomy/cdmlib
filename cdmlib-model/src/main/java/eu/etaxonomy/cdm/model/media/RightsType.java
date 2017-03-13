@@ -80,9 +80,6 @@ public class RightsType extends DefinedTermBase<RightsType> {
 
 // ************************************* MTEHODS ***************************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -118,7 +115,7 @@ public class RightsType extends DefinedTermBase<RightsType> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<RightsType> termVocabulary) {
-		termMap = new HashMap<UUID, RightsType>();
+		termMap = new HashMap<>();
 		for (RightsType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

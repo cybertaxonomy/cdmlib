@@ -24,8 +24,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -58,7 +59,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	person.setNomenclaturalTitle(nomTitle);
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	person.setContact(getContact());
-    	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+    	TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
 
@@ -101,7 +102,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	team.addAnnotation(annotation);
     	team.setContact(getContact());
-    	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+    	TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(team);
 
     	service.save(team);
@@ -140,7 +141,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation2 = Annotation.NewDefaultLanguageInstance("Meine annotation2");
     	team.addAnnotation(annotation2);
     	team.setContact(getContact());
-    	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+    	TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(team);
     	Person member = Person.NewTitledInstance("Member person");
     	member.setNomenclaturalTitle("Memb. pers.");

@@ -111,7 +111,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
+		SortedSet<T> result = new TreeSet<>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
 		result.addAll( sortedSet.tailSet(otb));
 		return result;
@@ -128,7 +128,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
+		SortedSet<T> result = new TreeSet<>();
 		result = getLowerTerms(otb);
 		/*SortedSet<T> sortedSet = getSortedSetOfTerms();
 
@@ -157,7 +157,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 
 	public SortedSet<T> getEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
+		SortedSet<T> result = new TreeSet<>();
 		for (T setObject : terms){
 			if (setObject.compareTo(otb) == 0){
 				result.add(setObject);
@@ -275,7 +275,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	private T toBeChangedByObject;
 
-	public boolean indexChangeAllowed(OrderedTermBase<T> orderedTermBase){
+	public boolean indexChangeAllowed(OrderedTermBase orderedTermBase){
 		return orderedTermBase == toBeChangedByObject ;
 	}
 

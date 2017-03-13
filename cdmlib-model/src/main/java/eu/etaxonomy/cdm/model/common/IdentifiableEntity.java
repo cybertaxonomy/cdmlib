@@ -49,16 +49,11 @@ import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -138,7 +133,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
     @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
@@ -147,7 +142,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -156,7 +151,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Identifiers", nillable = true)
     @XmlElement(name = "Identifier")
     @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -164,7 +159,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -438,6 +433,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
+    @Override
     public void addExtension(String value, ExtensionType extensionType){
         Extension.NewInstance(this, value, extensionType);
     }
@@ -506,6 +502,21 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return source;
     }
 
+    @Override
+    public IdentifiableSource addPrimaryTaxonomicSource(Reference citation, String microCitation) {
+        if (citation == null && microCitation == null){
+            return null;
+        }
+        IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(citation, microCitation);
+        addSource(source);
+        return source;
+    }
+
+    @Override
+    public IdentifiableSource addPrimaryTaxonomicSource(Reference citation) {
+        return addPrimaryTaxonomicSource(citation, null);
+    }
+
 
     @Override
     public void removeSource(IdentifiableSource source) {
@@ -525,130 +536,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
-
-    public int compareTo(IdentifiableEntity identifiableEntity) {
-
-         int result = 0;
-
-         if (identifiableEntity == null) {
-             throw new NullPointerException("Cannot compare to null.");
-         }
-
-         // First, compare the name cache.
-         // TODO: Avoid using instanceof operator
-         // Use Class.getDeclaredMethod() instead to find out whether class has getNameCache() method?
-
-         String specifiedNameCache = "";
-         String thisNameCache = "";
-         String specifiedTitleCache = "";
-         String thisTitleCache = "";
-         String specifiedReferenceTitleCache = "";
-         String thisReferenceTitleCache = "";
-         String thisGenusString = "";
-         String specifiedGenusString = "";
-         int thisrank_order = 0;
-         final String HYBRID_SIGN = "\u00D7";
-         final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
-         //TODO we can remove all the deproxies here except for the first one
-         identifiableEntity = HibernateProxyHelper.deproxy(identifiableEntity, IdentifiableEntity.class);
-         if(identifiableEntity instanceof NonViralName) {
-             specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
-             specifiedTitleCache = identifiableEntity.getTitleCache();
-            if (identifiableEntity instanceof BotanicalName){
-            	 if (((BotanicalName)identifiableEntity).isAutonym()){
-            		 boolean isProtected = false;
-            		 String oldNameCache = ((BotanicalName) identifiableEntity).getNameCache();
-            		 if ( ((BotanicalName)identifiableEntity).isProtectedNameCache()){
-            			 isProtected = true;
-            		 }
-            		 ((BotanicalName)identifiableEntity).setProtectedNameCache(false);
-            		 ((BotanicalName)identifiableEntity).setNameCache(null, false);
-            		 specifiedNameCache = ((BotanicalName) identifiableEntity).getNameCache();
-            		 ((BotanicalName)identifiableEntity).setNameCache(oldNameCache, isProtected);
-
-            	 }
-             }
-
-         } else if(identifiableEntity instanceof TaxonBase) {
-             TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
-
-             TaxonNameBase<?,?> taxonNameBase = taxonBase.getName();
-
-
-             NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
-             specifiedNameCache = nonViralName.getNameCache();
-             specifiedTitleCache = taxonNameBase.getTitleCache();
-
-             specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
-             Reference reference = taxonBase.getSec();
-             if (reference != null) {
-                 reference = HibernateProxyHelper.deproxy(reference, Reference.class);
-                 specifiedReferenceTitleCache = reference.getTitleCache();
-             }
-         }
-
-         if(this.isInstanceOf(NonViralName.class)) {
-             thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
-             thisTitleCache = getTitleCache();
-
-             if (this instanceof BotanicalName){
-            	 if (((BotanicalName)this).isAutonym()){
-            		 boolean isProtected = false;
-            		 String oldNameCache = ((BotanicalName) this).getNameCache();
-            		 if ( ((BotanicalName)this).isProtectedNameCache()){
-            			 isProtected = true;
-            		 }
-            		 ((BotanicalName)this).setProtectedNameCache(false);
-            		 ((BotanicalName)this).setNameCache(null, false);
-            		 thisNameCache = ((BotanicalName) this).getNameCache();
-            		 ((BotanicalName)this).setNameCache(oldNameCache, isProtected);
-            	 }
-             }
-         } else if(this.isInstanceOf(TaxonBase.class)) {
-             TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
-             NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
-             thisNameCache = nonViralName.getNameCache();
-             thisTitleCache = taxonNameBase.getTitleCache();
-             thisReferenceTitleCache = ((TaxonBase)this).getSec().getTitleCache();
-             thisGenusString = nonViralName.getGenusOrUninomial();
-         }
-
-         // Compare name cache of taxon names
-
-
-
-         if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
-
-        	 thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
-        	 thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
-
-
-        	 specifiedNameCache = specifiedNameCache.replaceAll(HYBRID_SIGN, "");
-        	 specifiedNameCache = specifiedNameCache.replaceAll(QUOT_SIGN, "");
-
-
-             result = thisNameCache.compareTo(specifiedNameCache);
-         }
-
-         // Compare title cache of taxon names
-
-         if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
-        	 thisTitleCache = thisTitleCache.replaceAll(HYBRID_SIGN, "");
-        	 thisTitleCache = thisTitleCache.replaceAll(QUOT_SIGN, "");
-
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll(HYBRID_SIGN, "");
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll(QUOT_SIGN, "");
-             result = thisTitleCache.compareTo(specifiedTitleCache);
-         }
-
-         // Compare title cache of taxon references
-
-         if ((result == 0) && (!specifiedReferenceTitleCache.equals("") || !thisReferenceTitleCache.equals(""))) {
-             result = thisReferenceTitleCache.compareTo(specifiedReferenceTitleCache);
-         }
-
-         return result;
-     }
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
@@ -686,28 +573,28 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         IdentifiableEntity<?> result = (IdentifiableEntity<?>)super.clone();
 
         //Extensions
-        result.extensions = new HashSet<Extension>();
+        result.extensions = new HashSet<>();
         for (Extension extension : getExtensions() ){
             Extension newExtension = (Extension)extension.clone();
             result.addExtension(newExtension);
         }
 
         //Identifier
-        result.identifiers = new ArrayList<Identifier>();
+        result.identifiers = new ArrayList<>();
         for (Identifier<?> identifier : getIdentifiers() ){
         	Identifier<?> newIdentifier = (Identifier<?>)identifier.clone();
             result.addIdentifier(newIdentifier);
         }
 
         //OriginalSources
-        result.sources = new HashSet<IdentifiableSource>();
+        result.sources = new HashSet<>();
         for (IdentifiableSource source : getSources()){
             IdentifiableSource newSource = (IdentifiableSource)source.clone();
             result.addSource(newSource);
         }
 
         //Rights
-        result.rights = new HashSet<Rights>();
+        result.rights = new HashSet<>();
         for(Rights rights : getRights()) {
             Rights newRights = (Rights)rights.clone();
             result.addRights(newRights);
@@ -715,7 +602,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
         //Credits
-        result.credits = new ArrayList<Credit>();
+        result.credits = new ArrayList<>();
         for(Credit credit : getCredits()) {
             Credit newCredit = (Credit)credit.clone();
             result.addCredit(newCredit);

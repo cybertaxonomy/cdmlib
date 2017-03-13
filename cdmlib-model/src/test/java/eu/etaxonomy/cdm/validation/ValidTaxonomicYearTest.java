@@ -15,8 +15,9 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -53,7 +54,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 
-		name = BotanicalName.NewInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setAuthorshipCache("L.");
 		name.setFullTitleCache("Aus aus L.");
@@ -91,7 +92,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
     @Test
     public void testZooName() {
 
-        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
+        IZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 
         zooName.setNomenclaturalReference(null);
         zooName.setPublicationYear(1788);
@@ -104,9 +105,5 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 
         zooName.setNomenclaturalReference(beforeLineeRef);
         validateHasConstraint(zooName, validatorClass, group);
-
-
     }
-
-
 }

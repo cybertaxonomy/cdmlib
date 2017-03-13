@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
@@ -37,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -84,9 +84,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @created 01.07.2008
  */
-public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
-    private static final long serialVersionUID = 8730012744209195616L;
+public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
+            extends CdmIoBase<STATE>
+            implements ICdmImport<CONFIG, STATE>{
 
+    private static final long serialVersionUID = 8730012744209195616L;
     private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
 	protected static final boolean CREATE = true;
@@ -464,7 +466,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}else if (list.size() == 1){
 			return list.get(0);
 		}else if (list.size() > 1){
-			List<NamedArea> preferredList = new ArrayList<NamedArea>();
+			List<NamedArea> preferredList = new ArrayList<>();
 			for (TermVocabulary<NamedArea> voc: vocabularyPreference){
 				for (NamedArea area : list){
 					if (voc.equals(area.getVocabulary())){
@@ -476,7 +478,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 			}
 			if (preferredList.size() > 1 ){
-				preferredList = getLowestLevelAreas(preferredList);
+				preferredList = getHighestLevelAreas(preferredList);
 			}else if (preferredList.size() == 0 ){
 				preferredList = list;
 			}
@@ -493,22 +495,21 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 
-	private List<NamedArea> getLowestLevelAreas(List<NamedArea> preferredList) {
-		List<NamedArea> result = new ArrayList<NamedArea>();
+	private List<NamedArea> getHighestLevelAreas(List<NamedArea> preferredList) {
+		List<NamedArea> result = new ArrayList<>();
 		for (NamedArea area : preferredList){
 			if (result.isEmpty()){
 				result.add(area);
 			}else {
 				int compare = compareAreaLevel(area, result.get(0));
-				if (compare < 0){
-					result = new ArrayList<NamedArea>();
+				if (compare > 0){
+					result = new ArrayList<>();
 					result.add(area);
 				}else if (compare == 0){
 					result.add(area);
 				}else{
 					//do nothing
 				}
-
 			}
 		}
 
@@ -926,7 +927,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
+	public void addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable<?>)cdmBase;
@@ -978,8 +979,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			logger.warn("Parent taxon is null. Missing name parts can not be taken from parent");
 			return;
 		}
-		NonViralName<?> parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
-		NonViralName<?> childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
+		INonViralName parentName = parentTaxon.getName();
+		INonViralName childName = childTaxon.getName();
 		fillMissingEpithets(parentName, childName);
 	}
 
@@ -991,7 +992,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param parentTaxon
 	 * @param childTaxon
 	 */
-	protected void fillMissingEpithets(NonViralName parentName, NonViralName childName) {
+	protected void fillMissingEpithets(INonViralName parentName, INonViralName childName) {
 		if (StringUtils.isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
@@ -1069,8 +1070,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * If a new description is created the given reference will be added as a source.
 	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
+	 * @see #getDefaultTaxonDescription(Taxon, boolean, boolean, Reference)
 	 */
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery,
+	        boolean createNewIfNotExists) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descriptions= taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
@@ -1090,6 +1093,78 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return result;
 	}
+
+	/**
+	 * Returns the default taxon description. If no default taxon description exists,
+	 * a new one is created, the default flag is set to true and, if a source is passed,
+	 * it is added to the new description. Otherwise source has no influence.
+	 * @param taxon
+	 * @param isImageGallery
+	 * @param createNewIfNotExists
+	 * @param source
+	 * @return the default description
+	 * @see #getTaxonDescription(Taxon, Reference, boolean, boolean)
+	 */
+	public TaxonDescription getDefaultTaxonDescription(Taxon taxon, boolean isImageGallery,
+            boolean createNewIfNotExists, Reference source) {
+        TaxonDescription result = null;
+        Set<TaxonDescription> descriptions= taxon.getDescriptions();
+        for (TaxonDescription description : descriptions){
+            if (description.isImageGallery() == isImageGallery){
+                if (description.isDefault()){
+                    result = description;
+                    break;
+                }
+            }
+        }
+        if (result == null && createNewIfNotExists){
+            result = TaxonDescription.NewInstance(taxon);
+            result.setImageGallery(isImageGallery);
+            result.setDefault(true);
+            if (source != null){
+                result.addImportSource(null, null, source, null);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the taxon description with marked as <code>true</code> with the given marker type.
+     * If createNewIfNotExists a new description is created if it does not yet exist.
+     * For the new description the source and the title are set if not <code>null</code>.
+     * @param taxon
+     * @param markerType
+     * @param isImageGallery
+     * @param createNewIfNotExists
+     * @param source
+     * @param title
+     * @return the existing or new taxon description
+     */
+   public TaxonDescription getMarkedTaxonDescription(Taxon taxon, MarkerType markerType, boolean isImageGallery,
+            boolean createNewIfNotExists, Reference source, String title) {
+        TaxonDescription result = null;
+        Set<TaxonDescription> descriptions= taxon.getDescriptions();
+        for (TaxonDescription description : descriptions){
+            if (description.isImageGallery() == isImageGallery){
+                if (description.hasMarker(markerType, true)){
+                    result = description;
+                    break;
+                }
+            }
+        }
+        if (result == null && createNewIfNotExists){
+            result = TaxonDescription.NewInstance(taxon);
+            result.setImageGallery(isImageGallery);
+            result.addMarker(Marker.NewInstance(markerType, true));
+            if (source != null){
+                result.addImportSource(null, null, source, null);
+            }
+            if (isNotBlank(title)){
+                result.setTitleCache(title, true);
+            }
+        }
+        return result;
+    }
 
 
 	/**
@@ -1144,6 +1219,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * sources need to be added to the description itself.
 	 * Currently a feature placeholder is marked by a marker of type 'feature placeholder'. Maybe in future
 	 * there will be a boolean marker in the TextData class itself.
+	 *
 	 * @param state
 	 * @param feature
 	 * @param taxon
@@ -1152,7 +1228,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected TextData getFeaturePlaceholder(STATE state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {
-		UUID featurePlaceholderUuid = MarkupTransformer.uuidFeaturePlaceholder;
+		UUID featurePlaceholderUuid = MarkupTransformer.uuidMarkerFeaturePlaceholder;
 		for (DescriptionElementBase element : description.getElements()){
 			if (element.isInstanceOf(TextData.class)){
 				TextData textData = CdmBase.deproxy(element, TextData.class);

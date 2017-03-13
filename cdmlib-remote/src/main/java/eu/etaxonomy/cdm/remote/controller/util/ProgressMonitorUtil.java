@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
+import eu.etaxonomy.cdm.remote.json.JsonpUtil;
 
 /**
  * @author Andreas Kohlbecker
@@ -40,16 +41,17 @@ public class ProgressMonitorUtil {
      * send redirect "see other"
      *
      * @param frontendBaseUrl
-     * @param request
-     * @param response
      * @param processLabel
      * @param monitorUuid
+     * @param dataRedirect whether to respond with a {@link JsonpRedirect} object instead of a HTTP 302 redirect.
+     * @param request
+     * @param response
      * @return
      * @throws IOException
      */
-    public ModelAndView respondWithMonitor(String frontendBaseUrl, HttpServletRequest request, HttpServletResponse response, String processLabel,
-            final UUID monitorUuid) throws IOException {
-        return respondWithMonitorOrDownload(frontendBaseUrl, null, request, response, processLabel, monitorUuid);
+    public ModelAndView respondWithMonitor(String frontendBaseUrl, String processLabel, final UUID monitorUuid, boolean dataRedirect,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return respondWithMonitorOrDownload(frontendBaseUrl, null, processLabel, monitorUuid, dataRedirect, request, response);
     }
 
 
@@ -58,15 +60,17 @@ public class ProgressMonitorUtil {
      *
      * @param frontendBaseUrl
      * @param downloadUrl can be null
-     * @param request
-     * @param response
      * @param processLabel
      * @param monitorUuid
+     * @param dataRedirect whether to respond with a {@link JsonpRedirect} object instead of a HTTP 302 redirect.
+     * @param request
+     * @param response
      * @return
      * @throws IOException
      */
-    public ModelAndView respondWithMonitorOrDownload(String frontendBaseUrl, String downloadUrl, HttpServletRequest request, HttpServletResponse response, String processLabel,
-            final UUID monitorUuid) throws IOException {
+    public ModelAndView respondWithMonitorOrDownload(String frontendBaseUrl, String downloadUrl,
+            String processLabel, final UUID monitorUuid, boolean dataRedirect,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         //TODO: add reference to exportCSV...
         ModelAndView mv = new ModelAndView();
@@ -85,7 +89,7 @@ public class ProgressMonitorUtil {
                 jsonpRedirect = new JsonpRedirect(request, monitorPath);
             }
 
-            boolean isJSONP = request.getParameter("callback") != null;
+            boolean isJSONP = dataRedirect || JsonpUtil.readJsonpCallback(request) != null;
             if(isJSONP){
                 response.setHeader("Location", jsonpRedirect.getRedirectURL());
                 mv.addObject(jsonpRedirect);

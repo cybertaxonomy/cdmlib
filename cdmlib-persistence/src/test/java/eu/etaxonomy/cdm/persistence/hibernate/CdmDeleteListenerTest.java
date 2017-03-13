@@ -27,7 +27,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -59,7 +59,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	@DataSet("CdmDeleteListenerTest.xml")
 	@ExpectedDataSet
 	public void testOnDelete() throws Exception {
-		NonViralName<?> name = (NonViralName<?>)taxonNameDao.findByUuid(uuid);
+		TaxonNameBase<?,?> name = taxonNameDao.findByUuid(uuid);
 		/**
 		 * Ended up with some horrible hibernate errors otherwise
 		 */

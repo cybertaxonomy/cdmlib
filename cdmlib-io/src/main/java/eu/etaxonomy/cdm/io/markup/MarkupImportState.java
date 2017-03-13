@@ -19,9 +19,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -43,13 +45,15 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
 
+	private ImportDeduplicationHelper<MarkupImportState> deduplicationHelper;
+
 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>
 
 	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
 
-	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
+	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<>();
 
 	private PolytomousKey currentKey;
 
@@ -76,15 +80,21 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	private boolean isSpecimenType = false;
 
+	private boolean taxonIsHybrid = false;
+
+
 
 	private String baseMediaUrl = null;
 
-	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<String, FootnoteDataHolder>();
+	private String nameStatus;
 
-	private Map<String, Media> figureRegister = new HashMap<String, Media>();
 
-	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
-	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<>();
+
+	private Map<String, Media> figureRegister = new HashMap<>();
+
+	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<>();
+	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<>();
 
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
 
@@ -92,9 +102,12 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
 	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
-	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
-	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<>();  //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<>(); //keep in multiple imports
 
+    private String collectionAndType = "";
+
+    private boolean firstSpecimenInFacade;
 
 	/**
 	 * This method resets all those variables that should not be reused from one import to another.
@@ -431,7 +444,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	//or do we need to make this a uuid?
 	private Map<String, Collection> collectionMap = new HashMap<String, Collection>();
-	public Collection getCollectionByCode(String code) {
+
+    public Collection getCollectionByCode(String code) {
 		return collectionMap.get(code);
 	}
 
@@ -440,7 +454,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	}
 
 
-	String collectionAndType = "";
+
 	public void addCollectionAndType(String txt) {
 		collectionAndType = CdmUtils.concat("@", collectionAndType, txt);
 	}
@@ -459,6 +473,35 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
         this.currentTaxonExcluded = currentTaxonExcluded;
     }
 
+    public boolean isFirstSpecimenInFacade() {
+        return firstSpecimenInFacade;
+    }
+    public void setFirstSpecimenInFacade(boolean firstSpecimenInFacade) {
+        this.firstSpecimenInFacade = firstSpecimenInFacade;
+    }
 
+    public ImportDeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmRepository repository) {
+        if (this.deduplicationHelper == null){
+            this.deduplicationHelper = new ImportDeduplicationHelper<>(repository);
+        }
+        return deduplicationHelper;
+    }
+    public void setDeduplicationHelper(ImportDeduplicationHelper<MarkupImportState> deduplicationHelper) {
+        this.deduplicationHelper = deduplicationHelper;
+    }
+
+    public void setNameStatus(String nameStatus) {
+        this.nameStatus = nameStatus;
+    }
+    public String getNameStatus() {
+        return nameStatus;
+    }
+
+    public boolean isTaxonIsHybrid() {
+        return taxonIsHybrid;
+    }
+    public void setTaxonIsHybrid(boolean taxonIsHybrid) {
+        this.taxonIsHybrid = taxonIsHybrid;
+    }
 
 }

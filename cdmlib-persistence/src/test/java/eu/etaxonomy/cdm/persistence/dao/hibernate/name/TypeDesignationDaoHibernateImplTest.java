@@ -26,13 +26,14 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -108,7 +109,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 			}
 		}
 
-		TaxonNameBase<?,?> newName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> newName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		newName.setUuid(UUID.fromString("c16c3bc5-d3d0-4676-91a1-848ebf011e7c"));
 		newName.setTitleCache("Name used as typified name", true);
 		newName.addTypeDesignation(specTypeDesig, false);
@@ -137,7 +138,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("a1b8af89-b724-469b-b0ce-027c2199aadd"));
 
-		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setUuid(UUID.fromString("503d78dc-5d4c-4eb6-b682-0ab90fdee02c"));
 		name.setTitleCache("Name saved via cascade", true);
 		name.addTypeDesignation(desig1, false);
@@ -155,7 +156,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		// creating new Typedesignation for a new Name:
 
 		//  1. new TaxonName with UUID 8564287e-9654-4b8b-a38c-0ccdd9e885db
-		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+	    TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("Name1", true);
 		name1.setUuid(UUID.fromString("8564287e-9654-4b8b-a38c-0ccdd9e885db"));
 		//   2. new TypeDesignation with uuid ceca086e-e8d3-444e-abfb-c47f76835130
@@ -183,7 +184,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@Test
 	@ExpectedDataSet
 	public void testSaveTypeDesignationsCascadeToSpecimen() {
-		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+	    TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("Name1", true);
 		name1.setUuid(UUID.fromString("eb41f549-4a70-499b-a9a5-f2314880df07"));
 
@@ -212,7 +213,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@ExpectedDataSet
 	//test save from specimen to name via type designation
 	public void testSaveTypeDesignationsCascadeFromSpecimen() {
-		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		IBotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("Name1", true);
 		name1.setUuid(UUID.fromString("7ce3a355-8f7c-4417-a0b3-41869de4f60b"));
 
@@ -233,11 +234,11 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@Test
 //	@ExpectedDataSet
 	public void testRemoveTypeDesignationsFromName() {
-		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		IBotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("Name1");
 		name1.setUuid(UUID.fromString("2cfc05fc-138e-452d-b4ea-8798134c7410"));
 
-		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
+		IBotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("Name2");
 		name2.setUuid(UUID.fromString("7a12057d-2e99-471e-ac7e-633f1d0b5686"));
 
@@ -257,7 +258,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		this.endTransaction();
 		this.startNewTransaction();
 
-		name1 = (BotanicalName)nameDao.load(name1.getUuid());
+		name1 = nameDao.load(name1.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name1 should have 2 type designations", 2, name1.getTypeDesignations().size());
 
@@ -269,7 +270,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		this.endTransaction();
 		this.startNewTransaction();
 
-		name1 = (BotanicalName)nameDao.load(name1.getUuid());
+		name1 = nameDao.load(name1.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name1 should have 1 type designation", 1, name1.getTypeDesignations().size());
 
@@ -282,11 +283,11 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		this.endTransaction();
 		this.startNewTransaction();
 
-		name1 = (BotanicalName)nameDao.load(name1.getUuid());
+		name1 = nameDao.load(name1.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name1 should have no type designations", 0, name1.getTypeDesignations().size());
 
-		name2 = (BotanicalName)nameDao.load(name2.getUuid());
+		name2 = nameDao.load(name2.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name2 should have 1 type designation", 1, name2.getTypeDesignations().size());
 		SpecimenTypeDesignation desig1New = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
@@ -303,7 +304,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
             this.endTransaction();
 			this.startNewTransaction();
 		}
-		name2 = (BotanicalName)nameDao.load(name2.getUuid());
+		name2 = nameDao.load(name2.getUuid());
 		Assert.assertNotNull(name1);
 		desig1 = (SpecimenTypeDesignation)typeDesignationDao.load(desig1.getUuid());
 		name2.removeTypeDesignation(desig1);

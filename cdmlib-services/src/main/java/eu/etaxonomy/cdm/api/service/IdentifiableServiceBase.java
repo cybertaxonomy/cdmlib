@@ -38,7 +38,10 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.ITaxonName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -271,7 +274,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				if (entity.getTitleCache() != null){
 					//System.err.println(entity.getTitleCache());
 				}else{
-					//System.err.println("no titleCache" + ((NonViralName)entity).getNameCache());
+				    //System.err.println("no titleCache" + ((TaxonNameBase<?,?>)entity).getNameCache());
 				}
 			}
 			saveOrUpdate(entitiesToUpdate);
@@ -322,7 +325,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@SuppressWarnings("unchecked")
 	private void updateTitleCacheForSingleEntity(
 			IIdentifiableEntityCacheStrategy<T> cacheStrategy,
-			List<T> entitiesToUpdate, T entity) {
+			List<T> entitiesToUpdate,
+			T entity) {
 
 		//assert (entity.isProtectedTitleCache() == false );
 
@@ -346,7 +350,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 
 
-
 		//old titleCache
 		entity.setProtectedTitleCache(true);
 
@@ -360,14 +363,14 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		if (entity instanceof NonViralName ){
 
 			try{
-				NonViralName<?> nvn = (NonViralName) entity;
+				INonViralName nvn = (INonViralName) entity;
 				if (!nvn.isProtectedNameCache()){
-					nvn.setProtectedNameCache(true);
+				    nvn.setProtectedNameCache(true);
 					oldNameCache = nvn.getNameCache();
 					nvn.setProtectedNameCache(false);
 				}
 				if (!nvn.isProtectedFullTitleCache()){
-					nvn.setProtectedFullTitleCache(true);
+				    nvn.setProtectedFullTitleCache(true);
 					oldFullTitleCache = nvn.getFullTitleCache();
 					nvn.setProtectedFullTitleCache(false);
 				}
@@ -385,21 +388,20 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 		setOtherCachesNull(entity);
 		String newTitleCache= null;
-		NonViralName<?> nvn = null;//TODO find better solution
+		INonViralName nvn = null; //TODO find better solution
 		try{
-			if (entity instanceof NonViralName){
-				nvn = (NonViralName) entity;
+			if (entity instanceof TaxonNameBase){
+				nvn = (ITaxonName) entity;
 				newTitleCache = entityCacheStrategy.getTitleCache(nvn);
 			} else{
 				 newTitleCache = entityCacheStrategy.getTitleCache(entity);
 			}
 		}catch (ClassCastException e){
-			nvn = HibernateProxyHelper.deproxy(entity, NonViralName.class);
+			nvn = HibernateProxyHelper.deproxy(entity, TaxonNameBase.class);
 			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
-			//System.out.println("titleCache: " +entity.getTitleCache());
 		}
 
-		if ( oldTitleCache == null   || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
+		if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			String newCache = entity.getTitleCache();
 
@@ -410,7 +412,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				logger.info("oldTitleCache should never be null");
 			}
 			if (nvn != null){
-				//NonViralName<?> nvn = (NonViralName) entity;
 				nvn.getNameCache();
 				nvn.getFullTitleCache();
 			}
@@ -420,7 +421,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			}
 			entitiesToUpdate.add(entity);
 		}else if (nvn != null){
-			//NonViralName<?> nvn = (NonViralName) entity;
 			String newNameCache = nvn.getNameCache();
 			String newFullTitleCache = nvn.getFullTitleCache();
 			if ((oldNameCache == null && !nvn.isProtectedNameCache()) || (oldNameCache != null && !oldNameCache.equals(newNameCache))){

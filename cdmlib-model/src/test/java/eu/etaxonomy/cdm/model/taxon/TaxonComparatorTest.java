@@ -21,7 +21,9 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -66,10 +68,10 @@ public class TaxonComparatorTest {
 //		ref2.setDatePublished(TimePeriod.NewInstance(cal2));
         ref3.setDatePublished(TimePeriod.NewInstance(cal3));
 
-        BotanicalName botName1 =  BotanicalName.NewInstance(null);
-        BotanicalName botName2 =  BotanicalName.NewInstance(null);
-        BotanicalName botName3 =  BotanicalName.NewInstance(null);
-        ZoologicalName zooName1 = ZoologicalName.NewInstance(null);
+        BotanicalName botName1 =  TaxonNameFactory.NewBotanicalInstance(null);
+        BotanicalName botName2 =  TaxonNameFactory.NewBotanicalInstance(null);
+        BotanicalName botName3 =  TaxonNameFactory.NewBotanicalInstance(null);
+        IZoologicalName zooName1 = TaxonNameFactory.NewZoologicalInstance(null);
 
         botName1.setNomenclaturalReference(ref1);
         botName2.setNomenclaturalReference(ref2);

@@ -508,7 +508,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
 		if (strScientificName != null){
-			name = parser.parseFullName(strScientificName, nomCode, rank);
+			name = (TaxonNameBase<?,?>)parser.parseFullName(strScientificName, nomCode, rank);
 			if ( rank != null && name != null && name.getRank() != null &&  ! rank.equals(name.getRank())){
 				if (config.isValidateRankConsistency()){
 					String message = "Parsed rank %s (%s) differs from rank %s given by fields 'taxonRank' or 'verbatimTaxonRank'";
@@ -610,24 +610,23 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
-	private void checkAuthorship(TaxonNameBase nameBase, StreamItem item) {
+	private void checkAuthorship(TaxonNameBase<?,?> nameBase, StreamItem item) {
 		if (!nameBase.isInstanceOf(NonViralName.class)){
 			return;
 		}
-		NonViralName<?> nvName = CdmBase.deproxy(nameBase, NonViralName.class);
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
 
-		if (! nvName.isProtectedTitleCache()){
-			if (StringUtils.isBlank(nvName.getAuthorshipCache())){
-				if (nvName.isInstanceOf(BotanicalName.class) || nvName.isInstanceOf(ZoologicalName.class)){
+		if (! nameBase.isProtectedTitleCache()){
+			if (StringUtils.isBlank(nameBase.getAuthorshipCache())){
+				if (nameBase.isInstanceOf(BotanicalName.class) || nameBase.isInstanceOf(ZoologicalName.class)){
 					//TODO can't we also parse NonViralNames correctly ?
 					try {
-						parser.parseAuthors(nvName, strAuthors);
+						parser.parseAuthors(nameBase, strAuthors);
 					} catch (StringNotParsableException e) {
-						nvName.setAuthorshipCache(strAuthors);
+					    nameBase.setAuthorshipCache(strAuthors);
 					}
 				}else{
-					nvName.setAuthorshipCache(strAuthors);
+				    nameBase.setAuthorshipCache(strAuthors);
 				}
 				//TODO throw warning (scientific name should always include authorship) by DwC definition
 			}

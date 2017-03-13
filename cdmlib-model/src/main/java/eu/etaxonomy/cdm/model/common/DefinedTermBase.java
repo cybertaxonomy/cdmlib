@@ -99,7 +99,9 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ClassBridge(impl=DefinedTermBaseClassBridge.class)
 //TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
-public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T>, Comparable<T> {
+public abstract class DefinedTermBase<T extends DefinedTermBase>
+            extends TermBase
+            implements ILoadableTerm<T>, IDefinedTerm<T>, Comparable<T> {
     private static final long serialVersionUID = 2931811562248571531L;
     private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
 
@@ -208,7 +210,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
-              return (T) ((T)li.getImplementation()).getKindOf();
+              return (T)((T)li.getImplementation()).getKindOf();
           } else {
               return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
           }
@@ -246,7 +248,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
-              return (T) ((T)li.getImplementation()).getPartOf();
+              return (T)((T)li.getImplementation()).getPartOf();
           } else {
               return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
           }

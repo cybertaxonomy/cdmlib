@@ -106,11 +106,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 //	private boolean doSequence = true;
 //
 //	//Names
-//	private boolean doViralName = true;
-//	private boolean doNonViralName = true;
-//	private boolean doBotanicalName = true;
-//	private boolean doZoologicalName = true;
-//	private boolean doCultivarPlantName = true;
+//	private boolean doTaxonName = true;
 //
 //	private boolean doClassification = true;
 //
@@ -159,11 +155,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 //			doSequence = false;
 //
 //			//Names
-//			doViralName = false;
-//			doNonViralName = false;
-//			doBotanicalName = false;
-//			doZoologicalName = false;
-//			doCultivarPlantName = false;
+//			doTaxonName = false;
 //
 //			doClassification = false;
 //
@@ -290,36 +282,6 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 //	}
 //	public boolean isDoSequence() {
 //		return doSequence;
-//	}
-//	public void setDoViralName(boolean doViralName) {
-//		this.doViralName = doViralName;
-//	}
-//	public boolean isDoViralName() {
-//		return doViralName;
-//	}
-//	public void setDoNonViralName(boolean doNonViralName) {
-//		this.doNonViralName = doNonViralName;
-//	}
-//	public boolean isDoNonViralName() {
-//		return doNonViralName;
-//	}
-//	public void setDoBotanicalName(boolean doBotanicalName) {
-//		this.doBotanicalName = doBotanicalName;
-//	}
-//	public boolean isDoBotanicalName() {
-//		return doBotanicalName;
-//	}
-//	public void setDoZoologicalName(boolean doZoologicalName) {
-//		this.doZoologicalName = doZoologicalName;
-//	}
-//	public boolean isDoZoologicalName() {
-//		return doZoologicalName;
-//	}
-//	public void setDoCultivarPlantName(boolean doCultivarPlantName) {
-//		this.doCultivarPlantName = doCultivarPlantName;
-//	}
-//	public boolean isDoCultivarPlantName() {
-//		return doCultivarPlantName;
 //	}
 //	public void setDoClassification(boolean doClassification) {
 //		this.doClassification = doClassification;

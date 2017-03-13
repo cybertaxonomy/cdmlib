@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  * @author n.hoffmann
  * @created Jan 22, 2010
- * @version 1.0
  */
 public class MatchStrategyConfigurator {
 

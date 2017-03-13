@@ -15,7 +15,7 @@
     <menu name="Developer">
       <item name="Getting started" href="getting-started.html"/>
       <item name="Reference" href="reference.html"/>
-      <item name="UML" href="http://wp5.e-taxonomy.eu/cdm-uml"/>
+      <item name="UML" href="https://cybertaxonomy.eu/cdm/latest/"/>
       <item name="API" href="apidocs/index.html"/>
       <item name="REST API" href="rest-api.html">
       <item name="Search" href="rest-api-search.html"/>
@@ -25,13 +25,13 @@
       </item>
       <item name="OAI-PMH" href="oai-pmh.html"/>
       <item name="Troubleshooting" href="troubleshooting.html"/>
-      <item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev"/>
+      <item name="Wiki" href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmLibraryDev"/>
     </menu>
     <menu name="Project">
       <item name="Mailing Lists" href="mail-lists.html"/>
       <item name="Project Team" href="team-list.html"/>
       <item name="Continuous Integration" href="integration.html"/>
-      <item name="Issue Tracking" href="http://dev.e-taxonomy.eu/trac/"/>
+      <item name="Issue Tracking" href="https://dev.e-taxonomy.eu/redmine/projects/edit"/>
       <item name="Source Repository" href="source-repository.html"/>
       <item name="License" href="license.html"/>
     </menu>

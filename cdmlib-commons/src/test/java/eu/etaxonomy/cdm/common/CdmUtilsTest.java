@@ -1,15 +1,15 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class CdmUtilsTest {
 	private static final Logger logger = Logger.getLogger(CdmUtilsTest.class);
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -44,7 +44,7 @@ public class CdmUtilsTest {
 	}
 
 /************************** TESTS ****************************************/
-	
+
 	@Test
 	public void testGetReadableResourceStream() {
 		String resourceFileName = CdmUtils.MUST_EXIST_FILE;
@@ -65,21 +65,21 @@ public class CdmUtilsTest {
 	public void testGetHomeDir() {
 		//Assert.assertEquals("", CdmUtils.getHomeDir());
 	}
-	
+
 	@Test
 	public void testFindLibrary() {
 		if (logger.isEnabledFor(Level.DEBUG)) {logger.debug(CdmUtils.findLibrary(CdmUtils.class));}
-		
+
 		String library = CdmUtils.findLibrary(CdmUtils.class);
 		String endOfLibrary = "target/classes/eu/etaxonomy/cdm/common/CdmUtils.class";
 		String libraryContains = "/cdmlib-commons/";
-		
-		Assert.assertTrue(library.endsWith(endOfLibrary)); 
-		Assert.assertTrue(library.contains(libraryContains)); 
+
+		Assert.assertTrue(library.endsWith(endOfLibrary));
+		Assert.assertTrue(library.contains(libraryContains));
 	}
-	
+
 	/**
-	 * This is a default test for fast running any simple test. It can be overriden and ignored whenever needed. 
+	 * This is a default test for fast running any simple test. It can be overriden and ignored whenever needed.
 	 */
 	@Test
 	public void testAny(){

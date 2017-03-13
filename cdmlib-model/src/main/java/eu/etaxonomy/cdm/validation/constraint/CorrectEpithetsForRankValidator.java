@@ -14,16 +14,16 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
 
-public class CorrectEpithetsForRankValidator implements ConstraintValidator<CorrectEpithetsForRank, NonViralName<?>> {
+public class CorrectEpithetsForRankValidator implements ConstraintValidator<CorrectEpithetsForRank, INonViralName> {
 
 	@Override
     public void initialize(CorrectEpithetsForRank correctEpithetsForRank) { }
 
 	@Override
-	public boolean isValid(NonViralName<?> name, ConstraintValidatorContext constraintContext) {
+	public boolean isValid(INonViralName name, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 		if(name.isSupraGeneric() || name.isGenus()) {
 			if(isNotBlank(name.getInfraGenericEpithet())) {

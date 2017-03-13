@@ -535,7 +535,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	 */
 	@SuppressWarnings("unchecked")
 	static public List<CdmPersistentDataSource> getAllDataSources(){
-		List<CdmPersistentDataSource> dataSources = new ArrayList<CdmPersistentDataSource>();
+		List<CdmPersistentDataSource> dataSources = new ArrayList<>();
 
 		Element root = getBeansRoot(CdmPersistentSourceUtils.getCdmSourceInputStream());
 		if (root == null){

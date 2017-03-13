@@ -1,0 +1,5 @@
+The package eu.etaxonomy.cdm.remote.config contains spring configurations 
+which are to be loaded into the *child WebApplicationContext* loaded via 
+Spring's DispatcherServlet.
+
+The *child WebApplicationContext* contains beans  

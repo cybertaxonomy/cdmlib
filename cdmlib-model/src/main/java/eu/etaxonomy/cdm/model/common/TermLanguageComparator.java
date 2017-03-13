@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,11 +25,11 @@ public class TermLanguageComparator<T extends TermBase> implements Comparator<T>
 
 	private Language defaultLanguage = Language.DEFAULT();
 	private Language compareLanguage = Language.DEFAULT();
-	
-	
-	
+
+
+
 	/**
-	 * 
+	 *
 	 */
 	public TermLanguageComparator() {
 		// TODO Auto-generated constructor stub
@@ -38,13 +38,18 @@ public class TermLanguageComparator<T extends TermBase> implements Comparator<T>
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
-	public int compare(T termbase1, T termbase2) throws RuntimeException{
+	@Override
+    public int compare(T termbase1, T termbase2) throws RuntimeException{
+
+	    if (termbase1.equals(termbase2)){
+	        return 0;
+	    }
 		String label1 = makeCompareLabel(termbase1);
 		String label2 = makeCompareLabel(termbase2);
 
 		return label1.compareTo(label2);
 	}
-	
+
 	private String makeCompareLabel(T termbase){
 		String result;
 		if (termbase == null){

@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
  * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
  *
  * @author a.mueller
- * @version 1.0
  * @created 17-APR-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -41,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 })
 @Entity
 @Audited
-public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
+public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
     private static final long serialVersionUID = 5216821307314001961L;
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>4.5.1</version>
+  <version>4.6.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -24,7 +24,7 @@
   </modules>
   <properties>    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.codelevel>1.7</java.codelevel>
+    <java.codelevel>1.8</java.codelevel>
     <spring.version>4.2.4.RELEASE</spring.version>
     <spring-security.version>4.0.3.RELEASE</spring-security.version>
     <spring-security-oauth2.version>2.0.11.RELEASE</spring-security-oauth2.version>
@@ -49,8 +49,8 @@
   </properties>
   
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib.git</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
   </scm>
   
@@ -185,7 +185,7 @@
     </contributors -->
   <issueManagement>
     <system>Trac</system>
-    <url>http://dev.e-taxonomy.eu/trac/</url>
+    <url>https://dev.e-taxonomy.eu/redmine/projects/edit</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
@@ -287,11 +287,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+		<version>2.3.2</version> 
         <configuration>
           <source>${java.codelevel}</source>
           <target>${java.codelevel}</target>
           <encoding>UTF-8</encoding>  <!-- necessary? should be covered by project. properties source encoding -->
+		  <!-- to increase stacksize see #6404 -->
         </configuration>
       </plugin>
       <plugin>
@@ -328,7 +329,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.0</version>
+        <version>3.3</version>
         <configuration>
           <locales>en</locales>
           <outputEncoding>UTF-8</outputEncoding>
@@ -528,6 +529,15 @@
         <version>1.0-beta-2</version>
       </extension>
     </extensions>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+      </plugins>  
+    </pluginManagement>
   </build>
   <reporting>
     <plugins>

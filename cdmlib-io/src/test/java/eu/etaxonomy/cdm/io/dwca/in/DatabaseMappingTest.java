@@ -22,6 +22,8 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author a.mueller
@@ -76,7 +78,7 @@ public class DatabaseMappingTest {
 		ICdmDataSource datasource = mapping.getDatabase();
 		Assert.assertNotNull("Datasource should not be null", datasource);
 
-		BotanicalName botName1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(null);
 		int id = 23;
 		botName1.setId(id);
 		String sourceNS = "sourceNS";

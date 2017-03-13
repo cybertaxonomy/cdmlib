@@ -44,7 +44,7 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
             }
 
             if ( !ap.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch && isPropertyMatch){
-                logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
+                logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
                 return ACCESS_GRANTED;
             }
             if ( vr.isUuidMatch  && vr.isClassMatch && vr.isPermissionMatch && isPropertyMatch){
@@ -59,6 +59,8 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
         }
 
         // nothing to do here since the CdmAuthority has no property naming a feature
+        // this case however should never ever happen if the implementation of the CdmPermissionVoter
+        // works correctly.
         return ACCESS_ABSTAIN;
     }
 

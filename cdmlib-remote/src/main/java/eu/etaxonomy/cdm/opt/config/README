@@ -1,0 +1,8 @@
+The package eu.etaxonomy.cdm.opt.config contains spring configurations 
+which can be loaded into the *root WebApplicationContext* loaded via 
+*Spring's ContextLoaderListener*, but which are optional.
+
+This package must not be covered by a component scan the bean in here should be added 
+individually to the context. 
+
+The root WebApplicationContext contains beans such for MVC specific configuration

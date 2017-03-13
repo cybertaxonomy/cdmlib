@@ -50,11 +50,12 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -167,7 +168,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
-        actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
+        actualTaxon.setName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()));
         try{
             service.saveOrUpdate(actualTaxon);
         }catch(Exception e){
@@ -179,7 +180,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public final void testRemoveTaxon() {
-        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.UNKNOWN_RANK()), null);
+        Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.UNKNOWN_RANK()), null);
         UUID uuid = service.save(taxon).getUuid();
        // try {
 			service.deleteTaxon(taxon.getUuid(), null, null);
@@ -288,11 +289,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Reference reference = ReferenceFactory.newGeneric();
         String referenceDetail = "test";
 
-        NonViralName<?> t1n = NonViralName.NewInstance(null);
+        INonViralName t1n = TaxonNameFactory.NewNonViralInstance(null);
         Taxon t1 = Taxon.NewInstance(t1n, reference);
-        NonViralName<?> t2n = NonViralName.NewInstance(null);
+        INonViralName t2n = TaxonNameFactory.NewNonViralInstance(null);
         Taxon t2 = Taxon.NewInstance(t2n, reference);
-        NonViralName<?> s1n = NonViralName.NewInstance(null);
+        INonViralName s1n = TaxonNameFactory.NewNonViralInstance(null);
         Synonym s1 = Synonym.NewInstance(s1n, reference);
         t1.addSynonym(s1, heteroTypicSynonymType);
         service.saveOrUpdate(t1);
@@ -522,10 +523,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Rank rank = Rank.SPECIES();
         Reference ref1 = ReferenceFactory.newGeneric();
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
-        Taxon taxon1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
-        Synonym synonym0 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        Synonym synonym1 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+        Taxon taxon1 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+        Synonym synonym0 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        Synonym synonym1 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        Synonym synonym2 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test4", null, null, null, null, null, null, null), null);
         synonym0.getName().setHomotypicalGroup(taxon1.getHomotypicGroup());
         synonym2.getName().setHomotypicalGroup(synonym1.getHomotypicGroup());
         //tax2.addHeterotypicSynonymName(synonym.getName());
@@ -556,10 +557,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Rank rank = Rank.SPECIES();
         Reference ref1 = ReferenceFactory.newGeneric();
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
-        Taxon taxon1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
-        Synonym synonym0 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        Synonym synonym1 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+        Taxon taxon1 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+        Synonym synonym0 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        Synonym synonym1 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        Synonym synonym2 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test4", null, null, null, null, null, null, null), null);
         synonym0.getName().setHomotypicalGroup(taxon1.getHomotypicGroup());
         synonym2.getName().setHomotypicalGroup(synonym1.getHomotypicGroup());
         //tax2.addHeterotypicSynonymName(synonym.getName());
@@ -1080,7 +1081,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonNode node = child1.getTaxonNodes().iterator().next();
         child1.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Import));
 
-        SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
+        SpecimenOrObservationBase<?> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
         DeterminationEvent.NewInstance(child1, identifiedUnit);
         //UUID eventUUID = eventService.save(determinationEvent);
         UUID identifiedUnitUUID = occurenceService.save(identifiedUnit).getUuid();
@@ -1189,7 +1190,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(taxonName);
         assertNull(taxon);
         config.setDeleteNameIfPossible(true);
-        Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        Taxon newTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
         service.save(newTaxon);
         result = service.deleteTaxon(newTaxon.getUuid()
         		, config, null);
@@ -1251,7 +1252,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         config.setDeleteNameIfPossible(true);
-        Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        Taxon newTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
         service.save(newTaxon);
         result = service.deleteTaxon(newTaxon.getUuid()
                 , config, null);
@@ -1315,7 +1316,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
-        BotanicalName fromName = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1416,7 +1417,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
-        Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
+        Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
@@ -1454,7 +1455,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
-        Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
+        Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
@@ -1494,7 +1495,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
-        Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
+        Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
@@ -1533,7 +1534,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
-        Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        Taxon misappliedName = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
@@ -1562,7 +1563,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
-        Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        Taxon misappliedName = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
@@ -1592,7 +1593,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
 
-        Taxon misappliedNameTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        Taxon misappliedNameTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
@@ -1787,11 +1788,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public void createTestDataSet() throws FileNotFoundException {
     	Rank rank = Rank.SPECIES();
 
-        taxWithoutSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
-        taxWithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
-        tax2WithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test5", null, null, null, null, null, null, null), null);
-        synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+        taxWithoutSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test1", null, null, null, null, null, null, null), null);
+        taxWithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+        tax2WithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test5", null, null, null, null, null, null, null), null);
+        synonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        synonym2 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test4", null, null, null, null, null, null, null), null);
         synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
 
         taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
@@ -1824,7 +1825,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             citationRef.setTitleCache("Sp. lunarum", true);
 
             //genus taxon with Name, combinationAuthor,
-            BotanicalName botName = BotanicalName.NewInstance(Rank.GENUS());
+            BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
             botName.setTitleCache("Hieracium L.", true);
             botName.setGenusOrUninomial("Hieracium");
             botName.setCombinationAuthorship(Person.NewInstance());
@@ -1834,7 +1835,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             genusTaxon.setUuid(GENUS_UUID);
             service.save(genusTaxon);
             //a name that is the basionym of genusTaxon's name
-            BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS());
+            BotanicalName basionym = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
             basionym.setTitleCache("Hieracilla DC.", true);
             basionym.setGenusOrUninomial("Hieracilla");
             basionym.setCombinationAuthorship(deCandolle);
@@ -1842,7 +1843,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             botName.addBasionym(basionym, null, null,"216");
             nameService.saveOrUpdate(basionym);
             //species taxon that is the child of genus taxon
-            BotanicalName botSpecies = BotanicalName.NewInstance(Rank.SPECIES());
+            BotanicalName botSpecies = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies.setTitleCache("Hieracium asturianum Pau", true);
             botSpecies.setGenusOrUninomial("Hieracium");
             botSpecies.setSpecificEpithet("asturianum");
@@ -1860,7 +1861,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //            childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
             classificationService.save(classification);
             //homotypic synonym of childTaxon1
-            BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES());
+            BotanicalName botSpecies4= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies4.setTitleCache("Hieracium gueri DC.", true);
             botSpecies4.setGenusOrUninomial("Hieracium");
             botSpecies4.setSpecificEpithet("gueri");
@@ -1871,7 +1872,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             service.saveOrUpdate(childTaxon);
 
             //2nd child species taxon that is the child of genus taxon
-            BotanicalName botSpecies2= BotanicalName.NewInstance(Rank.SPECIES());
+            BotanicalName botSpecies2= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
             botSpecies2.setGenusOrUninomial("Hieracium");
             botSpecies2.setSpecificEpithet("wolffii");
@@ -1884,7 +1885,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
             service.saveOrUpdate(childTaxon2);
             //heterotypic synonym of childTaxon2
-            BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES());
+            BotanicalName botSpecies3= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies3.setTitleCache("Hieracium lupium DC.", true);
             botSpecies3.setGenusOrUninomial("Hieracium");
             botSpecies3.setSpecificEpithet("lupium");
@@ -1894,7 +1895,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
             service.saveOrUpdate(childTaxon2);
             //missaplied Name for childTaxon2
-            BotanicalName missName= BotanicalName.NewInstance(Rank.SPECIES());
+            BotanicalName missName= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             missName.setTitleCache("Hieracium lupium DC.", true);
             missName.setGenusOrUninomial("Hieracium");
             missName.setSpecificEpithet("lupium");

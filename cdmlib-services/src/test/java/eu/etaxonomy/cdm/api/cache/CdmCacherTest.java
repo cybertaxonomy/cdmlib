@@ -11,8 +11,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -46,10 +47,10 @@ public class CdmCacherTest extends CdmIntegrationTest {
 		// to a taxon name with no name cache to begin with
 		Reference sec = ReferenceFactory.newDatabase();
         referenceService.save(sec);
-		Taxon taxon = Taxon.NewInstance(NonViralName.NewInstance(Rank.SERIES()), sec);
+		Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewNonViralInstance(Rank.SERIES()), sec);
         taxon.setTitleCache("Tax" + "CdmCacher", true);
         taxonService.save(taxon);
-        NonViralName<?> nvn = (NonViralName<?>)taxon.getName();
+        INonViralName nvn = taxon.getName();
         String nameCache = nvn.getNameCache();
         logger.warn("name cache : " + nameCache);
 	}

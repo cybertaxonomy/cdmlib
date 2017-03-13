@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -27,7 +28,7 @@ public class MethodCacheImplTest {
     public void setUp() throws Exception {
         methodCache = new MethodCacheImpl();
         taxon = Taxon.NewInstance(null, null);
-        botanicalName = BotanicalName.NewInstance(null);
+        botanicalName = TaxonNameFactory.NewBotanicalInstance(null);
         nomenclaturalReference = ReferenceFactory.newBook();
     }
 

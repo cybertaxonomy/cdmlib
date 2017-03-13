@@ -17,4 +17,6 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
  */
 public interface IGrantedAuthorityService extends IService<GrantedAuthorityImpl> {
 
+    public GrantedAuthorityImpl findAuthorityString(String authorityString);
+
 }

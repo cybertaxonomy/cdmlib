@@ -690,6 +690,7 @@ public class Rank extends OrderedTermBase<Rank> {
             return null;
         }
         idInVoc = normalizeSectionAndSubsection(idInVoc);
+        idInVoc = normalizeSubgen(idInVoc);
         idInVoc = normalizeSpecialForm(idInVoc);
         idInVoc = normalizeSsp(idInVoc);
         idInVoc = normalizeForma(idInVoc);
@@ -717,6 +718,13 @@ public class Rank extends OrderedTermBase<Rank> {
             return "sect.(bot.)";
         }else if (idInVoc.equals("subsect.")){
             return "subsect.(bot.)";
+        }
+        return idInVoc;
+    }
+
+    private static String normalizeSubgen(String idInVoc) {
+        if (idInVoc.equals("subgen.")){
+            return "subg.";
         }
         return idInVoc;
     }

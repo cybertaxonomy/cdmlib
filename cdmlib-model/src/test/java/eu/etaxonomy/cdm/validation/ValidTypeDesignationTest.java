@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
@@ -55,10 +56,10 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 
 
 
-		name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setNameCache("Aus aus");
 
-	    name2 = BotanicalName.NewInstance(Rank.SPECIES());
+	    name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 	    name2.setNameCache("Aus bus");
 
 	    specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);

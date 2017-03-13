@@ -288,6 +288,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+
     /**
      * @see {@link #pageTaxonDescriptions(Taxon, Set, Set, Integer, Integer, List)}
      *

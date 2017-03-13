@@ -848,10 +848,53 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		return this.modifyingText.remove(language);
 	}
 
+	/**
+	 * Sets the taxon of this {@link PolytomousKeyNode}.
+	 * If this node already has a taxon removes the taxon
+	 * and puts it to a new empty child node. <BR>
+	 * If no taxon exists, but empty child nodes exist
+	 * adds a new empty child node and puts the taxon.
+	 * Note: Handle with care, if
+	 * @param taxon
+	 * @return the number of taxa belong to the node
+	 * after the taxon was added
+	 */
+	public PolytomousKeyNode setOrAddTaxon(Taxon taxon){
+	    if (taxon == null){
+	        throw new NullPointerException("Taxon must not be null");
+	    }
+	    if(this.taxon != null){
+            //rearrange first taxon  //TODO code to PKNode class
+            Taxon firstTaxon = this.removeTaxon();
+            PolytomousKeyNode firstChildNode = PolytomousKeyNode.NewInstance();
+            firstChildNode.setTaxon(firstTaxon);
+            this.addChild(firstChildNode);
+        }
+	    if (!emptyChildNodeExists()){
+	        setTaxon(taxon);
+	        return this;
+	    }else{
+	        PolytomousKeyNode childNode = PolytomousKeyNode.NewInstance();
+	        childNode.setTaxon(taxon);
+	        this.addChild(childNode);
+	        return childNode;
+	    }
+	}
+
+    private boolean emptyChildNodeExists() {
+        for (PolytomousKeyNode child : this.children){
+            if (child.getStatement() == null && child.getQuestion() == null && child.getChildren().isEmpty()
+                    && child.getSubkey() == null && child.getOtherNode() == null){
+                return true;
+            }
+        }
+        return false;
+    }
 
 	// *********************** CLONE ********************************************************/
 
-	/**
+
+    /**
 	 * Clones <i>this</i> PolytomousKeyNode. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>
 	 * PolytomousKeyNode by modifying only some of the attributes. The parent,
@@ -882,12 +925,10 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 	}
 
-    /**
-     *
-     */
-    public void removeTaxon() {
+    public Taxon removeTaxon() {
+        Taxon result = taxon;
         this.taxon = null;
-
+        return result;
     }
 
     private void updateSortIndex(){

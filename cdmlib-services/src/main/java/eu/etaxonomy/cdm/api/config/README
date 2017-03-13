@@ -1,0 +1,3 @@
+The package eu.etaxonomy.cdm.api.config contains spring configurations 
+which are loaded automatically into the application context via 
+component scan.

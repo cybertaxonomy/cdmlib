@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 
 import com.ibm.lsid.MalformedLSIDException;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
@@ -83,7 +83,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 	 * @return
 	 */
 	@Override
-    public List<Collection> getCollectionsByCode(String code, ICdmApplicationConfiguration appConfig){
+    public List<Collection> getCollectionsByCode(String code, ICdmRepository appConfig){
 
 		SchemaAdapterBase<Collection> schemaAdapter = schemaAdapterMap.get("recordSchema");
 		if(schemaAdapter == null){
@@ -129,7 +129,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 	 * @param restRequest
 	 * @return
 	*/
-	private List<? extends IdentifiableEntity> queryService(String request, ICdmApplicationConfiguration appConfig, URL serviceUrl, ServiceType serviceType){
+	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository appConfig, URL serviceUrl, ServiceType serviceType){
 		try {
             // create the request url
             URL newUrl = new URL(serviceUrl.getProtocol(),
@@ -179,7 +179,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
     }
 
 
-	private List<Collection> buildCollectionList(InputStream content, ICdmApplicationConfiguration appConfig) throws IOException {
+	private List<Collection> buildCollectionList(InputStream content, ICdmRepository appConfig) throws IOException {
 		List<Collection> result = new ArrayList<Collection>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
@@ -196,7 +196,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 	}
 
 
-	private Collection getCollectionFromLine(String line, ICdmApplicationConfiguration appConfig) {
+	private Collection getCollectionFromLine(String line, ICdmRepository appConfig) {
 		//urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
 		String[] splits = line.split("\t");
 		if (splits.length != 3){
@@ -237,7 +237,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 	}
 
 
-	private Reference getBciCitation(ICdmApplicationConfiguration appConfig) {
+	private Reference getBciCitation(ICdmRepository appConfig) {
 		Reference bciReference;
 		if (appConfig != null){
 			bciReference = appConfig.getReferenceService().find(uuidBci);

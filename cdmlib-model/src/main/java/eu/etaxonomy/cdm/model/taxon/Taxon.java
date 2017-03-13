@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
@@ -70,7 +71,6 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  * and between ("synonym") taxa and ("accepted/correct") taxa on the other.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -105,7 +105,7 @@ public class Taxon
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @ContainedIn
-    private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
+    private Set<TaxonDescription> descriptions = new HashSet<>();
 
     // all related synonyms
     @XmlElementWrapper(name = "Synonyms")
@@ -125,7 +125,7 @@ public class Taxon
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
 //    @Valid
-    private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
+    private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<>();
 
     // all taxa relations with rel.toTaxon==this
     @XmlElementWrapper(name = "RelationsToThisTaxon")
@@ -135,7 +135,7 @@ public class Taxon
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @Valid
-    private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
+    private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<>();
 
     @XmlAttribute(name= "taxonStatusUnknown")
     private boolean taxonStatusUnknown = false;
@@ -157,6 +157,16 @@ public class Taxon
     private Set<TaxonNode> taxonNodes = new HashSet<>();
 
 // ************************* FACTORY METHODS ********************************/
+
+    /**
+     * @see #NewInstance(TaxonNameBase, Reference)
+     * @param taxonNameBase
+     * @param sec
+     * @return
+     */
+    public static Taxon NewInstance(ITaxonNameBase taxonNameBase, Reference sec){
+        return NewInstance(TaxonNameBase.castAndDeproxy(taxonNameBase), sec);
+    }
 
     /**
      * Creates a new (accepted/valid) taxon instance with

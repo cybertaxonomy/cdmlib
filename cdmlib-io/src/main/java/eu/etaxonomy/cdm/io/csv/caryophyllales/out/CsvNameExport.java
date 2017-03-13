@@ -35,12 +35,13 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroupComparator;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -226,13 +227,13 @@ public class CsvNameExport extends CsvNameExportBase {
 
 
 
-    private String createSynonymNameString(BotanicalName synonymName, boolean isInvalid) {
+    private String createSynonymNameString(IBotanicalName synonymName, boolean isInvalid) {
         String synonymString = null;
 
         synonymString= createTaggedNameString(synonymName, isInvalid);
         Set<NameRelationship> nameRelations = synonymName.getNameRelations();
 
-        NonViralName relatedName = null;
+        INonViralName relatedName = null;
         String nameRelType = null;
         boolean first = true;
         boolean isInvalidRel = false;
@@ -244,10 +245,9 @@ public class CsvNameExport extends CsvNameExportBase {
             nameRelType = nameRel.getType().getTitleCache();
             String relatedNameString = "";
             if (fromName.equals(synonymName)){
-                relatedName = HibernateProxyHelper.deproxy(nameRel.getToName(), NonViralName.class);
-
+                relatedName = nameRel.getToName();
             }else{
-                relatedName = HibernateProxyHelper.deproxy(nameRel.getFromName(), NonViralName.class);
+                relatedName = nameRel.getFromName();
             }
             if (!nameRel.getType().equals(NameRelationshipType.BASIONYM())){
                 isInvalidRel = getStatus(relatedName);
@@ -310,7 +310,7 @@ public class CsvNameExport extends CsvNameExportBase {
      * @param relatedName
      * @return
      */
-    private boolean getStatus(NonViralName relatedName) {
+    private boolean getStatus(INonViralName relatedName) {
         boolean result;
         if (!relatedName.getStatus().isEmpty()){
             NomenclaturalStatus status = HibernateProxyHelper.deproxy(relatedName.getStatus().iterator().next(),NomenclaturalStatus.class);
@@ -325,7 +325,7 @@ public class CsvNameExport extends CsvNameExportBase {
         return result;
     }
 
-    private String createTaggedNameString(NonViralName name, boolean isInvalid){
+    private String createTaggedNameString(INonViralName name, boolean isInvalid){
         String nameString = null;
         if (name == null){
             return nameString;
@@ -527,7 +527,7 @@ public class CsvNameExport extends CsvNameExportBase {
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         //  if (taxon.isPublish()){
 
-        NonViralName nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+        INonViralName nonViralName = taxon.getName();
 
         nameString = createTaggedNameString(nonViralName, false);
         nameRecord.put("childTaxon", taxon.getTitleCache());
@@ -678,17 +678,17 @@ public class CsvNameExport extends CsvNameExportBase {
 
         Set<NameRelationship> nameRelations = name.getNameRelations();
 
-        NonViralName relatedName = null;
+        INonViralName relatedName = null;
         String nameRelType = null;
         String relNameString = null;
         if (nameRelations.size()>0){
             NameRelationship nameRel = nameRelations.iterator().next();
             BotanicalName fromName = HibernateProxyHelper.deproxy(nameRel.getFromName(), BotanicalName.class);
             if (fromName.equals(taxon.getName())){
-                relatedName = HibernateProxyHelper.deproxy(nameRel.getToName(), NonViralName.class);
+                relatedName = nameRel.getToName();
 
             }else{
-                relatedName = HibernateProxyHelper.deproxy(nameRel.getFromName(), NonViralName.class);
+                relatedName = nameRel.getFromName();
             }
             nameRel = HibernateProxyHelper.deproxy(nameRel, NameRelationship.class);
             nameRelType = nameRel.getType().getTitleCache();
@@ -724,11 +724,11 @@ public class CsvNameExport extends CsvNameExportBase {
                         appendedPhrase = relatedTaxon.getAppendedPhrase();
                     }
                     if (secRef == null){
-                        nameString.append("<misapplied>\"" + createTaggedNameString(HibernateProxyHelper.deproxy(relatedTaxon.getName(), NonViralName.class), false) + "\" " + appendedPhrase);
+                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase);
                     } else if (secRef.getAuthorship() == null){
-                        nameString.append("<misapplied>\"" + createTaggedNameString(HibernateProxyHelper.deproxy(relatedTaxon.getName(), NonViralName.class), false) + "\" " + appendedPhrase + " sensu " + secRef.getTitleCache());
+                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase + " sensu " + secRef.getTitleCache());
                     } else {
-                        nameString.append("<misapplied>\"" + createTaggedNameString(HibernateProxyHelper.deproxy(relatedTaxon.getName(), NonViralName.class), false) + "\" " + appendedPhrase + " sensu " + secRef.getAuthorship().getNomenclaturalTitle());
+                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase + " sensu " + secRef.getAuthorship().getNomenclaturalTitle());
                     }
 
                 }

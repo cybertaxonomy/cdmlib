@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,26 +31,29 @@ import eu.etaxonomy.cdm.model.common.User;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
-public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE>, CONFIG extends DbImportConfiguratorBase<STATE>> extends CdmImportBase<CONFIG, STATE> implements ICdmIO<STATE>, IPartitionedIO<STATE> {
-	private static final Logger logger = Logger.getLogger(DbImportBase.class);
-	
+public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE>, CONFIG extends DbImportConfiguratorBase<STATE>>
+            extends CdmImportBase<CONFIG, STATE>
+            implements ICdmIO<STATE>, IPartitionedIO<STATE> {
+    private static final long serialVersionUID = 5539446566014467398L;
+    private static final Logger logger = Logger.getLogger(DbImportBase.class);
+
 	private String dbTableName ;
 	private String pluralString;
-	
+
 	public DbImportBase(String tableName, String pluralString) {
 		super();
 		this.dbTableName = tableName;
 		this.pluralString = pluralString;
 	}
-	
-	protected void doInvoke(STATE state){
+
+	@Override
+    protected void doInvoke(STATE state){
 			//	String strTeamStore = ICdmIO.TEAM_STORE;
 			CONFIG config = state.getConfig();
 			Source source = config.getSource();
 			boolean success = true ;
-			
+
 			logger.info("start make " + getPluralString() + " ...");
 
 			String strIdQuery = getIdQuery(state);
@@ -71,7 +74,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 				logger.error("SQLException:" +  e);
 				state.setUnsuccessfull();
 			}
-	
+
 			logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
 			if (success == false){
 				state.setUnsuccessfull();
@@ -79,7 +82,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			return;
 	}
 
-	
+
 	/**
 	 * @return
 	 */
@@ -89,8 +92,8 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	 * @return
 	 */
 	protected abstract String getIdQuery(STATE state);
-	
-	
+
+
 	/**
 	 * @return
 	 */
@@ -99,13 +102,11 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#getPluralString()
-	 */
-	public String getPluralString() {
+	@Override
+    public String getPluralString() {
 		return pluralString;
 	}
-	
+
 
 	/**
 	 * @param state
@@ -117,7 +118,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	protected boolean doId(STATE state, ISourceable sourceable, long id, String namespace) {
 		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference(), id, namespace);
 	}
-	
+
 	/**
 	 * @param state
 	 * @param sourceable
@@ -129,7 +130,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference(), id, namespace);
 	}
 
-	
+
 
 	/**
 	 * Adds a note to the annotatable entity.
@@ -150,14 +151,14 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			annotatableEntity.addAnnotation(notesAnnotation);
 		}
 	}
-	
+
 
 	protected User getUser(STATE state, String userString){
 		if (CdmUtils.isBlank(userString)){
 			return null;
 		}
 		userString = userString.trim();
-		
+
 		User user = state.getUser(userString);
 		if (user == null){
 			user = getTransformedUser(userString,state);
@@ -170,7 +171,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		}
 		return user;
 	}
-	
+
 	private User getTransformedUser(String userString, STATE state){
 		Method method = state.getConfig().getUserTransformationMethod();
 		if (method == null){
@@ -186,19 +187,19 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	}
 
 	private User makeNewUser(String userString, STATE state){
-		String pwd = getRandomPassword(); 
+		String pwd = getRandomPassword();
 		User user = User.NewInstance(userString, pwd);
 		state.putUser(userString, user);
 		getUserService().save(user);
 		logger.info("Added new user: " + userString);
 		return user;
 	}
-	
+
 	private String getRandomPassword(){
 		String result = UUID.randomUUID().toString();
 		return result;
 	}
-	
+
 	protected boolean resultSetHasColumn(ResultSet rs, String columnName){
 		try {
 			ResultSetMetaData metaData = rs.getMetaData();
@@ -213,16 +214,16 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
             return false;
 		}
 	}
-	
-	
+
+
 	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
 		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
 				" INNER JOIN syscolumns AS c ON t.id = c.id " +
-				" WHERE (t.xtype = 'U') AND " + 
-				" (t.name = '" + tableName + "') AND " + 
+				" WHERE (t.xtype = 'U') AND " +
+				" (t.name = '" + tableName + "') AND " +
 				" (c.name = '" + columnName + "')";
-		ResultSet rs = source.getResultSet(strQuery) ;		
+		ResultSet rs = source.getResultSet(strQuery) ;
 		int n;
 		try {
 			rs.next();
@@ -232,11 +233,11 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			e.printStackTrace();
 			return false;
 		}
-		
-	}
-	
 
-	
+	}
+
+
+
 	/**
 	 * Returns a map that holds all values of a ResultSet. This is needed if a value needs to
 	 * be accessed twice
@@ -275,7 +276,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			idSet.add(id);
 		}
 	}
-	
+
 	/**
 	 * Returns true if i is a multiple of recordsPerTransaction
 	 * @param i
@@ -286,14 +287,14 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		startTransaction();
 		return (i % recordsPerLoop) == 0;
 		}
-	
+
 	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
 		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
 	}
-	
 
 
 
-	
-	
+
+
+
 }

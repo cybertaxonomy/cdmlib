@@ -26,12 +26,11 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -62,6 +61,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		state.setOnlyNumberedTaxaExist(onlyNumberedTaxaExist);
 
 		PolytomousKey key = PolytomousKey.NewInstance();
+		key.addPrimaryTaxonomicSource(state.getConfig().getSourceReference(), null);
 		key.addTaxonomicScope(state.getCurrentTaxon());
 		state.setCurrentKey(key);
 
@@ -123,7 +123,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 
 	private void handleCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode parentNode) throws XMLStreamException {
 		String num = getOnlyAttribute(parentEvent, NUM, true);
-		List<PolytomousKeyNode> childList = new ArrayList<PolytomousKeyNode>();
+		List<PolytomousKeyNode> childList = new ArrayList<>();
 
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -191,7 +191,8 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 	}
 
-	private void handleQuestion(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, List<PolytomousKeyNode> nodesList) throws XMLStreamException {
+	private void handleQuestion(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
+	        List<PolytomousKeyNode> nodesList) throws XMLStreamException {
 		// attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		//TODO needed only for data lineage
@@ -200,7 +201,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		PolytomousKeyNode myNode = PolytomousKeyNode.NewInstance();
 		myNode.setKey(state.getCurrentKey());  //to avoid NPE while computing num in PolytomousKeyNode in case this node is not matched correctly with a parent
 		nodesList.add(myNode);
-
+		int countToTaxon = 0;
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -210,12 +211,28 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 				KeyStatement statement = KeyStatement.NewInstance(getDefaultLanguage(state), text);
 				myNode.setStatement(statement);
 			} else if (isStartingElement(next, COUPLET)) {
-				//TODO test
+				fireWarningEvent("Check if toCouplet in question is implemented correctly", next, 4);
 				handleCouplet(state, reader, next, myNode);
 			} else if (isStartingElement(next, TO_COUPLET)) {
 				handleToCouplet(state, reader, next, myNode);
 			} else if (isStartingElement(next, TO_TAXON)) {
-				handleToTaxon(state, reader, next, myNode);
+				if (countToTaxon == 0){
+				    handleToTaxon(state, reader, next, myNode);
+				}else{
+				    if(countToTaxon == 1){
+				        //rearrange first taxon  //similar to PKNode.setOrAddTaxon(taxon) but the later can't be used here
+				        //TODO this does not yet move the unmatched taxon keys to the new node
+				        fireWarningEvent("Multiple toTaxon requires manual adjustment", next, 6);
+				        Taxon firstTaxon = myNode.removeTaxon();
+				        PolytomousKeyNode firstChildNode = PolytomousKeyNode.NewInstance();
+				        firstChildNode.setTaxon(firstTaxon);
+	                    myNode.addChild(firstChildNode);
+				    }
+				    PolytomousKeyNode childNode = PolytomousKeyNode.NewInstance();
+			        myNode.addChild(childNode);
+				    handleToTaxon(state, reader, next, childNode);
+				}
+				countToTaxon++;
 			} else if (isStartingElement(next, TO_KEY)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -248,18 +265,10 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		String taxonCData = handleInnerToTaxon(state, reader, parentEvent, node).trim();
 
 		String taxonKeyStr = makeTaxonKey(taxonCData, state.getCurrentTaxon(), parentEvent.getLocation());
-        try{
-            if (taxonKeyStr.contains(":")){
-                System.out.println(":");
-                UUID.fromString(taxonKeyStr);
-                System.out.println("Here we have a uuid: " + taxonKeyStr );
-            }
-        }catch(Exception e){
-        }
 
 		taxonNotExists = taxonNotExists || (isBlank(num) && state.isOnlyNumberedTaxaExist());
 		if (taxonNotExists){
-			NonViralName<?> name = createNameByCode(state, Rank.UNKNOWN_RANK());
+			INonViralName name = createNameByCode(state, Rank.UNKNOWN_RANK());
 			Taxon taxon = Taxon.NewInstance(name, null);
 			taxon.getName().setTitleCache(taxonKeyStr, true);
 			node.setTaxon(taxon);
@@ -283,7 +292,8 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private String handleInnerToTaxon(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode node) throws XMLStreamException {
+	private String handleInnerToTaxon(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
+	        PolytomousKeyNode node) throws XMLStreamException {
 		String taxonText = "";
 		String modifyingText = null;
 		while (reader.hasNext()) {
@@ -322,7 +332,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			return "";
 		}
 
-		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		INonViralName name = taxon.getName();
 		String strGenusName = name.getGenusOrUninomial();
 
 		String normalized = normalizeKeyString(strGoto, location);
@@ -389,7 +399,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		Taxon taxon = state.getCurrentTaxon();
 		String num = state.getCurrentTaxonNum();
 
-		NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		INonViralName nvn = taxon.getName();
 		String nameString = nvn.getNameCache();
 		nameString = normalizeKeyString(nameString, event.getLocation());
         nameString = removeTrailingDot(nameString);

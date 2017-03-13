@@ -51,6 +51,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
@@ -323,6 +324,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
          return HibernateProxyHelper.deproxy(object, clazz);
      }
 
+     @Override
      public boolean isInstanceOf(Class<? extends CdmBase> clazz) throws ClassCastException {
          return HibernateProxyHelper.isInstanceOf(this, clazz);
      }
@@ -460,6 +462,17 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
             }
         }
         return result;
+    }
+
+
+    /**
+     * Returns true if the given String is blank.
+     * @param str the String to check
+     * @see CdmUtils#isBlank(String)
+     * @return true if str is blank
+     */
+    protected boolean isBlank(String str) {
+        return CdmUtils.isBlank(str);
     }
 
 

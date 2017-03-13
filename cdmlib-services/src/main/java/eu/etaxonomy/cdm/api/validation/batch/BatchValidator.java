@@ -28,7 +28,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -53,7 +53,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
     private static final Logger logger = Logger.getLogger(BatchValidator.class);
 
 
-    private ICdmApplicationConfiguration repository;
+    private ICdmRepository repository;
 
     private ApplicationContext appContext;
 
@@ -245,7 +245,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
      *
      * @return The application context
      */
-    public ICdmApplicationConfiguration getAppController() {
+    public ICdmRepository getAppController() {
         return repository;
     }
 
@@ -255,7 +255,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
      * @param context
      *            The application context
      */
-    public void setAppController(ICdmApplicationConfiguration context) {
+    public void setAppController(ICdmRepository context) {
         this.repository = context;
     }
 

@@ -22,17 +22,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
@@ -43,6 +42,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NameTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -104,7 +104,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			} else if (isEndingElement(next, NAME_TYPE)) {
 				state.setNameType(false);
 			} else if (isStartingElement(next, NOM)) {
-				NonViralName<?> name = handleNom(state, reader, next, homotypicalGroup);
+				INonViralName name = handleNom(state, reader, next, homotypicalGroup);
 				homotypicalGroup = name.getHomotypicalGroup();
 				hasNom = true;
 			} else if (isStartingElement(next, NAME_TYPE)) {
@@ -162,8 +162,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				if (isStartingElement(next, NOM)) {
 					// TODO should we check if the type is always a species, is
 					// this a rule?
-					NonViralName<?> speciesName = handleNom(state, reader,
-							next, null);
+					TaxonNameBase<?,?> speciesName = TaxonNameBase.castAndDeproxy(
+					        handleNom(state, reader, next, null));
 					for (TaxonNameBase<?, ?> name : homotypicalGroup
 							.getTypifiedNames()) {
 						name.addNameTypeDesignation(speciesName, null, null,
@@ -195,20 +195,33 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader,
+	private INonViralName handleNom(MarkupImportState state, XMLEventReader reader,
 			XMLEvent parentEvent, HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		boolean isSynonym = false;
 		boolean isNameType = state.isNameType();
 		// attributes
-		String classValue = getClassOnlyAttribute(parentEvent);
-		NonViralName<?> name;
-		if (!isNameType && ACCEPTED.equalsIgnoreCase(classValue)) {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+        boolean isMisidentification = getAndRemoveBooleanAttributeValue(parentEvent, attributes, "misidentification", false);
+		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, "class");
+        checkNoAttributes(attributes, parentEvent);
+
+		INonViralName name;
+		TaxonRelationship misappliedRelation = null;
+		if (isMisidentification) {
+            if (isNameType || ACCEPTED.equalsIgnoreCase(classValue) ){
+                fireWarningEvent("Misidentification only defined for synonyms", parentEvent, 4);
+            }
+            name = createNameByCode(state, null);
+            Taxon acc = state.getCurrentTaxon();
+            Taxon misapplied = Taxon.NewInstance(name, null);
+            misappliedRelation = acc.addMisappliedName(misapplied, null, null);
+        }else if (!isNameType && ACCEPTED.equalsIgnoreCase(classValue)) {
 			isSynonym = false;
 			name = createName(state, homotypicalGroup, isSynonym);
 		} else if (!isNameType && SYNONYM.equalsIgnoreCase(classValue)) {
-			isSynonym = true;
-			name = createName(state, homotypicalGroup, isSynonym);
-		} else if (isNameType && NAME_TYPE.equalsIgnoreCase(classValue)) {
+            isSynonym = true;
+            name = createName(state, homotypicalGroup, isSynonym);
+        } else if (isNameType && NAME_TYPE.equalsIgnoreCase(classValue)) {
 			// TODO do we need to define the rank here?
 			name = createNameByCode(state, null);
 		} else {
@@ -216,19 +229,23 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			name = createNameByCode(state, null);
 		}
 
-		Map<String, String> nameMap = new HashMap<String, String>();
+		Map<String, String> nameMap = new HashMap<>();
 		String text = "";
 
 		boolean nameFilled = false;
+		state.setNameStatus(null);
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				// fill the name with all data gathered, if not yet done before
 				if (nameFilled == false){
-					fillName(state, nameMap, name, next);
+					fillName(state, nameMap, name, misappliedRelation, next);
 				}
 				handleNomText(state, parentEvent, text, isNameType);
-				return name;
+				state.getDeduplicationHelper(docImport).replaceAuthorNamesAndNomRef(state, name);
+				handleNameStatus(state, name, next);
+				state.setNameStatus(null);
+		        return name;
 			} else if (isEndingElement(next, ANNOTATION)) {
 				// NOT YET IMPLEMENTED //TODO test
 				// handleSimpleAnnotation
@@ -241,9 +258,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				handleName(state, reader, next, nameMap);
 			} else if (isStartingElement(next, CITATION)) {
 				//we need to fill the name here to have nomenclatural author available for the following citations
-				fillName(state, nameMap, name, next);
+				fillName(state, nameMap, name, misappliedRelation, next);
 				nameFilled = true;
-				handleCitation(state, reader, next, name, nameMap);
+				handleCitation(state, reader, next, name,  misappliedRelation);
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else if (isStartingElement(next, HOMONYM)) {
@@ -258,11 +275,30 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				handleUnexpectedElement(next);
 			}
 		}
-		// TODO handle missing end element
 		throw new IllegalStateException("Nom has no closing tag");
 	}
 
 	/**
+     * @param state
+     * @param name
+     * @param next
+     */
+    private void handleNameStatus(MarkupImportState state, INonViralName name, XMLEvent next) {
+        if (isNotBlank(state.getNameStatus())){
+            String nameStatus = state.getNameStatus().trim();
+            try {
+                NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
+                        .getNomenclaturalStatusTypeByAbbreviation(nameStatus, name);
+                name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
+            } catch (UnknownCdmTypeException e) {
+                String message = "Status '%s' could not be recognized";
+                message = String.format(message, nameStatus);
+                fireWarningEvent(message, next, 4);
+            }
+        }
+    }
+
+    /**
 	 * Handles appearance of text within <nom> tags.
 	 * Usually this is not expected except for some information that is already handled
 	 * elsewhere, e.g. the string Nametype is holding information that is available already
@@ -344,7 +380,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void fillName(MarkupImportState state, Map<String, String> nameMap,
-			NonViralName<?> name, XMLEvent event) {
+			INonViralName name, TaxonRelationship misappliedRel, XMLEvent event) {
 
 		// Ranks: family, subfamily, tribus, genus, subgenus, section,
 		// subsection, species, subspecies, variety, subvariety, forma
@@ -360,6 +396,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String statusStr = getAndRemoveMapKey(nameMap, STATUS);
 		String notes = getAndRemoveMapKey(nameMap, NOTES);
 
+		if (misappliedRel != null && authorStr != null && authorStr.startsWith("auct.")){
+		    misappliedRel.getFromTaxon().setAppendedPhrase(authorStr);
+		    authorStr = null;
+		}
+
 		if (!name.isProtectedTitleCache()) { // otherwise fullName
 
 			makeRankDecision(state, nameMap, name, event, infrank);
@@ -373,7 +414,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		// status
 		// TODO handle pro parte, pro syn. etc.
-		if (StringUtils.isNotBlank(statusStr)) {
+		if (isNotBlank(statusStr)) {
 			String proPartePattern = "(pro parte|p.p.)";
 			if (statusStr.matches(proPartePattern)) {
 				state.setProParte(true);
@@ -381,7 +422,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			try {
 				// TODO handle trim earlier
 				statusStr = statusStr.trim();
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr, name);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
+				        .getNomenclaturalStatusTypeByAbbreviation(statusStr, name);
 				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
 			} catch (UnknownCdmTypeException e) {
 				String message = "Status '%s' could not be recognized";
@@ -399,6 +441,19 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	/**
+     * @param statusStr
+     * @return
+     */
+    private String normalizeStatus(String statusStr) {
+        if (statusStr == null){
+            return null;
+        }else if (statusStr.equals("nomen")){
+            statusStr = "nom. nud.";
+        }
+        return statusStr.trim();
+    }
+
+    /**
 	 * @param state
 	 * @param nameMap
 	 * @param name
@@ -406,7 +461,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrankStr
 	 */
 	private void makeRankDecision(MarkupImportState state,
-			Map<String, String> nameMap, NonViralName<?> name, XMLEvent event,
+			Map<String, String> nameMap, INonViralName name, XMLEvent event,
 			String infrankStr) {
 		// TODO ranks
 		for (String key : nameMap.keySet()) {
@@ -487,16 +542,16 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, NonViralName<?> name,
+	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, INonViralName name,
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
-				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(infrAut, event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(state, infrAut, event);
 				name.setCombinationAuthorship(authorAndEx[0]);
 				name.setExCombinationAuthorship(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(infrParAut)) {
-				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(infrParAut,event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(state, infrParAut,event);
 				name.setBasionymAuthorship(authorAndEx[0]);
 				name.setExBasionymAuthorship(authorAndEx[1]);
 			}
@@ -510,12 +565,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				}
 			}
 			if (StringUtils.isNotBlank(authorStr)) {
-				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(authorStr,	event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(state, authorStr,	event);
 				name.setCombinationAuthorship(authorAndEx[0]);
 				name.setExCombinationAuthorship(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(paraut)) {
-				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(paraut, event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(state, paraut, event);
 				name.setBasionymAuthorship(authorAndEx[0]);
 				name.setExBasionymAuthorship(authorAndEx[1]);
 			}
@@ -525,7 +580,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		state.setLatestAuthorInHomotype(name.getCombinationAuthorship());
 	}
 
-	private TeamOrPersonBase<?>[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {
+	private TeamOrPersonBase<?>[] authorAndEx(MarkupImportState state, String authorAndEx, XMLEvent xmlEvent) {
 		authorAndEx = authorAndEx.trim();
 		TeamOrPersonBase<?>[] result = new TeamOrPersonBase[2];
 
@@ -533,28 +588,29 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (split.length > 2) {
 			String message = "There is more then 1 ' ex ' in author string. Can't separate author and ex-author";
 			fireWarningEvent(message, xmlEvent, 4);
-			result[0] = createAuthor(authorAndEx);
+			result[0] = createAuthor(state, authorAndEx);
 		} else if (split.length == 2) {
-			result[0] = createAuthor(split[1]);
-			result[1] = createAuthor(split[0]);
+			result[0] = createAuthor(state, split[1]);
+			result[1] = createAuthor(state, split[0]);
 		} else {
-			result[0] = createAuthor(split[0]);
+			result[0] = createAuthor(state, split[0]);
 		}
 		return result;
 	}
 
 	/**
 	 * Returns the (empty) name with the correct homotypical group depending on
-	 * the taxon status. Throws NPE if no currentTaxon is set in state.
+	 * the taxon status and in case of synonym adds it to the taxon.
+	 * Throws NPE if no currentTaxon is set in state.
 	 *
 	 * @param state
 	 * @param homotypicalGroup
 	 * @param isSynonym
 	 * @return
 	 */
-	private NonViralName<?> createName(MarkupImportState state,
+	private INonViralName createName(MarkupImportState state,
 			HomotypicalGroup homotypicalGroup, boolean isSynonym) {
-		NonViralName<?> name;
+		INonViralName name;
 		Taxon taxon = state.getCurrentTaxon();
 		if (isSynonym) {
 			Rank defaultRank = Rank.SPECIES(); // can be any
@@ -566,27 +622,29 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 			}
-			taxon.addSynonymName(name, synonymType);
+			taxon.addSynonymName(TaxonNameBase.castAndDeproxy(name), synonymType);
 		} else {
-			name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			name = taxon.getName();
 		}
 		return name;
 	}
 
 	private void handleCitation(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, NonViralName<?> name, Map<String, String> nameMap) throws XMLStreamException {
+			XMLEvent parentEvent, INonViralName nvn, TaxonRelationship misappliedRel) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
+		TaxonNameBase<?,?> name = TaxonNameBase.castAndDeproxy(nvn);
 		state.setCitation(true);
 		boolean hasRefPart = false;
-		Map<String, String> refMap = new HashMap<String, String>();
+		Map<String, String> refMap = new HashMap<>();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
 				Reference reference = createReference(state, refMap, next);
 				String microReference = refMap.get(DETAILS);
-				doCitation(state, name, classValue, reference, microReference, parentEvent);
+				doCitation(state, name, classValue, misappliedRel,
+				        reference, microReference, parentEvent);
 				state.setCitation(false);
 				return;
 			} else if (isStartingElement(next, REF_PART)) {
@@ -600,50 +658,30 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	}
 
-	private void handleRefPart(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, Map<String, String> refMap)
-			throws XMLStreamException {
-		String classValue = getClassOnlyAttribute(parentEvent);
 
-		String text = "";
-		while (reader.hasNext()) {
-			XMLEvent next = readNoWhitespace(reader);
-			if (isMyEndingElement(next, parentEvent)) {
-				refMap.put(classValue, text);
-				return;
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next); // TODO test
-															// handleSimpleAnnotation
-				} else if (isStartingElement(next, ITALICS)) {
-					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, BOLD)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next.asStartElement());
-				}
-			} else if (next.isCharacters()) {
-				text += next.asCharacters().getData();
-			} else {
-				handleUnexpectedEndElement(next.asEndElement());
-			}
-		}
-		throw new IllegalStateException("RefPart has no closing tag");
-
-	}
-
-	private void doCitation(MarkupImportState state, NonViralName<?> name,
-			String classValue, Reference reference, String microCitation,
+	private void doCitation(MarkupImportState state, TaxonNameBase<?,?> name,
+			String classValue, TaxonRelationship misappliedRel,
+			Reference reference, String microCitation,
 			XMLEvent parentEvent) {
-		if (PUBLICATION.equalsIgnoreCase(classValue)) {
+	    reference = state.getDeduplicationHelper(docImport).getExistingReference(state, reference);
+	    if (misappliedRel != null){
+	        if (!PUBLICATION.equalsIgnoreCase(classValue)){
+                fireWarningEvent("'Usage' not handled correctly for misidentifications", parentEvent, 4);
+            }else{
+                Taxon misappliedTaxon = misappliedRel.getFromTaxon();
+                misappliedTaxon.setSec(reference);
+                misappliedTaxon.setSecMicroReference(microCitation);
+                misappliedRel.setCitation(state.getConfig().getSourceReference());
+            }
+	    }else if (PUBLICATION.equalsIgnoreCase(classValue)) {
 			name.setNomenclaturalReference(reference);
 			name.setNomenclaturalMicroReference(microCitation);
 		} else if (USAGE.equalsIgnoreCase(classValue)) {
 			Taxon taxon = state.getCurrentTaxon();
-			TaxonDescription td = getTaxonDescription(taxon, state.getConfig().getSourceReference(), false, true);
+			TaxonDescription td = getDefaultTaxonDescription(taxon, false, true, state.getConfig().getSourceReference());
 			TextData citation = TextData.NewInstance(Feature.CITATION());
 			// TODO name used in source
-			citation.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, reference, microCitation);
+			citation.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, reference, microCitation, name, null);
 			td.addElement(citation);
 		} else if (TYPE.equalsIgnoreCase(classValue)) {
 			handleNotYetImplementedAttributeValue(parentEvent, CLASS, classValue);
@@ -664,7 +702,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void testRankAuthorConsistency(NonViralName<?> name, XMLEvent event,
+	private void testRankAuthorConsistency(INonViralName name, XMLEvent event,
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() == null) {
 			return;
@@ -706,14 +744,16 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String publocation = getAndRemoveMapKey(refMap, PUBLOCATION);
 		String publisher = getAndRemoveMapKey(refMap, PUBLISHER);
 		String appendix = getAndRemoveMapKey(refMap, APPENDIX);
+		String issue = getAndRemoveMapKey(refMap, ISSUE);
+        String nameStatus = getAndRemoveMapKey(refMap, NAME_STATUS);
 
 		if (state.isCitation()) {
 			reference = handleCitationSpecific(state, type, authorStr,
-					titleStr, titleCache, volume, edition, editors, pubName, pages, appendix, refMap, parentEvent);
+					titleStr, titleCache, volume, issue, edition, editors, pubName, pages, appendix, refMap, parentEvent);
 
 		} else { // no citation
-			reference = handleNonCitationSpecific(type, authorStr, titleStr,
-					titleCache, volume, edition, editors, pubName, appendix);
+			reference = handleNonCitationSpecific(state, type, authorStr, titleStr,
+					titleCache, volume, issue, edition, editors, pubName, appendix, pages, parentEvent);
 		}
 
 		//year
@@ -726,17 +766,21 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		//Quickfix for these 2 attributes used in feature.references
 		Reference inRef = reference.getInReference() == null ? reference : reference.getInReference();
 		//publocation
-		if (StringUtils.isNotEmpty(publisher)){
+		if (isNotBlank(publisher)){
 			inRef.setPublisher(publisher);
 		}
 
 		//publisher
-		if (StringUtils.isNotEmpty(publocation)){
+		if (isNotBlank(publocation)){
 			inRef.setPlacePublished(publocation);
 		}
 
+		if (isNotBlank(nameStatus)){
+		    state.setNameStatus(nameStatus);
+		}
+
 		// TODO
-		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS };
+		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, NOTES, STATUS };
 		for (String unhandled : unhandledList) {
 			String value = getAndRemoveMapKey(refMap, unhandled);
 			if (isNotBlank(value)) {
@@ -761,13 +805,21 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 */
 	private Reference handleCitationSpecific(MarkupImportState state,
 			String type, String authorStr, String titleStr, String titleCache,
-			String volume, String edition, String editors, String pubName,
+			String volume, String issue, String edition, String editors, String pubName,
 			String pages, String appendix, Map<String, String> refMap, XMLEvent parentEvent) {
 
 		if (titleStr != null){
 			String message = "Currently it is not expected that a titleStr exists in a citation";
 			fireWarningEvent(message, parentEvent, 4);
 		}
+		if (isBlank(volume) && isNotBlank(issue)){
+		    String message = "Issue ('"+issue+"') exists but no volume";
+            fireWarningEvent(message, parentEvent, 4);
+            volume = issue;
+		}else if (isNotBlank(issue)){
+            volume = volume + "("+ issue + ")";
+        }
+
 
 		RefType refType = defineRefTypeForCitation(type, volume, editors, authorStr, pubName, parentEvent);
 		Reference reference;
@@ -799,7 +851,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			book.setEdition(edition);
 
 			if (state.getConfig().isUseEditorAsInAuthorWhereNeeded()){
-				TeamOrPersonBase<?> inAuthor = createAuthor(editors);
+				TeamOrPersonBase<?> inAuthor = createAuthor(state, editors);
 				book.setAuthorship(inAuthor);
 				editors = null;
 			}
@@ -859,7 +911,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				reference.setAuthorship(author);
 			}
 		}else{
-			author = createAuthor(authorStr);
+			author = createAuthor(state, authorStr);
 			state.setLatestAuthorInHomotype(author);
 			reference.setAuthorship(author);
 		}
@@ -873,6 +925,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		//pages
 		handlePages(state, refMap, parentEvent, reference, pages);
+
+//		state.getDeduplicationHelper(docImport).getExistingReference(state, reference);
 
 		//remember reference for following citation
 		state.setLatestReferenceInHomotype(reference);
@@ -924,6 +978,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 					return RefType.LatestUsed;
 				}else if (volume == null){
 					return RefType.Book;  //Book must not have in-authors
+				}else if (IJournal.guessIsJournalName(pubName)){
+				    return RefType.Article;
 				}else{
 					return RefType.Generic;
 				}
@@ -941,76 +997,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
-
-	private boolean isArticle(String type, String volume, String editors) {
-		if ("journal".equalsIgnoreCase(type)){
-			return true;
-		}else if (volume != null && editors == null){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	/**
-	 * in work
-	 * @param appendix
-	 * @return
-	 */
-	private Reference handleNonCitationSpecific(String type, String authorStr,
-			String titleStr, String titleCache, String volume, String edition,
-			String editors, String pubName, String appendix) {
-
-	    Reference reference;
-
-	    if (isNotBlank(appendix)){
-	        pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
-	    }
-
-	    if (isArticle(type, volume, editors)) {
-			IArticle article = ReferenceFactory.newArticle();
-			if (pubName != null) {
-				IJournal journal = ReferenceFactory.newJournal();
-				journal.setTitle(pubName);
-				article.setInJournal(journal);
-			}
-			reference = (Reference) article;
-
-		} else {
-			Reference bookOrPartOf = ReferenceFactory.newGeneric();
-			reference = bookOrPartOf;
-		}
-
-		// TODO type
-		TeamOrPersonBase<?> author = createAuthor(authorStr);
-		reference.setAuthorship(author);
-
-		//title
-		reference.setTitle(titleStr);
-		if (StringUtils.isNotBlank(titleCache)) {
-			reference.setTitleCache(titleCache, true);
-		}
-
-		//edition
-		reference.setEdition(edition);
-		reference.setEditor(editors);
-
-		//pubName
-		if (pubName != null) {
-			Reference inReference;
-			if (reference.getType().equals(ReferenceType.Article)) {
-				inReference = ReferenceFactory.newJournal();
-			} else {
-				inReference = ReferenceFactory.newGeneric();
-			}
-			inReference.setTitle(pubName);
-			reference.setInReference(inReference);
-		}
-
-		//volume
-		reference.setVolume(volume);
-		return reference;
-	}
 
 	private void handlePages(MarkupImportState state,
 			Map<String, String> refMap, XMLEvent parentEvent,

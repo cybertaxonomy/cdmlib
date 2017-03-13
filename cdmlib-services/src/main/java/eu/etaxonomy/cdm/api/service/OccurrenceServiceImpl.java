@@ -114,6 +114,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * @author a.babadshanjan
@@ -182,7 +183,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public List<Country> getCountryByName(String name) {
         List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null);
-        List<Country> countries = new ArrayList<Country>();
+        List<Country> countries = new ArrayList<>();
         for (int i = 0; i < terms.size(); i++) {
             countries.add((Country) terms.get(i));
         }
@@ -199,7 +200,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDerivationEvents(occurence);
 
-        List<DerivationEvent> results = new ArrayList<DerivationEvent>();
+        List<DerivationEvent> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getDerivationEvents(occurence, pageSize, pageNumber, propertyPaths);
         }
@@ -216,7 +217,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 
-        List<DeterminationEvent> results = new ArrayList<DeterminationEvent>();
+        List<DeterminationEvent> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getDeterminations(occurrence, taxonBase, pageSize, pageNumber, propertyPaths);
         }
@@ -228,7 +229,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countMedia(occurence);
 
-        List<Media> results = new ArrayList<Media>();
+        List<Media> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getMedia(occurence, pageSize, pageNumber, propertyPaths);
         }
@@ -239,7 +240,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-        List<Media> media = new ArrayList<Media>();
+        List<Media> media = new ArrayList<>();
         //media specimens
         if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
             MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
@@ -251,7 +252,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<Sequence> sequences = dnaSample.getSequences();
             //we do show only those gelPhotos which lead to a consensus sequence
             for (Sequence sequence : sequences) {
-                Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                Set<Media> dnaRelatedMedia = new HashSet<>();
                 for (SingleRead singleRead : sequence.getSingleReads()){
                     AmplificationResult amplification = singleRead.getAmplificationResult();
                     dnaRelatedMedia.add(amplification.getGelPhoto());
@@ -275,7 +276,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
-        List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
+        List<SpecimenOrObservationBase> results = new ArrayList<>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer start = pageSize == null ? 0 : pageSize * pageNumber;
@@ -287,7 +288,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
-        List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
+        List<SpecimenOrObservationBase> results = new ArrayList<>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer start = pageSize == null ? 0 : pageSize * pageNumber;
@@ -320,7 +321,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public List<DerivedUnitFacade> listDerivedUnitFacades(
             DescriptionBase description, List<String> propertyPaths) {
 
-        List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<DerivedUnitFacade>();
+        List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
         IndividualsAssociation tempIndividualsAssociation;
         SpecimenOrObservationBase tempSpecimenOrObservationBase;
         List<IndividualsAssociation> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
@@ -366,7 +367,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
 
         // gather the IDs of all relevant field units
-        Set<UUID> fieldUnitUuids = new HashSet<UUID>();
+        Set<UUID> fieldUnitUuids = new HashSet<>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
             for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid())) {
@@ -422,9 +423,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         fieldUnitDTO.setTaxonName(associatedTaxon.getName().getTitleCache());
 
         // Herbaria map
-        Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
+        Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<>();
         // List of accession numbers for citation
-        List<String> preservedSpecimenAccessionNumbers = new ArrayList<String>();
+        List<String> preservedSpecimenAccessionNumbers = new ArrayList<>();
 
         // assemble preserved specimen DTOs
         Set<DerivationEvent> derivationEvents = fieldUnit.getDerivationEvents();
@@ -462,7 +463,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         // assemble citation
         String citation = fieldUnit.getTitleCache();
-        if((CdmUtils.isBlank(citation) || citation.contains("title cache generation not implemented"))
+        if((CdmUtils.isBlank(citation) || citation.equals(IdentifiableEntityDefaultCacheStrategy.TITLE_CACHE_GENERATION_NOT_IMPLEMENTED))
                 && !fieldUnit.isProtectedTitleCache()){
             fieldUnit.setTitleCache(null);
             citation = fieldUnit.getTitleCache();
@@ -563,7 +564,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         for (DescriptionElementBase descriptionElementBase : characterDataForSpecimen) {
             String character = descriptionElementBase.getFeature().getLabel();
-            ArrayList<Language> languages = new ArrayList<Language>(Collections.singleton(Language.DEFAULT()));
+            ArrayList<Language> languages = new ArrayList<>(Collections.singleton(Language.DEFAULT()));
             if (descriptionElementBase instanceof QuantitativeData) {
                 QuantitativeData quantitativeData = (QuantitativeData) descriptionElementBase;
                 DefaultQuantitativeDescriptionBuilder builder = new DefaultQuantitativeDescriptionBuilder();
@@ -585,7 +586,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
             if (typeStatus != null) {
-                List<String> typedTaxaNames = new ArrayList<String>();
+                List<String> typedTaxaNames = new ArrayList<>();
                 String label = typeStatus.getLabel();
                 Set<TaxonNameBase> typifiedNames = specimenTypeDesignation.getTypifiedNames();
                 for (TaxonNameBase taxonNameBase : typifiedNames) {
@@ -724,7 +725,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     private Collection<DerivedUnit> getDerivedUnitsFor(SpecimenOrObservationBase<?> specimen) {
-        Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
+        Collection<DerivedUnit> derivedUnits = new ArrayList<>();
         for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 derivedUnits.add(derivative);
@@ -740,9 +741,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Set<Taxon> taxa = new HashSet<Taxon>();
-        Set<Integer> occurrenceIds = new HashSet<Integer>();
-        List<T> occurrences = new ArrayList<T>();
+        Set<Taxon> taxa = new HashSet<>();
+        Set<Integer> occurrenceIds = new HashSet<>();
+        List<T> occurrences = new ArrayList<>();
 
         // Integer limit = PagerUtils.limitFor(pageSize);
         // Integer start = PagerUtils.startFor(pageSize, pageNumber);
@@ -792,7 +793,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         // --- execute search
         TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.SPECIMEN_OR_OBSERVATIONBASE, "id");
 
         // --- initialize taxa, highlight matches ....
@@ -850,7 +851,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         // FIXME: use HQL queries to increase performance
         SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
-        Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
+        Collection<FieldUnit> fieldUnits = new ArrayList<>();
 
         if (specimen.isInstanceOf(FieldUnit.class)) {
             fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
@@ -862,7 +863,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     private Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
-        Collection<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
+        Collection<FieldUnit> fieldUnits = new HashSet<>();
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null && !originals.isEmpty()) {
             for (SpecimenOrObservationBase<?> original : originals) {
@@ -1002,7 +1003,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         -storedUnder CDM TaxonNameBase
          */
 
-        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<>();
 
         //Choose the correct entry point to traverse the graph (FieldUnit or DerivedUnit)
 
@@ -1068,7 +1069,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     private Collection<ICdmBase> getSpecimenOrObservationNonCascadedAssociatedElements(
             SpecimenOrObservationBase<?> specimen) {
-        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<>();
         // scan SpecimenOrObservationBase
         for (DeterminationEvent determinationEvent : specimen.getDeterminations()) {
             // modifier
@@ -1201,7 +1202,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
             //clone to avoid concurrent modification
             //can happen if the child is deleted and deleted its own derivedFrom event
-            Set<DerivationEvent> derivationEventsClone = new HashSet<DerivationEvent>(derivationEvents);
+            Set<DerivationEvent> derivationEventsClone = new HashSet<>(derivationEvents);
             for (DerivationEvent derivationEvent : derivationEventsClone) {
                 Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
                 for (DerivedUnit derivedUnit : derivatives) {
@@ -1223,7 +1224,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (relatedObject.isInstanceOf(SpecimenTypeDesignation.class)) {
                 SpecimenTypeDesignation designation = HibernateProxyHelper.deproxy(relatedObject, SpecimenTypeDesignation.class);
                 designation.setTypeSpecimen(null);
-                List<TaxonNameBase> typifiedNames = new ArrayList<TaxonNameBase>();
+                List<TaxonNameBase> typifiedNames = new ArrayList<>();
                 typifiedNames.addAll(designation.getTypifiedNames());
                 for (TaxonNameBase taxonNameBase : typifiedNames) {
                     taxonNameBase.removeTypeDesignation(designation);
@@ -1296,7 +1297,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
 
         //individuals associations
         associatedTaxa.addAll(listIndividualsAssociationTaxa(specimen, limit, start, orderHints, propertyPaths));
@@ -1314,7 +1315,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){
                 if(determinationEvent.getTaxon()!=null){
@@ -1331,7 +1332,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
             if(typeDesignation.getTypeSpecimen().equals(specimen)){
                 Set<TaxonNameBase> typifiedNames = typeDesignation.getTypifiedNames();
@@ -1346,7 +1347,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
             if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
@@ -1368,7 +1369,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Map<DerivedUnit, Collection<SpecimenTypeDesignation>> listTypeDesignations(
             Collection<DerivedUnit> specimens, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        Map<DerivedUnit, Collection<SpecimenTypeDesignation>> typeDesignationMap = new HashMap<DerivedUnit, Collection<SpecimenTypeDesignation>>();
+        Map<DerivedUnit, Collection<SpecimenTypeDesignation>> typeDesignationMap = new HashMap<>();
         for (DerivedUnit specimen : specimens) {
             Collection<SpecimenTypeDesignation> typeDesignations = listTypeDesignations(specimen, limit, start, orderHints, propertyPaths);
             typeDesignationMap.put(specimen, typeDesignations);
@@ -1395,7 +1396,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (specimen != null) {
             return specimen.characterData();
         }else{
-            return new ArrayList<DescriptionElementBase>();
+            return new ArrayList<>();
         }
     }
 
@@ -1412,11 +1413,37 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
+    public Integer countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+        if (config instanceof FindOccurrencesConfigurator) {
+            FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
+            Taxon taxon = null;
+            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                if(taxonBase.isInstanceOf(Taxon.class)){
+                    taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                }
+            }
+            TaxonNameBase taxonName = null;
+            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
+                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
+            }
+            return dao.countOccurrences(occurrenceConfig.getClazz(),
+                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+        }
+        else{
+            return dao.countByTitle(config.getTitleSearchString());
+        }
+
+    }
+
+    @Override
     public Pager<SpecimenOrObservationBase> findByTitle(
             IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
-            List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
+            List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
             Taxon taxon = null;
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
                 TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
@@ -1435,7 +1462,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             //filter out (un-)assigned specimens
             if(taxon==null && taxonName==null){
                 AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
-                List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<SpecimenOrObservationBase<?>>();
+                List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
                 if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
                     for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
                         Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase, null, null, null, null);
@@ -1448,12 +1475,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     occurrences.removeAll(specimenWithAssociations);
                 }
                 if(assignmentStatus.equals(AssignmentStatus.ASSIGNED_SPECIMENS)){
-                    occurrences = new ArrayList<SpecimenOrObservationBase>(specimenWithAssociations);
+                    occurrences = new ArrayList<>(specimenWithAssociations);
                 }
             }
             // indirectly associated specimens
-            List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+                List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<>(occurrences);
                 for (SpecimenOrObservationBase specimen : occurrences) {
                     List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
                     for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
@@ -1472,7 +1499,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen){
-        List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<SpecimenOrObservationBase<?>>();
+        List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<>();
         Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid());
         if(fieldUnits.isEmpty()){
             allHierarchyDerivatives.add(specimen);
@@ -1494,7 +1521,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen){
-        List<DerivedUnit> childDerivate = new ArrayList<DerivedUnit>();
+        List<DerivedUnit> childDerivate = new ArrayList<>();
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
@@ -1508,7 +1535,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
-        return findByTitle(config).getRecords().size();
+        return countByTitle(config);
     }
 
 }

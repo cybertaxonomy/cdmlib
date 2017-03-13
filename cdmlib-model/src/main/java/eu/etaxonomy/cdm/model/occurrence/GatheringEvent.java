@@ -107,7 +107,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@NotNull
 	// further collecting areas. Should not include country
-	private Set<NamedArea> collectingAreas = new HashSet<NamedArea>();
+	private Set<NamedArea> collectingAreas = new HashSet<>();
 
 	@XmlElement(name = "CollectingMethod")
 	@Field

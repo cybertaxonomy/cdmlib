@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,9 +22,9 @@ import org.junit.Test;
 public class ViralNameTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ViralNameTest.class);
-	
+
 	private ViralName viralName1;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -37,11 +37,11 @@ public class ViralNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		viralName1 = ViralName.NewInstance(Rank.SPECIES());
+		viralName1 = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
 	}
 
 //****************** TESTS ******************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.ViralName#clone()}.
 	 */

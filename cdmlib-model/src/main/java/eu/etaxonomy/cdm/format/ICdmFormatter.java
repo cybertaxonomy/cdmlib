@@ -46,6 +46,7 @@ public interface ICdmFormatter {
         /*media specimen*/
         MEDIA_TITLE,
         MEDIA_ARTIST,
+        MEDIA_TITLE_CACHE,
         /*sequence*/
         SEQUENCE_DNA_MARKER,
         /*single read*/

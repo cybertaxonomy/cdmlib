@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 // even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
 // this is needed, otherwise the fields of the also abstract super class are missed during indexing
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
-public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> implements Cloneable{
+public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> implements Cloneable{
 	private static final long serialVersionUID = -3525746216270843517L;
 
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
@@ -246,7 +246,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
                 e.printStackTrace();
             }
         } catch (ClassNotFoundException e) {
-            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<SpecimenOrObservationBase>();
+            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<>();
         }
     }
 //

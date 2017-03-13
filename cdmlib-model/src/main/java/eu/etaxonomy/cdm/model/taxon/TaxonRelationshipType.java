@@ -440,7 +440,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		}
 	}
 
-	//TODO ohter relationshipTypes
+	//TODO other relationshipTypes
 
 	public static final TaxonRelationshipType ALL_RELATIONSHIPS(){
 		return getTermByUuid(uuidAllRelationships);

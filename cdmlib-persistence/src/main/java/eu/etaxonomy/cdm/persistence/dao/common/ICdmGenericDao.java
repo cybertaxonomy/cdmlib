@@ -82,8 +82,9 @@ public interface ICdmGenericDao {
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
 
 	/**
-	 * Merges cdmBase2 into cdmBase2 and rearranges all reference to cdmBase2 by letting them point to
-	 * cdmBase1. If the merge strategy is not defined (<code>null</code>)  the default merge strategy is taken instead.
+	 * Merges cdmBase2 into cdmBase1 and rearranges all reference to cdmBase2 by letting them point to
+	 * cdmBase1. If the merge strategy is not defined (<code>null</code>) the default merge strategy is taken instead.
+	 *
 	 * @param cdmBase1
 	 * @param cdmBase2
 	 * @param mergeStrategy

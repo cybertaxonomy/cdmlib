@@ -28,10 +28,12 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -113,7 +115,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				if (nomCode != null){
 					nameBase = nomCode.getNewTaxonNameInstance(rank);
 				}else{
-					nameBase = NonViralName.NewInstance(rank);
+					nameBase = TaxonNameFactory.NewNonViralInstance(rank);
 				}
 				childName = "Simple";
 				obligatory = true;
@@ -289,7 +291,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			if (nomCode != null){
 				nameBase = nomCode.getNewTaxonNameInstance(rank);
 			}else{
-				nameBase = NonViralName.NewInstance(rank);
+				nameBase = TaxonNameFactory.NewNonViralInstance(rank);
 			}
 			childName = "Simple";
 			obligatory = true;
@@ -368,7 +370,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			Namespace ns = elCanonicalAuthorship.getNamespace();
 
 			if (name instanceof NonViralName){
-				NonViralName nonViralName = (NonViralName)name;
+				INonViralName nonViralName = name;
 
 				String childName = "Simple";
 				boolean obligatory = true;
@@ -431,8 +433,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
 		name.setFullTitleCache(simple, cacheProtected);
 
-		if (name instanceof NonViralName<?>){
-			NonViralName<?> nonViralName = (NonViralName<?>)name;
+		if (name instanceof NonViralName){
+			INonViralName nonViralName = name;
 			childName = "Uninomial";
 			obligatory = false;
 			Element elUninomial = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
@@ -523,15 +525,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	private void makeGenusReferenceType(TaxonNameBase name, Element elGenus, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
 		if(name instanceof NonViralName){
-			NonViralName nonViralName = (NonViralName)name;
-			if (elGenus != null && name != null){
-				TaxonNameBase genusReferenceName;
+			INonViralName nonViralName = name;
+			if (elGenus != null){
+			    INonViralName genusReferenceName;
 				//TODO code
 				Class<? extends NonViralName> clazz = NonViralName.class;
 				genusReferenceName = makeReferenceType(elGenus, clazz, taxonNameMap, success);
-				NonViralName nvGenusReference = (NonViralName)genusReferenceName;
 				//Genus is stored either in Genus part (if ref) or in titleCache (if plain text)
-				String genus = nvGenusReference.getGenusOrUninomial()!= null ? nvGenusReference.getGenusOrUninomial(): genusReferenceName.getTitleCache();
+				String genus = genusReferenceName.getGenusOrUninomial()!= null ? genusReferenceName.getGenusOrUninomial(): genusReferenceName.getTitleCache();
 				nonViralName.setGenusOrUninomial(genus);
 			}else{
 				logger.warn("Missing Genus information");

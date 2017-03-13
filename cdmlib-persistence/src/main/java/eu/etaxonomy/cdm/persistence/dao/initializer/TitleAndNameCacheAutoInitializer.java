@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -42,7 +43,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         // to avoid too much casting
         if(bean instanceof NonViralName){
             // ---> NonViralName
-            NonViralName<?> n = (NonViralName<?>)bean;
+            INonViralName n = (INonViralName)bean;
             if(!n.isProtectedFullTitleCache())  {
                 n.getFullTitleCache();
             } else if(!bean.isProtectedTitleCache()){
@@ -93,17 +94,14 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     @Override
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
 
-
         String result = "";
         if (TaxonNameBase.class.isAssignableFrom(clazz)){
             result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
             result += String.format(" LEFT JOIN FETCH %s.relationsToThisName relTo LEFT JOIN FETCH relTo.relatedFrom ", beanAlias);
-            if (NonViralName.class.isAssignableFrom(clazz)){
-                result += String.format(" LEFT JOIN FETCH %s.combinationAuthorship ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorship ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.basionymAuthorship ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorship ", beanAlias);
-            }
+            result += String.format(" LEFT JOIN FETCH %s.combinationAuthorship ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorship ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.basionymAuthorship ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorship ", beanAlias);
         }
         if (TaxonBase.class.isAssignableFrom(clazz)){
             // TODO with the TaxonBase.getTaggedTtile() this is getting much more complicated

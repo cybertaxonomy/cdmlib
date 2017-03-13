@@ -122,7 +122,32 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
      */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType type) {
-        return dao.getUuidAndAbbrevTitleCache(limit, pattern, type);
+        ReferenceType inReferenceType = null;
+        inReferenceType = getInReferenceType(type);
+        return dao.getUuidAndAbbrevTitleCache(limit, pattern, inReferenceType);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type) {
+        ReferenceType inReferenceType = null;
+        inReferenceType = getInReferenceType(type);
+        return dao.getUuidAndTitleCache(limit, pattern, inReferenceType);
+    }
+
+    private ReferenceType getInReferenceType(ReferenceType type){
+        ReferenceType inReferenceType = null;
+        if (type.equals(ReferenceType.Article)){
+            inReferenceType = ReferenceType.Journal;
+        } else if (type.equals(ReferenceType.BookSection)){
+            inReferenceType = ReferenceType.Book;
+        } else if (type.equals(ReferenceType.InProceedings) ){
+            inReferenceType = ReferenceType.Proceedings;
+        } else if (type.equals(ReferenceType.Book) || type.equals(ReferenceType.Proceedings)){
+            inReferenceType = ReferenceType.PrintSeries;
+        } else if (type.equals(ReferenceType.Generic)){
+            inReferenceType = ReferenceType.Generic;
+        }
+        return inReferenceType;
     }
 
 }

@@ -56,7 +56,6 @@ import javassist.compiler.ast.Keyword;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:42
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -119,6 +118,8 @@ public class Person extends TeamOrPersonBase<Person>{
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	protected Set<InstitutionalMembership> institutionalMemberships;
 
+// *********************** FACTORY **********************************/
+
 	/**
 	 * Creates a new empty instance for a person whose existence is all what is known.
 	 * This can be a provisional solution until more information about <i>this</i> person
@@ -143,6 +144,7 @@ public class Person extends TeamOrPersonBase<Person>{
 		return result;
 	}
 
+// *********************** CONSTRUCTOR **********************************/
 
 	/**
 	 * Class constructor.
@@ -175,6 +177,7 @@ public class Person extends TeamOrPersonBase<Person>{
 		logger.debug("after - Set nomenclatural Title");
 	}
 
+// *********************** GETTER SETTER ADDER **********************************/
 
 	/**
 	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person.

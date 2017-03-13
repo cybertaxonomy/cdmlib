@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.description;
 
@@ -21,17 +21,19 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 public class SpecimenDescriptionDefaultCacheStrategy extends StrategyBase implements
 		IIdentifiableEntityCacheStrategy<SpecimenDescription> {
+    private static final long serialVersionUID = 310092633142719872L;
 
-	final static UUID uuid = UUID.fromString("73c03fc4-0429-4ca1-b2cb-b9a56aad4d22");
-	
+    final static UUID uuid = UUID.fromString("73c03fc4-0429-4ca1-b2cb-b9a56aad4d22");
+
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	public String getTitleCache(SpecimenDescription specimenDescription) {
+	@Override
+    public String getTitleCache(SpecimenDescription specimenDescription) {
 		String title;
-		SpecimenOrObservationBase specimen = specimenDescription.getDescribedSpecimenOrObservation(); 
+		SpecimenOrObservationBase specimen = specimenDescription.getDescribedSpecimenOrObservation();
 		if (specimen == null){
 			title = getFirstPart(specimenDescription);
 			title = title.replace(" for ", "");
@@ -41,7 +43,7 @@ public class SpecimenDescriptionDefaultCacheStrategy extends StrategyBase implem
 		}
 		return title;
 	}
-	
+
 	private String getFirstPart(SpecimenDescription specimenDescription){
 		Set<Marker> markers = specimenDescription.getMarkers();
 		MarkerType markerType = MarkerType.USE();
@@ -50,7 +52,7 @@ public class SpecimenDescriptionDefaultCacheStrategy extends StrategyBase implem
 			if(marker.getMarkerType().equals(markerType)) {
 				isUseDescription = true;
 			}
-		} 
+		}
 		if (specimenDescription.isImageGallery()){
 			return "Image gallery for " ;
 		} else if (isUseDescription) {

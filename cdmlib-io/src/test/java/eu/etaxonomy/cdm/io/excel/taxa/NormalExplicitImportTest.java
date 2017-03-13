@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -161,7 +160,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
 		assertEquals("Number of synonyms should be 1", 1, synonyms.size());
 		Synonym synonym = synonyms.iterator().next();
-		assertEquals("Synonym name should be ", "Noctua atlantica", ((NonViralName<?>)synonym.getName()).getNameCache());
+		assertEquals("Synonym name should be ", "Noctua atlantica", synonym.getName().getNameCache());
 		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
 		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
 		TaxonDescription taxonDescription = descriptions.iterator().next();
@@ -222,7 +221,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
 		assertEquals("Number of synonyms should be 1", 1, synonyms.size());
 		Synonym synonym = synonyms.iterator().next();
-		assertEquals("Synonym name should be ", "Noctua atlantica", ((NonViralName<?>)synonym.getName()).getNameCache());
+		assertEquals("Synonym name should be ", "Noctua atlantica", synonym.getName().getNameCache());
 		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
 		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
 		TaxonDescription taxonDescription = descriptions.iterator().next();

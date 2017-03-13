@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,20 +22,19 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 /**
  * @author a.mueller
  * @created 07.08.2009
- * @version 1.0
  */
 public class CacheMatcher extends FieldMatcherBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CacheMatcher.class);
-	
+
 	private ReplaceMode cacheReplaceMode;
 	private List<String> replacedProperties;
 	private MatchMode replaceMatchMode;
-	
+
 	public static CacheMatcher NewInstance(Field field, ReplaceMode replaceMode, String[] replacedProperties, MatchMode replaceMatchMode){
 		return new CacheMatcher(field.getName(), field, MatchMode.CACHE, replaceMode, Arrays.asList(replacedProperties), replaceMatchMode);
 	}
-	
+
 	private CacheMatcher (String propertyname, Field field, MatchMode matchMode, ReplaceMode replaceMode, List<String> replacedProperties, MatchMode replaceMatchMode){
 		super(propertyname, field, matchMode);
 		this.replacedProperties = replacedProperties;
@@ -56,9 +55,9 @@ public class CacheMatcher extends FieldMatcherBase {
 		String protectedPropertyName = "protected" + this.getPropertyName().substring(0, 1).toUpperCase() + this.getPropertyName().substring(1);
 		return protectedPropertyName;
 	}
-	
-	
-	
+
+
+
 	public List<DoubleResult<String, MatchMode>> getReplaceMatchModes(Matching matching) throws MatchException{
 		List<DoubleResult<String, MatchMode>> result = new ArrayList<DoubleResult<String,MatchMode>>();
 		List<FieldMatcher> fieldMatchers = matching.getFieldMatchers(true);
@@ -70,12 +69,12 @@ public class CacheMatcher extends FieldMatcherBase {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * @param fieldMatcher
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean isReplaceProperty(String propertyName) throws MatchException {
 		if (this.cacheReplaceMode == ReplaceMode.NONE){
@@ -134,7 +133,7 @@ public class CacheMatcher extends FieldMatcherBase {
 	public void setReplaceMatchMode(MatchMode replaceMatchMode) {
 		this.replaceMatchMode = replaceMatchMode;
 	}
-	
-	
-	
+
+
+
 }

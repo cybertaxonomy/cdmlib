@@ -17,11 +17,11 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
+import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
@@ -38,18 +38,12 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
     private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
     public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.access.AccessDecisionVoter#supports(org.springframework.security.access.ConfigAttribute)
-     */
     @Override
     public boolean supports(ConfigAttribute attribute) {
         // all CdmPermissionVoter support CdmAuthority
         return attribute instanceof CdmAuthority;
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.access.AccessDecisionVoter#supports(java.lang.Class)
-     */
     @Override
     public boolean supports(Class<?> clazz) {
         /* NOTE!!!
@@ -80,22 +74,20 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
         return CdmPermissionClass.getValueOf(getResponsibilityClass());
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
-     */
     @Override
-    public int vote(Authentication authentication, CdmBase object, Collection<ConfigAttribute> attributes) {
+    public int vote(Authentication authentication, CdmBase cdmBase, Collection<ConfigAttribute> attributes) {
 
-        if(!isResponsibleFor(object)){
+        if(!isResponsibleFor(cdmBase)){
             logger.debug("class missmatch => ACCESS_ABSTAIN");
             return ACCESS_ABSTAIN;
         }
 
         if (logger.isDebugEnabled()){
-            logger.debug("authentication: " + authentication.getName() + ", object : " + object.toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
+            logger.debug("authentication: " + authentication.getName() + ", object : " + cdmBase.toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
         }
 
         int fallThroughVote = ACCESS_DENIED;
+        boolean deniedByPreviousFurtherVoting = false;
 
         // loop over all attributes = permissions of which at least one must match
         // usually there is only one element in the collection!
@@ -127,10 +119,10 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
 
                 vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
-                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(object.getUuid());
+                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(cdmBase.getUuid());
 
                 // first of all, always allow deleting orphan entities
-                if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(object)) {
+                if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(cdmBase)) {
                     return ACCESS_GRANTED;
                 }
 
@@ -159,10 +151,22 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 // ask subclasses for further voting decisions
                 // subclasses will cast votes for specific Cdm Types
                 //
-                Integer furtherVotingResult = furtherVotingDescisions(auth, object, attributes, vr);
-                if(furtherVotingResult != null && furtherVotingResult != ACCESS_ABSTAIN){
+                Integer furtherVotingResult = furtherVotingDescisions(auth, cdmBase, attributes, vr);
+                if(furtherVotingResult != null){
                     logger.debug("furtherVotingResult => " + furtherVotingResult);
-                    return furtherVotingResult;
+                    switch(furtherVotingResult){
+                        case ACCESS_GRANTED:
+                            // no further check needed
+                            return ACCESS_GRANTED;
+                        case ACCESS_DENIED:
+                            // remember the DENIED vote in case none of
+                            // potentially following furtherVotes are
+                            // GRANTED
+                            deniedByPreviousFurtherVoting = true;
+                        //$FALL-THROUGH$
+                        case ACCESS_ABSTAIN: /* nothing to do */
+                            default: /* nothing to do */
+                    }
                 }
 
             } // END Authorities loop
@@ -170,7 +174,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
 
         // the value of fallThroughVote depends on whether the authority had an property or not, see above
         logger.debug("fallThroughVote => " + fallThroughVote);
-        return fallThroughVote;
+        return deniedByPreviousFurtherVoting ? ACCESS_DENIED : fallThroughVote;
     }
 
     /**

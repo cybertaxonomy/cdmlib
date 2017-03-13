@@ -17,15 +17,15 @@ import org.hibernate.criterion.Criterion;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -89,7 +89,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            the hybrid relationship type (or null to return all hybrid)
 	 * @return a count of HybridRelationship instances
 	 */
-	public int countHybridNames(NonViralName name, HybridRelationshipType type);
+	public int countHybridNames(INonViralName name, HybridRelationshipType type);
 
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered by
@@ -107,7 +107,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            set (0 - based)
 	 * @return a List of HybridRelationship instances
 	 */
-	public List<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<HybridRelationship> getHybridNames(INonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a count of types related to this name, optionally filtered by type
@@ -318,7 +318,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public long countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
-	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
+	public IZoologicalName findZoologicalNameByUUID(UUID uuid);
 
 	List<HashMap<String, String>> getNameRecords();
 }

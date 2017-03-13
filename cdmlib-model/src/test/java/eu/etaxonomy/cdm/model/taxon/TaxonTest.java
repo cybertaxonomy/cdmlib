@@ -29,9 +29,10 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -43,7 +44,7 @@ public class TaxonTest extends EntityTestBase {
 
 	private Reference sec;
 	private Reference misSec;
-	private ZoologicalName name1;
+	private IZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
 	private Taxon child1;
@@ -71,10 +72,10 @@ public class TaxonTest extends EntityTestBase {
 		misSec = ReferenceFactory.newBook();
 		misSec.setTitleCache("Stupid book", true);
 
-		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
-		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
-		name4 = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,linne,null,"p.14", null);
+		name1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
+		name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
+		name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,linne,null,"p.14", null);
 		rootT = Taxon.NewInstance(name1,sec);
 		freeT = Taxon.NewInstance(name4,sec);
 		// taxonomic children
@@ -186,9 +187,9 @@ public class TaxonTest extends EntityTestBase {
 
     @Test
     public void testAddHomotypicSynonymName(){
-        TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
-        TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
+        TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
         // add a synonym to the taxon
         Synonym synonym1 = taxon.addHomotypicSynonymName(synonymName1);
         // get the homotypic group of that synonym
@@ -199,9 +200,9 @@ public class TaxonTest extends EntityTestBase {
     }
     @Test
     public void testAddHomotypicSynonym(){
-        TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
-        TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
+        TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
         Synonym synonym = Synonym.NewInstance(synonymName1, null);
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
@@ -216,10 +217,10 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddRemoveSynonymInSameGroup(){
-		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
 		Taxon taxon = Taxon.NewInstance(taxonName, null);
-		TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> synonymName2 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> synonymName2 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		// add a synonym to the taxon
 		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1);

@@ -30,8 +30,8 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -96,7 +96,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		statisticalValue.setValue((float) 23.8);
 
 		quantData.addStatisticalValue(statisticalValue);
-		taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null), null);
+		taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null), null);
 		taxonInteraction = TaxonInteraction.NewInstance();
 		taxonInteraction.setTaxon2(taxon);
 		langString = LanguageString.NewInstance("TestTaxonInteraction", Language.ENGLISH());

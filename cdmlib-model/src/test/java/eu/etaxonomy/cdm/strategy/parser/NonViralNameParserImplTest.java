@@ -27,6 +27,7 @@ import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
@@ -37,11 +38,14 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -128,7 +132,7 @@ public class NonViralNameParserImplTest {
     @Test
     public final void testTeamSeperation(){
         Rank speciesRank = Rank.SPECIES();
-        NonViralName<?> name;
+        INonViralName name;
 
 //      String strNameWith1AUthorAndCommaSepEditon = "Abies alba Mill., Sp. Pl., ed. 3: 455. 1987";
 //      name = parser.parseReferencedName(strNameWith1AUthorAndCommaSepEditon, botanicCode, speciesRank);
@@ -160,7 +164,7 @@ public class NonViralNameParserImplTest {
     public final void testParseSimpleName() {
 
         //Uninomials
-        ZoologicalName milichiidae = (ZoologicalName)parser.parseSimpleName("Milichiidae", NomenclaturalCode.ICZN, null);
+        IZoologicalName milichiidae = (IZoologicalName)parser.parseSimpleName("Milichiidae", NomenclaturalCode.ICZN, null);
         assertEquals("Family rank expected", Rank.FAMILY(), milichiidae.getRank());
         BotanicalName crepidinae = (BotanicalName)parser.parseSimpleName("Crepidinae", ICNAFP, null);
         assertEquals("Family rank expected", Rank.SUBTRIBE(), crepidinae.getRank());
@@ -196,7 +200,7 @@ public class NonViralNameParserImplTest {
     public final void testParseSubGenericFullName() {
         String zooSpeciesWithSubgenus = "Bacanius (Mullerister) rombophorus (Aube, 1843)";
         //zoo as fullName
-        ZoologicalName zooName = (ZoologicalName)parser.parseReferencedName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
+        IZoologicalName zooName = parser.parseReferencedName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
         Assert.assertTrue(zooName.getParsingProblems().isEmpty());
         Assert.assertEquals("Mullerister", zooName.getInfraGenericEpithet());
         Assert.assertEquals(Integer.valueOf(1843), zooName.getOriginalPublicationYear());
@@ -244,19 +248,19 @@ public class NonViralNameParserImplTest {
     @Test
     public final void testParseFullNameUnicode() {
 
-        NonViralName<?> nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, null, Rank.SPECIES());
+        INonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, null, Rank.SPECIES());
         assertEquals("Abies", nameAuthor.getGenusOrUninomial());
         assertEquals("alba", nameAuthor.getSpecificEpithet());
         assertEquals("M\u00FCller", nameAuthor.getCombinationAuthorship().getNomenclaturalTitle());
 
-        NonViralName<?> nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, null, Rank.SPECIES());
+        INonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
         assertEquals("D'M\u00FCller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitle());
         INomenclaturalAuthor basionymTeam = nameBasionymAuthor.getBasionymAuthorship();
         assertEquals("Ciardelli", basionymTeam.getNomenclaturalTitle());
 
-        NonViralName<?> nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
+        INonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
         assertEquals("D'M\u00FCller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitle());
@@ -295,7 +299,7 @@ public class NonViralNameParserImplTest {
         }
 
         //Team
-        NonViralName<?> nameTeam1 = parser.parseFullName(strNameTeam1);
+        INonViralName nameTeam1 = parser.parseFullName(strNameTeam1);
         assertEquals( "Abies", nameTeam1.getGenusOrUninomial());
         assertEquals( "alba", nameTeam1.getSpecificEpithet());
         assertEquals("Mueller & L.",  nameTeam1.getCombinationAuthorship().getNomenclaturalTitle());
@@ -305,7 +309,7 @@ public class NonViralNameParserImplTest {
         assertEquals("L.", team.getTeamMembers().get(1).getNomenclaturalTitle());
 
         //ZooName
-        ZoologicalName nameZoo1 = (ZoologicalName)parser.parseFullName(strNameZoo1);
+        IZoologicalName nameZoo1 = (IZoologicalName)parser.parseFullName(strNameZoo1);
         assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
         assertEquals( "alba", nameZoo1.getSpecificEpithet());
         assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorship().getNomenclaturalTitle());
@@ -316,24 +320,24 @@ public class NonViralNameParserImplTest {
         assertEquals("Mueller", teamZoo.getTeamMembers().get(0).getNomenclaturalTitle());
         assertEquals("L.", teamZoo.getTeamMembers().get(1).getNomenclaturalTitle());
 
-        ZoologicalName nameZoo2 = (ZoologicalName)parser.parseFullName(strNameZoo2);
+        IZoologicalName nameZoo2 = (IZoologicalName)parser.parseFullName(strNameZoo2);
         assertEquals(Integer.valueOf(2002), nameZoo2.getPublicationYear());
         assertEquals(Integer.valueOf(1822), nameZoo2.getOriginalPublicationYear());
         assertEquals("Mueller",  nameZoo2.getBasionymAuthorship().getNomenclaturalTitle());
         assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorship().getNomenclaturalTitle());
 
         //subsp
-        ZoologicalName nameZoo3 = (ZoologicalName)parser.parseFullName(strNameZoo3);
+        IZoologicalName nameZoo3 = (IZoologicalName)parser.parseFullName(strNameZoo3);
         assertEquals("Ciardelli",  nameZoo3.getCombinationAuthorship().getNomenclaturalTitle());
         assertFalse("Subsp. without marker should be parsable", nameZoo3.hasProblem());
         assertEquals("Variety should be recognized", Rank.SUBSPECIES(), nameZoo3.getRank());
 
-        ZoologicalName nameZoo4 = (ZoologicalName)parser.parseFullName(strNameZoo4);
+        IZoologicalName nameZoo4 = (IZoologicalName)parser.parseFullName(strNameZoo4);
         assertEquals("Ciardelli",  nameZoo4.getCombinationAuthorship().getNomenclaturalTitle());
         assertFalse("Subsp. without marker should be parsable", nameZoo4.hasProblem());
         assertEquals("Variety should be recognized", Rank.SUBSPECIES(), nameZoo4.getRank());
 
-        ZoologicalName nameZoo5 = (ZoologicalName)parser.parseFullName(strNameZoo5);
+        IZoologicalName nameZoo5 = (IZoologicalName)parser.parseFullName(strNameZoo5);
         assertEquals("Ciardelli",  nameZoo5.getCombinationAuthorship().getNomenclaturalTitle());
         assertFalse("Subsp. without marker should be parsable", nameZoo5.hasProblem());
         assertEquals("Variety should be recognized", Rank.VARIETY(), nameZoo5.getRank());
@@ -345,24 +349,24 @@ public class NonViralNameParserImplTest {
 
 
         //empty
-        NonViralName<?> nameEmpty = parser.parseFullName(strNameEmpty);
+        INonViralName nameEmpty = parser.parseFullName(strNameEmpty);
         assertNotNull(nameEmpty);
         assertEquals("", nameEmpty.getTitleCache());
 
         //null
-        NonViralName<?> nameNull = parser.parseFullName(strNameNull);
+        INonViralName nameNull = parser.parseFullName(strNameNull);
         assertNull(nameNull);
 
         //some authors
         String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex M\u00FCller & Schmidt)Clark ex Ciardelli";
-        NonViralName<?> authorname = parser.parseFullName(fullNameString);
+        INonViralName authorname = parser.parseFullName(fullNameString);
         assertFalse(authorname.hasProblem());
         assertEquals("Basionym author should have 3 authors", 2, ((Team)authorname.getExBasionymAuthorship()).getTeamMembers().size());
         Assert.assertTrue("ExbasionymAuthorship must have more members'", ((Team)authorname.getExBasionymAuthorship()).isHasMoreMembers());
 
         //author with 2 capitals
         fullNameString = "Campanula rhodensis A. DC.";
-        NonViralName<?> name = parser.parseFullName(fullNameString);
+        INonViralName name = parser.parseFullName(fullNameString);
         assertFalse(name.hasProblem());
 
         //author with no space  #5618
@@ -386,13 +390,13 @@ public class NonViralNameParserImplTest {
     public final void testEtAl() throws StringNotParsableException {
         //some authors
         String fullNameString = "Abies alba Greuther, Hiver & al.";
-        NonViralName<?> authorname = parser.parseFullName(fullNameString);
+        INonViralName authorname = parser.parseFullName(fullNameString);
         assertFalse(authorname.hasProblem());
         assertEquals("Basionym author should have 2 authors", 2, ((Team)authorname.getCombinationAuthorship()).getTeamMembers().size());
         assertTrue("Basionym author team should have more authors", ((Team)authorname.getCombinationAuthorship()).isHasMoreMembers()  );
 
         //et al.
-        NonViralName<?> nvn = ZoologicalName.NewInstance(null);
+        INonViralName nvn = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(nvn, "Eckweiler, Hand et al., 2003");
         Team team = (Team)nvn.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", team);
@@ -405,7 +409,7 @@ public class NonViralNameParserImplTest {
     public final void testMultipleAuthors() {
         //multiple authors for inReference
         String fullTitleString = "Abies alba L. in Mill., Gregor & Behr., Sp. Pl. 173: 384. 1982.";
-        NonViralName<?> multipleAuthorRefName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        INonViralName multipleAuthorRefName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
         assertFalse(multipleAuthorRefName.hasProblem());
         assertTrue("Combination author should be a person", multipleAuthorRefName.getCombinationAuthorship() instanceof Person);
         assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorship()).getNomenclaturalTitle());
@@ -420,7 +424,7 @@ public class NonViralNameParserImplTest {
 
 //        multiple authors in Name
         fullTitleString = "Abies alba Mill., Aber & Schwedt";
-        NonViralName<?> multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        INonViralName multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
         assertFalse(multipleAuthorName.hasProblem());
         assertTrue("Combination author should be a team", multipleAuthorName.getCombinationAuthorship() instanceof Team);
         team = (Team)multipleAuthorName.getCombinationAuthorship();
@@ -462,7 +466,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Second team member should be Schwedt", "Schwedt", team.getTeamMembers().get(2).getTitleCache());
 
         //et al.
-        NonViralName<?> nvn = ZoologicalName.NewInstance(null);
+        INonViralName nvn = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseReferencedName (nvn, "Marmota marmota Eckweiler, Hand et al., 2003", Rank.SPECIES(),true);
         assertTrue("Combination author should be a team", nvn.getCombinationAuthorship() instanceof Team);
         team = (Team)nvn.getCombinationAuthorship();
@@ -478,7 +482,7 @@ public class NonViralNameParserImplTest {
      */
     @Test
     public final void testHybrids() {
-        NonViralName<?> name1;
+        INonViralName name1;
 
 
         //Infrageneric hybrid
@@ -489,7 +493,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Infrageneric epithet must be 'Insulae'", "Insulae", name1.getInfraGenericEpithet());
 
         //Species hybrid
-//      NonViralName nameTeam1 = parser.parseFullName("Aegilops \u00D7insulae-cypri H. Scholz");
+//      INonViralName nameTeam1 = parser.parseFullName("Aegilops \u00D7insulae-cypri H. Scholz");
         name1 = parser.parseFullName("Aegilops \u00D7insulae Scholz", botanicCode, null);
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
@@ -575,7 +579,7 @@ public class NonViralNameParserImplTest {
 
         //unranked infraspecific
         String infraspecificUnranked = "Genus species [unranked] infraspecific";
-        NonViralName<?> name = parser.parseFullName(infraspecificUnranked);
+        INonViralName name = parser.parseFullName(infraspecificUnranked);
         assertEquals( "Genus", name.getGenusOrUninomial());
         assertEquals( "species", name.getSpecificEpithet());
         assertEquals( "infraspecific", name.getInfraSpecificEpithet());
@@ -583,7 +587,7 @@ public class NonViralNameParserImplTest {
 
         //unranked infrageneric
         String infraGenericUnranked = "Genus [unranked] Infragen";
-        NonViralName<?> name2 = parser.parseFullName(infraGenericUnranked);
+        INonViralName name2 = parser.parseFullName(infraGenericUnranked);
         assertEquals( "Genus", name2.getGenusOrUninomial());
         assertEquals( null, name2.getSpecificEpithet());
         assertEquals( "Infragen", name2.getInfraGenericEpithet());
@@ -607,15 +611,15 @@ public class NonViralNameParserImplTest {
 
         //Species hybrid
         String hybridCache = "Abies alba "+UTF8.HYBRID+" Pinus bus";
-        NonViralName<?> name1 = parser.parseFullName(hybridCache, botanicCode, null);
+        INonViralName name1 = parser.parseFullName(hybridCache, botanicCode, null);
         assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
         assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
         assertEquals("Title cache must be correct", hybridCache, name1.getTitleCache());
         List<HybridRelationship> orderedRels = name1.getOrderedChildRelationships();
         assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
-        NonViralName<?> firstParent = orderedRels.get(0).getParentName();
+        TaxonNameBase<?,?> firstParent = orderedRels.get(0).getParentName();
         assertEquals("Name must have Abies alba as first hybrid parent", "Abies alba", firstParent.getTitleCache());
-        NonViralName<?> secondParent = orderedRels.get(1).getParentName();
+        TaxonNameBase<?,?> secondParent = orderedRels.get(1).getParentName();
         assertEquals("Name must have Pinus bus as second hybrid parent", "Pinus bus", secondParent.getTitleCache());
         assertEquals("Hybrid name must have the lowest rank ('species') as rank", Rank.SPECIES(), name1.getRank());
         assertNull("Name must not have a genus eptithet", name1.getGenusOrUninomial());
@@ -670,7 +674,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus var. beta", name1.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
 
-        //hybrids with authors
+        //hybrids with authors  //happens but questionable
         name1 = parser.parseFullName("Abies alba L. \u00D7 Pinus bus Mill.", botanicCode, null);
         assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
         assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
@@ -683,14 +687,137 @@ public class NonViralNameParserImplTest {
         assertEquals("Name must have Pinus bus Mill. as second hybrid parent", "Pinus bus Mill.", secondParent.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
 
+        //abbreviated genus hybrid formula #6410 / #5983
+        String nameStr = "Nepenthes mirabilis \u00D7 N. alata";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Nepenthes mirabilis \u00D7 Nepenthes alata", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        //to be discussed as usually they should be ordered alphabetically
+        assertEquals("Name must have Nepenthes mirabilis as first hybrid parent", "Nepenthes mirabilis", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Nepenthes alata as second hybrid parent", "Nepenthes alata", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+
+        //missing genus hybrid formula #5983
+        nameStr = "Nepenthes mirabilis \u00D7 alata";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Nepenthes mirabilis \u00D7 Nepenthes alata", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        //to be discussed as usually they should be ordered alphabetically
+        assertEquals("Name must have Nepenthes mirabilis as first hybrid parent", "Nepenthes mirabilis", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Nepenthes alata as second hybrid parent", "Nepenthes alata", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+
+        //#5983 subsp. with species and missing genus
+        nameStr = "Orchis coriophora subsp. fragrans \u00D7 sancta";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis coriophora subsp. fragrans \u00D7 Orchis sancta", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis coriophora subsp. fragrans as first hybrid parent", "Orchis coriophora subsp. fragrans", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis sancta as second hybrid parent", "Orchis sancta", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+        //2 subspecies with missing genus part #5983
+        nameStr = "Orchis morio subsp. syriaca \u00D7 papilionacea subsp. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis papilionacea subsp. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis papilionacea subsp. schirvanica as second hybrid parent", "Orchis papilionacea subsp. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+        //subspecies and variety with missing genus part
+        nameStr = "Orchis morio subsp. syriaca \u00D7 papilionacea var. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis papilionacea var. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis papilionacea var. schirvanica as second hybrid parent", "Orchis papilionacea var. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
+
+        //2 subspecies with missing genus and species part #5983
+        nameStr = "Orchis morio subsp. syriaca \u00D7 subsp. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis morio subsp. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis morio subsp. schirvanica as second hybrid parent", "Orchis morio subsp. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('subspecies') as rank", Rank.SUBSPECIES(), name1.getRank());
+
+        //subspecies and variety with missing genus and species part #5983
+        nameStr = "Orchis morio subsp. syriaca \u00D7 var. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Orchis morio var. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis morio subsp. schirvanica as second hybrid parent", "Orchis morio var. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
+
+
     }
+
+    @Test
+    public final void testTemp(){
+//        String nalata = "N. alata";
+//        if (! nalata.matches(NonViralNameParserImplRegExBase.abbrevHybridSecondPart)){
+//            throw new RuntimeException();
+//        }
+//
+//        //#6100  jun.
+//        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+//        INonViralName name = parser.parseFullName(nameStr, botanicCode, null);
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+    }
+
 
     @Test
     public final void testHybridsRemoval(){
         //if the parser input already has hybridrelationships they need to be removed
         //Create input
         String hybridCache = "Abies alba "+UTF8.HYBRID+" Pinus bus";
-        NonViralName<?> name1 = parser.parseFullName(hybridCache, botanicCode, null);
+        INonViralName name1 = parser.parseFullName(hybridCache, botanicCode, null);
         assertFalse("Name must not have parsing problems", name1.hasProblem());
         assertTrue("", name1.getHybridChildRelations().size() == 2);
 
@@ -730,23 +857,23 @@ public class NonViralNameParserImplTest {
 
     private void testName_StringNomcodeRank(Method parseMethod)
             throws InvocationTargetException, IllegalAccessException  {
-        NonViralName<?> name1 = (NonViralName<?>)parseMethod.invoke(parser, strNameAbies1, null, Rank.SPECIES());
+        INonViralName name1 = (INonViralName)parseMethod.invoke(parser, strNameAbies1, null, Rank.SPECIES());
         //parser.parseFullName(strNameAbies1, null, Rank.SPECIES());
         assertEquals("Abies", name1.getGenusOrUninomial());
         assertEquals("alba", name1.getSpecificEpithet());
 
-        NonViralName<?> nameAuthor = (NonViralName<?>)parseMethod.invoke(parser, strNameAbiesAuthor1, null, Rank.SPECIES());
+        INonViralName nameAuthor = (INonViralName)parseMethod.invoke(parser, strNameAbiesAuthor1, null, Rank.SPECIES());
         assertEquals("Abies", nameAuthor.getGenusOrUninomial());
         assertEquals("alba", nameAuthor.getSpecificEpithet());
         assertEquals("Mueller", nameAuthor.getCombinationAuthorship().getNomenclaturalTitle());
 
-        NonViralName<?> nameBasionymAuthor = (NonViralName<?>)parseMethod.invoke(parser, strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
+        INonViralName nameBasionymAuthor = (INonViralName)parseMethod.invoke(parser, strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
         assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitle());
         assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorship().getNomenclaturalTitle());
 
-        NonViralName<?> nameBasionymExAuthor = (NonViralName<?>)parseMethod.invoke(parser, strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
+        INonViralName nameBasionymExAuthor = (INonViralName)parseMethod.invoke(parser, strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
         assertEquals("D'Mueller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitle());
@@ -754,7 +881,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Ciardelli", nameBasionymExAuthor.getExBasionymAuthorship().getNomenclaturalTitle());
         assertEquals("Doering", nameBasionymExAuthor.getBasionymAuthorship().getNomenclaturalTitle());
 
-        NonViralName<?> name2 = (NonViralName<?>)parseMethod.invoke(parser, strNameAbiesSub1, null, Rank.SPECIES());
+        INonViralName name2 = (INonViralName)parseMethod.invoke(parser, strNameAbiesSub1, null, Rank.SPECIES());
         assertEquals("Abies", name2.getGenusOrUninomial());
         assertEquals("alba", name2.getSpecificEpithet());
         assertEquals("beta", name2.getInfraSpecificEpithet());
@@ -763,7 +890,7 @@ public class NonViralNameParserImplTest {
 
         // unparseable *********
         String problemString = "sdfjlös wer eer wer";
-        NonViralName<?> nameProblem = (NonViralName<?>)parseMethod.invoke(parser, problemString, null, Rank.SPECIES());
+        INonViralName nameProblem = (INonViralName)parseMethod.invoke(parser, problemString, null, Rank.SPECIES());
         List<ParserProblem> list = nameProblem.getParsingProblems();
         assertTrue(nameProblem.getParsingProblem()!=0);
         assertEquals(problemString, nameProblem.getTitleCache());
@@ -777,7 +904,7 @@ public class NonViralNameParserImplTest {
     public final void testParseNomStatus() {
         //nom. ambig.
         String strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. ambig.";
-        NonViralName<?> nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        INonViralName nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
         assertFullRefStandard(nameTestStatus);
         assertTrue(nameTestStatus.getStatus().size()== 1);
         assertEquals( NomenclaturalStatusType.AMBIGUOUS(), nameTestStatus.getStatus().iterator().next().getType());
@@ -1007,12 +1134,12 @@ public class NonViralNameParserImplTest {
         //null
         String strNull = null;
         Rank rankSpecies = Rank.SPECIES();
-        NonViralName<?> nameNull = parser.parseReferencedName(strNull, null, rankSpecies);
+        INonViralName nameNull = parser.parseReferencedName(strNull, null, rankSpecies);
         assertNull(nameNull);
 
         //Empty
         String strEmpty = "";
-        NonViralName<?> nameEmpty = parser.parseReferencedName(strEmpty, null, rankSpecies);
+        INonViralName nameEmpty = parser.parseReferencedName(strEmpty, null, rankSpecies);
         assertFalse(nameEmpty.hasProblem());
         assertEquals(strEmpty, nameEmpty.getFullTitleCache());
         assertNull(nameEmpty.getNomenclaturalMicroReference());
@@ -1020,14 +1147,14 @@ public class NonViralNameParserImplTest {
 
         //Whitespaces
         String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
-        NonViralName<?> namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
+        INonViralName namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
         assertFullRefStandard(namefullWhiteSpcaceAndDot);
         assertTrue(((Reference)namefullWhiteSpcaceAndDot.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
         assertEquals( "Abies alba Mill., Sp. Pl. 4: 455. 1987", namefullWhiteSpcaceAndDot.getFullTitleCache());
 
         //Book
         String fullReference = "Abies alba Mill., Sp. Pl. 4: 455. 1987";
-        NonViralName<?> name1 = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName name1 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFullRefStandard(name1);
         assertTrue(((Reference)name1.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
         assertEquals(fullReference, name1.getFullTitleCache());
@@ -1035,7 +1162,7 @@ public class NonViralNameParserImplTest {
 
         //Book Section
         fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
-        NonViralName<?> name2 = parser.parseReferencedName(fullReference + ".", null, rankSpecies);
+        INonViralName name2 = parser.parseReferencedName(fullReference + ".", null, rankSpecies);
         assertFullRefNameStandard(name2);
         assertEquals(fullReference, name2.getFullTitleCache());
         assertFalse(name2.hasProblem());
@@ -1053,7 +1180,7 @@ public class NonViralNameParserImplTest {
 
         //Article
         fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
-        NonViralName<?> name3 = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName name3 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFullRefNameStandard(name3);
         name3.setTitleCache(null);
         assertEquals(fullReference, name3.getFullTitleCache());
@@ -1071,7 +1198,7 @@ public class NonViralNameParserImplTest {
 
         //Article with volume range
         fullReference = "Abies alba Mill. in Sp. Pl. 4(1-2): 455. 1987";
-        NonViralName<?> name3a = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName name3a = parser.parseReferencedName(fullReference, null, rankSpecies);
         name3a.setTitleCache(null);
         assertEquals(fullReference, name3a.getFullTitleCache());
         assertFalse(name3a.hasProblem());
@@ -1086,7 +1213,7 @@ public class NonViralNameParserImplTest {
         String fullReferenceWithoutYear = "Abies alba Mill. in " + journalTitle + " 4(6): 455.";
         fullReference = fullReferenceWithoutYear + yearPart;
         String fullReferenceWithEnd = fullReference + ".";
-        NonViralName<?> name4 = parser.parseReferencedName(fullReferenceWithEnd, null, rankSpecies);
+        INonViralName name4 = parser.parseReferencedName(fullReferenceWithEnd, null, rankSpecies);
         assertFalse(name4.hasProblem());
         assertFullRefNameStandard(name4);
         assertEquals(fullReferenceWithoutYear + " " + parsedYear, name4.getFullTitleCache());
@@ -1102,7 +1229,7 @@ public class NonViralNameParserImplTest {
 
         //Zoo name
         String strNotParsableZoo = "Abies alba M., 1923, Sp. P. xxwer4352, nom. inval.";
-        ZoologicalName nameZooRefNotParsabel = (ZoologicalName)parser.parseReferencedName(strNotParsableZoo, null, null);
+        IZoologicalName nameZooRefNotParsabel = parser.parseReferencedName(strNotParsableZoo, null, null);
         assertTrue(nameZooRefNotParsabel.hasProblem());
         List<ParserProblem> list = nameZooRefNotParsabel.getParsingProblems();
         assertTrue("List must contain detail and year warning ", list.contains(ParserProblem.CheckDetailOrYear));
@@ -1117,13 +1244,13 @@ public class NonViralNameParserImplTest {
         assertEquals(1, nameZooRefNotParsabel.getStatus().size());
 
         String strZooNameSineYear = "Homo sapiens L., 1758, Sp. An. 3: 345";
-        ZoologicalName nameZooNameSineYear = (ZoologicalName)parser.parseReferencedName(strZooNameSineYear);
+        IZoologicalName nameZooNameSineYear = parser.parseReferencedName(strZooNameSineYear);
         assertFalse(nameZooNameSineYear.hasProblem());
         assertEquals("Name without reference year must have year", (Integer)1758, nameZooNameSineYear.getPublicationYear());
         assertEquals("Name without reference year must have year", "1758", nameZooNameSineYear.getNomenclaturalReference().getYear());
 
         String strZooNameNewCombination = "Homo sapiens (L., 1758) Mill., 1830, Sp. An. 3: 345";
-        ZoologicalName nameZooNameNewCombination = (ZoologicalName)parser.parseReferencedName(strZooNameNewCombination);
+        IZoologicalName nameZooNameNewCombination = parser.parseReferencedName(strZooNameNewCombination);
         assertTrue(nameZooNameNewCombination.hasProblem());
         list = nameZooNameNewCombination.getParsingProblems();
         assertTrue("List must contain new combination has publication warning ", list.contains(ParserProblem.NewCombinationHasPublication));
@@ -1133,21 +1260,21 @@ public class NonViralNameParserImplTest {
 
         //Special MicroRefs
         String strSpecDetail1 = "Abies alba Mill. in Sp. Pl. 4(6): [455]. 1987";
-        NonViralName<?> nameSpecDet1 = parser.parseReferencedName(strSpecDetail1 + ".", null, rankSpecies);
+        INonViralName nameSpecDet1 = parser.parseReferencedName(strSpecDetail1 + ".", null, rankSpecies);
         assertFalse(nameSpecDet1.hasProblem());
         assertEquals(strSpecDetail1, nameSpecDet1.getFullTitleCache());
         assertEquals("[455]", nameSpecDet1.getNomenclaturalMicroReference());
 
         //Special MicroRefs
         String strSpecDetail2 = "Abies alba Mill. in Sp. Pl. 4(6): couv. 2. 1987";
-        NonViralName<?> nameSpecDet2 = parser.parseReferencedName(strSpecDetail2 + ".", null, rankSpecies);
+        INonViralName nameSpecDet2 = parser.parseReferencedName(strSpecDetail2 + ".", null, rankSpecies);
         assertFalse(nameSpecDet2.hasProblem());
         assertEquals(strSpecDetail2, nameSpecDet2.getFullTitleCache());
         assertEquals("couv. 2", nameSpecDet2.getNomenclaturalMicroReference());
 
         //Special MicroRefs
         String strSpecDetail3 = "Abies alba Mill. in Sp. Pl. 4(6): fig. 455. 1987";
-        NonViralName<?> nameSpecDet3 = parser.parseReferencedName(strSpecDetail3 + ".", null, rankSpecies);
+        INonViralName nameSpecDet3 = parser.parseReferencedName(strSpecDetail3 + ".", null, rankSpecies);
         assertFalse(nameSpecDet3.hasProblem());
         assertEquals(strSpecDetail3, nameSpecDet3.getFullTitleCache());
         assertEquals("fig. 455", nameSpecDet3.getNomenclaturalMicroReference());
@@ -1155,7 +1282,7 @@ public class NonViralNameParserImplTest {
         //Special MicroRefs
         String strSpecDetail4 = "Abies alba Mill. in Sp. Pl. 4(6): fig. 455-567. 1987";
         fullReference = strSpecDetail4 + ".";
-        NonViralName<?> nameSpecDet4 = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName nameSpecDet4 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFalse(nameSpecDet4.hasProblem());
         assertEquals(strSpecDetail4, nameSpecDet4.getFullTitleCache());
         assertEquals("fig. 455-567", nameSpecDet4.getNomenclaturalMicroReference());
@@ -1164,7 +1291,7 @@ public class NonViralNameParserImplTest {
         //Special MicroRefs
         String strSpecDetail5 = "Abies alba Mill. in Sp. Pl. 4(6): Gard n\u00B0 4. 1987";
         fullReference = strSpecDetail5 + ".";
-        NonViralName<?> nameSpecDet5 = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName nameSpecDet5 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFalse(nameSpecDet5.hasProblem());
         assertEquals(strSpecDetail5, nameSpecDet5.getFullTitleCache());
         assertEquals("Gard n\u00B0 4", nameSpecDet5.getNomenclaturalMicroReference());
@@ -1172,7 +1299,7 @@ public class NonViralNameParserImplTest {
         //Special MicroRefs
         String strSpecDetail6 = "Abies alba Mill. in Sp. Pl. 4(6): 455a. 1987";
         fullReference = strSpecDetail6 + ".";
-        NonViralName<?> nameSpecDet6 = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName nameSpecDet6 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFalse(nameSpecDet6.hasProblem());
         assertEquals(strSpecDetail6, nameSpecDet6.getFullTitleCache());
         assertEquals("455a", nameSpecDet6.getNomenclaturalMicroReference());
@@ -1180,14 +1307,14 @@ public class NonViralNameParserImplTest {
         //Special MicroRefs
         String strSpecDetail7 = "Abies alba Mill. in Sp. Pl. 4(6): pp.455-457. 1987";
         fullReference = strSpecDetail7 + ".";
-        NonViralName<?> nameSpecDet7 = parser.parseReferencedName(fullReference, null, rankSpecies);
+        INonViralName nameSpecDet7 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFalse(nameSpecDet7.hasProblem());
         assertEquals(strSpecDetail7, nameSpecDet7.getFullTitleCache());
         assertEquals("pp.455-457", nameSpecDet7.getNomenclaturalMicroReference());
 
         //Special MicroRefs
         String strSpecDetail8 = "Abies alba Mill. in Sp. Pl. 4(6): ppp.455-457. 1987";
-        NonViralName<?> nameSpecDet8 = parser.parseReferencedName(strSpecDetail8, null, rankSpecies);
+        INonViralName nameSpecDet8 = parser.parseReferencedName(strSpecDetail8, null, rankSpecies);
         assertTrue(nameSpecDet8.hasProblem());
         assertEquals(20, nameSpecDet8.getProblemStarts()); //TODO better start behind :
         assertEquals(51, nameSpecDet8.getProblemEnds());   //TODO better stop after -457
@@ -1195,21 +1322,21 @@ public class NonViralNameParserImplTest {
 
         //Special MicroRefs
         String strSpecDetail9 = "Abies alba Mill. in Sp. Pl. 4(6): pp. 455 - 457. 1987";
-        NonViralName<?> nameSpecDet9 = parser.parseReferencedName(strSpecDetail9, null, rankSpecies);
+        INonViralName nameSpecDet9 = parser.parseReferencedName(strSpecDetail9, null, rankSpecies);
         assertFalse(nameSpecDet9.hasProblem());
         assertEquals(strSpecDetail9, nameSpecDet9.getFullTitleCache());
         assertEquals("pp. 455 - 457", nameSpecDet9.getNomenclaturalMicroReference());
 
         //Special MicroRefs
         String strSpecDetail10 = "Abies alba Mill. in Sp. Pl. 4(6): p 455. 1987";
-        NonViralName<?> nameSpecDet10 = parser.parseReferencedName(strSpecDetail10, null, rankSpecies);
+        INonViralName nameSpecDet10 = parser.parseReferencedName(strSpecDetail10, null, rankSpecies);
         assertFalse(nameSpecDet10.hasProblem());
         assertEquals(strSpecDetail10, nameSpecDet10.getFullTitleCache());
         assertEquals("p 455", nameSpecDet10.getNomenclaturalMicroReference());
 
         //Special MicroRefs
         String strSpecDetail11 = "Abies alba Mill. in Sp. Pl. 4(6): p. 455 - 457. 1987";
-        NonViralName<?> nameSpecDet11 = parser.parseReferencedName(strSpecDetail11, null, rankSpecies);
+        INonViralName nameSpecDet11 = parser.parseReferencedName(strSpecDetail11, null, rankSpecies);
         assertTrue(nameSpecDet11.hasProblem());
         list = nameSpecDet11.getParsingProblems();
         assertTrue("Problem is Detail. Must be pp.", list.contains(ParserProblem.CheckDetailOrYear));
@@ -1219,7 +1346,7 @@ public class NonViralNameParserImplTest {
 
         //no volume, no edition
         String strNoVolume = "Abies alba Mill., Sp. Pl.: 455. 1987";
-        NonViralName<?> nameNoVolume = parser.parseReferencedName(strNoVolume, null, rankSpecies);
+        INonViralName nameNoVolume = parser.parseReferencedName(strNoVolume, null, rankSpecies);
         assertFalse(nameNoVolume.hasProblem());
         assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
         assertEquals(null, ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
@@ -1250,7 +1377,7 @@ public class NonViralNameParserImplTest {
         assertEquals("3", ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
 
         String strUnparsableInRef = "Abies alba Mill. in -er46: 455. 1987";
-        NonViralName<?> nameUnparsableInRef = parser.parseReferencedName(strUnparsableInRef, null, rankSpecies);
+        INonViralName nameUnparsableInRef = parser.parseReferencedName(strUnparsableInRef, null, rankSpecies);
         assertTrue(nameUnparsableInRef.hasProblem());
         list = nameUnparsableInRef.getParsingProblems();
         assertTrue("Unparsable title", list.contains(ParserProblem.UnparsableReferenceTitle));
@@ -1261,7 +1388,7 @@ public class NonViralNameParserImplTest {
 
         //volume, edition
         String strNoSeparator = "Abies alba Mill. Sp. Pl. ed. 3, 4(5): 455. 1987";
-        NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, ICNAFP, rankSpecies);
+        INonViralName nameNoSeparator = parser.parseReferencedName(strNoSeparator, ICNAFP, rankSpecies);
         assertTrue(nameNoSeparator.hasProblem());
         list = nameNoSeparator.getParsingProblems();
         assertTrue("Problem is missing name-reference separator", list.contains(ParserProblem.NameReferenceSeparation));
@@ -1270,7 +1397,7 @@ public class NonViralNameParserImplTest {
         assertEquals(47, nameNoSeparator.getProblemEnds());   //TODO better stop before :
 
         String strUnparsableInRef2 = "Hieracium pepsicum L., My Bookkkk 1. 1903";
-        NonViralName<?> nameUnparsableInRef2 = parser.parseReferencedName(strUnparsableInRef2, null, rankSpecies);
+        INonViralName nameUnparsableInRef2 = parser.parseReferencedName(strUnparsableInRef2, null, rankSpecies);
         assertTrue(nameUnparsableInRef2.hasProblem());
         list = nameUnparsableInRef2.getParsingProblems();
         assertTrue("Problem detail", list.contains(ParserProblem.CheckDetailOrYear));
@@ -1280,7 +1407,7 @@ public class NonViralNameParserImplTest {
 
 
         String strUnparsableInRef3 = "Hieracium pespcim N., My Bookkkk 1. 1902";
-        NonViralName<?> nameUnparsableInRef3 = parser.parseReferencedName(strUnparsableInRef3, null, null);
+        INonViralName nameUnparsableInRef3 = parser.parseReferencedName(strUnparsableInRef3, null, null);
         assertTrue(nameUnparsableInRef3.hasProblem());
         list = nameUnparsableInRef3.getParsingProblems();
         assertTrue("Problem detail", list.contains(ParserProblem.CheckDetailOrYear));
@@ -1289,7 +1416,7 @@ public class NonViralNameParserImplTest {
         assertEquals(40, nameUnparsableInRef3.getProblemEnds());
 
         String strUnparsableInRef4 = "Hieracium pepsicum (Hsllreterto) L., My Bookkkk 1. 1903";
-        NonViralName<?> nameUnparsableInRef4 = parser.parseReferencedName(strUnparsableInRef4, null, null);
+        INonViralName nameUnparsableInRef4 = parser.parseReferencedName(strUnparsableInRef4, null, null);
         assertTrue(nameUnparsableInRef4.hasProblem());
         list = nameUnparsableInRef4.getParsingProblems();
         assertTrue("Problem detail", list.contains(ParserProblem.CheckDetailOrYear));
@@ -1298,7 +1425,7 @@ public class NonViralNameParserImplTest {
         assertEquals(55, nameUnparsableInRef4.getProblemEnds());
 
         String strSameName = "Hieracium pepcum (Hsllreterto) L., My Bokkk 1. 1903";
-        NonViralName<?> nameSameName = nameUnparsableInRef4;
+        INonViralName nameSameName = nameUnparsableInRef4;
         parser.parseReferencedName(nameSameName, strSameName, null, true);
         assertTrue(nameSameName.hasProblem());
         list = nameSameName.getParsingProblems();
@@ -1308,7 +1435,7 @@ public class NonViralNameParserImplTest {
         assertEquals(51, nameSameName.getProblemEnds());
 
         String strGenusUnparse = "Hieracium L., jlklk";
-        NonViralName<?> nameGenusUnparse =
+        INonViralName nameGenusUnparse =
             parser.parseReferencedName(strGenusUnparse, null, null);
         assertTrue(nameGenusUnparse.hasProblem());
         list = nameGenusUnparse.getParsingProblems();
@@ -1319,7 +1446,7 @@ public class NonViralNameParserImplTest {
         assertEquals(19, nameGenusUnparse.getProblemEnds());
 
         String strGenusUnparse2 = "Hieracium L., Per Luigi: 44. 1987";
-        NonViralName<?> nameGenusUnparse2 =
+        INonViralName nameGenusUnparse2 =
             parser.parseReferencedName(strGenusUnparse2, null, Rank.FAMILY());
         assertFalse(nameGenusUnparse2.hasProblem());
         assertEquals(strGenusUnparse2, nameGenusUnparse2.getFullTitleCache());
@@ -1328,7 +1455,7 @@ public class NonViralNameParserImplTest {
 
         String strBookSection2 = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz, ed. 2, 2: 288. 1905-1907";
         String strBookSection2NoComma = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz ed. 2, 2: 288. 1905-1907";
-        NonViralName<?> nameBookSection2 =
+        INonViralName nameBookSection2 =
             parser.parseReferencedName(strBookSection2, null, null);
         assertFalse(nameBookSection2.hasProblem());
         nameBookSection2.setFullTitleCache(null, false);
@@ -1340,7 +1467,7 @@ public class NonViralNameParserImplTest {
 
 
         String strBookSection = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz ed. 2, 2: 288. 1905";
-        NonViralName<?> nameBookSection =
+        INonViralName nameBookSection =
             parser.parseReferencedName(strBookSection, null, null);
         assertFalse(nameBookSection.hasProblem());
         assertEquals(strBookSection.replace(" ed.", ", ed."), nameBookSection.getFullTitleCache());
@@ -1350,7 +1477,7 @@ public class NonViralNameParserImplTest {
         assertEquals("1905", ((IBookSection)nameBookSection.getNomenclaturalReference()).getDatePublished().getYear());
 
         String strXXXs = "Abies alba, Soer der 1987";
-        NonViralName<?> problemName = parser.parseReferencedName(strXXXs, null, null);
+        INonViralName problemName = parser.parseReferencedName(strXXXs, null, null);
         assertTrue(problemName.hasProblem());
         list = problemName.getParsingProblems();
         assertTrue("Problem must be name-reference separation", list.contains(ParserProblem.NameReferenceSeparation));
@@ -1484,17 +1611,16 @@ public class NonViralNameParserImplTest {
      * @return
      */
     private List<ParserProblem> getProblems(String string, NomenclaturalCode code) {
-        List<ParserProblem> result;
-        result = parser.parseReferencedName(string, code, null).getParsingProblems();
+        List<ParserProblem> result = parser.parseReferencedName(string, code, null).getParsingProblems();
         return result;
     }
 
     private boolean isParsable(String string, NomenclaturalCode code){
-        NonViralName<?> name = parser.parseReferencedName(string, code, null);
+        INonViralName name = parser.parseReferencedName(string, code, null);
         return ! name.hasProblem();
     }
 
-    private void assertFullRefNameStandard(NonViralName<?> name){
+    private void assertFullRefNameStandard(INonViralName name){
         assertEquals("Abies", name.getGenusOrUninomial());
         assertEquals("alba", name.getSpecificEpithet());
         assertEquals("Mill.", name.getAuthorshipCache());
@@ -1502,7 +1628,7 @@ public class NonViralNameParserImplTest {
         assertNotNull(name.getNomenclaturalReference());
     }
 
-    private void assertFullRefStandard(NonViralName<?> name){
+    private void assertFullRefStandard(INonViralName name){
         assertEquals("Abies", name.getGenusOrUninomial());
         assertEquals("alba", name.getSpecificEpithet());
         assertEquals("Mill.", name.getAuthorshipCache());
@@ -1520,7 +1646,7 @@ public class NonViralNameParserImplTest {
 
         String irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
 //      irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Uiuis Iuiui Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
-        NonViralName<?> nvn = this.parser.parseReferencedName(irinaExample, NomenclaturalCode.ICZN, null);
+        INonViralName nvn = this.parser.parseReferencedName(irinaExample, NomenclaturalCode.ICZN, null);
         int parsingProblem = nvn.getParsingProblem();
         Assert.assertEquals("Name should have only rank warning", 1, parsingProblem);
         Assert.assertEquals("Titlecache", "Milichiidae Sharp, 1899", nvn.getTitleCache());
@@ -1578,7 +1704,7 @@ public class NonViralNameParserImplTest {
      */
     @Test
     public final void testParseAuthorsTaxonNameString() throws StringNotParsableException {
-        NonViralName<?> nvn = ZoologicalName.NewInstance(null);
+        INonViralName nvn = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(nvn, "Eckweiler & ten Hagen, 2003");
         Team team = (Team)nvn.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", team);
@@ -1586,7 +1712,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Second member must be 'ten Hagen'", "ten Hagen", team.getTeamMembers().get(1).getTitleCache());
 
         //Crosson du Cormier, 1964
-        ZoologicalName zooName = ZoologicalName.NewInstance(null);
+        IZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "Crosson du Cormier, 1964");
         Person person = (Person)zooName.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", person);
@@ -1594,7 +1720,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Year must be 1964", Integer.valueOf(1964), zooName.getPublicationYear() );
 
         //(van der Hoeven, 1839)
-        zooName = ZoologicalName.NewInstance(null);
+        zooName = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "(van der Hoeven, 1839)");
         Assert.assertNull("Combination author must be null", zooName.getCombinationAuthorship());
         person = (Person)zooName.getBasionymAuthorship();
@@ -1603,7 +1729,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Year must be 1839", Integer.valueOf(1839), zooName.getOriginalPublicationYear() );
 
         //le Doux, 1931
-        zooName = ZoologicalName.NewInstance(null);
+        zooName = TaxonNameFactory.NewZoologicalInstance(null);
         parser.parseAuthors(zooName, "le Doux, 1931");
         person = (Person)zooName.getCombinationAuthorship();
         Assert.assertNotNull("Comb. author must not be null", person);
@@ -1618,7 +1744,7 @@ public class NonViralNameParserImplTest {
         //this test does not really test problematic cases where sect.idInVoc = "sect." instead of "sect.(bot.)"
         //however, by changing the csv file entry to sect. just for testing it can be used as a functional test
         String sectionNameStr = "Taraxacum sect. Testtaxa M\u00fcller, Incredible Taxa: 12. 2016";
-        NonViralName<?> sectionName = parser.parseReferencedName(sectionNameStr, NomenclaturalCode.ICNAFP, null);
+        INonViralName sectionName = parser.parseReferencedName(sectionNameStr, NomenclaturalCode.ICNAFP, null);
         int parsingProblem = sectionName.getParsingProblem();
         Assert.assertEquals("Problem should be 0", 0, parsingProblem);
         Rank rank = sectionName.getRank();
@@ -1630,7 +1756,7 @@ public class NonViralNameParserImplTest {
     public final void testLongRunningParsingCapitals(){
         DateTime start = DateTime.now();
         String nameStr = "Nazeris fujianensis JIAYAO HU, LIZHEN LI, MEIJUN ZHAO,2010";  //name from CoL that created problems
-        NonViralName<?> name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICZN, null);
+        INonViralName name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICZN, null);
         DateTime end = DateTime.now();
         Duration duration = new Duration(start, end);
         long seconds = duration.getStandardSeconds();
@@ -1646,7 +1772,7 @@ public class NonViralNameParserImplTest {
         //name only
         String nameStr = "Dictyocoela berillonum R.S. Terry, J.E. Sm., R.G. Sharpe, T. Rigaud, D.T.J. Littlewood, J.E. Ironside, D. Rollinson & D. Bou";
         DateTime start = DateTime.now();
-        NonViralName<?> name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICNAFP, null);
+        INonViralName name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICNAFP, null);
         DateTime end = DateTime.now();
         Duration duration = new Duration(start, end);
         long seconds = duration.getStandardSeconds();
@@ -1722,9 +1848,9 @@ public class NonViralNameParserImplTest {
 
     @Test
     public final void testNomenclaturalStatus() {
-        BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
+        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
         name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-        BotanicalName name2 = BotanicalName.NewInstance(Rank.FAMILY());
+        BotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY());
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
@@ -1733,7 +1859,7 @@ public class NonViralNameParserImplTest {
     @Test
     public final void testSpecificAuthors(){
         //McVaugh
-        NonViralName<?> name = parser.parseFullName("Psidium longipes var. orbiculare (O.Berg) McVaugh");
+        INonViralName name = parser.parseFullName("Psidium longipes var. orbiculare (O.Berg) McVaugh");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "McVaugh", combinationAuthor.getNomenclaturalTitle());
@@ -1747,7 +1873,7 @@ public class NonViralNameParserImplTest {
     @Test
     public final void testExistingProblems(){
         //Canabio, issue with space
-        NonViralName<?> name = parser.parseReferencedName("Machaonia erythrocarpa var. hondurensis (Standl.) Borhidi"
+        INonViralName name = parser.parseReferencedName("Machaonia erythrocarpa var. hondurensis (Standl.) Borhidi"
                 + " in Acta Bot. Hung. 46 (1-2): 30. 2004");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
@@ -2029,11 +2155,117 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
 
-        //test case disabled, would fail! Is due to '´t'
-        // ´t
-//        name = parser.parseReferencedName("Sempervivum globiferum subsp. allionii (Jord. & Fourr.) ´t Hart & Bleij");
-//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        //#6100  jun.
+        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+        name = parser.parseFullName(nameStr, botanicCode, null);  //fails with missing botanicCode, see open issues
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
 
+        //#6100 bis /ter
+        nameStr = "Schistidium aquaticum (R.Br.ter) Ochyra";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "R.Br.ter", name.getBasionymAuthorship().getTitleCache());
+
+        nameStr = "Grimmia mitchellii R.Br.bis";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "R.Br.bis", name.getCombinationAuthorship().getTitleCache());
+
+        //forma #6100
+        nameStr = "Xerocomus parasiticus forma piperatoides (J. Blum) R. Mazza";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "piperatoides", name.getInfraSpecificEpithet());
+        assertEquals( Rank.FORM(), name.getRank());
+
+        //subgen. #6100
+        nameStr = "Aliciella subgen. Gilmania (H.Mason & A.D.Grant) J.M.Porter";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "Gilmania", name.getInfraGenericEpithet());
+        assertEquals( Rank.SUBGENUS(), name.getRank());
+
+        //subgen. #6100
+        nameStr = "Aliciella subgen. Gilmania J.M.Porter";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "Gilmania", name.getInfraGenericEpithet());
+        assertEquals( Rank.SUBGENUS(), name.getRank());
+        assertEquals( "J.M.Porter", name.getCombinationAuthorship().getTitleCache());
+
+        //la Croix #6100
+        nameStr = "Eulophia ovalis var. bainesii (Rolfe) P.J.Cribb & la Croix";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "P.J.Cribb & la Croix", name.getCombinationAuthorship().getTitleCache());
+
+        //I = Yi #6100
+        nameStr = "Parasenecio hwangshanicus (P.I Mao) C.I Peng";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("I (=Yi) should be an accepted ending", "C.I Peng", name.getCombinationAuthorship().getTitleCache());
+        assertEquals("I (=Yi) should be an accepted ending", "P.I Mao", name.getBasionymAuthorship().getTitleCache());
+
+        //´t Hart #6100
+        nameStr = "Sedum decipiens (Baker) Thiede & \u00B4t Hart";   //still does not work with "´", don't know what the difference is, see openIssues()
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
+                "Thiede & \u00B4t Hart", name.getCombinationAuthorship().getTitleCache());
+
+        //Man in 't Veld  #6100
+        nameStr = "Phytophthora multivesiculata Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters", name.getCombinationAuthorship().getTitleCache());
+
+        nameStr = "Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("De la Torre, Vicedo, Alonso & Paya", name.getCombinationAuthorship().getTitleCache());
+
+        //Sant'Anna
+        nameStr = "Coelosphaerium evidenter-marginatum M.T.P.Azevedo & Sant'Anna";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("M.T.P.Azevedo & Sant'Anna", name.getCombinationAuthorship().getTitleCache());
+
+        //Heft
+        nameStr = "Nepenthes deaniana Macfarl. in Engl., Mein Pflanzenr. IV. 111 (Heft 36): 57. 1908.";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference ref = (Reference)name.getNomenclaturalReference();
+        Assert.assertFalse("Reference should be parsable", ref.hasProblem());
+        //or even better IV. 111 (Heft 36), but this is currently not implemented
+        assertEquals("111 (Heft 36)", ref.getInReference().getVolume());
+
+
+    }
+
+    @Test
+    @Ignore
+    public final void openIssues(){
+        //#6100  jun.
+        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+        INonViralName name = parser.parseFullName(nameStr, botanicCode, null);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+        name = parser.parseFullName(nameStr);  //fails for some reasons without botanicCode given, as anyBotanicFullName is not recognized, strange because other very similar names such as Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya do not fail
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+
+        //´t Hart #6100
+        nameStr = "Sedum decipiens (Baker) Thiede & \u00B4t Hart";   //still does not work with "´" if compiled by maven, don't know what the difference is
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
+                "Thiede & \u00B4t Hart", name.getCombinationAuthorship().getTitleCache());
+        nameStr = "Sedum decipiens (Baker) Thiede & ´t Hart";   //does not work if compiled with maven
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
+                "Thiede & ´t Hart", name.getCombinationAuthorship().getTitleCache());
 
     }
 

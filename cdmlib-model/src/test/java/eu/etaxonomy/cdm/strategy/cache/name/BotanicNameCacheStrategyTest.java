@@ -26,10 +26,11 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -79,15 +80,15 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	@Before
 	public void setUp() throws Exception {
 		strategy = BotanicNameDefaultCacheStrategy.NewInstance();
-		familyName = BotanicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
-		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
+		familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
+		genusName = TaxonNameFactory.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
 
-		subGenusName = BotanicalName.NewInstance(Rank.SUBGENUS());
+		subGenusName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
-		speciesName = BotanicalName.PARSED_NAME(speciesNameString);
-		subSpeciesName = BotanicalName.PARSED_NAME(subSpeciesNameString);
+		speciesName = TaxonNameFactory.PARSED_BOTANICAL(speciesNameString);
+		subSpeciesName = TaxonNameFactory.PARSED_BOTANICAL(subSpeciesNameString);
 
 		author = Person.NewInstance();
 		author.setNomenclaturalTitle(authorString);
@@ -225,7 +226,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
+		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, INonViralName.class);
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
 	}

@@ -37,9 +37,10 @@ import org.springframework.beans.BeanUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 //import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -99,11 +100,11 @@ public class ClassificationTest {
 		treeName1 = "Greuther, 1993";
 		//refFactory = ReferenceFactory.newInstance();
 		classification1 = Classification.NewInstance(treeName1);
-		taxonName12 = BotanicalName.NewInstance(Rank.SPECIES());
-		taxonName121 = BotanicalName.NewInstance(Rank.SUBSPECIES());
-		taxonName1 = BotanicalName.NewInstance(Rank.GENUS());
-		taxonName2 = ZoologicalName.NewInstance(Rank.GENUS());
-		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
+		taxonName12 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		taxonName121 = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+		taxonName1 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		taxonName2 = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
+		taxonName3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		ref1 = ReferenceFactory.newJournal();
 		ref2 = ReferenceFactory.newJournal();
 		ref3 = ReferenceFactory.newJournal();
@@ -130,7 +131,7 @@ public class ClassificationTest {
 	 */
 	@Test
 	public void testAddRoot() {
-		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonNode1.setSynonymToBeUsed(synonym);
@@ -231,7 +232,7 @@ public class ClassificationTest {
 	@Test
 	public void testAddParentChild() {
 
-		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
 		rootNode.setSynonymToBeUsed(synonym);
@@ -347,7 +348,7 @@ public class ClassificationTest {
 		//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
 
 
-		BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
+		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name.setTitleCache("A dummy name", true);
 		result.add(name);
 		Reference ref = ReferenceFactory.newBook();

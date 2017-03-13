@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -223,7 +224,7 @@ public class DefaultMergeStrategyTest {
 	 */
 	@Test
 	public void testInvokeReferences() throws MergeException {
-		INomenclaturalReferenceCacheStrategy cacheStrategy1 = (INomenclaturalReferenceCacheStrategy)book1.getCacheStrategy();
+		INomenclaturalReferenceCacheStrategy cacheStrategy1 = book1.getCacheStrategy();
 		int id = book1.getId();
 		UUID uuid = book1.getUuid();
 		try {
@@ -317,9 +318,9 @@ public class DefaultMergeStrategyTest {
 	//@Ignore
 	public void testInvokeTxonNames() throws MergeException {
 		IMergeStrategy botNameMergeStrategy = DefaultMergeStrategy.NewInstance(BotanicalName.class);
-		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
-		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
-		BotanicalName botName3 = BotanicalName.NewInstance(Rank.SPECIES());
+		BotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		BotanicalName botName3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 
 		botName1.setGenusOrUninomial("Genus1");
 		botName1.setSpecificEpithet("species1");

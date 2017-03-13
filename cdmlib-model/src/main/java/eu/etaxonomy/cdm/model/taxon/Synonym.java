@@ -30,6 +30,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
@@ -98,6 +99,15 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     private SynonymType type;
 
 //************************************* FACTORY ****************************/
+    /**
+     * @see #NewInstance(TaxonNameBase, Reference)
+     * @param taxonNameBase
+     * @param sec
+     * @return
+     */
+    public static Synonym NewInstance(ITaxonNameBase taxonNameBase, Reference sec){
+        return NewInstance(TaxonNameBase.castAndDeproxy(taxonNameBase), sec);
+    }
 
     /**
      * Creates a new synonym instance with

@@ -22,13 +22,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -43,14 +47,19 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -63,7 +72,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 @Component
 public class IpniService  implements IIpniService{
-	private static final String EAST_OR_WEST = "East or west";
+    private static final Logger logger = Logger.getLogger(IpniService.class);
+
+
+    //TYPE
+    private static final String EAST_OR_WEST = "East or west";
 
 	private static final String NORTH_OR_SOUTH = "North or south";
 
@@ -72,6 +85,14 @@ public class IpniService  implements IIpniService{
 	private static final String LATITUDE_MINUTES = "Latitude minutes";
 
 	private static final String LATITUDE_DEGREES = "Latitude degrees";
+
+	private static final String LONGITUDE_SECONDS = "Longitude seconds";
+
+    private static final String LONGITUDE_MINUTES = "Longitude minutes";
+
+    private static final String LONGITUDE_DEGREES = "Longitude degrees";
+
+
 
 	private static final String COLLECTION_DATE_AS_TEXT = "Collection date as text";
 
@@ -95,7 +116,6 @@ public class IpniService  implements IIpniService{
 
 	private static final String TYPE_REMARKS = "Type remarks";
 
-	private static final Logger logger = Logger.getLogger(IpniService.class);
 
 	// GENERAL
 	public static String ID = "Id";
@@ -110,10 +130,12 @@ public class IpniService  implements IIpniService{
 	public static final String INFRA_GENUS = "Infra genus";
 	public static final String SPECIES = "Species";
 	public static final String INFRA_SPECIFIC = "Infra species";
+	public static final String HYBRID = "Hybrid";
 	public static final String RANK = "Rank";
 	public static final String BASIONYM_AUTHOR = "Basionym author";
 	public static final String PUBLISHING_AUTHOR = "Publishing author";
 	public static final String PUBLICATION = "Publication";
+	public static final String COLLATION = "Collation";
 	public static final String PUBLICATION_YEAR_FULL = "Publication year full";
 	public static final String NAME_STATUS = "Name status";
 	public static final String BASIONYM = "Basionym";
@@ -210,12 +232,8 @@ public class IpniService  implements IIpniService{
 
 // ****************************** METHODS ****************************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.ipni.IIpniService#getAuthors(java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration, eu.etaxonomy.cdm.ext.ipni.IpniServiceAuthorConfigurator)
-	 */
 	@Override
-    public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmApplicationConfiguration services, IpniServiceAuthorConfigurator config){
+    public List<Person> getAuthors(String abbreviation, String surname, String forename, String isoCountry, ICdmRepository services, IpniServiceAuthorConfigurator config){
 		//config
 		if (config == null){
 			config = new IpniServiceAuthorConfigurator();
@@ -240,13 +258,15 @@ public class IpniService  implements IIpniService{
 
 
 	/**
-	 *	FIXME rewrote this method to rely on {@link UriUtils}. The whole class should be adjusted to reflect this change.
+	 *	FIXME rewrote this method to rely on {@link UriUtils}. The whole class should be
+	 *  adjusted to reflect this change.
 	 *	Also see comments in the class' documentation block.
 	 *
 	 * @param restRequest
 	 * @return
 	*/
-	private List<? extends IdentifiableEntity> queryService(String request, ICdmApplicationConfiguration services, URL serviceUrl, IIpniServiceConfigurator config, ServiceType serviceType){
+	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository repository, URL serviceUrl,
+	            IIpniServiceConfigurator config, ServiceType serviceType){
 		if (config == null){
 			throw new NullPointerException("Ipni service configurator should not be null");
 		}
@@ -259,11 +279,8 @@ public class IpniService  implements IIpniService{
                                                      serviceUrl.getPath()
                                                      + "?" + request);
 
-
             URI newUri = newUrl.toURI();
-
             logger.info("Firing request for URI: " + newUri);
-
             HttpResponse response = UriUtils.getResponse(newUri, null);
 
             int responseCode = response.getStatusLine().getStatusCode();
@@ -271,13 +288,13 @@ public class IpniService  implements IIpniService{
             // get the content at the resource
             InputStream content = response.getEntity().getContent();
             // build the result
-            List<? extends IdentifiableEntity> result;
+            List<? extends IdentifiableEntity<?>> result;
             if (serviceType.equals(ServiceType.AUTHOR)){
-            	result = buildAuthorList(content, services, config);
+            	result = buildAuthorList(content, repository, config);
             }else if (serviceType.equals(ServiceType.NAME)){
-            	result = buildNameList(content, services, config);
+            	result = buildNameList(content, repository, config);
             }else {
-            	result = buildPublicationList(content, services, config);
+            	result = buildPublicationList(content, repository, config);
             }
             if(responseCode == HttpURLConnection.HTTP_OK){
                     return result;
@@ -321,29 +338,29 @@ public class IpniService  implements IIpniService{
             return content;
 
 		   } catch (IOException e) {
-	            logger.error("No content for request: " + request);
-	        } catch (URISyntaxException e) {
+	           logger.error("No content for request: " + request);
+	           throw new RuntimeException(e);
+	       } catch (URISyntaxException e) {
 				logger.error("Given URL could not be transformed into URI", e);
-			}
-
-		return null;
+				   throw new RuntimeException(e);
+		   }
 
 	}
 
 
 
 
-	private List<Reference> buildPublicationList( InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<Reference> buildPublicationList( InputStream content, ICdmRepository services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServicePublicationConfigurator config = (IpniServicePublicationConfigurator)iConfig;
 
-		List<Reference> result = new ArrayList<Reference>();
+		List<Reference> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
 		Map<Integer, String> parameterMap = getParameterMap(headerLine);
 
 		String line = reader.readLine();
-		while (StringUtils.isNotBlank(line)){
+		while (isNotBlank(line)){
 			Reference reference = getPublicationFromLine(line, parameterMap, services, config);
 			result.add(reference);
 			line = reader.readLine();
@@ -356,18 +373,16 @@ public class IpniService  implements IIpniService{
 	/**
 	 * @param line
 	 * @param parameterMap
-	 * @param appConfig
+	 * @param repository
 	 * @param config
 	 * @return
 	 */
-	private Reference getPublicationFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig, IpniServicePublicationConfigurator config) {
+	private Reference getPublicationFromLine(String line, Map<Integer, String> parameterMap,
+	        ICdmRepository repository, IpniServicePublicationConfigurator config) {
 		//fill value map
 		String[] splits = line.split("%");
 
-		Map<String, String> valueMap = new HashMap<String, String>();
-		for (int i = 0; i < splits.length; i++){
-			valueMap.put(parameterMap.get(i), splits[i]);
-		}
+		Map<String, String> valueMap = fillValueMap(parameterMap, splits);
 
 		//create reference object
 		Reference ref = ReferenceFactory.newGeneric();
@@ -386,15 +401,17 @@ public class IpniService  implements IIpniService{
 		ref.setPlacePublished(valueMap.get(PLACE));
 
 		String author = valueMap.get(PUBLICATION_AUTHOR_TEAM);
-		if (StringUtils.isNotBlank(author)){
+		if (isNotBlank(author)){
 			Team team = Team.NewTitledInstance(author, author);
 			ref.setAuthorship(team);
 		}
 
 		//remarks
 		String remarks = valueMap.get(REMARKS);
-		Annotation annotation = Annotation.NewInstance(remarks, AnnotationType.EDITORIAL(), Language.ENGLISH());
-		ref.addAnnotation(annotation);
+		if (remarks != null){
+		    Annotation annotation = Annotation.NewInstance(remarks, AnnotationType.EDITORIAL(), Language.ENGLISH());
+		    ref.addAnnotation(annotation);
+		}
 
 
 		String tl2AuthorString = valueMap.get(TL2_AUTHOR);
@@ -414,7 +431,7 @@ public class IpniService  implements IIpniService{
 
 
 		//source
-		Reference citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(repository);
 		ref.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
 
 
@@ -433,42 +450,36 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private List<BotanicalName> buildNameList( InputStream content, ICdmApplicationConfiguration appConfig, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<TaxonNameBase<?,?>> buildNameList( InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceNamesConfigurator config = (IpniServiceNamesConfigurator)iConfig;
-		List<BotanicalName> result = new ArrayList<BotanicalName>();
+		List<TaxonNameBase<?,?>> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
+//		System.out.println(headerLine);
 		Map<Integer, String> parameterMap = getParameterMap(headerLine);
 
 		String line = reader.readLine();
-		while (StringUtils.isNotBlank(line)){
-
-			BotanicalName name = getNameFromLine(line,parameterMap, appConfig);
+		while (isNotBlank(line)){
+//		    System.out.println(line);
+		    TaxonNameBase<?,?> name = (TaxonNameBase<?,?>)getNameFromLine(line,parameterMap, repository, config);
 			result.add(name);
 			line = reader.readLine();
-
 		}
-
 
 		return result;
 	}
 
 
-	private BotanicalName getNameFromLine(String line, Map<Integer, String> parameterMap, ICdmApplicationConfiguration appConfig) {
+	private static final NonViralNameParserImpl nvnParser = NonViralNameParserImpl.NewInstance();
+
+	private IBotanicalName getNameFromLine(String line, Map<Integer, String> parameterMap, ICdmRepository repository, IpniServiceNamesConfigurator config) {
 		//Id%Version%Standard form%Default author forename%Default author surname%Taxon groups%Dates%Alternative names
 		String[] splits = line.split("%");
-		Map<String, String> valueMap = new HashMap<String, String>();
 
-		for (int i = 0; i < splits.length; i++){
-			valueMap.put(parameterMap.get(i), splits[i]);
-		}
+		Map<String, String> valueMap = fillValueMap(parameterMap, splits);
 
-		BotanicalName name = BotanicalName.NewInstance(null);
-
-		//caches
-		name.setNameCache(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), true);
-		name.setAuthorshipCache(valueMap.get(AUTHORS), true);
+		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
 
 		//epithets
 		name.setGenusOrUninomial(valueMap.get(GENUS));
@@ -479,104 +490,175 @@ public class IpniService  implements IIpniService{
 		//rank
 		try {
 			String rankStr = nomalizeRank(valueMap.get(RANK));
-			name.setRank(Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICNAFP, true));
+			Rank rank = Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICNAFP, true);
+			name.setRank(rank);
 		} catch (UnknownCdmTypeException e) {
 			logger.warn("Rank was unknown");
 		}
+        //caches
+		String pureName = valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS);
+        String nameCache = name.getNameCache();
+		if (!Nz(pureName).equals(nameCache)) {
+            nvnParser.parseSimpleName(name, valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), name.getRank(), true);
+//            name.setNameCache(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), true);
+        }
 
+
+
+        String authors = "";
 		//authors
-		name.setBasionymAuthorship(Team.NewTitledInstance(valueMap.get(BASIONYM_AUTHOR), valueMap.get(BASIONYM_AUTHOR)));
-		name.setCombinationAuthorship(Team.NewTitledInstance(valueMap.get(PUBLISHING_AUTHOR), valueMap.get(PUBLISHING_AUTHOR)));
+		if (valueMap.get(BASIONYM_AUTHOR)!= null){
+		    authors = valueMap.get(BASIONYM_AUTHOR);
+//		    name.setBasionymAuthorship(Team.NewTitledInstance(valueMap.get(BASIONYM_AUTHOR), valueMap.get(BASIONYM_AUTHOR)));
+		}
+        if (valueMap.get(PUBLISHING_AUTHOR)!= null){
+            authors += valueMap.get(PUBLISHING_AUTHOR);
+//            name.setCombinationAuthorship(Team.NewTitledInstance(valueMap.get(PUBLISHING_AUTHOR), valueMap.get(PUBLISHING_AUTHOR)));
+        }
+        try {
+            nvnParser.parseAuthors(name, authors);
+        } catch (StringNotParsableException e1) {
+            //
+        }
+        if (!Nz(valueMap.get(AUTHORS)).equals(name.getAuthorshipCache())) {
+            name.setAuthorshipCache(valueMap.get(AUTHORS), true);
+        }
+        if ("Y".equals(valueMap.get(HYBRID))){
+            if (!name.isHybrid()){
+                //Is there a concrete way to include the hybrid flag info? As it does not say which type of hybrid it seems
+                //to be best to handle hybrids via parsing. But there might be a better errror handling possible.
+                logger.warn("Name is flagged as hybrid at IPNI but CDM name has no hybrid flag set: " + name.getTitleCache());
+            }
+        }
 
 		//publication
-		Reference ref = ReferenceFactory.newGeneric();
-		ref.setTitleCache(valueMap.get(PUBLICATION), true);
-		TimePeriod datePublished = TimePeriodParser.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
-		name.setNomenclaturalReference(ref);
+		if (valueMap.get(PUBLICATION)!= null || valueMap.get(COLLATION)!= null || valueMap.get(PUBLICATION_YEAR_FULL) != null){
+		    Reference ref = ReferenceFactory.newGeneric();
+
+		    //TODO probably we can do better parsing here
+		    String pub = CdmUtils.concat(" ", valueMap.get(PUBLICATION), valueMap.get(COLLATION));
+		    if (isNotBlank(pub)){
+    		    String nomRefTitle = pub;
+    		    String[] split = nomRefTitle.split(":");
+    		    if (split.length > 1){
+    		        String detail = split[split.length-1];
+    		        name.setNomenclaturalMicroReference(detail.trim());
+    		        nomRefTitle = nomRefTitle.substring(0, nomRefTitle.length() - detail.length() - 1).trim();
+    		    }
+
+    		    ref.setAbbrevTitle(nomRefTitle);
+		    }
+
+    		TimePeriod datePublished = parsePublicationFullYear(valueMap.get(PUBLICATION_YEAR_FULL));
+		    ref.setDatePublished(datePublished);
+
+		    name.setNomenclaturalReference(ref);
+		}
 
 		//name status
 		NomenclaturalStatusType statusType = null;
 		String statusString = valueMap.get(NAME_STATUS);
-		if (StringUtils.isNotBlank(statusString)){
+		if (isNotBlank(statusString)){
 			try {
 				statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, name);
 				NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(statusType);
 				name.addStatus(nomStatus);
 			} catch (UnknownCdmTypeException e) {
 				logger.warn("Name status not recognized: " + statusString);
+	            Annotation annotation = Annotation.NewInstance("Name status: " + statusString, AnnotationType.EDITORIAL(), Language.ENGLISH());
+	            name.addAnnotation(annotation);
 			}
 		}
 
 		//remarks
 		String remarks = valueMap.get(REMARKS);
-		Annotation annotation = Annotation.NewInstance(remarks, AnnotationType.EDITORIAL(), Language.ENGLISH());
-		name.addAnnotation(annotation);
+		if (remarks != null){
+		    Annotation annotation = Annotation.NewInstance(remarks, AnnotationType.EDITORIAL(), Language.ENGLISH());
+		    name.addAnnotation(annotation);
+		}
 
 		//basionym
-		BotanicalName basionym = BotanicalName.NewInstance(null);
-		basionym.setTitleCache(valueMap.get(BASIONYM), true);
-		name.addBasionym(basionym);
+		if (config.isDoBasionyms() && valueMap.get(BASIONYM)!= null){
+		    TaxonNameBase<?,?> basionym = TaxonNameFactory.NewBotanicalInstance(null);
+		    basionym.setTitleCache(valueMap.get(BASIONYM), true);
+		    name.addBasionym(basionym);
+		}
 
 		//replaced synonym
-		BotanicalName replacedSynoynm = BotanicalName.NewInstance(null);
-		replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
-		name.addReplacedSynonym(replacedSynoynm, null, null, null);
+		if (config.isDoBasionyms() && valueMap.get(REPLACED_SYNONYM)!= null){
+		    TaxonNameBase<?,?> replacedSynoynm = TaxonNameFactory.NewBotanicalInstance(null);
+		    replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
+		    name.addReplacedSynonym(replacedSynoynm, null, null, null);
+		}
 
 		//type information
-		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+		if (config.isDoType() && valueMap.get(COLLECTION_DATE_AS_TEXT)!= null || valueMap.get(COLLECTION_NUMBER) != null
+		        || valueMap.get(COLLECTION_DAY1) != null || valueMap.get(COLLECTION_DAY2) != null
+		        || valueMap.get(COLLECTION_MONTH1) != null || valueMap.get(COLLECTION_MONTH2) != null
+		        || valueMap.get(COLLECTION_YEAR1) != null || valueMap.get(COLLECTION_YEAR2) != null
+		        || valueMap.get(COLLECTOR_TEAM_AS_TEXT) != null || valueMap.get(LOCALITY)!= null
+		        || valueMap.get(LATITUDE_DEGREES) != null || valueMap.get(LATITUDE_MINUTES) != null
+                || valueMap.get(LATITUDE_SECONDS) != null || valueMap.get(NORTH_OR_SOUTH) != null
+                || valueMap.get(COLLECTION_YEAR1) != null || valueMap.get(COLLECTION_YEAR2) != null
+                //TODO TBC
+		        ){
+    		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 
 
-		//gathering period
-		String collectionDateAsText = valueMap.get(COLLECTION_DATE_AS_TEXT);
-		TimePeriod gatheringPeriod = TimePeriodParser.parseString(collectionDateAsText);
+    		//gathering period
+    		String collectionDateAsText = valueMap.get(COLLECTION_DATE_AS_TEXT);
+    		TimePeriod gatheringPeriod = TimePeriodParser.parseString(collectionDateAsText);
 
-		try {
-			gatheringPeriod.setStartDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY1));
-			gatheringPeriod.setStartMonth(getIntegerDateValueOrNull(valueMap, COLLECTION_MONTH1));
-			gatheringPeriod.setStartYear(getIntegerDateValueOrNull(valueMap, COLLECTION_YEAR1));
-			gatheringPeriod.setEndDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY2));
-			gatheringPeriod.setEndMonth(getIntegerDateValueOrNull(valueMap, COLLECTION_MONTH2));
-			gatheringPeriod.setEndYear(getIntegerDateValueOrNull(valueMap, COLLECTION_YEAR2));
-		} catch (IndexOutOfBoundsException e) {
-			logger.info("Exception occurred when trying to fill gathering period");
+    		try {
+    			gatheringPeriod.setStartDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY1));
+    			gatheringPeriod.setStartMonth(getIntegerDateValueOrNull(valueMap, COLLECTION_MONTH1));
+    			gatheringPeriod.setStartYear(getIntegerDateValueOrNull(valueMap, COLLECTION_YEAR1));
+    			gatheringPeriod.setEndDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY2));
+    			gatheringPeriod.setEndMonth(getIntegerDateValueOrNull(valueMap, COLLECTION_MONTH2));
+    			gatheringPeriod.setEndYear(getIntegerDateValueOrNull(valueMap, COLLECTION_YEAR2));
+    		} catch (IndexOutOfBoundsException e) {
+    			logger.info("Exception occurred when trying to fill gathering period");
+    		}
+    		specimen.setGatheringPeriod(gatheringPeriod);
+
+    		specimen.setFieldNumber(valueMap.get(COLLECTION_NUMBER));
+
+    		//collector team
+    		String team = valueMap.get(COLLECTOR_TEAM_AS_TEXT);
+    		if (team != null){
+    		    Team collectorTeam = Team.NewTitledInstance(team, team);
+    		    specimen.setCollector(collectorTeam);
+    		}
+
+    		specimen.setLocality(valueMap.get(LOCALITY));
+
+    		try {
+    			String latDegrees = CdmUtils.Nz(valueMap.get(LATITUDE_DEGREES));
+    			String latMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
+    			String latSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
+    			String direction = CdmUtils.Nz(valueMap.get(NORTH_OR_SOUTH));
+    			String latitude = latDegrees + "°" + latMinutes + "'" + latSeconds + "\"" + direction;
+
+    			String lonDegrees = CdmUtils.Nz(valueMap.get(LONGITUDE_DEGREES));
+    			String lonMinutes = CdmUtils.Nz(valueMap.get(LONGITUDE_MINUTES));
+    			String lonSeconds = CdmUtils.Nz(valueMap.get(LONGITUDE_SECONDS));
+    			direction = CdmUtils.Nz(valueMap.get(EAST_OR_WEST));
+    			String longitude = lonDegrees + "°" + lonMinutes + "'" + lonSeconds + "\"" + direction;
+
+    			specimen.setExactLocationByParsing(longitude, latitude, null, null);
+    		} catch (ParseException e) {
+    			logger.info("Parsing exception occurred when trying to parse type exact location."  + e.getMessage());
+    		} catch (Exception e) {
+    			logger.info("Exception occurred when trying to read type exact location."  + e.getMessage());
+    		}
+
+
+    		//type annotation
+    		if (valueMap.get(TYPE_REMARKS)!= null){
+    		    Annotation typeAnnotation = Annotation.NewInstance(valueMap.get(TYPE_REMARKS), AnnotationType.EDITORIAL(), Language.DEFAULT());
+    		    specimen.addAnnotation(typeAnnotation);
+    		}
 		}
-		specimen.setGatheringPeriod(gatheringPeriod);
-
-		specimen.setFieldNumber(valueMap.get(COLLECTION_NUMBER));
-
-		//collector team
-		String team = valueMap.get(COLLECTOR_TEAM_AS_TEXT);
-		Team collectorTeam = Team.NewTitledInstance(team, team);
-		specimen.setCollector(collectorTeam);
-
-		specimen.setLocality(valueMap.get(LOCALITY));
-
-		try {
-			String latDegrees = CdmUtils.Nz(valueMap.get(LATITUDE_DEGREES));
-			String latMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
-			String latSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
-			String direction = CdmUtils.Nz(valueMap.get(NORTH_OR_SOUTH));
-			String latitude = latDegrees + "°" + latMinutes + "'" + latSeconds + "\"" + direction;
-
-			String lonDegrees = CdmUtils.Nz(valueMap.get(LATITUDE_DEGREES));
-			String lonMinutes = CdmUtils.Nz(valueMap.get(LATITUDE_MINUTES));
-			String lonSeconds = CdmUtils.Nz(valueMap.get(LATITUDE_SECONDS));
-			direction = CdmUtils.Nz(valueMap.get(EAST_OR_WEST));
-			String longitude = lonDegrees + "°" + lonMinutes + "'" + lonSeconds + "\"" + direction;
-
-
-			specimen.setExactLocationByParsing(longitude, latitude, null, null);
-		} catch (ParseException e) {
-			logger.info("Parsing exception occurred when trying to parse type exact location."  + e.getMessage());
-		} catch (Exception e) {
-			logger.info("Exception occurred when trying to read type exact location."  + e.getMessage());
-		}
-
-
-		//type annotation
-		Annotation typeAnnotation = Annotation.NewInstance(TYPE_REMARKS, AnnotationType.EDITORIAL(), Language.DEFAULT());
-		specimen.addAnnotation(typeAnnotation);
-
 
 		//TODO  Type name
 		//TODO "Type locations"  , eg. holotype   CAT  ,isotype   CAT  ,isotype   FI
@@ -584,11 +666,8 @@ public class IpniService  implements IIpniService{
 		//TODO Geographic unit as text
 
 
-
-
-
 		//source
-		Reference citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(repository);
 		name.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
 
 
@@ -636,6 +715,55 @@ public class IpniService  implements IIpniService{
 		return name;
 	}
 
+    private String datePatternStr = "([12][0789]\\d{2})\\s\\[([123]?\\d\\s[A-Z][a-z][a-z]\\s[1-2][0789]\\d{2})\\]";
+    private Pattern datePattern = Pattern.compile(datePatternStr);
+
+	/**
+     * Parses the full year string as a {@link TimePeriod}
+     * @param string
+     * @return
+     */
+    private TimePeriod parsePublicationFullYear(String fullYearStr) {
+        TimePeriod result = null;
+
+        if (fullYearStr != null){
+            Matcher matcher = datePattern.matcher(fullYearStr);
+            if (matcher.matches()){
+                String yearStr = matcher.group(1);
+                Integer year = Integer.valueOf(yearStr);
+                String exactDate = matcher.group(2);
+                result = TimePeriodParser.parseString(exactDate);
+                if (!year.equals(result.getStartYear())){
+                    logger.warn("Year and exact date year do not match");
+                    result = TimePeriod.NewInstance(year);
+                    result.setFreeText(fullYearStr);
+                }
+            }else{
+                result = TimePeriodParser.parseString(fullYearStr);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * Fills the map where the key is the parameter name from the parameterMap and the value is the value from the split.
+     * @param parameterMap
+     * @param splits
+     * @param valueMap
+     */
+    private Map<String, String> fillValueMap(Map<Integer, String> parameterMap, String[] splits) {
+        Map<String, String> result = new HashMap<>();
+        for (int i = 0; i < splits.length; i++){
+		    String key = parameterMap.get(i);
+		    String value = splits[i];
+		    if (isNotBlank(value)){
+		        result.put(key, value);
+		    }
+		}
+        return result;
+    }
+
 	/**
 	 * @param valueMap
 	 * @return
@@ -656,15 +784,9 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private String nomalizeRank(String string) {
-		String result = string.replace("spec.", "sp.");
-		return result;
-	}
-
-
-	private List<Person> buildAuthorList(InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<Person> buildAuthorList(InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceAuthorConfigurator config = (IpniServiceAuthorConfigurator)iConfig;
-		List<Person> result = new ArrayList<Person>();
+		List<Person> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
@@ -672,8 +794,8 @@ public class IpniService  implements IIpniService{
 			Map<Integer, String> parameterMap = getParameterMap(headerLine);
 
 			String line = reader.readLine();
-			while (StringUtils.isNotBlank(line)){
-				Person author = getAuthorFromLine(line,parameterMap, services, config);
+			while (isNotBlank(line)){
+				Person author = getAuthorFromLine(line,parameterMap, repository, config);
 				result.add(author);
 				line = reader.readLine();
 			}
@@ -696,14 +818,10 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private Person getAuthorFromLine(String line, Map<Integer, String> categoryMap, ICdmApplicationConfiguration appConfig, IpniServiceAuthorConfigurator config) {
+	private Person getAuthorFromLine(String line, Map<Integer, String> categoryMap, ICdmRepository repository, IpniServiceAuthorConfigurator config) {
 		//Id%Version%Standard form%Default author forename%Default author surname%Taxon groups%Dates%Alternative names
 		String[] splits = line.split("%");
-		Map<String, String> valueMap = new HashMap<String, String>();
-
-		for (int i = 0; i < splits.length; i++){
-			valueMap.put(categoryMap.get(i), splits[i]);
-		}
+		Map<String, String> valueMap = fillValueMap(categoryMap, splits);
 
 		Person person = Person.NewInstance();
 
@@ -711,7 +829,7 @@ public class IpniService  implements IIpniService{
 		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
 		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 
-		Reference citation = getIpniCitation(appConfig);
+		Reference citation = getIpniCitation(repository);
 
 		//id, version
 		person.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
@@ -722,7 +840,7 @@ public class IpniService  implements IIpniService{
 
 		//alternative_names
 		String alternativeNames = valueMap.get(ALTERNATIVE_NAMES);
-		if (StringUtils.isNotBlank(alternativeNames)){
+		if (isNotBlank(alternativeNames)){
 			String[] alternativeNameSplits = alternativeNames.split("%");
 			for (String alternativeName : alternativeNameSplits){
 				if (alternativeName.startsWith(">")){
@@ -738,7 +856,7 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private Reference getIpniCitation(ICdmApplicationConfiguration appConfig) {
+	private Reference getIpniCitation(ICdmRepository appConfig) {
 		Reference ipniReference;
 		if (appConfig != null){
 			ipniReference = appConfig.getReferenceService().find(uuidIpni);
@@ -759,47 +877,30 @@ public class IpniService  implements IIpniService{
 	private Reference getNewIpniReference() {
 		Reference ipniReference;
 		ipniReference = ReferenceFactory.newDatabase();
-		ipniReference.setTitleCache("The International Plant Names Index (IPNI)");
+		ipniReference.setTitle("The International Plant Names Index (IPNI)");
 		return ipniReference;
 	}
 
 
-	/**
-	 * @param parameter
-	 */
-	private String normalizeParameter(String parameter) {
-		String result = CdmUtils.Nz(parameter).replace(" ", "+");
-		return result;
-	}
 
 	@Override
     public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
-			String infraGenus, String infraSpecies, String authorAbbrev, Boolean includePublicationAuthors,
-			Boolean includeBasionymAuthors,
+			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
-			Boolean isAPNIRecord,
-			Boolean isGCIRecord,
-			Boolean isIKRecord,
 			Rank rankInRangeToReturn,
-			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmApplicationConfiguration services){
+			ICdmRepository services){
 		IpniRank ipniRank = IpniRank.valueOf(rankInRangeToReturn);
-		return getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, includePublicationAuthors, includeBasionymAuthors, publicationTitle, isAPNIRecord, isGCIRecord, isIKRecord, ipniRank, sortByFamily, config, services);
+		return getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, publicationTitle, ipniRank, config, services);
 	}
 
 	@Override
     public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
-			String infraGenus, String infraSpecies, String authorAbbrev, Boolean includePublicationAuthors,
-			Boolean includeBasionymAuthors,
+			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
-			Boolean isAPNIRecord,
-			Boolean isGCIRecord,
-			Boolean isIKRecord,
 			IpniRank rankToReturn,
-			Boolean sortByFamily,
 			IpniServiceNamesConfigurator config,
-			ICdmApplicationConfiguration services) {
+			ICdmRepository services) {
 
 //		find_rankToReturn=all&output_format=normal&find_sortByFamily=on&find_sortByFamily=off&query_type=by_query&back_page=plantsearch
 
@@ -829,21 +930,23 @@ public class IpniService  implements IIpniService{
 				"&find_infragenus=" + infraGenus +
 				"&find_infraspecies=" + infraSpecies +
 				"&find_authorAbbrev=" + authorAbbrev +
-				getBooleanParameter("&find_includePublicationAuthors=", includePublicationAuthors, "on", "off") +
-				getBooleanParameter("&find_includeBasionymAuthors=", includePublicationAuthors, "on", "off") +
-				getBooleanParameter("&find_find_isAPNIRecord=", includePublicationAuthors, "on", "false") +
-				getBooleanParameter("&find_isGCIRecord=", includePublicationAuthors, "on", "false") +
-				getBooleanParameter("&find_isIKRecord=", includePublicationAuthors, "on", "false") +
-
-
+				getBooleanParameter("&find_includePublicationAuthors=", config.isIncludePublicationAuthors(), "on", "off") +
+				getBooleanParameter("&find_includeBasionymAuthors=", config.isIncludeBasionymAuthors(), "on", "off") +
+				getBooleanParameter("&find_isAPNIRecord=", config.isDoApni(), "on", "false") +
+				getBooleanParameter("&find_isGCIRecord=", config.isDoGci(), "on", "false") +
+				getBooleanParameter("&find_isIKRecord=", config.isDoIk(), "on", "false") +
+				getBooleanParameter("&find_sortByFamily=", config.isSortByFamily(), "on", "off") +
+				(rankToReturn == null? "all" : rankToReturn.strRank)+
 				"&find_publicationTitle=" + publicationTitle +
 				"&output_format=" + format.parameter;
 
+		System.out.println(request);
 		return (List)queryService(request, services, getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL), config, ServiceType.NAME);
 	}
 
 
-	private String getBooleanParameter(String urlParamString, Boolean booleanParameter, String trueString, String falseString) {
+
+    private String getBooleanParameter(String urlParamString, Boolean booleanParameter, String trueString, String falseString) {
 		String result;
 		if (booleanParameter == null){
 			result = getBooleanParameter(urlParamString, true, trueString, falseString) + getBooleanParameter(urlParamString, false, trueString, falseString);
@@ -856,15 +959,12 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.IIpniService#getNamesSimple(java.lang.String, eu.etaxonomy.cdm.ext.IIpniService.DelimitedFormat, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
-	 */
 	@Override
-    public List<BotanicalName> getNamesSimple(String wholeName, ICdmApplicationConfiguration services, IpniServiceNamesConfigurator config){
+    public List<IBotanicalName> getNamesSimple(String wholeName, ICdmRepository repository,
+            IpniServiceNamesConfigurator config){
 		if (config == null){
 			config = new IpniServiceNamesConfigurator();
 		}
-
 
 //		query_type=by_query&back_page=query_ipni.html
 
@@ -875,14 +975,11 @@ public class IpniService  implements IIpniService{
 		String request = "find_wholeName=" + wholeName +
 						"&output_format=" + format.parameter;
 
-		return (List)queryService(request, services, getServiceUrl(IIpniService.SIMPLE_NAME_SERVICE_URL), config, ServiceType.NAME);
+		return (List)queryService(request, repository, getServiceUrl(IIpniService.SIMPLE_NAME_SERVICE_URL), config, ServiceType.NAME);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.IIpniService#getPublications(java.lang.String, java.lang.String, boolean, eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration)
-	 */
 	@Override
-    public List<Reference> getPublications(String title, String abbreviation, ICdmApplicationConfiguration services, IpniServicePublicationConfigurator config){
+    public List<Reference> getPublications(String title, String abbreviation, ICdmRepository services, IpniServicePublicationConfigurator config){
 //		http://www.uk.ipni.org/ipni/advPublicationSearch.do?find_title=Spe*plant*&find_abbreviation=&output_format=normal&query_type=by_query&back_page=publicationsearch
 //		http://www.uk.ipni.org/ipni/advPublicationSearch.do?find_title=*Hortus+Britannicus*&find_abbreviation=&output_format=delimited-classic&output_format=delimited
 
@@ -899,15 +996,6 @@ public class IpniService  implements IIpniService{
 
 		List<Reference> result = (List)queryService(request, services, getServiceUrl(IIpniService.PUBLICATION_SERVICE_URL), config, ServiceType.PUBLICATION);
 		return result;
-	}
-
-
-
-	/**
-	 * @return
-	 */
-	private DelimitedFormat getDefaultFormat() {
-		return DelimitedFormat.SHORT;
 	}
 
 
@@ -930,22 +1018,48 @@ public class IpniService  implements IIpniService{
 
 	@Override
 	public InputStream getNamesById(String id) {
-
-
 		String request = "id="+id + "&output_format=lsid-metadata";
 		return queryServiceForID(request, getServiceUrl(IIpniService.ID_NAMESEARCH_SERVICE_URL));
-
 	}
 
 	@Override
 	public InputStream getPublicationsById(String id) {
-
-
 		String request = "id="+id ;
 		return queryServiceForID(request, getServiceUrl(IIpniService.ID_PUBLICATION_SERVICE_URL));
-
 	}
 
+
+    /**
+     * @param parameter
+     */
+    private String normalizeParameter(String parameter) {
+        String result = CdmUtils.Nz(parameter).replace(" ", "+");
+        return result;
+    }
+
+    private String nomalizeRank(String string) {
+        if (string == null){
+            return null;
+        }
+        String result = string.replace("spec.", "sp.");
+        return result;
+    }
+
+    /**
+     * @return
+     */
+    private DelimitedFormat getDefaultFormat() {
+        return DelimitedFormat.SHORT;
+    }
+
+    private boolean isNotBlank(String line) {
+        return StringUtils.isNotBlank(line);
+    }
+
+    @NotNull
+    private String Nz(String string) {
+        return CdmUtils.Nz(string);
+    }
 
 
 }

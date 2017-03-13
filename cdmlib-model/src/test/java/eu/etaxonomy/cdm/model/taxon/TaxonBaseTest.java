@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -23,8 +24,10 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -38,7 +41,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
 
 	private Reference sec;
-	private ZoologicalName name1;
+	private IZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
 	private Taxon taxon1;
@@ -58,9 +61,9 @@ public class TaxonBaseTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		sec= ReferenceFactory.newBook();
 		sec.setTitleCache("Schoenes saftiges Allg�u", true);
-		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
+		name1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
 		// taxa
 		taxon1 = Taxon.NewInstance(name1,sec);
 		synonym1 = Synonym.NewInstance(name2,sec);
@@ -143,7 +146,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	public final void testClone(){
 
-		BotanicalName test = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		String genus = "test";
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);
@@ -156,4 +159,40 @@ public class TaxonBaseTest extends EntityTestBase {
 		assertNull(clone.getSec());
 		assertSame(freeT.getName(), clone.getName());
 	}
+
+	  /*
+	    * Moved from IdentifiableEntityTest to here due to #922
+	    */
+	   @Test
+	   public void testCompareTo() {
+
+	       TaxonNameBase<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       abies.setNameCache("Abies");
+	       abies.setTitleCache("Abies", true);
+	       Reference sec = ReferenceFactory.newArticle();
+	       sec.setTitle("Abies alba Ref");
+
+	       Taxon abiesTaxon = Taxon.NewInstance(abies, sec);
+
+	       TaxonNameBase<?,?> abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       abiesMill.setNameCache("Abies");
+	       abiesMill.setTitleCache("Abies Mill.", true);
+	       Taxon abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
+
+	       int result = 0;
+
+	       // "Abies" < "Abies Mill."
+	       result = abies.compareToName(abiesMill);
+	       assertTrue(result < 0);
+
+	       abiesTaxon = abies.getTaxa().iterator().next();
+
+	       assertTrue(abiesTaxon.compareToTaxon(abiesTaxon) == 0);
+
+	       assertTrue(abiesMillTaxon.compareToTaxon(abiesTaxon) > 0);
+
+	       assertTrue(abiesTaxon.compareToTaxon(abiesMillTaxon) < 0);
+
+
+	   }
 }

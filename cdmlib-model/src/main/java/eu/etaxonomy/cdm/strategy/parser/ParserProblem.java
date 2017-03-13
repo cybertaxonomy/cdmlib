@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,29 +32,23 @@ public enum ParserProblem {
 	RankNotSupported(ERROR()),
 	NewCombinationHasPublication(WARNING()),
 	;
-	
-	//logger.warn("ICNCP parsing not yet implemented");
-	//logger.warn("ICNB not yet implemented");
-	//logger.error("Viral name is not a NonViralName !!");
-	//logger.error("Unknown Nomenclatural Code !!");
-	//logger.warn("nameToBeFilled class not supported ("+nameToBeFilled.getClass()+")");
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ParserProblem.class);
-	
+
 	private final static int WARNING(){return 0;};
 	private final static int ERROR() {return 1;};
-	
-	int type;  
-	
+
+	int type;
+
 	private ParserProblem(int type){
 		this.type = type;
 	}
-	
+
 	public String getMessage(){
 		return getMessage(Language.DEFAULT());
 	}
-	
+
 	public String getMessage(Language language){
 		//TODO language not yet supported
 		if (this == CheckRank){
@@ -79,8 +73,8 @@ public enum ParserProblem {
 			return "unknown parser problem";
 		}
 	}
-	
-	
+
+
 	public boolean isError(){
 		return type == ERROR();
 	}
@@ -89,7 +83,7 @@ public enum ParserProblem {
 		return type == WARNING();
 	}
 
-	
+
 	public static List<ParserProblem> warningList(int problem){
 		List<ParserProblem> result = new ArrayList<ParserProblem>();
 		ParserProblem[] values = ParserProblem.values();
@@ -100,7 +94,7 @@ public enum ParserProblem {
 		}
 		return result;
 	}
-	
+
 	public static boolean hasError(int problem){
 		List<ParserProblem> list = warningList(problem);
 		for (ParserProblem warning : list){
@@ -132,7 +126,7 @@ public enum ParserProblem {
 			return originalProblems | 1 << newProblem.ordinal();
 		}
 	}
-	
+
 	public static int addProblems(int hasProblem, int newProblems) {
 		return hasProblem | newProblems;
 	}
@@ -148,8 +142,8 @@ public enum ParserProblem {
 		}else{
 			return originalProblems & ~(1 << problemToRemove.ordinal());
 		}
-	}	
+	}
 
-	
-	
+
+
 }

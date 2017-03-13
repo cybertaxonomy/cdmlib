@@ -85,7 +85,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     @OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //  @Merge(MergeMode.ADD_CLONE)
-    private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
+    private Set<IntextReference> intextReferences = new HashSet<>();
 
 	//Human annotation
 	@XmlElement(name = "Commentator")
@@ -157,10 +157,20 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     public Set<IntextReference> getIntextReferences(){
 		return this.intextReferences;
 	}
+
+	@Override
+    public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end){
+        return IntextReferenceHelper.addIntextReference(target, this, start, inner, end);
+    }
+    @Override
+    public IntextReference addIntextReference(IIntextReferenceTarget target, int start, int end){
+        return IntextReferenceHelper.addIntextReference(target, this, start, end);
+    }
+
 	@Override
     public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
-			intextReference.setAnnotation(this);
+			intextReference.setReferencedEntity(this);
 			getIntextReferences().add(intextReference);
 		}
 	}
@@ -169,7 +179,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     public void removeIntextReference(IntextReference intextReference){
 		if(getIntextReferences().contains(intextReference)) {
 			getIntextReferences().remove(intextReference);
-			intextReference.setAnnotation((Annotation)null);
+			intextReference.setReferencedEntity((Annotation)null);
 		}
 	}
 

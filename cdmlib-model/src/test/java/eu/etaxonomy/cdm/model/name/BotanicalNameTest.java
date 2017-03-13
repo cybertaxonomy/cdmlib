@@ -54,7 +54,7 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testPARSED_NAME() {
 		String fullName = "Abies alba subsp. beta (L.) Mill.";
-		BotanicalName name = BotanicalName.PARSED_NAME(fullName);
+		IBotanicalName name = TaxonNameFactory.PARSED_BOTANICAL(fullName);
 		assertFalse(name.hasProblem());
 		assertEquals("beta", name.getInfraSpecificEpithet());
 	}
@@ -68,11 +68,11 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testBotanicalNameRank() {
 		Rank genus = Rank.GENUS();
-		BotanicalName rankName = BotanicalName.NewInstance(genus);
+		IBotanicalName rankName = TaxonNameFactory.NewBotanicalInstance(genus);
 		assertNotNull(rankName);
 		assertSame(genus, rankName.getRank());
 		assertTrue(rankName.getRank().isGenus());
-		BotanicalName nullRankName = BotanicalName.NewInstance(null);
+		IBotanicalName nullRankName = TaxonNameFactory.NewBotanicalInstance(null);
 		assertNotNull(nullRankName);
 		assertNull(nullRankName.getRank());
 	}
@@ -88,7 +88,7 @@ public class BotanicalNameTest extends EntityTestBase{
 		INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
 		String nomenclMicroRef = "microRef";
 		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
-		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+		IBotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		assertEquals(Rank.SPECIALFORM(), fullName.getRank());
 		assertEquals("Genus", fullName.getGenusOrUninomial());
 		assertEquals("infraGenericEpi", fullName.getInfraGenericEpithet());

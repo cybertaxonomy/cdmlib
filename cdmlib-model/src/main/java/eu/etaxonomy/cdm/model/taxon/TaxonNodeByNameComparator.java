@@ -14,7 +14,9 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -24,19 +26,15 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @date 24.06.2009
  *
  */
-//@Component
 public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNode> implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
 
-    private static final String HYBRID_SIGN = "\u00D7";
+    private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
 
     private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
 
     private boolean ignoreHybridSign = true;
     private boolean sortInfraGenericFirst = true;
 
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     @Override
     public int compare(TaxonNode o1, TaxonNode o2) {
 
@@ -101,7 +99,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
 
             if (name instanceof NonViralName){
                 if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
-                NonViralName<?> nonViralName = (NonViralName<?>)name;
+                INonViralName nonViralName = name;
                 if (nonViralName.getGenusOrUninomial() != null){
                     titleCache = nonViralName.getGenusOrUninomial();
                     if (name.isSpecies() && nonViralName.getSpecificEpithet() != null){

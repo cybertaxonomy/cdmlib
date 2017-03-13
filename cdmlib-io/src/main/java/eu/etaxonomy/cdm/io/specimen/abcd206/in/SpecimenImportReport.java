@@ -25,7 +25,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -47,7 +47,7 @@ public class SpecimenImportReport {
     private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<UnitIdSpecimen>>();
     private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<UnitIdSpecimen, List<UnitIdSpecimen>>();
     private final List<UnitIdSpecimen> alreadyExistingSpecimens = new ArrayList<UnitIdSpecimen>();
-    private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
+    private final List<ITaxonNameBase> createdNames = new ArrayList<ITaxonNameBase>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
 
@@ -55,7 +55,7 @@ public class SpecimenImportReport {
         createdTaxa.add(taxon);
     }
 
-    public void addName(TaxonNameBase<?, ?> taxonName){
+    public void addName(ITaxonNameBase taxonName){
         createdNames.add(taxonName);
     }
 
@@ -159,7 +159,7 @@ public class SpecimenImportReport {
 
         //taxon name
         out.println("---Created Taxon Names ("+createdNames.size()+")---");
-        for (TaxonNameBase<?, ?> taxonName : createdNames) {
+        for (ITaxonNameBase taxonName : createdNames) {
             out.println(taxonName.getTitleCache());
         }
         out.println("\n");

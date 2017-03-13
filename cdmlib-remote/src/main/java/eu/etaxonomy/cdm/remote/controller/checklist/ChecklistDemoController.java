@@ -295,7 +295,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
                     subThread.setPriority(priority);
                     subThread.start();
                 }
-                mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
+                mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, processLabel, indexMonitorUuid, false, request, response);
             }
             return mv;
         }catch(Exception e){

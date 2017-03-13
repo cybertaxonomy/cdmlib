@@ -35,9 +35,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -148,11 +150,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		//nameRelations
 
-		t1.getName().addRelationshipFromName(BotanicalName.NewInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
+		t1.getName().addRelationshipFromName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
 
 		//taxonRelations
-		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
-		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		t1.addTaxonRelation(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
+		Synonym synonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
 		UUID uuidSynonym = taxonService.save(synonym).getUuid();
 
 		t1.addHomotypicSynonym(synonym);
@@ -239,12 +241,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		polKeyService.save(polKey);
 
 		//nameRelations
-		t1.getName().addRelationshipFromName(BotanicalName.NewInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
+		t1.getName().addRelationshipFromName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
 		TaxonNameBase<?,?> name1 = t1.getName();
 		UUID name1UUID = name1.getUuid();
 		//taxonRelations
-		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
-		Synonym t1HomotypSynonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		t1.addTaxonRelation(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
+		Synonym t1HomotypSynonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
 
 		t1.addHomotypicSynonym(t1HomotypSynonym);
 		TaxonNameBase<?,?> nameT1 = t1.getName();
@@ -376,7 +378,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node6 = taxonNodeService.load(node6Uuid);
 
 		treeIndex = node6.treeIndex();
-		Taxon newTaxon= Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		Taxon newTaxon= Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
 		UUID taxonNewUuid = taxonService.save(newTaxon).getUuid();
 
 		node5.addChildTaxon(newTaxon, null, null);
@@ -401,7 +403,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(rootNodeUuid);
 		node1 = HibernateProxyHelper.deproxy(node1);
 
-		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
 		newNode = taxonNodeService.load(uuidNewNode);
 		UUID taxUUID = newNode.getTaxon().getUuid();
@@ -420,7 +422,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertNull(t1);
 		Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
 		assertNull(newTaxon);
-		BotanicalName name = (BotanicalName)nameService.load(nameUUID);
+		IBotanicalName name = nameService.load(nameUUID);
 		assertNull(name);
 
 
@@ -443,7 +445,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         List<TaxonNode> nodesOfClassification2 = taxonNodeService.listAllNodesForClassification(classification2, null, null);
         UUID nodeUUID = nodesOfClassification2.get(0).getUuid();
         assertEquals(nodeUUID, nodeClassification2.getUuid());
-        Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()),  null);
+        Taxon newTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()),  null);
         taxonService.save(newTaxon);
         TaxonNode newNode = node1.addChildTaxon(newTaxon,null, null);
         UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
@@ -482,7 +484,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(rootNodeUuid);
 		node1 = HibernateProxyHelper.deproxy(node1);
 		node2 = HibernateProxyHelper.deproxy(node2);
-		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
 		List<TaxonNode> treeNodes = new ArrayList<TaxonNode>();
 		treeNodes.add(node1);
@@ -510,7 +512,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	  //  Set<TaxonNode>  nodes = classification.getAllNodes();
 	    List<TaxonNode>  nodes = classification.getChildNodes();
 	    System.out.println(nodes.size());
-	    classification.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), nodes.size(), null, null);
+	    classification.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), nodes.size(), null, null);
 	   nodes =  classification.getChildNodes();
 	    System.out.println(nodes.size());
 
@@ -527,22 +529,22 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	 *  `- Pinus pampa
     	 */
     	Classification classification = Classification.NewInstance("Classification");
-    	BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+    	IBotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
     	abiesName.setGenusOrUninomial("Abies");
     	Taxon abies = Taxon.NewInstance(abiesName, null);
-    	BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+    	IBotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	abiesAlbaName.setGenusOrUninomial("Abies");
     	abiesAlbaName.setSpecificEpithet("alba");
     	Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
-    	BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+    	IBotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
     	pinusName.setGenusOrUninomial("Pinus");
     	Taxon pinus = Taxon.NewInstance(pinusName, null);
-    	BotanicalName pinusPampaName = BotanicalName.NewInstance(Rank.SPECIES());
+    	IBotanicalName pinusPampaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	pinusPampaName.setGenusOrUninomial("Pinus");
     	pinusPampaName.setSpecificEpithet("pampa");
     	Taxon pinusPampa = Taxon.NewInstance(pinusPampaName, null);
 
-        BotanicalName abiesBalsameaName = BotanicalName.NewInstance(Rank.SPECIES());
+        IBotanicalName abiesBalsameaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesBalsameaName.setGenusOrUninomial("Abies");
         abiesBalsameaName.setSpecificEpithet("balsamea");
         Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);
@@ -597,27 +599,27 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        Classification checklist = Classification.NewInstance("Checklist");
 //        checklist.setUuid(classificationUuid);
 //
-//        BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+//        BotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 //        abiesName.setGenusOrUninomial("Abies");
 //        Taxon abies = Taxon.NewInstance(abiesName, null);
 //
-//        BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+//        BotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 //        abiesAlbaName.setGenusOrUninomial("Abies");
 //        abiesAlbaName.setSpecificEpithet("alba");
 //        Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
 //
-//        BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+//        BotanicalName abiesAlbaSubBrotaName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
 //        abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
 //        abiesAlbaSubBrotaName.setSpecificEpithet("alba");
 //        abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
 //        Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
 //
-//        BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
+//        BotanicalName abiesPalmaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 //        abiesPalmaName.setGenusOrUninomial("Abies");
 //        abiesPalmaName.setSpecificEpithet("palma");
 //        Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
 //
-//        BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+//        BotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 //        pinusName.setGenusOrUninomial("Pinus");
 //        Taxon pinus = Taxon.NewInstance(pinusName, null);
 //
@@ -893,31 +895,31 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Classification checklist = Classification.NewInstance("Checklist");
         checklist.setUuid(classificationUuid);
 
-        BotanicalName abiesName = BotanicalName.NewInstance(Rank.GENUS());
+        BotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         abiesName.setGenusOrUninomial("Abies");
         Taxon abies = Taxon.NewInstance(abiesName, null);
         abies.setUuid(abiesUuid);
 
-        BotanicalName abiesAlbaName = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesAlbaName.setGenusOrUninomial("Abies");
         abiesAlbaName.setSpecificEpithet("alba");
         Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
         abiesAlba.setUuid(abiesAlbaUuid);
 
-        BotanicalName abiesAlbaSubBrotaName = BotanicalName.NewInstance(Rank.SUBSPECIES());
+        BotanicalName abiesAlbaSubBrotaName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
         abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
         abiesAlbaSubBrotaName.setSpecificEpithet("alba");
         abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
         Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
         abiesAlbaSubBrota.setUuid(abiesAlbaSubBrotaUuid);
 
-        BotanicalName abiesPalmaName = BotanicalName.NewInstance(Rank.SPECIES());
+        BotanicalName abiesPalmaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesPalmaName.setGenusOrUninomial("Abies");
         abiesPalmaName.setSpecificEpithet("palma");
         Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
         abiesPalma.setUuid(abiesPalmaUuid);
 
-        BotanicalName pinusName = BotanicalName.NewInstance(Rank.GENUS());
+        BotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         pinusName.setGenusOrUninomial("Pinus");
         Taxon pinus = Taxon.NewInstance(pinusName, null);
         pinus.setUuid(pinusUuid);

@@ -35,9 +35,9 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -65,7 +65,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		this.specimenImport = new MarkupSpecimenImport(docImport);
 		this.nomenclatureImport = new MarkupNomenclatureImport(docImport, specimenImport);
 		this.modsImport = new MarkupModsImport(docImport);
-		this.featureImport = new MarkupFeatureImport(docImport, specimenImport, nomenclatureImport);
+		this.featureImport = new MarkupFeatureImport(docImport, specimenImport, nomenclatureImport, keyImport);
 	}
 
 	public void doInvoke(MarkupImportState state) throws XMLStreamException {
@@ -319,7 +319,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private Taxon handleTaxon(MarkupImportState state, XMLEventReader reader, StartElement parentEvent) throws XMLStreamException {
 		// TODO progress monitoring
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		Taxon taxon = createTaxonAndName(state, attributes);
+		Taxon taxon = createTaxonAndName(state, attributes, parentEvent);
 		state.setCurrentTaxon(taxon);
 		state.addNewFeatureSorterLists(taxon.getUuid().toString());
 
@@ -327,7 +327,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		boolean hasNomenclature = false;
 		String taxonTitle = null;
 
-		Reference descriptionReference = state.getConfig().getSourceReference();
+		Reference sourceReference = state.getConfig().getSourceReference();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -341,6 +341,11 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					fireWarningEvent(warning, next, 12);
 					taxon.getName().setRank(Rank.UNKNOWN_RANK());
 				}
+				//hybrid
+				if (state.isTaxonIsHybrid() && !taxon.getName().isHybrid()){
+				    fireWarningEvent("Taxon is hybrid but name is not a hybrid name", next, 4);
+				}
+				state.setTaxonIsHybrid(false);
 
 				keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
 				state.setCurrentTaxon(null);
@@ -348,7 +353,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				if (taxon.getName().getRank().isHigher(Rank.GENUS())){
 					state.setLatestGenusEpithet(null);
 				}else{
-					state.setLatestGenusEpithet(((NonViralName<?>)taxon.getName()).getGenusOrUninomial());
+					state.setLatestGenusEpithet(taxon.getName().getGenusOrUninomial());
 				}
 				save(taxon, state);
 				return taxon;
@@ -378,8 +383,9 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 						notesUuid = state.getTransformer().getFeatureUuid("notes");
 						Feature feature = getFeature(state, notesUuid, "Notes",	"Notes", "note", null);
 						TextData textData = TextData.NewInstance(feature);
+						textData.addPrimaryTaxonomicSource(sourceReference);
 						textData.putText(getDefaultLanguage(state), note);
-						TaxonDescription description = getTaxonDescription(taxon, descriptionReference, false, true);
+						TaxonDescription description = getDefaultTaxonDescription(taxon, false, true, sourceReference);
 						description.addElement(textData);
 					} catch (UndefinedTransformerMethodException e) {
 						String message = "getFeatureUuid method not yet implemented";
@@ -388,14 +394,15 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				} else if (isStartingElement(next, REFERENCES)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, FIGURE_REF)) {
-					TaxonDescription desc = getTaxonDescription(taxon, state.getConfig().getSourceReference(), IMAGE_GALLERY, CREATE_NEW);
+					TaxonDescription desc = getTaxonDescription(taxon, sourceReference, IMAGE_GALLERY, CREATE_NEW);
 					TextData textData;
 					if (desc.getElements().isEmpty()){
 						textData = TextData.NewInstance(Feature.IMAGE());
+						textData.addPrimaryTaxonomicSource(sourceReference);
 						desc.addElement(textData);
 					}
 					textData = (TextData)desc.getElements().iterator().next();
-					featureImport.makeFeatureFigureRef(state, reader, desc, false, textData, next);
+					featureImport.makeFeatureFigureRef(state, reader, desc, false, textData, sourceReference, next);
 				} else if (isStartingElement(next, FIGURE)) {
 					handleFigure(state, reader, next, specimenImport, nomenclatureImport);
 				} else if (isStartingElement(next, FOOTNOTE)) {
@@ -426,24 +433,28 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 */
 	private void makeKeyWriter(MarkupImportState state, XMLEventReader reader, Taxon taxon, String taxonTitle, XMLEvent next) throws XMLStreamException {
 		WriterDataHolder writer = handleWriter(state, reader, next);
-		taxon.addExtension(writer.extension);
-		// TODO what if taxonTitle comes later
-		taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : ((NonViralName)taxon.getName()).getNameCache();
-		if (writer.extension != null) {
-			if (StringUtils.isBlank(taxonTitle)){
-				fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);
-				taxonTitle = null;
-			}
-			Reference sec = ReferenceFactory.newBookSection();
-			sec.setTitle(taxonTitle);
-			TeamOrPersonBase<?> author = createAuthor(writer.writer);
-			sec.setAuthorship(author);
-			sec.setInReference(state.getConfig().getSourceReference());
-			taxon.setSec(sec);
-			registerFootnotes(state, sec, writer.footnotes);
-		} else {
-			String message = "There is no writer extension defined";
-			fireWarningEvent(message, next, 6);
+		if (state.getConfig().isHandleWriterManually()){
+		    fireWarningEvent("<Writer> is expected to be handled manually", next, 1);
+		}else{
+		    taxon.addExtension(writer.extension);
+	        // TODO what if taxonTitle comes later
+	        taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : taxon.getName().getNameCache();
+	        if (writer.extension != null) {
+	            if (StringUtils.isBlank(taxonTitle)){
+	                fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);
+	                taxonTitle = null;
+	            }
+	            Reference sec = ReferenceFactory.newBookSection();
+	            sec.setTitle(taxonTitle);
+	            TeamOrPersonBase<?> author = createAuthor(state, writer.writer);
+	            sec.setAuthorship(author);
+	            sec.setInReference(state.getConfig().getSourceReference());
+	            taxon.setSec(sec);
+	            registerFootnotes(state, sec, writer.footnotes);
+	        } else {
+	            String message = "There is no writer extension defined";
+	            fireWarningEvent(message, next, 6);
+	        }
 		}
 	}
 
@@ -490,7 +501,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 * @throws XMLStreamException
 	 */
 	private String makeNotesString(MarkupImportState state,	XMLEventReader reader, String text, XMLEvent next) throws XMLStreamException {
-		Map<String, String> stringMap = handleString(state, reader,	next, null);
+		Map<String, SubheadingResult> stringMap = handleString(state, reader,	next, null);
 		if (stringMap.size() == 0){
 			String message = "No text available in <notes>";
 			fireWarningEvent(message, next, 4);
@@ -519,14 +530,16 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	/**
 	 * @param state
 	 * @param attributes
+	 * @param event
 	 */
 	private Taxon createTaxonAndName(MarkupImportState state,
-			Map<String, Attribute> attributes) {
-		NonViralName<?> name;
+			Map<String, Attribute> attributes, StartElement event) {
+		INonViralName name;
 		Rank rank = null;  //Rank.SPECIES(); // default
 		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");
+
 		if (isCultivar) {
-			name = CultivarPlantName.NewInstance(rank);
+			name = TaxonNameFactory.NewCultivarInstance(rank);
 		} else {
 			name = createNameByCode(state, rank);
 		}
@@ -536,8 +549,10 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		} else if (checkAndRemoveAttributeValue(attributes, CLASS, "excluded")) {
 			state.setCurrentTaxonExcluded(true);
 		}
+        state.setTaxonIsHybrid(checkAndRemoveAttributeValue(attributes, CLASS, "hybrid"));
+
 		// TODO insufficient, new, expected
-		handleNotYetImplementedAttribute(attributes, CLASS);
+		handleNotYetImplementedAttribute(attributes, CLASS, event);
 		// From old version
 		// MarkerType markerType = getMarkerType(state, attrValue);
 		// if (markerType == null){
@@ -569,7 +584,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				if (isMyEndingElement(next, parentEvent)) {
 					Taxon taxon = state.getCurrentTaxon();
 					String titleText = null;
-					if (checkMandatoryText(text, parentEvent)) {
+					if (state.getConfig().isDoExtensionForTaxonTitle() && checkMandatoryText(text, parentEvent)) {
 						titleText = normalize(text);
 						UUID uuidTitle = MarkupTransformer.uuidTaxonTitle;
 						ExtensionType titleExtension = this.getExtensionType(state, uuidTitle, "Taxon Title ","taxon title", "title");

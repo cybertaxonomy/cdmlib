@@ -13,6 +13,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -35,8 +36,8 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 			TaxonNameBase<?,?> to = CdmBase.deproxy(nameRelationship.getToName(), TaxonNameBase.class);
 
 			if(from instanceof NonViralName && to instanceof NonViralName) {
-				NonViralName<?> fromName = (NonViralName<?>) from;
-				NonViralName<?> toName = (NonViralName<?>) to;
+				INonViralName fromName =  from;
+				INonViralName toName = to;
 
 				//compare author teams
 				if(fromName.getCombinationAuthorship() == null || !fromName.getCombinationAuthorship().equals(toName.getBasionymAuthorship())) {

@@ -127,30 +127,30 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * nomenclature code only containing the given {@link Rank rank}.
 	 *
 	 * @param	rank	the rank of the new taxon name instance
-	 * @see 			BotanicalName#NewInstance(Rank)
-	 * @see 			ZoologicalName#NewInstance(Rank)
-	 * @see 			CultivarPlantName#NewInstance(Rank)
-	 * @see 			BacterialName#NewInstance(Rank)
-	 * @see 			ViralName#NewInstance(Rank)
+	 * @see 			TaxonNameBase#NewBotanicalInstance(Rank)
+	 * @see 			TaxonNameBase#NewZoologicalInstance(Rank)
+	 * @see 			TaxonNameBase#NewCultivarInstance(Rank)
+	 * @see 			TaxonNameBase#NewBacterialInstance(Rank)
+	 * @see 			TaxonNameBase#NewViralInstance(Rank)
 	 */
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
 
 		switch (this){
 		case ICNAFP:
-			result = BotanicalName.NewInstance(rank);
+			result = TaxonNameFactory.NewBotanicalInstance(rank);
 			break;
 		case ICZN:
-			result = ZoologicalName.NewInstance(rank);
+			result = TaxonNameFactory.NewZoologicalInstance(rank);
 			break;
 		case ICNCP:
-			result = CultivarPlantName.NewInstance(rank);
+			result = TaxonNameFactory.NewCultivarInstance(rank);
 			break;
 		case ICNB:
-			result = BacterialName.NewInstance(rank);
+			result = TaxonNameFactory.NewBacterialInstance(rank);
 			break;
 		case ICVCN:
-			result = ViralName.NewInstance(rank);
+			result = TaxonNameFactory.NewViralInstance(rank);
 			break;
 		default:
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
@@ -165,11 +165,11 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * nomenclature code only containing the given {@link Rank rank}.
 	 *
 	 * @param	rank	the rank of the new taxon name instance
-	 * @see 			BotanicalName#NewInstance(Rank)
-	 * @see 			ZoologicalName#NewInstance(Rank)
-	 * @see 			CultivarPlantName#NewInstance(Rank)
-	 * @see 			BacterialName#NewInstance(Rank)
-	 * @see 			ViralName#NewInstance(Rank)
+     * @see             TaxonNameBase#NewBotanicalInstance(Rank)
+     * @see             TaxonNameBase#NewZoologicalInstance(Rank)
+     * @see             TaxonNameBase#NewCultivarInstance(Rank)
+     * @see             TaxonNameBase#NewBacterialInstance(Rank)
+     * @see             TaxonNameBase#NewViralInstance(Rank)
 	 */
 	@Transient
 	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){

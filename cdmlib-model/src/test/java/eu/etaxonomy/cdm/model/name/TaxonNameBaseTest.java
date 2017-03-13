@@ -17,8 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 /**
  * @author a.mueller
  * @created 28.06.2008
- * @version 1.0
  */
 public class TaxonNameBaseTest {
 	private static final Logger logger = Logger.getLogger(TaxonNameBaseTest.class);
@@ -65,26 +62,20 @@ public class TaxonNameBaseTest {
 
 
 	private class TaxonNameBaseTestClass extends TaxonNameBase<TaxonNameBaseTestClass, INameCacheStrategy<TaxonNameBaseTestClass>>{
-		public TaxonNameBaseTestClass(){super();};
-		public TaxonNameBaseTestClass(Rank rank){super(rank);};
-		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);};
-		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(rank, hg);};
+		public TaxonNameBaseTestClass(){super();}
+		public TaxonNameBaseTestClass(Rank rank){super(rank);}
+		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);}
+		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(rank, hg);}
 		@Override
-		public boolean isCodeCompliant(){return false;};
+		public void setCacheStrategy(INameCacheStrategy strategy){}
 		@Override
-		public void setCacheStrategy(INameCacheStrategy strategy){};
+		public INameCacheStrategy getCacheStrategy(){return null;}
 		@Override
-		public INameCacheStrategy getCacheStrategy(){return null;};
-		@Override
-		public NomenclaturalCode getNomenclaturalCode(){return null;};
+		public NomenclaturalCode getNomenclaturalCode(){return null;}
 		@Override
 		public String generateFullTitle(){return null;}
 		@Override
 		public String generateTitle() {
-			return null;
-		}
-		@Override
-		protected Map<String, java.lang.reflect.Field> getAllFields() {
 			return null;
 		}
 
@@ -268,9 +259,9 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetBasionym() {
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase basionym1 = BotanicalName.NewInstance(null);
-		TaxonNameBase basionym2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase basionym1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase basionym2 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		assertEquals(null, name1.getBasionym());
 		name1.addBasionym(basionym1);
@@ -325,7 +316,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetRank() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		assertNull("Rank shall be null", name1.getRank());
 		name1.setRank(Rank.SPECIES());
 		assertNotNull("Rank shall not be null", name1.getRank());
@@ -351,7 +342,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetAppendedPhrase() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		String appPhrase = "appPhrase";
 		assertNull(name1.getAppendedPhrase());
 		name1.setAppendedPhrase(appPhrase);
@@ -365,7 +356,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetSetNomenclaturalMicroReference() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		String microRef = "micro";
 		assertNull(name1.getNomenclaturalMicroReference());
 		name1.setNomenclaturalMicroReference(microRef);
@@ -379,7 +370,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetSetHasProblem() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.setParsingProblem(0);
 		assertFalse(name1.hasProblem());
 		name1.setParsingProblem(1);
@@ -560,10 +551,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testMergeHomotypicGroups() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		assertFalse(name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup()));
 		int numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
@@ -601,10 +592,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testIsBasionymFor() {
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase name2 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		assertFalse(name2.isBasionymFor(name1));
 		assertFalse(name1.isBasionymFor(name2));
@@ -618,10 +609,10 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testIsHomotypic() {
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.mergeHomotypicGroups(name2);
 		name2.mergeHomotypicGroups(name4);
 
@@ -635,10 +626,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testMakeGroupsBasionym(){
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		name1.mergeHomotypicGroups(name2);
 		name1.mergeHomotypicGroups(name3);
@@ -655,10 +646,10 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testIsGroupsBasionym(){
-		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
-		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase<?,?> name4 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		assertFalse(name1.isGroupsBasionym());
 
@@ -677,9 +668,9 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testRemoveBasionyms(){
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		TaxonNameBase basionym = BotanicalName.NewInstance(null);
-		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase basionym = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonNameBase name3 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		name1.addBasionym(basionym);
 		assertEquals(1, name1.getBasionyms().size());
@@ -808,13 +799,13 @@ public class TaxonNameBaseTest {
 
 	@Test
 	public void testClone(){
-		NonViralName taxonNameBase1 = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> genusName = NonViralName.NewInstance(Rank.GENUS());
-		Taxon taxonBase = Taxon.NewInstance(taxonNameBase1, null);
+	    TaxonNameBase<?,?> taxonNameBase1 = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+	    TaxonNameBase<?,?> genusName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS());
+        Taxon.NewInstance(taxonNameBase1, null);
 
 		//basionym & homonym
-		NonViralName<?> basionym = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName<?> earlierHomonym = NonViralName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> basionym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> earlierHomonym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		taxonNameBase1.addBasionym(basionym);
 		taxonNameBase1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule");
 		//status
@@ -837,8 +828,8 @@ public class TaxonNameBaseTest {
 		description.addElement(textData);
 
 		//CLONE
-		TaxonNameBase<?,?> clone = (TaxonNameBase)taxonNameBase1.clone();
-		TaxonNameBase<?,?> genusClone = (TaxonNameBase)genusName.clone();
+		TaxonNameBase<?,?> clone = (TaxonNameBase<?,?>)taxonNameBase1.clone();
+		TaxonNameBase<?,?> genusClone = (TaxonNameBase<?,?>)genusName.clone();
 		assertSame("Rank should be same", taxonNameBase1.getRank(), clone.getRank());
 		assertTrue("TaxonBases should not be cloned", clone.getTaxonBases().isEmpty());
 		assertEquals("TaxonBases of original name should not be empty", 1, taxonNameBase1.getTaxonBases().size());
@@ -922,5 +913,102 @@ public class TaxonNameBaseTest {
 		assertSame("Relationship type should be cloned correctly", NameRelationshipType.LATER_HOMONYM(), nameRelation.getType());
 		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
 	}
+
+
+   /*
+    * Moved from IdentifiableEntityTest to here due to #922
+    */
+   @Test
+   public void testCompareTo() {
+       TaxonNameBase<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+       abies.setNameCache("Abies");
+       abies.setTitleCache("Abies", true);
+
+       TaxonNameBase<?,?> abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+       abiesMill.setNameCache("Abies");
+       abiesMill.setTitleCache("Abies Mill.", true);
+
+       TaxonNameBase<?,?> abiesAlba = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
+       abiesAlba.setNameCache("Abies alba");
+       abiesAlba.setTitleCache("Abies alba", true);
+
+       TaxonNameBase<?,?> abiesAlbaMichx = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES(), null);
+       abiesAlbaMichx.setNameCache("Abies alba");
+       abiesAlbaMichx.setTitleCache("Abies alba Michx.", true);
+
+       TaxonNameBase<?,?> abiesAutonym  = TaxonNameFactory.NewNonViralInstance(Rank.SECTION_BOTANY());
+       abiesAutonym.setGenusOrUninomial("Abies");
+       abiesAutonym.setInfraGenericEpithet("Abies");
+
+       abiesAutonym.setTitleCache("Abies Mill. sect. Abies", true);
+       abiesAutonym.getNameCache();
+
+       TaxonNameBase<?,?> abiesBalsamea  = TaxonNameFactory.NewNonViralInstance(Rank.SECTION_BOTANY());
+       abiesBalsamea.setGenusOrUninomial("Abies");
+       abiesBalsamea.setInfraGenericEpithet("Balsamea");
+       abiesBalsamea.getNameCache();
+       abiesBalsamea.setTitleCache("Abies sect. Balsamea L.", true);
+
+       TaxonNameBase<?,?> abiesAlbaxPinusBeta = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+       abiesAlbaxPinusBeta.setHybridFormula(true);
+       abiesAlbaxPinusBeta.addHybridParent(abiesAlba, HybridRelationshipType.FIRST_PARENT(), null);
+
+       int result = 0;
+
+       // "Abies" < "Abies Mill."
+       result = abies.compareToName(abiesMill);
+       assertTrue(result < 0);
+
+       // "Abies Mill." > "Abies"
+       result = abiesMill.compareToName(abies);
+       assertTrue(result > 0);
+
+       // "Abies" < "Abies alba"
+       result = abies.compareToName(abiesAlba);
+       assertTrue(result < 0);
+
+       // "Abies alba" > "Abies"
+       result = abiesAlba.compareToName(abies);
+       assertTrue(result > 0);
+
+       // "Abies Mill." < "Abies alba Michx."
+       result = abiesMill.compareToName(abiesAlbaMichx);
+       assertTrue(result < 0);
+
+       // "Abies alba Michx." > "Abies Mill."
+       result = abiesAlbaMichx.compareToName(abiesMill);
+       assertTrue(result > 0);
+
+       //Autonym should be sorted without the author string
+
+       result = abiesAutonym.compareToName(abiesBalsamea);
+       assertTrue(result < 0);
+       // Test consistency of compareTo() with equals():
+       // Is consistent if and only if for every e1 and e2 of class C
+       // e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2)
+
+       boolean compareResult = false;
+       boolean equalsResult = false;
+
+       compareResult = (abies.compareToName(abies) == 0);
+       equalsResult = abies.equals(abies);
+       assertEquals(compareResult, equalsResult);
+
+       compareResult = (abies.compareToName(abiesAlba) == 0);
+       equalsResult = abies.equals(abiesAlba);
+       assertEquals(compareResult, equalsResult);
+
+       compareResult = (abiesMill.compareToName(abies) == 0);
+       equalsResult = abiesMill.equals(abies);
+       assertEquals(compareResult, equalsResult);
+
+       //Abies alba x Pinus beta < Abies alba xinus
+       TaxonNameBase<?,?> abiesAlbaXinus = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+       abiesAlbaXinus.setGenusOrUninomial("Abies");
+       abiesAlbaXinus.setSpecificEpithet("alba");
+       abiesAlbaXinus.setInfraSpecificEpithet("xinus");
+       result = abiesAlbaxPinusBeta.compareToName(abiesAlbaXinus);
+       assertTrue(result < 0);
+   }
 
 }

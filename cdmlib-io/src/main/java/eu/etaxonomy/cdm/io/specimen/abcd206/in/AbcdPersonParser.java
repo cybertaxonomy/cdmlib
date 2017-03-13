@@ -13,7 +13,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -29,10 +29,10 @@ public class AbcdPersonParser {
 
     private final SpecimenImportReport report;
 
-    private final ICdmApplicationConfiguration cdmAppController;
+    private final ICdmRepository cdmAppController;
 
 
-    public AbcdPersonParser(String prefix, SpecimenImportReport report, ICdmApplicationConfiguration cdmAppController) {
+    public AbcdPersonParser(String prefix, SpecimenImportReport report, ICdmRepository cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;

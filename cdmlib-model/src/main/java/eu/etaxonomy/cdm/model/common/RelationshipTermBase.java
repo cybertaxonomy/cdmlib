@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 })
 @Entity
 @Audited
-public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
+public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);

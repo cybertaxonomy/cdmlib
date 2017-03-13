@@ -21,9 +21,11 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAuthorsValidator;
@@ -55,23 +57,20 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		name = BotanicalName.NewInstance(Rank.SPECIES());
+		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");
 		author1 = Person.NewTitledInstance("Person");
 		name.setBasionymAuthorship(author1);
 
 		author2 = Person.NewTitledInstance("Person2");
-		basionymName = BotanicalName.NewInstance(Rank.SPECIES());
+		basionymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		basionymName.setGenusOrUninomial("Aus");
 		basionymName.setSpecificEpithet("aus");
         basionymName.setCombinationAuthorship(author1);
 
-
         name.addBasionym(basionymName);
-
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -156,17 +155,17 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
        Reference nomRef = ReferenceFactory.newBook();
        Reference nomRef2 = ReferenceFactory.newBook();
 
-       ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
+       IZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
        zooName.setGenusOrUninomial("Aus");
        zooName.setSpecificEpithet("aus");
        zooName.setBasionymAuthorship(author1);
        zooName.setNomenclaturalReference(nomRef);
-       ZoologicalName originalCombination = ZoologicalName.NewInstance(Rank.SPECIES());
+       IZoologicalName originalCombination = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
        originalCombination.setGenusOrUninomial("Aus");
        originalCombination.setSpecificEpithet("aus");
        originalCombination.setCombinationAuthorship(author1);
        originalCombination.setNomenclaturalReference(nomRef);
-       zooName.addBasionym(originalCombination);
+       zooName.addBasionym(TaxonNameBase.castAndDeproxy(originalCombination));
 
 
        Assert.assertEquals(1, zooName.getNameRelations().size());

@@ -33,13 +33,12 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TermVocabularyTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(TermVocabularyTest.class);
 
-	private DefinedTermBase dtb1;
-	private DefinedTermBase dtb2;
-	private DefinedTermBase dtb3;
-	private DefinedTermBase dtbFree;
-	private TermVocabulary<DefinedTermBase> voc1;
-	private TermVocabulary<DefinedTermBase> voc2;
-	private TermVocabulary<DefinedTermBase> voc3;
+	private DefinedTermBase<?> dtb1;
+	private DefinedTermBase<?> dtb2;
+	private DefinedTermBase<?> dtb3;
+	private DefinedTermBase<?> dtbFree;
+	private TermVocabulary<DefinedTermBase<?>> voc1;
+	private TermVocabulary<DefinedTermBase<?>> voc2;
 
 
 	@BeforeClass
@@ -57,7 +56,7 @@ public class TermVocabularyTest extends EntityTestBase {
 		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", "m");
 		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", "l");
 		dtbFree = new DerivedDefinedTermBase();
-		voc1 = new TermVocabulary<DefinedTermBase>();
+		voc1 = new TermVocabulary<>();
 		voc1.addTerm(dtb1);
 		voc1.addTerm(dtb2);
 		voc1.addTerm(dtb3);
@@ -68,7 +67,8 @@ public class TermVocabularyTest extends EntityTestBase {
 	}
 
 	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
-		private DerivedDefinedTermBase(){
+        private static final long serialVersionUID = 280869784120656292L;
+        private DerivedDefinedTermBase(){
 			super(TermType.Unknown);
 		}
 		private DerivedDefinedTermBase(TermType type, String term, String label, String labelAbbrev){
@@ -77,7 +77,7 @@ public class TermVocabularyTest extends EntityTestBase {
 		@Override
 		protected void setDefaultTerms(TermVocabulary<DerivedDefinedTermBase> termVocabulary) {}
 		@Override
-		public void resetTerms() {};
+		public void resetTerms() {}
 	}
 
 /****************** TESTS ****************************************/
@@ -101,20 +101,20 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testTermVocabularyStringStringString() {
-		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("label", voc2.getLabel());
 	}
 
 	@Test
     public final void testTermIdInVocabularyComparator() {
         assertNotNull(voc1);
-        Set<DefinedTermBase> terms = voc1.getTerms();
-        TermIdInVocabularyComparator comp = new TermIdInVocabularyComparator();
-        int res = comp.compare(dtb1, dtb2);
-        int res2 = comp.compare(dtb2, dtb1);
+        Set<DefinedTermBase<?>> terms = voc1.getTerms();
+        TermIdInVocabularyComparator<DefinedTermBase<?>> comparator = new TermIdInVocabularyComparator<>();
+        int res = comparator.compare(dtb1, dtb2);
+        int res2 = comparator.compare(dtb2, dtb1);
         assertEquals(res, -res2);
-        SortedSet<DefinedTermBase> result = new TreeSet(comp);
-        for (DefinedTermBase term:terms){
+        SortedSet<DefinedTermBase<?>> result = new TreeSet<>(comparator);
+        for (DefinedTermBase<?> term:terms){
             result.add(term);
         }
        assertEquals(result.first(), dtb3);
@@ -180,7 +180,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTermSourceUri() {
 		assertEquals(null, voc1.getTermSourceUri());
-		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("http://term.Source.Uri", voc2.getTermSourceUri().toString());
 	}
 
@@ -197,7 +197,7 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testIterator() {
-		Iterator<DefinedTermBase> it = voc1.iterator();
+		Iterator<DefinedTermBase<?>> it = voc1.iterator();
 		int i = 0;
 		while (it.hasNext()){
 			i++;

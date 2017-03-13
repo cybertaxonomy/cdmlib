@@ -34,8 +34,8 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -182,14 +182,14 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNamesByExample() {
-        ZoologicalName zoologicalName = ZoologicalName.NewInstance(Rank.GENUS());
+        TaxonNameBase<?,?> zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
         Set<String> includedProperties = new HashSet<String>();
         includedProperties.add("genusOrUninomial");
         includedProperties.add("specificEpithet");
         includedProperties.add("infraSpecificEpithet");
         includedProperties.add("rank");
-        int count = taxonNameDao.count(zoologicalName,includedProperties);
+        int count = taxonNameDao.count(zoologicalName, includedProperties);
 
         assertEquals("countNames should return 3",3,count);
     }
@@ -224,10 +224,10 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         Iterator<TaxonBase> taxa= taxonBases.iterator();
         TaxonBase taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
-        
+
         //int numbOfTaxa = taxonDao.count(TaxonBase.class);
         List<TaxonBase> taxaList = taxonDao.getAllTaxonBases(100, 0);
-      
+
         acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
         taxon = taxonDao.findByUuid(taxonUuid);
         group = homotypicalGroupDao.findByUuid(groupUuid);

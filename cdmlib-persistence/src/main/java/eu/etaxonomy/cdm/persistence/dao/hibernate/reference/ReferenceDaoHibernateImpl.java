@@ -96,26 +96,28 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	@Override
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType) {
-		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+		List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 		Session session = getSession();
 
-		String queryString = "SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ";
+		String queryString = "SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache "
+		        + " FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ";
 
 		if (refType != null || pattern != null){
-		    queryString += " WHERE ";
-		    if (refType != null){
-		        queryString += "r.type = " ;
+		    queryString += " WHERE (1=1) ";
+		    if (refType != null ){
+		        queryString += " AND (r.type = :type OR r.type = :genericType) " ;
+		    }
+		    if (pattern != null){
+		        queryString += " AND (r.titleCache LIKE :pattern) ";
 		    }
 		}
-		Reference reference = ReferenceFactory.newArticle();
 
-
-		 Query query;
-		if (pattern != null){
-		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab where r.titleCache like :pattern");
-		}else{
-		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
-		}
+		Query query;
+		//if (pattern != null){
+		    query = session.createQuery(queryString);
+//		}else{
+//		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
+//		}
 
 		if (limit != null){
 		    query.setMaxResults(limit);
@@ -126,6 +128,10 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		      pattern = pattern + "%";
 	          query.setParameter("pattern", pattern);
 	    }
+		if (refType != null){
+		    query.setParameter("type", refType);
+		    query.setParameter("genericType", ReferenceType.Generic);
+		}
 		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
@@ -138,7 +144,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0],(Integer)object[1], referenceTitle));
 			}else{
-				logger.error("title cache of reference is null. UUID: " + object[0]);
+				logger.warn("Title cache of reference is null. This should not happen. Please fix data. UUID: " + object[0]);
 			}
 		}
 

@@ -45,11 +45,12 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -214,7 +215,7 @@ public class Datasource {
 
 	private void insertSomeData(CdmApplicationController appCtr) {
 		Classification cl = Classification.NewInstance("myClass");
-		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(null), null), null, null);
+		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null), null, null);
 		appCtr.getClassificationService().save(cl);
 
 		Taxon t2 = Taxon.NewInstance(null, null);
@@ -292,7 +293,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -312,7 +313,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -352,7 +353,7 @@ public class Datasource {
 
 		boolean exists = appCtr.getUserService().userExists("admin");
 		try {
-			BotanicalName name = BotanicalName.NewInstance(null);
+			IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null);
 			String nameCache = "testName";
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
@@ -428,14 +429,14 @@ public class Datasource {
 //			 CdmPersistentDataSource.NewInstance("localH2");
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 		try {
-			BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
-			BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
-			BotanicalName hybridName = BotanicalName.NewInstance(Rank.SPECIES());
+		    TaxonNameBase<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			TaxonNameBase<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			IBotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
 			UUID uuid1 = botName1.getUuid();
 			UUID uuid2 = botName2.getUuid();
 			try {
-				Logger loggerTrace = logger.getLogger("org.hibernate.type");
+				Logger loggerTrace = Logger.getLogger("org.hibernate.type");
 				loggerTrace.setLevel(Level.TRACE);
 				System.out.println(logger.getName());
 

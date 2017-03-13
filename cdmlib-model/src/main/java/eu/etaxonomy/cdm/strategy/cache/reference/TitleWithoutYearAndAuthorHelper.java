@@ -58,8 +58,10 @@ public class TitleWithoutYearAndAuthorHelper {
             return getTitleWithoutYearAndAuthorCdDvd(ref, isAbbrev);
         }else if(type == ReferenceType.Generic){
             return getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
-        }else if (type == ReferenceType.WebPage || type == ReferenceType.Thesis) {
-            return getTitleWithoutYearAndAuthorWebPageThesis(ref, isAbbrev);
+        }else if (type == ReferenceType.WebPage) {
+            return getTitleWithoutYearAndAuthorWebPage(ref, isAbbrev);
+        }else if (type == ReferenceType.Thesis) {
+            return getTitleWithoutYearAndAuthorThesis(ref, isAbbrev);
         }else if (type == ReferenceType.Section || type == ReferenceType.BookSection){
             // not needed in Section
             logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
@@ -312,7 +314,7 @@ public class TitleWithoutYearAndAuthorHelper {
      * @param isAbbrev
      * @return
      */
-    private static String getTitleWithoutYearAndAuthorWebPageThesis(Reference ref, boolean isAbbrev) {
+    private static String getTitleWithoutYearAndAuthorThesis(Reference ref, boolean isAbbrev) {
         //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 
         if (ref == null){
@@ -325,6 +327,36 @@ public class TitleWithoutYearAndAuthorHelper {
 
         //titelAbbrev
         String nomRefCache = titelAbbrev + blank;
+
+        //delete .
+        while (nomRefCache.endsWith(".")){
+            nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
+        }
+
+        return nomRefCache.trim();
+    }
+
+    /**
+     * @param ref
+     * @param isAbbrev
+     * @return
+     */
+    private static String getTitleWithoutYearAndAuthorWebPage(Reference ref, boolean isAbbrev) {
+        //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
+
+        if (ref == null){
+            return null;
+        }
+
+        //titleAbbrev
+        //TODO
+        String titleAbbrev = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
+        if (isBlank(titleAbbrev) && ref.getUri() != null){
+            titleAbbrev = ref.getUri().toString();
+        }
+
+        //titelAbbrev
+        String nomRefCache = titleAbbrev + blank;
 
         //delete .
         while (nomRefCache.endsWith(".")){

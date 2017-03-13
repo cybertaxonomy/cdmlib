@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.ProgressMonitorManager;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * @author Andreas Kohlbecker
@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
+@CrossOrigin(origins="*")
 @Api(value="progress", description="provides access to information on long running processes. "
         + "URIs to the resources exposed by this controller are provided in the responses to the"
         + "HTTP requests that trigger long term processes.")

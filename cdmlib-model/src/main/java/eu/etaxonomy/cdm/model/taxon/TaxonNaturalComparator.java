@@ -28,16 +28,20 @@ public class TaxonNaturalComparator implements Comparator<TaxonNode> {
 	public int compare(TaxonNode node1, TaxonNode node2) {
 	   // System.out.println("compare node 1: "+ node1.getTaxon().getTitleCache() + " - node 2: " + node2.getTaxon().getTitleCache());
 	    if (node1.equals(node2)) {
-
 	        return 0;
+        }
+	    // if we do not check for null for the treeIndex we always return 1 if one of the nodes have no treeIndex
+	    if (node1.treeIndex() == null){
+	        return 1;
+	    }
+	    if (node2.treeIndex() == null){
+            return -1;
         }
 
 	    if (node1.isAncestor(node2)) {
-
             return -1;
         }
 		if (node2.isAncestor(node1)) {
-
             return 1;
         }
 

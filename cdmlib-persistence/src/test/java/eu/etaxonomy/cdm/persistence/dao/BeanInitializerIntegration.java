@@ -28,7 +28,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
@@ -99,7 +98,7 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		propertyPaths.add("combinationAuthorship");
 		propertyPaths.add("hybridRelationships");
 
-		NonViralName sphingidae = (NonViralName)taxonNameDao.load(sphingidaeUuid, propertyPaths);
+		TaxonNameBase<?,?> sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();
 		endTransaction();
 

@@ -21,9 +21,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
@@ -77,21 +76,15 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationT
 
 	@Test
 	public void testNewEntities() {
-		TaxonNameBase acherontiaLachesis = ZoologicalName.NewInstance(null);
+		TaxonNameBase acherontiaLachesis = TaxonNameFactory.NewZoologicalInstance(null);
 		INameCacheStrategy zoologicalStrategy = (INameCacheStrategy)acherontiaLachesis.getCacheStrategy();
 		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
 
-		TaxonNameBase cryptocoryneGriffithii = BotanicalName.NewInstance(null);
+		TaxonNameBase cryptocoryneGriffithii = TaxonNameFactory.NewBotanicalInstance(null);
 		INameCacheStrategy botanicalStrategy = (INameCacheStrategy)cryptocoryneGriffithii.getCacheStrategy();
 		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

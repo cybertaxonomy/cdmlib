@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -122,7 +123,7 @@ public class Reference
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
                    IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis,IWebPage, IPersonalCommunication,
-                   INomenclaturalReference, IReference,
+                   INomenclaturalReference, IReference, IIntextReferenceTarget,
                    Cloneable {
 
     private static final long serialVersionUID = -2034764545042691295L;
@@ -142,7 +143,7 @@ public class Reference
 	@Column(length=4096, name="title")
 	@Lob
 	@Field
-	@Match(MatchMode.EQUAL_REQUIRED)
+	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore
     //TODO Val #3379
 //	@NullOrNotEmpty
 	private String title;
@@ -300,7 +301,8 @@ public class Reference
 	@Type(type="uriUserType")
 	private URI uri;
 
-	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
+	//flag to subselect only references that could be useful for nomenclatural citations.
+	//If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
 	@XmlElement(name = "IsNomenclaturallyRelevant")
 	@Merge(MergeMode.OR)
@@ -367,9 +369,32 @@ public class Reference
 //*************************** GETTER / SETTER ******************************************/
 
 
+
+    // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
+    @Override
+    public String getTitleCache(){
+        String result = super.getTitleCache();
+        if (isBlank(result)){
+            this.titleCache = this.getAbbrevTitleCache(true);
+        }
+        return titleCache;
+    }
+
 	@Override
 	public String getAbbrevTitleCache() {
-		if (protectedAbbrevTitleCache){
+		return getAbbrevTitleCache(false);
+	}
+
+	/**
+	 * Implements {@link #getAbbrevTitleCache()} but allows to
+	 * avoid never ending recursions if both caches are empty
+	 * avoidRecursion should only be <code>true</code> if called
+	 * by {@link #getTitleCache()}
+	 * @param avoidRecursion
+	 * @return
+	 */
+	private String getAbbrevTitleCache(boolean avoidRecursion) {
+        if (protectedAbbrevTitleCache){
             return this.abbrevTitleCache;
         }
         // is reference dirty, i.e. equal NULL?
@@ -377,10 +402,14 @@ public class Reference
             this.abbrevTitleCache = generateAbbrevTitle();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
         }
+        if (isBlank(abbrevTitleCache) && !avoidRecursion){
+            this.abbrevTitleCache = this.getTitleCache();
+        }
         return abbrevTitleCache;
-	}
+    }
 
-	@Override
+
+    @Override
 	@Deprecated
 	public void setAbbrevTitleCache(String abbrevTitleCache) {
 		this.abbrevTitleCache = abbrevTitleCache;
@@ -706,6 +735,13 @@ public class Reference
 
 
 //****************************************************  /
+
+	@Transient
+	@Override
+	public void setTitleCaches(String cache){
+	    this.setAbbrevTitleCache(cache, true);
+	    this.setTitleCache(cache, true);
+	}
 
 
 	/**

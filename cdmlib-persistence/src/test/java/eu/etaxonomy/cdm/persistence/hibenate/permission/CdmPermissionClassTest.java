@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
@@ -36,19 +36,19 @@ public class CdmPermissionClassTest {
     public void testCdmPermissionClass(){
         Assert.assertEquals(
                 CdmPermissionClass.TAXONNAMEBASE,
-                CdmPermissionClass.getValueOf(ZoologicalName.NewInstance(Rank.GENUS()))
+                CdmPermissionClass.getValueOf(TaxonNameFactory.NewZoologicalInstance(Rank.GENUS()))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONNAMEBASE,
-                CdmPermissionClass.getValueOf(BotanicalName.NewInstance(Rank.GENUS()))
+                CdmPermissionClass.getValueOf(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONBASE,
-                CdmPermissionClass.getValueOf(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null))
+                CdmPermissionClass.getValueOf(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.TAXONBASE,
-                CdmPermissionClass.getValueOf(Synonym.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null))
+                CdmPermissionClass.getValueOf(Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null))
                 );
         Assert.assertEquals(
                 CdmPermissionClass.DESCRIPTIONBASE,

@@ -19,9 +19,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
@@ -39,18 +36,15 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Utility class which provides the functionality to convert a JSON response
@@ -254,43 +248,42 @@ public class GbifJsonOccurrenceParser {
                             string = record.getString(NOMENCLATURALCODE);
 
                             if (string.equals(NomenclaturalCode.ICZN.getTitleCache())){
-                                name = ZoologicalName.NewInstance(rank);
+                                name = TaxonNameFactory.NewZoologicalInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNAFP.getTitleCache())) {
-                                name = BotanicalName.NewInstance(rank);
+                                name = TaxonNameFactory.NewBotanicalInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
-                                name = BacterialName.NewInstance(rank);
+                                name = TaxonNameFactory.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
-                                name = CultivarPlantName.NewInstance(rank);
+                                name = TaxonNameFactory.NewCultivarInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
-                                name = ViralName.NewInstance(rank);
+                                name = TaxonNameFactory.NewViralInstance(rank);
                             } else {
-                                name = NonViralName.NewInstance(rank);
                             }
                         }else {
                             if (record.has(KINGDOM)){
                                 if (record.getString(KINGDOM).equals(PLANTAE)){
-                                    name = BotanicalName.NewInstance(rank);
+                                    name = TaxonNameFactory.NewBotanicalInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(ANIMALIA)){
-                                    name = ZoologicalName.NewInstance(rank);
+                                    name = TaxonNameFactory.NewZoologicalInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(FUNGI)){
-                                    name = NonViralName.NewInstance(rank);
+                                    name = TaxonNameFactory.NewBotanicalInstance(rank);
                                 } else if (record.getString(KINGDOM).equals(BACTERIA)){
-                                    name = BacterialName.NewInstance(rank);
+                                    name = TaxonNameFactory.NewBacterialInstance(rank);
                                 } else{
-                                    name = NonViralName.NewInstance(rank);
+                                    name = TaxonNameFactory.NewNonViralInstance(rank);
                                 }
                             } else{
-                                name = NonViralName.NewInstance(rank);
+                                name = TaxonNameFactory.NewNonViralInstance(rank);
                             }
                         }
                         if (record.has(GENUS)){
-                            ((NonViralName)name).setGenusOrUninomial(record.getString(GENUS));
+                            name.setGenusOrUninomial(record.getString(GENUS));
                         }
                         if (record.has(SPECIFIC_EPITHET)){
-                            ((NonViralName)name).setSpecificEpithet(record.getString(SPECIFIC_EPITHET));
+                            name.setSpecificEpithet(record.getString(SPECIFIC_EPITHET));
                         }
                         if (record.has(INFRASPECIFIC_EPITHET)){
-                            ((NonViralName)name).setInfraSpecificEpithet(record.getString(INFRASPECIFIC_EPITHET));
+                            name.setInfraSpecificEpithet(record.getString(INFRASPECIFIC_EPITHET));
                         }
                         if (record.has(SCIENTIFIC_NAME)){
                             name.setTitleCache(record.getString(SCIENTIFIC_NAME), true);

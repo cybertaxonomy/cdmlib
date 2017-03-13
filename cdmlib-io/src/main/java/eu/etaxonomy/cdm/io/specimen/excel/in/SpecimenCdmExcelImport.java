@@ -45,12 +45,15 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -493,8 +496,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}
 
 		//name
-		NonViralName<?> name;
-		INonViralNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
+		INonViralName name;
+		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (StringUtils.isNotBlank(commonDetermination.fullName)){
 			name = parser.parseFullName(commonDetermination.fullName, nc, rank);
@@ -503,9 +506,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			}
 		}else{
 			if (nc != null){
-				name = (NonViralName)nc.getNewTaxonNameInstance(rank);
+				name = nc.getNewTaxonNameInstance(rank);
 			}else{
-				name = NonViralName.NewInstance(rank);
+				name = TaxonNameFactory.NewNonViralInstance(rank);
 			}
 			if (StringUtils.isNotBlank(commonDetermination.genus)){
 				name.setGenusOrUninomial(commonDetermination.genus);
@@ -537,7 +540,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (StringUtils.isNotBlank(commonDetermination.determinedBy)){
 			sec = ReferenceFactory.newGeneric();
 			TeamOrPersonBase<?> determinedBy;
-			BotanicalName dummyName = BotanicalName.NewInstance(Rank.SPECIES());
+			IBotanicalName dummyName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			try {
 				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
 				determinedBy = dummyName.getCombinationAuthorship();
@@ -564,8 +567,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 
 
-	private void setAuthorship(NonViralName<?> name, String author, INonViralNameParser<NonViralName> parser) {
-		if (name.isInstanceOf(BotanicalName.class) || name.isInstanceOf(ZoologicalName.class)){
+	private void setAuthorship(INonViralName name, String author, INonViralNameParser<NonViralName> parser) {
+		if (name instanceof BotanicalName || name instanceof ZoologicalName){
 			try {
 				parser.parseAuthors(name, author);
 			} catch (StringNotParsableException e) {
@@ -574,9 +577,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}else{
 			name.setAuthorshipCache(author);
 		}
-
 	}
-
 
 
 
@@ -591,7 +592,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private Taxon findBestMatchingTaxon(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, boolean createIfNotExists) {
-		NonViralName<?> name = makeTaxonName(state, determinationLight);
+		INonViralName name = makeTaxonName(state, determinationLight);
 
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
@@ -627,7 +628,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight,
-				NonViralName<?> name) {
+				INonViralName name) {
 		String titleCache = determinationLight.fullName;
 		if (! state.getConfig().isPreferNameCache() || StringUtils.isBlank(titleCache) ){
 			String computedTitleCache = name.getTitleCache();
@@ -644,11 +645,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @param determinationLight
 	 * @return
 	 */
-	private NonViralName<?> makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
-		NonViralName<?> name = NonViralName.NewInstance(null);
+	private INonViralName makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
+		INonViralName name = TaxonNameFactory.NewNonViralInstance(null);
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (nc != null){
-			name = (NonViralName<?>)nc.getNewTaxonNameInstance(null);
+			name = nc.getNewTaxonNameInstance(null);
 		}
 		name.setGenusOrUninomial(determinationLight.genus);
 		name.setSpecificEpithet(determinationLight.speciesEpi);
@@ -686,7 +687,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 	private TaxonNameBase findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
 
-		NonViralName<?> name = makeTaxonName(state, determinationLight);
+		INonViralName name = makeTaxonName(state, determinationLight);
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
 		//TODO
@@ -832,7 +833,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 
-	private TaxonNameBase<?, ?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
+	private TaxonNameBase<?,?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
 		TaxonNameBase<?,?> result = null;
 		result = state.getName(name);
 		if (result != null){
@@ -846,7 +847,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (result == null){
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
-			result = parser.parseFullName(name, code, null);
+			result = (TaxonNameBase<?,?>)parser.parseFullName(name, code, null);
 
 		}
 		if (result != null){

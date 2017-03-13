@@ -177,6 +177,11 @@ public class CdmMetaData extends CdmBase{
 		@Override
         public int compare(String version1, String version2) {
 			int result = 0;
+
+			if (version1.equals(version2)){
+			    return 0;
+			}
+
 			String[] version1Split = version1.split("\\.");
 			String[] version2Split = version2.split("\\.");
 
@@ -188,8 +193,11 @@ public class CdmMetaData extends CdmBase{
 			if(depth != null && (version1Split.length < depth || version2Split.length < depth )){
 				throwException("Desired depth can not be achieved with the given strings. depth: " + depth  + ", version1: " + version1 + ", version2:" + version2);
 			}
-
-			int length = (depth == null ||version1Split.length < depth) ? version1Split.length : depth;
+			//use the shorter version to avoid arrayOutOfBoundsException, if version2Split.length < version1Split.length but > depth
+			int length = (version1Split.length < version2Split.length) ? version1Split.length: version2Split.length;
+			if (depth != null){
+			    length = length<depth?length:depth;
+			}
 			for (int i = 0; i < length; i++){
 				Long version1Part = Long.valueOf(version1Split[i]);
 				Long version2Part = Long.valueOf(version2Split[i]);

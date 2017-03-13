@@ -29,4 +29,19 @@ public interface IJournal extends IPublicationBase{
 	 */
 	public void setIssn(String issn);
 
+    /**
+     * Guesses if the publication name is a journal name
+     * on comparing typical journal name parts
+     * @param publicationName
+     * @return true if it is probably a journal
+     */
+    public static boolean guessIsJournalName(String publicationName) {
+        String rgEx =
+                "(.*((J|Bull|Mag|Centralbl|Newsl(ett)?|Trans|Chron)\\.|"    //abbrev titles
+                + "Zeitung|Journal|).*|"  //non-abbrev titles
+                + "Blumea|Flora)";     //full title (no other title parts exist)
+        //Trans. ??
+        return publicationName.matches(rgEx);
+    }
+
 }

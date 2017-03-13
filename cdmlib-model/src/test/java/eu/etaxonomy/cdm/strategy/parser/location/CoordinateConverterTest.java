@@ -93,6 +93,50 @@ public class CoordinateConverterTest {
         Assert.assertTrue("Pattern with acute accent for seconds must be recognised", conversionResults.patternRecognised);
         Assert.assertTrue("Pattern with acute accent for seconds  must be recognised", conversionResults.conversionSuccessful);
 
+
+	}
+
+	//#5554
+	@Test
+    public void testApostrophs() {
+
+	    //4º 58’ N, 118º 10’ E
+	    //minutes
+	    ConversionResults conversionResults = coordinateConverter.tryConvert("4\u00B058\u2019N");
+	    Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+	    Assert.assertTrue("Pattern with english quotation end for minute must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation end for minute  must be successful", conversionResults.conversionSuccessful);
+
+        conversionResults = coordinateConverter.tryConvert("4\u00B058\u2019 N");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation and whitespace must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation and whitespace must be successful", conversionResults.conversionSuccessful);
+
+        conversionResults = coordinateConverter.tryConvert("4\u00B0 58\u201944\" N");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation and whitespace must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation and whitespace must be successful", conversionResults.conversionSuccessful);
+
+        conversionResults = coordinateConverter.tryConvert("118\u00B0 10\u201933\" E");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation and whitespace must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with english quotation and whitespace must be successful", conversionResults.conversionSuccessful);
+
+        //seconds
+        conversionResults = coordinateConverter.tryConvert("4\u00B058\u201944\u201DN");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with right double quotation for second must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with right double quotation for second must be successful", conversionResults.conversionSuccessful);
+
+        conversionResults = coordinateConverter.tryConvert("4\u00B058\u201944\u201D N");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with right double quotation and whitespace must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with right double quotation and whitespace must be successful", conversionResults.conversionSuccessful);
+
+        conversionResults = coordinateConverter.tryConvert("118\u00B0 10\u201933\u201D E");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with right double quotation and whitespace must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with right double quotation and whitespace must be successful", conversionResults.conversionSuccessful);
 	}
 
 	/**

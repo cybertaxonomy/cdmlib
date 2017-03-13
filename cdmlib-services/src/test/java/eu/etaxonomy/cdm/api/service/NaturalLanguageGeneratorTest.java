@@ -18,8 +18,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
@@ -28,19 +28,20 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore //FIXME Remove @Ignore once maximes code is completely comitted
 public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NaturalLanguageGeneratorTest.class);
-	
+
 	@SpringBeanByType
 	private INaturalLanguageGenerator generator;
-	
+
     private FeatureTree featureTree;
     private TaxonDescription description;
     Set<Feature> featureSet  = new HashSet<Feature>();
@@ -48,11 +49,11 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 	@Before
 	public void setUp() throws Exception {
         // set up your test objects here
-		
-		NonViralName tnb = NonViralName.NewInstance(null);
+
+		INonViralName tnb = TaxonNameFactory.NewNonViralInstance(null);
 		Taxon taxon = Taxon.NewInstance(tnb, null);
 		description = TaxonDescription.NewInstance(taxon);
-		
+
 		featureTree= FeatureTree.NewInstance();
 		FeatureNode root = FeatureNode.NewInstance();
 		featureTree.setRoot(root);
@@ -81,7 +82,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		FeatureNode qNode = FeatureNode.NewInstance(qFeature);
 		root.addChild(qNode);
 	}
-	
+
 	@Test
 	public void testGenerateNaturalLanguageDescription() {
 		assertNotNull("FeatureTree should exist", featureTree);
@@ -95,7 +96,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		assertTrue("Empty text",!stringBuilder.equals(""));
 		System.out.println(stringBuilder.toString());
 	}
-	
+
 	public void buildBranches(FeatureNode parent, String[][][] children, int level, int depth, int nodeNumber) {
 		int i = nodeNumber;
 		int j;
@@ -108,7 +109,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 						buildBranches(child, children,level+1,depth, j);
 					}
 			}
-		
+
 	}
 
     /* (non-Javadoc)
@@ -117,7 +118,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
-	
+
 }

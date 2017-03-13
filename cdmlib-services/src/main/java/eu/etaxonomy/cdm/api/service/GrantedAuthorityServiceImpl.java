@@ -32,5 +32,14 @@ public class GrantedAuthorityServiceImpl extends ServiceBase<GrantedAuthorityImp
         this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GrantedAuthorityImpl findAuthorityString(String authorityString) {
+        return dao.findAuthorityString(authorityString);
+
+    }
+
 
 }

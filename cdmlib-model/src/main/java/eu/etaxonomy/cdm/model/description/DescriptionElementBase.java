@@ -412,6 +412,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         addSource(source);
         return source;
     }
+
     @Override
     public void addSources(Set<DescriptionElementSource> sources){
     	for (DescriptionElementSource source:sources){
@@ -427,6 +428,21 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
         addSource(source);
         return source;
+    }
+
+    @Override
+    public DescriptionElementSource addPrimaryTaxonomicSource(Reference citation, String microCitation) {
+        if (citation == null && microCitation == null){
+            return null;
+        }
+        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation);
+        addSource(source);
+        return source;
+    }
+
+    @Override
+    public DescriptionElementSource addPrimaryTaxonomicSource(Reference citation) {
+        return addPrimaryTaxonomicSource(citation, null);
     }
 
     /**

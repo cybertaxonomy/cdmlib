@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,9 +22,9 @@ import org.junit.Test;
 public class ZoologicalNameTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalNameTest.class);
-	
-	private ZoologicalName zooName1;
-	
+
+	private IZoologicalName zooName1;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -37,11 +37,11 @@ public class ZoologicalNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		zooName1 = ZoologicalName.NewInstance(Rank.SPECIES(), "Aus", null, "bus", "infracus", null, null, null, null);
+		zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(), "Aus", null, "bus", "infracus", null, null, null, null);
 	}
 
 //****************** TESTS ******************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.ZoologicalName#clone()}.
 	 */
@@ -50,7 +50,7 @@ public class ZoologicalNameTest {
 		zooName1.setBreed("breed");
 		zooName1.setPublicationYear(1956);
 		zooName1.setOriginalPublicationYear(1867);
-		ZoologicalName clone = (ZoologicalName)zooName1.clone();
+		IZoologicalName clone = (IZoologicalName)zooName1.clone();
 		Assert.assertEquals("Breed should be equal", "breed", clone.getBreed());
 		Assert.assertEquals("Publication year should be equal", Integer.valueOf(1956), clone.getPublicationYear());
 		Assert.assertEquals("Original publication year should be equal", Integer.valueOf(1867), clone.getOriginalPublicationYear());

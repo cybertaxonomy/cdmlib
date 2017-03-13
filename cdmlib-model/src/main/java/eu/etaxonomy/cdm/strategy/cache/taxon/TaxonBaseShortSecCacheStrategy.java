@@ -1,6 +1,3 @@
-package eu.etaxonomy.cdm.strategy.cache.taxon;
-
-
 /**
 * Copyright (C) 2015 EDIT
 * European Distributed Institute of Taxonomy
@@ -10,7 +7,7 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-
+package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -136,12 +132,11 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 	 * @param name
 	 */
 	private String getNamePart(TaxonBase<?> taxonBase) {
-		TaxonNameBase<?,?> nameBase = taxonBase.getName();
-		String result = nameBase.getTitleCache();
+		TaxonNameBase<?,?> taxonName = taxonBase.getName();
+		String result = taxonName.getTitleCache();
 		//use name cache instead of title cache if required
-		if (taxonBase.isUseNameCache() && nameBase.isInstanceOf(NonViralName.class)){
-			NonViralName<?> nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
-			result = nvn.getNameCache();
+		if (taxonBase.isUseNameCache()){
+			result = taxonName.getNameCache();
 		}
 		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
 			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim();

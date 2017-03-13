@@ -63,10 +63,19 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
     private void setIntextReferences(Set<IntextReference> intextReferences){
         this.intextReferences = intextReferences;
     }
+
+
+    public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end){
+        return IntextReferenceHelper.addIntextReference(target, this, start, inner, end);
+    }
+    public IntextReference addIntextReference(IIntextReferenceTarget target, int start, int end){
+        return IntextReferenceHelper.addIntextReference(target, this, start, end);
+    }
+
 	@Override
     public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
-			intextReference.setLanguageString(this);
+			intextReference.setReferencedEntity(this);
 			getIntextReferences().add(intextReference);
 		}
 	}
@@ -75,7 +84,7 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
     public void removeIntextReference(IntextReference intextReference){
 		if(getIntextReferences().contains(intextReference)) {
 			getIntextReferences().remove(intextReference);
-			intextReference.setLanguageString(null);
+			intextReference.setReferencedEntity(null);
 		}
 	}
 

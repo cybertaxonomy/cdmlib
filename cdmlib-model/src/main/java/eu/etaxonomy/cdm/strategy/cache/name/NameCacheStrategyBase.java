@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -21,7 +21,9 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * @author AM
  */
-public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends StrategyBase implements INameCacheStrategy<T> {
+public abstract class NameCacheStrategyBase<T extends ITaxonNameBase> extends StrategyBase implements INameCacheStrategy<T> {
+    private static final long serialVersionUID = -2322348388258675517L;
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NameCacheStrategyBase.class);
 

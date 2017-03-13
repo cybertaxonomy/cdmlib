@@ -46,12 +46,9 @@ public class ConvertMergeStrategy extends DefaultMergeStrategy {
         this.deleteSecondObject = deleteSecondObject;
     }
 
-@Override
-protected <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
-
-    super.mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet, clonedObjects);
-
-}
-
+    @Override
+    protected <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
+        super.mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet, clonedObjects);
+    }
 
 }

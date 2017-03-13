@@ -85,16 +85,17 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String status = "";
 
     //marker
-    protected static String InfraGenusMarker = "(n|notho)?(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
+    protected static String InfraGenusMarker = "(n|notho)?(subg(en)?\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
-    protected static String infraSpeciesMarker = "(n|notho)?(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String infraSpeciesMarkerNoNotho = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|forma|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
     protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
     //AuthorString
-    protected static String qm = "[" + UTF8.RIGHT_SINGLE_QUOT + "'`]";
-    protected static String authorPart = "(" + "([OdDL]"+qm+"|[’'`]t|ten\\s||le\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC.)" + "(" + qm + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|-e|de(n|l|\\sla)?)" ;
-    protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f\\.|fil\\.|secundus)?" ;
+    protected static String qm = "[" + UTF8.RIGHT_SINGLE_QUOT + UTF8.ACUTE_ACCENT + "'`]";
+    protected static String authorPart = "(" + "([OdDL]"+qm+"|"+ qm + "t\\s?|ten\\s||l[ae]\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC\\.)I?" + "(" + qm + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|-e|de(n|l|\\sla)?)" ;
+    protected static String author = "((" + authorPart + "(" + fWs + "|-)" + ")+" + "(f(il)?\\.|secundus|jun\\.|ter|bis)?|Man in "+qm+"t Veld|Sant"+qm+"Anna)" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
     protected static String notFinalTeamSplitter = "(?:" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
     protected static String authorTeam = fWs + "((?>" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)" +  fWs;
@@ -186,7 +187,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String volume = nr4 + "[a-z]?" + fWs + "(\\("+ nr4 + "[a-z]?"  + "([-\u2013]" + nr4 + ")?\\))?" + "(\\((Suppl|Beibl|App|Beil|Misc|Vorabdr)\\.\\))?";
+    protected static String volume = nr4 + "[a-z]?" + fWs + "(\\("+ nr4 + "[a-z]?"  + "([-\u2013]" + nr4 + ")?\\))?" + "(\\(((Suppl|Beibl|App|Beil|Misc|Vorabdr)\\.|Heft\\s*\\d{1,4})\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
@@ -287,7 +288,13 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
     protected static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     protected static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
-    protected static String hybridFullName = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")" + hybridFormularSeparator + "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")";
+    protected static String abbrevHybridGenus = "([A-Z](\\.\\s*|\\s+))";
+    protected static String abbrevHybridSecondPartWithSpecies = abbrevHybridGenus + "?" + nonCapitalEpiWord + "(" + oWs + infraSpeciesMarkerNoNotho + oWs + nonCapitalEpiWord + ")?";  //#5983 first step but still to strict
+    protected static String abbrevHybridSecondPartOnlyInfraSpecies = infraSpeciesMarkerNoNotho + oWs + nonCapitalEpiWord;
+    protected static String abbrevHybridSecondPart = "(" + abbrevHybridSecondPartWithSpecies + "|" + abbrevHybridSecondPartOnlyInfraSpecies + ")";
+
+    protected static String hybridSecondPart = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + "|" + abbrevHybridSecondPart + ")";
+    protected static String hybridFullName = "(" + anyFullName  + "|" +  anyBotanicName + "|" + anyZooName + ")" + hybridFormularSeparator + hybridSecondPart ;
 
     //Pattern
     protected static Pattern oWsPattern = Pattern.compile(oWs);

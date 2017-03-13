@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:58
  */
 @XmlAccessorType(XmlAccessType.FIELD)

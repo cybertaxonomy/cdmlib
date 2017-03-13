@@ -191,7 +191,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "invalid" or a kind of "invalid" (true) or not (false) -
-	 * this corresponds to "not available" for {@link ZoologicalName zoological names} -.
+	 * this corresponds to "not available" for {@link IZoologicalName zoological names} -.
 	 * Returns false if <i>this</i> nomenclatural status type is null. The use
 	 * of "invalid" {@link TaxonNameBase taxon names} should be avoided.<BR>
 	 * A taxon name is "invalid" if it is not "valid"; this means that
@@ -226,7 +226,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "legitimate" or a kind of "legitimate" (true)
-	 * or not (false). Corresponds to "valid" for {@link ZoologicalName zoological names}.<BR>
+	 * or not (false). Corresponds to "valid" for {@link IZoologicalName zoological names}.<BR>
 	 * Returns false if <i>this</i> nomenclatural status type is null.<BR>
 	 * A "valid" (zool.: "available") {@link TaxonNameBase taxon name}, unless "rejected",
 	 * is "legitimate" if it was not "superfluous" when published
@@ -257,7 +257,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "illegitimate" or a kind of "illegitimate" (true)
-	 * or not (false) - this corresponds to "invalid" for {@link ZoologicalName zoological names} -.
+	 * or not (false) - this corresponds to "invalid" for {@link IZoologicalName zoological names} -.
 	 * Returns false if <i>this</i> nomenclatural status type is null.<BR>
 	 * A "valid" ("available") {@link TaxonNameBase taxon name}, unless "conserved" or
 	 * "sanctioned", is "illegitimate" if it was "superfluous" when published
@@ -295,7 +295,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * by different authors in different senses (other than the originally
 	 * intended) that it has become a persistent cause of error and confusion.<BR>
 	 * An "ambiguous" taxon name is treated as if "rejected" and is therefore
-	 * also "illegitimate" ("invalid" for {@link ZoologicalName zoological names}).
+	 * also "illegitimate" ("invalid" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
@@ -311,7 +311,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * application is uncertain; the confusion being derived from an incomplete
 	 * or confusing description.<BR>
 	 * A "doubtful" taxon name is treated as if "rejected" and is therefore
-	 * also "illegitimate" (("invalid" for {@link ZoologicalName zoological names}).
+	 * also "illegitimate" (("invalid" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
@@ -326,7 +326,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * {@link TaxonNameBase taxon name} is "confusum" if it has been widely
 	 * and persistently used for a taxon or taxa not including its type.<BR>
 	 * A "confusum" taxon name is treated as if "rejected" and is therefore
-	 * also "illegitimate" ("invalid" for {@link ZoologicalName zoological names}).
+	 * also "illegitimate" ("invalid" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
@@ -338,7 +338,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "illegitimate" ("invalid" for
-	 * {@link ZoologicalName zoological names}). A "valid" ("available")
+	 * {@link IZoologicalName zoological names}). A "valid" ("available")
 	 * {@link TaxonNameBase taxon name}, unless "conserved" or "sanctioned", is "illegitimate"
 	 * if it was "superfluous" when published or has been later "rejected".<BR>
 	 *
@@ -359,7 +359,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * the {@link NomenclaturalCode nomenclature code}, and if it has not been later declared
 	 * "conserved" or "sanctioned" by the competent authorities.<BR>
 	 * A "superfluous" taxon name is therefore also "illegitimate" ("invalid" for
-	 * {@link ZoologicalName zoological names}).
+	 * {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #CONSERVED()
@@ -375,7 +375,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * {@link TaxonNameBase taxon name} is "rejected" if, even though by the strict
 	 * application of the rules of the {@link NomenclaturalCode nomenclature code}, and especially
 	 * of the principle of priority, it should be "legitimate" ("valid" for
-	 * {@link ZoologicalName zoological names}), competent authorities decided to handle
+	 * {@link IZoologicalName zoological names}), competent authorities decided to handle
 	 * it as "illegitimate".<BR>
 	 * A "rejected" taxon name is therefore also "illegitimate" ("invalid" for
 	 * zoological names). A "rejected" taxon name is always rejected in favour
@@ -412,7 +412,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be conserved"
 	 * if, even though by the strict application of the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
-	 * it is "illegitimate" ("invalid" for {@link ZoologicalName zoological names}),
+	 * it is "illegitimate" ("invalid" for {@link IZoologicalName zoological names}),
 	 * it has been submitted to competent authorities in order to decide whether
 	 * it should be handled as "legitimate".<BR>
 	 * A "proposed to be conserved" taxon name is therefore still "illegitimate"
@@ -461,7 +461,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * spelling, it has been submitted to competent authorities in order to
 	 * decide whether the proposed alternative spelling should be "conserved".<BR>
 	 * A "proposed to be conserved (orthography)" taxon name is therefore still
-	 * "illegitimate" ("invalid" for {@link ZoologicalName zoological names}).
+	 * "illegitimate" ("invalid" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #isIllegitimateType()
 	 * @see  #CONSERVED_PROP()
@@ -475,7 +475,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "legitimate" ("valid" for
-	 * {@link ZoologicalName zoological names}). A "valid" ("available")
+	 * {@link IZoologicalName zoological names}). A "valid" ("available")
 	 * {@link TaxonNameBase taxon name}, unless "rejected", is "legitimate" if it was not
 	 * "superfluous" when published or has been later "conserved".<BR>
 	 *
@@ -511,7 +511,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * in order either to replace an earlier name that is "illegitimate" or to
 	 * avoid the building of a "later homonym".<BR>
 	 * A "novum" taxon name is therefore also "legitimate" ("valid" for
-	 * {@link ZoologicalName zoological names}).
+	 * {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #isIllegitimateType()
@@ -527,7 +527,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be utique rejected"
 	 * if, even though by the strict application of the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
-	 * it is "legitimate" ("valid" for {@link ZoologicalName zoological names}),
+	 * it is "legitimate" ("valid" for {@link IZoologicalName zoological names}),
 	 * it has been submitted to competent authorities in order to decide whether
 	 * it should be handled as "illegitimate" (without to be rejected in favour
 	 * of a "conserved" taxon name).<BR>
@@ -549,7 +549,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * {@link TaxonNameBase taxon name} is "conserved (orthography)" if competent authorities
 	 * decided to conserve a different spelling to the one published originally.<BR>
 	 * A "conserved (orthography)" taxon name is "conserved" and hence
-	 * "legitimate" ("valid" for {@link ZoologicalName zoological names}).
+	 * "legitimate" ("valid" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #isLegitimateType()
 	 * @see  #CONSERVED()
@@ -582,7 +582,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be rejected"
 	 * if, even though by the strict application of the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
-	 * it should be "legitimate" ("valid" for {@link ZoologicalName zoological names}),
+	 * it should be "legitimate" ("valid" for {@link IZoologicalName zoological names}),
 	 * it has been submitted to competent authorities in order to decide whether
 	 * it should be handled as "illegitimate".<BR>
 	 * A "proposed to be rejected" taxon name is therefore still "legitimate"
@@ -606,7 +606,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * ("available") {@link TaxonNameBase taxon name} is "conserved" if, even though by the strict
 	 * application of the rules of the {@link NomenclaturalCode nomenclature code}, and especially of
 	 * the principle of priority, it should be "illegitimate" ("invalid" for
-	 * {@link ZoologicalName zoological names}), competent authorities decided to handle
+	 * {@link IZoologicalName zoological names}), competent authorities decided to handle
 	 * it as "legitimate".<BR>
 	 * A "conserved" taxon name is therefore also "legitimate" ("valid" for
 	 * zoological names).
@@ -637,7 +637,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "invalid" (this corresponds to
-	 * "not available" for {@link ZoologicalName zoological names}). The use of "invalid"
+	 * "not available" for {@link IZoologicalName zoological names}). The use of "invalid"
 	 * {@link TaxonNameBase taxon names} should be avoided.<BR>
 	 * A taxon name is "invalid" if it is not "valid"; this means that
 	 * the taxon name:<ul>
@@ -661,7 +661,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * if its publication is not accompanied by a description or diagnosis or
 	 * by a reference to such a previously published description or diagnosis.<BR>
 	 * A "nudum" taxon name is therefore also "invalid" ("not available" for
-	 * {@link ZoologicalName zoological names}).
+	 * {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #isInvalidType()
 	 */
@@ -675,7 +675,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * {@link NonViralName#getCombinationAuthorship() author} did not definitely associate the final
 	 * epithet with the name of the genus or species, or with its abbreviation.<BR>
 	 * An "invalid combination" taxon name is therefore also "invalid"
-	 * ("not available" for {@link ZoologicalName zoological names}).
+	 * ("not available" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #isInvalidType()
 	 */
@@ -722,7 +722,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "valid" (this corresponds to
-	 * "available" for {@link ZoologicalName zoological names}).<BR>
+	 * "available" for {@link IZoologicalName zoological names}).<BR>
 	 * A {@link TaxonNameBase taxon name} is "valid" if it:<ul>
 	 * <li>has been effectively published and
 	 * <li>has a form which complies with the rules of the
@@ -770,7 +770,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * is rejected by the commission but an opus with regard to the validity of
 	 * all taxon names occurring in it.<BR>
 	 * An "opus utique oppressum" taxon name is therefore also "invalid"
-	 * ("not available" for {@link ZoologicalName zoological names}).
+	 * ("not available" for {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #isInvalidType()
 	 */
@@ -816,12 +816,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * Returns the nomenclatural status type identified through its label
 	 * abbreviation. Preliminary implementation for BotanicalNameParser.
 	 *
-	 * @param	statusAbbreviation	the label abbreviation
-	 * @param name
+	 * @param statusAbbreviation	the label abbreviation
+	 * @param name                  the taxon name
 	 * @return  					the nomenclatural status type
 	 *
 	 */
-	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation, NonViralName<?> name) throws UnknownCdmTypeException{
+	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation, ITaxonNameBase name) throws UnknownCdmTypeException{
 		if (statusAbbreviation == null){
 			throw new NullPointerException("Abbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
 		}

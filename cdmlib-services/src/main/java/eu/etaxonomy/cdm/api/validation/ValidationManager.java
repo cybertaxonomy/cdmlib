@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.validation.batch.BatchValidator;
 import eu.etaxonomy.cdm.api.validation.batch.ValidationScheduler;
 import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl;
@@ -58,8 +58,8 @@ public class ValidationManager {
     private BatchValidator batchValidator;
 
     @Autowired
-    @Qualifier("cdmApplicationDefaultConfiguration")
-    private ICdmApplicationConfiguration cdmApplicationDefaultConfiguration;
+    @Qualifier("cdmRepository")
+    private ICdmRepository cdmRepository;
 
     @Autowired
 //    IEntityValidationService validationService;
@@ -113,7 +113,7 @@ public class ValidationManager {
                 l2Listener.setValidationExecutor(validationExecutor);
 
                 //level3
-                l3Listener = new Level3TransactionalValidationEventListener(cdmApplicationDefaultConfiguration, validationDao);
+                l3Listener = new Level3TransactionalValidationEventListener(cdmRepository, validationDao);
                 l3Listener.setValidationExecutor(validationExecutor);
 
                 // prepend to register before or append to register after

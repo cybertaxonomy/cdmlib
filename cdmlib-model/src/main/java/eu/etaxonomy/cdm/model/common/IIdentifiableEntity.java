@@ -87,6 +87,8 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void addExtension(Extension extension);
 
+    public void addExtension(String value, ExtensionType extensionType);
+
     public void removeExtension(Extension extension);
 
     /**
@@ -168,6 +170,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public byte[] getData();
 
 	void removeSources();
+
 
 
 

@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -419,7 +420,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public Pager<HybridRelationship> getHybridNames(NonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<HybridRelationship> getHybridNames(INonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countHybridNames(name, type);
 
         List<HybridRelationship> results = new ArrayList<HybridRelationship>();
@@ -445,7 +446,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 
     protected LuceneSearch prepareFindByFuzzyNameSearch(Class<? extends CdmBase> clazz,
-            NonViralName nvn,
+            INonViralName nvn,
             float accuracy,
             int maxNoOfResults,
             List<Language> languages,
@@ -591,7 +592,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         logger.info("Name to fuzzy search for : " + name);
         // parse the input name
         NonViralNameParserImpl parser = new NonViralNameParserImpl();
-        NonViralName nvn = parser.parseFullName(name);
+        INonViralName nvn = parser.parseFullName(name);
         if(name != null && !name.equals("") && nvn == null) {
             throw new ParseException("Could not parse name " + name);
         }
@@ -626,7 +627,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         logger.info("Name to fuzzy search for : " + name);
         // parse the input name
         NonViralNameParserImpl parser = new NonViralNameParserImpl();
-        NonViralName nvn = parser.parseFullName(name);
+        INonViralName nvn = parser.parseFullName(name);
         if(name != null && !name.equals("") && nvn == null) {
             throw new ParseException("Could not parse name " + name);
         }
@@ -798,18 +799,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     protected void setOtherCachesNull(TaxonNameBase name) {
-        if (name.isInstanceOf(NonViralName.class)){
-            NonViralName<?> nvn = CdmBase.deproxy(name, NonViralName.class);
-            if (! nvn.isProtectedNameCache()){
-                nvn.setNameCache(null, false);
-            }
-            if (! nvn.isProtectedAuthorshipCache()){
-                nvn.setAuthorshipCache(null, false);
-            }
-            if (! nvn.isProtectedFullTitleCache()){
-                nvn.setFullTitleCache(null, false);
-            }
+         if (! name.isProtectedNameCache()){
+             name.setNameCache(null, false);
         }
+        if (! name.isProtectedAuthorshipCache()){
+            name.setAuthorshipCache(null, false);
+        }
+        if (! name.isProtectedFullTitleCache()){
+            name.setFullTitleCache(null, false);
+        }
+
     }
 
     @Override
@@ -861,7 +860,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
         //hybrid relationships
         if (name.isInstanceOf(NonViralName.class)){
-            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+            INonViralName nvn = name;
             Set<HybridRelationship> parentHybridRelations = nvn.getHybridParentRelations();
             //Hibernate.initialize(parentHybridRelations);
             if (! parentHybridRelations.isEmpty()){

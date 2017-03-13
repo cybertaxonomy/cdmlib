@@ -32,7 +32,9 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IPrintSeries;
@@ -42,7 +44,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @created 03.08.2009
- * @version 1.0
  */
 public class DefaultMatchStrategyTest {
 	@SuppressWarnings("unused")
@@ -162,7 +163,7 @@ public class DefaultMatchStrategyTest {
 	public void testGetMatchMode() {
 		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, matchStrategy.getMatchMode("isbn"));
-		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
+		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL_REQUIRED", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
 	}
 
 	/**
@@ -215,8 +216,8 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
 
 		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
-		BotanicalName botName1 = BotanicalName.NewInstance(Rank.GENUS());
-		BotanicalName botName2 = BotanicalName.NewInstance(Rank.GENUS());
+		IBotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		IBotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Assert.assertNotNull("Rank should not be null", botName1.getRank());
 
 		botName1.setGenusOrUninomial("Genus1");
@@ -344,9 +345,9 @@ public class DefaultMatchStrategyTest {
 	public void testInvokeTaxonNames() throws MatchException {
 		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
 
-		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
-		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
-		BotanicalName botName3 = BotanicalName.NewInstance(Rank.SPECIES());
+		BotanicalName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		BotanicalName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		IBotanicalName botName3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 
 		Assert.assertFalse("Names without title should not match", matchStrategy.invoke(botName1, botName2));
 

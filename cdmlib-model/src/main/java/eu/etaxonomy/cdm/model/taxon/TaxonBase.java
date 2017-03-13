@@ -40,9 +40,11 @@ import org.hibernate.search.annotations.Store;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -97,7 +99,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             impl = AcceptedTaxonBridge.class),
     @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, Cloneable {
+public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, IIntextReferenceTarget, Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
 
@@ -371,6 +373,68 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
         return name == null ? null : name.getRank();
     }
 
+    /**
+     * This method compares 2 taxa on it's name titles and caches.
+     * If both are equal it compares on the secundum titleCache as well.
+     * It is not fully clear/defined how this method relates to
+     * explicit comparators like {@link TaxonComparator}. The later
+     * currently uses this method.
+     * Historically it was a compareTo method in {@link IdentifiableEntity}
+     * but did not fulfill the {@link Comparable} contract.
+     * <BR><BR>
+     * {@link  https://dev.e-taxonomy.eu/redmine/issues/922}<BR>
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/6311}
+     *
+     * @see ITaxonNameBase#compareToName(TaxonNameBase)
+     * @see TaxonComparator
+     * @see TaxonNaturalComparator
+     * @see TaxonNodeByNameComparator
+     * @see TaxonNodeByRankAndNameComparator
+     * @param otherTaxon
+     * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
+     * @throws NullPointerException if otherTaxon is <code>null</code>
+     */
+    //TODO handling of protected titleCache
+    public int compareToTaxon(TaxonBase otherTaxon){
+
+        int result = 0;
+
+        if (otherTaxon == null) {
+            throw new NullPointerException("Cannot compare to null.");
+        }
+
+        otherTaxon = deproxy(otherTaxon);
+
+        TaxonNameBase<?,?> otherName = deproxy(otherTaxon.getName());
+        ITaxonNameBase thisName = this.getName();
+        if ((otherName == null || thisName == null)){
+            if (otherName != thisName){
+                result = thisName == null ? -1 : 1;
+            }
+        }else{
+            result = thisName.compareToName(otherName);
+        }
+
+        if (result == 0){
+            String otherReferenceTitleCache = "";
+            String thisReferenceTitleCache = "";
+
+            Reference otherRef = deproxy(otherTaxon.getSec());
+            if (otherRef != null) {
+                otherReferenceTitleCache = otherRef.getTitleCache();
+            }
+            Reference thisRef = deproxy(this.getSec());
+            if (thisRef != null) {
+                thisReferenceTitleCache = thisRef.getTitleCache();
+            }
+            if ((CdmUtils.isNotBlank(otherReferenceTitleCache) || CdmUtils.isNotBlank(thisReferenceTitleCache))) {
+                result = thisReferenceTitleCache.compareTo(otherReferenceTitleCache);
+            }
+        }
+
+        return result;
+    }
+
 //*********************** CLONE ********************************************************/
 
     /**
@@ -382,9 +446,9 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
      */
     @Override
     public Object clone() {
-        TaxonBase result;
+        TaxonBase<?> result;
         try {
-            result = (TaxonBase)super.clone();
+            result = (TaxonBase<?>)super.clone();
             result.setSec(null);
 
             return result;

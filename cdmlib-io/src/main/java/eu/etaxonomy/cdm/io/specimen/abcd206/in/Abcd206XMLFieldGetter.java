@@ -85,6 +85,9 @@ public class Abcd206XMLFieldGetter {
     protected void getScientificNames(NodeList group) {
         NodeList identifications, results;
         String tmpName = null;
+        String preferredFlag = null;
+        String identifierStr = null;
+        String dateStr = null;
         //TODO: add the identifier!!
 //        abcd:Identification>
 //        <abcd:Result>
@@ -104,6 +107,8 @@ public class Abcd206XMLFieldGetter {
 //        <abcd:Date>
 //        <abcd:DateText>2014-07-11T00:00:00</abcd:DateText></abcd:Date>
 //        </abcd:Identification>
+
+        // TODO:here we need to get the informations about the higher taxa to get the info about the nomenclatural code!!
         for (int j = 0; j < group.getLength(); j++) {
             if (group.item(j).getNodeName().equals(prefix + "Identification")) {
                 identifications = group.item(j).getChildNodes();
@@ -114,24 +119,36 @@ public class Abcd206XMLFieldGetter {
                         for (int k = 0; k < results.getLength(); k++) {
                             if (results.item(k).getNodeName().equals(prefix + "TaxonIdentified")) {
                                 tmpName = this.getScientificName(results.item(k));
-                                // logger.info("TMP NAME " + tmpName);dataHolder.identificationList.add(tmpName);nameFound = true;
+                                 logger.info("TMP NAME " + tmpName);
+
                             }
                         }
-                    } else if (identifications.item(m).getNodeName().equals(prefix + "PreferredFlag")) {
-                        if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "") {
-                            // logger.info("TMP NAME P" + tmpName);
-
-                            dataHolder.getIdentificationList().add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.getNomenclatureCode(), null));
-                        } else {
-                            dataHolder.getIdentificationList().add(new Identification(tmpName, identifications.item(m).getTextContent()));
-                        }
+                      } else if (identifications.item(m).getNodeName().equals(prefix + "PreferredFlag")) {
+                          preferredFlag = identifications.item(m).getTextContent();
+//                        if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "") {
+//                            // logger.info("TMP NAME P" + tmpName);
+//
+//                            dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dataHolder.getNomenclatureCode(), null));
+//                        } else {
+//                            dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag));
+//                        }
                         path = identifications.item(m).getNodeName();
                         // getHierarchie(identifications.item(m));
                         dataHolder.knownABCDelements.add(path);
                         path = "";
                     } else if (identifications.item(m).getNodeName().equals(prefix + "References")) {
                         this.getReferences(identifications.item(m));
+                    } else if (identifications.item(m).getNodeName().equals(prefix + "Identifiers")){
+                        identifierStr = this.getIdentifiers(identifications.item(m));
+                    }else if (identifications.item(m).getNodeName().equals(prefix +"Date")){
+                        dateStr = this.getDateIdentified(identifications.item(m));
                     }
+                }
+                if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "" ) {
+                    // logger.info("TMP NAME P" + tmpName);
+                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dataHolder.getNomenclatureCode(), identifierStr, dateStr));
+                } else {
+                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dateStr));
                 }
             }
         }
@@ -157,14 +174,68 @@ public class Abcd206XMLFieldGetter {
                 if (!hasPref && tmpName != null) {
                     if (dataHolder.getNomenclatureCode() != null
                             && dataHolder.getNomenclatureCode() != "") {
-                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode(), null));
+                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode(), null, dateStr));
                     } else {
-                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0"));
+                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dateStr));
                     }
                 }
             }
         }
     }
+
+    /**
+     * @param item
+     * @return
+     */
+    private String getDateIdentified(Node item) {
+        NodeList results, dateNode, dateTextNode;
+        results = item.getChildNodes();
+        boolean identifierFound = false;
+
+        for (int k = 0; k < results.getLength(); k++) {
+            if (results.item(k).getNodeName().equals(prefix + "DateText")) {
+                return results.item(k).getTextContent();
+            }
+
+
+        }
+        return null;
+
+    }
+
+
+    /**
+     * @param item
+     */
+    private String getIdentifiers(Node item) {
+        NodeList results, identifier, personName;
+        results = item.getChildNodes();
+        boolean identifierFound = false;
+
+        for (int k = 0; k < results.getLength(); k++) {
+            if (results.item(k).getNodeName().equals(prefix + "Identifier")) {
+                identifier = results.item(k).getChildNodes();
+                for (int l = 0; l < identifier.getLength(); l++) {
+                    if (identifier.item(l).getNodeName().equals(prefix + "PersonName")) {
+                       identifierFound = true;
+                       Node identifierPersonName = identifier.item(l);
+                       personName = identifierPersonName.getChildNodes();
+                       for (int m = 0; m < personName.getLength(); m++) {
+                           if (personName.item(m).getNodeName().equals(prefix + "FullName")) {
+                               return personName.item(m).getTextContent();
+                           }
+                       }
+
+                    }
+
+                }
+
+            }
+        }
+        return null;
+
+    }
+
 
     /**
      * getScientificName : get the list of scientific names
@@ -194,7 +265,7 @@ public class Abcd206XMLFieldGetter {
                             if (scnames.item(n).hasChildNodes()) {
                                 String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();
 
-                                if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
+                                if (tmp.indexOf(prefix) != -1 && prefix.length() > 0) {
                                     dataHolder.setNomenclatureCode(tmp.split(prefix)[1]);
                                 }
                                 else {

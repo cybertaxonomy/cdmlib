@@ -28,6 +28,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
@@ -47,7 +48,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * as creators of pictures or field collectors or administrators of collections.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -57,7 +57,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Table(appliesTo="AgentBase", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMergable, IMatchable, Cloneable{
+public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy<? extends AgentBase<S>>>
+        extends IdentifiableMediaEntity<S>
+        implements IMergable, IMatchable, IIntextReferenceTarget, Cloneable{
 	private static final long serialVersionUID = 7732768617469448829L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentBase.class);
@@ -235,8 +237,5 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	public void removeUrl(URI url) {
 		getNewOrExistingContact(false).removeUrl(url);
 	}
-
-
-
 
 }

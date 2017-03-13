@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -190,6 +191,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             "synonyms.sec.titleCache",
             "synonyms.sources.citation.sources.idNamespace",
             "synonyms.sources.citation.sources.idInSource",
+            "synonyms.type.inverseRepresentations",
             "acceptedTaxon.name.rank.titleCache",
             "acceptedTaxon.sec.titleCache",
             "acceptedTaxon.sources.citation.sources.idNamespace",
@@ -676,8 +678,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
-            NonViralName<?> nvn = CdmBase.deproxy(service.load(UUID.fromString(nameUuid),
-                        NAME_INFORMATION_INIT_STRATEGY), NonViralName.class);
+            TaxonNameBase<?,?> nvn = service.load(UUID.fromString(nameUuid),NAME_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
             if (nvn != null) {
@@ -822,7 +823,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
-                    NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+                    INonViralName nvn = CdmBase.deproxy(taxon.getName());
 
                     String secTitle = "" ;
                     String modified = "";
@@ -1166,7 +1167,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                 AcceptedNameSearch ans = new AcceptedNameSearch();
                 ans.setRequest(query);
 
-                for (NonViralName nvn : nameList) {
+                for (INonViralName nvn : nameList) {
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
@@ -1179,7 +1180,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             Synonym synonym = (Synonym) tb;
                             Taxon accTaxon = synonym.getAcceptedTaxon();
                             if (accTaxon != null) {
-                                NonViralName<?> accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
+                                INonViralName accNvn = CdmBase.deproxy(accTaxon.getName());
                                 Map<String, Map> classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(), classificationMap);
                             }

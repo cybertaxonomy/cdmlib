@@ -21,14 +21,14 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -78,7 +78,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationT
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
-	TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 
@@ -184,19 +184,19 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationT
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
-		
+
 		//freetext without unit
 		String altitudeText = "approx. 40";
 		specimenFacade.setAbsoluteElevationText(altitudeText);
 		String expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeText);
 		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
-		
+
 		//freetext with unit
 		String altitudeTextM = "approx. 40 m";
 		specimenFacade.setAbsoluteElevationText(altitudeTextM);
 		expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
 		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
-		
+
 	}
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
@@ -204,7 +204,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationT
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

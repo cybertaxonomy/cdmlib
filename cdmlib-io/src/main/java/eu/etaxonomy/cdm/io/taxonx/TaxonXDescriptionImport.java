@@ -188,7 +188,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
-//		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+//		result =  Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null);
 		ICommonService commonService = getCommonService();
 
 		String originalSourceId = config.getOriginalSourceId();

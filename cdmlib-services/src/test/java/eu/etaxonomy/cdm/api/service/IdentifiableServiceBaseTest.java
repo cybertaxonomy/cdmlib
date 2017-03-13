@@ -30,9 +30,10 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -273,7 +274,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		termService.save(identifierType2);
 
 
-    	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+    	IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         Taxon tb = Taxon.NewInstance(name, null);
         tb.addIdentifier("ext-1234", identifierType1);
         name.addIdentifier("ext-name12", identifierType2);

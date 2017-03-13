@@ -280,13 +280,19 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
                 }
             }
             if(isMissing){
-                GrantedAuthorityImpl newGa = GrantedAuthorityImpl.NewInstance();
-                newGa.setAuthority(a);
+                GrantedAuthorityImpl newGa = grantedAuthorityService.findAuthorityString(a);
+
+                if (newGa == null){
+                    newGa = GrantedAuthorityImpl.NewInstance();
+                    newGa.setAuthority(a);
+                }
+
                 group.addGrantedAuthority(newGa);
                 logger.info("New GrantedAuthority '" + a + "' added  to '" + groupName + "'");
             }
         }
-        groupService.saveOrUpdate(group);
+
+        groupService.merge(group, true);
         logger.info("Check of group  '" + groupName + "' done");
     }
 

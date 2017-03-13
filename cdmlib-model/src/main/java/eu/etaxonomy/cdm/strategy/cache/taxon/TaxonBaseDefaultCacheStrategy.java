@@ -91,7 +91,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     }
 
     private List<TaggedText> getNameTags(T taxonBase) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
         TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){

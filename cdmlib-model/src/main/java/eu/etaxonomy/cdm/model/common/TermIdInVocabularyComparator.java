@@ -26,15 +26,10 @@ public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implemen
     public int compare(T term1, T term2) {
         String label1;
         String label2;
-        if (term1 == term2){
+        if (term1.equals(term2)){
             return 0;
         }
-        if (term1 == null){
-            return 1;
-        }
-        if (term2 == null){
-            return -1;
-        }
+
         if (term1.getIdInVocabulary() == null){
             label1 = CdmUtils.Nz(term1.getTitleCache());
         }else{

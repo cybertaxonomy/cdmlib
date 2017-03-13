@@ -48,8 +48,10 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -391,7 +393,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @param sec
      */
     private void setTaxonNameBase(SpecimenSynthesysExcelImportConfigurator config){
-        NonViralName<?> taxonName = null;
+        ITaxonNameBase taxonName = null;
         Taxon taxon = null;
 
         String scientificName="";
@@ -450,10 +452,10 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = parseScientificName(scientificName);
                 }
                 else{
-                    taxonName = NonViralName.NewInstance(null);
+                    taxonName = TaxonNameFactory.NewNonViralInstance(null);
                     taxonName.setTitleCache(scientificName, true);
                 }
-                getNameService().save(taxonName);
+                getNameService().save((TaxonNameBase<?,?>)taxonName);
                 taxon = Taxon.NewInstance(taxonName, ref); //sec set null
                 getTaxonService().save(taxon);
                 //   refreshTransaction();
@@ -507,12 +509,12 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         return (Taxon) getTaxonService().find(taxon.getUuid());
     }
 
-    private NonViralName<?> parseScientificName(String scientificName){
+    private ITaxonNameBase parseScientificName(String scientificName){
         if (DEBUG) {
             logger.debug("in parseScientificName");
         }
         NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
-        NonViralName<?>taxonName = null;
+        ITaxonNameBase taxonName = null;
         boolean problem=false;
 
         if (DEBUG) {
@@ -520,7 +522,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
         if(nomenclatureCode == null){
-            taxonName = NonViralName.NewInstance(null);
+            taxonName = TaxonNameFactory.NewNonViralInstance(null);
             taxonName.setTitleCache(scientificName, true);
             return taxonName;
         }
@@ -555,7 +557,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         //      }
         //TODO: parsing of ViralNames?
         if(problem){
-            taxonName = NonViralName.NewInstance(null);
+            taxonName = TaxonNameFactory.NewNonViralInstance(null);
             taxonName.setTitleCache(scientificName, true);
         }
         return taxonName;

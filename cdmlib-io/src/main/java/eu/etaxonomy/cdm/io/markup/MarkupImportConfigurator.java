@@ -5,11 +5,13 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.io.markup;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -24,60 +26,72 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupImportState> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(MarkupImportConfigurator.class);
-	
+    private static final long serialVersionUID = 779807547137921079L;
+
+    private static final Logger logger = Logger.getLogger(MarkupImportConfigurator.class);
+
 	public static MarkupImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new MarkupImportConfigurator(uri, destination);
 	}
-	
+
 	private boolean replaceStandardKeyTitles = true;
-	
+
 	private boolean doTaxa = true;
-	
+
 	private boolean reuseExistingState = false;
-	
+
 	private boolean allowCapitalSpeciesEpithet = false;  //set to true if you want to allow specific epithets with capital letter at the beginning. This was allowed by the code for epithets referring to persons such as Beilschmiedia Zenkeri.
 
-	private boolean handlePagesAsDetailWhereNeeded = true;  //often details in publications and citations are tagged as pages, not as details. If value is true, pages are handled as details where possible 
+	private boolean handlePagesAsDetailWhereNeeded = true;  //often details in publications and citations are tagged as pages, not as details. If value is true, pages are handled as details where possible
 
 	private boolean useEditorAsInAuthorWhereNeeded = true;  //often the inAuthor is stored as "Editor" in citations, atleast in FM.
-	
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
-	private String classificationTitle = "E-Flora Import";
 	private String sourceReferenceTitle = "E-Flora";
 	private UUID defaultLanguageUuid;
-	
-	//TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
+
+    private List<String> knownCollections = new ArrayList<>();
+
+    private boolean ignoreLocalityClass = false;
+
+    private boolean handleWriterManually = false;
+
+    private boolean doExtensionForTaxonTitle = true;
+
+
+
+    private UUID specimenNotSeenMarkerTypeUuid = MarkupTransformer.uuidMarkerNotSeen;
+    private String specimenNotSeenMarkerTypeLabel;
+
+
+    //TODO move to state, but a state gets lost after each import.invoke, so I can't move this information
 	//from the one import to another import in case I run 2 imports in line
 	private UUID lastTaxonUuid;
-	
-	//if true, the keys will be printed after they have been created	
+
+	//if true, the keys will be printed after they have been created
 	private boolean doPrintKeys = false;
 
 	private MarkupImportState state;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#makeIoClassList()
-	 */
+	@Override
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			MarkupDocumentImport.class
 		};
 	};
-	
+
+// ******************** CONSTRUCTOR ************************/
+
 	protected MarkupImportConfigurator() {
 		super(defaultTransformer);
 	}
-	
-	
-	/**
-	 * 
-	 */
+
+
 	protected MarkupImportConfigurator(IInputTransformer transformer) {
 		super(transformer);
 	}
-	
+
 
 	/**
 	 * @param url
@@ -88,7 +102,7 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		setSource(uri);
 		setDestination(destination);
 	}
-	
+
 	/**
 	 * @param url
 	 * @param destination
@@ -99,11 +113,10 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		setDestination(destination);
 	}
 
+// *************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
-	public MarkupImportState getNewState() {
+	@Override
+    public MarkupImportState getNewState() {
 		if (this.isReuseExistingState() == true){
 			if (this.state == null){
 				this.state = new MarkupImportState(this);
@@ -114,14 +127,10 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		}else{
 			return new MarkupImportState(this);
 		}
-		
-		
-	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
+
+	}
+
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -140,13 +149,13 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		}else{
 			return this.getSource().toString();
 		}
-	}	
-	
+	}
+
 
 	public UUID getLastTaxonUuid() {
 		return lastTaxonUuid;
 	}
-	
+
 	public void setLastTaxonUuid(UUID lastTaxonUuid) {
 		this.lastTaxonUuid = lastTaxonUuid;
 	}
@@ -200,11 +209,11 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	public void setReuseExistingState(boolean reuseExistingState) {
 		this.reuseExistingState = reuseExistingState;
 	}
-	
+
 	/**
 	 * If {@link #isReuseExistingState()} is true, this method returns the state.
 	 * This is an experimental workaround for Markup import. The functionality
-	 * should better be moved to CdmImportBase somewhere. 
+	 * should better be moved to CdmImportBase somewhere.
 	 * @return
 	 */
 	public MarkupImportState getState() {
@@ -222,7 +231,7 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	public boolean isHandlePagesAsDetailWhereNeeded() {
 		return this.handlePagesAsDetailWhereNeeded;
 	}
-	
+
 	public void setHandlePagesAsDetailWhereNeeded(boolean handlePagesAsDetailWhereNeeded) {
 		this.handlePagesAsDetailWhereNeeded = handlePagesAsDetailWhereNeeded;
 	}
@@ -234,10 +243,12 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	public void setUseEditorAsInAuthorWhereNeeded(boolean useEditorAsInAuthorWhereNeeded) {
 		this.useEditorAsInAuthorWhereNeeded = useEditorAsInAuthorWhereNeeded;
 	}
-	
+
 	boolean useFotGSpecimenTypeCollectionAndTypeOnly = false;
 
-	public boolean isUseFotGSpecimenTypeCollectionAndTypeOnly() {
+
+
+    public boolean isUseFotGSpecimenTypeCollectionAndTypeOnly() {
 		return useFotGSpecimenTypeCollectionAndTypeOnly;
 	}
 
@@ -245,7 +256,49 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 			boolean useFotGSpecimenTypeCollectionAndTypeOnly) {
 		this.useFotGSpecimenTypeCollectionAndTypeOnly = useFotGSpecimenTypeCollectionAndTypeOnly;
 	}
-	
 
-	
+    public void setKnownCollections(List<String> knownCollections) {
+        this.knownCollections =knownCollections;
+    }
+    public List<String> getKnownCollections(){
+        return this.knownCollections;
+    }
+
+    public boolean isIgnoreLocalityClass() {
+        return this.ignoreLocalityClass;
+    }
+    public void setIgnoreLocalityClass(boolean ignoreLocalityClass) {
+        this.ignoreLocalityClass = ignoreLocalityClass;
+    }
+
+    public boolean isHandleWriterManually() {
+        return this.handleWriterManually;
+    }
+    public void setHandleWriterManually(boolean handleWriterManually) {
+        this.handleWriterManually = handleWriterManually;
+    }
+
+    public UUID getSpecimenNotSeenMarkerTypeUuid() {
+        return specimenNotSeenMarkerTypeUuid;
+    }
+    public void setSpecimenNotSeenMarkerTypeUuid(UUID specimenNotSeenMarkerTypeUuid) {
+        this.specimenNotSeenMarkerTypeUuid = specimenNotSeenMarkerTypeUuid;
+    }
+
+    public String getSpecimenNotSeenMarkerTypeLabel() {
+        return specimenNotSeenMarkerTypeLabel;
+    }
+    public void setSpecimenNotSeenMarkerTypeLabel(String specimenNotSeenMarkerTypeLabel) {
+        this.specimenNotSeenMarkerTypeLabel = specimenNotSeenMarkerTypeLabel;
+    }
+
+
+    public boolean isDoExtensionForTaxonTitle() {
+        return doExtensionForTaxonTitle;
+    }
+
+    public void setDoExtensionForTaxonTitle(boolean doExtensionForTaxonTitle) {
+        this.doExtensionForTaxonTitle = doExtensionForTaxonTitle;
+    }
+
 }

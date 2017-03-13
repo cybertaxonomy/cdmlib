@@ -275,7 +275,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
         }
 
         if (result == 0 && name1 != null && name2 != null){
-            result = name1.compareTo(name2);
+            result = name1.compareToName(name2);
             if (result != 0){
                 return result;
             }

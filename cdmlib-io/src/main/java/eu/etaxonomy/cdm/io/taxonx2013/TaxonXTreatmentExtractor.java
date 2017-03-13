@@ -49,12 +49,11 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -898,7 +897,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param acceptedTaxon: the current accepted Taxon
      * @param refMods: the current reference extracted from the MODS
      */
-    private String extractMaterialsDirect(Node materials, Taxon acceptedTaxon, Reference refMods, String event, NonViralName<?> currentName) {
+    private String extractMaterialsDirect(Node materials, Taxon acceptedTaxon, Reference refMods, String event, TaxonNameBase<?,?> currentName) {
         logger.info("extractMaterialsDirect");
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         String descr="";
@@ -1585,7 +1584,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
 
-    private boolean addFollowingTextToName(TaxonNameBase nameToBeFilled, String followingText) {
+    private boolean addFollowingTextToName(ITaxonNameBase nameToBeFilled, String followingText) {
     	if (nameToBeFilled != null && StringUtils.isNotBlank(followingText)){
     		if (! followingText.matches("\\d\\.?")){
 
@@ -1615,7 +1614,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         acceptedTaxon = CdmBase.deproxy(acceptedTaxon, Taxon.class);
 
         NodeList children = refgroup.getChildNodes();
-        NonViralName<?> nameToBeFilled = getNonViralNameAccNomenclature();
+        INonViralName nameToBeFilled = getNonViralNameAccNomenclature();
 
         ReferenceBuilder refBuild = new ReferenceBuilder(sourceHandler);
         for (int i=0;i<children.getLength();i++){
@@ -1663,8 +1662,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @return
      */
 
-    private NonViralName<?> getNonViralNameAccNomenclature() {
-    	return (NonViralName<?>)nomenclaturalCode.getNewTaxonNameInstance(null);
+    private INonViralName getNonViralNameAccNomenclature() {
+    	return nomenclaturalCode.getNewTaxonNameInstance(null);
     }
 
     /**
@@ -1690,7 +1689,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * handle cases where the bibref are inside <p> and outside
      */
     @SuppressWarnings("rawtypes")
-    private void extractReferenceRawText(NodeList references, NonViralName<?> nameToBeFilled, Reference refMods,
+    private void extractReferenceRawText(NodeList references, INonViralName nameToBeFilled, Reference refMods,
             Taxon acceptedTaxon) {
         logger.info("extractReferenceRawText");
         String refString="";
@@ -1970,13 +1969,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 fullname =  getFullReference(name,nameTBF.getParsingProblems());
             }
             if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)){
-                nameTBF = BotanicalName.NewInstance(null);
+                nameTBF = TaxonNameFactory.NewBotanicalInstance(null);
             }
             if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
-                nameTBF = ZoologicalName.NewInstance(null);
+                nameTBF = TaxonNameFactory.NewZoologicalInstance(null);
             }
             if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)){
-                nameTBF= BacterialName.NewInstance(null);
+                nameTBF= TaxonNameFactory.NewBacterialInstance(null);
             }
             parser.parseReferencedName(nameTBF, fullname, rank, false);
             retry++;
@@ -2091,7 +2090,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 //                System.out.println("COLLECTION EVENT INSIDE NOMENCLATURE");
                 extractMaterialsDirect(childNode, acceptedTaxon, refMods, "collection", currentMyName.getTaxonNameBase());
             }else if(childName.equalsIgnoreCase("tax:name")){
-            	NonViralName<?> nameToBeFilled;
+                INonViralName nameToBeFilled;
                 //System.out.println("HANDLE FIRST NAME OF THE LIST");
                 if(!containsSynonyms){
                 	wasSynonym = false;
@@ -2218,7 +2217,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }else if (childName.equalsIgnoreCase("tax:bibref")){
             	logger.warn(childName + " still preliminary");
 
-            	NonViralName<?> currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
+            	INonViralName currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
             	boolean handled = addFollowingTextToName (currentName, childNode.getTextContent() );
             	if (! handled){
             		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());
@@ -2228,7 +2227,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if(!stringIsEmpty(freetext.trim())) {;
                 if (! freetext.matches("\\d\\.?")){
-                	NonViralName<?> currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
+                    INonViralName currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
                 	boolean handled = false;
                 	if (currentName != null && !wasSynonym){
                 		handled = addFollowingTextToName (currentName, childNode.getTextContent() );
@@ -2301,15 +2300,15 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     s = askSetParent(s);
                     r = askRank(s,rankListStr);
 
-                    NonViralName<?> nameToBeFilled = null;
+                    TaxonNameBase<?,?> nameToBeFilled = null;
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)){
-                        nameToBeFilled = BotanicalName.NewInstance(null);
+                        nameToBeFilled = TaxonNameFactory.NewBotanicalInstance(null);
                     }
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
-                        nameToBeFilled = ZoologicalName.NewInstance(null);
+                        nameToBeFilled = TaxonNameFactory.NewZoologicalInstance(null);
                     }
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)){
-                        nameToBeFilled = BacterialName.NewInstance(null);
+                        nameToBeFilled = TaxonNameFactory.NewBacterialInstance(null);
                     }
                     nameToBeFilled.setTitleCache(s, true);
                     nameToBeFilled.setRank(getRank(r), true);
@@ -2439,14 +2438,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         boolean parseNameManually=false;
         INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
-        TaxonNameBase<?,?>  nameToBeFilledTest ;
+        ITaxonNameBase  nameToBeFilledTest ;
 
         //if selected the atomised version
         if(newName==atomisedNameStr){
             nameToBeFilledTest = parseWithExtension(parser, atomisedNameStr, rank, followingText, atomisedMap);
             if (nameToBeFilledTest.hasProblem()){
                 addProblemNameToFile("ato",atomisedNameStr,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
-                nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode,rank);
+                nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode, rank);
                 if (nameToBeFilledTest.hasProblem()){
                     addProblemNameToFile("full",fullName,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
                     parseNameManually=true;
@@ -2455,7 +2454,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }else{
             nameToBeFilledTest = parseWithExtension(parser, atomisedNameStr, rank, followingText, atomisedMap);
             if (nameToBeFilledTest.hasProblem()){
-                addProblemNameToFile("fullversion",fullName,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
+                addProblemNameToFile("fullversion",fullName, nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
                 nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode,rank);
                 parseNameManually=true;
                 if(!originalName.equalsIgnoreCase(atomisedNameStr)) {
@@ -2581,7 +2580,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         boolean parseNameManually=false;
         INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
-        TaxonNameBase  nameToBeFilledTest = null;
+        ITaxonNameBase  nameToBeFilledTest = null;
 
         //if selected the atomised version
         if(newName==atomisedNameStr){
@@ -2620,13 +2619,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     }
 
-    private TaxonNameBase<?,?> parseWithExtension(INonViralNameParser parser, String atomisedNameStr, Rank rank, String followingText, HashMap<String, String> atomisedMap) {
+    private ITaxonNameBase parseWithExtension(INonViralNameParser parser, String atomisedNameStr, Rank rank, String followingText, HashMap<String, String> atomisedMap) {
     	Object[] nameExtensionResult = getPossibleExtension(followingText, atomisedMap, nomenclaturalCode);
 
-    	TaxonNameBase<?,?> name = parser.parseFullName(atomisedNameStr, nomenclaturalCode, rank);
+    	ITaxonNameBase name = parser.parseFullName(atomisedNameStr, nomenclaturalCode, rank);
     	if (nameExtensionResult != null && nameExtensionResult[0] != null){
     		String ext = (String)nameExtensionResult[0];
-    		TaxonNameBase<?,?> extName =parser.parseFullName(atomisedNameStr + " " + ext, nomenclaturalCode, rank);
+    		ITaxonNameBase extName =parser.parseFullName(atomisedNameStr + " " + ext, nomenclaturalCode, rank);
     		if (! extName.hasProblem()){
     			name = extName;
     			this.usedFollowingTextPrefix = ext;
@@ -3048,7 +3047,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     private void createUnparsedSynonymNew(Rank rank, String newName, HashMap<String, String> atomisedMap, MyName myname, Reference refMods) {
         logger.info("createSynonym");
 
-        NonViralName<?> nameToBeFilled = this.getNonViralNameAccNomenclature();
+        INonViralName nameToBeFilled = this.getNonViralNameAccNomenclature();
         //System.out.println("createsynonym");
         if(rank.equals(Rank.UNKNOWN_RANK())){
             //TODO
@@ -3207,75 +3206,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         classification = classification2;
     }
 
-    /**
-     * @param tnb
-     * cast the current taxonnamebase into a botanical name or zoological or bacterial name
-     * if errors, cast into a classis nonviralname
-     * @param taxonnamebase2
-     */
-    @SuppressWarnings("rawtypes")
-    public NonViralName<?> castTaxonNameBase(TaxonNameBase tnb, NonViralName<?> nvn) {
 
-    	//logger.info("castTaxonNameBase");
-        NonViralName<?> taxonnamebase2 = nvn;
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)) {
-            try{
-                taxonnamebase2=(BotanicalName) tnb;
-            }catch(Exception e){
-                taxonnamebase2= (NonViralName<?>) tnb;
-            }
-        }
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)) {
-            try{
-                taxonnamebase2=(ZoologicalName) tnb;
-            }catch(Exception e){
-                taxonnamebase2= (NonViralName<?>) tnb;
-            }
-        }
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)) {
-            try{
-                taxonnamebase2=(BacterialName) tnb;
-            }catch(Exception e){
-                taxonnamebase2= (NonViralName<?>) tnb;
-            }
-        }
-        return taxonnamebase2;
-    }
-
-    /**
-     * @param tnb
-     * cast the current taxonnamebase into a botanical name or zoological or bacterial name
-     * if errors, cast into a classis nonviralname
-     * @param taxonnamebase2
-     */
-    @SuppressWarnings("rawtypes")
-    public NonViralName<?> castTaxonNameBase(TaxonNameBase tnb) {
-        //logger.info("castTaxonNameBase2");
-        NonViralName<?> taxonnamebase2 = null;
-        tnb=CdmBase.deproxy(tnb, TaxonNameBase.class);
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)) {
-            try{
-                taxonnamebase2=(BotanicalName) tnb;
-            }catch(Exception e){
-                taxonnamebase2= (NonViralName<?>) tnb;
-            }
-        }
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)) {
-            try{
-                taxonnamebase2=(ZoologicalName) tnb;
-            }catch(Exception e){
-                taxonnamebase2= (NonViralName<?>) tnb;
-            }
-        }
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)) {
-            try{
-                taxonnamebase2=(BacterialName) tnb;
-            }catch(Exception e){
-                taxonnamebase2= (NonViralName<?>) tnb;
-            }
-        }
-        return taxonnamebase2;
-    }
 
     public class MyName {
         /**
@@ -3293,12 +3224,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         String status="";
         String author=null;
 
-        NonViralName<?> taxonNameBase;
+        TaxonNameBase<?,?> taxonNameBase;
 
         Reference refMods ;
 
         Taxon family,subfamily,tribe,subtribe,genus,subgenus,species,subspecies, variety,form;
-        NonViralName<?> familyName, subfamilyName, tribeName,subtribeName,genusName,subgenusName,speciesName,subspeciesName;
+        INonViralName familyName, subfamilyName, tribeName,subtribeName,genusName,subgenusName,speciesName,subspeciesName;
         String familyStr, subfamilyStr, tribeStr,subtribeStr,genusStr,subgenusStr,speciesStr,subspeciesStr,formStr,varietyStr;
         Integer publicationYear;
 
@@ -3510,7 +3441,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     logger.warn("Problem with status");
                 }
             }
-            List<TaxonBase> tmpList = new ArrayList<TaxonBase>();
+            List<TaxonBase> tmpList = new ArrayList<>();
 
             Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitle(TaxonBase.class, newName2, MatchMode.BEGINNING, null, null, null, null, null);
             tmpList.addAll(taxontest.getRecords());
@@ -3518,7 +3449,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             //logger.info("tmpList returned: "+tmpList.size());
 
 
-            NonViralName<?> identicName = null;
+            INonViralName identicName = null;
             boolean foundIdentic=false;
             TaxonBase<?> tmpTaxonBase=null;
             //            Taxon tmpPartial=null;
@@ -3531,7 +3462,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             crank =tnb.getRank();
                             if (crank !=null && rank !=null){
                                 if (crank.equals(rank)){
-                                	identicName = CdmBase.deproxy(tnb, NonViralName.class);
+                                	identicName = tnb;
                                 	if (isSynonym && tmpb.isInstanceOf(Synonym.class) || !isSynonym && tmpb.isInstanceOf(Taxon.class)){
                                 		foundIdentic=true;
                                 		tmpTaxonBase=tmpb;
@@ -3557,7 +3488,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if ((tmpTaxonBase == null || !foundIdentic) ||  (tmpTaxonBase != null && !statusMatch) ||  (tmpTaxonBase != null && !appendedMatch && !statusMatch)){
 
-            	NonViralName<?> tnb;
+            	INonViralName tnb;
             	if (identicName == null){
             		tnb = getNonViralNameAccNomenclature();
             		tnb.setRank(rank);
@@ -3606,7 +3537,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             	this.syno=(Synonym)tmpTaxonBase;
             }
 
-            taxonNameBase = castTaxonNameBase(tnb, taxonNameBase);
+            taxonNameBase = tnb;
 
         }
 
@@ -3690,8 +3621,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     	author1=taxonNameBase.getAuthorshipCache();
                     }
                     try {
-                        if(castTaxonNameBase(bestMatchingTaxon.getName()).getAuthorshipCache()!=null) {
-                            author2=castTaxonNameBase(bestMatchingTaxon.getName()).getAuthorshipCache();
+                        if(bestMatchingTaxon.getName().getAuthorshipCache()!=null) {
+                            author2=bestMatchingTaxon.getName().getAuthorshipCache();
                         }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
@@ -3784,8 +3715,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 			if (newTaxon.isInstanceOf(Synonym.class)){
 				return false;
 			}
-			NonViralName<?> nodeName = CdmBase.deproxy(nodeTaxon.getName(), NonViralName.class);
-			NonViralName<?> newName = CdmBase.deproxy(newTaxon.getName(), NonViralName.class);
+			INonViralName nodeName = nodeTaxon.getName();
+			INonViralName newName = newTaxon.getName();
 			if (nodeTaxon.getName() == null ||  newName == null){
 				return false;
 			}
@@ -3896,9 +3827,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         /**
          * @param nameToBeFilledTest
          */
-        @SuppressWarnings("rawtypes")
-        public void setParsedName(TaxonNameBase nameToBeFilledTest) {
-            this.taxonNameBase = (NonViralName<?>) nameToBeFilledTest;
+        public void setParsedName(ITaxonNameBase nameToBeFilledTest) {
+            this.taxonNameBase = TaxonNameBase.castAndDeproxy(nameToBeFilledTest);
 
         }
         //variety dwcranks:varietyEpithet
@@ -3917,7 +3847,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         /**
          * @return
          */
-        public NonViralName<?> getTaxonNameBase() {
+        public TaxonNameBase<?,?> getTaxonNameBase() {
             return taxonNameBase;
         }
 
@@ -4044,7 +3974,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if ((tmp == null || !foundIdentic) ||  (tmp != null && !statusMatch) ||  (tmp != null && !appendedMatch && !statusMatch)){
 
-                NonViralName<?> tnb = getNonViralNameAccNomenclature();
+                INonViralName tnb = getNonViralNameAccNomenclature();
                 tnb.setRank(rank);
 
                 if(statusType != null) {
@@ -4139,7 +4069,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildSubfamily(NonViralName<?> tnb) {
+        private Taxon buildSubfamily(INonViralName tnb) {
             Taxon tmp;
             //            tnb.generateTitle();
             tmp = findMatchingTaxon(tnb,refMods);
@@ -4165,7 +4095,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildFamily(NonViralName<?> tnb) {
+        private Taxon buildFamily(INonViralName tnb) {
             Taxon tmp;
             //            tnb.generateTitle();
             tmp = findMatchingTaxon(tnb,refMods);
@@ -4186,7 +4116,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildForm(String fullname, String partialname, NonViralName<?> tnb) {
+        private Taxon buildForm(String fullname, String partialname, INonViralName tnb) {
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
             }
@@ -4235,7 +4165,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildVariety(String fullname, String partialname, NonViralName<?> tnb) {
+        private Taxon buildVariety(String fullname, String partialname, INonViralName tnb) {
             Taxon tmp;
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
@@ -4285,7 +4215,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildSubspecies(String partialname, NonViralName<?> tnb) {
+        private Taxon buildSubspecies(String partialname, INonViralName tnb) {
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
             }
@@ -4325,7 +4255,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildSpecies(String partialname, NonViralName<?> tnb) {
+        private Taxon buildSpecies(String partialname, INonViralName tnb) {
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
             }
@@ -4364,7 +4294,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildSubgenus(String partialname, NonViralName<?> tnb) {
+        private Taxon buildSubgenus(String partialname, INonViralName tnb) {
             tnb.setInfraGenericEpithet(partialname);
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
@@ -4393,7 +4323,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildGenus(String partialname, NonViralName<?> tnb) {
+        private Taxon buildGenus(String partialname, INonViralName tnb) {
             Taxon tmp;
             tnb.setGenusOrUninomial(partialname);
 
@@ -4442,7 +4372,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildSubtribe(NonViralName<?> tnb) {
+        private Taxon buildSubtribe(INonViralName tnb) {
             Taxon tmp = findMatchingTaxon(tnb,refMods);
             if(tmp==null){
                 tmp = Taxon.NewInstance(tnb, sourceUrlRef);
@@ -4466,7 +4396,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildTribe(NonViralName<?> tnb) {
+        private Taxon buildTribe(INonViralName tnb) {
             Taxon tmp = findMatchingTaxon(tnb,refMods);
             if(tmp==null){
                 tmp = Taxon.NewInstance(tnb, sourceUrlRef);
@@ -4663,8 +4593,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         public void setFamily(Taxon family) {
             this.family = family;
-            TaxonNameBase taxonNameBase = CdmBase.deproxy(family.getName(), TaxonNameBase.class);
-            familyName = castTaxonNameBase(taxonNameBase,familyName);
+            familyName = CdmBase.deproxy(family.getName());
         }
         /**
          * @return the subfamily
@@ -4678,8 +4607,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         public void setSubfamily(Taxon subfamily) {
             this.subfamily = subfamily;
-            TaxonNameBase taxonNameBase = CdmBase.deproxy(subfamily.getName(), TaxonNameBase.class);
-            subfamilyName = castTaxonNameBase(taxonNameBase,subfamilyName);
+            subfamilyName = CdmBase.deproxy(subfamily.getName());
         }
         /**
          * @return the tribe
@@ -4693,8 +4621,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         public void setTribe(Taxon tribe) {
             this.tribe = tribe;
-            TaxonNameBase taxonNameBase = CdmBase.deproxy(tribe.getName(), TaxonNameBase.class);
-            tribeName = castTaxonNameBase(taxonNameBase,tribeName);
+            tribeName = CdmBase.deproxy(tribe.getName());
         }
         /**
          * @return the subtribe
@@ -4708,8 +4635,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         public void setSubtribe(Taxon subtribe) {
             this.subtribe = subtribe;
-            TaxonNameBase taxonNameBase = CdmBase.deproxy(subtribe.getName(), TaxonNameBase.class);
-            subtribeName =castTaxonNameBase(taxonNameBase,subtribeName);
+            subtribeName =CdmBase.deproxy(subtribe.getName());
         }
         /**
          * @return the genus
@@ -4724,8 +4650,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         public void setGenus(Taxon genus) {
             if (genus != null){
 	        	this.genus = genus;
-	            TaxonNameBase taxonNameBase = CdmBase.deproxy(genus.getName(), TaxonNameBase.class);
-	            genusName = castTaxonNameBase(taxonNameBase,genusName);
+	            genusName = CdmBase.deproxy(genus.getName());
             }
         }
         /**
@@ -4740,8 +4665,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         public void setSubgenus(Taxon subgenus) {
             this.subgenus = subgenus;
-            TaxonNameBase taxonNameBase = CdmBase.deproxy(subgenus.getName(), TaxonNameBase.class);
-            subgenusName = castTaxonNameBase(taxonNameBase,subgenusName);
+            subgenusName = CdmBase.deproxy(subgenus.getName());
         }
         /**
          * @return the species
@@ -4755,9 +4679,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         public void setSpecies(Taxon species) {
         	if (species != null){
 	            this.species = species;
-	            @SuppressWarnings("rawtypes")
-	            TaxonNameBase taxonNameBase = CdmBase.deproxy(species.getName(), TaxonNameBase.class);
-	            speciesName = castTaxonNameBase(taxonNameBase,speciesName);
+	            speciesName = CdmBase.deproxy(species.getName());
         	}
         }
         /**
@@ -4772,8 +4694,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         public void setSubspecies(Taxon subspecies) {
             this.subspecies = subspecies;
-            TaxonNameBase taxonNameBase = CdmBase.deproxy(subspecies.getName(), TaxonNameBase.class);
-            subspeciesName = castTaxonNameBase(taxonNameBase,subspeciesName);
+            subspeciesName = CdmBase.deproxy(subspecies.getName());
 
         }
 
@@ -4804,7 +4725,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param tnb
      * @return
      */
-    private Taxon findMatchingTaxon(NonViralName<?> tnb, Reference refMods) {
+    private Taxon findMatchingTaxon(INonViralName tnb, Reference refMods) {
         logger.info("findMatchingTaxon");
         Taxon tmp=null;
 
@@ -4836,8 +4757,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     e.printStackTrace();
                 }
                 try {
-                    if(castTaxonNameBase(bestMatchingTaxon.getName()).getAuthorshipCache()!=null) {
-                        author2=castTaxonNameBase(bestMatchingTaxon.getName()).getAuthorshipCache();
+                    if(bestMatchingTaxon.getName().getAuthorshipCache()!=null) {
+                        author2=bestMatchingTaxon.getName().getAuthorshipCache();
                     }
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -4886,7 +4807,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param similarityAuthor
      * @return
      */
-    private boolean compareAndCheckTaxon(NonViralName<?> tnb, Reference refMods, double similarityScore,
+    private boolean compareAndCheckTaxon(INonViralName tnb, Reference refMods, double similarityScore,
             Taxon bestMatchingTaxon, double similarityAuthor) {
         //logger.info("compareAndCheckTaxon");
         boolean insertAsExisting;
@@ -4902,7 +4823,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
         //        }
 
-        logDecision(tnb,bestMatchingTaxon,insertAsExisting, refMods);
+        logDecision(tnb, bestMatchingTaxon, insertAsExisting, refMods);
         return insertAsExisting;
     }
 
@@ -4910,7 +4831,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @return
      */
     @SuppressWarnings("rawtypes")
-    private List<Taxon> getMatchingTaxa(TaxonNameBase tnb) {
+    private List<Taxon> getMatchingTaxa(ITaxonNameBase tnb) {
         //logger.info("getMatchingTaxon");
     	if (tnb.getTitleCache() == null){
     		tnb.setTitleCache(tnb.toString(), tnb.isProtectedTitleCache());
@@ -5017,7 +4938,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param taxonNameBase
      */
     @SuppressWarnings("rawtypes")
-    public void lookForParentNode(NonViralName<?> taxonNameBase, Taxon tax, Reference ref, MyName myName) {
+    public void lookForParentNode(INonViralName taxonNameBase, Taxon tax, Reference ref, MyName myName) {
         logger.info("lookForParentNode "+taxonNameBase.getTitleCache()+" for "+myName.toString());
         //System.out.println("LOOK FOR PARENT NODE "+taxonnamebase.toString()+"; "+tax.toString()+"; "+taxonnamebase.getRank());
         INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
@@ -5077,7 +4998,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
             }
             if(parent == null) {
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+                INonViralName parentNameName =  parser.parseFullName(parentStr, nomenclaturalCode, r);
                 Taxon tmp = findMatchingTaxon(parentNameName,ref);
                 if(tmp ==null)
                 {
@@ -5107,7 +5028,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             r = Rank.FAMILY();
         }
         if(parentStr!=null){
-            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            INonViralName parentNameName =  parser.parseFullName(parentStr, nomenclaturalCode, r);
             Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
             //                    importer.getTaxonService().save(parent);
             //                    parent = CdmBase.deproxy(parent, Taxon.class);
@@ -5159,7 +5080,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             r = Rank.FAMILY();
         }
         if(parentStr!=null){
-            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            INonViralName parentNameName =  parser.parseFullName(parentStr, nomenclaturalCode, r);
             Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
             //                    importer.getTaxonService().save(parent);
             //                    parent = CdmBase.deproxy(parent, Taxon.class);
@@ -5216,7 +5137,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             r = Rank.FAMILY();
         }
         if(parentStr!=null){
-            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            INonViralName parentNameName =  parser.parseFullName(parentStr, nomenclaturalCode, r);
             Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
             //                    importer.getTaxonService().save(parent);
             //                    parent = CdmBase.deproxy(parent, Taxon.class);
@@ -5279,7 +5200,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             r = Rank.FAMILY();
         }
         if(parentStr!=null){
-            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            INonViralName parentNameName =  parser.parseFullName(parentStr, nomenclaturalCode, r);
             Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
             //                    importer.getTaxonService().save(parent);
             //                    parent = CdmBase.deproxy(parent, Taxon.class);
@@ -5501,7 +5422,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @return
      */
     private Taxon handleParentName(Reference ref, MyName myName, INonViralNameParser<?> parser, String parentStr, Rank r) {
-        NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+        INonViralName parentNameName =  parser.parseFullName(parentStr, nomenclaturalCode, r);
         Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
         //                    importer.getTaxonService().save(parent);
         //                    parent = CdmBase.deproxy(parent, Taxon.class);
@@ -5569,11 +5490,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param insertAsExisting
      * @param refMods
      */
-    private void logDecision(NonViralName<?> tnb, Taxon bestMatchingTaxon, boolean insertAsExisting, Reference refMods) {
+    private void logDecision(INonViralName tnb, Taxon bestMatchingTaxon, boolean insertAsExisting, Reference refMods) {
         try{
-            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "Decisions_"+classification.toString()+".txt",true);
+            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "Decisions_"+classification.toString()+".txt", true);
             BufferedWriter out = new BufferedWriter(fstream);
-            out.write(tnb.getTitleCache()+" sec. "+refMods+"\t"+bestMatchingTaxon.getTitleCache()+"\t"+insertAsExisting+"\n");
+            out.write(tnb.getTitleCache() + " sec. " + refMods + "\t" + bestMatchingTaxon.getTitleCache() + "\t" + insertAsExisting + "\n");
             //Close the output stream
             out.close();
         }catch (Exception e){//Catch exception if any

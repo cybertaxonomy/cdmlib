@@ -44,10 +44,10 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author a.mueller
@@ -239,7 +239,7 @@ public class SpecimenTest {
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
-		TaxonNameBase<?, ?> storedUnder = BotanicalName.NewInstance(Rank.GENUS());
+		TaxonNameBase<?, ?> storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		String titleCache = "title";
 		Calendar updated = Calendar.getInstance();
 		Person updatedBy = Person.NewTitledInstance("updatedPerson");

@@ -24,9 +24,10 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author a.mueller
@@ -37,12 +38,12 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
 	private ZooNameDefaultCacheStrategy strategy;
-	private ZoologicalName familyName;
-	private ZoologicalName genusName;
-	private ZoologicalName subGenusName;
-	private ZoologicalName speciesName;
-	private ZoologicalName subSpeciesName;
-	private ZoologicalName speciesNameWithInfrGenEpi;
+	private IZoologicalName familyName;
+	private IZoologicalName genusName;
+	private IZoologicalName subGenusName;
+	private IZoologicalName speciesName;
+	private IZoologicalName subSpeciesName;
+	private IZoologicalName speciesNameWithInfrGenEpi;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
@@ -79,16 +80,16 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Before
 	public void setUp() throws Exception {
 		strategy = ZooNameDefaultCacheStrategy.NewInstance();
-		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
-		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
+		familyName = TaxonNameFactory.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
+		genusName = TaxonNameFactory.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 
-		subGenusName = ZoologicalName.NewInstance(Rank.SUBGENUS());
+		subGenusName = TaxonNameFactory.NewZoologicalInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
-		speciesName = ZoologicalName.PARSED_NAME(speciesNameString);
-		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameString);
-		speciesNameWithInfrGenEpi = ZoologicalName.PARSED_NAME(speciesNameWithGenusEpiString);
+		speciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameString);
+		subSpeciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameString);
+		speciesNameWithInfrGenEpi = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameWithGenusEpiString);
 		Assert.assertFalse(speciesName.hasProblem());  //guarantee names are well past
 		Assert.assertFalse(speciesNameWithInfrGenEpi.hasProblem());
         Assert.assertFalse(subSpeciesName.hasProblem());
@@ -205,7 +206,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
+		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, INonViralName.class);
 
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));

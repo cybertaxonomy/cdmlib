@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,10 +19,10 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
@@ -48,8 +48,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String nameAccordingTo;
 	private String namePublishedIn;
 	private String higherClassification;
-	
-	
+
+
 	private String kingdom;
 	private String phylum;
 	private String clazz;
@@ -62,7 +62,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String infraGenericEpithet;
 	private String specificEpithet;
 	private String infraspecificEpithet;
-	
+
 
 
 	private Rank taxonRank;
@@ -84,7 +84,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String datasetName;
 	private String source;
 
-	
+
 	public DwcaTaxRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		scientificNameId = new DwcaId(config);
@@ -94,7 +94,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
 	 */
-	protected void registerKnownFields(){
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField(TermUri.DWC_SCIENTIFIC_NAME_ID);
 			addKnownField(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
@@ -141,8 +142,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
 //	 */
@@ -199,44 +200,44 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //	@Override
 //	public List<String> getHeaderList() {
 //		String[] result = new String[]{
-//				"id", 
+//				"id",
 //				"scientificNameId",
 //				"acceptedNameUsageId",
-//				"parentNameUsageId", 
-//				"originalNameUsageId", 
-//				"nameAccordingToId", 
+//				"parentNameUsageId",
+//				"originalNameUsageId",
+//				"nameAccordingToId",
 //				"namePublishedInId",
 //				"taxonConceptId",
 //				"scientificName",
-//				"acceptedNameUsage", 
-//				"parentNameUsage", 
-//				"originalNameUsage", 
+//				"acceptedNameUsage",
+//				"parentNameUsage",
+//				"originalNameUsage",
 //				"nameAccordingTo",
 //				"namePublishedIn",
 //				"higherClassification",
-//				
+//
 //				"kingdom",
 //				"phylum",
 //				"clazz",
-//				"order", 
-//				"family", 
-//				"genus", 
+//				"order",
+//				"family",
+//				"genus",
 //				"subgenus",
 //				"specificEpithet",
 //				"infraspecificEpithet",
-//				
-//				"taxonRank", 
+//
+//				"taxonRank",
 //				"verbatimTaxonRank",
 //				"scientificNameAuthorship",
-//				"vernacularName", 
-//				"nomenclaturalCode", 
-//				"taxonomicStatus", 
+//				"vernacularName",
+//				"nomenclaturalCode",
+//				"taxonomicStatus",
 //				"nomenclaturalStatus",
 //				"taxonRemarks",
 //				"modified",
-//				"language", 
-//				"rights", 
-//				"rightsHolder", 
+//				"language",
+//				"rights",
+//				"rightsHolder",
 //				"accessRights",
 //				"bibliographicCitation",
 //				"informationWithheld",
@@ -246,8 +247,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		};
 //		return Arrays.asList(result);
 //	}
-	
-	
+
+
 //	public void write(PrintWriter writer) {
 //		print(id, writer, IS_FIRST, null);
 //		print(scientificNameId, writer, IS_NOT_FIRST, "scientificNameID");
@@ -264,7 +265,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(nameAccordingTo, writer, IS_NOT_FIRST, "nameAccordingTo");
 //		print(namePublishedIn, writer, IS_NOT_FIRST, "namePublishedIn");
 //		print(higherClassification, writer, IS_NOT_FIRST, "higherClassification");
-//		
+//
 //		print(kingdom, writer, IS_NOT_FIRST, "kingdom");
 //		print(phylum, writer, IS_NOT_FIRST, "phylum");
 //		print(clazz, writer, IS_NOT_FIRST, "clazz");
@@ -274,7 +275,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(subgenus, writer, IS_NOT_FIRST, "subgenus");
 //		print(specificEpithet, writer, IS_NOT_FIRST, "specificEpithet");
 //		print(infraspecificEpithet, writer, IS_NOT_FIRST, "infraspecificEpithet");
-//		
+//
 //		print(getRank(taxonRank), writer, IS_NOT_FIRST, "taxonRank");
 //		print(verbatimTaxonRank, writer, IS_NOT_FIRST, "verbatimTaxonRank");
 //		print(scientificNameAuthorship, writer, IS_NOT_FIRST, "scientificNameAuthorship");
@@ -296,7 +297,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		writer.println();
 //	}
 
-	public void write(PrintWriter writer) {
+	@Override
+    public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "id");
 		print(scientificNameId, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME_ID);
 		print(acceptedNameUsageId, writer, IS_NOT_FIRST, TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
@@ -313,7 +315,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(originalNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_ORIGINAL_NAME_USAGE);
 //		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUri.DWC_NAME_ACCORDING_TO);
 //		print(namePublishedIn, writer, IS_NOT_FIRST, TermUri.DWC_NAME_PUBLISHED_IN);
-		
+
 //		if (config.isWithHigherClassification()){
 //			print(higherClassification, writer, IS_NOT_FIRST, TermUri.DWC_HIGHER_CLASSIFICATION);
 //			print(kingdom, writer, IS_NOT_FIRST, TermUri.DWC_KINGDOM);
@@ -327,10 +329,10 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(uninomial, writer, IS_NOT_FIRST, TermUri.TDWG_UNINOMIAL);
 //		print(genusPart, writer, IS_NOT_FIRST, TermUri.TDWG_GENUSPART);
 //		print(infraGenericEpithet, writer, IS_NOT_FIRST, TermUri.TDWG_INFRAGENERICEPITHET);
-//		
+//
 //		print(specificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_SPECIFIC_EPI);
 //		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_INFRA_SPECIFIC_EPI);
-//		
+//
 //		print(verbatimTaxonRank, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_TAXON_RANK);
 //		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);
 //		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST, TermUri.DWC_NOMENCLATURAL_CODE);
@@ -347,8 +349,8 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE, config.getDefaultTaxonSource());
 		writer.println();
 	}
-	
-	
+
+
 	//Andreas
 //	public void write(PrintWriter writer) {
 //		printId(getUuid(), writer, IS_FIRST, "id");
@@ -365,7 +367,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(originalNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_ORIGINAL_NAME_USAGE);
 //		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUri.DWC_NAME_ACCORDING_TO);
 //		print(namePublishedIn, writer, IS_NOT_FIRST, TermUri.DWC_NAME_PUBLISHED_IN);
-//		
+//
 //		if (config.isWithHigherClassification()){
 //			print(higherClassification, writer, IS_NOT_FIRST, TermUri.DWC_HIGHER_CLASSIFICATION);
 //			print(kingdom, writer, IS_NOT_FIRST, TermUri.DWC_KINGDOM);
@@ -379,10 +381,10 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(uninomial, writer, IS_NOT_FIRST, TermUri.TDWG_UNINOMIAL);
 //		print(genusPart, writer, IS_NOT_FIRST, TermUri.TDWG_GENUSPART);
 //		print(infraGenericEpithet, writer, IS_NOT_FIRST, TermUri.TDWG_INFRAGENERICEPITHET);
-//		
+//
 //		print(specificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_SPECIFIC_EPI);
 //		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_INFRA_SPECIFIC_EPI);
-//		
+//
 //		print(getRank(taxonRank), writer, IS_NOT_FIRST, TermUri.DWC_TAXON_RANK);
 //		print(verbatimTaxonRank, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_TAXON_RANK);
 //		print(scientificNameAuthorship, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
@@ -407,10 +409,10 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public String getScientificNameId() {
 		return scientificNameId.getId();
 	}
-	public void setScientificNameId(TaxonNameBase<?, ?> scientificNameId) {
+	public void setScientificNameId(ITaxonNameBase scientificNameId) {
 		this.scientificNameId.setId(scientificNameId);
 	}
-	
+
 	public UUID getAcceptedNameUsageId() {
 		return acceptedNameUsageId;
 	}
@@ -429,15 +431,15 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public void setOriginalNameUsageId(UUID originalNameUsageId) {
 		this.originalNameUsageId = originalNameUsageId;
 	}
-	
+
 	public Object getNameAccordingToId() {
 		return nameAccordingToId;
 	}
-	
+
 	public void setNameAccordingToId(UUID nameAccordingToId) {
 		this.nameAccordingToId = nameAccordingToId;
 	}
-	
+
 	public Object getNamePublishedInId() {
 		return namePublishedInId;
 	}
@@ -601,7 +603,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		this.source = source;
 	}
 
-	
+
 	public String getKingdom() {
 		return kingdom;
 	}
@@ -669,7 +671,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public String getInfraspecificEpithet() {
 		return infraspecificEpithet;
 	}
-	
+
 	public void setInfraspecificEpithet(String infraspecificEpithet) {
 		this.infraspecificEpithet = infraspecificEpithet;
 	}
@@ -723,5 +725,5 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		this.genusPart = genusPart;
 	}
 
-	
+
 }

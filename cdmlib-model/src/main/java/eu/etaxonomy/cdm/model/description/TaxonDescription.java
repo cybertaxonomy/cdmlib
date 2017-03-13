@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
+import javafx.stage.Stage;
 
 /**
  * This class represents descriptions that delimit or circumscribe a real taxon.
@@ -68,7 +69,9 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheS
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
-public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>> implements Cloneable{
+public class TaxonDescription
+            extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>
+            implements Cloneable{
     private static final long serialVersionUID = 8065879180505546803L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDescription.class);

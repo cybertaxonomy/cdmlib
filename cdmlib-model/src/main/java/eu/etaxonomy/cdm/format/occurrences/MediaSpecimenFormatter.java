@@ -34,6 +34,7 @@ public class MediaSpecimenFormatter extends DerivedUnitFormatter {
             if(media.getTitle()!=null){
                 formatKeyMap.put(FormatKey.MEDIA_TITLE, media.getTitle().getText());
             }
+            formatKeyMap.put(FormatKey.MEDIA_TITLE_CACHE, media.getTitleCache());
         }
     }
 

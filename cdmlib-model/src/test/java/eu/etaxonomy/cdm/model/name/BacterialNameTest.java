@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,9 +22,9 @@ import org.junit.Test;
 public class BacterialNameTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BacterialNameTest.class);
-	
-	private BacterialName bacterialName1;
-	
+
+	private IBacterialName bacterialName1;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -37,11 +37,11 @@ public class BacterialNameTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		bacterialName1 = BacterialName.NewInstance(Rank.SPECIES());
+		bacterialName1 = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
 	}
 
 //****************** TESTS ******************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.BacterialName#clone()}.
 	 */
@@ -49,7 +49,7 @@ public class BacterialNameTest {
 	public void testClone() {
 		bacterialName1.setSubGenusAuthorship("Bacter.");
 		bacterialName1.setNameApprobation("approb");
-		BacterialName clone = (BacterialName)bacterialName1.clone();
+		IBacterialName clone = (IBacterialName)bacterialName1.clone();
 		Assert.assertEquals("SubGenusAuthorship should be equal", "Bacter.", clone.getSubGenusAuthorship());
 		Assert.assertEquals("Name approbation should be equal", "approb", clone.getNameApprobation());
 	}

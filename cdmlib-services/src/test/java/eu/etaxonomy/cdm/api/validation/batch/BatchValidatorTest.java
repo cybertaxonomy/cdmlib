@@ -26,7 +26,7 @@ import org.springframework.context.ApplicationContext;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -48,7 +48,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 //    private BatchValidator batchValidator;
 
 //    @SpringBeanByName  //does not exist as such
-    private ICdmApplicationConfiguration app;
+    private ICdmRepository app;
 
     @SpringApplicationContext
     private ApplicationContext applicationContext;

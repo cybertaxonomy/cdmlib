@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -147,7 +148,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
             return;
         }
 
-        Taxon taxon = Taxon.NewInstance(null, null);
+        Taxon taxon = Taxon.NewInstance((ITaxonNameBase)null, null);
         taxon.setTitleCache("TitleCache", true);
         taxon.setCreated(new DateTime());
         taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:1"));

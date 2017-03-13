@@ -16,7 +16,6 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.hibernate.Hibernate;
 
-//import org.hibernate.Hibernate;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;

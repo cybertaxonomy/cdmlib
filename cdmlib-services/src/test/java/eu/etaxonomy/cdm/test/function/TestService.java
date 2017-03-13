@@ -29,11 +29,12 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -59,10 +60,10 @@ public class TestService {
 
 	public void testAppController() {
 		logger.info("Create name objects...");
-		NonViralName<?> nvn = NonViralName.NewInstance(Rank.SPECIES());
+		INonViralName nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 
-		BotanicalName bn = BotanicalName.NewInstance(Rank.SUBSPECIES());
-		ZoologicalName zn = ZoologicalName.NewInstance(Rank.FAMILY());
+		IBotanicalName bn = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+		IZoologicalName zn = TaxonNameFactory.NewZoologicalInstance(Rank.FAMILY());
 
 		logger.info("Create reference objects...");
 
@@ -105,7 +106,7 @@ public class TestService {
 
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
@@ -149,7 +150,7 @@ public class TestService {
 
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
@@ -173,7 +174,7 @@ public class TestService {
 
 	public void testTransientRank(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(transientRank);
+		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(transientRank);
 		Reference ref =  ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 
@@ -224,10 +225,10 @@ public class TestService {
 			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
 
 
-			TaxonNameBase<?,?> name = NonViralName.NewInstance(null);
+			TaxonNameBase<?,?> name = TaxonNameFactory.NewNonViralInstance(null);
 			name.setTitleCache("Abies alba", true);
 
-			TaxonNameBase<?,?> name2 = NonViralName.NewInstance(null);
+			TaxonNameBase<?,?> name2 = TaxonNameFactory.NewNonViralInstance(null);
 			name2.setTitleCache("Abies beta", true);
 
 			//appCtr.getNameService().saveTaxonName(name);

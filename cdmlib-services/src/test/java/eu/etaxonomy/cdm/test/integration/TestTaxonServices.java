@@ -22,10 +22,11 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -91,10 +92,10 @@ public class TestTaxonServices {
 		logger.info("Testing testRemoveNameRelationship()");
 		TransactionStatus txStatus = appCtr.startTransaction();
 
-		BotanicalName name1, name2;
+		TaxonNameBase<?,?> name1, name2;
 		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
-		name1 = BotanicalName.NewInstance(Rank.SPECIES(),"Name1",null,"arvensis",null,(TeamOrPersonBase)linne,null,"p.1", null);
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Name2",null,"lanzae",null,(TeamOrPersonBase)linne,null,"p.2", null);
+		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Name1",null,"arvensis",null,(TeamOrPersonBase)linne,null,"p.1", null);
+		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Name2",null,"lanzae",null,(TeamOrPersonBase)linne,null,"p.2", null);
 
 		name1.addRelationshipToName(name2, NameRelationshipType.BASIONYM(), "ruleTo");
 		name2.addRelationshipFromName(name1, NameRelationshipType.BASIONYM(), "ruleFrom");

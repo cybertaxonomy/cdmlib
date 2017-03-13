@@ -11,6 +11,17 @@
     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
     <context:property-override location="classpath:eu/etaxonomy/cdm/override.properties"/>
+   
+    <!-- 
+        This applicationContext is not a full cdm application context. It only covers the remote compoents 
+        without service and persistence. The cacheManager is usually provided via a Java config class in
+        eu/etaxonomy/cdm/service/api/conf which cannot  use in this conetext. Therefore we are 
+        using the EhCacheManagerFactoryBean here to initialize the cacheManager bean.
+     -->
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+      <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml"/>
+      <property name="shared" value="true"/>
+    </bean> 
 
     <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>    
 </beans>

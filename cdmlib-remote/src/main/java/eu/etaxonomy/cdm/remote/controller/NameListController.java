@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -38,16 +37,13 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @RequestMapping(value = {"/name"})
 public class NameListController extends AbstractIdentifiableListController<TaxonNameBase, INameService> {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(INameService service) {
         this.service = service;
     }
 
-   @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
+    @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
     public Pager<TaxonNameBase> doFindTitleCache(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -64,7 +60,6 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
         pagerParams.normalizeAndValidate(response);
 
         return service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
-
     }
 
     @RequestMapping(value = "findByName", method = RequestMethod.GET)
@@ -80,5 +75,4 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
 
         return service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
     }
-
 }

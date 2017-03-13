@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ValidTypeDesignation(groups=Level2.class)
-public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
+public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>> extends ReferencedEntityBase implements ITypeDesignation {
     private static final long serialVersionUID = 8622351017235131355L;
 
     @SuppressWarnings("unused")
@@ -79,7 +79,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+    private Set<TaxonNameBase> typifiedNames = new HashSet<>();
 
     @XmlElement(name = "TypeStatus")
     @XmlIDREF

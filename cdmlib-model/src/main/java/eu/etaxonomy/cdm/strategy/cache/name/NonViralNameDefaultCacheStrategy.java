@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -52,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * existing methods, e.g. a CacheStrategy for zoological names should overwrite getAuthorAndExAuthor
  * @author a.mueller
  */
-public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
+public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         extends NameCacheStrategyBase<T>
         implements INonViralNameCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
@@ -85,7 +86,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * Factory method
      * @return NonViralNameDefaultCacheStrategy A new instance of  NonViralNameDefaultCacheStrategy
      */
-    public static <T extends NonViralName<?>> NonViralNameDefaultCacheStrategy<T> NewInstance(Class<T> clazz){
+    public static <T extends INonViralName> NonViralNameDefaultCacheStrategy<T> NewInstance(Class<T> clazz){
         return new NonViralNameDefaultCacheStrategy<T>();
     }
 
@@ -301,7 +302,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected boolean nameIncludesAuthorship(NonViralName<?> nonViralName){
+    protected boolean nameIncludesAuthorship(INonViralName nonViralName){
         Rank rank = nonViralName.getRank();
         if (rank != null && rank.isSpeciesAggregate()){
             return false;
@@ -572,7 +573,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getRanklessTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getRanklessTaggedNameCache(INonViralName nonViralName){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
         String speciesEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
         if (StringUtils.isNotBlank(speciesEpi)){
@@ -594,7 +595,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    private List<TaggedText> getUninomialTaggedPart(NonViralName<?> nonViralName) {
+    private List<TaggedText> getUninomialTaggedPart(INonViralName nonViralName) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
 
         if (nonViralName.isMonomHybrid()){
@@ -615,7 +616,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getGenusOrUninomialTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getGenusOrUninomialTaggedNameCache(INonViralName nonViralName){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
         addAppendedTaggedPhrase(tags, nonViralName);
         return tags;
@@ -628,7 +629,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getInfraGenusTaggedNameCache(INonViralName nonViralName){
         Rank rank = nonViralName.getRank();
         if (rank != null && rank.isSpeciesAggregate() && isBlank(nonViralName.getAuthorshipCache())){
             return getSpeciesAggregateTaggedCache(nonViralName);
@@ -673,7 +674,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
 	 * @param infraGenericMarker
 	 */
 	protected void addInfraGenericPart(
-	        @SuppressWarnings("unused") NonViralName<?> name,
+	        @SuppressWarnings("unused") INonViralName name,
 	        List<TaggedText> tags,
 	        String infraGenericMarker,
 	        String infraGenEpi) {
@@ -692,7 +693,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getSpeciesAggregateTaggedCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getSpeciesAggregateTaggedCache(INonViralName nonViralName){
         if (! isBlank(nonViralName.getAuthorshipCache())){
         	List<TaggedText> result = getSpeciesTaggedNameCache(nonViralName);
         	return result;
@@ -711,7 +712,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param tags
      * @param nonViralName
      */
-    private void addSpeciesAggregateTaggedEpithet(List<TaggedText> tags, NonViralName<?> nonViralName) {
+    private void addSpeciesAggregateTaggedEpithet(List<TaggedText> tags, INonViralName nonViralName) {
         String marker;
         try {
             marker = nonViralName.getRank().getInfraGenericMarker();
@@ -729,7 +730,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getSpeciesTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getSpeciesTaggedNameCache(INonViralName nonViralName){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
         addAppendedTaggedPhrase(tags, nonViralName);
         return tags;
@@ -751,7 +752,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param includeMarker
      * @return
      */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName, boolean includeMarker){
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(INonViralName nonViralName, boolean includeMarker){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
         if (includeMarker || nonViralName.isTrinomHybrid()){
             String marker = (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
@@ -790,7 +791,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param nonViralName
      * @return
      */
-    private List<TaggedText> getGenusAndSpeciesTaggedPart(NonViralName<?> nonViralName) {
+    private List<TaggedText> getGenusAndSpeciesTaggedPart(INonViralName nonViralName) {
         //Uninomial
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
 
@@ -823,7 +824,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
      * @param tags
      * @param nonViralName
      */
-    protected void addAppendedTaggedPhrase(List<TaggedText> tags, NonViralName<?> nonViralName){
+    protected void addAppendedTaggedPhrase(List<TaggedText> tags, INonViralName nonViralName){
         String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
         String originalName = getOriginalNameString(nonViralName, tags);
         if (StringUtils.isNotBlank(originalName)){
@@ -834,9 +835,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
         }
     }
 
-    private String getOriginalNameString(NonViralName<?> currentName, List<TaggedText> originalNameTaggs) {
-		List<String> originalNameStrings = new ArrayList<String>(1);
-		currentName = HibernateProxyHelper.deproxy(currentName, NonViralName.class);
+    private String getOriginalNameString(INonViralName currentName, List<TaggedText> originalNameTaggs) {
+		List<String> originalNameStrings = new ArrayList<>(1);
+		currentName = CdmBase.deproxy(currentName);
 		//Hibernate.initialize(currentName.getRelationsToThisName());
     	for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
 			NameRelationshipType type = nameRel.getType();
@@ -846,7 +847,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
     			if (!originalName.isInstanceOf(NonViralName.class)){
     				originalNameString = originalName.getTitleCache();
     			}else{
-    				NonViralName<?> originalNvName = CdmBase.deproxy(originalName, NonViralName.class);
+    				INonViralName originalNvName = CdmBase.deproxy(originalName);
     				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
     			}
     			originalNameStrings.add("'" + originalNameString +"'");
@@ -861,7 +862,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
 	}
 
 
-	private String makeOriginalNameString(NonViralName<?> currentName, NonViralName<?> originalName, List<TaggedText> currentNameTags) {
+	private String makeOriginalNameString(INonViralName currentName, INonViralName originalName,
+	        List<TaggedText> currentNameTags) {
 		//use cache if necessary
 		String cacheToUse = null;
 		if (originalName.isProtectedNameCache() && StringUtils.isNotBlank(originalName.getNameCache())){

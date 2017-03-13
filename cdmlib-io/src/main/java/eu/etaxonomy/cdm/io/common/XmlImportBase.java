@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,18 +37,20 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
  * @date 28.06.2011
  *
  */
-public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STATE>, STATE extends XmlImportState<CONFIG, ?>> extends CdmImportBase<CONFIG, STATE> implements IIoObserver {
-	@SuppressWarnings("unused")
+public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STATE>, STATE extends XmlImportState<CONFIG, ?>>
+            extends CdmImportBase<CONFIG, STATE>
+            implements IIoObserver {
+
+    private static final long serialVersionUID = 1505202381104645545L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(XmlImportBase.class);
-	
-	
 
 	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
 		String type = "ElementStart";
 		XMLEvent next = reader.nextEvent();
 		fireSchemaConflictEvent(type, elName, next);
 	}
-	
+
 
 	/**
 	 * @param r
@@ -64,7 +66,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 			return false;
 		}
 	}
-	
+
 
 	/**
 	 * TODO namespace
@@ -104,7 +106,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		}
 		return isEndingElement(next, elName);
 	}
-	
+
 	protected boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
 		boolean result = false;
 		boolean isEnd = event.isEndElement();
@@ -156,7 +158,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		String location = "l." + next.getLocation().getLineNumber() + "/c." + next.getLocation().getColumnNumber();
 		fireWarningEvent(message, location, 16);
 	}
-	
+
 
 	/**
 	 * Returns the StAX-Reader (XMLEventReader) for the source.
@@ -173,7 +175,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		XMLEventReader reader = staxFactory.createXMLEventReader(fileName, is);
 		return reader;
 	}
-	
+
 
 	/**
 	 * Parses the source file with the given handler
@@ -191,7 +193,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		SAXParser saxParser = saxFactory.newSAXParser();
 		saxParser.parse(is, handler);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.events.IIoObserver#handleEvent(eu.etaxonomy.cdm.io.common.events.IIoEvent)

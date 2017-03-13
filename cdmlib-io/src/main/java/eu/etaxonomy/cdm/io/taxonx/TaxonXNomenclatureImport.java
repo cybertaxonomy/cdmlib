@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -121,8 +121,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			TaxonNameBase<?,?> nameBase = syn.getName();
 			if (nameBase != null){
 				if (nameBase.isInstanceOf(NonViralName.class)){
-					NonViralName<?> nonViralName = nameBase.deproxy(nameBase, NonViralName.class);
-					if (nonViralName.getNameCache().equals(synName)){
+					if (nameBase.getNameCache().equals(synName)){
 						return syn;  //only first synonym is returned
 					}
 				}
@@ -134,7 +133,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
-//		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+//		result =  Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null);
 		//ICommonService commonService =config.getCdmAppController().getCommonService();
 		ICommonService commonService = getCommonService();
 		String originalSourceId = config.getOriginalSourceId();
@@ -298,12 +297,11 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 
 					Pager<TaxonNameBase> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null, null, null);
 
-					List<NonViralName> result = new ArrayList<NonViralName>();
+					List<INonViralName> result = new ArrayList<>();
 					for (TaxonNameBase nt : nameTypes.getRecords()){
-						NonViralName nameType = CdmBase.deproxy(nt, NonViralName.class);
-						if (compareAuthorship(nameType, authorStr)){
-							result.add(nameType);
-							success &= doNameTypeDesignation(taxonName, nameType, status/*, isLectoType*/);
+						if (compareAuthorship(nt, authorStr)){
+							result.add(nt);
+							success &= doNameTypeDesignation(taxonName, nt, status/*, isLectoType*/);
 						}else{
 							//TODO ?
 						}
@@ -335,7 +333,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 //			}
 //			Set<Taxon> children = taxon.getTaxonomicChildren();
 //			for (Taxon child: children){
-//				NonViralName childName = (CdmBase.deproxy(child.getName(), NonViralName.class));
+//				INonViralName childName = child.getName();
 //				if (childName.getNameCache().equals(typeStr)){
 //					if (compareAuthorship(childName, authorStr)){
 //						return childName;
@@ -346,7 +344,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 //		return result;
 //	}
 
-	private boolean compareAuthorship(NonViralName typeName, String authorStr){
+	private boolean compareAuthorship(INonViralName typeName, String authorStr){
 		 boolean result = false;
 		 authorStr = authorStr.replaceAll("\\s+and\\s+", "&");
 		 authorStr = authorStr.replaceAll("\\s*", "");

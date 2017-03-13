@@ -2,6 +2,7 @@
 "d13fecdf-eb44-4dd7-9244-26679c05df1c",,"Taxonomically Included in","Taxonomically Included in","⊂","Taxonomically Includes","Taxonomically Includes","⊃",FALSE,TRUE
 "1ed87175-59dd-437e-959e-0d71583d8417",,"Misapplied Name for","Misapplied Name for","–","Has Misapplied Name","Has Misapplied Name",,FALSE,FALSE
 "605b1d01-f2b1-4544-b2e0-6f08def3d6ed",,"Invalid Designation for","Invalid Designation for","–","Has Invalid Designation","Has Invalid Designation",,FALSE,FALSE
+"8a896603-0fa3-44c6-9cd7-df2d8792e577",,"Pro parte synonym for","Pro parte synonym for","p.p.","Has pro parte synonym","Has pro parte synonym","partim",FALSE,TRUE
 "a8f03491-2ad6-4fae-a04c-2a4c117a2e9b",,"Contradiction","Contradiction","∅","Contradiction","Contradiction","∅",TRUE,FALSE
 "60974c98-64ab-4574-bb5c-c110f6db634d",,"Congruent to","Congruent to","≜","Congruent to","Congruent to","≜",TRUE,FALSE
 "0501c385-cab1-4fbe-b945-fc747419bb13",,"Includes","Includes","⊃","Included in","Included in","⊂",FALSE,TRUE

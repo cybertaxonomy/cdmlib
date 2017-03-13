@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -157,7 +157,7 @@ public class CsvDemoExport extends CsvDemoBase {
         for (TaxonNode node : result){
             Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
             CsvDemoRecord record = assembleRecord(state);
-            NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+            INonViralName name = taxon.getName();
             config.setClassificationTitleCache(classification.getTitleCache());
             if (! this.recordExists(taxon)){
                 handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
@@ -214,7 +214,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    		for (TaxonNode node : result){
 	    			Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 	    			CsvDemoRecord record = assembleRecord(state);
-	    			NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+	    			INonViralName name = taxon.getName();
 	    			//	                Classification classification = node.getClassification();
 	    			config.setClassificationTitleCache(classification.getTitleCache());
 	    			if (! this.recordExists(taxon)){
@@ -373,7 +373,7 @@ public class CsvDemoExport extends CsvDemoBase {
 //		for (Taxon misappliedName : misappliedNames ){
 ////			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 //			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-//			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
+//			INonViralName name = misappliedName.getName();
 //
 //			if (! this.recordExists(misappliedName)){
 //				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
@@ -401,8 +401,8 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param node
 	 * @param type
 	 */
-	private void handleTaxonBase(CsvDemoRecord record,TaxonBase<?> taxonBase,
-			NonViralName<?> name, Classification classification,
+	private void handleTaxonBase(CsvDemoRecord record, TaxonBase<?> taxonBase,
+			INonViralName name, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 
@@ -522,7 +522,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 */
 	private void handleTaxonomicStatus(
 			CsvDemoRecord record,
-			NonViralName<?> name,
+			INonViralName name,
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
@@ -569,7 +569,7 @@ public class CsvDemoExport extends CsvDemoBase {
 			if (type == null){ // should not happen
 				type = SynonymType.SYNONYM_OF();
 			}
-			NonViralName<?> name = CdmBase.deproxy(synonym.getName(), NonViralName.class);
+			INonViralName name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());
 		}
 		record.setSynonyms(synonymLabels);

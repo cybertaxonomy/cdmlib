@@ -13,17 +13,17 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 
 public class MustHaveAuthorityValidator implements
-		ConstraintValidator<NameMustHaveAuthority, NonViralName<?>> {
+		ConstraintValidator<NameMustHaveAuthority, INonViralName> {
 
 	@Override
     public void initialize(NameMustHaveAuthority mustHaveAuthority) { }
 
     @Override
-    public boolean isValid(NonViralName<?> name, ConstraintValidatorContext constraintContext) {
+    public boolean isValid(INonViralName name, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 
 		if(name.getBasionymAuthorship() == null && name.getAuthorshipCache() == null) {

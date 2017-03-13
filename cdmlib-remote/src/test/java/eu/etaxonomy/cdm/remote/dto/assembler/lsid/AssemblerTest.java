@@ -52,9 +52,9 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -85,7 +85,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     private IBook book;
     private Reference bookSection;
     private TeamOrPersonBase<?> authorship;
-    private NonViralName<?> name;
+    private INonViralName name;
     private LSID lsid;
     private TaxonDescription taxonDescription;
 
@@ -103,7 +103,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         authorship.setTitleCache("authorship.titleCache", true);
         authorship.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
 
-        name = BotanicalName.NewInstance(null);
+        name = TaxonNameFactory.NewBotanicalInstance(null);
         name.setNameCache("nameCache");
         INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
         nomenclaturalReference.setTitleCache("nomenclaturalReference", true);
@@ -285,8 +285,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         assertNotNull(simpleDarwinRecord.getModified());
         assertEquals(taxon.getName().getTitleCache(), simpleDarwinRecord.getScientificName());
-        assertEquals(((NonViralName<?>)taxon.getName()).getAuthorshipCache(), simpleDarwinRecord.getScientificNameAuthorship());
-        assertEquals(((NonViralName<?>)taxon.getName()).getCitationString(), simpleDarwinRecord.getNamePublishedIn());
+        assertEquals(taxon.getName().getAuthorshipCache(), simpleDarwinRecord.getScientificNameAuthorship());
+        assertEquals(taxon.getName().getCitationString(), simpleDarwinRecord.getNamePublishedIn());
         assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
     }
 

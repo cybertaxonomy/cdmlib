@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -252,7 +251,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.reset();
 
                     Element item = (Element) unitsList.item(i);
-                    this.setUnitPropertiesXML( item, abcdFieldGetter, state);
+                    Abcd206ImportParser.setUnitPropertiesXML( item, abcdFieldGetter, state);
                     updateProgress(state, "Importing data for unit "+state.getDataHolder().getUnitID()+" ("+i+"/"+unitsList.getLength()+")");
 
                     //import unit + field unit data
@@ -306,7 +305,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         if(associatedUnits.item(m) instanceof Element){
                             state.reset();
                             state.setPrefix(unitAssociationWrapper.getPrefix());
-                            this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
+                            Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
                            // logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
                             handleSingleUnit(state, associatedUnits.item(m));
 
@@ -366,7 +365,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             logger.info("handleSingleUnit "+state.getRef());
         }
         try {
-            ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+            ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
             if(cdmAppController==null){
                 cdmAppController = this;
             }
@@ -763,7 +762,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                 if(associatedUnits.item(m) instanceof Element){
                                     state.reset();
                                     state.setPrefix(associationWrapper.getPrefix());
-                                    this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
+                                    Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
                                    // logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
                                     handleSingleUnit(state, associatedUnits.item(m));
 
@@ -1003,63 +1002,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         abcdFieldGetter.getGatheringPeople(root);
     }
 
-    /**
-     * Store the unit's properties into variables Look which unit is the
-     * preferred one Look what kind of name it is supposed to be, for the
-     * parsing (Botanical, Zoological)
-     * @param state
-     *
-     * @param racine: the root node for a single unit
-     */
-    private void setUnitPropertiesXML(Element root, Abcd206XMLFieldGetter abcdFieldGetter, Abcd206ImportState state) {
-        try {
-            NodeList group;
 
-            group = root.getChildNodes();
-            for (int i = 0; i < group.getLength(); i++) {
-                if (group.item(i).getNodeName().equals(state.getPrefix() + "Identifications")) {
-                    group = group.item(i).getChildNodes();
-                    break;
-                }
-            }
-            state.getDataHolder().setIdentificationList(new ArrayList<Identification>());
-            state.getDataHolder().setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
-            state.getDataHolder().setAtomisedIdentificationList(new ArrayList<HashMap<String, String>>());
-            state.getDataHolder().setReferenceList(new ArrayList<String[]>());
-            state.getDataHolder().setMultimediaObjects(new HashMap<String,Map<String, String>>());
-            state.getDataHolder().setGatheringMultimediaObjects(new HashMap<String,Map<String, String>>());
-
-            abcdFieldGetter.getScientificNames(group);
-            abcdFieldGetter.getType(root);
-
-            if(DEBUG) {
-                logger.info("this.identificationList "+state.getDataHolder().getIdentificationList().toString());
-            }
-            abcdFieldGetter.getIDs(root);
-            abcdFieldGetter.getRecordBasis(root);
-            abcdFieldGetter.getKindOfUnit(root);
-            abcdFieldGetter.getMultimedia(root);
-            abcdFieldGetter.getNumbers(root);
-            abcdFieldGetter.getGeolocation(root, state);
-            abcdFieldGetter.getGatheringPeople(root);
-            abcdFieldGetter.getGatheringDate(root);
-            abcdFieldGetter.getGatheringElevation(root);
-            abcdFieldGetter.getGatheringNotes(root);
-            abcdFieldGetter.getGatheringImages(root);
-            abcdFieldGetter.getGatheringMethod(root);
-            abcdFieldGetter.getAssociatedUnitIds(root);
-            abcdFieldGetter.getUnitNotes(root);
-            boolean referencefound = abcdFieldGetter.getReferences(root);
-            if (!referencefound) {
-                String[]a = {state.getRef().getTitleCache(),"",""};
-                state.getDataHolder().getReferenceList().add(a);
-            }
-
-        } catch (Exception e) {
-            logger.info("Error occured while parsing XML file" + e);
-            e.printStackTrace();
-        }
-    }
 
     //    private void compareABCDtoCDM(URI urlFileName, List<String> knownElts, Abcd206XMLFieldGetter abcdFieldGetter) {
     //        try {

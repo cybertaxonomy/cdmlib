@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -18,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 06.01.2017
  *
  */
-public class SetSecundumForSubtreeConfigurator {
+public class SetSecundumForSubtreeConfigurator implements Serializable{
     private UUID subtreeUuid;
     private Reference newSecundum;
     private boolean includeAcceptedTaxa = true;
@@ -28,8 +29,6 @@ public class SetSecundumForSubtreeConfigurator {
     private boolean emptySecundumDetail = true;
     private boolean includeSharedTaxa = true;
 
-
-
     /**
      * @param subtreeUuid
      * @param newSecundum
@@ -38,6 +37,16 @@ public class SetSecundumForSubtreeConfigurator {
         super();
         this.subtreeUuid = subtreeUuid;
         this.newSecundum = newSecundum;
+    }
+
+    /**
+     * @param subtreeUuid
+     * @param newSecundum
+     */
+    public SetSecundumForSubtreeConfigurator(UUID subtreeUuid) {
+        super();
+        this.subtreeUuid = subtreeUuid;
+       // this.newSecundum = newSecundum;
     }
     /**
      * @return the subtreeUuid

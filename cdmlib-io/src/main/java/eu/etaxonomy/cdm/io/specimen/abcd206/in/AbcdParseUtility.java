@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -60,7 +60,7 @@ public class AbcdParseUtility {
 
     public static String parseFirstTextContent(NodeList nodeList, boolean cleanUpWhiteSpaces){
         String string = null;
-        if(nodeList.getLength()>0){
+        if(nodeList!=null && nodeList.getLength()>0){
             string = nodeList.item(0).getTextContent();
             if(cleanUpWhiteSpaces){
                 string = string.replace("\n", "").replaceAll("( )+", " ").trim();
@@ -120,7 +120,7 @@ public class AbcdParseUtility {
         return date;
     }
 
-    public static Reference parseFirstReference(NodeList referenceNodeList, ICdmApplicationConfiguration cdmAppController){
+    public static Reference parseFirstReference(NodeList referenceNodeList, ICdmRepository cdmAppController){
         String referenceCitation = AbcdParseUtility.parseFirstTextContent(referenceNodeList);
         //check if reference already exists
         List<Reference> matchingReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, referenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();

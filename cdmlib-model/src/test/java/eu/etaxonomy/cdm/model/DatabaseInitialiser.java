@@ -15,9 +15,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -39,9 +39,8 @@ public class DatabaseInitialiser {
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
 		IJournal sec = ReferenceFactory.newJournal();
-		NonViralName<?> nvName = BotanicalName.NewInstance(Rank.SPECIES());
+		INonViralName nvName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Taxon tax = Taxon.NewInstance(nvName, (Reference)sec);
-		//BotanicalName ve = nm.getNextVersion();
 		nvName.setNameCache(speciesname);
 		nvName.setTitleCache(speciesname, true);
 		save(tax);

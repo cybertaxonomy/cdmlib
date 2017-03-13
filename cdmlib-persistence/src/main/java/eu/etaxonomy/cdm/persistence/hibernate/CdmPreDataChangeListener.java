@@ -25,8 +25,10 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -108,24 +110,26 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
 
     public static void generateCaches(Object entity){
         if (entity != null){
+            entity = CdmBase.deproxy(entity);
             Class<?> entityClazz = entity.getClass();
 
             if (IdentifiableEntity.class.isAssignableFrom(entityClazz)){
-                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
-                //non-viral-name caches
+                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>)entity;
                 if(NonViralName.class.isAssignableFrom(entityClazz)) {
-                    NonViralName<?> nonViralName = (NonViralName<?>)entity;
+                    //non-viral-name caches
+                    INonViralName nonViralName = (INonViralName)entity;
                     nonViralName.getAuthorshipCache();
                     nonViralName.getNameCache();
                     nonViralName.getTitleCache();
                     nonViralName.getFullTitleCache();
-                    //team-or-person caches
                 }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
+                    //team-or-person caches
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
                     String nomTitle = teamOrPerson.getNomenclaturalTitle();
                     if (teamOrPerson instanceof Team){
-                        Team team =CdmBase.deproxy(teamOrPerson, Team.class);
-                        team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
+                        Team team = (Team)teamOrPerson;
+                        //nomTitle is not necessarily cached when it is created
+                        team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
                     }else{
                         teamOrPerson.setNomenclaturalTitle(nomTitle);
                     }
@@ -139,10 +143,18 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
                     Reference ref = (Reference)entity;
                     ref.getAbbrevTitleCache();
                     ref.getTitleCache();
-                }else { //any other
-                    //title cache
+                //specimen
+                }else if (SpecimenOrObservationBase.class.isAssignableFrom(entityClazz)){
+                    SpecimenOrObservationBase<?> specimen = (SpecimenOrObservationBase<?>)entity;
+                    if (!specimen.isProtectedTitleCache()){
+                        specimen.setTitleCache(specimen.generateTitle(), false);
+                    }
+                //any other
+                }   else{
+                   // identifiableEntity.setTitleCache(identifiableEntity.generateTitle(), identifiableEntity.isProtectedTitleCache());
                     identifiableEntity.getTitleCache();
                 }
+
                 //titleCache should never be empty, even if protected #5763, #5849
                 if (identifiableEntity.isProtectedTitleCache() && identifiableEntity.hasEmptyTitleCache()){
                     identifiableEntity.setTitleCache(null, false);
