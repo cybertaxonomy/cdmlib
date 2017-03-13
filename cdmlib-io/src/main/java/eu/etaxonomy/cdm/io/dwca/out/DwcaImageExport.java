@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,8 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -28,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -41,7 +44,7 @@ public class DwcaImageExport extends DwcaExportBase {
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
 	private static final String fileName = "images.txt";
-	
+
 	/**
 	 * Constructor
 	 */
@@ -53,7 +56,7 @@ public class DwcaImageExport extends DwcaExportBase {
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -69,7 +72,22 @@ public class DwcaImageExport extends DwcaExportBase {
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
-			List<TaxonNode> allNodes =  getAllNodes(null);
+			Set<UUID> classificationUuidSet = config.getClassificationUuids();
+            List<Classification> classificationList;
+            if (classificationUuidSet.isEmpty()){
+                classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+            }else{
+                classificationList = getClassificationService().find(classificationUuidSet);
+            }
+
+            Set<Classification> classificationSet = new HashSet<Classification>();
+            classificationSet.addAll(classificationList);
+            List<TaxonNode> allNodes;
+
+            if (state.getAllNodes().isEmpty()){
+                getAllNodes(state, classificationSet);
+            }
+            allNodes = state.getAllNodes();
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<? extends DescriptionBase<?>> descriptions = taxon.getDescriptions();
@@ -92,9 +110,9 @@ public class DwcaImageExport extends DwcaExportBase {
 						}
 					}
 				}
-				
+
 				writer.flush();
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -107,11 +125,11 @@ public class DwcaImageExport extends DwcaExportBase {
 		}finally {
 			closeWriter(writer, state);
 		}
-		
+
 		commitTransaction(txStatus);
 		return;
 	}
-	
+
 
 
 
@@ -143,7 +161,7 @@ public class DwcaImageExport extends DwcaExportBase {
 		//TODO missing
 		record.setAudience(null);
 	}
-	
+
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
@@ -156,5 +174,5 @@ public class DwcaImageExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoImages();
 	}
-	
+
 }

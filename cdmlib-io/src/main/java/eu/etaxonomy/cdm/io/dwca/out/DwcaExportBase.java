@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -37,8 +38,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -57,6 +58,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 
     protected Set<Integer> existingRecordIds = new HashSet<Integer>();
     protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
+    private String serverFileName = "-dwca_export-cdm.zip";
 
 
 
@@ -79,7 +81,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
      * Preliminary implementation. Better implement API method for this.
      * @return
      */
-    protected List<TaxonNode> getAllNodes(Set<Classification> classificationList) {
+    protected void getAllNodes(DwcaTaxExportState state, Set<Classification> classificationList) {
         //handle empty list as no filter defined
         if (classificationList != null && classificationList.isEmpty()){
             classificationList = null;
@@ -93,6 +95,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
             }else if (classificationList != null && ! classificationList.contains(node.getClassification())){
                 continue;
             }else{
+                node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
                 Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
                 if (taxon == null){
                     String message = "There is a taxon node without taxon: " + node.getId();
@@ -102,7 +105,8 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
                 result.add(node);
             }
         }
-        return result;
+        state.setAllNodes(result);
+
     }
 
 

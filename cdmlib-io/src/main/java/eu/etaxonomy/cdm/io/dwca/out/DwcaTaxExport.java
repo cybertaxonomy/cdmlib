@@ -79,7 +79,13 @@ public class DwcaTaxExport extends DwcaExportBase {
 		state.addMetaRecord(metaRecord);
 
 		Set<UUID> classificationUuidSet = config.getClassificationUuids();
-		List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
+		List<Classification> classificationList;
+		if (classificationUuidSet.isEmpty()){
+		    classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+		}else{
+		    classificationList = getClassificationService().find(classificationUuidSet);
+		}
+
 		Set<Classification> classificationSet = new HashSet<Classification>();
 		classificationSet.addAll(classificationList);
 
@@ -88,8 +94,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 		try {
 
 			writer = createPrintWriter(fileName, state);
-
-			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
+			List<TaxonNode> allNodes;
+			if (state.getAllNodes().isEmpty()){
+			    getAllNodes(state, classificationSet);
+			}
+			allNodes = state.getAllNodes();
 			int i = 0;
 			for (TaxonNode node : allNodes){
 				i++;
@@ -126,6 +135,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			e.printStackTrace();
 		}
 		finally{
+
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);

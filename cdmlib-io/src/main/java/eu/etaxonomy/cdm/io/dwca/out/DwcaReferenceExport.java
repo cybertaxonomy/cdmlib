@@ -13,7 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -23,6 +26,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -64,7 +68,22 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
-			List<TaxonNode> allNodes =  getAllNodes(null);
+			Set<UUID> classificationUuidSet = config.getClassificationUuids();
+            List<Classification> classificationList;
+            if (classificationUuidSet.isEmpty()){
+                classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+            }else{
+                classificationList = getClassificationService().find(classificationUuidSet);
+            }
+
+            Set<Classification> classificationSet = new HashSet<Classification>();
+            classificationSet.addAll(classificationList);
+            List<TaxonNode> allNodes;
+
+            if (state.getAllNodes().isEmpty()){
+                getAllNodes(state, classificationSet);
+            }
+            allNodes = state.getAllNodes();
 			for (TaxonNode node : allNodes){
 				//sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
