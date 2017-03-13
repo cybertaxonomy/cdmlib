@@ -46,6 +46,7 @@
 	<jaxb.version>2.2.11</jaxb.version>
 	<cglib.version>3.2.0</cglib.version>
 	<aspectj.version>1.8.8</aspectj.version>
+    <javadoc.opts>-Xdoclint:none</javadoc.opts>
   </properties>
   
   <scm>
@@ -361,6 +362,7 @@
           <quiet>true</quiet>
           <detectLinks>true</detectLinks>
           <failOnError>false</failOnError>
+          <additionalparam>${javadoc.opts}</additionalparam>
         </configuration>
         <executions>
           <execution>
@@ -548,6 +550,7 @@
         <version>2.7</version>
         <configuration>
           <detectLinks>true</detectLinks>
+          <additionalparam>${javadoc.opts}</additionalparam>
         </configuration>
       </plugin>
       <plugin>
