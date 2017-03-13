@@ -163,6 +163,27 @@ public class DefaultReferenceCacheStrategyTest {
 		Assert.assertEquals("Team1, My article in " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
+	//#6496
+    @Test
+    public void testArticleGetTitleCacheWithPages(){
+        journal1.setTitle("My journal");
+        journal1.setAuthorship(articleTeam2);
+        article1.setTitle("My article");
+        article1.setInJournal(journal1);
+        article1.setAuthorship(articleTeam1);
+        article1.setDatePublished(TimePeriod.NewInstance(1975));
+        Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
+        article1.setPages("12-22");
+        Assert.assertEquals("Team1, My article in My journal: 12-22. 1975", article1.getTitleCache());
+
+        article1.setVolume("7");
+        Assert.assertEquals("Team1, My article in My journal 7: 12-22. 1975", article1.getTitleCache());
+
+        article1.setSeriesPart("II");
+        //TODO unclear if punctuation is correct
+        Assert.assertEquals("Team1, My article in My journal, II, 7: 12-22. 1975", article1.getTitleCache());
+   }
+
 	@Test
 	public void testArticleGetAbbrevTitleCache(){
 
@@ -197,6 +218,9 @@ public class DefaultReferenceCacheStrategyTest {
 		Assert.assertEquals("in M. J. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
 		article1.setSeriesPart("ser. 11");
 		Assert.assertEquals("in M. J., ser. 11, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+
+		article1.setPages("33"); //#6496 don't show pages in nomencl. citation
+        Assert.assertEquals("in M. J., ser. 11, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
 	}
 
 	/**
@@ -289,6 +313,9 @@ public class DefaultReferenceCacheStrategyTest {
         //TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
         Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3", book1.getTitleCache());
 
+        book1.setPages("1-405");
+        Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3: 1-405", book1.getTitleCache());
+
     }
 
 
@@ -353,6 +380,11 @@ public class DefaultReferenceCacheStrategyTest {
         book1.setSeriesPart("2");
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book, ser. 2. 1976", bookSection1.getTitleCache());
 
+        //FIXME #6496
+//        bookSection1.setPages("33-38");
+//        bookSection1.setTitleCache(null);
+//        Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book, ser. 2: 33-38. 1976", bookSection1.getTitleCache());
+
         bookSection1.setInBook(null);
         bookSection1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in - undefined book -. 1976", bookSection1.getTitleCache());
@@ -396,6 +428,10 @@ public class DefaultReferenceCacheStrategyTest {
 
         book1.setSeriesPart("2");
         Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
+        //#6496 don't show pages in nom.ref. citations
+        bookSection1.setPages("35-39");
+        Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
+
     }
 
     @Test
