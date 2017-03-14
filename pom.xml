@@ -52,7 +52,7 @@
   <scm>
     <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib.git</connection>
     <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib.git</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree</url>
   </scm>
   
   <prerequisites>
