@@ -501,7 +501,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     //Cultivar attribute(s)
 
     //the characteristical name of the cultivar
-    @XmlElement(name = "CultivarName", required = true)
+    @XmlElement(name = "CultivarName")
     //TODO Val #3379
     //@NullOrNotEmpty
     @Column(length=255)
