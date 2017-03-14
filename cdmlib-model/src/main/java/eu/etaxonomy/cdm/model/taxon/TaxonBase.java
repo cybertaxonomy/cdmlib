@@ -121,8 +121,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;
 
-
-    @XmlElement(name = "Name", required = true)
+    @XmlElement(name = "Name")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
