@@ -57,6 +57,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	//Identifier Type
 	public static final UUID uuidLsid = UUID.fromString("26729412-9df6-4cc3-9e5d-501531ca21f0");
 	public static final UUID uuidAlternativeFieldNumber = UUID.fromString("054fd3d1-1961-42f8-b024-b91184ac9e0c");
+    public static UUID uuidTropicosNameIdentifier = UUID.fromString("6205e531-75b0-4f2a-9a9c-b1247fb080ab");
 
 	//TaxonNode Agent Relation Type
 	public static final UUID uuidLastScrutiny = UUID.fromString("b4495910-28e9-4a49-86cf-a0476c78f460");
@@ -155,6 +156,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static DefinedTerm ITS1_MARKER(){
 		return getTermByUuid(uuidIts1);
 	}
+
+    public static DefinedTerm TROPICOS_NAME_IDENTIFIER(){
+        return getTermByUuid(uuidTropicosNameIdentifier);
+    }
 
 
 	@Override
