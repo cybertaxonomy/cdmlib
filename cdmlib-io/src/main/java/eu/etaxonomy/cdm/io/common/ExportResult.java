@@ -20,41 +20,68 @@ import java.util.List;
  */
 public class ExportResult implements Serializable {
 
-    private boolean success;
-    private List<byte[]> data;
+    private static final long serialVersionUID = 6843406252245776806L;
+
+    private ExportResultState success;
+
+    private List<byte[]> data = new ArrayList<>();  //resulting files
+
+    private List<byte[]> errors = new ArrayList<>();
+    private List<byte[]> warnings = new ArrayList<>();
+
+    private List<Exception> exceptions = new ArrayList<>();
 
     public ExportResult() {
-        success = true;
-        data = new ArrayList<byte[]>();
+        success = ExportResultState.SUCCESS;
+        data = new ArrayList<>();
     }
 
-    /**
-     * @return the success
-     */
-    public boolean isSuccess() {
-        return success;
-    }
-    /**
-     * @param success the success to set
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-    /**
-     * @return the exportData
-     */
-    public List<byte[]> getExportData() {
-        return data;
-    }
-    /**
-     * @param exportData the exportData to set
-     */
-    public void setExportData(List<byte[]> data) {
-        this.data = data;
+    public enum ExportResultState{
+        SUCCESS,
+        SUCCESS_BUT_NO_DATA,
+        SUCCESS_WITH_WARNING,
+        FINISHED_WITH_ERROR,
+        ABORTED,
+        CANCELED,
+        ERROR
+        ;
     }
 
+// **************** GETTER /SETTER *********************/
+
+    public ExportResultState isSuccess() {return success;}
+    public void setSuccess(ExportResultState success) {this.success = success;}
+
+    public List<byte[]> getExportData() {return data;}
+    public void setExportData(List<byte[]> data) {this.data = data;}
     public void addExportData(byte[] exportData) {
         data.add(exportData);
+    }
+
+    public List<byte[]> getErrors() {return errors;}
+    public void setErrors(List<byte[]> errors) {this.errors = errors;}
+    public void addError(String error) {
+//        errors.add(error);
+    }
+
+    public List<byte[]> getWarnings() {return warnings;}
+    public void setWarnings(List<byte[]> warnings) {this.warnings = warnings;}
+    public void addWarning(String warning) {
+//        warnings.add(StringUtils..warning.to);
+    }
+
+    /**
+     * @return the exceptions
+     */
+    public List<Exception> getExceptions() {
+        return exceptions;
+    }
+
+    /**
+     * @param exceptions the exceptions to set
+     */
+    public void setExceptions(List<Exception> exceptions) {
+        this.exceptions = exceptions;
     }
 
 }

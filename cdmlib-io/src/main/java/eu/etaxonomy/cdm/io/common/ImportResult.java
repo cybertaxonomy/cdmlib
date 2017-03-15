@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class ImportResult implements Serializable {
 
+    private static final long serialVersionUID = -7299667532720042100L;
+
     private boolean success;
     private List<byte[]> reports;
 
