@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -16,16 +17,11 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 
 
     private ByteArrayOutputStream byteOutputStream;
-	private String encoding = "UTF-8";
-	private String linesTerminatedBy = "\r\n";
-	private String fieldsEnclosedBy = "\"";
-	private boolean hasHeaderLines = true;
-	private String fieldsTerminatedBy=";";
 	private boolean namesOnly = false;
 	private UUID classificationUUID;
 	private boolean condensedDistribution = false;
 	private boolean invalidNamesQuoted = false;
-
+	private CsvIOConfigurator csvIOConfig = CsvIOConfigurator.NewInstance();
 
     private Rank rank = Rank.GENUS();
 
@@ -57,34 +53,34 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 
 
 	public String getEncoding() {
-		return encoding;
+		return csvIOConfig.getEncoding();
 	}
 	public void setEncoding(String encoding) {
-		this.encoding = encoding;
+		this.csvIOConfig.setEncoding(encoding);
 	}
 	public String getLinesTerminatedBy() {
-		return linesTerminatedBy;
+		return csvIOConfig.getLinesTerminatedBy();
 	}
 	public void setLinesTerminatedBy(String linesTerminatedBy) {
-		this.linesTerminatedBy = linesTerminatedBy;
+		this.csvIOConfig.setLinesTerminatedBy(linesTerminatedBy);
 	}
 	public String getFieldsEnclosedBy() {
-		return fieldsEnclosedBy;
+		return  csvIOConfig.getFieldsEnclosedBy();
 	}
 	public void setFieldsEnclosedBy(String fieldsEnclosedBy) {
-		this.fieldsEnclosedBy = fieldsEnclosedBy;
+		this.csvIOConfig.setFieldsEnclosedBy(fieldsEnclosedBy);
 	}
 	public boolean isHasHeaderLines() {
-		return hasHeaderLines;
+		return  csvIOConfig.isHasHeaderLines();
 	}
 	public void setHasHeaderLines(boolean hasHeaderLines) {
-		this.hasHeaderLines = hasHeaderLines;
+		this.csvIOConfig.setHasHeaderLines(hasHeaderLines);
 	}
 	public String getFieldsTerminatedBy() {
-		return fieldsTerminatedBy;
+		return  csvIOConfig.getFieldsTerminatedBy();
 	}
 	public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
-		this.fieldsTerminatedBy = fieldsTerminatedBy;
+		this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
 	}
 
 	@Override
