@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,30 +31,32 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author h.fradin
  * @created 24.10.2008
- * @version 1.0
  */
 public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportState> implements IImportConfigurator, IMatchingImportConfigurator {
-	private static final Logger logger = Logger.getLogger(SDDImportConfigurator.class);
+    private static final long serialVersionUID = -960998183005112130L;
+
+    private static final Logger logger = Logger.getLogger(SDDImportConfigurator.class);
 
 	//TODO
 	private static IInputTransformer defaultTransformer = new SDDTransformer();
-	
+
 	private boolean doMatchTaxa = true;
-	
+
 	//xml xmlNamespace
 	Namespace sddNamespace;
 
-	protected void makeIoClassList(){
+	@Override
+    protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				SDDImport.class
 		};
 	};
-	
+
 	public static SDDImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new SDDImportConfigurator(uri, destination);
 	}
-	
-	
+
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -65,14 +67,10 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 		setSource(uri);
 		setDestination(destination);
 	}
-	
-	
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
-	public SDDImportState getNewState() {
+
+	@Override
+    public SDDImportState getNewState() {
 		return new SDDImportState(this);
 	}
 
@@ -103,10 +101,6 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 		return true;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -118,11 +112,8 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
@@ -141,14 +132,16 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 	/**
 	 * @param doMatchTaxa the doMatchTaxa to set
 	 */
-	public void setReuseExistingTaxaWhenPossible(boolean doMatchTaxa) {
+	@Override
+    public void setReuseExistingTaxaWhenPossible(boolean doMatchTaxa) {
 		this.doMatchTaxa = doMatchTaxa;
 	}
 
 	/**
 	 * @return the doMatchTaxa
 	 */
-	public boolean isReuseExistingTaxaWhenPossible() {
+	@Override
+    public boolean isReuseExistingTaxaWhenPossible() {
 		return doMatchTaxa;
 	}
 }

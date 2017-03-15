@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -51,21 +51,21 @@ public class TermLoader implements ITermLoader {
 
 	@Override
 	public UUID loadUuids(VocabularyEnum vocType, Map<UUID, Set<UUID>> uuidMap) {
-		
+
 		try {
 			CSVReader reader = getCsvReader(vocType);
 			String[] nextLine = reader.readNext();
 			UUID uuidVocabulary = UUID.fromString(nextLine[0]);
 			Set<UUID> termSet = new HashSet<UUID>();
 			uuidMap.put(uuidVocabulary, termSet);
-			
+
 			while ( (nextLine = reader.readNext()) != null) {
 				UUID uuidTerm = UUID.fromString(nextLine[0]);
 				termSet.add(uuidTerm);
 			}
 			return uuidVocabulary;
-			
-			
+
+
 		} catch (Exception e) {
 			logger.error(e + " " + e.getCause() + " " + e.getMessage());
 			for(StackTraceElement ste : e.getStackTrace()) {
@@ -73,21 +73,21 @@ public class TermLoader implements ITermLoader {
 			}
 			throw new RuntimeException(e);
 		}
-	
+
 	}
-	
+
 	@Override
 	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
-		
-		
+
+
 		try {
 			CSVReader reader = getCsvReader(vocType);
-			
+
 			String [] nextLine = reader.readNext();
-			
-			
+
+
 			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
-			
+
 			//vocabulary
 			TermVocabulary<T> voc;
 			TermType termType = TermType.Unknown;
@@ -96,17 +96,17 @@ public class TermLoader implements ITermLoader {
 			}else{
 				voc = TermVocabulary.NewInstance(termType);
 			}
-			
+
 			if (nextLine != null){
 				voc.readCsvLine(arrayedLine(nextLine));
 			}
 			termType = voc.getTermType();
 			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
-			
-			// Ugly, I know, but I don't think we can use a static method here . . 
-			
-			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance(); 
-			
+
+			// Ugly, I know, but I don't think we can use a static method here . .
+
+			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
+
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				if (nextLine.length == 0){
@@ -125,7 +125,7 @@ public class TermLoader implements ITermLoader {
 			}
 			throw new RuntimeException(e);
 		}
-		
+
 	}
 
 	/**
@@ -148,30 +148,30 @@ public class TermLoader implements ITermLoader {
 		terms.put(term.getUuid(), term);
 		return term;
 	}
-	
+
 
 	@Override
 	public <T extends DefinedTermBase> Set<T> loadSingleTerms(VocabularyEnum vocType,
 			TermVocabulary<T> voc, Set<UUID> missingTerms) {
 		try {
 			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
-			
+
 			CSVReader reader = getCsvReader(vocType);
 			String [] nextLine =  reader.readNext();
-			
+
 			if (! UUID.fromString(nextLine[0]).equals(voc.getUuid())){
 				throw new IllegalStateException("Vocabularies in csv file and vocabulary must be equal");
 			}
-			
-			
-			
+
+
+
 			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
 			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
 			Map<UUID,DefinedTermBase> allVocTerms = new HashMap<UUID, DefinedTermBase>();
 			for (T term:voc.getTerms()){
 				allVocTerms.put(term.getUuid(), term);
 			}
-			
+
 			while ((nextLine = reader.readNext()) != null) {
 				if (nextLine.length == 0){
 					continue;
@@ -181,7 +181,7 @@ public class TermLoader implements ITermLoader {
 					handleSingleTerm(nextLine, allVocTerms, termClass, voc, abbrevAsId, classDefiningTermInstance);
 				}
 			}
-			
+
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,10 +197,9 @@ public class TermLoader implements ITermLoader {
 	 */
 	private CSVReader getCsvReader(VocabularyEnum vocType) throws IOException {
 		String filename = vocType.name()+".csv";
-		
 		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
-		logger.debug("strResourceFileName is " + strResourceFileName);
-		CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
+		if (logger.isDebugEnabled()){logger.debug("strResourceFileName is " + strResourceFileName);}
+		CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader(strResourceFileName));
 		return reader;
 	}
 

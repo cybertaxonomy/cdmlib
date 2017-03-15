@@ -88,7 +88,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 
 /* *****************CONSTRUCTOR *****************************/
 
-	public ImportConfiguratorBase(IInputTransformer transformer){
+	protected ImportConfiguratorBase(IInputTransformer transformer){
 		super();
 		setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		this.transformer = transformer;

@@ -18,6 +18,7 @@ import java.util.List;
  *
  */
 public class ImportResult implements Serializable {
+    private static final long serialVersionUID = -7299667532720042100L;
 
     private static final long serialVersionUID = -7299667532720042100L;
 
@@ -26,7 +27,7 @@ public class ImportResult implements Serializable {
 
     public ImportResult() {
         success = true;
-        reports = new ArrayList<byte[]>();
+        reports = new ArrayList<>();
     }
 
     /**
@@ -42,13 +43,13 @@ public class ImportResult implements Serializable {
         this.success = success;
     }
     /**
-     * @return the exportData
+     * @return the reports
      */
     public List<byte[]> getReports() {
         return reports;
     }
     /**
-     * @param exportData the exportData to set
+     * @param reports the reports to set
      */
     public void setReports(List<byte[]> reports) {
         this.reports = reports;
