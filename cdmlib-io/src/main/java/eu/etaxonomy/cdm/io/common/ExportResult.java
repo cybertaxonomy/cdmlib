@@ -83,5 +83,18 @@ public class ExportResult implements Serializable {
     public void setExceptions(List<Exception> exceptions) {
         this.exceptions = exceptions;
     }
+    /**
+     * @deprecated use {@link #setSuccess(ExportResultState)} instead
+     * @param doCheck
+     */
+    @Deprecated
+    public void setSuccess(boolean success) {
+       if (success){
+           this.setSuccess(ExportResultState.SUCCESS);
+       }else{
+           this.setSuccess(ExportResultState.ERROR);
+       }
+
+    }
 
 }
