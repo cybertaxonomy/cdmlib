@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -172,4 +173,10 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return
      */
     public Language getLanguageByLabel(String label);
+
+    /**
+     * @param representations
+     * @return
+     */
+    public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations);
 }
