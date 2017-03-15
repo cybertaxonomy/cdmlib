@@ -62,7 +62,7 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
             Set<Representation> representations = new HashSet<>();
             UUID langUuid = config.getLanguageUuid();
             DefinedTermBase<?> languageTerm = getTermService().find(langUuid);
-            if (!languageTerm.isInstanceOf(Language.class)){
+            if (languageTerm == null || !languageTerm.isInstanceOf(Language.class)){
                 logger.warn("Language not recognized. Skip import");
                 csvReader.close();
                 return;
