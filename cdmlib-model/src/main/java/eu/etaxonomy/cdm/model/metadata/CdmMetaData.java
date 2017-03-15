@@ -91,7 +91,10 @@ public class CdmMetaData extends CdmBase{
 		DB_SCHEMA_VERSION,
 		TERMS_VERSION,
  		DB_CREATE_DATE,
-		DB_CREATE_NOTE;
+		DB_CREATE_NOTE,
+		INSTANCE_NAME,
+		INSTANCE_ID;
+
 
 		public String getSqlQuery(){
 			return "SELECT value FROM CdmMetaData WHERE propertyname=" + this.ordinal();
