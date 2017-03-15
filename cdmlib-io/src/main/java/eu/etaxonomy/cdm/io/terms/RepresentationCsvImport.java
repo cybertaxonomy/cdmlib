@@ -59,7 +59,11 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
                 csvReader.close();
                 return;
             }
-            Set<Representation> representations = new HashSet<>();
+
+            @SuppressWarnings("rawtypes")
+            Set<DefinedTermBase> termsToSave = new HashSet<>();
+            @SuppressWarnings("rawtypes")
+            Set<TermVocabulary> vocsToSave = new HashSet<>();
             UUID langUuid = config.getLanguageUuid();
             DefinedTermBase<?> languageTerm = getTermService().find(langUuid);
             if (languageTerm == null || !languageTerm.isInstanceOf(Language.class)){
@@ -71,14 +75,22 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
 
             int i = 0;
             for (String[] strs : lines){
-                Representation rep = handleSingleLine(config, strs, language, i);
-                if (rep != null){
-                    representations.add(rep);
+                TermBase term = handleSingleLine(config, strs, language, i);
+                if (term != null){
+                    if (term.isInstanceOf(DefinedTermBase.class)){
+                        termsToSave.add(CdmBase.deproxy(term, DefinedTermBase.class));
+                    }else if (term.isInstanceOf(TermVocabulary.class)){
+                        vocsToSave.add(CdmBase.deproxy(term, TermVocabulary.class));
+                    }else{
+                        csvReader.close();
+                        throw new IllegalArgumentException("Term class type not yet supported: " + term.getClass().getSimpleName());
+                    }
                 }
                 i++;
             }
             csvReader.close();
-            getTermService().saveOrUpdateRepresentations(representations);
+            getTermService().saveOrUpdate(termsToSave);
+            getVocabularyService().saveOrUpdate(vocsToSave);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -92,7 +104,7 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
      * @param i line counter
      * @return
      */
-    private Representation handleSingleLine(RepresentationCsvImportConfigurator config, String[] strs,
+    private TermBase handleSingleLine(RepresentationCsvImportConfigurator config, String[] strs,
             Language language, int i) {
         if (strs.length<1){
             String message = String.format(
@@ -124,7 +136,7 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
             return null;
         }
         //skip column 1, it is for default language label, but not used during import
-        String label = strs[2];
+        String label = null;
         String description = null;
         String abbrev = null;
         if (isNotBlank(strs[2])){
@@ -149,6 +161,7 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
         Representation representation = term.getRepresentation(language);
         if (representation == null){
             representation = Representation.NewInstance(description, label, abbrev, language);
+            term.addRepresentation(representation);
         }
         if (label != null || config.isOverrideWithEmpty()){
             representation.setLabel(label);
@@ -159,7 +172,7 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
         if (abbrev != null || config.isOverrideWithEmpty()){
             representation.setAbbreviatedLabel(abbrev);
         }
-        return representation;
+        return term;
     }
 
     /**

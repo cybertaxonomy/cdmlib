@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author k.luther
@@ -43,9 +44,23 @@ public class OutputModelClassificationExport
             Classification classification = getClassificationService().find(classificationUuid);
             if (classification == null){
                 String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
+                //TODO
                 state.getResult().addWarning(message);
+            }else{
+//                gtTaxonNodeService().
+                TaxonNode root = classification.getRootNode();
+                for (TaxonNode child : root.getChildNodes()){
+                    handleSingleTaxon(child);
+                }
             }
         }
+    }
+
+    /**
+     * @param child
+     */
+    private void handleSingleTaxon(TaxonNode child) {
+        // TODO Auto-generated method stub
     }
 
     /**
