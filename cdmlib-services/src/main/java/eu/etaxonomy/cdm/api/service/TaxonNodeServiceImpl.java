@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
-import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
@@ -741,12 +740,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config, IProgressMonitor monitor) {
+    public UpdateResult setSecundumForSubtree(UUID subtreeUuid,  Reference newSec, boolean includeAcceptedTaxa, boolean includeSynonyms, boolean overwriteExistingAccepted, boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
+       // IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        UUID subtreeUuid = config.getSubtreeUuid();
+        monitor.beginTask("Update Secundum Reference", 100);
         if (subtreeUuid == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
@@ -762,16 +762,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
 
-        Reference ref = config.getNewSecundum();
-        if (config.isIncludeAcceptedTaxa()){
-            Set<Taxon> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, ref, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa() ,config.isEmptySecundumDetail());
+        //Reference ref = config.getNewSecundum();
+        if (includeAcceptedTaxa){
+            monitor.subTask("Update Accepted Taxa");
+            Set<Taxon> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, overwriteExistingAccepted, includeSharedTaxa, emptyDetail);
             result.addUpdatedObjects(updatedTaxa);
         }
-        if (config.isIncludeSynonyms()){
-            Set<Synonym> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, ref, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+        if (includeSynonyms){
+            monitor.subTask("Update Synonyms");
+            Set<Synonym> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, overwriteExistingSynonyms, includeSharedTaxa , emptyDetail);
             result.addUpdatedObjects(updatedSynonyms);
         }
-
+        monitor.done();
         return result;
     }
 

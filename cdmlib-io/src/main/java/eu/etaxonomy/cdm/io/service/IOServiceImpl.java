@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.io.common.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
@@ -59,6 +60,10 @@ public class IOServiceImpl implements IIOService {
 
     @Autowired
     IProgressMonitorService progressMonitorService;
+//
+//    @Autowired
+//    @Qualifier("defaultUpdate")
+//    CdmApplicationAwareDefaultUpdate cdmUpdate;
 
 
 
@@ -93,6 +98,24 @@ public class IOServiceImpl implements IIOService {
     }
 
     @Override
+    public UUID monitUpdateData(final IImportConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+
+                configurator.setProgressMonitor(monitor);
+                ImportResult result =updateData((SetSecundumForSubtreeConfigurator)configurator);
+
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
         ImportResult result;
         switch(type) {
@@ -107,6 +130,14 @@ public class IOServiceImpl implements IIOService {
         default :
             throw new RuntimeException("Source type is not recongnised");
         }
+    }
+
+    @Override
+    public ImportResult updateData(SetSecundumForSubtreeConfigurator configurator) {
+        ImportResult result;
+
+        result = cdmImport.invoke(configurator);
+        return result;
     }
 
     @Override
