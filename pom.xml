@@ -226,7 +226,7 @@
     <!-- the cdm internal repository -->
     <repository>
       <id>EditRepository</id>
-      <url>http://wp5.e-taxonomy.eu/mavenrepo/</url>
+      <url>http://cybertaxonomy.eu/mavenrepo/</url>
     </repository>
     <!-- apache incubating repository -->
     <repository>
@@ -446,8 +446,8 @@
           <fromDir>${project.build.directory}/docbkx/</fromDir>
           <includes>**/*</includes>
           <excludes />
-          <url>scpexe://wp5.e-taxonomy.eu</url>
-          <serverId>wp5.e-taxonomy.eu</serverId>
+          <url>scpexe://cybertaxonomy.eu</url>
+          <serverId>cybertaxonomy.eu</serverId>
           <toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
         </configuration>
         <executions>
@@ -628,15 +628,15 @@
   <!-- DISTRIBUTION MANAGEMENT -->
   <distributionManagement>
     <site>
-      <id>wp5.e-taxonomy.eu</id>
+      <id>cybertaxonomy.eu</id>
       <name>CDM Library Website</name>
-      <url>scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
+      <url>scpexe://cybertaxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
     </site>
     <repository>
       <uniqueVersion>false</uniqueVersion>
-      <id>wp5.e-taxonomy.eu</id>
+      <id>cybertaxonomy.eu</id>
       <name>Edit Maven Repository</name>
-      <url>scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
+      <url>scpexe://cybertaxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
       <layout>default</layout>
     </repository>
   </distributionManagement>
