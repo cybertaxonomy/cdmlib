@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -82,8 +83,8 @@ public class OutputModelClassificationExport
 
         csvLine[table.getIndex(OutputModelTable.TAXON_ID)] = getId(state, taxon);
         csvLine[table.getIndex(OutputModelTable.NAME_FK)] = getId(state, name);
-        //TODO NPE when root?
-        csvLine[table.getIndex(OutputModelTable.PARENT_FK)] = getId(state, taxonNode.getParent().getTaxon());
+        Taxon parent = (taxonNode.getParent()==null) ? null : taxonNode.getParent().getTaxon();
+        csvLine[table.getIndex(OutputModelTable.PARENT_FK)] = getId(state, parent);
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
 
@@ -125,9 +126,17 @@ public class OutputModelClassificationExport
     private void handleSynonym(OutputModelExportState state, Synonym syn) {
        ITaxonNameBase name = syn.getName();
        handleName(state, name);
-       //add to syn table
 
+       OutputModelTable table = OutputModelTable.SYNONYM;
+       String[] csvLine = new String[table.getSize()];
 
+       csvLine[table.getIndex(OutputModelTable.SYNONYM_ID)] = getId(state, syn);
+       csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, syn.getAcceptedTaxon());
+       csvLine[table.getIndex(OutputModelTable.NAME_FK)] = getId(state, name);
+       csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, syn.getSec());
+       csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(syn.getSec());
+
+       state.getProcessor().put(table, csvLine);
     }
 
     /**
@@ -136,6 +145,27 @@ public class OutputModelClassificationExport
      */
     private void handleName(OutputModelExportState state, ITaxonNameBase name) {
         Rank rank = name.getRank();
+
+    }
+
+    /**
+     * @param state
+     * @param name
+     */
+    private void handleReference(OutputModelExportState state, Reference reference) {
+        OutputModelTable table = OutputModelTable.REFERENCE;
+
+        String[] csvLine = new String[table.getSize()];
+        csvLine[table.getIndex(OutputModelTable.REFERENCE_ID)] = getId(state, reference);
+        //TODO short citations correctly
+        String shortCitation = reference.getAbbrevTitleCache();  //Should be Author(year) like in Taxon.sec
+        csvLine[table.getIndex(OutputModelTable.BIBLIO_SHORT_CITATION)] = shortCitation;
+        //TODO get preferred title
+        csvLine[table.getIndex(OutputModelTable.REF_TITLE)] = reference.getTitle();
+        csvLine[table.getIndex(OutputModelTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
+        //TBC
+
+        state.getProcessor().put(table, csvLine);
 
     }
 
