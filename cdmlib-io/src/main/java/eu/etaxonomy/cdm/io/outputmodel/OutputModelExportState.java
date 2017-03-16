@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  */
 public class OutputModelExportState extends ExportStateBase<OutputModelConfigurator, IExportTransformer>{
 
-    private ExportResult result = new ExportResult();
+    private ExportResult result = ExportResult.NewInstance();
+
+    private OutputModelResultProcessor processor = new OutputModelResultProcessor(this);
 
     /**
      * @param config
@@ -44,7 +46,16 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
      *
      */
     public void setEmptyData() {
-        this.result.setSuccess(ExportResultState.SUCCESS_BUT_NO_DATA);
+        this.result.setState(ExportResultState.SUCCESS_BUT_NO_DATA);
     }
+
+    /**
+     * @return the processor
+     */
+    public OutputModelResultProcessor getProcessor() {
+        return processor;
+    }
+
+
 
 }

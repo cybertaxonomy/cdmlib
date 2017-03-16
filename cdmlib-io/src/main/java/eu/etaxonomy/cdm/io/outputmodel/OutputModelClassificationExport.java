@@ -13,7 +13,13 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -40,6 +46,7 @@ public class OutputModelClassificationExport
             state.setEmptyData();
             return;
         }
+        //TODO MetaData
         for (UUID classificationUuid : config.getClassificationUuids()){
             Classification classification = getClassificationService().find(classificationUuid);
             if (classification == null){
@@ -50,17 +57,86 @@ public class OutputModelClassificationExport
 //                gtTaxonNodeService().
                 TaxonNode root = classification.getRootNode();
                 for (TaxonNode child : root.getChildNodes()){
-                    handleSingleTaxon(child);
+                    handleTaxon(state, child);
+                    //TODO progress monitor
                 }
             }
         }
     }
 
     /**
-     * @param child
+     * @param state
+     * @param taxon
      */
-    private void handleSingleTaxon(TaxonNode child) {
-        // TODO Auto-generated method stub
+    private void handleTaxon(OutputModelExportState state, TaxonNode taxonNode) {
+        Taxon taxon = taxonNode.getTaxon();
+        ITaxonNameBase name = taxon.getName();
+        handleName(state, name);
+        for (Synonym syn : taxon.getSynonyms()){
+            handleSynonym(state, syn);
+        }
+
+
+        OutputModelTable table = OutputModelTable.TAXON;
+        String[] csvLine = new String[table.getSize()];
+
+        csvLine[table.getIndex(OutputModelTable.TAXON_ID)] = getId(state, taxon);
+        csvLine[table.getIndex(OutputModelTable.NAME_FK)] = getId(state, name);
+        //TODO NPE when root?
+        csvLine[table.getIndex(OutputModelTable.PARENT_FK)] = getId(state, taxonNode.getParent().getTaxon());
+        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
+        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+
+
+        state.getProcessor().put(table, csvLine);
+
+
+    }
+
+    /**
+     * @param sec
+     * @return
+     */
+    private String getTitleCache(IIdentifiableEntity identEntity) {
+        if (identEntity == null){
+            return "";
+        }
+        //TODO refresh?
+        return identEntity.getTitleCache();
+    }
+
+    /**
+     * @param state
+     * @param taxon
+     * @return
+     */
+    private String getId(OutputModelExportState state, ICdmBase cdmBase) {
+        if (cdmBase == null){
+            return "";
+        }
+        //TODO make configurable
+        return cdmBase.getUuid().toString();
+    }
+
+    /**
+     * @param state
+     * @param syn
+     */
+    private void handleSynonym(OutputModelExportState state, Synonym syn) {
+       ITaxonNameBase name = syn.getName();
+       handleName(state, name);
+       //add to syn table
+
+
+    }
+
+    /**
+     * @param state
+     * @param name
+     */
+    private void handleName(OutputModelExportState state, ITaxonNameBase name) {
+        Rank rank = name.getRank();
+
     }
 
     /**
