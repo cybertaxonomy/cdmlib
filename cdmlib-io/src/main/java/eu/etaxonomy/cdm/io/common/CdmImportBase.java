@@ -156,6 +156,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	}
 
+
+    //TODO move up to CdmIoBase once ImportResult is used here
+	@Override
+    public boolean invoke(STATE state) {
+        if (isIgnore( state)){
+            logger.info("No invoke for " + ioName + " (ignored)");
+            return true;
+        }else{
+            updateProgress(state, "Invoking " + ioName);
+            doInvoke(state);
+            return state.isSuccess();
+        }
+    }
+
 	protected Classification makeTree(STATE state, Reference reference){
 		String treeName = "Classification (Import)";
 		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){

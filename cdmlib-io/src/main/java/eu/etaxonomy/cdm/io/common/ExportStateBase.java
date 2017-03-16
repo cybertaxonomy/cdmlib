@@ -22,6 +22,8 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?,?,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportStateBase.class);
 
+	private ExportResult result = ExportResult.NewInstance();
+
 	protected ExportStateBase(CONFIG config){
 		this.config = config;
 	}
@@ -29,5 +31,19 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?,?,
 	public TRANSFORM getTransformer(){
 		return this.config.getTransformer();
 	}
+
+    /**
+     * @return the result
+     */
+    public ExportResult getResult() {
+        return result;
+    }
+
+    /**
+     * @param result the result to set
+     */
+    public void setResult(ExportResult result) {
+        this.result = result;
+    }
 
 }

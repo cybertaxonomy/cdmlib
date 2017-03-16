@@ -22,7 +22,7 @@ public class ExportResult implements Serializable {
 
     private static final long serialVersionUID = 6843406252245776806L;
 
-    private ExportResultState success;
+    private ExportResultState state;
 
     private List<byte[]> data = new ArrayList<>();  //resulting files
 
@@ -31,26 +31,47 @@ public class ExportResult implements Serializable {
 
     private List<Exception> exceptions = new ArrayList<>();
 
-    public ExportResult() {
-        success = ExportResultState.SUCCESS;
+// **************************** FACTORY ****************************************/
+
+    public static ExportResult NewInstance(){
+        return new ExportResult();
+    }
+
+    public static ExportResult NewNoDataInstance(){
+        ExportResult result = new ExportResult();
+        result.state = ExportResultState.SUCCESS_BUT_NO_DATA;
+        return result;
+    }
+
+
+// *********************** CONSTRUCTOR *****************************************/
+
+    private ExportResult() {
+        state = ExportResultState.SUCCESS;
         data = new ArrayList<>();
     }
 
     public enum ExportResultState{
-        SUCCESS,
-        SUCCESS_BUT_NO_DATA,
-        SUCCESS_WITH_WARNING,
-        FINISHED_WITH_ERROR,
-        ABORTED,
-        CANCELED,
-        ERROR
+        SUCCESS_BUT_NO_DATA,   //Only if NO data at all is exported, if only 1 class is exported use SUCCESS
+        SUCCESS,               //All configured data exported, no warning, no errors
+        SUCCESS_WITH_WARNING,   //All data exported but with some warnings
+        FINISHED_WITH_ERROR,    //Probably all data exported but with errors
+        INCOMPLETE_WITH_ERROR,  //Run to the end, but in the middle there might be "larger" amounts of data missing, e.g. some parts did not run to the end
+        CANCELED,              //Export canceled by the user
+        ABORTED,                //An handled exception occurred that lead to abort the export
         ;
     }
 
 // **************** GETTER /SETTER *********************/
 
-    public ExportResultState isSuccess() {return success;}
-    public void setSuccess(ExportResultState success) {this.success = success;}
+    public boolean isSuccess(){
+        return state == ExportResultState.SUCCESS || state == ExportResultState.SUCCESS_WITH_WARNING;
+    }
+
+    public ExportResultState getState() {return state;}
+    public void setState(ExportResultState state) {this.state = state;}
+
+
 
     public List<byte[]> getExportData() {return data;}
     public void setExportData(List<byte[]> data) {this.data = data;}
@@ -83,18 +104,38 @@ public class ExportResult implements Serializable {
     public void setExceptions(List<Exception> exceptions) {
         this.exceptions = exceptions;
     }
-    /**
-     * @deprecated use {@link #setSuccess(ExportResultState)} instead
-     * @param doCheck
-     */
-    @Deprecated
-    public void setSuccess(boolean success) {
-       if (success){
-           this.setSuccess(ExportResultState.SUCCESS);
-       }else{
-           this.setSuccess(ExportResultState.ERROR);
-       }
 
+    /**
+     *
+     */
+    public void setAborted() {
+        this.state = ExportResultState.ABORTED;
     }
+
+    /**
+     * @param e
+     */
+    public void addException(Exception e) {
+        exceptions.add(e);
+        this.state = ExportResultState.INCOMPLETE_WITH_ERROR;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return state.toString();
+    }
+
+    /**
+     * @param invoke
+     */
+    public void merge(ExportResult invoke) {
+        // TODO implemented
+    }
+
+
+
 
 }

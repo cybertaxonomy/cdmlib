@@ -49,6 +49,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 
+
+    private boolean success = true;
+
 	//States
 	private boolean isCheck;
 
@@ -395,6 +398,19 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
      */
     public byte[] getReportAsByteArray() {
         return null;
+    }
+
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public void setUnsuccessfull(){
+        this.success = false;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 
 

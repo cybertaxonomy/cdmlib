@@ -17,4 +17,6 @@ public interface ICdmExport<CONFIG extends IExportConfigurator, STATE extends Ex
 
 	public byte[] getByteArray();
 
+	public abstract ExportResult invoke(STATE state);
+
 }

@@ -17,5 +17,6 @@ public interface ICdmImport<CONFIG extends IImportConfigurator, STATE extends Im
 
     public byte[] getByteArray();
 
+    public abstract boolean invoke(STATE state);
 
 }

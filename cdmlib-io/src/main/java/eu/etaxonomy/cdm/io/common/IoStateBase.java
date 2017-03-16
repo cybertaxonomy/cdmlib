@@ -24,8 +24,6 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 
 	private IO currentIO;
 
-	private boolean success = true;
-
 	CONFIG config;
 
 	/**
@@ -64,17 +62,6 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 		return currentIO;
 	}
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-
-	public void setUnsuccessfull(){
-		this.success = false;
-	}
-
-	public boolean isSuccess() {
-		return success;
-	}
 
 
 }

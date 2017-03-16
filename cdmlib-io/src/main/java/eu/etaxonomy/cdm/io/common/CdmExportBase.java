@@ -21,8 +21,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 01.07.2008
  * @version 1.0
  */
-public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TRANSFORM>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends CdmIoBase<STATE> implements ICdmExport<CONFIG, STATE>{
-	private static Logger logger = Logger.getLogger(CdmExportBase.class);
+public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TRANSFORM>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer>
+            extends CdmIoBase<STATE>
+            implements ICdmExport<CONFIG, STATE>{
+
+    private static Logger logger = Logger.getLogger(CdmExportBase.class);
 
     protected ByteArrayOutputStream exportStream;
 
@@ -39,5 +42,19 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
 	        return null;
 	    }
 	}
+
+	//TODO move up to CdmIoBase once ImportResult is also implemented
+    @Override
+    public ExportResult invoke(STATE state) {
+        if (isIgnore( state)){
+            logger.info("No invoke for " + ioName + " (ignored)");
+            return ExportResult.NewNoDataInstance();
+        }else{
+            updateProgress(state, "Invoking " + ioName);
+            state.setResult(ExportResult.NewInstance());
+            doInvoke(state);
+            return state.getResult();
+        }
+    }
 
 }

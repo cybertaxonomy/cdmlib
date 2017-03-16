@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -19,31 +19,34 @@ public class CdmDefaultExport<T extends IExportConfigurator> extends CdmDefaultI
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDefaultExport.class);
 
-	public boolean invoke(T config){
+	@Override
+    public ExportResult invoke(T config){
 		ICdmDataSource source = config.getSource();
 		return invoke(config, source);
 	}
-	
-	
+
+
 	/**
 	 * @param config
 	 * @param source
 	 * @return
 	 */
-	public boolean invoke(IExportConfigurator config, ICdmDataSource source) {
-		
+	public ExportResult invoke(IExportConfigurator config, ICdmDataSource source) {
+	    ExportResult result = ExportResult.NewInstance();
 		boolean createNew = false;
 		boolean omitTermLoading = false;
 		if (startApplicationController(config, source, omitTermLoading, createNew) == false){
-			return false;
+			String message = "Application conext could not be started";
+		    result.addError(message);
+		    return result;
 		}else{
-			CdmApplicationAwareDefaultExport<?> defaultExport = 
+			CdmApplicationAwareDefaultExport<?> defaultExport =
 				(CdmApplicationAwareDefaultExport<?>)getCdmAppController().getBean("defaultExport");
 			return defaultExport.invoke(config);
 		}
 	}
-	
-	
+
+
 
 
 }
