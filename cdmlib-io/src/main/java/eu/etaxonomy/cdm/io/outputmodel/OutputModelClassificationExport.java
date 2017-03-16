@@ -88,10 +88,7 @@ public class OutputModelClassificationExport
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
 
-
-        state.getProcessor().put(table, csvLine);
-
-
+        state.getProcessor().put(table, taxon, csvLine);
     }
 
     /**
@@ -136,7 +133,7 @@ public class OutputModelClassificationExport
        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, syn.getSec());
        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(syn.getSec());
 
-       state.getProcessor().put(table, csvLine);
+       state.getProcessor().put(table, syn, csvLine);
     }
 
     /**
@@ -165,7 +162,7 @@ public class OutputModelClassificationExport
         csvLine[table.getIndex(OutputModelTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
         //TBC
 
-        state.getProcessor().put(table, csvLine);
+        state.getProcessor().put(table, reference, csvLine);
 
     }
 

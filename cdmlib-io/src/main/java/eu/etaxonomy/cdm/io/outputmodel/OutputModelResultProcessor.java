@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.outputmodel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
 /**
@@ -21,8 +21,10 @@ import java.util.Map;
  */
 public class OutputModelResultProcessor {
 
-    Map<OutputModelTable, List<String[]>> result = new HashMap<>();
-    OutputModelExportState state;
+    private static final String HEADER = "HEADER_207dd23a-f877-4c27-b93a-8dbea3234281";
+
+    private Map<OutputModelTable, Map<String,String[]>> result = new HashMap<>();
+    private OutputModelExportState state;
 
 
     /**
@@ -38,15 +40,37 @@ public class OutputModelResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(OutputModelTable table, String[] csvLine) {
-        List<String[]> list = result.get(table);
-        if (list == null ){
-            list = new ArrayList<>();
+    public void put(OutputModelTable table, String id, String[] csvLine) {
+        Map<String,String[]> resultMap = result.get(table);
+        if (resultMap == null ){
+            resultMap = new HashMap<>();
             if (state.getConfig().isHasHeaderLines()){
-                list.add(table.getColumnNames());
+                resultMap.put(HEADER, table.getColumnNames());
             }
         }
-        list.add(csvLine);
+        String[] record = resultMap.get(id);
+        if (record == null){
+            record = csvLine;
+            resultMap.put(id, record);
+        }
     }
 
+    public boolean hasRecord(OutputModelTable table, String id){
+        Map<String, String[]> resultMap = result.get(table);
+        if (resultMap == null){
+            return false;
+        }else{
+            return resultMap.get(id) != null;
+        }
+    }
+
+
+    /**
+     * @param table
+     * @param taxon
+     * @param csvLine
+     */
+    public void put(OutputModelTable table, ICdmBase cdmBase, String[] csvLine) {
+       this.put(table, String.valueOf(cdmBase.getId()), csvLine);
+    }
 }
