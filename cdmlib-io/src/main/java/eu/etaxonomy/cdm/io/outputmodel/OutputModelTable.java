@@ -15,10 +15,10 @@ package eu.etaxonomy.cdm.io.outputmodel;
  * @date 15.03.2017
  */
 public enum OutputModelTable {
-    METADATA("Metadata",new String[]{}),
-    SCIENTIFIC_NAME("ScientificName", new String[]{}),
-    NAME_RELATIONSHIP("NameRelationship",new String[]{}),
-    HOMOTYPIC_GROUP("HomotypicGroup",new String[]{}),
+    METADATA("Metadata", metaDataColumns()),
+    SCIENTIFIC_NAME("ScientificName", nameColumns()),
+    NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
+    HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
     NOMENCLATURAL_AUTHOR("NomenclaturalAuthor", new String[]{}),
     NOMENCLATURAL_AUTHOR_TEAM_RELATION("NomenclaturalAuthorTeamRelation", new String[]{}),
     TYPE_DESIGNATION("TypeDesignation", new String[]{}),
@@ -71,21 +71,56 @@ public enum OutputModelTable {
     protected static final String ABBREV_TITLE = "AbbreviatedTitle";
     protected static final String FULL_TITLE = "FullTitle";
     protected static final String ABBREV_REF_AUTHOR = "AbbreviatedRefAuthor";
-//    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
-//
-//    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
-//    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
-//    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
-//    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
-//    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
+    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
+    protected static final String COLLATION = "Collation";
+    protected static final String VOLUME_ISSUE = "Volume_Issue";
+    protected static final String DETAIL = "Detail";
+    protected static final String YEAR_PUBLISHED = "YearPublished";
+    protected static final String TITLE_PAGE_YEAR = "TitlePageYear";
+    protected static final String PROTOLOGUE_URI = "ProtologueURI";
+    protected static final String NOM_STATUS = "NomenclaturalStatus";
+    protected static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
+    protected static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
+    protected static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
+    protected static final String TYPE_STRING = "TypeString";
+
+    //Name Relationship
+    protected static final String NAME1_FK = "Name1_FK";
+    protected static final String NAME2_FK = "Name2_FK";
+    protected static final String NAME_REL_TYPE = "NameRelationship_Type";
+
+    //CDM MetaData
+    protected static final String INSTANCE_ID = "EditInstance_ID";
+    protected static final String INSTANCE_NAME = "EditInstanceName";
+
+    //Homotypic Group
+    protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
+    protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
 
 
 
 
-
+    final static String[] homotypicGroupColumns(){
+        return new String[]{INSTANCE_ID, INSTANCE_NAME};
+    }
+    final static String[] metaDataColumns(){
+        return new String[]{INSTANCE_ID, INSTANCE_NAME};
+    }
+    final static String[] nameRelationColumns(){
+        return new String[]{NAME1_FK, NAME2_FK, NAME_REL_TYPE};
+    }
     final static String[] nameColumns(){
         return new String[]{NAME_ID, TROPICOS_ID, IPNI_ID, RANK, RANK_SEQUENCE,
-                };
+                FULL_NAME_WITH_AUTHORS, FULL_NAME_NO_AUTHORS, GENUS_UNINOMIAL,
+                INFRAGENERIC_RANK, INFRAGENERIC_EPITHET, SPECIFIC_EPITHET,
+                INFRASPECIFIC_RANK, INFRASPECIFIC_EPITHET,
+                BAS_EX_AUTHORTEAM_FK, BAS_AUTHORTEAM_FK, COMB_EX_AUTHORTEAM_FK, COMB_AUTHORTEAM_FK,
+                AUTHOR_TEAM_STRING, PUBLICATION_TYPE, ABBREV_TITLE, FULL_TITLE,
+                ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
+                DETAIL, YEAR_PUBLISHED, TITLE_PAGE_YEAR, PROTOLOGUE_URI,
+                NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
+                HOMOTYPIC_GROUP_SEQ, TYPE_STRING
+        };
     }
     final static String[] taxonColumns(){
         return new String[]{TAXON_ID, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
