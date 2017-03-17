@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author k.luther
@@ -20,26 +21,31 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  */
 public class OutputModelExportState extends ExportStateBase<OutputModelConfigurator, IExportTransformer>{
 
-    private ExportResult result = ExportResult.NewInstance();
+    private ExportResult result;
 
     private OutputModelResultProcessor processor = new OutputModelResultProcessor(this);
+
+    private TaxonBase actualTaxonBase;
 
     /**
      * @param config
      */
     protected OutputModelExportState(OutputModelConfigurator config) {
         super(config);
+        result = ExportResult.NewInstance(config.getResultType());
 
     }
 
     /**
      * @return the result
      */
+    @Override
     public ExportResult getResult() {return result;}
 
     /**
      * @param result the result to set
      */
+    @Override
     public void setResult(ExportResult result) {this.result = result;}
 
     /**
@@ -55,6 +61,10 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
     public OutputModelResultProcessor getProcessor() {
         return processor;
     }
+
+    public void setActualTaxonBase(TaxonBase actualTaxonBase){ this.actualTaxonBase = actualTaxonBase;}
+
+    public TaxonBase getActualTaxonBase() {return actualTaxonBase;}
 
 
 
