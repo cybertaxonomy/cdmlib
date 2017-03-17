@@ -46,6 +46,8 @@ public interface IExportConfigurator<STATE extends ExportStateBase, TRANSFORM ex
 
     public Class<ICdmIO>[] getIoClassList();
 
+
+
     /**
      * The CDM data source for the export
      * Don't use when using a spring data source
@@ -65,6 +67,8 @@ public interface IExportConfigurator<STATE extends ExportStateBase, TRANSFORM ex
     public TRANSFORM getTransformer();
 
     public void setTransformer(TRANSFORM transformer);
+
+    public ExportResultType getResultType();
 
 
 }

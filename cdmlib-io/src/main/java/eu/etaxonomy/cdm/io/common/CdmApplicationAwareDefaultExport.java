@@ -76,7 +76,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 
 	@Override
     public ExportResult invoke(IExportConfigurator config){
-	    ExportResult result = ExportResult.NewInstance();
+	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 		if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
 		    boolean success =  doCheck(config);
 		    if (! success){
@@ -101,7 +101,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 
 
     public ExportResult execute(IExportConfigurator config) {
-	    ExportResult result = ExportResult.NewInstance();
+	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 	    if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
 	        boolean success =  doCheck(config);
             if (! success){
@@ -190,7 +190,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 	 * Executes the whole
 	 */
 	protected <CONFIG extends IExportConfigurator>  ExportResult doExport(CONFIG config){
-	    ExportResult result = ExportResult.NewInstance();
+	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 		//validate
 		if (config == null){
 			logger.warn("Configuration is null");

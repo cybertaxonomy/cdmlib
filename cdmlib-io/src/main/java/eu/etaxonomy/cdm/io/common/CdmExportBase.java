@@ -48,10 +48,10 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
     public ExportResult invoke(STATE state) {
         if (isIgnore( state)){
             logger.info("No invoke for " + ioName + " (ignored)");
-            return ExportResult.NewNoDataInstance();
+            return ExportResult.NewNoDataInstance(((IExportConfigurator)state.config).getResultType());
         }else{
             updateProgress(state, "Invoking " + ioName);
-            state.setResult(ExportResult.NewInstance());
+            state.setResult(ExportResult.NewInstance(((IExportConfigurator)state.config).getResultType()));
             doInvoke(state);
             return state.getResult();
         }

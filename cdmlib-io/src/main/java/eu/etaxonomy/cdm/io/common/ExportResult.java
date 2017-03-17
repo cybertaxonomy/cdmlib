@@ -24,7 +24,7 @@ public class ExportResult implements Serializable {
 
     private ExportResultState state;
 
-    private List<byte[]> data = new ArrayList<>();  //resulting files
+    private ExportDataWrapper data ;  //resulting files
 
     private List<byte[]> errors = new ArrayList<>();
     private List<byte[]> warnings = new ArrayList<>();
@@ -33,12 +33,12 @@ public class ExportResult implements Serializable {
 
 // **************************** FACTORY ****************************************/
 
-    public static ExportResult NewInstance(){
-        return new ExportResult();
+    public static ExportResult NewInstance(ExportResultType type){
+        return new ExportResult(type);
     }
 
-    public static ExportResult NewNoDataInstance(){
-        ExportResult result = new ExportResult();
+    public static ExportResult NewNoDataInstance(ExportResultType type){
+        ExportResult result = new ExportResult(type);
         result.state = ExportResultState.SUCCESS_BUT_NO_DATA;
         return result;
     }
@@ -46,9 +46,13 @@ public class ExportResult implements Serializable {
 
 // *********************** CONSTRUCTOR *****************************************/
 
-    private ExportResult() {
+    private ExportResult(ExportResultType type) {
         state = ExportResultState.SUCCESS;
-        data = new ArrayList<>();
+        if (type.equals(ExportResultType.BYTE_ARRAY)){
+            data = ExportDataWrapper.NewByteArrayInstance();
+        }else if (type.equals(ExportResultType.LIST_BYTE_ARRAY)){
+            data = ExportDataWrapper.NewListByteArrayInstance();
+        }
     }
 
     public enum ExportResultState{
@@ -73,10 +77,10 @@ public class ExportResult implements Serializable {
 
 
 
-    public List<byte[]> getExportData() {return data;}
-    public void setExportData(List<byte[]> data) {this.data = data;}
+    public ExportDataWrapper getExportData() {return data;}
+    public void setExportData(ExportDataWrapper data) {this.data = data;}
     public void addExportData(byte[] exportData) {
-        data.add(exportData);
+        data.addExportData(exportData);
     }
 
     public List<byte[]> getErrors() {return errors;}

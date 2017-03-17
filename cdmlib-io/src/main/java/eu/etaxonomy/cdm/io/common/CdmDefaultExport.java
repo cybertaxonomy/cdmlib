@@ -32,7 +32,7 @@ public class CdmDefaultExport<T extends IExportConfigurator> extends CdmDefaultI
 	 * @return
 	 */
 	public ExportResult invoke(IExportConfigurator config, ICdmDataSource source) {
-	    ExportResult result = ExportResult.NewInstance();
+	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 		boolean createNew = false;
 		boolean omitTermLoading = false;
 		if (startApplicationController(config, source, omitTermLoading, createNew) == false){

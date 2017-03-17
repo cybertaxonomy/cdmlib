@@ -34,6 +34,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	protected IDatabase sourceReference;
 	protected Class<ICdmIO>[] ioClassList;
 
+	protected ExportResultType resultType;
 	/**
 	 * The transformer class to be used for Input
 	 */
@@ -206,5 +207,9 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 			return this.getSource().getName();
 		}
 	}
+
+	@Override
+	public ExportResultType getResultType(){return resultType;}
+
 
 }

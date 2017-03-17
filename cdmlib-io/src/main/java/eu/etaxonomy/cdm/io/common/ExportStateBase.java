@@ -22,7 +22,7 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?,?,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportStateBase.class);
 
-	private ExportResult result = ExportResult.NewInstance();
+	private ExportResult result;
 
 	protected ExportStateBase(CONFIG config){
 		this.config = config;
