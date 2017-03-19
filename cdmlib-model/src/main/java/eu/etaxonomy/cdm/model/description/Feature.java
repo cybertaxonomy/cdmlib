@@ -190,6 +190,7 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidSystematics = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
     private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
     private static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
+    public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
 
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
@@ -656,13 +657,13 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 		String text = csvLine.get(4);
 		if (text != null && text.length() >= 6){
-			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);};
-			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);};
-			if ("1".equals(text.substring(2, 3))){newInstance.setSupportsDistribution(true);};
-			if ("1".equals(text.substring(3, 4))){newInstance.setSupportsIndividualAssociation(true);};
-			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);};
-			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);};
-			// if ("1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);};
+			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}
+			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);}
+			if ("1".equals(text.substring(2, 3))){newInstance.setSupportsDistribution(true);}
+			if ("1".equals(text.substring(3, 4))){newInstance.setSupportsIndividualAssociation(true);}
+			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);}
+			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);}
+			if (text.length() > 6 && "1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);}
 			//there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
 			newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
 		}
@@ -997,6 +998,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature SYSTEMATICS(){
 		return getTermByUuid(uuidSystematics);
 	}
+
+	public static final Feature LIFEFORM(){
+        return getTermByUuid(uuidLifeform);
+    }
 
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
