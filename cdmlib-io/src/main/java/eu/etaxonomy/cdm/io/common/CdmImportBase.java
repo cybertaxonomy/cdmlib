@@ -619,9 +619,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 				voc.addTerm(stateTerm);
 				getTermService().save(stateTerm);
-			}else{
-				logger.warn("No label provided for new state with uuid " + uuid);
-			}
+			}else if (stateTerm == null){
+                logger.warn("No label provided for new state with uuid " + uuid);
+            }
 			importState.putStateTerm(stateTerm);
 		}
 		return stateTerm;

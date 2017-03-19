@@ -93,6 +93,15 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
         return new CategoricalData();
     }
 
+
+    /**
+     * @param habitat
+     * @return
+     */
+    public static CategoricalData NewInstance(Feature feature) {
+        return new CategoricalData( new ArrayList<>() , feature);
+    }
+
     /**
      * Creates a new empty categorical data instance.
      */
@@ -265,5 +274,6 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
             return null;
         }
     }
+
 
 }
