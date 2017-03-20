@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,18 +33,21 @@ public class ExportDataWrapper<T> implements Serializable{
     public static final ExportDataWrapper<List<byte[]>> NewListByteArrayInstance(){
         ExportDataWrapper<List<byte[]>> result = new ExportDataWrapper<>();
         result.type = ExportResultType.LIST_BYTE_ARRAY;
+        result.exportData = new ArrayList<byte[]>();
         return result;
     }
 
     public static final ExportDataWrapper<Map<String,byte[]>> NewMapByteArrayInstance(){
         ExportDataWrapper<Map<String, byte[]>> result = new ExportDataWrapper<>();
         result.type = ExportResultType.MAP_BYTE_ARRAY;
+        result.exportData = new HashMap<String, byte[]>();
         return result;
     }
 
     public static final ExportDataWrapper<byte[]> NewByteArrayInstance(){
         ExportDataWrapper<byte[]> result = new ExportDataWrapper<>();
         result.type = ExportResultType.BYTE_ARRAY;
+
         return result;
     }
 

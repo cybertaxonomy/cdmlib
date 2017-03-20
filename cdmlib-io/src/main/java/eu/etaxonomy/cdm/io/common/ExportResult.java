@@ -47,6 +47,9 @@ public class ExportResult implements Serializable {
 // *********************** CONSTRUCTOR *****************************************/
 
     private ExportResult(ExportResultType type) {
+        if (type == null){
+            type = ExportResultType.LIST_BYTE_ARRAY;
+        }
         state = ExportResultState.SUCCESS;
         if (type.equals(ExportResultType.BYTE_ARRAY)){
             data = ExportDataWrapper.NewByteArrayInstance();
