@@ -155,7 +155,17 @@ public class CsvNameExport extends CsvNameExportBase {
         propertyPaths.add("childNodes");
         txStatus = startTransaction();
         Classification classification = getClassificationService().load(state.getConfig().getClassificationUUID());
-        TaxonNode rootNode = classification.getRootNode();
+        TaxonNode rootNode;
+        if (classification != null){
+            rootNode = classification.getRootNode();
+        }else{
+            List<Classification> classifications = getClassificationService().list(Classification.class, 10, 0, null, null);
+            if (classifications.isEmpty()){
+                return null;
+            }
+            classification = classifications.get(0);
+            rootNode = classification.getRootNode();
+        }
         rootNode = getTaxonNodeService().load(rootNode.getUuid(), propertyPaths);
         Set<UUID> childrenUuids = new HashSet<UUID>();
 
@@ -206,14 +216,17 @@ public class CsvNameExport extends CsvNameExportBase {
             familyNode.removeNullValueFromChildren();
             for (TaxonNode child: familyNode.getChildNodes()){
                 child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
-                name = HibernateProxyHelper.deproxy(child.getTaxon().getName(), TaxonNameBase.class);
-                if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
-                    childrenUuids.add(child.getUuid());
-                    if (child.hasChildNodes()){
+                Taxon taxon = HibernateProxyHelper.deproxy(child.getTaxon());
+                if (taxon != null){
+                    name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
+                    if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
+                        childrenUuids.add(child.getUuid());
+                        if (child.hasChildNodes()){
+                            parentsNodesUUID.add(child.getUuid());
+                        }
+                    }else{
                         parentsNodesUUID.add(child.getUuid());
                     }
-                }else{
-                    parentsNodesUUID.add(child.getUuid());
                 }
             }
             //refreshTransaction();
