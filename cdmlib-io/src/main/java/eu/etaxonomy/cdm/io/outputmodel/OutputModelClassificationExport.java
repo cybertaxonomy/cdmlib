@@ -8,10 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.outputmodel;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -28,6 +32,10 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroupNameComparator;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -160,6 +168,8 @@ public class OutputModelClassificationExport
         String[] csvLine = new String[table.getSize()];
 
         csvLine[table.getIndex(OutputModelTable.NAME_ID)] = getId(state, name);
+        csvLine[table.getIndex(OutputModelTable.LSID)] = name.getLsid().getLsid();
+
         csvLine[table.getIndex(OutputModelTable.RANK)] = getTitleCache(rank);
         csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = String.valueOf(rank.getOrderIndex());
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = getTropicosTitleCache(name);
@@ -227,6 +237,27 @@ public class OutputModelClassificationExport
         }else{
             csvLine[table.getIndex(OutputModelTable.PROTOLOGUE_URI)] = "";
         }
+        if (name.getStatus() != null || name.getStatus().isEmpty()){
+            csvLine[table.getIndex(OutputModelTable.NOM_STATUS)] = "";
+            csvLine[table.getIndex(OutputModelTable.NOM_STATUS_ABBREV)] = "";
+        }else{
+
+            String statusStringAbbrev = extractStatusString(name, true);
+            String statusString = extractStatusString(name, false);
+
+            csvLine[table.getIndex(OutputModelTable.NOM_STATUS)] = statusString.trim();
+            csvLine[table.getIndex(OutputModelTable.NOM_STATUS_ABBREV)] = statusStringAbbrev.trim();
+        }
+
+        HomotypicalGroup group =name.getHomotypicalGroup();
+
+        if (state.getHomotypicalGroupFromStore(group.getId()) == null){
+            handleHomotypicalGroup(state, group);
+        }
+        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = String.valueOf(group.getId());
+        //csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = String.valueOf(group.getTypifiedNames());
+        state.getProcessor().put(table, name, csvLine);
+
 
         state.getProcessor().put(table, name, csvLine);
 /*
@@ -245,15 +276,71 @@ Detail
 DatePublished
 YearPublished
 TitlePageYear
-ProtologueURI
-NomenclaturalStatus
-NomenclaturalStatusAbbreviation
-HomotypicGroup_Fk
+
+
+
 HomotypicGroupSequenceNumber
-TypeString
+
 
  *
  */
+    }
+
+    /**
+     * @param name
+     * @param statusString
+     * @return
+     */
+    private String extractStatusString(TaxonNameBase name, boolean abbrev) {
+        Set<NomenclaturalStatus> status = name.getStatus();
+        String statusString = "";
+        for (NomenclaturalStatus nameStatus: status){
+            if (abbrev){
+                statusString += nameStatus.getType().getIdInVocabulary();
+            }else{
+                statusString += nameStatus.getType().getTitleCache();
+            }
+            if (!abbrev){
+                if (!StringUtils.isBlank(nameStatus.getRuleConsidered())){
+                    statusString += " " + nameStatus.getRuleConsidered();
+                }
+                if (nameStatus.getCitation() != null){
+                    statusString += " " + nameStatus.getCitation().getTitleCache();
+                }
+                if (!StringUtils.isBlank(nameStatus.getCitationMicroReference())){
+                    statusString += " " + nameStatus.getCitationMicroReference();
+                }
+            }
+            statusString += " ";
+        }
+        return statusString;
+    }
+
+    /**
+     * @param group
+     */
+    private void handleHomotypicalGroup(OutputModelExportState state, HomotypicalGroup group) {
+        state.addHomotypicalGroupToStore(group);
+        OutputModelTable table = OutputModelTable.HOMOTYPIC_GROUP;
+        String[] csvLine = new String[table.getSize()];
+
+        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_ID)] = String.valueOf(group.getId());
+        List<TaxonNameBase> typifiedNames = new ArrayList<>();
+        typifiedNames.addAll(group.getTypifiedNames());
+        Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(null, true));
+        String typifiedNamesString = "";
+        for (TaxonNameBase name: typifiedNames){
+            //Concatenated output string for homotypic group (names and citations) + status + some name relations (e.g. “non”)
+//TODO: nameRelations, which and how to display
+            typifiedNamesString = name.getTitleCache() + " " + extractStatusString(name, true) + " ";
+        }
+        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_SEQ)] = typifiedNamesString.trim();
+
+        Set<NameTypeDesignation> typeDesigantions = group.getNameTypeDesignations();
+        for (NameTypeDesignation typeDesignation: typeDesigantions){
+            //TODO...
+        }
+
     }
 
     /**

@@ -8,10 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.outputmodel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -27,13 +31,15 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
 
     private TaxonBase actualTaxonBase;
 
+    private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<Integer, HomotypicalGroup>();
+
+
     /**
      * @param config
      */
     protected OutputModelExportState(OutputModelConfigurator config) {
         super(config);
         result = ExportResult.NewInstance(config.getResultType());
-
     }
 
     /**
@@ -65,6 +71,24 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
     public void setActualTaxonBase(TaxonBase actualTaxonBase){ this.actualTaxonBase = actualTaxonBase;}
 
     public TaxonBase getActualTaxonBase() {return actualTaxonBase;}
+
+    /**
+     * @return the homotypicalGroupStore
+     */
+    public Map<Integer, HomotypicalGroup> getHomotypicalGroupStore() {
+        return homotypicalGroupStore;
+    }
+
+    /**
+     * @param homotypicalGroupStore the homotypicalGroupStore to set
+     */
+    public void addHomotypicalGroupToStore(HomotypicalGroup homotypicalGroup) {
+        this.homotypicalGroupStore.put(homotypicalGroup.getId(), homotypicalGroup);
+    }
+
+    public HomotypicalGroup getHomotypicalGroupFromStore(Integer id){
+        return homotypicalGroupStore.get(id);
+    }
 
 
 

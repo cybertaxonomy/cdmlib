@@ -52,6 +52,7 @@ public enum OutputModelTable {
     protected static final String NAME_ID = "Name_ID";
     protected static final String TROPICOS_ID = "Tropicos_ID";
     protected static final String IPNI_ID = "IPNI_ID";
+    protected static final String LSID = "LSID";
     protected static final String RANK = "Rank";
     protected static final String RANK_SEQUENCE = "Name_ID";
     protected static final String FULL_NAME_WITH_AUTHORS = "FullNameWithAuthors";
