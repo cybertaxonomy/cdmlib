@@ -38,6 +38,9 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  *
@@ -85,6 +88,38 @@ public class WorkingSet extends AnnotatableEntity {
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
+
+	@XmlElementWrapper(name = "TaxonNodes")
+	@XmlElement(name = "TaxonNode")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@NotNull
+	private Set<TaxonNode> taxonNodes = new HashSet<>();
+
+	@XmlElementWrapper(name = "Areas")
+	@XmlElement(name = "Area")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@NotNull
+	private Set<NamedArea> areas = new HashSet<>();
+
+	@XmlElement(name = "MinRank")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	private Rank minRank;
+
+	@XmlElement(name = "MaxRank")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	private Rank maxRank;
 
 	/**
 	 * Class constructor: creates a new empty working set instance.
@@ -261,9 +296,67 @@ public class WorkingSet extends AnnotatableEntity {
 		return result;
 	}
 
+	/**
+     * @return the nodes
+     */
+    public Set<TaxonNode> getTaxonNodes() {
+        return taxonNodes;
+    }
+
+    public boolean addTaxonNode(TaxonNode taxonNode){
+        return taxonNodes.add(taxonNode);
+    }
+
+    public boolean removeTaxonNode(TaxonNode taxonNode){
+        return taxonNodes.remove(taxonNode);
+    }
+
+    /**
+     * @return the areas
+     */
+    public Set<NamedArea> getAreas() {
+        return areas;
+    }
+
+    public boolean addArea(NamedArea area){
+        return areas.add(area);
+    }
+
+    public boolean removeArea(NamedArea area){
+        return areas.remove(area);
+    }
+
+    /**
+     * @return the minRank
+     */
+    public Rank getMinRank() {
+        return minRank;
+    }
+
+    /**
+     * @param minRank the minRank to set
+     */
+    public void setMinRank(Rank minRank) {
+        this.minRank = minRank;
+    }
+
+    /**
+     * @return the maxRank
+     */
+    public Rank getMaxRank() {
+        return maxRank;
+    }
+
+    /**
+     * @param maxRank the maxRank to set
+     */
+    public void setMaxRank(Rank maxRank) {
+        this.maxRank = maxRank;
+    }
+
 	//*********************** CLONE ********************************************************/
 
-	/**
+    /**
 	 * Clones <i>this</i> WorkingSet. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> WorkingSet by
 	 * modifying only some of the attributes.
@@ -278,8 +371,8 @@ public class WorkingSet extends AnnotatableEntity {
 		WorkingSet result;
 		try {
 			result = (WorkingSet)super.clone();
-			result.descriptions = new HashSet<DescriptionBase>();
 
+			result.descriptions = new HashSet<DescriptionBase>();
 			for (DescriptionBase desc: this.descriptions){
 				result.addDescription(desc);
 			}
@@ -288,6 +381,15 @@ public class WorkingSet extends AnnotatableEntity {
 			for (Representation rep : this.representations){
 				result.addRepresentation((Representation)rep.clone());
 			}
+
+			result.taxonNodes = new HashSet<>();
+			this.taxonNodes.forEach((TaxonNode taxonNode) -> result.addTaxonNode(taxonNode));
+
+			result.areas = new HashSet<>();
+			this.areas.forEach((NamedArea area) -> result.addArea(area));
+
+			result.minRank = this.minRank;
+			result.maxRank = this.maxRank;
 
 			return result;
 		}catch (CloneNotSupportedException e) {
