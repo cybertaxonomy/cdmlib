@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -38,6 +39,9 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  *
@@ -47,7 +51,6 @@ import eu.etaxonomy.cdm.model.common.Representation;
  *
  * @author h.fradin
  * @created 12.08.2009
- * @version 1.0
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -68,7 +71,7 @@ public class WorkingSet extends AnnotatableEntity {
 	@XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
-	private Set<Representation> representations = new HashSet<Representation>();
+	private Set<Representation> representations = new HashSet<>();
 
 	@XmlElement(name = "DescriptiveSystem")
 	@XmlIDREF
@@ -84,8 +87,53 @@ public class WorkingSet extends AnnotatableEntity {
     @ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@NotNull
-	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
+	private Set<DescriptionBase> descriptions = new HashSet<>();
 
+    @XmlElementWrapper(name = "SubtreeTaxonFilter")
+    @XmlElement(name = "Subtree")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @NotNull
+    //a positive filter that defines that all taxa in the subtree belong to
+    //the dataset. If the filter is NOT set, taxa need to be explicitly defined
+    //via the descriptions set. If the filter is set all taxa not having
+    //a description in descriptions yet are considered to have an empty description
+    //TODO what, if a taxon is removed from the subtree but a description exists in
+    //descriptions
+    private Set<TaxonNode> taxonSubtreeFilter = new HashSet<>();
+
+    @XmlElementWrapper(name = "GeoFilter")
+    @XmlElement(name = "FilteredArea")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @JoinTable(name="WorkingSet_NamedArea")
+    @NotNull
+    private Set<NamedArea> geoFilter = new HashSet<>();
+
+    @XmlElement(name = "minRank")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Rank minRank;
+
+    @XmlElement(name = "maxRank")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Rank maxRank;
+
+// ******************* FACTORY *********************************************/
+
+	public static WorkingSet NewInstance(){
+        return new WorkingSet();
+    }
+
+
+// *******************CONSTRUCTOR **********************************/
 	/**
 	 * Class constructor: creates a new empty working set instance.
 	 */
@@ -93,21 +141,63 @@ public class WorkingSet extends AnnotatableEntity {
 		super();
 	}
 
-	/**
-	 * Creates a new empty working set instance.
-	 */
-	public static WorkingSet NewInstance(){
-		return new WorkingSet();
-	}
+// ******************** GETTER / SETTER ************************/
 
+
+	public Set<TaxonNode> getTaxonSubtreeFilter() {
+        return taxonSubtreeFilter;
+    }
+
+	//make public if needed
+    private void setTaxonSubtreeFilter(Set<TaxonNode> taxonSubtreeFilter) {
+        this.taxonSubtreeFilter = taxonSubtreeFilter;
+    }
+
+    public void  addTaxonSubtree(TaxonNode subtree) {
+        this.taxonSubtreeFilter.add(subtree);
+    }
+
+    public void  removeTaxonSubtree(TaxonNode subtree) {
+        this.taxonSubtreeFilter.remove(subtree);
+    }
+
+    //geo filter
+    public Set<NamedArea> getGeoFilter() {
+        return geoFilter;
+    }
+    public void setGeoFilter(Set<NamedArea> geoFilter) {
+        this.geoFilter = geoFilter;
+    }
+    public void addGeoFilterArea(NamedArea area){
+        this.geoFilter.add(area);
+    }
+    public boolean removeGeoFilterArea(NamedArea area) {
+        return this.geoFilter.remove(area);
+    }
+
+    //min rank
+    public Rank getMinRank() {
+        return minRank;
+    }
+    public void setMinRank(Rank minRank) {
+        this.minRank = minRank;
+    }
+
+    //max rank
+    public Rank getMaxRank() {
+        return maxRank;
+    }
+    public void setMaxRank(Rank maxRank) {
+        this.maxRank = maxRank;
+    }
+
+    //representations
 	public Set<Representation> getRepresentations() {
 		return this.representations;
 	}
-
 	public void addRepresentation(Representation representation) {
 		this.representations.add(representation);
 	}
-
 	public void removeRepresentation(Representation representation) {
 		this.representations.remove(representation);
 	}
@@ -278,16 +368,30 @@ public class WorkingSet extends AnnotatableEntity {
 		WorkingSet result;
 		try {
 			result = (WorkingSet)super.clone();
-			result.descriptions = new HashSet<DescriptionBase>();
 
-			for (DescriptionBase desc: this.descriptions){
+			//descriptions
+			result.descriptions = new HashSet<>();
+			for (DescriptionBase<?> desc: this.descriptions){
 				result.addDescription(desc);
 			}
 
-			result.representations = new HashSet<Representation>();
+			//representations
+			result.representations = new HashSet<>();
 			for (Representation rep : this.representations){
 				result.addRepresentation((Representation)rep.clone());
 			}
+
+			//subtree filter
+            result.taxonSubtreeFilter = new HashSet<>();
+            for (TaxonNode subtree : this.taxonSubtreeFilter){
+                result.addTaxonSubtree(subtree);
+            }
+
+            //geo filter
+            result.geoFilter = new HashSet<>();
+            for (NamedArea area : this.geoFilter){
+                result.addGeoFilterArea(area);
+            }
 
 			return result;
 		}catch (CloneNotSupportedException e) {

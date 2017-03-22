@@ -17,10 +17,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.IndexAdder;
-import eu.etaxonomy.cdm.database.update.LanguageStringTableCreator;
+import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.v40_41.NomenclaturalCodeUpdater;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
 /**
@@ -60,46 +58,43 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
-
-        //#3658 update nomenclatural code
-        NomenclaturalCodeUpdater.NewInstance(stepList);
-
-        //#5970
-        //Implement allowOverride in CdmPreference
-        stepName = "Add allowOverride in CdmPreference";
-        tableName = "CdmPreference";
-        newColumnName = "allowOverride";
-        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, ! INCLUDE_AUDIT, false);
+		//#6529
+		//Extend WorkingSet to allow a more fine grained definiton of taxon set
+		//min rank
+        stepName = "Add minRank column";
+        tableName = "WorkingSet";
+        newColumnName = "minRank_id";
+        String referencedTable = "DefinedTermBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
-        //#5875
-        //Implement isDefault to DescriptionBase
-        stepName = "Add isDefault in DescriptionBase";
-        tableName = "DescriptionBase";
-        newColumnName = "isDefault";
-        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        //max rank
+        stepName = "Add maxRank column";
+        tableName = "WorkingSet";
+        newColumnName = "maxRank_id";
+        referencedTable = "DefinedTermBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
-
-        //index
-        stepName = "Add identityCache index";
-        tableName = "SpecimenOrObservationBase";
-        newColumnName = "identityCache";
-        step = IndexAdder.NewInstance(stepName, tableName, newColumnName, null);
+        //subtree filter
+        stepName= "Add geo filter MN table to WorkingSet";
+        String firstTableName = "WorkingSet";
+        String secondTableName = "DefinedTermBase";
+        String secondTableAlias = "NamedArea";
+        boolean hasSortIndex = false;
+        boolean secondTableInKey = true;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, SchemaUpdaterBase.INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
         stepList.add(step);
 
-        stepName = "Add protectedIdentityCache";
-        tableName = "SpecimenOrObservationBase";
-        newColumnName = "protectedIdentityCache";
-        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        //subtree filter
+        stepName= "Add subtree filter MN table to WorkingSet";
+        firstTableName = "WorkingSet";
+        secondTableName = "TaxonNode";
+        hasSortIndex = false;
+        secondTableInKey = true;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, SchemaUpdaterBase.INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
         stepList.add(step);
 
-        //#5634 Add excluded note
-        stepName = "Add excluded note";
-        tableName = "TaxonNode";
-        String attributeName = "excludedNote";
-        step = LanguageStringTableCreator.NewLanguageStringInstance(stepName, tableName, attributeName, INCLUDE_AUDIT);
-        stepList.add(step);
 
         return stepList;
     }
