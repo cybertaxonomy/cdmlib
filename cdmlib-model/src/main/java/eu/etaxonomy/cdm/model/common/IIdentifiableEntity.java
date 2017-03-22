@@ -20,8 +20,29 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void setLsid(LSID lsid);
 
+    /**
+     * Returns a title cache String created by the according cache strategy
+     * with the given identifiable entity WITHOUT setting the titleCache
+     * of <code>this</code> object.
+     * This method is meant for internal use and usually not needed for
+     * external use. Use {@link #getTitleCache()} instead.
+     *
+     * @see #getTitleCache()
+     * @return the computed title cache string
+     */
     public String generateTitle();
 
+    /**
+     * Returns the title cache. If the title cache does not
+     * exist yet or if a refresh is required the title cache is
+     * recomputed and stored in the entity.<BR>
+     * It is currently up to the implementing classes
+     * if the cache is recomputed each time or only if the entity
+     * has changed.
+     *
+     * @see #generateTitle()
+     * @return the titleCache
+     */
     public String getTitleCache();
 
     /**
