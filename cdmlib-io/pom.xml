@@ -71,7 +71,7 @@
       <groupId>identificationKeyAPI</groupId>
       <artifactId>identificationKeyAPI</artifactId>
     </dependency>
-		<dependency>
+    <dependency>
  		<groupId>org.apache.jena</groupId>
  		<artifactId>jena-tdb</artifactId>	
 	</dependency>
