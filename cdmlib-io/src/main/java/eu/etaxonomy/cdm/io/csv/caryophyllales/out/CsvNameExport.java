@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -70,6 +71,7 @@ public class CsvNameExport extends CsvNameExportBase {
     public CsvNameExport() {
         super();
         this.ioName = this.getClass().getSimpleName();
+        this.exportData = ExportDataWrapper.NewByteArrayInstance();
 
     }
 
@@ -109,7 +111,7 @@ public class CsvNameExport extends CsvNameExportBase {
             } else {
                 result = getRecordsForPrintPub(state);
             }
-            NameRecord nameRecord;
+            CsvRecord nameRecord;
             int count = 0;
             boolean isFirst = true;
             for (HashMap<String,String> record:result){
@@ -117,9 +119,12 @@ public class CsvNameExport extends CsvNameExportBase {
                     isFirst = false;
                 }
                 count++;
-                nameRecord = new NameRecord(record, isFirst);
+                nameRecord = new CsvRecord(record, isFirst);
                 nameRecord.print(writer, config);
 
+            }
+            if (exportStream != null){
+                this.exportData.addExportData(exportStream.toByteArray());
             }
             writer.flush();
 
@@ -750,6 +755,8 @@ public class CsvNameExport extends CsvNameExportBase {
         }
 
     }
+
+
 
 
 }

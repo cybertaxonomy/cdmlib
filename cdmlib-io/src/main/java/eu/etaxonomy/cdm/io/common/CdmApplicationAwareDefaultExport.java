@@ -216,7 +216,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 				if (cdmIo != null){
 					//result &= cdmIo.invoke(config, stores);
 					state.setCurrentIO(cdmIo);
-					result.merge(cdmIo.invoke(state));
+					result = cdmIo.invoke(state);
 					if (config.getTarget().equals(TARGET.EXPORT_DATA)){
 					    result.addExportData(cdmIo.getByteArray());
 					}

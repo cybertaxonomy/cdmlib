@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,6 +13,8 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 
 /**
  * @author a.mueller
@@ -28,6 +30,7 @@ public class DwcaZipExport extends DwcaExportBase {
 	public DwcaZipExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves the MetaData for a Darwin Core Archive File.
@@ -45,22 +48,22 @@ public class DwcaZipExport extends DwcaExportBase {
 			}
 		}
 //		DwcaTaxExportConfigurator config = state.getConfig();
-//	    
+//
 //		String zipFileName = "dwca.zip";
 //	    String filePath = config.getDestinationNameString();
 //		String zipFullFileName = filePath + File.separatorChar + zipFileName;
-//		
+//
 //		ZipOutputStream zos  = null;
 //		try {
 //		  	zos  = new ZipOutputStream( new FileOutputStream(zipFullFileName) ) ;
-//			 
+//
 //		    for (DwcaMetaDataRecord record : state.getMetaRecords()){
 //		    	try {
 //					String fileLocation = record.getFileLocation();
 //					File file = new File(filePath + File.separatorChar + fileLocation);
 //					ZipEntry newEntry = new ZipEntry(fileLocation);
 //					zos.putNextEntry(newEntry);
-// 
+//
 //					BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 //					while (bis.available() > 0) {
 //					    zos.write(bis.read());
@@ -74,15 +77,15 @@ public class DwcaZipExport extends DwcaExportBase {
 //					throw new IOException(e);
 //				}
 //		   	 }
-//		  	
+//
 //	        zos.finish();
 //	        zos.close();
-//		 
+//
 //		} catch (IOException e) {
 //			try {
 //		       if(zos!=null) zos.close();
 //		    } catch(Exception ex){
-//		    	
+//
 //		    }
 //			e.printStackTrace();
 //		    //TODO finally is not called anymore
@@ -91,11 +94,11 @@ public class DwcaZipExport extends DwcaExportBase {
 //		    try {
 //		       if(zos!=null) zos.close();
 //		    } catch(Exception ex){
-//		    	
+//
 //		    }
 //		 }
-	 
-		
+
+
 		return;
 	}
 
@@ -116,5 +119,6 @@ public class DwcaZipExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.isZip();
 	}
-	
+
+
 }

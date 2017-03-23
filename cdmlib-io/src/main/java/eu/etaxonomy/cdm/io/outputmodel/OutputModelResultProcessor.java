@@ -8,9 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.outputmodel;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -47,11 +51,15 @@ public class OutputModelResultProcessor {
             if (state.getConfig().isHasHeaderLines()){
                 resultMap.put(HEADER, table.getColumnNames());
             }
+            result.put(table, resultMap);
         }
         String[] record = resultMap.get(id);
         if (record == null){
             record = csvLine;
-            resultMap.put(id, record);
+            String[] oldRecord = resultMap.put(id, record);
+            if (oldRecord != null){
+                System.out.println("This should not happen");
+            }
         }
     }
 
@@ -72,5 +80,70 @@ public class OutputModelResultProcessor {
      */
     public void put(OutputModelTable table, ICdmBase cdmBase, String[] csvLine) {
        this.put(table, String.valueOf(cdmBase.getId()), csvLine);
+    }
+
+
+    /**
+     * @return
+     */
+    public void createFinalResult() {
+        String strToPrint ="";
+        ExportResult finalResult = ExportResult.NewInstance(ExportResultType.MAP_BYTE_ARRAY);
+
+        if (!result.isEmpty() ){
+            //Replace quotes by double quotes
+            String value ;
+            for (OutputModelTable table: result.keySet()){
+                //schreibe jede Tabelle in einen Stream...
+                Map<String, String[]> tableData = result.get(table);
+                OutputModelConfigurator config = state.getConfig();
+                ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
+                PrintWriter writer = null;
+                writer = new PrintWriter(exportStream);
+                String[] csvHeaderLine = tableData.get(HEADER);
+                String lineString = createCsvLine(config, csvHeaderLine);
+                writer.println(lineString);
+
+                for (String key: tableData.keySet()){
+                    if (!key.equals(HEADER)){
+                        String[] csvLine = tableData.get(key);
+                        lineString = createCsvLine(config, csvLine);
+                        writer.println(lineString);
+                    }
+                }
+                writer.flush();
+
+                writer.close();
+                finalResult.addExportData(table.getTableName(), exportStream.toByteArray());
+
+            }
+        }
+
+
+        state.setResult(finalResult);
+    }
+
+
+    /**
+     * @param config
+     * @param csvLine
+     * @return
+     */
+    private String createCsvLine(OutputModelConfigurator config, String[] csvLine) {
+        String lineString = "";
+
+        for (String columnEntry: csvLine){
+            if (columnEntry == null){
+                columnEntry = "";
+            }
+            columnEntry = columnEntry.replace("\"", "\"\"");
+            columnEntry = columnEntry.replace(config.getLinesTerminatedBy(), "\\r");
+            //replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
+            columnEntry = columnEntry.replace("\r\n", "\\r");
+            columnEntry = columnEntry.replace("\r", "\\r");
+            columnEntry = columnEntry.replace("\n", "\\r");
+            lineString += config.getFieldsEnclosedBy() + columnEntry + config.getFieldsEnclosedBy() + config.getFieldsTerminatedBy();
+        }
+        return lineString;
     }
 }

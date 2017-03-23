@@ -28,6 +28,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -53,6 +54,14 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
     private static final Logger logger = Logger.getLogger(JaxbExport.class);
 
     private DataSet dataSet;
+
+    /**
+     *
+     */
+    public JaxbExport() {
+        super();
+        this.exportData = ExportDataWrapper.NewByteArrayInstance();
+    }
 
 
     //	/**
@@ -112,6 +121,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
                 CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
                 exportStream = new ByteArrayOutputStream();
                 cdmDocumentBuilder.marshal(dataSet, new StreamResult(exportStream));
+                exportData.addExportData(getByteArray());
                 break;
             default:
                 break;
@@ -331,5 +341,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
     protected boolean isIgnore(JaxbExportState state) {
         return false;
     }
+
+
 
 }

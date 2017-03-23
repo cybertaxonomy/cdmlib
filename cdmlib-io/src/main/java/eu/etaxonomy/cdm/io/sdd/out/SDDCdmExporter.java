@@ -26,6 +26,7 @@ import org.springframework.util.ResourceUtils;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -59,6 +60,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	public SDDCdmExporter() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -328,6 +330,8 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	protected boolean isIgnore(SDDExportState state) {
 		return false;
 	}
+
+
 
 
 }

@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
@@ -36,6 +37,7 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
      */
     public OutputModelConfigurator(IExportTransformer transformer) {
         super(transformer);
+        this.resultType = ExportResultType.MAP_BYTE_ARRAY;
     }
 
 
@@ -74,8 +76,8 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
      */
     @Override
     public OutputModelExportState getNewState() {
-        // TODO Auto-generated method stub
-        return null;
+
+        return new OutputModelExportState(this);
     }
     /**
      * {@inheritDoc}
@@ -85,15 +87,13 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
         // TODO Auto-generated method stub
         return null;
     }
-    /**
-     * {@inheritDoc}
-     */
     @Override
+    @SuppressWarnings("unchecked")
     protected void makeIoClassList() {
-        // TODO Auto-generated method stub
-
+        ioClassList = new Class[] {
+                OutputModelClassificationExport.class
+        };
     }
-
 
     /**
      * @return the classificationUuids

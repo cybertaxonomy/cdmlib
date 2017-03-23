@@ -709,4 +709,14 @@ public class CsvDemoExport extends CsvDemoBase {
 		return ! state.getConfig().isDoTaxa();
 	}
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] getByteArray() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

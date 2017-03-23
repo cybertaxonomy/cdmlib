@@ -259,6 +259,15 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 		return false;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] getByteArray() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 
 
 }

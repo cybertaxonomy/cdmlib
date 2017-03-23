@@ -83,7 +83,7 @@ public enum OutputModelTable {
     protected static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
     protected static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
     protected static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
-    protected static final String TYPE_STRING = "TypeString";
+
 
     //Name Relationship
     protected static final String NAME1_FK = "Name1_FK";
@@ -97,12 +97,13 @@ public enum OutputModelTable {
     //Homotypic Group
     protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
+    protected static final String TYPE_STRING = "TypeString";
 
 
 
 
     final static String[] homotypicGroupColumns(){
-        return new String[]{INSTANCE_ID, INSTANCE_NAME};
+        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
     }
     final static String[] metaDataColumns(){
         return new String[]{INSTANCE_ID, INSTANCE_NAME};
@@ -111,7 +112,7 @@ public enum OutputModelTable {
         return new String[]{NAME1_FK, NAME2_FK, NAME_REL_TYPE};
     }
     final static String[] nameColumns(){
-        return new String[]{NAME_ID, TROPICOS_ID, IPNI_ID, RANK, RANK_SEQUENCE,
+        return new String[]{NAME_ID, LSID, TROPICOS_ID, IPNI_ID, RANK, RANK_SEQUENCE,
                 FULL_NAME_WITH_AUTHORS, FULL_NAME_NO_AUTHORS, GENUS_UNINOMIAL,
                 INFRAGENERIC_RANK, INFRAGENERIC_EPITHET, SPECIFIC_EPITHET,
                 INFRASPECIFIC_RANK, INFRASPECIFIC_EPITHET,
@@ -120,7 +121,7 @@ public enum OutputModelTable {
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, YEAR_PUBLISHED, TITLE_PAGE_YEAR, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
-                HOMOTYPIC_GROUP_SEQ, TYPE_STRING
+                HOMOTYPIC_GROUP_SEQ
         };
     }
     final static String[] taxonColumns(){

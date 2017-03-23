@@ -16,8 +16,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -37,7 +39,10 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroupNameComparator;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeComparator;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -49,12 +54,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 15.03.2017
  *
  */
+@Component
 public class OutputModelClassificationExport
             extends CdmExportBase<OutputModelConfigurator, OutputModelExportState, IExportTransformer>
             implements ICdmExport<OutputModelConfigurator, OutputModelExportState>{
 
 
     private static final long serialVersionUID = 2518643632756927053L;
+
+    public OutputModelClassificationExport() {
+        super();
+        this.ioName = this.getClass().getSimpleName();
+
+    }
 
     /**
      * {@inheritDoc}
@@ -84,7 +96,7 @@ public class OutputModelClassificationExport
                 }
             }
         }
-      //  state.getProcessor().createFinalResult(ExportResult)
+        state.getProcessor().createFinalResult();
     }
 
     /**
@@ -111,6 +123,10 @@ public class OutputModelClassificationExport
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
 
         state.getProcessor().put(table, taxon, csvLine);
+        for (TaxonNode child: taxonNode.getChildNodes()){
+            handleTaxon(state, child);
+        }
+
     }
 
     /**
@@ -168,10 +184,19 @@ public class OutputModelClassificationExport
         String[] csvLine = new String[table.getSize()];
 
         csvLine[table.getIndex(OutputModelTable.NAME_ID)] = getId(state, name);
-        csvLine[table.getIndex(OutputModelTable.LSID)] = name.getLsid().getLsid();
+        if (name.getLsid() != null){
+            csvLine[table.getIndex(OutputModelTable.LSID)] = name.getLsid().getLsid();
+        }else{
+            csvLine[table.getIndex(OutputModelTable.LSID)] = "";
+        }
+
 
         csvLine[table.getIndex(OutputModelTable.RANK)] = getTitleCache(rank);
-        csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = String.valueOf(rank.getOrderIndex());
+        if (rank != null){
+            csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = String.valueOf(rank.getOrderIndex());
+        }else{
+            csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = "";
+        }
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = getTropicosTitleCache(name);
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_NO_AUTHORS)] = name.getNameCache();
         csvLine[table.getIndex(OutputModelTable.GENUS_UNINOMIAL)] = name.getGenusOrUninomial();
@@ -186,33 +211,35 @@ public class OutputModelClassificationExport
         Reference nomRef = (Reference)name.getNomenclaturalReference();
         if (nomRef != null){
             csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = nomRef.getType().name();
-        }else{
-            csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = "";
-        }
-        if (nomRef.getInReference() != null){
-            Reference inReference = nomRef.getInReference();
-            csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = CdmUtils.Nz(inReference.getAbbrevTitle());
-            csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = CdmUtils.Nz(inReference.getTitle());
 
-            TeamOrPersonBase author = inReference.getAuthorship();
-            if (author != null){
-                csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getNomenclaturalTitle());
-                csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
+            if (nomRef.getInReference() != null){
+                Reference inReference = nomRef.getInReference();
+                csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = CdmUtils.Nz(inReference.getAbbrevTitle());
+                csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = CdmUtils.Nz(inReference.getTitle());
+
+                TeamOrPersonBase author = inReference.getAuthorship();
+                if (author != null){
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getNomenclaturalTitle());
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
+                }else{
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
+                }
             }else{
+                csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = "";
+                csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = "";
+                csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)]= "";
                 csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
                 csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
             }
         }else{
-            csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = "";
-            csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = "";
-            csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)]= "";
-            csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
-            csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
+            csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = "";
         }
         if (state.getActualTaxonBase() instanceof Taxon ){
             Taxon actualTaxon = (Taxon)state.getActualTaxonBase();
             Set<TaxonDescription> descriptions = actualTaxon.getDescriptions();
             String protologueUriString = "";
+            boolean first = true;
             for (TaxonDescription description : descriptions){
                 if (!description.getElements().isEmpty()){
                     for (DescriptionElementBase element : description.getElements()){
@@ -225,7 +252,12 @@ public class OutputModelClassificationExport
                                         MediaRepresentation rep = it.next();
                                         List<MediaRepresentationPart> parts = rep.getParts();
                                         for (MediaRepresentationPart part: parts){
-                                            protologueUriString += ", " +part.getUri().toString();
+                                            if (first){
+                                                protologueUriString += part.getUri().toString();
+                                                first = false;
+                                            }else{
+                                                protologueUriString += ", " +part.getUri().toString();
+                                            }
                                         }
                                     }
                                 }
@@ -234,6 +266,8 @@ public class OutputModelClassificationExport
                     }
                 }
             }
+
+            csvLine[table.getIndex(OutputModelTable.PROTOLOGUE_URI)] = protologueUriString;
         }else{
             csvLine[table.getIndex(OutputModelTable.PROTOLOGUE_URI)] = "";
         }
@@ -254,14 +288,12 @@ public class OutputModelClassificationExport
         if (state.getHomotypicalGroupFromStore(group.getId()) == null){
             handleHomotypicalGroup(state, group);
         }
-        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = String.valueOf(group.getId());
+        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
         //csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = String.valueOf(group.getTypifiedNames());
         state.getProcessor().put(table, name, csvLine);
 
-
-        state.getProcessor().put(table, name, csvLine);
 /*
- * EditName_ID
+ *
 Tropicos_ID
 IPNI_ID
 
@@ -295,23 +327,30 @@ HomotypicGroupSequenceNumber
         Set<NomenclaturalStatus> status = name.getStatus();
         String statusString = "";
         for (NomenclaturalStatus nameStatus: status){
-            if (abbrev){
-                statusString += nameStatus.getType().getIdInVocabulary();
-            }else{
-                statusString += nameStatus.getType().getTitleCache();
+            if (nameStatus != null){
+                if (abbrev){
+                    if (nameStatus.getType() != null){
+                        statusString += nameStatus.getType().getIdInVocabulary();
+                    }
+                }else{
+                    if (nameStatus.getType() != null){
+                        statusString += nameStatus.getType().getTitleCache();
+                    }
+                }
+                if (!abbrev){
+
+                    if (nameStatus.getRuleConsidered() != null && !StringUtils.isBlank(nameStatus.getRuleConsidered())){
+                        statusString += " " + nameStatus.getRuleConsidered();
+                    }
+                    if (nameStatus.getCitation() != null){
+                        statusString += " " + nameStatus.getCitation().getTitleCache();
+                    }
+                    if (nameStatus.getCitationMicroReference() != null && !StringUtils.isBlank(nameStatus.getCitationMicroReference())){
+                        statusString += " " + nameStatus.getCitationMicroReference();
+                    }
+                }
+                statusString += " ";
             }
-            if (!abbrev){
-                if (!StringUtils.isBlank(nameStatus.getRuleConsidered())){
-                    statusString += " " + nameStatus.getRuleConsidered();
-                }
-                if (nameStatus.getCitation() != null){
-                    statusString += " " + nameStatus.getCitation().getTitleCache();
-                }
-                if (!StringUtils.isBlank(nameStatus.getCitationMicroReference())){
-                    statusString += " " + nameStatus.getCitationMicroReference();
-                }
-            }
-            statusString += " ";
         }
         return statusString;
     }
@@ -324,7 +363,7 @@ HomotypicGroupSequenceNumber
         OutputModelTable table = OutputModelTable.HOMOTYPIC_GROUP;
         String[] csvLine = new String[table.getSize()];
 
-        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_ID)] = String.valueOf(group.getId());
+        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_ID)] = getId(state, group);
         List<TaxonNameBase> typifiedNames = new ArrayList<>();
         typifiedNames.addAll(group.getTypifiedNames());
         Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(null, true));
@@ -332,14 +371,56 @@ HomotypicGroupSequenceNumber
         for (TaxonNameBase name: typifiedNames){
             //Concatenated output string for homotypic group (names and citations) + status + some name relations (e.g. “non”)
 //TODO: nameRelations, which and how to display
+
+
             typifiedNamesString = name.getTitleCache() + " " + extractStatusString(name, true) + " ";
         }
-        csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_SEQ)] = typifiedNamesString.trim();
-
-        Set<NameTypeDesignation> typeDesigantions = group.getNameTypeDesignations();
-        for (NameTypeDesignation typeDesignation: typeDesigantions){
-            //TODO...
+        if (typifiedNamesString != null){
+            csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
+        }else{
+            csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_STRING)] = "";
         }
+        Set<TypeDesignationBase> typeDesigantions = group.getTypeDesignations();
+        List<TypeDesignationBase> designationList = new ArrayList<>();
+        designationList.addAll(typeDesigantions);
+        Collections.sort(designationList, new TypeComparator());
+        StringBuffer typeDesignationString = new StringBuffer();
+        for (TypeDesignationBase typeDesignation: typeDesigantions){
+            if (typeDesignation != null && typeDesignation.getTypeStatus() != null){
+                typeDesignationString.append(typeDesignation.getTypeStatus().getTitleCache() + ": ");
+            }
+            if (typeDesignation instanceof SpecimenTypeDesignation){
+                if (((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen() != null){
+                    typeDesignationString.append(((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen().getTitleCache());
+                }
+            }else{
+                if (((NameTypeDesignation)typeDesignation).getTypeName() != null){
+                    typeDesignationString.append(((NameTypeDesignation)typeDesignation).getTypeName().getTitleCache());
+                }
+            }
+            if(typeDesignation.getCitation() != null ){
+                typeDesignationString.append(", "+typeDesignation.getCitation().getTitleCache());
+            }
+            //TODO...
+            /*
+             * Sortierung:
+            1.  Status der Typen: a) holo, lecto, neo, syn, b) epi, paralecto, c) para (wenn überhaupt) – die jeweiligen iso immer direct mit dazu
+            2.  Land
+            3.  Sammler
+            4.  Nummer
+
+            Aufbau der Typusinformationen:
+            Land: Lokalität mit Höhe und Koordinaten; Datum; Sammler Nummer (Herbar/Barcode, Typusart; Herbar/Barcode, Typusart …)
+
+             */
+        }
+        String typeDesignations = typeDesignationString.toString();
+        if (typeDesignations != null){
+            csvLine[table.getIndex(OutputModelTable.TYPE_STRING)] = typeDesignations;
+        }else{
+            csvLine[table.getIndex(OutputModelTable.TYPE_STRING)] = "";
+        }
+        state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
 
     }
 
@@ -356,43 +437,78 @@ HomotypicGroupSequenceNumber
         TeamOrPersonBase basionymAuthor = name.getBasionymAuthorship();
         TeamOrPersonBase exBasionymAuthor = name.getExBasionymAuthorship();
 
-        String combinationAuthorString = null;
-        if (combinationAuthor instanceof Team){
-            for (Person teamMember:((Team)combinationAuthor).getTeamMembers()){
-                combinationAuthorString = createTropicosAuthorString(teamMember);
+        String combinationAuthorString = "";
+        if (combinationAuthor != null){
+            combinationAuthor = HibernateProxyHelper.deproxy(combinationAuthor);
+            if (combinationAuthor instanceof Team){
+                combinationAuthorString = createTropicosTeamTitle(combinationAuthor);
+            }else{
+                Person person = HibernateProxyHelper.deproxy(combinationAuthor, Person.class);
+                combinationAuthorString = createTropicosAuthorString(person);
             }
-        }else{
-            combinationAuthorString = createTropicosAuthorString((Person)combinationAuthor);
         }
-        String exCombinationAuthorString = null;
-        if (exCombinationAuthor instanceof Team){
-            for (Person teamMember:((Team)exCombinationAuthor).getTeamMembers()){
-                exCombinationAuthorString = createTropicosAuthorString(teamMember);
+        String exCombinationAuthorString = "";
+        if (exCombinationAuthor != null){
+            exCombinationAuthor = HibernateProxyHelper.deproxy(exCombinationAuthor);
+            if (exCombinationAuthor instanceof Team){
+               exCombinationAuthorString = createTropicosTeamTitle(exCombinationAuthor);
+            }else{
+                Person person = HibernateProxyHelper.deproxy(exCombinationAuthor, Person.class);
+                exCombinationAuthorString = createTropicosAuthorString(person);
             }
-        }else{
-            exCombinationAuthorString = createTropicosAuthorString((Person)exCombinationAuthor);
-        }
-
-        String basionymAuthorString = null;
-        if (basionymAuthor instanceof Team){
-            for (Person teamMember:((Team)basionymAuthor).getTeamMembers()){
-                basionymAuthorString = createTropicosAuthorString(teamMember);
-            }
-        }else{
-            basionymAuthorString = createTropicosAuthorString((Person)basionymAuthor);
         }
 
-        String exBasionymAuthorString = null;
-        if (exBasionymAuthor instanceof Team){
-            for (Person teamMember:((Team)exBasionymAuthor).getTeamMembers()){
-                exBasionymAuthorString = createTropicosAuthorString(teamMember);
+        String basionymAuthorString = "";
+        if (basionymAuthor != null){
+            basionymAuthor = HibernateProxyHelper.deproxy(basionymAuthor);
+            if (basionymAuthor instanceof Team){
+                basionymAuthorString =  createTropicosTeamTitle(basionymAuthor);
+            }else{
+                Person person = HibernateProxyHelper.deproxy(basionymAuthor, Person.class);
+                basionymAuthorString = createTropicosAuthorString(person);
             }
-        }else{
-            exBasionymAuthorString = createTropicosAuthorString((Person)exBasionymAuthor);
         }
-        String completeAuthorString =  basionymStart + CdmUtils.Nz(exBasionymAuthorString) +exAuthorSeperator + CdmUtils.Nz(exBasionymAuthorString) + basionymEnd + CdmUtils.Nz(exCombinationAuthorString) + exAuthorSeperator + CdmUtils.Nz(combinationAuthorString);
+
+        String exBasionymAuthorString = "";
+
+        if (exBasionymAuthor != null){
+;            exBasionymAuthor = HibernateProxyHelper.deproxy(exBasionymAuthor);
+            if (exBasionymAuthor instanceof Team){
+                exBasionymAuthorString = createTropicosTeamTitle(exBasionymAuthor);
+
+            }else{
+                Person person = HibernateProxyHelper.deproxy(exBasionymAuthor, Person.class);
+                exBasionymAuthorString = createTropicosAuthorString(person);
+            }
+        }
+        String completeAuthorString =  name.getNameCache() + " ";
+
+        completeAuthorString += (!CdmUtils.isBlank(exBasionymAuthorString) || !CdmUtils.isBlank(basionymAuthorString)) ? basionymStart: "";
+        completeAuthorString += (!CdmUtils.isBlank(exBasionymAuthorString)) ? (CdmUtils.Nz(exBasionymAuthorString) + exAuthorSeperator): "" ;
+        completeAuthorString += (!CdmUtils.isBlank(basionymAuthorString))? CdmUtils.Nz(basionymAuthorString):"";
+        completeAuthorString += (!CdmUtils.isBlank(exBasionymAuthorString) || !CdmUtils.isBlank(basionymAuthorString)) ?  basionymEnd:"";
+        completeAuthorString += (!CdmUtils.isBlank(exCombinationAuthorString)) ? (CdmUtils.Nz(exCombinationAuthorString) + exAuthorSeperator): "" ;
+        completeAuthorString += (!CdmUtils.isBlank(combinationAuthorString))? CdmUtils.Nz(combinationAuthorString):"";
+
 
         return completeAuthorString;
+    }
+
+    /**
+     * @param combinationAuthor
+     * @return
+     */
+    private String createTropicosTeamTitle(TeamOrPersonBase combinationAuthor) {
+        String combinationAuthorString;
+        Team team = HibernateProxyHelper.deproxy(combinationAuthor, Team.class);
+        Team tempTeam = Team.NewInstance();
+        for (Person teamMember:team.getTeamMembers()){
+            combinationAuthorString = createTropicosAuthorString(teamMember);
+            Person tempPerson = Person.NewTitledInstance(combinationAuthorString);
+            tempTeam.addTeamMember(tempPerson);
+        }
+        combinationAuthorString = tempTeam.generateTitle();
+        return combinationAuthorString;
     }
 
     /**
@@ -400,17 +516,45 @@ HomotypicGroupSequenceNumber
      */
     private String createTropicosAuthorString(Person teamMember) {
         String nomAuthorString = "";
-        String[] splittedAuthorString = teamMember.getNomenclaturalTitle().split("\\s");
-        int index = 0;
-        for (String split: splittedAuthorString){
-            if ( index < splittedAuthorString.length-1 && (split.length()==1 || split.endsWith("."))){
-                nomAuthorString += split;
-            }else{
-                nomAuthorString = nomAuthorString +" "+ split;
-            }
-            index++;
+        String[] splittedAuthorString = null;
+        if (teamMember == null){
+            return nomAuthorString;
         }
-        return nomAuthorString;
+
+        if (teamMember.getFirstname() != null){
+            String firstNameString = teamMember.getFirstname().replaceAll("\\.", "\\. ");
+            splittedAuthorString = firstNameString.split("\\s");
+            for (String split: splittedAuthorString){
+                if (!StringUtils.isBlank(split)){
+                    nomAuthorString += split.substring(0, 1);
+                }
+            }
+        }
+        if (teamMember.getLastname() != null){
+            String lastNameString = teamMember.getLastname().replaceAll("\\.", "\\. ");
+            splittedAuthorString = lastNameString.split("\\s");
+            for (String split: splittedAuthorString){
+                nomAuthorString += " " +split;
+            }
+        }
+        if (StringUtils.isBlank(nomAuthorString.trim())){
+            if (teamMember.getTitleCache() != null) {
+                String titleCacheString = teamMember.getTitleCache().replaceAll("\\.", "\\. ");
+                splittedAuthorString = titleCacheString.split("\\s");
+            }
+
+
+            int index = 0;
+            for (String split: splittedAuthorString){
+                if ( index < splittedAuthorString.length-1 && (split.length()==1 || split.endsWith("."))){
+                    nomAuthorString += split;
+                }else{
+                    nomAuthorString = nomAuthorString +" "+ split;
+                }
+                index++;
+            }
+        }
+        return nomAuthorString.trim();
     }
 
     /**
@@ -449,6 +593,8 @@ HomotypicGroupSequenceNumber
     protected boolean isIgnore(OutputModelExportState state) {
         return false;
     }
+
+
 
 
 

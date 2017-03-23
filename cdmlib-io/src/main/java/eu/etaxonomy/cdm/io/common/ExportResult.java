@@ -55,6 +55,8 @@ public class ExportResult implements Serializable {
             data = ExportDataWrapper.NewByteArrayInstance();
         }else if (type.equals(ExportResultType.LIST_BYTE_ARRAY)){
             data = ExportDataWrapper.NewListByteArrayInstance();
+        }else if (type.equals(ExportResultType.MAP_BYTE_ARRAY)){
+            data = ExportDataWrapper.NewMapByteArrayInstance();
         }
     }
 
@@ -84,6 +86,10 @@ public class ExportResult implements Serializable {
     public void setExportData(ExportDataWrapper data) {this.data = data;}
     public void addExportData(byte[] exportData) {
         data.addExportData(exportData);
+    }
+
+    public void addExportData(String tableName, byte[] exportData) {
+        data.addExportData(exportData, tableName);
     }
 
     public List<byte[]> getErrors() {return errors;}

@@ -15,6 +15,8 @@ package eu.etaxonomy.cdm.io.common;
 public interface ICdmExport<CONFIG extends IExportConfigurator, STATE extends ExportStateBase> extends ICdmIO<STATE>{
 
 
+	public ExportDataWrapper getExportData();
+
 	public byte[] getByteArray();
 
 	public abstract ExportResult invoke(STATE state);

@@ -36,6 +36,13 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 
 	protected ExportResultType resultType;
 	/**
+     * @param resultType the resultType to set
+     */
+    public void setResultType(ExportResultType resultType) {
+        this.resultType = resultType;
+    }
+
+    /**
 	 * The transformer class to be used for Input
 	 */
 	private TRANSFORM transformer;

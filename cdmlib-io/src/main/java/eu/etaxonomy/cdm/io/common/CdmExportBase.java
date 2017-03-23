@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 import java.io.ByteArrayOutputStream;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.formula.functions.T;
 
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -29,15 +30,19 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
 
     protected ByteArrayOutputStream exportStream;
 
+    protected ExportDataWrapper<T> exportData;
+
 	public Object getDbId(CdmBase cdmBase, STATE state){
 		logger.warn("Not yet implemented for export base class");
 		return null;
 	}
 
 	@Override
-	public  byte[] getByteArray() {
+	public  ExportDataWrapper getExportData() {
 	    if (exportStream != null){
-	        return exportStream.toByteArray();
+	        ExportDataWrapper data = ExportDataWrapper.NewByteArrayInstance();
+	        data.addExportData( exportStream.toByteArray());
+	        return data;
 	    }else{
 	        return null;
 	    }
@@ -56,5 +61,14 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
             return state.getResult();
         }
     }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] getByteArray() {
+        if (this.exportStream != null){
+            return this.exportStream.toByteArray();
+        }
+        return null;
+    }
 }

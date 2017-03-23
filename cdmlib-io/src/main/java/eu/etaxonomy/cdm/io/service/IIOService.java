@@ -105,4 +105,12 @@ public interface IIOService {
      */
     ImportResult updateData(SetSecundumForSubtreeConfigurator configurator);
 
+
+    /**
+     * @param configurator
+     * @param type
+     * @return
+     */
+    UUID monitExportData(IExportConfigurator configurator);
+
 }

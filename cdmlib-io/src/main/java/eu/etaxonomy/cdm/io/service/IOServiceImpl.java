@@ -98,6 +98,26 @@ public class IOServiceImpl implements IIOService {
     }
 
     @Override
+    public UUID monitExportData(final IExportConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+
+                configurator.setProgressMonitor(monitor);
+                ExportResult result = export(configurator);
+//                for(byte[] report : result.getReports()) {
+//                    monitor.addReport(new String(report));
+//                }
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
     public UUID monitUpdateData(final IImportConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
