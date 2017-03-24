@@ -299,7 +299,7 @@ protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfigurat
         logger.error("For Gbif Import the item has to be of type GbifResponse.");
         return;
     }
-    if (DEBUG) {
+    if (logger.isDebugEnabled()) {
         logger.info("handleSingleUnit "+state.getRef());
     }
 
@@ -319,7 +319,7 @@ protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfigurat
             Taxon taxon = getOrCreateTaxonForName(bestMatchingName, state);
             if (state.getConfig().isAddIndividualsAssociationsSuchAsSpecimenAndObservations()) {
                 //do not add IndividualsAssociation to non-preferred taxa
-                if(DEBUG){
+                if(logger.isDebugEnabled()){
                     logger.info("isDoCreateIndividualsAssociations");
                 }
                 for (DeterminationEvent determinationEvent:derivedUnitFacade.getDeterminations()){

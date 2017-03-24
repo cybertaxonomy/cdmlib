@@ -76,6 +76,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Component
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
 
+    private static final long serialVersionUID = 3918095362150986307L;
+
     private static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 
     private static final Logger logger = Logger.getLogger(Abcd206Import.class);
@@ -361,7 +363,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         Element item = (Element) itemObject;
 
         Abcd206ImportConfigurator config = state.getConfig();
-        if (DEBUG) {
+        if (logger.isDebugEnabled()) {
             logger.info("handleSingleUnit "+state.getRef());
         }
         try {
@@ -710,7 +712,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             save(state.getDerivedUnitBase(), state);
 
-            if(DEBUG) {
+            if(logger.isDebugEnabled()) {
                 logger.info("saved ABCD specimen ...");
             }
 
@@ -929,7 +931,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     @Override
     protected DerivedUnitFacade getFacade(Abcd206ImportState state) {
-        if(DEBUG) {
+        if(logger.isDebugEnabled()) {
             logger.info("getFacade()");
         }
         SpecimenOrObservationType type = null;

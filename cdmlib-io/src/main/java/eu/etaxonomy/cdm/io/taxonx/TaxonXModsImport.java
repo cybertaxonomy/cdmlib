@@ -19,8 +19,7 @@ import org.jdom.Text;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -35,11 +34,12 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @created 29.07.2008
- * @version 1.0
  */
 @Component
-public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
-	private static final Logger logger = Logger.getLogger(TaxonXModsImport.class);
+public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
+
+    private static final long serialVersionUID = -4778280393567013855L;
+    private static final Logger logger = Logger.getLogger(TaxonXModsImport.class);
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;

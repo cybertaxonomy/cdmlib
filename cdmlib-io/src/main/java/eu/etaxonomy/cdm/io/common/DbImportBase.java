@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.User;
 public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE>, CONFIG extends DbImportConfiguratorBase<STATE>>
             extends CdmImportBase<CONFIG, STATE>
             implements ICdmIO<STATE>, IPartitionedIO<STATE> {
+
     private static final long serialVersionUID = 5539446566014467398L;
     private static final Logger logger = Logger.getLogger(DbImportBase.class);
 

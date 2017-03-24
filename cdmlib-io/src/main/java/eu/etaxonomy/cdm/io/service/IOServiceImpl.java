@@ -93,7 +93,7 @@ public class IOServiceImpl implements IIOService {
     }
 
     @Override
-    public UUID monitExportData(final IExportConfigurator configurator) {
+    public UUID monitExportData(@SuppressWarnings("rawtypes") final IExportConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {

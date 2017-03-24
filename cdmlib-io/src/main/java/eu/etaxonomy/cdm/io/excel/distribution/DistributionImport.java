@@ -24,8 +24,7 @@ import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactor
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
@@ -42,11 +41,14 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 /**
  * @author a.babadshanjan
  * @created 10.11.2008
- * @version 1.0
  */
 @Component
-public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> implements ICdmIO<ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> {
-	private static final Logger logger = Logger.getLogger(DistributionImport.class);
+public class DistributionImport
+        extends CdmImportBase<ExcelImportConfiguratorBase, ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> {
+
+    private static final long serialVersionUID = 7765309119416657235L;
+
+    private static final Logger logger = Logger.getLogger(DistributionImport.class);
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";

@@ -33,9 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -52,10 +50,13 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author p.kelbert 2013
  */
 @Component
-public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
-    private static final Logger logger = Logger.getLogger(TaxonXImport.class);
-    private static String prefix = "";
+public class TaxonXImport
+        extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
 
+    private static final long serialVersionUID = 8166758191513137605L;
+    private static final Logger logger = Logger.getLogger(TaxonXImport.class);
+
+    private static String prefix = "";
     public static String LOG_FOLDER = "C:\\Users\\pesiimport\\.cdmLibrary\\log\\taxonX\\";
 
     private Classification classification = null;
@@ -361,29 +362,8 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         return cR;
     }
 
-
     @Override
     protected boolean isIgnore(TaxonXImportState state) {
     	return false;
     }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportBase#handleSingleUnit(eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase, java.lang.Object)
-     */
-    @Override
-    protected void handleSingleUnit(TaxonXImportState state, Object item) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportBase#importAssociatedUnits(eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase, java.lang.Object, eu.etaxonomy.cdm.api.facade.DerivedUnitFacade)
-     */
-    @Override
-    protected void importAssociatedUnits(TaxonXImportState state, Object item, DerivedUnitFacade derivedUnitFacade) {
-        // TODO Auto-generated method stub
-
-    }
-
-
 }

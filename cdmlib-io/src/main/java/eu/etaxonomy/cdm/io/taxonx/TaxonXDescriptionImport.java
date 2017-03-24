@@ -25,8 +25,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -43,11 +42,13 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 29.07.2008
- * @version 1.0
  */
 @Component
-public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
-	private static final Logger logger = Logger.getLogger(TaxonXDescriptionImport.class);
+public class TaxonXDescriptionImport
+        extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState> {
+
+    private static final long serialVersionUID = 1957356490206741364L;
+    private static final Logger logger = Logger.getLogger(TaxonXDescriptionImport.class);
 
 	public TaxonXDescriptionImport(){
 		super();

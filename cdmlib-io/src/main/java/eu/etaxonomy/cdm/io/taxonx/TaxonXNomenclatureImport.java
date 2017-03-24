@@ -25,8 +25,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -46,12 +45,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller
  * @created 29.07.2008
- * @version 1.0
  */
 @Component
-public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
-    private static final long serialVersionUID = 796115831082828758L;
+public class TaxonXNomenclatureImport
+        extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>  {
 
+    private static final long serialVersionUID = 796115831082828758L;
     private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
 
 	@SuppressWarnings("unused")

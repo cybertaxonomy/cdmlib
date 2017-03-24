@@ -35,7 +35,8 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @date 15.07.2016
  *
  */
-public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase> extends ImportStateBase<CONFIG , CdmImportBase<CONFIG , STATE >>{
+public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase>
+        extends ImportStateBase<CONFIG , CdmImportBase<CONFIG , STATE >>{
 
 
     /**
@@ -43,7 +44,6 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
      */
     public SpecimenImportStateBase(CONFIG config) {
         super(config);
-        // TODO Auto-generated constructor stub
     }
 
     private TransactionStatus tx;

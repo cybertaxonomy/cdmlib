@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,31 +21,19 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
-public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportConfigurator<Abcd206ImportState, InputStream>, Abcd206ImportState>{
-	@SuppressWarnings("unused")
+public class Abcd206ImportState
+        extends SpecimenImportStateBase<Abcd206ImportConfigurator, Abcd206ImportState>{
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Abcd206ImportState.class);
 
-
 	private String prefix;
-
 
 	private List<String> associatedUnitIds = new ArrayList<String>();
 
 
-
-
-	//private Abcd206DataHolder dataHolder;
-
-
-
-
-
 //****************** CONSTRUCTOR ***************************************************/
-
-
-
 
 
     public Abcd206ImportState(Abcd206ImportConfigurator config) {
@@ -67,12 +54,6 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
     public void setDataHolder(Abcd206DataHolder dataHolder) {
         this.dataHolder = dataHolder;
     }
-
-
-
-
-
-
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;

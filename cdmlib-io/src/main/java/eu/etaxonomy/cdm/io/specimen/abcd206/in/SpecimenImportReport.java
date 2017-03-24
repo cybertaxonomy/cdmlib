@@ -43,13 +43,13 @@ public class SpecimenImportReport {
     static private final Logger logger = Logger.getLogger(SpecimenImportReport.class);
 
 
-    private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
-    private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<UnitIdSpecimen>>();
-    private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<UnitIdSpecimen, List<UnitIdSpecimen>>();
-    private final List<UnitIdSpecimen> alreadyExistingSpecimens = new ArrayList<UnitIdSpecimen>();
-    private final List<ITaxonNameBase> createdNames = new ArrayList<ITaxonNameBase>();
-    private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
-    private final List<String> infoMessages = new ArrayList<String>();
+    private final List<Taxon> createdTaxa = new ArrayList<>();
+    private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<>();
+    private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<>();
+    private final List<UnitIdSpecimen> alreadyExistingSpecimens = new ArrayList<>();
+    private final List<ITaxonNameBase> createdNames = new ArrayList<>();
+    private final List<TaxonNode> createdTaxonNodes = new ArrayList<>();
+    private final List<String> infoMessages = new ArrayList<>();
 
     public void addTaxon(Taxon taxon){
         createdTaxa.add(taxon);
