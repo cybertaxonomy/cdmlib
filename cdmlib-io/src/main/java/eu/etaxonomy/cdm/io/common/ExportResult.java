@@ -24,7 +24,7 @@ public class ExportResult implements Serializable {
 
     private ExportResultState state;
 
-    private ExportDataWrapper data ;  //resulting files
+    private ExportDataWrapper<?> data ;  //resulting files
 
     private List<byte[]> errors = new ArrayList<>();
     private List<byte[]> warnings = new ArrayList<>();
@@ -104,34 +104,15 @@ public class ExportResult implements Serializable {
 //        warnings.add(StringUtils..warning.to);
     }
 
-    /**
-     * @return the exceptions
-     */
-    public List<Exception> getExceptions() {
-        return exceptions;
-    }
-
-    /**
-     * @param exceptions the exceptions to set
-     */
-    public void setExceptions(List<Exception> exceptions) {
-        this.exceptions = exceptions;
-    }
-
-    /**
-     *
-     */
-    public void setAborted() {
-        this.state = ExportResultState.ABORTED;
-    }
-
-    /**
-     * @param e
-     */
+    public List<Exception> getExceptions() {return exceptions;}
+    public void setExceptions(List<Exception> exceptions) {this.exceptions = exceptions;}
     public void addException(Exception e) {
         exceptions.add(e);
         this.state = ExportResultState.INCOMPLETE_WITH_ERROR;
     }
+
+    public void setAborted() {this.state = ExportResultState.ABORTED;}
+
 
     /**
      * {@inheritDoc}
@@ -147,8 +128,5 @@ public class ExportResult implements Serializable {
     public void merge(ExportResult invoke) {
         // TODO implemented
     }
-
-
-
 
 }
