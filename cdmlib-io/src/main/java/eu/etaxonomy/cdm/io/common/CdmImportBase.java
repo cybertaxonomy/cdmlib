@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @created 01.07.2008
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
-            extends CdmIoBase<STATE>
+            extends CdmIoBase<STATE, ImportResult>
             implements ICdmImport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8730012744209195616L;
@@ -156,18 +156,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	}
 
+    @Override
+    protected ImportResult getNoDataResult(STATE state) {
+        return ImportResult.NewNoDataInstance();
+    }
 
-    //TODO move up to CdmIoBase once ImportResult is used here
-	@Override
-    public boolean invoke(STATE state) {
-        if (isIgnore( state)){
-            logger.info("No invoke for " + ioName + " (ignored)");
-            return true;
-        }else{
-            updateProgress(state, "Invoking " + ioName);
-            doInvoke(state);
-            return state.isSuccess();
-        }
+    @Override
+    protected ImportResult getDefaultResult(STATE state) {
+        return ImportResult.NewInstance();
     }
 
 	protected Classification makeTree(STATE state, Reference reference){

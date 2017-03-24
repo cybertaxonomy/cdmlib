@@ -186,14 +186,20 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	 * Executes the whole
 	 */
 	protected <CONFIG extends IExportConfigurator>  ExportResult doExport(CONFIG config){
-	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 		//validate
 		if (config == null){
-			logger.warn("Configuration is null");
+		    ExportResult result = ExportResult.NewInstance(null);
+		    String message = "Configuration is null";
+			logger.error(message);
+			result.addError(message);
 			result.setAborted();
 			return result;
-		}else if (! config.isValid()){
-			logger.warn("Configuration is not valid");
+		}
+		ExportResult result = ExportResult.NewInstance(config.getResultType());
+		if (! config.isValid()){
+			String message = "Configuration is not valid";
+		    logger.error(message);
+		    result.addError(message);
 			result.setAborted();
 			return result;
 		}

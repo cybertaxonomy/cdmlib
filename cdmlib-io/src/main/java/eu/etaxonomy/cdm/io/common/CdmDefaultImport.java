@@ -32,7 +32,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 		boolean createNew = config.isCreateNew();
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
 		    ImportResult result = new ImportResult();
-		    result.setSuccess(false);
+		    result.setAborted("Application controller could not be started");
 			return result;
 		}else{
 			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)getCdmAppController().getBean("defaultImport");

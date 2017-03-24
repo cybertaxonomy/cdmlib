@@ -16,15 +16,18 @@ import org.apache.log4j.Logger;
  * @author a.mueller
  * @created 11.05.2009
  */
-public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO> {
-//	public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO<IoStateBase<CONFIG, IO>>> {
+public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoStateBase.class);
 
 	private IO currentIO;
 
-	CONFIG config;
+	protected CONFIG config;
+
+	private RESULT result;
+
+
 
 	/**
 	 * @return the config
@@ -61,6 +64,21 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 	public IO getCurrentIO() {
 		return currentIO;
 	}
+
+
+    /**
+     * @return the result
+     */
+    public RESULT getResult() {
+        return result;
+    }
+
+    /**
+     * @param result the result to set
+     */
+    public void setResult(RESULT result) {
+        this.result = result;
+    }
 
 
 

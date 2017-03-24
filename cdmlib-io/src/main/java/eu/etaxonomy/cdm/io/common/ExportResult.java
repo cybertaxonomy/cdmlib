@@ -18,7 +18,7 @@ import java.util.List;
  * @date 31 Jul 2015
  *
  */
-public class ExportResult implements Serializable {
+public class ExportResult extends IoResultBase implements Serializable {
 
     private static final long serialVersionUID = 6843406252245776806L;
 
@@ -92,31 +92,15 @@ public class ExportResult implements Serializable {
         data.addExportData(exportData, tableName);
     }
 
-    public List<byte[]> getErrors() {return errors;}
-    public void setErrors(List<byte[]> errors) {this.errors = errors;}
-    public void addError(String error) {
-//        errors.add(error);
-    }
 
-    public List<byte[]> getWarnings() {return warnings;}
-    public void setWarnings(List<byte[]> warnings) {this.warnings = warnings;}
-    public void addWarning(String warning) {
-//        warnings.add(StringUtils..warning.to);
-    }
-
-    public List<Exception> getExceptions() {return exceptions;}
-    public void setExceptions(List<Exception> exceptions) {this.exceptions = exceptions;}
-    public void addException(Exception e) {
-        exceptions.add(e);
-        this.state = ExportResultState.INCOMPLETE_WITH_ERROR;
+    @Override
+    protected void setExceptionState() {
+        state = ExportResultState.INCOMPLETE_WITH_ERROR;
     }
 
     public void setAborted() {this.state = ExportResultState.ABORTED;}
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return state.toString();
@@ -128,5 +112,7 @@ public class ExportResult implements Serializable {
     public void merge(ExportResult invoke) {
         // TODO implemented
     }
+
+
 
 }

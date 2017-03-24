@@ -394,14 +394,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		this.isCheck = isCheck;
 	}
 
-    /**
-     * Returns the import report as a byte array
-     * @return
-     */
-    public byte[] getReportAsByteArray() {
-        return null;
-    }
-
 
     public void setSuccess(boolean success) {
         this.success = success;
@@ -414,6 +406,12 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
     public boolean isSuccess() {
         return success;
     }
-
+    /**
+     * Returns the import report as a byte array
+     * @return
+     */
+    public byte[] getReportAsByteArray() {
+        return null;
+    }
 
 }

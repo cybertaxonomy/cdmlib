@@ -21,8 +21,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 01.07.2008
  */
 public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TRANSFORM>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer>
-            extends CdmIoBase<STATE>
+            extends CdmIoBase<STATE, ExportResult>
             implements ICdmExport<CONFIG, STATE>{
+
+    private static final long serialVersionUID = 3685030095117254235L;
 
     private static Logger logger = Logger.getLogger(CdmExportBase.class);
 
@@ -42,22 +44,16 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
 	    }
 	}
 
-	//TODO move up to CdmIoBase once ImportResult is also implemented
     @Override
-    public ExportResult invoke(STATE state) {
-        if (isIgnore( state)){
-            logger.info("No invoke for " + ioName + " (ignored)");
-            return ExportResult.NewNoDataInstance(((IExportConfigurator)state.config).getResultType());
-        }else{
-            updateProgress(state, "Invoking " + ioName);
-            state.setResult(ExportResult.NewInstance(((IExportConfigurator)state.config).getResultType()));
-            doInvoke(state);
-            return state.getResult();
-        }
+    protected ExportResult getNoDataResult(STATE state) {
+        return ExportResult.NewNoDataInstance(((IExportConfigurator)state.config).getResultType());
     }
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
+    protected ExportResult getDefaultResult(STATE state) {
+        return ExportResult.NewInstance(((IExportConfigurator)state.config).getResultType());
+    }
+
     @Override
     public byte[] getByteArray() {
         if (this.exportStream != null){
