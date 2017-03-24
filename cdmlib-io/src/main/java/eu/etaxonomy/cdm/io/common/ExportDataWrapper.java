@@ -23,8 +23,8 @@ public class ExportDataWrapper<T> implements Serializable{
 
     private static final long serialVersionUID = 4500184563547082579L;
 
-    T exportData;
-    ExportResultType type;
+    private T exportData;
+    private ExportResultType type;
 
     /**
      * @return the type
@@ -47,18 +47,18 @@ public class ExportDataWrapper<T> implements Serializable{
     public static final ExportDataWrapper<List<byte[]>> NewListByteArrayInstance(){
         ExportDataWrapper<List<byte[]>> result = new ExportDataWrapper<>();
         result.type = ExportResultType.LIST_BYTE_ARRAY;
-        result.exportData = new ArrayList<byte[]>();
+        result.exportData = new ArrayList<>();
         return result;
     }
 
     public static final ExportDataWrapper<Map<String,byte[]>> NewMapByteArrayInstance(){
         ExportDataWrapper<Map<String, byte[]>> result = new ExportDataWrapper<>();
         result.type = ExportResultType.MAP_BYTE_ARRAY;
-        result.exportData = new HashMap<String, byte[]>();
+        result.exportData = new HashMap<>();
         return result;
     }
 
-    public static final ExportDataWrapper NewByteArrayInstance(){
+    public static final ExportDataWrapper<byte[]> NewByteArrayInstance(){
         ExportDataWrapper<byte[]> result = new ExportDataWrapper<>();
         result.type = ExportResultType.BYTE_ARRAY;
 
@@ -82,7 +82,6 @@ public class ExportDataWrapper<T> implements Serializable{
         if (type.equals(ExportResultType.MAP_BYTE_ARRAY)){
             ((Map<String, byte[]>)exportData).put(key,data);
         }
-
     }
 
 }
