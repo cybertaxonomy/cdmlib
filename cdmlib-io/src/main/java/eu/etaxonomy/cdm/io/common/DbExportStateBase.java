@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,14 +21,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
 public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase<? extends DbExportStateBase<CONFIG, TRANSFORM>, TRANSFORM>, TRANSFORM extends IExportTransformer>   extends ExportStateBase<CONFIG, TRANSFORM> {
 	private static final Logger logger = Logger.getLogger(DbExportStateBase.class);
-	
+
 	protected Map<UUID, Integer> dbIdMap = new HashMap<UUID, Integer>();
-	
-	
+
+
 	public DbExportStateBase(CONFIG config) {
 		super(config);
 	}
@@ -40,7 +39,7 @@ public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase<
 			logger.warn("CdmBase was (null) and could not be added to dbIdMap");
 		}
 	}
-	
+
 	public Integer getDbId(CdmBase cdmBase){
 		if (cdmBase != null){
 			return dbIdMap.get(cdmBase.getUuid());
@@ -49,5 +48,5 @@ public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase<
 			return null;
 		}
 	}
-	
+
 }

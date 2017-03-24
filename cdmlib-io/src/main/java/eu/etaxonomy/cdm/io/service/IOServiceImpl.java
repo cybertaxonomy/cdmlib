@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
-import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
@@ -56,7 +55,7 @@ public class IOServiceImpl implements IIOService {
 
     @Autowired
     @Qualifier("defaultImport")
-    CdmApplicationAwareDefaultImport cdmImport;
+    CdmApplicationAwareDefaultImport<?> cdmImport;
 
     @Autowired
     IProgressMonitorService progressMonitorService;
@@ -66,10 +65,6 @@ public class IOServiceImpl implements IIOService {
 //    CdmApplicationAwareDefaultUpdate cdmUpdate;
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.service.IExportService#export(eu.etaxonomy.cdm.io.common.IExportConfigurator)
-     */
     @Override
     public ExportResult export(IExportConfigurator config) {
         config.setTarget(TARGET.EXPORT_DATA);
@@ -141,7 +136,7 @@ public class IOServiceImpl implements IIOService {
         switch(type) {
         case URI:
             if (importData.equals(new byte[1])){
-                result = cdmImport.execute(configurator);
+                result = cdmImport.invoke(configurator);
                 return result;
             }
             return importDataFromUri(configurator, importData);
@@ -174,7 +169,7 @@ public class IOServiceImpl implements IIOService {
             stream = new FileOutputStream(tempFilePath.toFile());
             stream.write(importData);
             config.setSource(tempFilePath.toUri());
-            result = cdmImport.execute(config);
+            result = cdmImport.invoke(config);
      //       Files.delete(tempFilePath);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -201,7 +196,7 @@ public class IOServiceImpl implements IIOService {
             }else{
                 config.setSource(new ByteArrayInputStream(importData));
             }
-            result = cdmImport.execute(config);
+            result = cdmImport.invoke(config);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -212,9 +207,7 @@ public class IOServiceImpl implements IIOService {
     @Override
     public ImportResult importDataFromStream(SpecimenImportConfiguratorBase configurator) {
         ImportResult result = new ImportResult();
-
-            OccurenceQuery query;
-            result = cdmImport.execute(configurator);
+            result = cdmImport.invoke(configurator);
             return result;
     }
 
@@ -222,9 +215,8 @@ public class IOServiceImpl implements IIOService {
     public ImportResult importDataFromStream(List<Abcd206ImportConfigurator> configurators) {
         ImportResult result = new ImportResult();
 
-            OccurenceQuery query;
             for (SpecimenImportConfiguratorBase configurator:configurators){
-                result = cdmImport.execute(configurator);
+                result = cdmImport.invoke(configurator);
             }
             return result;
     }

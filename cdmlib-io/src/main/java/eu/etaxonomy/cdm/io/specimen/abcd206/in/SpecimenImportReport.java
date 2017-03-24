@@ -124,7 +124,7 @@ public class SpecimenImportReport {
 
         out.println("++++++++Import Report+++++++++");
       //all specimens
-        Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
+        Set<UnitIdSpecimen> allSpecimens = new HashSet<>();
         for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
             UnitIdSpecimen parentSpecimen = entry.getKey();
             allSpecimens.add(parentSpecimen);
@@ -133,7 +133,7 @@ public class SpecimenImportReport {
             }
         }
         out.println("Specimens created: "+allSpecimens.size());
-        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<SpecimenOrObservationType, Integer>();
+        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<>();
         for (UnitIdSpecimen unitIdSpecimen : allSpecimens) {
             incrementSpecimenTypeCount(specimenTypeToCount, unitIdSpecimen);
         }

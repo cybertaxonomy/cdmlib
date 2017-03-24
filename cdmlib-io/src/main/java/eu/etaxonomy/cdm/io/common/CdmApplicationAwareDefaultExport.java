@@ -33,25 +33,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
  */
 
 @Component("defaultExport")
-public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> implements ICdmExporter<T>, ApplicationContextAware {
-	private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultExport.class);
+public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
+        implements ICdmExporter<T>, ApplicationContextAware {
+
+    private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultExport.class);
 
 	protected ApplicationContext applicationContext;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-	 */
 	@Override
     public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-
-//	DbExportStateBase<T> state;
 
 
 	//Constants
