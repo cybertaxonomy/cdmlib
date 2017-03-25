@@ -131,6 +131,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         ImportStateBase state = config.getNewState();
         state.initialize(config);
+        state.setCheck(true);
 
         //do check for each class
         for (Class<ICdmImport> ioClass: config.getIoClassList()){
@@ -155,6 +156,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         //return
         System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");
+        state.setCheck(false);
         return result;
 
     }
