@@ -379,7 +379,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	}
 
 	/**
-	 * Returns true, if this import is in validation state. Flase otherwise
+	 * Returns true, if this import is in validation state. False otherwise
 	 * @return
 	 */
 	public boolean isCheck() {
