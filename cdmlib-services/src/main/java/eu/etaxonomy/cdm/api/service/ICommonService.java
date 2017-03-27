@@ -320,6 +320,12 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public CdmBase save(CdmBase newInstance);
 
+    /**
+     * Save or update a new entity
+     * @param entity the entity to be persisted
+     * @return The UUID of the persistent entity
+     */
+    public UUID saveOrUpdate(CdmBase entity);
 
     /**
      * Save a collection containing new entities (persists the entities)
@@ -328,6 +334,14 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      *         of those entities
      */
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
+
+    /**
+     * Save or update a collection containing entities
+     * @param entities the entities to be persisted
+     * @return A Map containing the new entities, keyed using the UUID's
+     *         of those entities
+     */
+    public <T extends CdmBase> Map<UUID,T> saveOrUpdate(Collection<T> entities);
 
     /**
      * @param mergeFirstId
