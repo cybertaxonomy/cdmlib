@@ -19,8 +19,8 @@ public enum OutputModelTable {
     SCIENTIFIC_NAME("ScientificName", nameColumns()),
     NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
     HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
-    NOMENCLATURAL_AUTHOR("NomenclaturalAuthor", new String[]{}),
-    NOMENCLATURAL_AUTHOR_TEAM_RELATION("NomenclaturalAuthorTeamRelation", new String[]{}),
+    NOMENCLATURAL_AUTHOR("NomenclaturalAuthor", nomenclaturalAuthorColumns()),
+    NOMENCLATURAL_AUTHOR_TEAM_RELATION("NomenclaturalAuthorTeamRelation", nomenclaturalAuthorTeamRelColumns()),
     TYPE_DESIGNATION("TypeDesignation", new String[]{}),
     SPECIMEN("Specimen", new String[]{}),
     TAXON("Taxon", taxonColumns()),
@@ -99,12 +99,35 @@ public enum OutputModelTable {
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
     protected static final String TYPE_STRING = "TypeString";
 
+    //NomenclaturalAuthor
+    protected static final String AUTHOR_ID = "Author_ID";
+    protected static final String ABBREV_AUTHOR = "AbbrevAuthor";
+    protected static final String AUTHOR_TITLE = "AuthorTitle";
+    protected static final String AUTHOR_FIRST_NAME = "AuthorFirstName";
+    protected static final String AUTHOR_LASTNAME = "AuthorLastName";
+    protected static final String AUTHOR_PREFIX = "AuthorPrefix";
+    protected static final String AUTHOR_SUFFIX = "AuthorSurfix";
+
+  //Nomenclatural Author AuthorTeam Relations
+
+    protected static final String AUTHOR_FK = "Author_Fk";
+    protected static final String AUTHOR_TEAM_FK = "AuthorTeam_Fk";
+    protected static final String AUTHOR_TEAM_SEQ_NUMBER = "SequenceNumber";
 
 
 
     final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
     }
+
+    final static String[] nomenclaturalAuthorColumns() {
+        return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_FIRST_NAME, AUTHOR_LASTNAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
+    }
+
+    final static String[] nomenclaturalAuthorTeamRelColumns() {
+        return new String[]{AUTHOR_TEAM_FK, AUTHOR_FK, AUTHOR_TEAM_SEQ_NUMBER};
+    }
+
     final static String[] metaDataColumns(){
         return new String[]{INSTANCE_ID, INSTANCE_NAME};
     }

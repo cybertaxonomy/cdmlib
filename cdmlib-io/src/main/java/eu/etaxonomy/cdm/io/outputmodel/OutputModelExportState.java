@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -32,7 +33,7 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
     private TaxonBase actualTaxonBase;
 
     private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<Integer, HomotypicalGroup>();
-
+    private Map<Integer, TeamOrPersonBase> authorStore = new HashMap<Integer, TeamOrPersonBase>();
 
     /**
      * @param config
@@ -70,6 +71,7 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
 
     public void setActualTaxonBase(TaxonBase actualTaxonBase){ this.actualTaxonBase = actualTaxonBase;}
 
+    @SuppressWarnings("rawtypes")
     public TaxonBase getActualTaxonBase() {return actualTaxonBase;}
 
     /**
@@ -88,6 +90,27 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
 
     public HomotypicalGroup getHomotypicalGroupFromStore(Integer id){
         return homotypicalGroupStore.get(id);
+    }
+
+    /**
+     * @return the homotypicalGroupStore
+     */
+    @SuppressWarnings("rawtypes")
+    public Map<Integer, TeamOrPersonBase> getAuthorStore() {
+        return authorStore;
+    }
+
+    /**
+     * @param homotypicalGroupStore the homotypicalGroupStore to set
+     */
+    @SuppressWarnings("rawtypes")
+    public void addAuthorToStore(TeamOrPersonBase author) {
+        this.authorStore.put(author.getId(), author);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public TeamOrPersonBase getAuthorFromStore(Integer id){
+        return authorStore.get(id);
     }
 
 

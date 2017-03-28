@@ -56,12 +56,16 @@ public class OutputModelResultProcessor {
         String[] record = resultMap.get(id);
         if (record == null){
             record = csvLine;
+
             String[] oldRecord = resultMap.put(id, record);
+
             if (oldRecord != null){
                 System.out.println("This should not happen");
             }
         }
     }
+
+
 
     public boolean hasRecord(OutputModelTable table, String id){
         Map<String, String[]> resultMap = result.get(table);
@@ -107,6 +111,7 @@ public class OutputModelResultProcessor {
                 for (String key: tableData.keySet()){
                     if (!key.equals(HEADER)){
                         String[] csvLine = tableData.get(key);
+                        System.out.println(key);
                         lineString = createCsvLine(config, csvLine);
                         writer.println(lineString);
                     }
@@ -144,6 +149,7 @@ public class OutputModelResultProcessor {
             columnEntry = columnEntry.replace("\n", "\\r");
             lineString += config.getFieldsEnclosedBy() + columnEntry + config.getFieldsEnclosedBy() + config.getFieldsTerminatedBy();
         }
+        System.out.println(lineString);
         return lineString;
     }
 }

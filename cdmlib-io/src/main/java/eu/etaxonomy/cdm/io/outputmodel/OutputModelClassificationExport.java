@@ -224,9 +224,32 @@ public class OutputModelClassificationExport
 
         csvLine[table.getIndex(OutputModelTable.INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
         csvLine[table.getIndex(OutputModelTable.BAS_AUTHORTEAM_FK)] = getId(state,name.getBasionymAuthorship());
+        if (name.getBasionymAuthorship() != null){
+            if (state.getAuthorFromStore(name.getBasionymAuthorship().getId()) == null) {
+                handleAuthor(state, name.getBasionymAuthorship());
+            }
+        }
         csvLine[table.getIndex(OutputModelTable.BAS_EX_AUTHORTEAM_FK)] = getId(state, name.getExBasionymAuthorship());
+        if (name.getExBasionymAuthorship() != null){
+            if (state.getAuthorFromStore(name.getExBasionymAuthorship().getId()) == null) {
+                handleAuthor(state, name.getExBasionymAuthorship());
+            }
+
+        }
         csvLine[table.getIndex(OutputModelTable.COMB_AUTHORTEAM_FK)] = getId(state,name.getCombinationAuthorship());
+        if (name.getCombinationAuthorship() != null){
+            if (state.getAuthorFromStore(name.getCombinationAuthorship().getId()) == null) {
+                handleAuthor(state, name.getCombinationAuthorship());
+            }
+        }
         csvLine[table.getIndex(OutputModelTable.COMB_EX_AUTHORTEAM_FK)] = getId(state, name.getExCombinationAuthorship());
+        if (name.getExCombinationAuthorship() != null){
+            if (state.getAuthorFromStore(name.getExCombinationAuthorship().getId()) == null) {
+                handleAuthor(state, name.getExCombinationAuthorship());
+            }
+
+        }
+
         csvLine[table.getIndex(OutputModelTable.AUTHOR_TEAM_STRING)] = name.getAuthorshipCache();
         Reference nomRef = (Reference)name.getNomenclaturalReference();
         if (nomRef != null){
@@ -359,6 +382,65 @@ HomotypicGroupSequenceNumber
 
  *
  */
+    }
+
+    /**
+     * @param state
+     * @param basionymAuthorship
+     */
+    private void handleAuthor(OutputModelExportState state, TeamOrPersonBase author) {
+        if (state.getAuthorFromStore(author.getId()) != null){
+            return;
+        }
+        state.addAuthorToStore(author);
+        OutputModelTable table = OutputModelTable.NOMENCLATURAL_AUTHOR;
+        String[] csvLine = new String[table.getSize()];
+        OutputModelTable tableAuthorRel = OutputModelTable.NOMENCLATURAL_AUTHOR_TEAM_RELATION;
+        String[] csvLineRel = new String[tableAuthorRel.getSize()];
+        String[] csvLineMember = new String[table.getSize()];
+        csvLine[table.getIndex(OutputModelTable.AUTHOR_ID)] = getId(state, author);
+        csvLine[table.getIndex(OutputModelTable.ABBREV_AUTHOR)] = author.getNomenclaturalTitle();
+        csvLine[table.getIndex(OutputModelTable.AUTHOR_TITLE)] = author.getTitleCache();
+        author = HibernateProxyHelper.deproxy(author);
+        if (author instanceof Person){
+            Person authorPerson = (Person)author;
+            csvLine[table.getIndex(OutputModelTable.AUTHOR_FIRST_NAME)] = authorPerson.getFirstname();
+            csvLine[table.getIndex(OutputModelTable.AUTHOR_LASTNAME)] = authorPerson.getLastname();
+            csvLine[table.getIndex(OutputModelTable.AUTHOR_PREFIX)] = authorPerson.getPrefix();
+            csvLine[table.getIndex(OutputModelTable.AUTHOR_SUFFIX)] = authorPerson.getSuffix();
+        } else{
+            // create an entry in rel table and all members in author table, check whether the team members already in author table
+
+            Team authorTeam = (Team)author;
+            int index = 0;
+            for (Person member: authorTeam.getTeamMembers()){
+                csvLineRel = new String[tableAuthorRel.getSize()];
+                csvLineRel[tableAuthorRel.getIndex(OutputModelTable.AUTHOR_TEAM_FK)] = getId(state, authorTeam);
+                csvLineRel[tableAuthorRel.getIndex(OutputModelTable.AUTHOR_FK)] = getId(state, member);
+                csvLineRel[tableAuthorRel.getIndex(OutputModelTable.AUTHOR_TEAM_SEQ_NUMBER)] = String.valueOf(index);
+                state.getProcessor().put(tableAuthorRel, authorTeam.getId() +":" +member.getId(), csvLineRel);
+
+                if (state.getAuthorFromStore(member.getId()) == null){
+                    state.addAuthorToStore(member);
+                    csvLineMember = new String[table.getSize()];
+                    csvLineMember[table.getIndex(OutputModelTable.AUTHOR_ID)] = getId(state, member);
+                    csvLineMember[table.getIndex(OutputModelTable.ABBREV_AUTHOR)] = member.getNomenclaturalTitle();
+                    csvLineMember[table.getIndex(OutputModelTable.AUTHOR_TITLE)] = member.getTitleCache();
+                    csvLineMember[table.getIndex(OutputModelTable.AUTHOR_FIRST_NAME)] = member.getFirstname();
+                    csvLineMember[table.getIndex(OutputModelTable.AUTHOR_LASTNAME)] = member.getLastname();
+                    csvLineMember[table.getIndex(OutputModelTable.AUTHOR_PREFIX)] = member.getPrefix();
+                    csvLineMember[table.getIndex(OutputModelTable.AUTHOR_SUFFIX)] = member.getSuffix();
+                    state.getProcessor().put(table, member, csvLineMember);
+                }
+                index++;
+
+            }
+        }
+        state.getProcessor().put(table, author, csvLine);
+
+
+
+
     }
 
     /**
