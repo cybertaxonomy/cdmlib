@@ -38,6 +38,7 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
     public OutputModelConfigurator(IExportTransformer transformer) {
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
+        this.setTarget(TARGET.EXPORT_DATA);
     }
 
 

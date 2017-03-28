@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author k.luther
@@ -83,6 +84,8 @@ public class OutputModelClassificationExport
         //TODO MetaData
         for (UUID classificationUuid : config.getClassificationUuids()){
             Classification classification = getClassificationService().find(classificationUuid);
+
+
             if (classification == null){
                 String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
                 //TODO
@@ -90,6 +93,10 @@ public class OutputModelClassificationExport
             }else{
 //                gtTaxonNodeService().
                 TaxonNode root = classification.getRootNode();
+
+                UUID uuid = root.getUuid();
+
+                root = getTaxonNodeService().load(uuid);
                 for (TaxonNode child : root.getChildNodes()){
                     handleTaxon(state, child);
                     //TODO progress monitor
@@ -194,14 +201,27 @@ public class OutputModelClassificationExport
         csvLine[table.getIndex(OutputModelTable.RANK)] = getTitleCache(rank);
         if (rank != null){
             csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = String.valueOf(rank.getOrderIndex());
+            if (rank.isInfraGeneric()){
+                try {
+                    csvLine[table.getIndex(OutputModelTable.INFRAGENERIC_RANK)] = name.getRank().getInfraGenericMarker();
+                } catch (UnknownCdmTypeException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            if (rank.isInfraSpecific()){
+                csvLine[table.getIndex(OutputModelTable.INFRASPECIFIC_RANK)] = name.getRank().getAbbreviation();
+            }
         }else{
             csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = "";
         }
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = getTropicosTitleCache(name);
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_NO_AUTHORS)] = name.getNameCache();
         csvLine[table.getIndex(OutputModelTable.GENUS_UNINOMIAL)] = name.getGenusOrUninomial();
+
         csvLine[table.getIndex(OutputModelTable.INFRAGENERIC_EPITHET)] = name.getInfraGenericEpithet();
         csvLine[table.getIndex(OutputModelTable.SPECIFIC_EPITHET)] = name.getSpecificEpithet();
+
         csvLine[table.getIndex(OutputModelTable.INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
         csvLine[table.getIndex(OutputModelTable.BAS_AUTHORTEAM_FK)] = getId(state,name.getBasionymAuthorship());
         csvLine[table.getIndex(OutputModelTable.BAS_EX_AUTHORTEAM_FK)] = getId(state, name.getExBasionymAuthorship());
@@ -211,6 +231,16 @@ public class OutputModelClassificationExport
         Reference nomRef = (Reference)name.getNomenclaturalReference();
         if (nomRef != null){
             csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = nomRef.getType().name();
+            if (nomRef.getVolume() != null){
+                csvLine[table.getIndex(OutputModelTable.VOLUME_ISSUE)] = nomRef.getVolume();
+            }
+            if (nomRef.getDatePublished() != null){
+                csvLine[table.getIndex(OutputModelTable.DATE_PUBLISHED)] = nomRef.getDatePublishedString();
+                csvLine[table.getIndex(OutputModelTable.YEAR_PUBLISHED)] = nomRef.getDatePublished().getYear();
+            }
+            if (name.getNomenclaturalMicroReference() != null){
+                csvLine[table.getIndex(OutputModelTable.DETAIL)] = name.getNomenclaturalMicroReference();
+            }
 
             if (nomRef.getInReference() != null){
                 Reference inReference = nomRef.getInReference();
@@ -235,6 +265,19 @@ public class OutputModelClassificationExport
         }else{
             csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = "";
         }
+
+
+
+       /*
+        * Collation
+
+        Detail
+
+
+        TitlePageYear
+        */
+
+
         if (state.getActualTaxonBase() instanceof Taxon ){
             Taxon actualTaxon = (Taxon)state.getActualTaxonBase();
             Set<TaxonDescription> descriptions = actualTaxon.getDescriptions();
@@ -325,6 +368,9 @@ HomotypicGroupSequenceNumber
      */
     private String extractStatusString(TaxonNameBase name, boolean abbrev) {
         Set<NomenclaturalStatus> status = name.getStatus();
+        if (status.isEmpty()){
+            return "";
+        }
         String statusString = "";
         for (NomenclaturalStatus nameStatus: status){
             if (nameStatus != null){
@@ -373,8 +419,9 @@ HomotypicGroupSequenceNumber
 //TODO: nameRelations, which and how to display
 
 
-            typifiedNamesString = name.getTitleCache() + " " + extractStatusString(name, true) + " ";
+            typifiedNamesString += name.getTitleCache()+ extractStatusString(name, true) + ", ";
         }
+        typifiedNamesString = typifiedNamesString.substring(0, typifiedNamesString.length()-2);
         if (typifiedNamesString != null){
             csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
         }else{

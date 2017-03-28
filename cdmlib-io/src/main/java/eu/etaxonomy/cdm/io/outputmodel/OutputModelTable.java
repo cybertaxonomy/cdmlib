@@ -54,7 +54,7 @@ public enum OutputModelTable {
     protected static final String IPNI_ID = "IPNI_ID";
     protected static final String LSID = "LSID";
     protected static final String RANK = "Rank";
-    protected static final String RANK_SEQUENCE = "Name_ID";
+    protected static final String RANK_SEQUENCE = "Rank_Sequence";
     protected static final String FULL_NAME_WITH_AUTHORS = "FullNameWithAuthors";
     protected static final String FULL_NAME_NO_AUTHORS = "FullNameNoAuthors";
     protected static final String GENUS_UNINOMIAL = "GenusOrUninomial";
@@ -119,7 +119,7 @@ public enum OutputModelTable {
                 BAS_EX_AUTHORTEAM_FK, BAS_AUTHORTEAM_FK, COMB_EX_AUTHORTEAM_FK, COMB_AUTHORTEAM_FK,
                 AUTHOR_TEAM_STRING, PUBLICATION_TYPE, ABBREV_TITLE, FULL_TITLE,
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
-                DETAIL, YEAR_PUBLISHED, TITLE_PAGE_YEAR, PROTOLOGUE_URI,
+                DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, TITLE_PAGE_YEAR, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
                 HOMOTYPIC_GROUP_SEQ
         };
