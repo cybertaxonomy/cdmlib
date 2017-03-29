@@ -18,7 +18,6 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -33,16 +32,14 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>>
         extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
-    private static final long serialVersionUID = 2759164811664484732L;
 
+    private static final long serialVersionUID = 2759164811664484732L;
     private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
+	private ArrayList<HashMap<String, String>> recordList = null;
 
-	ArrayList<HashMap<String, String>> recordList = null;
-
-	private final CdmApplicationController appCtr = null;
 	private ExcelImportConfiguratorBase configurator = null;
 
 
@@ -84,8 +81,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
                 ByteArrayInputStream stream = new ByteArrayInputStream(data);
                 recordList = ExcelUtils.parseXLS(stream, sheetName);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }else{
     		try {
@@ -181,11 +177,6 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 
 	public ExcelImportConfiguratorBase getConfigurator() {
 		return configurator;
-	}
-
-
-	public CdmApplicationController getApplicationController() {
-		return appCtr;
 	}
 
 
