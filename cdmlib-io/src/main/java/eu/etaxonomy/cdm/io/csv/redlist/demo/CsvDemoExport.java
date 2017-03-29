@@ -126,7 +126,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    }
 	    finally{
 	        if (exportStream != null){
-	            state.getResult().addExportData((byte[])this.createExportData().getExportData());
+	            state.getResult().addExportData(getByteArray());
 	        }
 	        if(writer != null){
 	            writer.close();
@@ -720,7 +720,9 @@ public class CsvDemoExport extends CsvDemoBase {
      */
     @Override
     public byte[] getByteArray() {
-        // TODO Auto-generated method stub
+        if (this.exportStream != null){
+            return this.exportStream.toByteArray();
+        }
         return null;
     }
 
