@@ -119,7 +119,7 @@ public class OutputModelResultProcessor {
                 writer.flush();
 
                 writer.close();
-                finalResult.addExportData(table.getTableName(), exportStream.toByteArray());
+                finalResult.putExportData(table.getTableName(), exportStream.toByteArray());
 
             }
         }
