@@ -116,6 +116,7 @@ public class CsvDemoExport extends CsvDemoBase {
                 if(writer != null) {
                     performCSVExport(state, config, txStatus, classificationSet, progressMonitor, writer);
                 }
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -124,11 +125,15 @@ public class CsvDemoExport extends CsvDemoBase {
 	        e.printStackTrace();
 	    }
 	    finally{
+	        if (exportStream != null){
+	            state.getResult().addExportData((byte[])this.createExportData().getExportData());
+	        }
 	        if(writer != null){
 	            writer.close();
 	        }
 	        this.clearExistingRecordIds();
 	    }
+
 //	    commitTransaction(txStatus);
 	    return;
 	}

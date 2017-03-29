@@ -34,7 +34,7 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
 
 
 	@Override
-	public  ExportDataWrapper getExportData() {
+	public  ExportDataWrapper createExportData() {
 	    if (exportStream != null){
 	        ExportDataWrapper<byte[]> data = ExportDataWrapper.NewByteArrayInstance();
 	        data.addExportData( exportStream.toByteArray());

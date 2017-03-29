@@ -16,7 +16,7 @@ public interface ICdmExport<CONFIG extends IExportConfigurator, STATE extends Ex
             extends ICdmIO<STATE>{
 
 
-	public ExportDataWrapper getExportData();
+	public ExportDataWrapper createExportData();
 
 	public byte[] getByteArray();
 

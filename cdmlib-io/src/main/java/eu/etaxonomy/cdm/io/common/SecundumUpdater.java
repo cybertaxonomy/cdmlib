@@ -57,7 +57,7 @@ public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigur
     @Override
     protected boolean doCheck(DefaultImportState<SetSecundumForSubtreeConfigurator> state) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
     /**
      * {@inheritDoc}

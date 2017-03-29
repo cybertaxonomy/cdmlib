@@ -37,7 +37,7 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
 
     @Override
     protected void doInvoke(DefaultImportState<SortIndexUpdaterConfigurator> state) {
-        SortIndexUpdaterConfigurator config = state.getConfig();
+        SortIndexUpdaterConfigurator config =  state.getConfig();
         SortIndexUpdater updater;
 
        // CaseType caseType = CaseType.caseTypeOfDatasource(config.getDestination());
@@ -133,14 +133,19 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
     }
 
 
+
+
     @Override
-    protected boolean doCheck(DefaultImportState<SortIndexUpdaterConfigurator> state) {
+    protected boolean isIgnore(DefaultImportState<SortIndexUpdaterConfigurator> state) {
         // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected boolean isIgnore(DefaultImportState<SortIndexUpdaterConfigurator> state) {
+    protected boolean doCheck(DefaultImportState<SortIndexUpdaterConfigurator> state) {
         // TODO Auto-generated method stub
         return false;
     }
