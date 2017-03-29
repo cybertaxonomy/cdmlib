@@ -124,7 +124,8 @@ public class CsvNameExport extends CsvNameExportBase {
 
             }
             if (exportStream != null){
-                this.exportData.addExportData(exportStream.toByteArray());
+                state.getResult().addExportData(getByteArray());
+                //this.exportData.addExportData(exportStream.toByteArray());
             }
             writer.flush();
 

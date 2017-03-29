@@ -155,6 +155,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		    case EXPORT_DATA:
 		        exportStream = new ByteArrayOutputStream();
                 sddDocumentBuilder.marshal(dataSet, exportStream);
+                state.getResult().addExportData(getByteArray());
 		        break;
 		    default:
 		        break;
