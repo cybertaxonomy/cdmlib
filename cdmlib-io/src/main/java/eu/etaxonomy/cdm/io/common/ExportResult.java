@@ -88,8 +88,8 @@ public class ExportResult extends IoResultBase implements Serializable {
         data.addExportData(exportData);
     }
 
-    public void addExportData(String tableName, byte[] exportData) {
-        data.addExportData(exportData, tableName);
+    public void putExportData(String tableName, byte[] exportData) {
+        data.putExportData(tableName, exportData);
     }
 
 
@@ -98,6 +98,7 @@ public class ExportResult extends IoResultBase implements Serializable {
         state = ExportResultState.INCOMPLETE_WITH_ERROR;
     }
 
+    @Override
     public void setAborted() {this.state = ExportResultState.ABORTED;}
 
 
