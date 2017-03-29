@@ -36,6 +36,8 @@ public enum OutputModelTable {
     protected static final String NAME_FK = "Name_FK";
     protected static final String TAXON_ID = "Taxon_ID";
     protected static final String TAXON_FK = "Taxon_FK";
+    protected static final String CLASSIFICATION_ID = "Classification_ID";
+    protected static final String CLASSIFICATION_TITLE = "Classification_Name";
     protected static final String SYNONYM_ID = "Synonym_ID";
     protected static final String PARENT_FK = "Parent_FK";
     protected static final String SEC_REFERENCE_FK = "SecReference_FK";
@@ -64,7 +66,7 @@ public enum OutputModelTable {
     protected static final String INFRASPECIFIC_RANK = "InfraspecificRank";
     protected static final String INFRASPECIFIC_EPITHET = "InfraSpecificEpithet ";
     protected static final String BAS_EX_AUTHORTEAM_FK = "BasionymExAuthorTeam_Fk";
-    protected static final String BAS_AUTHORTEAM_FK = "BasionymExAuthorTeam_Fk";
+    protected static final String BAS_AUTHORTEAM_FK = "BasionymAuthorTeam_Fk";
     protected static final String COMB_EX_AUTHORTEAM_FK = "PublishingExAuthorTeam_Fk";
     protected static final String COMB_AUTHORTEAM_FK = "PublishingAuthorTeam_Fk";
     protected static final String AUTHOR_TEAM_STRING = "AuthorTeamString";
@@ -148,7 +150,7 @@ public enum OutputModelTable {
         };
     }
     final static String[] taxonColumns(){
-        return new String[]{TAXON_ID, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
+        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
     }
     final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE};

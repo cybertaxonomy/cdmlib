@@ -128,6 +128,8 @@ public class OutputModelClassificationExport
         csvLine[table.getIndex(OutputModelTable.PARENT_FK)] = getId(state, parent);
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
         csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+        csvLine[table.getIndex(OutputModelTable.CLASSIFICATION_ID)] = getId(state, taxonNode.getClassification());
+        csvLine[table.getIndex(OutputModelTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification().getTitleCache();
 
         state.getProcessor().put(table, taxon, csvLine);
         for (TaxonNode child: taxonNode.getChildNodes()){
@@ -501,7 +503,7 @@ HomotypicGroupSequenceNumber
 //TODO: nameRelations, which and how to display
 
 
-            typifiedNamesString += name.getTitleCache()+ extractStatusString(name, true) + ", ";
+            typifiedNamesString += name.getTitleCache()+ extractStatusString(name, true) + "; ";
         }
         typifiedNamesString = typifiedNamesString.substring(0, typifiedNamesString.length()-2);
         if (typifiedNamesString != null){
