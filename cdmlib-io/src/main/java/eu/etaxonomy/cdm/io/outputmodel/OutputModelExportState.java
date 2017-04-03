@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -34,6 +36,8 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
 
     private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<Integer, HomotypicalGroup>();
     private Map<Integer, TeamOrPersonBase> authorStore = new HashMap<Integer, TeamOrPersonBase>();
+    private Map<Integer, DerivedUnit> specimenStore = new HashMap<Integer, DerivedUnit>();
+    private Map<Integer, Reference> referenceStore = new HashMap<Integer, Reference>();
 
     /**
      * @param config
@@ -113,6 +117,24 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
         return authorStore.get(id);
     }
 
+
+    public void addSpecimenToStore(DerivedUnit specimen) {
+        this.specimenStore.put(specimen.getId(), specimen);
+
+    }
+
+
+    public DerivedUnit getSpecimenFromStore(Integer id){
+        return specimenStore.get(id);
+    }
+
+    public Reference getReferenceFromStore(Integer id){
+        return referenceStore.get(id);
+    }
+    public void addReferenceToStore(Reference ref) {
+        this.referenceStore.put(ref.getId(), ref);
+
+    }
 
 
 }

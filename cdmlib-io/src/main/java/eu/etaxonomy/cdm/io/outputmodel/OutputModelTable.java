@@ -21,15 +21,16 @@ public enum OutputModelTable {
     HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
     NOMENCLATURAL_AUTHOR("NomenclaturalAuthor", nomenclaturalAuthorColumns()),
     NOMENCLATURAL_AUTHOR_TEAM_RELATION("NomenclaturalAuthorTeamRelation", nomenclaturalAuthorTeamRelColumns()),
-    TYPE_DESIGNATION("TypeDesignation", new String[]{}),
-    SPECIMEN("Specimen", new String[]{}),
+    TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
+    SPECIMEN("Specimen", specimenColumns()),
     TAXON("Taxon", taxonColumns()),
     SYNONYM("Synonym", synonymColumns()),
     REFERENCE("Reference", referenceColumns()),
-    SIMPLE_FACT("SimpleFact", new String[]{}),
-    SPECIMEN_FACT("SpecimenFact", new String[]{}),
-    GEOGRAPHIC_AREA_FACT("GeographicAreaFact", new String[]{}),
-    COMMON_NAME_FACT("CommonNameFact", new String[]{}),
+    SIMPLE_FACT("SimpleFact", simpleFactsColumns()),
+    SPECIMEN_FACT("SpecimenFact", specimenFactsColumns()),
+    GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
+    COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
+    FACT_SOURCES("FactSources", factSourcesColumns())
     ;
 
     //Taxon/Synonym
@@ -48,7 +49,26 @@ public enum OutputModelTable {
     protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
     protected static final String REF_TITLE = "Title";
     protected static final String DATE_PUBLISHED = "DatePublished";
-    //TBC
+    protected static final String EDITION = "Edition";
+    protected static final String EDITOR= "Editor";
+    protected static final String ISBN = "ISBN";
+    protected static final String ISSN = "ISSN";
+    protected static final String ORGANISATION = "Organisation";
+    protected static final String PAGES = "Pages";
+    protected static final String PLACE_PUBLISHED = "Place Published";
+    protected static final String PUBLISHER = "Publisher";
+    protected static final String REF_ABSTRACT = "Reference Abstract";
+    protected static final String SERIES_PART = "Series Part";
+    protected static final String VOLUME = "Volume";
+    protected static final String YEAR = "Year";
+    protected static final String AUTHORSHIP_TITLE = "Authorship";
+
+    protected static final String IN_REFERENCE = "inReference";
+    protected static final String INSTITUTION = "Institution";
+   // protected static final String LSID = "LSID";
+    protected static final String SCHOOL = "School";
+    protected static final String REF_TYPE = "Reference Type";
+    protected static final String URI = "URI";
 
     //Name
     protected static final String NAME_ID = "Name_ID";
@@ -116,13 +136,82 @@ public enum OutputModelTable {
     protected static final String AUTHOR_TEAM_FK = "AuthorTeam_Fk";
     protected static final String AUTHOR_TEAM_SEQ_NUMBER = "SequenceNumber";
 
+    //TypeDesignations
+
+    protected static final String SPECIMEN_FK = "Specimen_Fk";
+    protected static final String TYPE_VERBATIM_CITATION = "TypeVerbatimCitation";
+    protected static final String TYPE_CATEGORY = "TypeCategory";
+    protected static final String TYPE_DESIGNATED_BY_STRING = "TypeDesignatedByString";
+    protected static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignationByRef_Fk";
+
+    //Specimen
+
+    protected static final String SPECIMEN_ID = "Specimen_Id";
+    protected static final String SPECIMEN_CITATION = "SpecimenCitation";
+    protected static final String LOCALITY= "Locality";
+    protected static final String COUNTRY = "Country";
+    protected static final String AREA_CATEGORY1 = "AreaCategory1";
+    protected static final String AREA_NAME1 = "AreaName1";
+    protected static final String AREA_CATEGORY2 = "AreaCategory2";
+    protected static final String AREA_NAME2 = "AreaName2";
+    protected static final String AREA_CATEGORY3 = "AreaCategory3";
+    protected static final String AREA_NAME3 = "AreaName3";
+    protected static final String FURTHER_AREAS = "FurtherAreas";
+    protected static final String COLLECTOR_STRING = "CollectorString";
+    protected static final String COLLECTOR_NUMBER = "CollectorNumber";
+    protected static final String COLLECTION_DATE = "CollectionDate";
+    protected static final String SPECIMEN_IMAGE_URIS = "SpecimenImageURIs";
+    protected static final String HERBARIUM_ABBREV = "HerbariumAbbrev";
+    protected static final String MEDIA_SPECIMEN_URL = "MediaSpecimenURI";
+    //other specimen attributes
+
+
+    //SimpleFacts
+    protected static final String FACT_ID = "Fact_Id";
+    protected static final String FACT_TEXT = "FactText";
+    protected static final String LANGUAGE = "Language";
+    protected static final String MEDIA_URI = "MediaURI";
+    protected static final String FACT_CATEGORY = "FactCategory";
+
+    // Specimen Facts
+
+    //Geographic Area Facts
+    protected static final String AREA_LABEL = "AreaLabel";
+    protected static final String STATUS_LABEL = "StatusLabel";
+
+
+    //FactSources
+    protected static final String FACT_FK = "Fact_Fk";
+    protected static final String REFERENCE_FK = "Reference_Fk";
+    protected static final String NAME_IN_SOURCE_FK = "NameInSource_Fk";
+
 
 
     final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
     }
 
-    final static String[] nomenclaturalAuthorColumns() {
+    final static String[]  factSourcesColumns() {
+        return new String[]{FACT_FK, REFERENCE_FK, NAME_IN_SOURCE_FK};
+    }
+
+    final static String[] specimenFactsColumns() {
+        return new String[]{FACT_ID, TAXON_FK, SPECIMEN_FK};
+    }
+
+    final static String[] commonNameFactsColumns() {
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, AREA_LABEL};
+
+    }
+    final static String[] geographicAreaFactsColumns() {
+        return new String[]{FACT_ID, TAXON_FK, AREA_LABEL, STATUS_LABEL};
+
+    }
+    final static String[] simpleFactsColumns() {
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
+
+    }
+   final static String[] nomenclaturalAuthorColumns() {
         return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_FIRST_NAME, AUTHOR_LASTNAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
     }
 
@@ -156,8 +245,20 @@ public enum OutputModelTable {
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
     }
     final static String[] referenceColumns(){
-        return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE, DATE_PUBLISHED};
+        return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
+                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI};
     }
+
+    final static String[] typeDesignationColumns(){
+        return new String[]{SPECIMEN_FK, NAME_FK, TYPE_VERBATIM_CITATION, TYPE_CATEGORY, TYPE_DESIGNATED_BY_STRING, TYPE_DESIGNATED_BY_REF_FK};
+    }
+
+    final static String[] specimenColumns() {
+        return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,
+                FURTHER_AREAS, COLLECTOR_STRING, COLLECTOR_NUMBER, COLLECTION_DATE, SPECIMEN_IMAGE_URIS, HERBARIUM_ABBREV, MEDIA_SPECIMEN_URL};
+    }
+
+
 
     private String tableName;
     private String[] columnNames;

@@ -32,6 +32,8 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
 
     private CsvIOConfigurator csvIOConfig = CsvIOConfigurator.NewInstance();
 
+    private boolean isHighlightPrimaryCollector = false;
+
     /**
      * @param transformer
      */
@@ -109,6 +111,15 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
      */
     public void setClassificationUuids(Set<UUID> classificationUuids) {
         this.classificationUuids = classificationUuids;
+    }
+
+
+    /**
+     * @return
+     */
+    public boolean isHighLightPrimaryCollector() {
+
+        return isHighlightPrimaryCollector;
     }
 
 }
