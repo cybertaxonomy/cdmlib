@@ -144,12 +144,14 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     /**
      * Adds an identifier at the given position. For use of
-     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}.
+     * If <code>index</code> is <code>null</code> the identifier is added to the end
+     * of the list.
      * @see #getIdentifiers()
      * @param index the list index
      * @param identifier the identifier
      */
-    public void addIdentifier(int index, Identifier identifier);
+    public void addIdentifier(Integer index, Identifier identifier);
 
     /**
      * Removes an identifier at the given position. For use of
