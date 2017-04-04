@@ -272,7 +272,7 @@ public class DistributionImport
 
 
 	@Override
-	protected boolean doCheck(ExcelImportState state) {
+	protected boolean doCheck(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		boolean result = true;
 		logger.warn("No check implemented for distribution data import");
 		return result;
@@ -280,7 +280,7 @@ public class DistributionImport
 
 
 	@Override
-	protected boolean isIgnore(ExcelImportState state) {
+	protected boolean isIgnore(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		return false;
 	}
 
