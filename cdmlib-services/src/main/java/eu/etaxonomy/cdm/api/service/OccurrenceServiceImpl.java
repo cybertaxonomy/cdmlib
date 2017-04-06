@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -1205,8 +1206,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<DerivationEvent> derivationEventsClone = new HashSet<>(derivationEvents);
             for (DerivationEvent derivationEvent : derivationEventsClone) {
                 Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-                for (DerivedUnit derivedUnit : derivatives) {
-                    delete(derivedUnit, config);
+                Iterator<DerivedUnit> it = derivatives.iterator();
+                Set<DerivedUnit> derivativesToDelete = new HashSet<>();
+                while (it.hasNext()) {
+                    DerivedUnit unit = it.next();
+                    derivativesToDelete.add(unit);
+                }
+                for (DerivedUnit unit:derivativesToDelete){
+                    delete(unit, config);
                 }
             }
         }
@@ -1521,6 +1528,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen){
+        if (specimen == null){
+            return null;
+        }
         List<DerivedUnit> childDerivate = new ArrayList<>();
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
