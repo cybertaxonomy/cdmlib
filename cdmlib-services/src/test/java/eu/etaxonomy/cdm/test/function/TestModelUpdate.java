@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.CdmUpdater;
 /**
  * This class is meant for functional testing of model changes. It is not meant
  * for running in maven.
+ *
  * @author a.mueller
  * @date 22.05.2015
  * @see CdmUpdater
@@ -33,12 +34,12 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm40" : "cdm41");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm41" : "cdm47");
 //		database = "cdm36";
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
@@ -52,7 +53,7 @@ public class TestModelUpdate {
 			e.printStackTrace();
 		}
  		try{
-    		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+    		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
     //		Classification classification = Classification.NewInstance("Me");
     //		Taxon taxon = Taxon.NewInstance(null, null);
