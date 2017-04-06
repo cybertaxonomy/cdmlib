@@ -21,9 +21,10 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
+ * Service for {@link Group user groups}
+ *
  * @author n.hoffmann
  * @created Mar 9, 2011
- * @version 1.0
  */
 public interface IGroupService extends IService<Group>, GroupManager{
 
@@ -48,7 +49,6 @@ public interface IGroupService extends IService<Group>, GroupManager{
     public List<Group> listByName(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public UUID saveGroup(Group group);
-
 
 
 }

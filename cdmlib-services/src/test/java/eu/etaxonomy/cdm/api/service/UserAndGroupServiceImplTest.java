@@ -180,7 +180,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         context.setAuthentication(authentication);
 
 
-        List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> authorityList = new ArrayList<>();
         GrantedAuthorityImpl rolePublishAthotrity = GrantedAuthorityImpl.NewInstance(null);
         rolePublishAthotrity.setAuthority(Role.ROLE_PUBLISH.toString()); // testing if creating a Role from string is working
         authorityList.add(rolePublishAthotrity);
