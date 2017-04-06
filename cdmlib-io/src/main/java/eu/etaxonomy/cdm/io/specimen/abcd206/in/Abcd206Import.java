@@ -259,9 +259,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     //import unit + field unit data
                     state.setAssociatedUnitIds(state.getDataHolder().getAssociatedUnitIds());
                     this.handleSingleUnit(state, item);
-                    if (state.getConfig().isGetSiblings()){
-                        getSiblings(state, sourceUri);
-                    }
+
+//                    if (state.getConfig().isGetSiblings() && (state.getDataHolder().getKindOfUnit().toLowerCase().indexOf("clone")>-1 || state.getDataHolder().getRecordBasis().toLowerCase().indexOf("sample")>-1)){
+//                        getSiblings(state, sourceUri);
+//                    }
 
                 }
                 if(((Abcd206ImportConfigurator)state.getConfig()).isDeduplicateReferences()){
@@ -765,7 +766,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                     state.reset();
                                     state.setPrefix(associationWrapper.getPrefix());
                                     Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
-                                   // logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
+                                    logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
                                     handleSingleUnit(state, associatedUnits.item(m));
 
                                     DerivedUnit associatedUnit = state.getDerivedUnitBase();
@@ -970,7 +971,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (state.getDataHolder().getKindOfUnit().toLowerCase().indexOf("clone")>-1) {
                 kindOfUnit = getKindOfUnit(state, null, "clone culture", "clone culture", "cc", null);
             }
-            else if (state.getDataHolder().getRecordBasis().toLowerCase().startsWith("live"))  {
+            else if (state.getDataHolder().getKindOfUnit().toLowerCase().startsWith("live"))  {
                 kindOfUnit = getKindOfUnit(state, null, "live sample", "live sample", "ls", null);
             }
 

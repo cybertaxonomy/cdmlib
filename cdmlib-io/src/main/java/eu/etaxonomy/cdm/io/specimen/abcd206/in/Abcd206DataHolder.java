@@ -39,11 +39,47 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
 
 
-
     protected List<String> associatedUnitIds;
 
 
     protected String institutionCode;
+    /**
+     * @return the institutionCode
+     */
+    public String getInstitutionCode() {
+        return institutionCode;
+    }
+
+
+
+
+    /**
+     * @param institutionCode the institutionCode to set
+     */
+    public void setInstitutionCode(String institutionCode) {
+        this.institutionCode = institutionCode;
+    }
+
+
+
+
+    /**
+     * @return the collectionCode
+     */
+    public String getCollectionCode() {
+        return collectionCode;
+    }
+
+
+
+
+    /**
+     * @param collectionCode the collectionCode to set
+     */
+    public void setCollectionCode(String collectionCode) {
+        this.collectionCode = collectionCode;
+    }
+
     protected String collectionCode;
 
 
