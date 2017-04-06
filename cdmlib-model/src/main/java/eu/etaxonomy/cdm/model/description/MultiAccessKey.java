@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  * @author h.fradin
  * @created 13.08.2009
- * @version 1.0
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -70,7 +69,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="MultiAccessKey_CoveredTaxon")
     @NotNull
-	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
+	private Set<Taxon> coveredTaxa = new HashSet<>();
 
 	@XmlElementWrapper(name = "TaxonomicScope")
 	@XmlElement(name = "Taxon")
@@ -79,7 +78,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="MultiAccessKey_TaxonScope")
 	@NotNull
-	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
+	private Set<Taxon> taxonomicScope = new HashSet<>();
 
 	@XmlElementWrapper( name = "GeographicalScope")
 	@XmlElement( name = "Area")
@@ -88,7 +87,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="MultiAccessKey_NamedArea")
 	@NotNull
-	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
+	private Set<NamedArea> geographicalScope = new HashSet<>();
 
 	@XmlElementWrapper( name = "ScopeRestrictions")
 	@XmlElement( name = "Restriction")
@@ -97,7 +96,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="MultiAccessKey_Scope")
 	@NotNull
-	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
+	private Set<DefinedTerm> scopeRestrictions = new HashSet<>();
 
 	/**
 	 * Class constructor: creates a new empty multi-access key instance.
