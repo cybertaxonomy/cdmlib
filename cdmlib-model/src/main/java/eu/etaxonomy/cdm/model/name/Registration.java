@@ -35,6 +35,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -59,7 +60,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "submitter"
 })
 @Entity
-public class Registration {
+public class Registration extends AnnotatableEntity {
+
+    private static final long serialVersionUID = -5633923579539766801L;
 
     @XmlElement(name = "Identifier")
     @NullOrNotEmpty
@@ -114,6 +117,13 @@ public class Registration {
     @NotNull
     private Set<TypeDesignationBase> typeDesignations;
 
+    @XmlElementWrapper(name = "BlockingRegistrations")
+    @XmlElement(name = "BlockedBy")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @NotNull
     private Set<Registration> blockedBy;
 
     @XmlElement (name = "Submitter")
@@ -158,6 +168,7 @@ public class Registration {
     public void setSubmitter(User submitter) {this.submitter = submitter;}
 
     public Set<Registration> getBlockedBy() {return blockedBy;}
+    @SuppressWarnings("unused")
     private void setBlockedBy(Set<Registration> blockedBy) {this.blockedBy = blockedBy;}
 
     public Set<TypeDesignationBase> getTypeDesignations() {return typeDesignations;}

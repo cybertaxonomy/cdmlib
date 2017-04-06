@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
 /**
@@ -95,6 +96,17 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, SchemaUpdaterBase.INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
         stepList.add(step);
 
+        //#6258
+        stepName = "Add Registration table";
+        tableName = "IntextReference";
+        String[] columnNames = new String[]{"identifier","specificIdentifier","registrationDate","status",
+                "institution_id","name_id","submitter_id"};
+        String[] referencedTables = new String[]{null, null, null, null,
+                "AgentBase","TaxonNameBase","User"};
+        String[] columnTypes = new String[]{"string_255","string_255","datetime","string_255","int","int","int"};
+        step = TableCreator.NewAnnotatableInstance(stepName, tableName,
+                columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
+        stepList.add(step);
 
         return stepList;
     }

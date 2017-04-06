@@ -164,6 +164,7 @@
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatusType"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NonViralName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.Rank"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.Registration"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TaxonNameBase"/>
