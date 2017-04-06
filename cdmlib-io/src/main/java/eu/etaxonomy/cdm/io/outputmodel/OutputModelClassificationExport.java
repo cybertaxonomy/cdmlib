@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -60,6 +62,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -197,7 +200,7 @@ public class OutputModelClassificationExport
         String[] csvLine = new String[table.getSize()];
 
         for (DescriptionElementBase element: simpleFacts){
-            handleSource(state, element);
+            handleSource(state, element, OutputModelTable.SIMPLE_FACT);
 
             if (element instanceof TextData){
                TextData textData = (TextData)element;
@@ -234,7 +237,7 @@ public class OutputModelClassificationExport
             if (element instanceof IndividualsAssociation){
                 IndividualsAssociation indAssociation = (IndividualsAssociation)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
-                handleSource(state, element);
+                handleSource(state, element, table);
                 if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
                     SpecimenOrObservationBase specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
 
@@ -261,18 +264,22 @@ public class OutputModelClassificationExport
      * @param taxon
      * @param element
      */
-    private void handleSource(OutputModelExportState state, DescriptionElementBase element) {
+    private void handleSource(OutputModelExportState state, DescriptionElementBase element, OutputModelTable factsTable) {
         OutputModelTable table = OutputModelTable.FACT_SOURCES;
         String[] csvLine = new String[table.getSize()];
         Set<DescriptionElementSource> sources = element.getSources();
         for (DescriptionElementSource source: sources){
             Reference ref = source.getCitation();
-            if (state.getReferenceFromStore(ref.getId()) == null){
-                handleReference(state, ref);
+            if (ref != null){
+                if (state.getReferenceFromStore(ref.getId()) == null){
+                    handleReference(state, ref);
+                    csvLine[table.getIndex(OutputModelTable.REFERENCE_FK)] = getId(state, ref);
+                }
             }
             csvLine[table.getIndex(OutputModelTable.FACT_FK)] = getId(state, element);
-            csvLine[table.getIndex(OutputModelTable.REFERENCE_FK)] = getId(state, ref);
+
             csvLine[table.getIndex(OutputModelTable.NAME_IN_SOURCE_FK)] = getId(state, source.getNameUsedInSource());
+            csvLine[table.getIndex(OutputModelTable.FACT_TYPE)] = factsTable.getTableName();
             state.getProcessor().put(table, source, csvLine);
         }
 
@@ -290,7 +297,7 @@ public class OutputModelClassificationExport
             if (element instanceof Distribution){
                 Distribution distribution = (Distribution)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
-                handleSource(state, element);
+                handleSource(state, element, table);
                 csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
                 csvLine[table.getIndex(OutputModelTable.AREA_LABEL)] = distribution.getArea().getLabel();
                 csvLine[table.getIndex(OutputModelTable.STATUS_LABEL)] = distribution.getStatus().getLabel();
@@ -313,7 +320,7 @@ public class OutputModelClassificationExport
             if (element instanceof CommonTaxonName){
                 CommonTaxonName commonName = (CommonTaxonName)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
-                handleSource(state, element);
+                handleSource(state, element, table);
                 csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
                 csvLine[table.getIndex(OutputModelTable.FACT_TEXT)] = commonName.getName();
                 csvLine[table.getIndex(OutputModelTable.LANGUAGE)] = commonName.getLanguage().getLabel();
@@ -378,6 +385,7 @@ public class OutputModelClassificationExport
     private void handleName(OutputModelExportState state, TaxonNameBase name) {
         Rank rank = name.getRank();
         OutputModelTable table = OutputModelTable.SCIENTIFIC_NAME;
+        name = HibernateProxyHelper.deproxy(name);
         String[] csvLine = new String[table.getSize()];
 
         csvLine[table.getIndex(OutputModelTable.NAME_ID)] = getId(state, name);
@@ -387,6 +395,7 @@ public class OutputModelClassificationExport
             csvLine[table.getIndex(OutputModelTable.LSID)] = "";
         }
 
+        handleIdentifier(state, name, csvLine, table);
 
         csvLine[table.getIndex(OutputModelTable.RANK)] = getTitleCache(rank);
         if (rank != null){
@@ -405,7 +414,11 @@ public class OutputModelClassificationExport
         }else{
             csvLine[table.getIndex(OutputModelTable.RANK_SEQUENCE)] = "";
         }
-        csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = getTropicosTitleCache(name);
+        if (name.isProtectedTitleCache()){
+            csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] =name.getTitleCache();
+        }else{
+            csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = getTropicosTitleCache(name);
+        }
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_NO_AUTHORS)] = name.getNameCache();
         csvLine[table.getIndex(OutputModelTable.GENUS_UNINOMIAL)] = name.getGenusOrUninomial();
 
@@ -441,8 +454,14 @@ public class OutputModelClassificationExport
         }
 
         csvLine[table.getIndex(OutputModelTable.AUTHOR_TEAM_STRING)] = name.getAuthorshipCache();
+
         Reference nomRef = (Reference)name.getNomenclaturalReference();
+
         if (nomRef != null){
+            if (state.getReferenceFromStore(nomRef.getId()) == null){
+                handleReference(state, nomRef);
+            }
+            csvLine[table.getIndex(OutputModelTable.REFERENCE_FK)] = getId(state, nomRef);
             csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = nomRef.getType().name();
             if (nomRef.getVolume() != null){
                 csvLine[table.getIndex(OutputModelTable.VOLUME_ISSUE)] = nomRef.getVolume();
@@ -457,23 +476,27 @@ public class OutputModelClassificationExport
 
             if (nomRef.getInReference() != null){
                 Reference inReference = nomRef.getInReference();
+                if (inReference.getInReference() != null){
+                    inReference = inReference.getInReference();
+                }
                 csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = CdmUtils.Nz(inReference.getAbbrevTitle());
                 csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = CdmUtils.Nz(inReference.getTitle());
 
+
                 TeamOrPersonBase author = inReference.getAuthorship();
-                if (author != null){
+                if (author != null && (nomRef.isOfType(ReferenceType.BookSection) || nomRef.isOfType(ReferenceType.Section))){
                     csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getNomenclaturalTitle());
-                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
+                    csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
                 }else{
                     csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
-                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
+                    csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = "";
                 }
             }else{
                 csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = "";
                 csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = "";
                 csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)]= "";
-                csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
-                csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
+                csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = "";
+
             }
         }else{
             csvLine[table.getIndex(OutputModelTable.PUBLICATION_TYPE)] = "";
@@ -489,18 +512,12 @@ public class OutputModelClassificationExport
 
         TitlePageYear
         */
+        Set<TaxonNameDescription> descriptions = name.getDescriptions();
+        String protologueUriString = extractURIs(descriptions, Feature.PROTOLOGUE());
 
+        csvLine[table.getIndex(OutputModelTable.PROTOLOGUE_URI)] = protologueUriString;
 
-        if (state.getActualTaxonBase() instanceof Taxon ){
-            Taxon actualTaxon = (Taxon)state.getActualTaxonBase();
-            Set<TaxonDescription> descriptions = actualTaxon.getDescriptions();
-            String protologueUriString = extractURIs(descriptions, Feature.PROTOLOGUE());
-
-            csvLine[table.getIndex(OutputModelTable.PROTOLOGUE_URI)] = protologueUriString;
-        }else{
-            csvLine[table.getIndex(OutputModelTable.PROTOLOGUE_URI)] = "";
-        }
-        if (name.getStatus() != null || name.getStatus().isEmpty()){
+        if (name.getStatus() == null || name.getStatus().isEmpty()){
             csvLine[table.getIndex(OutputModelTable.NOM_STATUS)] = "";
             csvLine[table.getIndex(OutputModelTable.NOM_STATUS_ABBREV)] = "";
         }else{
@@ -548,6 +565,34 @@ HomotypicGroupSequenceNumber
     }
 
     /**
+     * @param state
+     * @param name
+     */
+    private void handleIdentifier(OutputModelExportState state, TaxonNameBase name, String[] csvLine, OutputModelTable table) {
+        Set<String>  IPNIidentifiers = name.getIdentifiers(DefinedTerm.IPNI_NAME_IDENTIFIER());
+        Set<String>  tropicosIdentifiers = name.getIdentifiers(DefinedTerm.TROPICOS_NAME_IDENTIFIER());
+        Set<String>  WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
+        if (!IPNIidentifiers.isEmpty()){ extractIdentifier(IPNIidentifiers, csvLine, table.getIndex(OutputModelTable.IPNI_ID));}
+        if (!tropicosIdentifiers.isEmpty()){extractIdentifier(tropicosIdentifiers, csvLine, table.getIndex(OutputModelTable.TROPICOS_ID));}
+        if (!WFOIdentifiers.isEmpty()){extractIdentifier(WFOIdentifiers,  csvLine, table.getIndex(OutputModelTable.WFO_ID));}
+    }
+
+    /**
+     * @param tropicosIdentifiers
+     */
+    private void extractIdentifier(Set<String> identifierSet, String[] csvLine, int index) {
+        String identifierString = "";
+        for (String identifier: identifierSet){
+            if (!StringUtils.isBlank(identifierString)){
+                identifierString += ", ";
+            }
+            identifierString += identifier;
+        }
+
+        csvLine[index] = identifierString;
+    }
+
+    /**
      * @param descriptions
      * @return
      */
@@ -556,6 +601,7 @@ HomotypicGroupSequenceNumber
         boolean first = true;
         SpecimenDescription specimenDescription;
         TaxonDescription taxonDescription;
+        TaxonNameDescription nameDescription;
         Set<DescriptionElementBase> elements = new HashSet();
         Set<DescriptionBase> descriptionsSet = (Set<DescriptionBase>)descriptions;
         for (DescriptionBase description : descriptionsSet){
@@ -566,10 +612,14 @@ HomotypicGroupSequenceNumber
                 }else if (description instanceof TaxonDescription){
                     taxonDescription = (TaxonDescription) description;
                     elements = taxonDescription.getElements();
+                } else if (description instanceof TaxonNameDescription){
+                    nameDescription = (TaxonNameDescription) description;
+                    elements = nameDescription.getElements();
                 }
 
                 for (DescriptionElementBase element : elements){
-                    if (element.getFeature().equals(feature)){
+                    Feature entityFeature = HibernateProxyHelper.deproxy(element.getFeature());
+                    if (entityFeature.equals(feature)){
                         if (!element.getMedia().isEmpty()){
                             List<Media> media = element.getMedia();
                             for (Media mediaElement: media){
@@ -857,6 +907,7 @@ HomotypicGroupSequenceNumber
             for (String split: splittedAuthorString){
                 if (!StringUtils.isBlank(split)){
                     nomAuthorString += split.substring(0, 1);
+                    nomAuthorString += ".";
                 }
             }
         }
