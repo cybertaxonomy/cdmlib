@@ -26,8 +26,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -40,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -160,7 +159,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testPurgeAndReindex() throws CorruptIndexException, IOException, ParseException {
+    public final void testPurgeAndReindex() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -186,8 +185,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException,
-            ParseException {
+    public final void testFindByDescriptionElementFullText_CommonName() throws IOException,
+            LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -217,7 +216,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_Distribution() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_Distribution() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -233,7 +232,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_wildcard() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_wildcard() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -246,14 +245,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     /**
      * Regression test for #3113 (hibernate search: wildcard query can cause BooleanQuery$TooManyClauses: maxClauseCount is set to 1024)
      *
-     * @throws CorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      */
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_TooManyClauses() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_TooManyClauses() throws IOException, LuceneParseException {
 
         // generate 1024 terms to reproduce the bug
         TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
@@ -278,15 +276,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     /**
      * Regression test for #3116 (fulltext search: always only one page of results)
      *
-     * @throws CorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      */
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     @Ignore
-    public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
+    public final void testFullText_Paging() throws IOException, LuceneParseException {
 
         Reference sec = ReferenceFactory.newDatabase();
         referenceService.save(sec);
@@ -330,15 +327,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * see {@link #testFullText_ScoreAndOrder_2()} for the complement
      * test with matches in multiple TextData per taxon
      *
-     * @throws CorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      */
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
     @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
-    public final void testFullText_ScoreAndOrder_1() throws CorruptIndexException, IOException, ParseException {
+    public final void testFullText_ScoreAndOrder_1() throws IOException, LuceneParseException {
 
         int numOfTaxa = 3;
 
@@ -376,15 +372,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * see {@link #testFullText_ScoreAndOrder_1()} for the complement
      * test with matches in a single TextData per taxon
      *
-     * @throws CorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      */
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
     @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
-    public final void testFullText_ScoreAndOrder_2() throws CorruptIndexException, IOException, ParseException {
+    public final void testFullText_ScoreAndOrder_2() throws IOException, LuceneParseException {
 
         int numOfTaxa = 3;
 
@@ -418,14 +413,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
 
     /**
-     * @throws CorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      * @throws LuceneMultiSearchException
      */
     @Test
     @DataSet
-    public final void testFullText_Grouping() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFullText_Grouping() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
         Set<String> uniqueRandomStrs = new HashSet<String>(1024);
@@ -473,7 +467,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     @Ignore
-    public final void testFindByDescriptionElementFullText_TextData() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_TextData() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -520,7 +514,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_MultipleWords() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_MultipleWords() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -554,7 +548,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public final void testFindByDescriptionElementFullText_modify_DescriptionElement() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_modify_DescriptionElement() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -608,7 +602,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public final void testFindByDescriptionElementFullText_modify_Taxon() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_modify_Taxon() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -658,7 +652,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_modify_Classification() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_modify_Classification() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -709,7 +703,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_CategoricalData() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_CategoricalData() throws IOException, LuceneParseException {
 
         // add CategoricalData
         DescriptionBase d_abies_balsamea = descriptionService.find(UUID.fromString(D_ABIES_BALSAMEA_UUID));
@@ -761,7 +755,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_Highlighting() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_Highlighting() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -801,7 +795,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public final void testFindByFullText() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByFullText() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
 
@@ -833,7 +827,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void testPrepareByAreaSearch() throws IOException, ParseException {
+    public final void testPrepareByAreaSearch() throws IOException, LuceneParseException {
 
         List<PresenceAbsenceTerm> statusFilter = new ArrayList<PresenceAbsenceTerm>();
         List<NamedArea> areaFilter = new ArrayList<NamedArea>();
@@ -848,7 +842,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void testFindTaxaAndNamesByFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFindTaxaAndNamesByFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -906,7 +900,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void testFindTaxaAndNamesByFullText_PhraseQuery() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFindTaxaAndNamesByFullText_PhraseQuery() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -935,7 +929,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void testFindTaxaAndNamesByFullText_Sort() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFindTaxaAndNamesByFullText_Sort() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -985,7 +979,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void testFindTaxaAndNamesByFullText_AreaFilter() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFindTaxaAndNamesByFullText_AreaFilter() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -1086,7 +1080,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     @Ignore // remove once http://dev.e-taxonomy.eu/trac/ticket/5477 is solved
-    public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         Set<NamedArea> a_germany_canada_russia = new HashSet<NamedArea>();
         a_germany_canada_russia.add(germany);
@@ -1121,14 +1115,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     /**
      * Regression test for #3119: fulltext search: Entity always null whatever search
      *
-     * @throws CorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      * @throws LuceneMultiSearchException
      */
     @Test
     @DataSet
-    public final void testFindByEverythingFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void testFindByEverythingFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -1153,7 +1146,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void findByEveryThingFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+    public final void findByEveryThingFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -1178,7 +1171,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //    @SuppressWarnings("rawtypes")
 //    @Test
 //    @DataSet
-//    public final void benchmarkFindTaxaAndNamesHql() throws CorruptIndexException, IOException, ParseException {
+//    public final void benchmarkFindTaxaAndNamesHql() throws IOException, LuceneParseException {
 //
 //        createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 //
@@ -1206,7 +1199,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void benchmarkFindByCommonNameHql() throws CorruptIndexException, IOException, ParseException {
+    public final void benchmarkFindByCommonNameHql() throws IOException, LuceneParseException {
 
 //        printDataSet(System.err, new String[] { "TaxonBase" });
 
@@ -1236,7 +1229,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void benchmarkFindByCommonNameLucene() throws CorruptIndexException, IOException, ParseException {
+    public final void benchmarkFindByCommonNameLucene() throws IOException, LuceneParseException {
 
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 

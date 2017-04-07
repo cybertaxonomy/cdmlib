@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -174,7 +175,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, ParseException, LuceneMultiSearchException {
+             throws IOException, LuceneParseException, LuceneMultiSearchException {
 
 
         logger.info("search : " + requestPathAndQuery(request) );
@@ -326,7 +327,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, ParseException {
+             throws IOException, LuceneParseException {
 
          logger.info("findByDescriptionElementFullText : " + requestPathAndQuery(request) );
 
@@ -369,7 +370,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, ParseException {
+             throws IOException, LuceneParseException {
 
          logger.info("findByFullText : " + requestPathAndQuery(request)  );
 
@@ -403,7 +404,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, ParseException, LuceneMultiSearchException {
+             throws IOException, LuceneParseException, LuceneMultiSearchException {
 
          logger.info("findByEverythingFullText : " + requestPathAndQuery(request) );
 
