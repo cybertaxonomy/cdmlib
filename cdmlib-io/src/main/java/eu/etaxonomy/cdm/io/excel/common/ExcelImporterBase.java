@@ -14,7 +14,9 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -209,5 +211,21 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		return result;
 	}
 
-
+    /**
+     * Returns the value of the record map for the given key.
+     * The value is trimmed and empty values are set to <code>null</code>.
+     * @param record
+     * @param originalKey
+     * @return the value
+     */
+    protected String getValue(Map<String, String> record, String originalKey) {
+        String value = record.get(originalKey);
+        if (! StringUtils.isBlank(value)) {
+            if (logger.isDebugEnabled()) { logger.debug(originalKey + ": " + value); }
+            value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
+            return value;
+        }else{
+            return null;
+        }
+    }
 }
