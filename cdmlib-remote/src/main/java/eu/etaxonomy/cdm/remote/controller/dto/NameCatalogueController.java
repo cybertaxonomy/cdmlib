@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -46,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -383,7 +383,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                         null,
                         false,
                         h);
-            } catch (ParseException e) {
+            } catch (LuceneParseException e) {
                 // TODO Auto-generated catch block
                 //e.printStackTrace();
                 ErrorResponse er = new ErrorResponse();
@@ -557,7 +557,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             false,
                             h);
                 }
-            } catch (ParseException e) {
+            } catch (LuceneParseException e) {
                 // TODO Auto-generated catch block
                 //e.printStackTrace();
                 ErrorResponse er = new ErrorResponse();

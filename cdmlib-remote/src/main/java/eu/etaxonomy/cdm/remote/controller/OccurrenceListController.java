@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -43,6 +42,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.RectanglePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -151,7 +151,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, ParseException {
+             throws IOException, LuceneParseException {
 
          logger.info("findByFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
 
