@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
@@ -63,6 +62,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -787,12 +787,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
             Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle boundingBox, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            List<String> propertyPaths) throws IOException, LuceneParseException {
 
         LuceneSearch luceneSearch = prepareByFullTextSearch(clazz, queryString, boundingBox, languages, highlightFragments);
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException parseException = new LuceneParseException(e.getMessage());
+            parseException.setStackTrace(e.getStackTrace());
+            throw parseException;
+        }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.SPECIMEN_OR_OBSERVATIONBASE, "id");

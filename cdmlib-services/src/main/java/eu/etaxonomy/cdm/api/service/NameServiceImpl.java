@@ -20,9 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.sandbox.queries.FuzzyLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -44,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -587,14 +586,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             List<Language> languages,
             boolean highlightFragments,
             List<String> propertyPaths,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+            int maxNoOfResults) throws IOException, LuceneParseException {
 
         logger.info("Name to fuzzy search for : " + name);
         // parse the input name
         NonViralNameParserImpl parser = new NonViralNameParserImpl();
         INonViralName nvn = parser.parseFullName(name);
         if(name != null && !name.equals("") && nvn == null) {
-            throw new ParseException("Could not parse name " + name);
+            throw new LuceneParseException("Could not parse name " + name);
         }
         LuceneSearch luceneSearch = prepareFindByFuzzyNameSearch(null, nvn, accuracy, maxNoOfResults, languages, highlightFragments);
 
@@ -622,14 +621,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             float accuracy,
             List<Language> languages,
             boolean highlightFragments,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+            int maxNoOfResults) throws IOException, LuceneParseException {
 
         logger.info("Name to fuzzy search for : " + name);
         // parse the input name
         NonViralNameParserImpl parser = new NonViralNameParserImpl();
         INonViralName nvn = parser.parseFullName(name);
         if(name != null && !name.equals("") && nvn == null) {
-            throw new ParseException("Could not parse name " + name);
+            throw new LuceneParseException("Could not parse name " + name);
         }
         LuceneSearch luceneSearch = prepareFindByFuzzyNameSearch(null, nvn, accuracy, maxNoOfResults, languages, highlightFragments);
 
@@ -653,7 +652,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             float accuracy,
             List<Language> languages,
             boolean highlightFragments,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+            int maxNoOfResults) throws IOException, LuceneParseException {
 
         logger.info("Name to fuzzy search for : " + name);
 
@@ -678,7 +677,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             boolean wildcard,
             List<Language> languages,
             boolean highlightFragments,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+            int maxNoOfResults) throws IOException, LuceneParseException {
 
         logger.info("Name to exact search for : " + name);
 
