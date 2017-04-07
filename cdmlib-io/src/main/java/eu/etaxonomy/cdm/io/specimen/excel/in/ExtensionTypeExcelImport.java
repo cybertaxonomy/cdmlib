@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,19 +37,19 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 	private static final String ABBREVIATION_COLUMN = "Abbreviation";
 	private static final String DESCRIPTION_COLUMN = "Description";
 	private static final String POSTFIX_COLUMN = "Postfix";
-	
-	
+
+
 	public ExtensionTypeExcelImport() {
 		super();
 	}
-	
+
 	@Override
 	protected void analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
 		Set<String> keys = record.keySet();
-    	
+
     	NamedAreaLevellRow row = new NamedAreaLevellRow();
     	state.setNamedAreaLevelRow(row);
-    	
+
     	for (String originalKey: keys) {
     		Integer index = 0;
     		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
@@ -65,15 +65,15 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 					continue;
 				}
     		}
-    		
-    		String value = (String) record.get(indexedKey);
+
+    		String value = record.get(indexedKey);
     		if (! StringUtils.isBlank(value)) {
     			if (logger.isDebugEnabled()) { logger.debug(key + ": " + value); }
         		value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
     		}else{
     			continue;
     		}
-    		
+
     		if (key.equalsIgnoreCase(UUID_COLUMN)) {
     			row.setUuid(UUID.fromString(value)); //VALIDATE UUID
  			} else if(key.equalsIgnoreCase(LABEL_COLUMN)) {
@@ -96,19 +96,19 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 	@Override
 	protected void firstPass(SpecimenCdmExcelImportState state) {
 		NamedAreaLevellRow row = state.getNamedAreaLevelRow();
-		
+
 		//level
 		UUID uuid = row.getUuid();
 		String label = row.getAbbreviation();
 		String text = row.getDescription();
 		String labelAbbrev = row.getAbbreviation();
-		
+
 		ExtensionType term = getExtensionType(state, uuid, label, text, labelAbbrev);
-		
+
 		if (StringUtils.isNotBlank(row.getPostfix())){
 			state.putPostfixExtensionType(row.getPostfix(), term);
 		}
-		
+
 		//save
 		getTermService().save(term);
 		return;
@@ -131,10 +131,11 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 		return true;
 	}
 
-	protected String getWorksheetName() {
+	@Override
+    protected String getWorksheetName() {
 		return WORKSHEET_NAME;
 	}
-	
+
 	@Override
 	protected boolean needsNomenclaturalCode() {
 		return false;

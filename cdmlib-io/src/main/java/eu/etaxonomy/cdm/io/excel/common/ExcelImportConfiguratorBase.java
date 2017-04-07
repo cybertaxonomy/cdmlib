@@ -48,9 +48,6 @@ public abstract class ExcelImportConfiguratorBase
 		setDestination(destination);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -65,7 +62,5 @@ public abstract class ExcelImportConfiguratorBase
 	public boolean isReuseExistingTaxaWhenPossible() {
 		return false;
 	}
-
-
 
 }
