@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.net.URI;
+
 import org.w3c.dom.NodeList;
 
 /**
@@ -20,6 +22,7 @@ import org.w3c.dom.NodeList;
 public class UnitAssociationWrapper {
 
     private NodeList associatedUnits;
+    private URI accesPoint;
     private String associationType;
     private String prefix;
 
@@ -45,6 +48,20 @@ public class UnitAssociationWrapper {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    /**
+     * @return the accesPoint
+     */
+    public URI getAccesPoint() {
+        return accesPoint;
+    }
+
+    /**
+     * @param accesPoint the accesPoint to set
+     */
+    public void setAccesPoint(URI accesPoint) {
+        this.accesPoint = accesPoint;
     }
 
 }

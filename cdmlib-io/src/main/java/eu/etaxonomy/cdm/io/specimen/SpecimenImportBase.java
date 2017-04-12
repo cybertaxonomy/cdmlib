@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Identification;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -97,7 +98,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	 * @param state
 	 * @param item
 	 */
-	protected abstract void handleSingleUnit(STATE state, Object item) ;
+	protected abstract void handleSingleUnit(STATE state, Object item, boolean handleAssociatedUnits) ;
 
 
 
@@ -1465,5 +1466,15 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	    }
+
+        /**
+         * @param state
+         * @param itemObject
+         * @param handleAssociatedUnits
+         */
+        public void handleSingleUnit(Abcd206ImportState state, Object itemObject, boolean handleAssociatedUnits) {
+            // TODO Auto-generated method stub
+
+        }
 
 }

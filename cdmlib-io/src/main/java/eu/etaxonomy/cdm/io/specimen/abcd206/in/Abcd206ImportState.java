@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,9 @@ public class Abcd206ImportState
 
 	private String prefix;
 
-	private List<String> associatedUnitIds = new ArrayList<String>();
+	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
+
+	private List<URI> actualAccesPoints = new ArrayList<>();
 
 
 //****************** CONSTRUCTOR ***************************************************/
@@ -71,12 +74,26 @@ public class Abcd206ImportState
         return importStream.toByteArray();
     }
 
-    public void setAssociatedUnitIds(List<String> associatedUnitIds){
+    public void setAssociatedUnitIds(List<String[]> associatedUnitIds){
         this.associatedUnitIds = associatedUnitIds;
     }
 
-    public List<String> getAssociatedUnitIds(){
+    public List<String[]> getAssociatedUnitIds(){
         return this.associatedUnitIds;
+    }
+
+    /**
+     * @return the actualAccesPoint
+     */
+    public List<URI> getActualAccesPoint() {
+        return actualAccesPoints;
+    }
+
+    /**
+     * @param actualAccesPoint the actualAccesPoint to set
+     */
+    public void addActualAccesPoint(URI actualAccesPoint) {
+        this.actualAccesPoints.add(actualAccesPoint);
     }
 
 //

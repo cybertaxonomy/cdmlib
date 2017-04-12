@@ -92,7 +92,7 @@ public class BioCaseQueryGenerator {
     private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgentsText";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
     private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
-    private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"Associations/UnitAssociation/AssociatedUnitID";
+    private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"/Associations/UnitAssociation/AssociatedUnitID";
 
     /**
      * Generates an XML query according to the BioCASe protocol.

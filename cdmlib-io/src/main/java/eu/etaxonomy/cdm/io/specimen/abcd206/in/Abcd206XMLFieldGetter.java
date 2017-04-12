@@ -866,15 +866,23 @@ public class Abcd206XMLFieldGetter {
                 for (int j = 0; j < childrenAssociations.getLength(); j++) {
                     if (childrenAssociations.item(j).getNodeName().equals(prefix + "UnitAssociation")) {
                         childrenUnitAssociations = childrenAssociations.item(j).getChildNodes();
+                        String[] associatedUnitId = new String[2];
                         for (int k = 0; k < childrenUnitAssociations.getLength(); k++) {
+                            System.err.println(childrenUnitAssociations.item(k).getNodeName());
                             if (childrenUnitAssociations.item(k).getNodeName().equals(prefix + "UnitID")) {
-                                dataHolder.addAssociatedUnitId(childrenUnitAssociations.item(k).getTextContent());
+                                associatedUnitId[0]= childrenUnitAssociations.item(k).getTextContent();
+
                                 path = childrenUnitAssociations.item(k).getNodeName();
                                 getHierarchie(childrenUnitAssociations.item(k));
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
                             }
+                            if (childrenUnitAssociations.item(k).getNodeName().equals(prefix +"DatasetAccessPoint")){
+                                associatedUnitId[1]= childrenUnitAssociations.item(k).getTextContent();
+                                System.err.println(childrenUnitAssociations.item(k).getTextContent());
+                            }
                         }
+                        dataHolder.addAssociatedUnitId(associatedUnitId);
                     }
                 }
             }

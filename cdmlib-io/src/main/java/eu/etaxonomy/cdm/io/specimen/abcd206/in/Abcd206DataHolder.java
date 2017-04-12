@@ -39,7 +39,7 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
 
 
-    protected List<String> associatedUnitIds;
+    protected List<String[]> associatedUnitIds;
 
 
     protected String institutionCode;
@@ -134,7 +134,7 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         setMultimediaObjects(new HashMap<String,Map<String, String>>());
         setGatheringMultimediaObjects(new HashMap<String,Map<String, String>>());
         setDocSources(new ArrayList<String>());
-        associatedUnitIds = new ArrayList<String>();
+        associatedUnitIds = new ArrayList<String[]>();
     }
 
 
@@ -222,11 +222,11 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         return this.gatheringMethod ;
 
     }
-    public void addAssociatedUnitId(String associatedUnitId){
+    public void addAssociatedUnitId(String[] associatedUnitId){
         this.associatedUnitIds.add(associatedUnitId);
     }
 
-    public List<String> getAssociatedUnitIds(){
+    public List<String[]> getAssociatedUnitIds(){
         return associatedUnitIds;
     }
 
