@@ -397,6 +397,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param item
      */
     @Override
+    public void handleSingleUnit(Abcd206ImportState state, Object itemObject){
+        handleSingleUnit(state, itemObject, true);
+    }
+
+
+
+
     @SuppressWarnings("rawtypes")
     public void handleSingleUnit(Abcd206ImportState state, Object itemObject, boolean handleAssociatedUnits) {
         Element item = (Element) itemObject;
