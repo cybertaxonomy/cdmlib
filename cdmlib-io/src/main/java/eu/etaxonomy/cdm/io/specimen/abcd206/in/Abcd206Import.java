@@ -260,13 +260,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.setAssociatedUnitIds(state.getDataHolder().getAssociatedUnitIds());
                     this.handleSingleUnit(state, item, true);
 
-//                   if (state.getDataHolder().getKindOfUnit() != null && state.getConfig().isGetSiblings() && (state.getDataHolder().getKindOfUnit().toLowerCase().indexOf("clone")>-1 || state.getDataHolder().getRecordBasis().toLowerCase().indexOf("sample")>-1)){
-//                        getSiblings(state, sourceUri);
-//                    }
-//                   if (state.getConfig().isSearchForAssociatingSpecimen()){
-//                       getAssociatingSpecimen(state, sourceUri);
-//                   }
-
                 }
                 if(state.getConfig().isDeduplicateReferences()){
                     getReferenceService().deduplicate(Reference.class, null, null);
@@ -307,8 +300,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
             }
 
-            DerivedUnit currentUnit = state.getDerivedUnitBase();
-           DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
+           DerivedUnit currentUnit = state.getDerivedUnitBase();
+         //  DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
            FieldUnit currentFieldUnit = facade.getFieldUnit(false);
             if(unitAssociationWrapper!=null){
                 NodeList associatedUnits = unitAssociationWrapper.getAssociatedUnits();
@@ -316,12 +309,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     for(int m=0;m<associatedUnits.getLength();m++){
                         if(associatedUnits.item(m) instanceof Element){
                             state.reset();
-                            //state.setPrefix(unitAssociationWrapper.getPrefix());
-
                             String associationType = AbcdParseUtility.parseFirstTextContent(((Element) associatedUnits.item(m)).getElementsByTagName(state.getPrefix()+"AssociationType"));
 
                             Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), unitAssociationWrapper.getPrefix()), state);
                            // logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
+
                             handleSingleUnit(state, associatedUnits.item(m), false);
 
                             DerivedUnit associatedUnit = state.getDerivedUnitBase();
@@ -334,52 +326,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             else if(associatedFieldUnits.size()==1){
                                 associatedFieldUnit = associatedFieldUnits.iterator().next();
                             }
-
-                            //attach current unit and associated unit depending on association type
-
                             //parent-child relation:
-                            //copy derivation event and connect parent and sub derivative
                             if(associationType.contains("individual") || associationType.contains("culture") || associationType.contains("sample")){
-                                if(currentDerivedFrom==null){
-                                    state.getReport().addInfoMessage(String.format("No derivation event found for unit %s. Defaulting to ACCESSIONING event.",SpecimenImportUtility.getUnitID(currentUnit, state.getConfig())));
-                                    DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, DerivationEventType.ACCESSIONING());
-                                }
-                                else{
-                                    DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit, associatedUnit, currentDerivedFrom.getType());
-                                    updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                    updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                    updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                    updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
-
+                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit, associatedUnit, DerivationEventType.ACCESSIONING());
+                                if(associatedFieldUnit!=null && associatedFieldUnit != currentFieldUnit){
+                                    associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
+                                    state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit);
                                 }
                                 state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
                             }
-                            //siblings relation
-                            //connect current unit to field unit of associated unit
-                            else if(associationType.contains("population")|| associationType.contains("sample")){
-                                //no associated field unit -> using current one
-                                if(associatedFieldUnit==null){
-                                    if(currentFieldUnit!=null){
-                                        DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
-                                    }
-                                }
-                                else{
-                                    if(currentDerivedFrom==null){
-                                        state.getReport().addInfoMessage("No derivation event found for unit "+SpecimenImportUtility.getUnitID(currentUnit, state.getConfig())+". Defaulting to ACCESIONING event.");
-                                        DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
-                                    }
-                                    if(currentDerivedFrom!=null && associatedFieldUnit!=currentFieldUnit){
-                                        DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
-                                        updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                        updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                        updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                        updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
-                                    }
-                                }
-                            }
-
-
-
                             save(associatedUnit, state);
 
                     }
@@ -388,7 +343,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
             state.reset();
             state.setDerivedUnitBase(currentUnit);
-            //state.setPrefix(currentPrefix);
+
     }
 
     /**
@@ -464,7 +419,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
              */
 
             //look for existing fieldUnit
+
             FieldUnit fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+
 
                 // gathering event
                 UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(),
@@ -727,17 +684,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 else{
                     sources=state.getDerivedUnitSources();
                 }
-//                System.out.println("nb sources: "+sources.size());
-//                System.out.println("derivedunitfacade : "+derivedUnitFacade.getTitleCache());
                 for (OriginalSourceBase<?> sour:sources){
                     if(sour.isInstanceOf(IdentifiableSource.class)){
                         if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-//                            System.out.println("add source to derivedunitfacade1 "+derivedUnitFacade.getTitleCache());
                             derivedUnitFacade.addSource((IdentifiableSource)sour.clone());
                         }
                     }else{
                         if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-//                            System.out.println("add source to derivedunitfacade2 "+derivedUnitFacade.getTitleCache());
                             derivedUnitFacade.addSource(OriginalSourceType.Import,sour.getCitation(),sour.getCitationMicroReference(), ioName);
                         }
                     }
@@ -746,12 +699,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (OriginalSourceBase<?> sr : sourceMap.values()){
                     if(sr.isInstanceOf(IdentifiableSource.class)){
                         if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-//                            System.out.println("add source to derivedunitfacade3 "+derivedUnitFacade.getTitleCache());
                             derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
                         }
                     }else{
                         if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-//                            System.out.println("add source to derivedunitfacade4 "+derivedUnitFacade.getTitleCache());
                             derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(), ioName);
                         }
                     }
@@ -771,7 +722,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (handleAssociatedUnits){
                 importAssociatedUnits(state, item, derivedUnitFacade);
             }
-            if (derivedUnitFacade.getType() != null && (derivedUnitFacade.getType().equals(SpecimenOrObservationType.LivingSpecimen) ||  derivedUnitFacade.getType().equals(SpecimenOrObservationType.TissueSample) ) &&state.getConfig().isGetSiblings()){
+            //siblings/ other children
+            if (derivedUnitFacade.getType() != null && (derivedUnitFacade.getType().equals(SpecimenOrObservationType.LivingSpecimen) ||  derivedUnitFacade.getType().equals(SpecimenOrObservationType.TissueSample)  ||  derivedUnitFacade.getType().equals(SpecimenOrObservationType.OtherSpecimen)) &&state.getConfig().isGetSiblings()){
                 getSiblings(state, item, derivedUnitFacade);
             }
 

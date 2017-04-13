@@ -93,6 +93,7 @@ public class BioCaseQueryGenerator {
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
     private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
     private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"/Associations/UnitAssociation/AssociatedUnitID";
+    private static final String ASSOCIATION_UNIT_ID_ABCD_2_1 = UNIT_PATH +"/Associations/UnitAssociation/UnitID";
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -234,7 +235,11 @@ public class BioCaseQueryGenerator {
 
 
         if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
-            addLikeFilter(elAnd, query.accessionNumber, ASSOCIATION_UNIT_ID_ABCD_2_0);
+            if (abcdSchema.equals(ABCD_SCHEMA_2_1)){
+                addLikeFilter(elAnd, query.accessionNumber, ASSOCIATION_UNIT_ID_ABCD_2_1);
+            }else{
+                addLikeFilter(elAnd, query.accessionNumber, ASSOCIATION_UNIT_ID_ABCD_2_0);
+            }
         }
 
         elSearch.addContent(elCount);

@@ -13,7 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +35,7 @@ public class Abcd206ImportState
 
 	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
 
-	private List<URI> actualAccesPoints = new ArrayList<>();
+	private Set<URI> actualAccesPoints = new HashSet<>();
 
 
 //****************** CONSTRUCTOR ***************************************************/
@@ -85,7 +87,7 @@ public class Abcd206ImportState
     /**
      * @return the actualAccesPoint
      */
-    public List<URI> getActualAccesPoint() {
+    public Set<URI> getActualAccesPoint() {
         return actualAccesPoints;
     }
 
