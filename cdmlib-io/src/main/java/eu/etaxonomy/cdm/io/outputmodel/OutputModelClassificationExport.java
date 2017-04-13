@@ -322,9 +322,9 @@ public class OutputModelClassificationExport
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
                 handleSource(state, element, table);
                 csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
-                csvLine[table.getIndex(OutputModelTable.FACT_TEXT)] = commonName.getName();
-                csvLine[table.getIndex(OutputModelTable.LANGUAGE)] = commonName.getLanguage().getLabel();
-                csvLine[table.getIndex(OutputModelTable.AREA_LABEL)] = commonName.getArea().getLabel();
+                if (commonName.getName() != null){csvLine[table.getIndex(OutputModelTable.FACT_TEXT)] = commonName.getName();}
+                if (commonName.getLanguage() != null){csvLine[table.getIndex(OutputModelTable.LANGUAGE)] = commonName.getLanguage().getLabel();}
+                if (commonName.getArea() != null){ csvLine[table.getIndex(OutputModelTable.AREA_LABEL)] = commonName.getArea().getLabel();}
                 state.getProcessor().put(table, commonName, csvLine);
             } else{
                 state.getResult().addError("The distribution description for the taxon " + taxon.getUuid() + " is not of type distribution. Could not be exported. UUID of the description element: " + element.getUuid());
