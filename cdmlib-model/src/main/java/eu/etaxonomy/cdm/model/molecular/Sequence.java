@@ -33,13 +33,13 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.codehaus.plexus.util.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -562,7 +562,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	private URI createExternalUri(String baseUri, String id) throws URISyntaxException{
-		if (StringUtils.isNotBlank(id)){
+		if (CdmUtils.isNotBlank(id)){
 			return new URI(String.format(baseUri, id.trim()));
 		}else{
 			return null;
