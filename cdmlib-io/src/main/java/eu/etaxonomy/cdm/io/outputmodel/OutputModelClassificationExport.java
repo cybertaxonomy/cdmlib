@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
+import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -122,7 +123,7 @@ public class OutputModelClassificationExport
                 }
             }
         }
-        state.getProcessor().createFinalResult();
+        state.getProcessor().createFinalResult(state);
     }
 
     /**
@@ -130,32 +131,45 @@ public class OutputModelClassificationExport
      * @param taxon
      */
     private void handleTaxon(OutputModelExportState state, TaxonNode taxonNode) {
+
         Taxon taxon = taxonNode.getTaxon();
-        TaxonNameBase name = taxon.getName();
-        handleName(state, name);
-        for (Synonym syn : taxon.getSynonyms()){
-            handleSynonym(state, syn);
-        }
+        if (taxon == null){
+            state.getResult().addError("There was a taxon node without a taxon: " + taxonNode.getUuid());
+            state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
+            System.err.println("There was a taxon node without a taxon: " + taxonNode.getUuid());
+
+        }else{
+             try{
+                TaxonNameBase name = taxon.getName();
+                handleName(state, name);
+                for (Synonym syn : taxon.getSynonyms()){
+                    handleSynonym(state, syn);
+                }
 
 
-        OutputModelTable table = OutputModelTable.TAXON;
-        String[] csvLine = new String[table.getSize()];
+                OutputModelTable table = OutputModelTable.TAXON;
+                String[] csvLine = new String[table.getSize()];
 
-        csvLine[table.getIndex(OutputModelTable.TAXON_ID)] = getId(state, taxon);
-        csvLine[table.getIndex(OutputModelTable.NAME_FK)] = getId(state, name);
-        Taxon parent = (taxonNode.getParent()==null) ? null : taxonNode.getParent().getTaxon();
-        csvLine[table.getIndex(OutputModelTable.PARENT_FK)] = getId(state, parent);
-        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
-        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
-        csvLine[table.getIndex(OutputModelTable.CLASSIFICATION_ID)] = getId(state, taxonNode.getClassification());
-        csvLine[table.getIndex(OutputModelTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification().getTitleCache();
+                csvLine[table.getIndex(OutputModelTable.TAXON_ID)] = getId(state, taxon);
+                csvLine[table.getIndex(OutputModelTable.NAME_FK)] = getId(state, name);
+                Taxon parent = (taxonNode.getParent()==null) ? null : taxonNode.getParent().getTaxon();
+                csvLine[table.getIndex(OutputModelTable.PARENT_FK)] = getId(state, parent);
+                csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
+                csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                csvLine[table.getIndex(OutputModelTable.CLASSIFICATION_ID)] = getId(state, taxonNode.getClassification());
+                csvLine[table.getIndex(OutputModelTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification().getTitleCache();
 
-        state.getProcessor().put(table, taxon, csvLine);
-        handleDescriptions(state, taxon);
-
-        for (TaxonNode child: taxonNode.getChildNodes()){
-            handleTaxon(state, child);
-        }
+                state.getProcessor().put(table, taxon, csvLine, state);
+                handleDescriptions(state, taxon);
+                 }catch(Exception e){
+                     state.getResult().addError("An unexpected problems trying to export taxon with id " + taxon.getId() + e.getStackTrace());
+                     e.printStackTrace();
+                     state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
+                 }
+             }
+           for (TaxonNode child: taxonNode.getChildNodes()){
+               handleTaxon(state, child);
+           }
 
     }
 
@@ -170,15 +184,17 @@ public class OutputModelClassificationExport
         List<DescriptionElementBase> distributionFacts = new ArrayList<>();
         List<DescriptionElementBase> commonNameFacts = new ArrayList<>();
         for (TaxonDescription description: descriptions){
-            for (DescriptionElementBase element: description.getElements()){
-                if (element.getFeature().equals(Feature.COMMON_NAME())){
-                    commonNameFacts.add(element);
-                }else if (element.getFeature().equals(Feature.DISTRIBUTION())){
-                    distributionFacts.add(element);
-                }else if (element.getFeature().equals(Feature.SPECIMEN())){
-                    specimenFacts.add(element);
-                }else{
-                    simpleFacts.add(element);
+            if (description.getElements() != null){
+                for (DescriptionElementBase element: description.getElements()){
+                    if (element.getFeature().equals(Feature.COMMON_NAME())){
+                        commonNameFacts.add(element);
+                    }else if (element.getFeature().equals(Feature.DISTRIBUTION())){
+                        distributionFacts.add(element);
+                    }else if (element.getFeature().equals(Feature.SPECIMEN())){
+                        specimenFacts.add(element);
+                    }else{
+                        simpleFacts.add(element);
+                    }
                 }
             }
         }
@@ -214,11 +230,11 @@ public class OutputModelClassificationExport
                        csvLine[table.getIndex(OutputModelTable.MEDIA_URI)] = extractMediaUris(media.getRepresentations().iterator());
                    }
                    csvLine[table.getIndex(OutputModelTable.FACT_CATEGORY)] = textData.getFeature().getLabel();
-                   state.getProcessor().put(table, textData, csvLine);
+                   state.getProcessor().put(table, textData, csvLine, state);
                }
                if (textData.getFeature().equals(Feature.CITATION())){
                    csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
-                   state.getProcessor().put(table, textData, csvLine);
+                   state.getProcessor().put(table, textData, csvLine, state);
                }
             }
         }
@@ -246,7 +262,7 @@ public class OutputModelClassificationExport
                         handleSpecimen(state, derivedUnit);
                         csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
                         csvLine[table.getIndex(OutputModelTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
-                        state.getProcessor().put(table, indAssociation, csvLine);
+                        state.getProcessor().put(table, indAssociation, csvLine, state);
                     }else{
                         state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
                     }
@@ -280,7 +296,7 @@ public class OutputModelClassificationExport
 
             csvLine[table.getIndex(OutputModelTable.NAME_IN_SOURCE_FK)] = getId(state, source.getNameUsedInSource());
             csvLine[table.getIndex(OutputModelTable.FACT_TYPE)] = factsTable.getTableName();
-            state.getProcessor().put(table, source, csvLine);
+            state.getProcessor().put(table, source, csvLine, state);
         }
 
     }
@@ -299,9 +315,9 @@ public class OutputModelClassificationExport
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
                 handleSource(state, element, table);
                 csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
-                csvLine[table.getIndex(OutputModelTable.AREA_LABEL)] = distribution.getArea().getLabel();
-                csvLine[table.getIndex(OutputModelTable.STATUS_LABEL)] = distribution.getStatus().getLabel();
-                state.getProcessor().put(table, distribution, csvLine);
+                if (distribution.getArea() != null){ csvLine[table.getIndex(OutputModelTable.AREA_LABEL)] = distribution.getArea().getLabel();}
+                if (distribution.getStatus() != null){ csvLine[table.getIndex(OutputModelTable.STATUS_LABEL)] = distribution.getStatus().getLabel();}
+                state.getProcessor().put(table, distribution, csvLine, state);
             } else{
                 state.getResult().addError("The distribution description for the taxon " + taxon.getUuid() + " is not of type distribution. Could not be exported. UUID of the description element: " + element.getUuid());
             }
@@ -325,7 +341,7 @@ public class OutputModelClassificationExport
                 if (commonName.getName() != null){csvLine[table.getIndex(OutputModelTable.FACT_TEXT)] = commonName.getName();}
                 if (commonName.getLanguage() != null){csvLine[table.getIndex(OutputModelTable.LANGUAGE)] = commonName.getLanguage().getLabel();}
                 if (commonName.getArea() != null){ csvLine[table.getIndex(OutputModelTable.AREA_LABEL)] = commonName.getArea().getLabel();}
-                state.getProcessor().put(table, commonName, csvLine);
+                state.getProcessor().put(table, commonName, csvLine, state);
             } else{
                 state.getResult().addError("The distribution description for the taxon " + taxon.getUuid() + " is not of type distribution. Could not be exported. UUID of the description element: " + element.getUuid());
             }
@@ -375,7 +391,7 @@ public class OutputModelClassificationExport
        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE_FK)] = getId(state, syn.getSec());
        csvLine[table.getIndex(OutputModelTable.SEC_REFERENCE)] = getTitleCache(syn.getSec());
 
-       state.getProcessor().put(table, syn, csvLine);
+       state.getProcessor().put(table, syn, csvLine, state);
     }
 
     /**
@@ -536,7 +552,7 @@ public class OutputModelClassificationExport
         }
         csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
         //csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = String.valueOf(group.getTypifiedNames());
-        state.getProcessor().put(table, name, csvLine);
+        state.getProcessor().put(table, name, csvLine, state);
 
 /*
  *
@@ -668,7 +684,7 @@ HomotypicGroupSequenceNumber
                 csvLineRel[tableAuthorRel.getIndex(OutputModelTable.AUTHOR_TEAM_FK)] = getId(state, authorTeam);
                 csvLineRel[tableAuthorRel.getIndex(OutputModelTable.AUTHOR_FK)] = getId(state, member);
                 csvLineRel[tableAuthorRel.getIndex(OutputModelTable.AUTHOR_TEAM_SEQ_NUMBER)] = String.valueOf(index);
-                state.getProcessor().put(tableAuthorRel, authorTeam.getId() +":" +member.getId(), csvLineRel);
+                state.getProcessor().put(tableAuthorRel, authorTeam.getId() +":" +member.getId(), csvLineRel, state);
 
                 if (state.getAuthorFromStore(member.getId()) == null){
                     state.addAuthorToStore(member);
@@ -680,13 +696,13 @@ HomotypicGroupSequenceNumber
                     csvLineMember[table.getIndex(OutputModelTable.AUTHOR_LASTNAME)] = member.getLastname();
                     csvLineMember[table.getIndex(OutputModelTable.AUTHOR_PREFIX)] = member.getPrefix();
                     csvLineMember[table.getIndex(OutputModelTable.AUTHOR_SUFFIX)] = member.getSuffix();
-                    state.getProcessor().put(table, member, csvLineMember);
+                    state.getProcessor().put(table, member, csvLineMember, state);
                 }
                 index++;
 
             }
         }
-        state.getProcessor().put(table, author, csvLine);
+        state.getProcessor().put(table, author, csvLine, state);
 
 
 
@@ -800,7 +816,7 @@ HomotypicGroupSequenceNumber
         }else{
             csvLine[table.getIndex(OutputModelTable.TYPE_STRING)] = "";
         }
-        state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
+        state.getProcessor().put(table, String.valueOf(group.getId()), csvLine, state);
 
     }
 
@@ -979,7 +995,7 @@ HomotypicGroupSequenceNumber
         if ( reference.getUri() != null){ csvLine[table.getIndex(OutputModelTable.URI)] = reference.getUri().toString();}
         csvLine[table.getIndex(OutputModelTable.REF_TYPE)] = reference.getType().getKey();
 
-        state.getProcessor().put(table, reference, csvLine);
+        state.getProcessor().put(table, reference, csvLine, state);
 
     }
 
@@ -1078,7 +1094,7 @@ HomotypicGroupSequenceNumber
             }
         }
 
-        state.getProcessor().put(table, specimen, csvLine);
+        state.getProcessor().put(table, specimen, csvLine, state);
 
 
 
@@ -1096,10 +1112,12 @@ HomotypicGroupSequenceNumber
             List<MediaRepresentationPart> parts = rep.getParts();
             for (MediaRepresentationPart part: parts){
                 if (first){
-                    mediaUriString += part.getUri().toString();
-                    first = false;
+                    if (part.getUri() != null){
+                        mediaUriString += part.getUri().toString();
+                        first = false;
+                    }
                 }else{
-                    mediaUriString += ", " +part.getUri().toString();
+                    if (part.getUri() != null){mediaUriString += ", " +part.getUri().toString();}
                 }
             }
         }
