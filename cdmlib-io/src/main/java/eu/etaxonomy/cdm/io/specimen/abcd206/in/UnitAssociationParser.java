@@ -146,15 +146,7 @@ public class UnitAssociationParser {
                         report.addException(exceptionMessage, e);
                     }
 
-                    if(unitAssociationWrapper!=null){
 
-                        if(unitAssociationWrapper.getAssociatedUnits()!=null && unitAssociationWrapper.getAssociatedUnits().getLength()>1){
-                            String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitID);
-                            logger.warn(moreThanOneUnitFoundMessage);
-                            report.addInfoMessage(moreThanOneUnitFoundMessage);
-                        }
-
-                    }
                     return unitAssociationWrapper;
                     }
                     else{

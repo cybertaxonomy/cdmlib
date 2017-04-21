@@ -297,8 +297,11 @@ public class Abcd206XMLFieldGetter {
         NodeList results, reference;
         results = result.getChildNodes();
         boolean referencefound = false;
-        String[] refDetails =new String[3];;
+        String[] refDetails =new String[3];
+
         for (int k = 0; k < results.getLength(); k++) {
+            System.out.println(results.item(k).getNodeName());
+            System.out.println(results.item(k).getTextContent());
             if (results.item(k).getNodeName().equals(prefix + "SourceReference")) {
                 reference = results.item(k).getChildNodes();
                 for (int l = 0; l < reference.getLength(); l++) {

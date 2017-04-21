@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +49,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -165,6 +163,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (state.getRef() == null){
                         state.setRef(ReferenceFactory.newGeneric());
                         state.getRef().setTitle("ABCD classic");
+                        state.getRef().setUri(sourceUri);
                     }
                 }
             //}
@@ -645,8 +644,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     reference.setTitle(strReference);
                 }
 
-                IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
 
+                save(reference, state);
+                IdentifiableSource sour = getIdentifiableSource(reference, citationDetail);
+                sour.setType(OriginalSourceType.PrimaryTaxonomicSource);
                 try{
                     if (sour.getCitation() != null){
                         if(StringUtils.isNotBlank(sour.getCitationMicroReference())) {
@@ -658,56 +659,72 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }catch(Exception e){
                     logger.warn("oups");
                 }
-                reference.addSource(sour);
-                save(reference, state);
-            }
-            List<IdentifiableSource> issTmp = new ArrayList<IdentifiableSource>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
-            List<DescriptionElementSource> issTmp2 = new ArrayList<DescriptionElementSource>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
+                derivedUnitFacade.addSource(sour);
 
-            Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
-            if(issTmp2!=null) {
-                osbSet.addAll(issTmp2);
             }
-            if(issTmp!=null) {
-                osbSet.addAll(issTmp);
-            }
-
-            addToSourceMap(sourceMap, osbSet);
-
-            if( state.getConfig().isInteractWithUser()){
-                List<OriginalSourceBase<?>>sources=null;
-                if(!state.isDerivedUnitSourcesSet()){
-                    sources= sui.askForSource(sourceMap, "the unit itself","",getReferenceService(), state.getDataHolder().getDocSources());
-                    state.setDerivedUnitSources(sources);
-                    state.setDerivedUnitSourcesSet(true);
-                }
-                else{
-                    sources=state.getDerivedUnitSources();
-                }
-                for (OriginalSourceBase<?> sour:sources){
-                    if(sour.isInstanceOf(IdentifiableSource.class)){
-                        if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-                            derivedUnitFacade.addSource((IdentifiableSource)sour.clone());
-                        }
-                    }else{
-                        if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-                            derivedUnitFacade.addSource(OriginalSourceType.Import,sour.getCitation(),sour.getCitationMicroReference(), ioName);
-                        }
+//            List<IdentifiableSource> issTmp = new ArrayList<IdentifiableSource>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
+//            List<DescriptionElementSource> issTmp2 = new ArrayList<DescriptionElementSource>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
+//
+//            Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
+//            if(issTmp2!=null) {
+//                osbSet.addAll(issTmp2);
+//            }
+//            if(issTmp!=null) {
+//                osbSet.addAll(issTmp);
+//            }
+            IdentifiableSource sour = getIdentifiableSource(state.getRef(),null);
+            String idInSource = derivedUnitFacade.getAccessionNumber() != null? derivedUnitFacade.getAccessionNumber():derivedUnitFacade.getCatalogNumber();
+            sour.getCitation().setUri(state.getActualAccessPoint());
+            sour.setIdInSource(idInSource);
+            try{
+                if (sour.getCitation() != null){
+                    if(StringUtils.isNotBlank(sour.getCitationMicroReference())) {
+                        state.getDataHolder().getDocSources().add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
+                    } else {
+                        state.getDataHolder().getDocSources().add(sour.getCitation().getTitleCache());
                     }
                 }
-            }else{
-                for (OriginalSourceBase<?> sr : sourceMap.values()){
-                    if(sr.isInstanceOf(IdentifiableSource.class)){
-                        if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-                            derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
-                        }
-                    }else{
-                        if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-                            derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(), ioName);
-                        }
-                    }
-                }
+            }catch(Exception e){
+                logger.warn("oups");
             }
+
+           derivedUnitFacade.addSource(sour);
+          // sourceMap.put(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference(),sour);
+
+//            if( state.getConfig().isInteractWithUser()){
+//                List<OriginalSourceBase<?>>sources=null;
+//                if(!state.isDerivedUnitSourcesSet()){
+//                    sources= sui.askForSource(sourceMap, "the unit itself","",getReferenceService(), state.getDataHolder().getDocSources());
+//                    state.setDerivedUnitSources(sources);
+//                    state.setDerivedUnitSourcesSet(true);
+//                }
+//                else{
+//                    sources=state.getDerivedUnitSources();
+//                }
+////                for (OriginalSourceBase<?> source:sources){
+////                    if(source.isInstanceOf(IdentifiableSource.class)){
+////                        if(sourceNotLinkedToElement(derivedUnitFacade,source)) {
+////                            derivedUnitFacade.addSource((IdentifiableSource)source.clone());
+////                        }
+////                    }else{
+////                        if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
+////                            derivedUnitFacade.addSource(OriginalSourceType.Import,source.getCitation(),source.getCitationMicroReference(), ioName);
+////                        }
+////                    }
+////                }
+//            }else{
+//                for (OriginalSourceBase<?> sr : sourceMap.values()){
+//                    if(sr.isInstanceOf(IdentifiableSource.class)){
+//                        if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
+//                            derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
+//                        }
+//                    }else{
+//                        if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
+//                            derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(), ioName);
+//                        }
+//                    }
+//                }
+//            }
 
             save(state.getDerivedUnitBase(), state);
 
@@ -761,7 +778,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     Element unitAssociation = (Element)unitAssociationList.item(k);
                     UnitAssociationParser unitAssociationParser = new UnitAssociationParser(currentPrefix, state.getReport(), state.getCdmRepository());
                     UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation);
-                    state.addActualAccesPoint(associationWrapper.getAccesPoint());
+                    state.setActualAccessPoint(associationWrapper.getAccesPoint());
                     if(associationWrapper!=null){
                         NodeList associatedUnits = associationWrapper.getAssociatedUnits();
                         if(associatedUnits!=null){
@@ -835,7 +852,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                             ){
                                         currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
                                         state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit);
-                                    }
+                                         }
 
                                     save(associatedUnit, state);
                                 }

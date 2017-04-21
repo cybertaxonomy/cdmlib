@@ -35,7 +35,9 @@ public class Abcd206ImportState
 
 	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
 
-	private Set<URI> actualAccesPoints = new HashSet<>();
+	private Set<URI> allAccesPoints = new HashSet<>();
+
+	private URI actualAccessPoint;
 
 
 //****************** CONSTRUCTOR ***************************************************/
@@ -88,14 +90,29 @@ public class Abcd206ImportState
      * @return the actualAccesPoint
      */
     public Set<URI> getActualAccesPoint() {
-        return actualAccesPoints;
+        return allAccesPoints;
     }
 
     /**
      * @param actualAccesPoint the actualAccesPoint to set
      */
     public void addActualAccesPoint(URI actualAccesPoint) {
-        this.actualAccesPoints.add(actualAccesPoint);
+        this.allAccesPoints.add(actualAccesPoint);
+    }
+
+    /**
+     * @return the actualAccessPoint
+     */
+    public URI getActualAccessPoint() {
+        return actualAccessPoint;
+    }
+
+    /**
+     * @param actualAccessPoint the actualAccessPoint to set
+     */
+    public void setActualAccessPoint(URI actualAccessPoint) {
+        this.addActualAccesPoint(actualAccessPoint);
+        this.actualAccessPoint = actualAccessPoint;
     }
 
 //
