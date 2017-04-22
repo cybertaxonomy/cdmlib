@@ -2977,6 +2977,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return getRank().isGenus();
     }
+
+    @Override
+    @Transient
+    public boolean isGenusOrSupraGeneric() {
+        return isGenus()|| isSupraGeneric();
+    }
     /**
      * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
      * taxon name is higher than the species rank and lower than the

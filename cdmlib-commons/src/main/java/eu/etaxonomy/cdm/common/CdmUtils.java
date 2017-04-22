@@ -564,4 +564,16 @@ public class CdmUtils {
         return text;
     }
 
+    /**
+     * Compares 2 strings. If they are not empty and equal returns <code>true</code>
+     * otherwise false.
+     *
+     * @param str1
+     * @param str2
+     * @return compare result as boolean
+     */
+    public static boolean nonEmptyEquals(String str1, String str2) {
+        return (isNotBlank(str1) && str1.equals(str2));
+    }
+
 }
