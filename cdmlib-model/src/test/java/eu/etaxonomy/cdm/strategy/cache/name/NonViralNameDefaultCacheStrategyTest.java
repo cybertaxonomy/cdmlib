@@ -294,6 +294,12 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         hybridName.setHybridFormula(true);
 
         Assert.assertEquals("", "Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache());
+        //Note: handling of empty nameCache of parents may change in future
+        Assert.assertEquals("", "Abies alba \u00D7", hybridName.getNameCache());
+        secondParent.setGenusOrUninomial("Second");
+        secondParent.setSpecificEpithet("parent");
+        hybridName.setNameCache(null, false);
+        Assert.assertEquals("", "Abies alba \u00D7 Second parent", hybridName.getNameCache());
 
     }
 

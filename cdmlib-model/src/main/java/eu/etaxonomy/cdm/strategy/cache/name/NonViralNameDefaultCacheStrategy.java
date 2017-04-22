@@ -453,11 +453,25 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         if (nonViralName == null){
             return null;
         }
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
         Rank rank = nonViralName.getRank();
 
         if (nonViralName.isProtectedNameCache()){
             tags.add(new TaggedText(TagEnum.name, nonViralName.getNameCache()));
+        }else if (nonViralName.isHybridFormula()){
+            //hybrid formula
+            String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
+            boolean isFirst = true;
+            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            for (HybridRelationship rel: rels){
+                if (! isFirst){
+                    tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
+                }
+                isFirst = false;
+                tags.addAll(getTaggedName((T)rel.getParentName()));
+            }
+            return tags;
+
         }else if (rank == null){
             tags = getRanklessTaggedNameCache(nonViralName);
 //		}else if (nonViralName.isInfragenericUnranked()){
