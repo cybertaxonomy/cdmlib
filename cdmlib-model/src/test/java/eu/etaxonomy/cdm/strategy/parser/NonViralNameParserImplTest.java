@@ -1749,8 +1749,30 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Problem should be 0", 0, parsingProblem);
         Rank rank = sectionName.getRank();
         Assert.assertEquals("", Rank.SECTION_BOTANY(), rank  );
+    }
+
+    //#6577
+    @Test
+    public final void testParseSpNov(){
+        //Canabio, issue with space
+        INonViralName name = parser.parseFullName("Iresine sp. nov. 1");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp. nov. 1", name.getSpecificEpithet());
+
+        name = parser.parseFullName("Gomphichis sp. 22");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp. 22", name.getSpecificEpithet());
+
+        name = parser.parseFullName("Phleum sp. nov.");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp. nov.", name.getSpecificEpithet());
+
+        name = parser.parseFullName("Phleum sp.");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp.", name.getSpecificEpithet());
 
     }
+
 
     @Test  //#5072
     public final void testLongRunningParsingCapitals(){

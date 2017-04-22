@@ -270,8 +270,10 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String genusOrSupraGenus = "("+hybridFull+")?" + capitalEpiWord;
     protected static String infraGenus = capitalEpiWord + oWs + InfraGenusMarker + oWs + capitalEpiWord;
     protected static String aggrOrGroup = capitalEpiWord + oWs + nonCapitalEpiWord + oWs + aggrOrGroupMarker;
-    protected static String species = genusOrSupraGenus + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
-    protected static String speciesWithInfraGen = genusOrSupraGenus + oWs + "\\(" + capitalEpiWord + "\\)" + oWs + nonCapitalEpiWord;
+    protected static String spNov = "sp\\.(\\s*nov\\.)?(\\s*\\d{1,2})?";
+    protected static String specificEpi = "(" + nonCapitalEpiWord + "|" + spNov + ")";
+    protected static String species = genusOrSupraGenus + oWs + "("+hybridPart+")?" + specificEpi;
+    protected static String speciesWithInfraGen = genusOrSupraGenus + oWs + "\\(" + capitalEpiWord + "\\)" + oWs + specificEpi;
 
     protected static String infraSpecies = species + oWs + infraSpeciesMarker + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String zooInfraSpecies = species + oWs + "(" + infraSpeciesMarker + oWs +")?" + "("+hybridPart+")?" + nonCapitalEpiWord;
@@ -329,6 +331,8 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static Pattern anyBotanicFullNamePattern = Pattern.compile(anyBotanicFullName);
     protected static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
+
+    protected static Pattern spNovPattern = Pattern.compile(spNov);
 
 
 }
