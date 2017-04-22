@@ -2026,7 +2026,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
      * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
-     * and to the basionym. The basionym cannot have itself a basionym.
+     * and to the basionym. The basionym cannot have itself as a basionym.
      * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the basionym
      * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
      *
@@ -2042,7 +2042,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
      * and keeps the nomenclatural rule considered for it. The basionym
      * {@link NameRelationship relationship} will be added to <i>this</i> taxon name and to the basionym.
-     * The basionym cannot have itself a basionym.
+     * The basionym cannot have itself as a basionym.
      * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the basionym
      * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
      *
