@@ -406,7 +406,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
             return null;
         }
 
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         //TODO how to handle protected fullTitleCache here?
 
@@ -596,7 +596,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     private List<TaggedText> getUninomialTaggedPart(INonViralName nonViralName) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (nonViralName.isMonomHybrid()){
             addHybridPrefix(tags);
