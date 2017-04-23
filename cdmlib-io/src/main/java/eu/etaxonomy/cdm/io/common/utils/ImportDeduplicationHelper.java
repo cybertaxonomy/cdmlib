@@ -25,7 +25,10 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
@@ -44,19 +47,21 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
 
     private ICdmRepository repository;
 
-
-    boolean referenceMapIsInitialized;
+    boolean referenceMapIsInitialized = false;
+    boolean nameMapIsInitialized = false;
+    boolean agentMapIsInitialized = false;
 
     private Map<String, Set<Reference>> refMap = new HashMap<>();
-
     private Map<String, Team> teamMap = new HashMap<>();
-
     private Map<String, Person> personMap = new HashMap<>();
+    //using titleCache
+    private Map<String, Set<INonViralName>> nameMap = new HashMap<>();
 
     private IMatchStrategy referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
+    private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonNameBase.class);
 
-    //using titleCache
-    private Map<String, INonViralName> nameMap = new HashMap<>();
+
+// ************************** FACTORY *******************************/
 
     public static ImportDeduplicationHelper<?> NewInstance(ICdmRepository repository){
         return new ImportDeduplicationHelper<>(repository);
@@ -135,9 +140,44 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         return personMap.get(title);
     }
 
+    //NAMES
+    private void putName(String title, INonViralName name){
+        Set<INonViralName> names = nameMap.get(title);
+        if (names == null){
+            names = new HashSet<>();
+            nameMap.put(title, names);
+        }
+        names.add(name);
+    }
+    private Set<INonViralName> getNames(String title){
+        return nameMap.get(title);
+    }
+
+    private Optional<INonViralName> getMatchingName(INonViralName existing){
+        Predicate<INonViralName> matchFilter = name ->{
+            try {
+                return nameMatcher.invoke(name, existing);
+            } catch (MatchException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        return Optional.ofNullable(getNames(existing.getTitleCache()))
+                .orElse(new HashSet<>())
+                .stream()
+                .filter(matchFilter)
+                .findAny();
+    }
+
+// **************************** METHODS *****************************/
+
     /**
-     * @param state
-     * @param name
+     * This method replaces name authors, nomenclatural reference and
+     * nomenclatural reference author by existing authors and references
+     * if matching authors or references exist. If not, the given authors
+     * and references are added to the map of existing entities.
+     *
+     * @param state the import state
+     * @param name the name with authors and references to replace
      */
     public void replaceAuthorNamesAndNomRef(STATE state,
             INonViralName name) {
@@ -188,7 +228,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         }
     }
 
-    boolean agentMapIsInitialized = false;
 
     /**
      * @param state
@@ -261,6 +300,50 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
            }
            referenceMapIsInitialized = true;
        }
-
    }
+
+   /**
+    * @param state
+    * @param name
+    */
+   public <NAME extends INonViralName> NAME getExistingName(STATE state, NAME name) {
+       if (name == null){
+           return null;
+       }else{
+           initNameMap(state);
+           @SuppressWarnings("unchecked")
+           NAME result = (NAME)getMatchingName(name).orElse(null);
+           if (result == null){
+               result = name;
+               Set<HybridRelationship> parentRelations = result.getHybridChildRelations();
+               for (HybridRelationship rel : parentRelations){
+                   INonViralName parent = rel.getParentName();
+                   if (parent != null){
+                       rel.setParentName((NonViralName<?>)getExistingName(state, parent));
+                   }
+               }
+               putName(result.getTitleCache(), result);
+           }else{
+               if(logger.isDebugEnabled()) {
+                   logger.debug("Matches");
+                }
+           }
+           return result;
+       }
+   }
+
+   /**
+    * @param state
+    */
+   private void initNameMap(STATE state) {
+       if (!nameMapIsInitialized && repository != null){
+           List<String> propertyPaths = Arrays.asList("");
+           List<TaxonNameBase<?,?>> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
+           for (TaxonNameBase<?,?> name : existingNames){
+               putName(name.getTitleCache(), name);
+           }
+          nameMapIsInitialized = true;
+       }
+   }
+
 }
