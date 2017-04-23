@@ -67,9 +67,6 @@ public class NonViralNameParserImplTest {
 
     private static final Logger logger = Logger.getLogger(NonViralNameParserImplTest.class);
 
-    final private String strNameFamily = "Asteraceae";
-    final private String strNameGenus = "Abies Mueller";
-    final private String strNameGenusUnicode = "Abies M\u00FCller";
     final private String strNameAbies1 = "Abies alba";
     final private String strNameAbiesSub1 = "Abies alba subsp. beta";
     final private String strNameAbiesAuthor1 = "Abies alba Mueller";
@@ -799,16 +796,15 @@ public class NonViralNameParserImplTest {
 
     @Test
     public final void testTemp(){
-//        String nalata = "N. alata";
-//        if (! nalata.matches(NonViralNameParserImplRegExBase.abbrevHybridSecondPart)){
-//            throw new RuntimeException();
-//        }
-//
-//        //#6100  jun.
-//        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+
+//        String nameStr = "Mentha aquatica L. x Mentha spicata L.";
 //        INonViralName name = parser.parseFullName(nameStr, botanicCode, null);
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-//        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+//        assertFalse( name.getHybridChildRelations().isEmpty());
+//        for (HybridRelationship rel : name.getHybridChildRelations()){
+//            TaxonNameBase<?,?> parent = rel.getParentName();
+//            System.out.println(parent.getTitleCache());
+//        }
     }
 
 

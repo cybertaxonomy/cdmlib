@@ -75,9 +75,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         return new ImportDeduplicationHelper<>(repository);
     }
 
-    /**
-     *
-     */
+// ************************ CONSTRUCTOR *****************************/
+
     public ImportDeduplicationHelper(ICdmRepository repository) {
         this.repository = repository;
         if (repository == null){
@@ -85,8 +84,9 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         }
     }
 
-    //************************ PUTTER / GETTER *****************************/
+//************************ PUTTER / GETTER *****************************/
 
+    //REFERENCES
     private void putReference(String title, Reference ref){
         Set<Reference> refs = refMap.get(title);
         if (refs == null){
@@ -114,6 +114,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                 .findAny();
     }
 
+    // AGENTS
     private void putAgentBase(String title, TeamOrPersonBase<?> agent){
         if (agent.isInstanceOf(Person.class) ){
             personMap.put(title, CdmBase.deproxy(agent, Person.class));
