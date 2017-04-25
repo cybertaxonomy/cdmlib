@@ -308,7 +308,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 
     @Override
     public List<TaggedText> getTaggedFullTitle(T nonViralName) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         //null
         if (nonViralName == null){
@@ -325,7 +325,6 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 //		String titleCache = nonViralName.getTitleCache();
         List<TaggedText> titleTags = getTaggedTitle(nonViralName);
         tags.addAll(titleTags);
-
 
         //reference
         String microReference = nonViralName.getNomenclaturalMicroReference();
@@ -433,6 +432,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
+
         return tags;
     }
 
