@@ -222,13 +222,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     }
 
 
-
-
-
-
-
 // ******************* Authorship ******************************/
-
 
     @Override
     public String getAuthorshipCache(T nonViralName) {
@@ -240,7 +234,6 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
             return nonViralName.getAuthorshipCache();
         }
         return getNonCacheAuthorshipCache(nonViralName);
-
     }
 
     /**
