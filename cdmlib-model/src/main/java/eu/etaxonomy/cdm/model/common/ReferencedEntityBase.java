@@ -30,9 +30,8 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * abstract class for all objects that may have a reference
+ * Abstract class for all objects that may have a reference
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
