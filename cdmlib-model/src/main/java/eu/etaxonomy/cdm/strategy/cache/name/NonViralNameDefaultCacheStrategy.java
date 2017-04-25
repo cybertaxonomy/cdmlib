@@ -343,6 +343,8 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
             tags.add(new TaggedText(TagEnum.reference, referenceCache));
         }
 
+        addOriginalSpelling(tags, nonViralName);
+
         //nomenclatural status
         tags.addAll(getNomStatusTags(nonViralName, true, false));
         return tags;
@@ -826,6 +828,13 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         return tags;
     }
 
+    protected void addOriginalSpelling(List<TaggedText> tags, INonViralName nonViralName){
+        String originalName = getOriginalNameString(nonViralName, tags);
+        if (StringUtils.isNotBlank(originalName)){
+            tags.add(new TaggedText(TagEnum.name, originalName));
+        }
+    }
+
     /**
      * Adds the tag for the appended phrase if an appended phrase exists
      * @param tags
@@ -833,10 +842,6 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      */
     protected void addAppendedTaggedPhrase(List<TaggedText> tags, INonViralName nonViralName){
         String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
-        String originalName = getOriginalNameString(nonViralName, tags);
-        if (StringUtils.isNotBlank(originalName)){
-            tags.add(new TaggedText(TagEnum.name, originalName));
-        }
         if (StringUtils.isNotEmpty(appendedPhrase)){
             tags.add(new TaggedText(TagEnum.name, appendedPhrase));
         }
@@ -857,7 +862,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     				INonViralName originalNvName = CdmBase.deproxy(originalName);
     				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
     			}
-    			originalNameStrings.add("'" + originalNameString +"'");
+    			originalNameStrings.add("[as " + UTF8.QUOT_DBL_LOW9 + originalNameString + UTF8.QUOT_DBL_LEFT + "]");
     		}
 		}
     	if (originalNameStrings.size() > 0){
