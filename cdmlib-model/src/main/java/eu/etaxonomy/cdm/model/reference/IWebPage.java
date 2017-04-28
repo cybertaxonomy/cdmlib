@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import org.joda.time.DateTime;
+
 /**
  * This interface represents electronic publications available on the world wide web.
  * <P>
@@ -31,5 +33,17 @@ public interface IWebPage extends IPublicationBase {
 	 */
 	public void setInReference(Reference inReference);
 
+    /**
+     * Date (and time) when a WebPage was accessed.
+     * @return the accessed date
+     */
+	//#5258
+    public DateTime getAccessed();
+
+    /**
+     * @param accessed
+     * @see #getAccessed()
+     */
+    public void setAccessed(DateTime accessed);
 
 }

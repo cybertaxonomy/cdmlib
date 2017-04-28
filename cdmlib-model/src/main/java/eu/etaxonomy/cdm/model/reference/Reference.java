@@ -14,6 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -45,9 +47,12 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
@@ -107,7 +112,8 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "institution",
     "school",
     "organization",
-    "inReference"
+    "inReference",
+    "accessed"
 })
 @XmlRootElement(name = "Reference")
 @Entity
@@ -286,7 +292,16 @@ public class Reference
 	@IndexedEmbedded
 	private TimePeriod datePublished = TimePeriod.NewInstance();
 
-	@XmlElement(name ="Abstract" )
+    //#5258
+    @XmlElement (name = "Accessed", type= String.class)
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
+    @Type(type="dateTimeUserType")
+    @Basic(fetch = FetchType.LAZY)
+    @Match(MatchMode.EQUAL)
+    @FieldBridge(impl = DateTimeBridge.class)
+    private DateTime accessed;
+
+    @XmlElement(name ="Abstract" )
 	@Column(length=65536, name="referenceAbstract")
 	@Lob
     @Field
@@ -653,6 +668,17 @@ public class Reference
 		boolean result =  ! ( (this.datePublished == null) || StringUtils.isBlank(datePublished.toString()));
 		return result;
 	}
+
+
+	@Override
+    public DateTime getAccessed() {
+        return accessed;
+    }
+
+	@Override
+    public void setAccessed(DateTime accessed) {
+        this.accessed = accessed;
+    }
 
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the
