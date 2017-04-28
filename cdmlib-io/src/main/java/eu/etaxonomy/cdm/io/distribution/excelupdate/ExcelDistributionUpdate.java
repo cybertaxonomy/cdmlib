@@ -15,9 +15,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -39,10 +44,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 04.04.2017
  *
  */
+@Component
 public class ExcelDistributionUpdate
             extends ExcelImporterBase<ExcelDistributionUpdateState>{
 
     private static final long serialVersionUID = 621338661492857764L;
+    private static final Logger logger = Logger.getLogger(ExcelDistributionUpdate.class);
+
+    private static final String AREA_MAP = "AreaMap";
 
     /**
      * {@inheritDoc}
@@ -60,13 +69,25 @@ public class ExcelDistributionUpdate
         HashMap<String, String> record = state.getOriginalRecord();
         String line = state.getCurrentLine() + ": ";
         String taxonUuid = getValue(record, "taxon_uuid");
+        String taxonName = getValue(record, "Taxonname");
+
+        if ("taxon_uuid".equals(taxonUuid)){
+            return;
+        }
         UUID uuidTaxon = UUID.fromString(taxonUuid);
         Taxon taxon = (Taxon)getTaxonService().find(uuidTaxon);
         if (taxon == null){
             String message = line + "Taxon for uuid not found: " +  uuidTaxon;
             state.getResult().addError(message);
         }else{
-            handleAreasForTaxon(state, taxon, record, line);
+            try {
+                handleAreasForTaxon(state, taxon, record, line);
+            } catch (Exception e) {
+                String message = line + "An unexpected error occurred when handling %s (uuid: %s)";
+                message = String.format(message, taxonName, taxonUuid);
+                state.getResult().addError(message);
+                state.getResult().addException(e);
+            }
         }
     }
 
@@ -80,23 +101,31 @@ public class ExcelDistributionUpdate
             String line) {
         Map<NamedArea, Set<Distribution>> existingDistributions = getExistingDistributions(state, taxon, line);
         Map<NamedArea, Distribution> newDistributions = getNewDistributions(state, record, line);
-        TaxonDescription newDescription = TaxonDescription.NewInstance(taxon);
+        TaxonDescription newDescription = TaxonDescription.NewInstance();
+        newDescription.setTitleCache("Updated distributions for " + getTaxonLabel(taxon), true);
         //TODO add reference
         Set<TaxonDescription> oldReducedDescriptions = new HashSet<>();
         for (NamedArea area : newDistributions.keySet()){
             Set<Distribution> existingDistrForArea = existingDistributions.get(area);
             boolean hasChange = false;
-            for (Distribution existingDistr : existingDistrForArea){
-                if (!isEqualDistribution(existingDistr, newDistributions.get(area))){
-                    DescriptionBase<?> inDescription = existingDistr.getInDescription();
-                    inDescription.removeElement(existingDistr);
+            if (existingDistrForArea == null || existingDistrForArea.isEmpty()){
+                if (newDistributions.get(area) != null){
+                    //new distribution exists, old distribution did not exist
                     hasChange = true;
-                    oldReducedDescriptions.add(CdmBase.deproxy(inDescription, TaxonDescription.class));
-                }else{
-//                    addSource?
+                }
+            }else{
+                for (Distribution existingDistr : existingDistrForArea){
+                    if (!isEqualDistribution(existingDistr, newDistributions.get(area))){
+                        DescriptionBase<?> inDescription = existingDistr.getInDescription();
+                        inDescription.removeElement(existingDistr);
+                        hasChange = true;
+                        oldReducedDescriptions.add(CdmBase.deproxy(inDescription, TaxonDescription.class));
+                    }else{
+    //                    addSource?
+                    }
                 }
             }
-            if (hasChange){
+            if (hasChange && newDistributions.get(area) != null){
                 newDescription.addElement(newDistributions.get(area));
             }
         }
@@ -112,6 +141,14 @@ public class ExcelDistributionUpdate
         }
     }
 
+    /**
+     * @param taxon
+     * @return
+     */
+    private String getTaxonLabel(Taxon taxon) {
+        return taxon.getName() == null ? taxon.getTitleCache() : taxon.getName().getTitleCache();
+    }
+
     private Map<NamedArea, Distribution> getNewDistributions(ExcelDistributionUpdateState state,
             HashMap<String, String> record, String line) {
 
@@ -123,12 +160,16 @@ public class ExcelDistributionUpdate
             NamedArea area = getAreaByIdInVoc(state, key, line);
             if (area != null){
                 String statusStr = record.get(key);
-                PresenceAbsenceTerm status = getStatusByStatusStr(statusStr);
-                Distribution distribution = Distribution.NewInstance(area, status);
-                Distribution previousDistribution = result.put(area, distribution);
-                if (previousDistribution != null){
-                    String message = "";
-                    state.getResult().addWarning(message);
+                PresenceAbsenceTerm status = getStatusByStatusStr(state, statusStr, line);
+                if (status != null){
+                    Distribution distribution = Distribution.NewInstance(area, status);
+                    Distribution previousDistribution = result.put(area, distribution);
+                    if (previousDistribution != null){
+                        String message = line + "Multiple distributions exist for same area (" + area.getTitleCache() +  ") in input source";
+                        state.getResult().addWarning(message);
+                    }
+                }else{
+                    result.put(area, null);
                 }
             }else{
                 //??
@@ -141,8 +182,22 @@ public class ExcelDistributionUpdate
      * @param statusStr
      * @return
      */
-    private PresenceAbsenceTerm getStatusByStatusStr(String statusStr) {
-//        xxx;
+    private PresenceAbsenceTerm getStatusByStatusStr(ExcelDistributionUpdateState state, String statusStr, String line) {
+//        FIXME replace hardcoded;
+        if ("A".equals(statusStr)) {
+            return PresenceAbsenceTerm.ABSENT();
+        }else if ("P".equals(statusStr)) {
+            return PresenceAbsenceTerm.PRESENT();
+        }else if ("P?".equals(statusStr)) {
+            return PresenceAbsenceTerm.PRESENT_DOUBTFULLY();
+        }else if (isBlank(statusStr)){
+            return null;
+        }else{
+            String message = line + "Status string not recognized: " +  statusStr +". Status not imported.";
+            logger.warn(message);
+            state.getResult().addWarning(message);
+        }
+
         return null;
     }
 
@@ -154,8 +209,30 @@ public class ExcelDistributionUpdate
      */
     private NamedArea getAreaByIdInVoc(ExcelDistributionUpdateState state, String id, String line) {
         //TODO remember in state
-        NamedArea area = getTermService().findByIdInVocabulary(id, state.getConfig().getAreaVocabularyUuid(), null);
+        Map<String, NamedArea> areaMap = (Map<String, NamedArea>)state.getStatusItem(AREA_MAP);
+        if (areaMap == null){
+            areaMap = createAreaMap(state);
+            state.putStatusItem(AREA_MAP, areaMap);
+        }
+        NamedArea area = areaMap.get(id);
         return area;
+    }
+
+    /**
+     * @param state
+     * @return
+     */
+    private Map<String, NamedArea> createAreaMap(ExcelDistributionUpdateState state) {
+        Map<String, NamedArea> result = new HashMap<>();
+        TermVocabulary<?> voc = getVocabularyService().find(state.getConfig().getAreaVocabularyUuid());
+        //TODO handle null
+        for (DefinedTermBase<?> obj : voc.getTerms()){
+            //TODO handle exception
+            NamedArea area = CdmBase.deproxy(obj, NamedArea.class);
+            String key = area.getIdInVocabulary();
+            result.put(key, area);
+        }
+        return result;
     }
 
     /**
@@ -169,10 +246,13 @@ public class ExcelDistributionUpdate
                 it.remove();
             }
         }
-        return null;
+        return keys;
     }
 
     private boolean isEqualDistribution(Distribution existingDistribution, Distribution newDistribution) {
+        if (existingDistribution == null || newDistribution == null){
+            return existingDistribution == newDistribution;
+        }
         if (existingDistribution.getArea().equals(newDistribution.getArea())){
             if (CdmUtils.nullSafeEqual(existingDistribution.getStatus(), newDistribution.getStatus())){
                 return true;

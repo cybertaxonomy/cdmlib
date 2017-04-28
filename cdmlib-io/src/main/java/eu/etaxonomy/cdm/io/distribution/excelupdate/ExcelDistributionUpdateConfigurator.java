@@ -26,6 +26,12 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
 
     private UUID areaVocabularyUuid;
 
+
+    public static ExcelDistributionUpdateConfigurator NewInstance(URI uri, ICdmDataSource destination, UUID areaVocabularyUuid){
+        ExcelDistributionUpdateConfigurator result = new ExcelDistributionUpdateConfigurator(uri, destination, areaVocabularyUuid);
+        return result;
+    }
+
     /**
      * @param uri
      * @param destination
@@ -33,6 +39,7 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
      */
     protected ExcelDistributionUpdateConfigurator(URI uri, ICdmDataSource destination, UUID areaVocabularyUuid) {
         super(uri, destination, null);
+        this.areaVocabularyUuid = areaVocabularyUuid;
     }
 
     /**
