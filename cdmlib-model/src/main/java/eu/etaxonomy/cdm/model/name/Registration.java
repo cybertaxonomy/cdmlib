@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.DateTime;
 
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "submitter"
 })
 @Entity
+@Audited
 public class Registration extends AnnotatableEntity {
 
     private static final long serialVersionUID = -5633923579539766801L;
