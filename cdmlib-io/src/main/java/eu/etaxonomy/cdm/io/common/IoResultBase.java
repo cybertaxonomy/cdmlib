@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +28,13 @@ public abstract class IoResultBase {
     public List<byte[]> getErrors() {return errors;}
     public void setErrors(List<byte[]> errors) {this.errors = errors;}
     public void addError(String error) {
-//        errors.add(error);
+        errors.add(error.getBytes(StandardCharsets.UTF_8));
     }
 
     public List<byte[]> getWarnings() {return warnings;}
     public void setWarnings(List<byte[]> warnings) {this.warnings = warnings;}
     public void addWarning(String warning) {
-//        warnings.add(StringUtils..warning.to);
+        warnings.add(warning.getBytes(StandardCharsets.UTF_8));
     }
 
     public List<Exception> getExceptions() {return exceptions;}
