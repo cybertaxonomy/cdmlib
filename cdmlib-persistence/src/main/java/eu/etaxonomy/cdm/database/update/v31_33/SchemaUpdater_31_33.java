@@ -487,7 +487,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				!INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
 		stepList.add(stepPref);
-		
+
 		// update RightsTerm to RightsType #1306
 		stepName = "Update RightsTerm -> RightsType";
 		String updateSql = "UPDATE @@DefinedTermBase@@ SET DTYPE = 'RightsType'  WHERE DTYPE = 'RightsTerm'";

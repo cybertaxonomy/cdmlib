@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 })
 @MappedSuperclass
 @Audited
-public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCacheStrategy >{
+public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<TermBase> >{
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermBase.class);

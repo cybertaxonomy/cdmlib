@@ -41,15 +41,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 	private final boolean includeAnnotatableEntity;
 	private boolean includeEventBase;
 	private final boolean excludeVersionableAttributes;
-	protected List<ColumnAdder> columnAdders = new ArrayList<ColumnAdder>();
-	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<ISchemaUpdaterStep>();
+	protected List<ColumnAdder> columnAdders = new ArrayList<>();
+	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<>();
 	private String primaryKeyParams;
 	private String primaryKeyParams_AUD;
 	private String uniqueParams;
 	private String uniqueParams_AUD;
 
 
-//	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNull, boolean includeAudTable){
 	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, boolean includeAudTable, boolean includeCdmBaseAttributes){
 		return new TableCreator(stepName, tableName, columnNames, columnTypes, null, null, null, includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
@@ -285,24 +284,28 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
 		if (includeCdmBaseAttributes){
-			if (! this.excludeVersionableAttributes){
+			//updatedBy
+		    if (! this.excludeVersionableAttributes){
 				String attribute = "updatedby";
 				String referencedTable = "UserAccount";
 				result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 			}
 
+		    //createdBy
 			String attribute = "createdby";
 			String referencedTable = "UserAccount";
 			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 
 		}
 		if (isAudit){
+		    //REV
 			String attribute = "REV";
 			String referencedTable = "AuditEvent";
 			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 		}
 		if (this.includeEventBase){
-			String attribute = "actor_id";
+			//actor
+		    String attribute = "actor_id";
 			String referencedTable = "AgentBase";
 			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 		}
@@ -401,10 +404,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 				monitor.warning(message);
 				return true;  //default
 			}
-
 		}
-
-
 	}
 
 	private static boolean isRevAttribute(String attribute) {

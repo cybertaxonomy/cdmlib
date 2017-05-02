@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
  * @date 16.09.2010
  *
  */
-public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISchemaUpdaterStep {
+public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
 	private static final Logger logger = Logger.getLogger(IndexAdder.class);
 
 	private String tableName;
@@ -35,16 +35,19 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 
 	private Integer length;
 
+// ********************** FACTORY ****************************************/
+
 	public static final IndexAdder NewInstance(String stepName, String tableName, String columnName, Integer length){
 		return new IndexAdder(stepName, tableName, columnName, length);
 	}
 
+// **************************** CONSTRUCTOR *********************************/
 
 	protected IndexAdder(String stepName, String tableName, String columnName, Integer length) {
 		super(stepName);
 		this.tableName = tableName;
 		this.columnName = columnName;
-		this.length = length == null ? 255 :length;
+		this.length = length == null ? 255 : length;
 	}
 
 
@@ -64,7 +67,7 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 			datasource.executeUpdate(updateQuery);
 			return true;
 		} catch (Exception e) {
-			logger.warn("Unique index for username could not be created");
+			logger.warn("Unique index for " + columnName + " could not be created");
 			return false;
 		}
 	}

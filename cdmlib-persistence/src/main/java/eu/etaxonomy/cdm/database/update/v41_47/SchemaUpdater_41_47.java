@@ -53,9 +53,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 		String stepName;
 		String tableName;
 		ISchemaUpdaterStep step;
-		String query;
 		String newColumnName;
-		String oldColumnName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 

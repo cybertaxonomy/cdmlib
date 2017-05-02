@@ -21,14 +21,13 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> implements ISchemaUpdaterStep {
+public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> {
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
 
 	private final String newColumnName;
 	private final String columnType;
 	private final Object defaultValue;
 	private boolean isNotNull;
-
 	private final String referencedTable;
 
 	/**
@@ -202,9 +201,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		return referencedTable;
 	}
 
-
 	public String getNewColumnName() {
 		return newColumnName;
 	}
-
 }
