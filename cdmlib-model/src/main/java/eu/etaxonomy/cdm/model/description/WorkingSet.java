@@ -57,12 +57,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @XmlType(name = "WorkingSet", propOrder = {
     "representations",
     "descriptiveSystem",
-    "descriptions"
+    "descriptions",
+    "taxonSubtreeFilter",
+    "geoFilter",
+    "minRank",
+    "maxRank"
 })
 @XmlRootElement(name = "WorkingSet")
 @Entity
 @Audited
-
 public class WorkingSet extends AnnotatableEntity {
 	private static final long serialVersionUID = 3256448866757415686L;
 	private static final Logger logger = Logger.getLogger(WorkingSet.class);
