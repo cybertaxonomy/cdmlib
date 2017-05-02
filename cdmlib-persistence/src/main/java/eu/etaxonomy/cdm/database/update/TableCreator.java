@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +28,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
 
-	private static final boolean SORT_INDEX = true;
+	private static final boolean IS_LIST = true;
+	private static final boolean IS_1_TO_M = true;
+	private static final boolean IS_M_TO_M = false;
+
 
 	private final List<String> columnNames;
 	private final List<String> columnTypes;
@@ -157,15 +159,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 			//annotations
 			stepName= "Add @tableName annotations";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 			mnTablesStepList.add(tableCreator);
 
 			//marker
 			stepName= "Add @tableName marker";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 			mnTablesStepList.add(tableCreator);
-
 		}
 
 		if (includeIdentifiable){
@@ -173,33 +174,31 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 			//credits
 			stepName= "Add @tableName credits";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Credit", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Credit", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
 			mnTablesStepList.add(tableCreator);
-
 
 			//identifier
 			stepName= "Add @tableName identifiers";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Identifier", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Identifier", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
 			mnTablesStepList.add(tableCreator);
-
 
 			//extensions
 			stepName= "Add @tableName extensions";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 			mnTablesStepList.add(tableCreator);
 
 			//OriginalSourceBase
 			stepName= "Add @tableName sources";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "OriginalSourceBase", "sources", SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "OriginalSourceBase", null, "sources", SchemaUpdaterBase.INCLUDE_AUDIT, ! IS_LIST, IS_1_TO_M);
 			mnTablesStepList.add(tableCreator);
 
 			//Rights
 			stepName= "Add @tableName rights";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
 			mnTablesStepList.add(tableCreator);
 		}
 	}
@@ -281,7 +280,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 	}
 
 
-	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		if (includeCdmBaseAttributes){
 			//updatedBy
@@ -317,26 +316,30 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 		return result;
 	}
 
-	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, String attribute, String referencedTable, CaseType caseType) throws SQLException {
+
+    public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, String attribute, String referencedTable, CaseType caseType) {
 		boolean result = true;
 
 		referencedTable = caseType.transformTo(referencedTable);
+
+        String idSuffix = "_id";
+        if (isRevAttribute(attribute) || attribute.endsWith(idSuffix)){
+            idSuffix = "";
+        }
+        String columnName =  attribute + idSuffix;
 
 		if (supportsForeignKeys(datasource, monitor, tableName, referencedTable)){
 			String index = "FK@tableName_@attribute";
 			index = index.replace("@tableName", tableName);
 			index = index.replace("@attribute", attribute);
 
-			String idSuffix = "_id";
-			if (isRevAttribute(attribute) || attribute.endsWith(idSuffix)){
-				idSuffix = "";
-			}
+
 			//OLD - don't remember why we used ADD INDEX here
 //			String updateQuery = "ALTER TABLE @tableName ADD INDEX @index (@attribute), ADD FOREIGN KEY (@attribute) REFERENCES @referencedTable (@id)";
 			String updateQuery = "ALTER TABLE @tableName ADD @constraintName FOREIGN KEY (@attribute) REFERENCES @referencedTable (@id)";
 			updateQuery = updateQuery.replace("@tableName", tableName);
 //			updateQuery = updateQuery.replace("@index", index);
-			updateQuery = updateQuery.replace("@attribute", attribute + idSuffix);
+			updateQuery = updateQuery.replace("@attribute", columnName);
 			updateQuery = updateQuery.replace("@referencedTable", referencedTable);
 			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
 				updateQuery = updateQuery.replace("@constraintName", "CONSTRAINT " + index);
@@ -360,9 +363,18 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> {
 			}
 			return result;
 		}else{
-			return true;
+		    //create only index
+			IndexAdder indexAdder = IndexAdder.NewIntegerInstance("Add index instead of Foreign Key", tableName, columnName);
+			try {
+                indexAdder.invoke(datasource, monitor, caseType);
+            } catch (Exception e) {
+                String message = "Problem when creating index instead of Foreign Key for " + tableName +"." + columnName +": " + e.getMessage();
+                monitor.warning(message);
+                logger.warn(message, e);
+                return true;   //we do not interrupt update if only index generation did not work
+            }
+		    return result;
 		}
-
 	}
 
 	/**

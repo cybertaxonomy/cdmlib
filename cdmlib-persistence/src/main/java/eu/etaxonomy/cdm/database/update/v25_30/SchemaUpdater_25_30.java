@@ -100,7 +100,7 @@ public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 
 		//covered taxa
 		stepName= "Add polytomous key covered taxa";
-		tableCreator = MnTableCreator.NewMnInstance(stepName, "PolytomousKey", null, "TaxonBase", "coveredtaxa", SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+		tableCreator = MnTableCreator.NewMnInstance(stepName, "PolytomousKey", null, "TaxonBase", null, "coveredtaxa", SchemaUpdaterBase.INCLUDE_AUDIT, false, false);
 		stepList.add(tableCreator);
 
 		//Polytomous key node

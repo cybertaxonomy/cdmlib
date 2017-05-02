@@ -37,9 +37,13 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
 
 // ********************** FACTORY ****************************************/
 
-	public static final IndexAdder NewInstance(String stepName, String tableName, String columnName, Integer length){
-		return new IndexAdder(stepName, tableName, columnName, length);
+	public static final IndexAdder NewStringInstance(String stepName, String tableName, String columnName, Integer length){
+		return new IndexAdder(stepName, tableName, columnName, length == null ? 255 : length);
 	}
+
+    public static final IndexAdder NewIntegerInstance(String stepName, String tableName, String columnName){
+        return new IndexAdder(stepName, tableName, columnName, null);
+    }
 
 // **************************** CONSTRUCTOR *********************************/
 
@@ -47,7 +51,7 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
 		super(stepName);
 		this.tableName = tableName;
 		this.columnName = columnName;
-		this.length = length == null ? 255 : length;
+		this.length = length;
 	}
 
 
@@ -78,7 +82,7 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
 			String updateQuery;
 			if (type.equals(DatabaseTypeEnum.MySQL)){
 				//Maybe MySQL also works with the below syntax. Did not check yet.
-				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+"("+length+"));";
+				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+ makeLength()+");";
 			}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
 				updateQuery = "CREATE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";
 			}else{
@@ -89,7 +93,19 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
 			return updateQuery;
 	}
 
-	private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
+	/**
+     * @param length2
+     * @return
+     */
+    private String makeLength() {
+        if (length != null){
+            return "(" + length + ")";
+        }else{
+            return "";
+        }
+    }
+
+    private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String indexName = "_UniqueKey";

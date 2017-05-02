@@ -26,8 +26,6 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase<ClassBase
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
 
-	private static final boolean SORT_INDEX = true;
-
 	private final boolean includeIdentifiableEntity;
 	private final boolean includeAnnotatableEntity;
 	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<>();

@@ -686,8 +686,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String firstTable = "Amplification";
 		String secondTable = "SingleRead";
 		step = MnTableCreator
-				.NewMnInstance(stepName, firstTable, null, secondTable, null,
-						SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+				.NewMnInstance(stepName, firstTable, null, secondTable, null, null,
+						SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 		stepList.add(step);
 
 		// sequence - single reads #3360
@@ -695,8 +695,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		firstTable = "Sequence";
 		secondTable = "SingleRead";
 		step = MnTableCreator
-				.NewMnInstance(stepName, firstTable, null, secondTable, null,
-						SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+				.NewMnInstance(stepName, firstTable, null, secondTable, null, null,
+						SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 		stepList.add(step);
 
 		// sequence - barcode #3360
