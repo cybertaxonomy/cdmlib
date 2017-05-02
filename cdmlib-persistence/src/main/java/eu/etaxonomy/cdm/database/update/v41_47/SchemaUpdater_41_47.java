@@ -57,7 +57,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 		String newColumnName;
 		String oldColumnName;
 
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		//#6529
 		//Extend WorkingSet to allow a more fine grained definiton of taxon set
@@ -80,25 +80,26 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //subtree filter
         stepName= "Add geo filter MN table to WorkingSet";
         String firstTableName = "WorkingSet";
-        String secondTableName = "DefinedTermBase";
-        String secondTableAlias = "NamedArea";
+        String secondTableName = "NamedArea";
+        String secondTableAlias = "geoFilter";
         boolean hasSortIndex = false;
         boolean secondTableInKey = true;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, SchemaUpdaterBase.INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
         stepList.add(step);
 
         //subtree filter
         stepName= "Add subtree filter MN table to WorkingSet";
         firstTableName = "WorkingSet";
         secondTableName = "TaxonNode";
+        secondTableAlias = "taxonSubtreeFilter";
         hasSortIndex = false;
         secondTableInKey = true;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, SchemaUpdaterBase.INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
         stepList.add(step);
 
         //#6258
         stepName = "Add Registration table";
-        tableName = "IntextReference";
+        tableName = "Registration";
         String[] columnNames = new String[]{"identifier","specificIdentifier","registrationDate","status",
                 "institution_id","name_id","submitter_id"};
         String[] referencedTables = new String[]{null, null, null, null,
@@ -106,6 +107,34 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         String[] columnTypes = new String[]{"string_255","string_255","datetime","string_255","int","int","int"};
         step = TableCreator.NewAnnotatableInstance(stepName, tableName,
                 columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //add blockedBy_id
+        stepName= "Add blockedBy_id to Registration";
+        firstTableName = "Registration";
+        secondTableName = "Registration";
+        secondTableAlias = "blockedBy";
+        hasSortIndex = false;
+        secondTableInKey = true;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        stepList.add(step);
+
+        //add type designations
+        stepName= "Add type designations to Registration";
+        firstTableName = "Registration";
+        secondTableName = "TypeDesignationBase";
+        secondTableAlias = "typeDesignations";
+        hasSortIndex = false;
+        secondTableInKey = true;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        stepList.add(step);
+
+        //#5258
+        //Add "accessed" to Reference
+        stepName = "Add 'accessed' to Reference";
+        tableName = "Reference";
+        newColumnName = "accessed";
+        step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
         stepList.add(step);
 
         return stepList;
