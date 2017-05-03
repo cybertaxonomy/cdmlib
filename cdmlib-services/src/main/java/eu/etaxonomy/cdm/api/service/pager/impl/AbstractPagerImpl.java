@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 
 public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
@@ -263,6 +264,18 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 		return pageSize;
 	}
 
+	/**
+	 * Test if the the <code>numberOfResults</code> in the range of the page specified by <code>pageIndex</code> and <code>pageSize</code>.
+	 *
+	 * When using this method in a service layer class you will also need to provide the according <code>limit</code> and <code>start</code>
+	 * parameters for dao list methods. The PagerUtil class provides the according methods for the required calculation:
+	 * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}
+	 *
+	 * @param numberOfResults
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
 	public static boolean hasResultsInRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
 		return numberOfResults > 0 // no results at all
 				&& (pageSize == null // page size may be null : return all in this case

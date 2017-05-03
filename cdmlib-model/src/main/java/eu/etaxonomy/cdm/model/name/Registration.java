@@ -43,11 +43,15 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 /**
  * A registration represents a nomenclatural act, either a {@link TaxonNameBase taxon name}
  * registration or a {@link TypeDesignationBase type} registration.
+ * <p>
+ * The name and all type designations associated with the Registration must share the same citation and citation detail.
+ *
  *
  * @author a.mueller
  * @date 13.03.2017
  *
  */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Registration", propOrder = {
     "identifier",
