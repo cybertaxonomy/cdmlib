@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -254,10 +257,38 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet("AgentDaoImplTest.xml")
+    public void testListPeopleFiltered() {
+
+        List<AgentBase> result = agentDao.list(null, (String)null, null, (MatchMode)null, (Integer)null, (Integer)null, null, null);
+        Assert.assertNotNull("list() should return a list",result);
+        Assert.assertEquals("list() should return 9 AgentBase entities in the current view", 9 ,result.size());
+
+        List<AgentBase>  personResults = agentDao.list(Person.class, (String)null, null, (MatchMode)null, (Integer)null, (Integer)null, null, null);
+        Assert.assertEquals("list() should return 5 Persons entities", 5, personResults.size());
+
+        personResults = agentDao.list(Person.class, "firstname", "Ben", MatchMode.EXACT, (Integer)null, (Integer)null, null, null);
+        Assert.assertEquals("list() should return 1 AgentBase entity having the firstname 'Ben'", 1 ,personResults.size());
+    }
+
+    @Test
+    @DataSet("AgentDaoImplTest.xml")
+    public void testCountPeopleFiltered() {
+        List<Criterion> restrictions = new ArrayList<Criterion>();
+
+        Assert.assertEquals("count() should return 9 AgentBase entities", 9 , agentDao.count(null, (String)null, null, (MatchMode)null));
+
+        Assert.assertEquals("count() should return 5 Persons entities", 5, agentDao.count(Person.class, (String)null, null, (MatchMode)null));
+
+        restrictions.add(Restrictions.eq("firstname", "Ben"));
+        Assert.assertEquals("count() should return 1 Persons entity having the firstname 'Ben'", 1 , agentDao.count(Person.class, "firstname", "Ben", MatchMode.EXACT));
+    }
+
+    @Test
     @DataSet("AgentDaoImplTest.testExists.xml")
     public void testListPeopleInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        List<Person> result = agentDao.list(Person.class,null, null);
+        List<Person> result = agentDao.list(Person.class, null, null);
         Assert.assertNotNull("list() should return a list",result);
         Assert.assertEquals("list() should return five agents in the current view",result.size(),5);
     }
