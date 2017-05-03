@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -99,12 +100,12 @@ public class ExcelDistributionUpdate
      */
     private void handleAreasForTaxon(ExcelDistributionUpdateState state, Taxon taxon, HashMap<String, String> record,
             String line) {
+        ImportResult result = state.getResult();
         Map<NamedArea, Set<Distribution>> existingDistributions = getExistingDistributions(state, taxon, line);
         Map<NamedArea, Distribution> newDistributions = getNewDistributions(state, record, line);
         TaxonDescription newDescription = TaxonDescription.NewInstance();
         newDescription.addImportSource(null, null, state.getConfig().getSourceReference(), "row " + state.getCurrentLine());
         newDescription.setTitleCache("Updated distributions for " + getTaxonLabel(taxon), true);
-        //TODO add reference
         Set<TaxonDescription> oldReducedDescriptions = new HashSet<>();
         for (NamedArea area : newDistributions.keySet()){
             Set<Distribution> existingDistrForArea = existingDistributions.get(area);
@@ -122,10 +123,12 @@ public class ExcelDistributionUpdate
                         if (state.getConfig().isCreateNewDistribution() || newDistribution == null ){
                             DescriptionBase<?> inDescription = existingDistr.getInDescription();
                             inDescription.removeElement(existingDistr);
+                            result.addDeletedRecord(existingDistr);
                             hasChange = true;
                             oldReducedDescriptions.add(CdmBase.deproxy(inDescription, TaxonDescription.class));
                         }else{
                             existingDistr.setStatus(newDistribution.getStatus());
+                            result.addUpdatedRecord(existingDistr);
                             existingDistr.addImportSource(null, null, state.getConfig().getSourceReference(), "row "+state.getCurrentLine());
                         }
                     }else{
@@ -135,16 +138,19 @@ public class ExcelDistributionUpdate
             }
             if (hasChange && newDistribution != null){
                 newDescription.addElement(newDistribution);
+                result.addNewRecord(newDistribution);
             }
         }
         //add new description to taxon if any new element exists
         if (!newDescription.getElements().isEmpty()){
             taxon.addDescription(newDescription);
+            result.addNewRecord(newDescription);
         }
         //remove old empty descriptions (oldReducedDescriptions) if really empty
         for (TaxonDescription desc : oldReducedDescriptions){
             if (desc.getElements().isEmpty()){
                 desc.getTaxon().removeDescription(desc);
+                result.addDeletedRecord(desc);
             }
         }
     }
@@ -175,6 +181,7 @@ public class ExcelDistributionUpdate
                     Distribution previousDistribution = result.put(area, distribution);
                     if (previousDistribution != null){
                         String message = line + "Multiple distributions exist for same area (" + area.getTitleCache() +  ") in input source";
+                        logger.warn(message);
                         state.getResult().addWarning(message);
                     }
                 }else{
