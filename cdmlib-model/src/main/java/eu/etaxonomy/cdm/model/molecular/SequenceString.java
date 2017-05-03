@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.codehaus.plexus.util.StringUtils;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * A sequence contains the genetic code of a DNA or RNA part. It is basically a string
@@ -106,7 +107,7 @@ public class SequenceString implements Cloneable, Serializable{
 	 * @param length    length
 	 */
 	public void setLength(Integer length){
-		if (StringUtils.isBlank(string)){
+		if (CdmUtils.isBlank(string)){
 			this.length = length;
 		}
 	}
