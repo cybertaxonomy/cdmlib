@@ -109,25 +109,32 @@ public class ExcelDistributionUpdate
         for (NamedArea area : newDistributions.keySet()){
             Set<Distribution> existingDistrForArea = existingDistributions.get(area);
             boolean hasChange = false;
+            Distribution newDistribution = newDistributions.get(area);
             if (existingDistrForArea == null || existingDistrForArea.isEmpty()){
-                if (newDistributions.get(area) != null){
+                if (newDistribution != null){
                     //new distribution exists, old distribution did not exist
                     hasChange = true;
                 }
             }else{
                 for (Distribution existingDistr : existingDistrForArea){
-                    if (!isEqualDistribution(existingDistr, newDistributions.get(area))){
-                        DescriptionBase<?> inDescription = existingDistr.getInDescription();
-                        inDescription.removeElement(existingDistr);
-                        hasChange = true;
-                        oldReducedDescriptions.add(CdmBase.deproxy(inDescription, TaxonDescription.class));
+                    if (!isEqualDistribution(existingDistr, newDistribution)){
+                        //distribution changed or deleted
+                        if (state.getConfig().isCreateNewDistribution() || newDistribution == null ){
+                            DescriptionBase<?> inDescription = existingDistr.getInDescription();
+                            inDescription.removeElement(existingDistr);
+                            hasChange = true;
+                            oldReducedDescriptions.add(CdmBase.deproxy(inDescription, TaxonDescription.class));
+                        }else{
+                            existingDistr.setStatus(newDistribution.getStatus());
+                            existingDistr.addImportSource(null, null, state.getConfig().getSourceReference(), "row "+state.getCurrentLine());
+                        }
                     }else{
-    //                    addSource?
+    //                    addSource? => not if nothing changed
                     }
                 }
             }
-            if (hasChange && newDistributions.get(area) != null){
-                newDescription.addElement(newDistributions.get(area));
+            if (hasChange && newDistribution != null){
+                newDescription.addElement(newDistribution);
             }
         }
         //add new description to taxon if any new element exists

@@ -28,6 +28,7 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
 
     private UUID areaVocabularyUuid;
 
+    private boolean createNewDistribution = true;
 
     public static ExcelDistributionUpdateConfigurator NewInstance(URI uri, ICdmDataSource destination, UUID areaVocabularyUuid){
         ExcelDistributionUpdateConfigurator result = new ExcelDistributionUpdateConfigurator(uri, destination, areaVocabularyUuid);
@@ -63,13 +64,6 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
         };
     }
 
-    public UUID getAreaVocabularyUuid() {
-        return this.areaVocabularyUuid;
-    }
-
-    public void setAreaVocabularyUuid(UUID areaVocabularyUuid) {
-        this.areaVocabularyUuid = areaVocabularyUuid;
-    }
 
     @Override
     public Reference getSourceReference() {
@@ -84,5 +78,22 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
         return sourceReference;
     }
 
+// ********************** GETTER / SETTER **************************/
+
+    public UUID getAreaVocabularyUuid() {
+        return this.areaVocabularyUuid;
+    }
+
+    public void setAreaVocabularyUuid(UUID areaVocabularyUuid) {
+        this.areaVocabularyUuid = areaVocabularyUuid;
+    }
+
+    public boolean isCreateNewDistribution() {
+        return createNewDistribution;
+    }
+
+    public void setCreateNewDistribution(boolean createNewDistribution) {
+        this.createNewDistribution = createNewDistribution;
+    }
 
 }
