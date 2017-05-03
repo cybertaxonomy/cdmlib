@@ -54,7 +54,7 @@ public abstract class ExcelImportConfiguratorBase
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = ReferenceFactory.newDatabase();
-			sourceReference.setTitleCache("Distribution data import", true);
+			sourceReference.setTitleCache("Excel import " + getDateString(), true);
 		}
 		return sourceReference;
 	}

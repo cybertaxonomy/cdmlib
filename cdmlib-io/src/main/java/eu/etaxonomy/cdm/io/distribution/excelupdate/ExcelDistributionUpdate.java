@@ -102,6 +102,7 @@ public class ExcelDistributionUpdate
         Map<NamedArea, Set<Distribution>> existingDistributions = getExistingDistributions(state, taxon, line);
         Map<NamedArea, Distribution> newDistributions = getNewDistributions(state, record, line);
         TaxonDescription newDescription = TaxonDescription.NewInstance();
+        newDescription.addImportSource(null, null, state.getConfig().getSourceReference(), "row " + state.getCurrentLine());
         newDescription.setTitleCache("Updated distributions for " + getTaxonLabel(taxon), true);
         //TODO add reference
         Set<TaxonDescription> oldReducedDescriptions = new HashSet<>();
@@ -163,6 +164,7 @@ public class ExcelDistributionUpdate
                 PresenceAbsenceTerm status = getStatusByStatusStr(state, statusStr, line);
                 if (status != null){
                     Distribution distribution = Distribution.NewInstance(area, status);
+                    distribution.addImportSource(null, null, state.getConfig().getSourceReference(), "row " + state.getCurrentLine());
                     Distribution previousDistribution = result.put(area, distribution);
                     if (previousDistribution != null){
                         String message = line + "Multiple distributions exist for same area (" + area.getTitleCache() +  ") in input source";

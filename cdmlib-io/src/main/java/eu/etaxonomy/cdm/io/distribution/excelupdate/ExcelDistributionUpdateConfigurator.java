@@ -14,6 +14,8 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -67,6 +69,19 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
 
     public void setAreaVocabularyUuid(UUID areaVocabularyUuid) {
         this.areaVocabularyUuid = areaVocabularyUuid;
+    }
+
+    @Override
+    public Reference getSourceReference() {
+        if (this.sourceReference == null){
+            sourceReference = ReferenceFactory.newGeneric();
+            if (this.getSource() == null){
+                sourceReference.setTitleCache("Excel Distribution Update " + getDateString(), true);
+            }else{
+                sourceReference.setTitleCache(getSource().toString(), true);
+            }
+        }
+        return sourceReference;
     }
 
 
