@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
@@ -30,6 +32,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since May 2, 2017
  *
  */
+@Service
+@Transactional(readOnly = true)
 public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao> implements IRegistrationService {
 
     /**
