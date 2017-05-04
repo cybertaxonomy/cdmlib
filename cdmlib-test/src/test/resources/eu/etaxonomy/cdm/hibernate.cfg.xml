@@ -95,6 +95,7 @@
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Distribution"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.Character"/>
       <mapping class="eu.etaxonomy.cdm.model.description.FeatureNode"/>
       <mapping class="eu.etaxonomy.cdm.model.description.FeatureTree"/>
       <mapping class="eu.etaxonomy.cdm.model.description.KeyStatement"/>

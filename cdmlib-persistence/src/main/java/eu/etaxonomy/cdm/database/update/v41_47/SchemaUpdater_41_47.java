@@ -133,6 +133,23 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
         stepList.add(step);
 
+        //#6618 Add structure column to DefinedTermBase (Character)
+        stepName = "Add structure column to DefinedTermBase (Character)";
+        tableName = "DefinedTermBase";
+        newColumnName = "structure_id";
+        referencedTable = "FeatureNode";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
+        //#6618 Add property column to DefinedTermBase (Character)
+        stepName = "Add property column to DefinedTermBase (Character)";
+        tableName = "DefinedTermBase";
+        newColumnName = "property_id";
+        referencedTable = "FeatureNode";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
+
         //#6535 update termtype for CdmMetaData (int => string)
 
         //ModelUpdateResult
