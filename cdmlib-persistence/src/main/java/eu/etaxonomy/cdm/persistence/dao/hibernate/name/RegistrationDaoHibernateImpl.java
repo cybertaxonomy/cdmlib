@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.reference.IReference;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since May 2, 2017
  *
  */
+@Repository
 public class RegistrationDaoHibernateImpl extends AnnotatableDaoImpl<Registration> implements IRegistrationDao {
 
     @SuppressWarnings("unused")
