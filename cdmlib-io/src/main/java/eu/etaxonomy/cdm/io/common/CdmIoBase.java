@@ -46,10 +46,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     protected String ioName = null;
 
 
-    /**
-     *
-     */
-    public CdmIoBase() {
+    protected CdmIoBase() {
         super();
         this.ioName = this.getClass().getSimpleName();
     }

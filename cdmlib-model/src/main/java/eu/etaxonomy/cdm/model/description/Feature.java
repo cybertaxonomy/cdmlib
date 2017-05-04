@@ -195,20 +195,6 @@ public class Feature extends DefinedTermBase<Feature> {
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
-	/**
-	 * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
-	 * a label and a label abbreviation.
-	 *
-	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new feature to be created
-	 * @param	label  		 the string identifying the new feature to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new feature to be created
-	 * @see 				 #Feature()
-	 */
-	protected Feature(String term, String label, String labelAbbrev) {
-		super(TermType.Feature, term, label, labelAbbrev);
-	}
 
 	/**
 	 * Creates a new empty feature instance.
@@ -240,6 +226,21 @@ public class Feature extends DefinedTermBase<Feature> {
     @Deprecated
     protected Feature() {
         super(TermType.Feature);
+    }
+
+    /**
+     * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
+     * a label and a label abbreviation.
+     *
+     * @param   term         the string (in the default language) describing the
+     *                       new feature to be created
+     * @param   label        the string identifying the new feature to be created
+     * @param   labelAbbrev  the string identifying (in abbreviated form) the
+     *                       new feature to be created
+     * @see                  #Feature()
+     */
+    protected Feature(String term, String label, String labelAbbrev) {
+        super(TermType.Feature, term, label, labelAbbrev);
     }
 
 /* *************************************************************************************/
