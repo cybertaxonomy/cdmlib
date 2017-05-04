@@ -180,8 +180,8 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         context.setAuthentication(authentication);
 
 
-        List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
-        GrantedAuthorityImpl rolePublishAthotrity = GrantedAuthorityImpl.NewInstance();
+        List<GrantedAuthority> authorityList = new ArrayList<>();
+        GrantedAuthorityImpl rolePublishAthotrity = GrantedAuthorityImpl.NewInstance(null);
         rolePublishAthotrity.setAuthority(Role.ROLE_PUBLISH.toString()); // testing if creating a Role from string is working
         authorityList.add(rolePublishAthotrity);
 
@@ -343,7 +343,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
-import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
@@ -73,8 +73,8 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     CdmPermissionClass permissionClass;
     String property;
     // Making sure that operation is always initialized, for both
-    // - the string representation to have a '[]' 
-    // - and the object representation to never be null (with check in constructors)     
+    // - the string representation to have a '[]'
+    // - and the object representation to never be null (with check in constructors)
     EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);;
     UUID targetUuid;
 
@@ -259,13 +259,10 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 //        return  new CdmAuthority(authority.getAuthority());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.IGrantedAuthorityConverter#asNewGrantedAuthority()
-     */
+
     @Override
     public GrantedAuthorityImpl asNewGrantedAuthority() throws ParsingException {
-        GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance();
-        grantedAuthority.setAuthority(getAuthority());
+        GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance(getAuthority());
         return grantedAuthority;
     }
 

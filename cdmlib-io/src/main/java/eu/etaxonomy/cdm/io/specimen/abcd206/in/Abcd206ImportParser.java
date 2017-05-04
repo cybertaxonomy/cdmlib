@@ -73,7 +73,7 @@ public class Abcd206ImportParser {
             abcdFieldGetter.getAssociatedUnitIds(root);
             abcdFieldGetter.getUnitNotes(root);
             boolean referencefound = abcdFieldGetter.getReferences(root);
-            if (!referencefound) {
+            if (!referencefound && state.getRef() != null) {
                 String[]a = {state.getRef().getTitleCache(),"",""};
                 state.getDataHolder().getReferenceList().add(a);
             }

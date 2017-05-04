@@ -103,8 +103,6 @@ public class SortIndexUpdaterConfigurator  extends ImportConfiguratorBase<Defaul
         ioClassList = new Class[]{
                      SortIndexUpdaterWrapper.class
         };
-
-
     }
 
 

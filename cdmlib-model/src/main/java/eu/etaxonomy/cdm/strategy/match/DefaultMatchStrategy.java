@@ -171,7 +171,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			boolean result) throws MatchException {
 		//matchFirst != matchSecond != null
 		try {
-			Map<String, List<MatchMode>> replaceMatchers = new HashMap<String, List<MatchMode>>();
+			Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 			for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
 				Field protectedField = cacheMatcher.getProtectedField(matching);
 				boolean protected1 = protectedField.getBoolean(matchFirst);
@@ -259,7 +259,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			}
 			result |= replaceMode.matches(value1, value2, null);
 		}
-		logger.debug(fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
+		if (logger.isDebugEnabled()){logger.debug(fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);}
 		return result;
 	}
 

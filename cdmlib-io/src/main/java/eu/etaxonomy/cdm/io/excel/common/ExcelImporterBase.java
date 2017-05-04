@@ -14,13 +14,16 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -65,8 +68,9 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 
 		byte[] data = null;
 		// read and save all rows of the excel worksheet
-		if (state.getConfig() instanceof NormalExplicitImportConfigurator && ((NormalExplicitImportConfigurator)state.getConfig()).getStream() != null){
-		    data =  ((NormalExplicitImportConfigurator)state.getConfig()).getStream();
+		if ((state.getConfig() instanceof NormalExplicitImportConfigurator || state.getConfig() instanceof ExcelDistributionUpdateConfigurator) &&
+		        (state.getConfig().getStream() != null || state.getConfig().getStream() != null)){
+		    data =  state.getConfig().getStream();
 		} else{
 		    source = state.getConfig().getSource();
 		}
@@ -209,5 +213,21 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		return result;
 	}
 
-
+    /**
+     * Returns the value of the record map for the given key.
+     * The value is trimmed and empty values are set to <code>null</code>.
+     * @param record
+     * @param originalKey
+     * @return the value
+     */
+    protected String getValue(Map<String, String> record, String originalKey) {
+        String value = record.get(originalKey);
+        if (! StringUtils.isBlank(value)) {
+            if (logger.isDebugEnabled()) { logger.debug(originalKey + ": " + value); }
+            value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
+            return value;
+        }else{
+            return null;
+        }
+    }
 }

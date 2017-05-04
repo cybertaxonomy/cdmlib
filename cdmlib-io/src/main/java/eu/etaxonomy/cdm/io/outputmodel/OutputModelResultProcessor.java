@@ -28,7 +28,7 @@ public class OutputModelResultProcessor {
     private static final String HEADER = "HEADER_207dd23a-f877-4c27-b93a-8dbea3234281";
 
     private Map<OutputModelTable, Map<String,String[]>> result = new HashMap<>();
-    private OutputModelExportState state;
+    //private OutputModelExportState state;
 
 
     /**
@@ -36,7 +36,7 @@ public class OutputModelResultProcessor {
      */
     public OutputModelResultProcessor(OutputModelExportState state) {
         super();
-        this.state = state;
+        //this.state = state;
     }
 
 
@@ -44,7 +44,7 @@ public class OutputModelResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(OutputModelTable table, String id, String[] csvLine) {
+    public void put(OutputModelTable table, String id, String[] csvLine, OutputModelExportState state) {
         Map<String,String[]> resultMap = result.get(table);
         if (resultMap == null ){
             resultMap = new HashMap<>();
@@ -82,15 +82,15 @@ public class OutputModelResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(OutputModelTable table, ICdmBase cdmBase, String[] csvLine) {
-       this.put(table, String.valueOf(cdmBase.getId()), csvLine);
+    public void put(OutputModelTable table, ICdmBase cdmBase, String[] csvLine, OutputModelExportState state) {
+       this.put(table, String.valueOf(cdmBase.getId()), csvLine, state);
     }
 
 
     /**
      * @return
      */
-    public void createFinalResult() {
+    public void createFinalResult(OutputModelExportState state) {
         String strToPrint ="";
         ExportResult finalResult = ExportResult.NewInstance(ExportResultType.MAP_BYTE_ARRAY);
 
@@ -123,7 +123,7 @@ public class OutputModelResultProcessor {
 
             }
         }
-
+        result.clear();
 
         state.setResult(finalResult);
     }

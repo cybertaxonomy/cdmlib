@@ -93,7 +93,7 @@ public class ImportHelper {
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);
-			if (strValue instanceof String && strValue != null){
+			if (strValue instanceof String){
 				strValue = ((String)strValue).trim();
 				if (blankToNull &&  strValue.equals("")){
 					strValue = null;

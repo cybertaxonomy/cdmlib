@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +33,11 @@ public class Abcd206ImportState
 
 	private String prefix;
 
-	private List<String> associatedUnitIds = new ArrayList<String>();
+	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
+
+	private Set<URI> allAccesPoints = new HashSet<>();
+
+	private URI actualAccessPoint;
 
 
 //****************** CONSTRUCTOR ***************************************************/
@@ -71,12 +78,41 @@ public class Abcd206ImportState
         return importStream.toByteArray();
     }
 
-    public void setAssociatedUnitIds(List<String> associatedUnitIds){
+    public void setAssociatedUnitIds(List<String[]> associatedUnitIds){
         this.associatedUnitIds = associatedUnitIds;
     }
 
-    public List<String> getAssociatedUnitIds(){
+    public List<String[]> getAssociatedUnitIds(){
         return this.associatedUnitIds;
+    }
+
+    /**
+     * @return the actualAccesPoint
+     */
+    public Set<URI> getActualAccesPoint() {
+        return allAccesPoints;
+    }
+
+    /**
+     * @param actualAccesPoint the actualAccesPoint to set
+     */
+    public void addActualAccesPoint(URI actualAccesPoint) {
+        this.allAccesPoints.add(actualAccesPoint);
+    }
+
+    /**
+     * @return the actualAccessPoint
+     */
+    public URI getActualAccessPoint() {
+        return actualAccessPoint;
+    }
+
+    /**
+     * @param actualAccessPoint the actualAccessPoint to set
+     */
+    public void setActualAccessPoint(URI actualAccessPoint) {
+        this.addActualAccesPoint(actualAccessPoint);
+        this.actualAccessPoint = actualAccessPoint;
     }
 
 //

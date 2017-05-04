@@ -21,10 +21,10 @@ public enum UTF8 {
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
 	RIGHT_SINGLE_QUOT("\u2019"), // Right single quotation mark
-	ENGLISH_QUOT_START("\u201c"),  //Left English quotation mark
-	ENGLISH_QUOT_END("\u201d"),  //Right English quotation mark
-    ENGLISH_QUOT_START_LOW("\u201e"),  //Left English quotation mark Low
-	ENGLISH_QUOT_END_HIGH("\u201f"),  //Right English quotation mark -‟-
+	QUOT_DBL_LEFT("\u201c"),  //LEFT DOUBLE QUOTATION MARK Left English quotation mark
+	QUOT_DBL_RIGHT("\u201d"),  //RIGHT DOUBLE QUOTATION MARK Right English quotation mark
+    QUOT_DBL_LOW9("\u201e"),  //DOUBLE LOW-9 QUOTATION MARK  Left English quotation mark Low
+	QUOT_DBL_HIGH_REV9("\u201f"),  //DOUBLE HIGH-REVERSED-9 QUOTATION MARK Right English quotation mark -‟-
 	ACUTE_ACCENT("\u00B4"),     //Acute Accent, looks a bit similar to th single quotation mark
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
 	DEGREE_SIGN("\u00B0"),      //°

@@ -74,6 +74,7 @@ public enum OutputModelTable {
     protected static final String NAME_ID = "Name_ID";
     protected static final String TROPICOS_ID = "Tropicos_ID";
     protected static final String IPNI_ID = "IPNI_ID";
+    protected static final String WFO_ID = "WorldFloraOnline_ID";
     protected static final String LSID = "LSID";
     protected static final String RANK = "Rank";
     protected static final String RANK_SEQUENCE = "Rank_Sequence";
@@ -90,11 +91,12 @@ public enum OutputModelTable {
     protected static final String COMB_EX_AUTHORTEAM_FK = "PublishingExAuthorTeam_Fk";
     protected static final String COMB_AUTHORTEAM_FK = "PublishingAuthorTeam_Fk";
     protected static final String AUTHOR_TEAM_STRING = "AuthorTeamString";
+   // protected static final String REFERENCE_FK = "Reference_Fk"
     protected static final String PUBLICATION_TYPE = "PublicationType";
     protected static final String ABBREV_TITLE = "AbbreviatedTitle";
     protected static final String FULL_TITLE = "FullTitle";
-    protected static final String ABBREV_REF_AUTHOR = "AbbreviatedRefAuthor";
-    protected static final String FULL_REF_AUTHOR = "FullRefAuthor";
+    protected static final String ABBREV_REF_AUTHOR = "AbbreviatedInRefAuthor";
+    protected static final String FULL_REF_AUTHOR = "FullInRefAuthor";
     protected static final String COLLATION = "Collation";
     protected static final String VOLUME_ISSUE = "Volume_Issue";
     protected static final String DETAIL = "Detail";
@@ -184,6 +186,7 @@ public enum OutputModelTable {
     protected static final String FACT_FK = "Fact_Fk";
     protected static final String REFERENCE_FK = "Reference_Fk";
     protected static final String NAME_IN_SOURCE_FK = "NameInSource_Fk";
+    protected static final String FACT_TYPE = "FactType";
 
 
 
@@ -192,7 +195,7 @@ public enum OutputModelTable {
     }
 
     final static String[]  factSourcesColumns() {
-        return new String[]{FACT_FK, REFERENCE_FK, NAME_IN_SOURCE_FK};
+        return new String[]{FACT_FK, REFERENCE_FK, NAME_IN_SOURCE_FK, FACT_TYPE};
     }
 
     final static String[] specimenFactsColumns() {
@@ -226,12 +229,12 @@ public enum OutputModelTable {
         return new String[]{NAME1_FK, NAME2_FK, NAME_REL_TYPE};
     }
     final static String[] nameColumns(){
-        return new String[]{NAME_ID, LSID, TROPICOS_ID, IPNI_ID, RANK, RANK_SEQUENCE,
+        return new String[]{NAME_ID, LSID, TROPICOS_ID, IPNI_ID, WFO_ID, RANK, RANK_SEQUENCE,
                 FULL_NAME_WITH_AUTHORS, FULL_NAME_NO_AUTHORS, GENUS_UNINOMIAL,
                 INFRAGENERIC_RANK, INFRAGENERIC_EPITHET, SPECIFIC_EPITHET,
                 INFRASPECIFIC_RANK, INFRASPECIFIC_EPITHET,
                 BAS_EX_AUTHORTEAM_FK, BAS_AUTHORTEAM_FK, COMB_EX_AUTHORTEAM_FK, COMB_AUTHORTEAM_FK,
-                AUTHOR_TEAM_STRING, PUBLICATION_TYPE, ABBREV_TITLE, FULL_TITLE,
+                AUTHOR_TEAM_STRING, REFERENCE_FK, PUBLICATION_TYPE, ABBREV_TITLE, FULL_TITLE,
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, TITLE_PAGE_YEAR, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,

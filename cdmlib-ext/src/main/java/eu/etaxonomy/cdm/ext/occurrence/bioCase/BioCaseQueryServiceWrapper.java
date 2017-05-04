@@ -147,4 +147,42 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         results.add(unit2.innerDerivedUnit());
         return results;
     }
+
+    /**
+     * @param query
+     * @param endPoint
+     * @return
+     */
+    public InputStream querySiblings(OccurenceQuery query, URI endPoint) throws ClientProtocolException, IOException{
+        if(endPoint==null){
+            logger.warn("URI for querying was null.");
+            return null;
+        }
+        if(UriUtils.isServiceAvailable(endPoint, 10000)){
+            //check capabilities for ABCD version
+            Map<String, String> requestHeaders = new HashMap<String, String>();
+            requestHeaders.put(CAPABILITY_TEST_PARAM.getName(), CAPABILITY_TEST_PARAM.getValue());
+            InputStream response = executeHttpGet(endPoint, requestHeaders);
+            String abcdSchema = parseAbcdSchemaVersion(response);
+
+            //build XML query
+            Document doc = BioCaseQueryGenerator.generateXMLQueryForSiblings(query, abcdSchema);
+            String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
+
+            //POST parameters
+            List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
+            queryParamsPOST.add(SUBMIT_PARAM);
+            addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
+            UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
+
+            //Query provider
+            logger.info("Querying BioCASE service with " + endPoint + ", POST: " + queryParamsPOST);
+            //FIXME do the ABCD import here
+            return executeHttpPost(endPoint, null, httpEntity);
+        }
+        else{
+            logger.error("Querying " + endPoint + " got a timeout!");
+            return null;
+        }
+    }
 }

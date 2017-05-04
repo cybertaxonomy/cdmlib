@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -413,6 +416,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 
     public void setFeatureTreeTitle(String featureTreeTitle) {
         this.featureTreeTitle = featureTreeTitle;
+    }
+
+
+    private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+
+    protected String getDateString(){
+        return formatter.print(new DateTime());
     }
 
 }

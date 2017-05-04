@@ -289,6 +289,8 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
         state.setDerivedUnitBase(currentUnit);
 
     }
+
+
 @Override
 protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
         Object itemObject){
@@ -701,23 +703,6 @@ protected boolean isIgnore(SpecimenImportStateBase<SpecimenImportConfiguratorBas
 
     return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

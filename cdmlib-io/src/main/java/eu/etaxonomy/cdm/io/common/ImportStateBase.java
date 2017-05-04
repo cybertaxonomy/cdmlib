@@ -63,6 +63,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	private Map<String,UUID> classificationKeyUuidMap = new HashMap<>();
 
+	private Map<String, Object> anyStatusItemMap = new HashMap<>();
+
 	private IInputTransformer inputTransformer;
 
 
@@ -366,6 +368,15 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putReferenceSystem(ReferenceSystem referenceSystem){
 		referenceSystemMap.put(referenceSystem.getUuid(), referenceSystem);
 	}
+
+	public Object getStatusItem(String key){
+        return anyStatusItemMap.get(key);
+    }
+
+    public void putStatusItem(String key, Object statusItem){
+        anyStatusItemMap.put(key, statusItem);
+    }
+
 
 
 	//TODO make this abstract or find another way to force that the

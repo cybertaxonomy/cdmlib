@@ -74,7 +74,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     @Override
     public GrantedAuthorityImpl asNewGrantedAuthority() {
         GrantedAuthorityImpl grantedAuthority;
-        grantedAuthority = GrantedAuthorityImpl.NewInstance();
+        grantedAuthority = GrantedAuthorityImpl.NewInstance(null);
         grantedAuthority.setUuid(uuid);
         grantedAuthority.setAuthority(authority);
         return grantedAuthority;
@@ -85,7 +85,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 		Assert.isTrue(authorityString.matches("^" + ROLE_PREFIX +"\\w*$"), "invalid role prefix of authority " + authorityString + "[" + grantedAuthority.getUuid() + "]");
         return new Role(grantedAuthority.getUuid(), authorityString);
     }
-    
+
     public static Role fromString(String authorityString){
 		Assert.isTrue(authorityString.matches("^" + ROLE_PREFIX +"\\w*$"), "invalid role prefix of authority " + authorityString);
 		Role role = null;

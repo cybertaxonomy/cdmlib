@@ -24,7 +24,6 @@ import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.sandbox.queries.DuplicateFilter;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -58,6 +57,7 @@ import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -1434,13 +1434,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Pager<SearchResult<TaxonBase>> findByFullText(
             Class<? extends TaxonBase> clazz, String queryString,
             Classification classification, List<Language> languages,
-            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
 
         LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments, null);
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException luceneParseException = new LuceneParseException(e.getMessage());
+            luceneParseException.setStackTrace(e.getStackTrace());
+            throw luceneParseException;
+        }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
@@ -1458,12 +1465,19 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
             Classification classification,
             Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException {
+            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
         LuceneSearch luceneSearch = prepareByDistributionSearch(areaFilter, statusFilter, classification);
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException luceneParseException = new LuceneParseException(e.getMessage());
+            luceneParseException.setStackTrace(e.getStackTrace());
+            throw luceneParseException;
+        }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
@@ -1599,7 +1613,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus, List<Language> languages,
             boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
-            throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+            throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         // FIXME: allow taxonomic ordering
         //  hql equivalent:  order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
@@ -1853,7 +1867,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException luceneParseException = new LuceneParseException(e.getMessage());
+            luceneParseException.setStackTrace(e.getStackTrace());
+            throw luceneParseException;
+        }
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
@@ -1959,13 +1980,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
             Class<? extends DescriptionElementBase> clazz, String queryString,
             Classification classification, List<Feature> features, List<Language> languages,
-            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
 
         LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(clazz, queryString, classification, features, languages, highlightFragments);
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException luceneParseException = new LuceneParseException(e.getMessage());
+            luceneParseException.setStackTrace(e.getStackTrace());
+            throw luceneParseException;
+        }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
@@ -1985,7 +2013,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
             Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
         LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments, null);
@@ -1993,7 +2021,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException luceneParseException = new LuceneParseException(e.getMessage());
+            luceneParseException.setStackTrace(e.getStackTrace());
+            throw luceneParseException;
+        }
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());

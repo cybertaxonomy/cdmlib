@@ -772,6 +772,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		String fullNameString = fullNameStringOrig.replaceAll(oWs , " ").trim();
 
 		fullNameString = removeHybridBlanks(fullNameString);
+		fullNameString = removeSpNovBlanks(fullNameString);
 		String[] epi = pattern.split(fullNameString);
 		try {
 	    	//cultivars //TODO 2 implement cultivars
@@ -827,7 +828,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			 else if (speciesPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.SPECIES());
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
-				nameToBeFilled.setSpecificEpithet(epi[1]);
+				nameToBeFilled.setSpecificEpithet(normalizeSpNov(epi[1]));
 				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length());
 			}
 		    //species with infra generic epithet
@@ -1001,6 +1002,17 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	/**
+     * @param string
+     * @return
+     */
+    private String normalizeSpNov(String epi) {
+        if (spNovPattern.matcher(epi).matches()){
+            epi = epi.replace(".", ". ").replace("\\s+", " ").trim();
+        }
+        return epi;
+    }
+
+    /**
      * @param firstName
      * @param secondNameString
      * @return
@@ -1091,6 +1103,20 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}
 		return result;
 	}
+
+
+    private String removeSpNovBlanks(String fullNameString) {
+        Matcher spNovMatcher = spNovPattern.matcher(fullNameString);
+        if (spNovMatcher.find()){
+            String spNov = spNovMatcher.group(0);
+            String spNovShort = spNov.replaceAll("\\s", "");
+            if (spNov.length() != spNovShort.length()){
+                fullNameString = fullNameString.replace(spNov, spNovShort);
+            }
+        }
+        return fullNameString;
+    }
+
 
 	/**
 	 * Author parser for external use

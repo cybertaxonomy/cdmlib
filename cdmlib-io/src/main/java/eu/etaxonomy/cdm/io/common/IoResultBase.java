@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author a.mueller
  * @date 24.03.2017
@@ -18,28 +20,50 @@ import java.util.List;
  */
 public abstract class IoResultBase {
 
-    private List<byte[]> errors = new ArrayList<>();
-    private List<byte[]> warnings = new ArrayList<>();
-    private List<Exception> exceptions = new ArrayList<>();
+    private List<Error> errors = new ArrayList<>();
+    private List<String> warnings = new ArrayList<>();
+    private List<Error> exceptions = new ArrayList<>();
+
+    public class Error{
+        String message;
+        Exception exception;
+        private Error(String msg, Exception e){this.message = msg; this.exception = e;}
+
+        public String getMessage(){
+            return message;
+        }
+
+        public Exception getException(){
+            return exception;
+        }
+    }
 
 // ************* GETTERS / SETTERS / ADDERS ***********************/
 
-    public List<byte[]> getErrors() {return errors;}
-    public void setErrors(List<byte[]> errors) {this.errors = errors;}
+    public List<Error> getErrors() {return errors;}
+    public void setErrors(List<Error> errors) {this.errors = errors;}
     public void addError(String error) {
-//        errors.add(error);
+        errors.add(new Error(error, null));
+    }
+    public void addError(String error, Exception e) {
+        errors.add(new Error(error, e));
     }
 
-    public List<byte[]> getWarnings() {return warnings;}
-    public void setWarnings(List<byte[]> warnings) {this.warnings = warnings;}
+    public List<String> getWarnings() {return warnings;}
+    public void setWarnings(List<String> warnings) {this.warnings = warnings;}
     public void addWarning(String warning) {
-//        warnings.add(StringUtils..warning.to);
+//       warnings.add(warning.getBytes(StandardCharsets.UTF_8));
+        warnings.add(warning);
     }
 
-    public List<Exception> getExceptions() {return exceptions;}
-    public void setExceptions(List<Exception> exceptions) {this.exceptions = exceptions;}
+    public List<Error> getExceptions() {return exceptions;}
+    public void setExceptions(List<Error> exceptions) {this.exceptions = exceptions;}
     public void addException(Exception e) {
-        exceptions.add(e);
+        exceptions.add(new Error(null, e));
+        setExceptionState();
+    }
+    public void addException(Exception e, String message) {
+        exceptions.add(new Error(message, e));
         setExceptionState();
     }
 
@@ -55,4 +79,46 @@ public abstract class IoResultBase {
     }
 
     public abstract void setAborted();
+
+    /**
+     * @return
+     */
+    public StringBuffer createReport() {
+        StringBuffer report = new StringBuffer("");
+        addErrorReport(report, "Errors", errors);
+        addErrorReport(report, "Exceptions", exceptions);
+        addWarnings(report, "Warnings", warnings);
+        return report;
+    }
+    /**
+     * @param report
+     * @param string
+     * @param warnings2
+     */
+    private void addWarnings(StringBuffer report, String label, List<String> list) {
+        if (!list.isEmpty()){
+            report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
+            for (String warning : list){
+                String str = String.valueOf(warning);
+                report.append("\n" + str);
+            }
+        }
+    }
+    /**
+     * @param report
+     * @param string
+     * @param newRecords2
+     */
+    private void addErrorReport(StringBuffer report, String label, List<Error> list) {
+        if (!errors.isEmpty()){
+            report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
+            for (Error error : list){
+                String message = error.message != null ? error.message : error.exception != null ? error.exception.getMessage() : "";
+                message = StringUtils.isBlank(message)? "no message" : message;
+                Object stacktrace = error.exception.getStackTrace();
+                String available = (stacktrace == null ? " not" : "");
+                report.append("\n" + message + "(stacktrace" + available + ")");
+            }
+        }
+    }
 }

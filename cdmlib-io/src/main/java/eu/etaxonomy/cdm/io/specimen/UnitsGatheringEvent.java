@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.specimen;
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,7 +19,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
@@ -128,46 +126,15 @@ public class UnitsGatheringEvent {
      * @param langageIso
      */
     public void setLocality(ITermService termService, String locality, String languageIso){
+
         LanguageString loc = null;
-        List<LanguageString> languages = termService.getAllLanguageStrings(0, 0);
-        boolean locFound=false;
-        if ((languageIso == null) || (termService.getLanguageByIso(languageIso) == null)){
-            //            if (languageIso != null && termService.getLanguageByIso(languageIso) == null ){
-            //                logger.info("unknown iso used for the locality: "+languageIso);
-            //            }
-            for (LanguageString ls:languages){
-                if (ls == null) {
-                    continue;
-                }
-                ls = HibernateProxyHelper.deproxy(ls, LanguageString.class);
-                if (ls.getText() == null){
-                    continue;
-                }
-                if (ls.getText().equalsIgnoreCase(locality)){
-                    loc=ls;
-                    locFound=true;
-                    //                    System.out.println("REUSE LOCALITY");
-                }
-            }
-            if (!locFound){
-                loc = LanguageString.NewInstance(locality, Language.DEFAULT());
-                termService.saveLanguageData(loc);
-                languages.add(loc);
-            }
+        if (languageIso == null){
+            loc = LanguageString.NewInstance(locality, Language.DEFAULT());
         }else{
-            for (LanguageString ls:languages){
-                if (ls.getText().equalsIgnoreCase(locality) && ls.getLanguage().equals(termService.getLanguageByIso(languageIso))){
-                    loc=ls;
-                    locFound=true;
-                    //                    System.out.println("REUSE LOCALITY");
-                }
-            }
-            if (!locFound) {
-                loc = LanguageString.NewInstance(locality, termService.getLanguageByIso(languageIso));
-                termService.saveLanguageData(loc);
-                languages.add(loc);
-            }
+            loc = LanguageString.NewInstance(locality, termService.getLanguageByIso(languageIso));
         }
+
+
         if (loc == null){logger.warn("PROBLEM LOCALITY");}
         this.gatheringEvent.setLocality(loc);
     }

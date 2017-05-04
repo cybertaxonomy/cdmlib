@@ -38,7 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.codehaus.plexus.util.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -47,6 +46,7 @@ import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.search.annotations.ClassBridge;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -201,7 +201,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
 
-          this.idInVocabulary = StringUtils.isBlank(idInVocabulary)? null : idInVocabulary;
+          this.idInVocabulary = CdmUtils.isBlank(idInVocabulary)? null : idInVocabulary;
       }
 
       @Override
@@ -389,7 +389,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         String label = csvLine.get(2).trim();
         String description = csvLine.get(3);
         String abbreviatedLabel = csvLine.get(4);
-        if (StringUtils.isBlank(abbreviatedLabel)){
+        if (CdmUtils.isBlank(abbreviatedLabel)){
             abbreviatedLabel = null;
         }
         if (abbrevAsId){
@@ -404,7 +404,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         int index = partOfCsvLineIndex();
          if (index != -1){
             String partOfString = csvLine.get(index);
-             if(StringUtils.isNotBlank(partOfString)) {
+             if(CdmUtils.isNotBlank(partOfString)) {
                  UUID partOfUuid = UUID.fromString(partOfString);
                  DefinedTermBase partOf = terms.get(partOfUuid);
                  partOf.addIncludes(newInstance);

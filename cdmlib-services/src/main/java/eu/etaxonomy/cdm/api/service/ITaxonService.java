@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryparser.classic.ParseException;
-
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
@@ -30,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -512,9 +510,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return a paged list of instances of type T matching the queryString and
      *         the additional filter criteria
      * @return
-     * @throws CorruptIndexException
+     * @throws LuceneCorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      * @throws LuceneMultiSearchException
      * @deprecated this search should fully be covered by the new method
      *      {@link #findTaxaAndNamesByFullText(EnumSet, String, Classification, Set, List, boolean, Integer, Integer, List, List)}
@@ -523,7 +521,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     @Deprecated
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
             Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException;
 
     /**
      * Searches for TaxonBase instances using the TaxonBase free text index.
@@ -563,13 +561,13 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a paged list of instances of type T matching the queryString and
      *         the additional filter criteria
-     * @throws CorruptIndexException
+     * @throws LuceneCorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      */
     public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+            List<String> propertyPaths) throws IOException, LuceneParseException;
 
 
     /**
@@ -596,12 +594,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *            this method can return - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a paged list of instances of {@link Taxon} instances
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      */
     public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
             Classification classification,
             Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException;
+            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
 
     /**
      * Searches for TaxonBase instances using the TaxonBase free text index.
@@ -643,16 +641,16 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *            this method can return - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a paged list of instances of {@link Taxon}, {@link Synonym}, matching the queryString and
      *         the additional filter criteria
-     * @throws CorruptIndexException
+     * @throws LuceneCorruptIndexException
      * @throws IOException
-     * @throws ParseException
+     * @throws LuceneParseException
      * @throws LuceneMultiSearchException
      */
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes,
             String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
+            List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException;
 
     /**
      * Searches for TaxonBase instances by using the DescriptionElement free text index.
@@ -694,10 +692,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return a paged list of instances of type T matching the queryString and
      *         the additional filter criteria
      * @throws IOException
-     * @throws CorruptIndexException
-     * @throws ParseException
+     * @throws LuceneCorruptIndexException
+     * @throws LuceneParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
 
 
     /**

@@ -17,12 +17,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -174,7 +174,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             List<Language> languages,
             boolean highlightFragments,
             List<String> propertyPaths,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+            int maxNoOfResults) throws IOException, LuceneParseException;
 
 	/**
 	 * Fuzzy matching for the taxon name elements using only the lucene index.
@@ -198,7 +198,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             float accuracy,
             List<Language> languages,
             boolean highlightFragments,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+            int maxNoOfResults) throws IOException, LuceneParseException;
 
 	/**
 	 * Fuzzy matching against the name cache using only the lucene index.
@@ -219,7 +219,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             float accuracy,
             List<Language> languages,
             boolean highlightFragments,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+            int maxNoOfResults) throws IOException, LuceneParseException;
 
 	/**
 	 * Exact matching for the taxon name elements using only the lucene index.
@@ -244,7 +244,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             boolean wildcard,
             List<Language> languages,
             boolean highlightFragments,
-            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+            int maxNoOfResults) throws IOException, LuceneParseException;
 
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
 

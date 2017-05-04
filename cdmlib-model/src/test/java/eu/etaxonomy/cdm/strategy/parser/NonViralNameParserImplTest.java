@@ -67,9 +67,6 @@ public class NonViralNameParserImplTest {
 
     private static final Logger logger = Logger.getLogger(NonViralNameParserImplTest.class);
 
-    final private String strNameFamily = "Asteraceae";
-    final private String strNameGenus = "Abies Mueller";
-    final private String strNameGenusUnicode = "Abies M\u00FCller";
     final private String strNameAbies1 = "Abies alba";
     final private String strNameAbiesSub1 = "Abies alba subsp. beta";
     final private String strNameAbiesAuthor1 = "Abies alba Mueller";
@@ -799,16 +796,15 @@ public class NonViralNameParserImplTest {
 
     @Test
     public final void testTemp(){
-//        String nalata = "N. alata";
-//        if (! nalata.matches(NonViralNameParserImplRegExBase.abbrevHybridSecondPart)){
-//            throw new RuntimeException();
-//        }
-//
-//        //#6100  jun.
-//        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+
+//        String nameStr = "Mentha aquatica L. x Mentha spicata L.";
 //        INonViralName name = parser.parseFullName(nameStr, botanicCode, null);
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-//        assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());
+//        assertFalse( name.getHybridChildRelations().isEmpty());
+//        for (HybridRelationship rel : name.getHybridChildRelations()){
+//            TaxonNameBase<?,?> parent = rel.getParentName();
+//            System.out.println(parent.getTitleCache());
+//        }
     }
 
 
@@ -1749,8 +1745,30 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Problem should be 0", 0, parsingProblem);
         Rank rank = sectionName.getRank();
         Assert.assertEquals("", Rank.SECTION_BOTANY(), rank  );
+    }
+
+    //#6577
+    @Test
+    public final void testParseSpNov(){
+        //Canabio, issue with space
+        INonViralName name = parser.parseFullName("Iresine sp. nov. 1");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp. nov. 1", name.getSpecificEpithet());
+
+        name = parser.parseFullName("Gomphichis sp. 22");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp. 22", name.getSpecificEpithet());
+
+        name = parser.parseFullName("Phleum sp. nov.");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp. nov.", name.getSpecificEpithet());
+
+        name = parser.parseFullName("Phleum sp.");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("sp.", name.getSpecificEpithet());
 
     }
+
 
     @Test  //#5072
     public final void testLongRunningParsingCapitals(){
