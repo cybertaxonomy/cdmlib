@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -121,7 +122,7 @@ public class Registration extends AnnotatableEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
-    private Set<TypeDesignationBase> typeDesignations;
+    private Set<TypeDesignationBase> typeDesignations = new HashSet<>();
 
     @XmlElementWrapper(name = "BlockingRegistrations")
     @XmlElement(name = "BlockedBy")
@@ -130,7 +131,7 @@ public class Registration extends AnnotatableEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
-    private Set<Registration> blockedBy;
+    private Set<Registration> blockedBy = new HashSet<>();
 
     @XmlElement (name = "Submitter")
     @XmlIDREF
