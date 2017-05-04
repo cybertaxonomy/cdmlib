@@ -133,6 +133,15 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
         stepList.add(step);
 
+        //#6535 update termtype for CdmMetaData (int => string)
+
+        //ModelUpdateResult
+
+        //Remove termupdater and allow update only from version 4.0
+
+
+
+
         return stepList;
     }
 
