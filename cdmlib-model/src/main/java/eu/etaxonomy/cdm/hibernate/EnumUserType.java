@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.RankClass;
+import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -105,6 +106,9 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 			//SequenceDirection
 			}else if (clazz.equals(SequenceDirection.class)){
 				return SequenceDirection.getByKey(val);
+            //RegistrationStatus
+			}else if (clazz.equals(RegistrationStatus.class)){
+                return RegistrationStatus.getByKey(val);
 			}else{
 	        	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
 	        }
