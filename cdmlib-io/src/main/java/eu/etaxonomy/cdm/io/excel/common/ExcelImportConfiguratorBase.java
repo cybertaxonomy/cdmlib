@@ -28,7 +28,7 @@ public abstract class ExcelImportConfiguratorBase
 
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
-
+	private byte[] stream;
 
 	/**
 	 * @param url
@@ -62,5 +62,12 @@ public abstract class ExcelImportConfiguratorBase
 	public boolean isReuseExistingTaxaWhenPossible() {
 		return false;
 	}
+	 public byte[] getStream(){
+	        return stream;
+	    }
 
+
+	    public void setStream(byte[] stream) {
+	        this.stream = stream;
+	    }
 }

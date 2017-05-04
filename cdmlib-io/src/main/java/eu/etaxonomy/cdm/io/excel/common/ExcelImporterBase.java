@@ -23,6 +23,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -67,8 +68,9 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 
 		byte[] data = null;
 		// read and save all rows of the excel worksheet
-		if (state.getConfig() instanceof NormalExplicitImportConfigurator && ((NormalExplicitImportConfigurator)state.getConfig()).getStream() != null){
-		    data =  ((NormalExplicitImportConfigurator)state.getConfig()).getStream();
+		if ((state.getConfig() instanceof NormalExplicitImportConfigurator || state.getConfig() instanceof ExcelDistributionUpdateConfigurator) &&
+		        (state.getConfig().getStream() != null || state.getConfig().getStream() != null)){
+		    data =  state.getConfig().getStream();
 		} else{
 		    source = state.getConfig().getSource();
 		}
