@@ -28,6 +28,14 @@ public abstract class IoResultBase {
         String message;
         Exception exception;
         private Error(String msg, Exception e){this.message = msg; this.exception = e;}
+
+        public String getMessage(){
+            return message;
+        }
+
+        public Exception getException(){
+            return exception;
+        }
     }
 
 // ************* GETTERS / SETTERS / ADDERS ***********************/
