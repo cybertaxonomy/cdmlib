@@ -27,9 +27,13 @@ public abstract class SchemaUpdaterBase extends UpdaterBase<ISchemaUpdaterStep, 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterBase.class);
 
-	public static boolean INCLUDE_AUDIT = true;
-	protected static boolean INCLUDE_CDM_BASE = true;
-	protected static boolean NOT_NULL = true;
+	public static final boolean INCLUDE_AUDIT = true;
+	protected static final boolean INCLUDE_CDM_BASE = true;
+	protected static final boolean NOT_NULL = true;
+	protected static final boolean IS_LIST = true;
+	protected static final boolean IS_1_TO_M = true;
+	protected static final boolean IS_M_TO_M = false;
+
 
 //	private List<ISchemaUpdaterStep> list;
 

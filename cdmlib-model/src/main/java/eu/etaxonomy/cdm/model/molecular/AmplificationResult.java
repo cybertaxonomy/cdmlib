@@ -117,7 +117,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="amplificationResult" , fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
+	private Set<SingleRead> singleReads = new HashSet<>();
 
     @XmlElement(name = "Cloning")
     @XmlIDREF

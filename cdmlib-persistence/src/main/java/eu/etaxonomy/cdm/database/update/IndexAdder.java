@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
  * @date 16.09.2010
  *
  */
-public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISchemaUpdaterStep {
+public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
 	private static final Logger logger = Logger.getLogger(IndexAdder.class);
 
 	private String tableName;
@@ -35,16 +35,23 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 
 	private Integer length;
 
-	public static final IndexAdder NewInstance(String stepName, String tableName, String columnName, Integer length){
-		return new IndexAdder(stepName, tableName, columnName, length);
+// ********************** FACTORY ****************************************/
+
+	public static final IndexAdder NewStringInstance(String stepName, String tableName, String columnName, Integer length){
+		return new IndexAdder(stepName, tableName, columnName, length == null ? 255 : length);
 	}
 
+    public static final IndexAdder NewIntegerInstance(String stepName, String tableName, String columnName){
+        return new IndexAdder(stepName, tableName, columnName, null);
+    }
+
+// **************************** CONSTRUCTOR *********************************/
 
 	protected IndexAdder(String stepName, String tableName, String columnName, Integer length) {
 		super(stepName);
 		this.tableName = tableName;
 		this.columnName = columnName;
-		this.length = length == null ? 255 :length;
+		this.length = length;
 	}
 
 
@@ -64,7 +71,7 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 			datasource.executeUpdate(updateQuery);
 			return true;
 		} catch (Exception e) {
-			logger.warn("Unique index for username could not be created");
+			logger.warn("Unique index for " + columnName + " could not be created");
 			return false;
 		}
 	}
@@ -75,7 +82,7 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 			String updateQuery;
 			if (type.equals(DatabaseTypeEnum.MySQL)){
 				//Maybe MySQL also works with the below syntax. Did not check yet.
-				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+"("+length+"));";
+				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+ makeLength()+");";
 			}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
 				updateQuery = "CREATE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";
 			}else{
@@ -86,7 +93,19 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 			return updateQuery;
 	}
 
-	private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
+	/**
+     * @param length2
+     * @return
+     */
+    private String makeLength() {
+        if (length != null){
+            return "(" + length + ")";
+        }else{
+            return "";
+        }
+    }
+
+    private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String indexName = "_UniqueKey";

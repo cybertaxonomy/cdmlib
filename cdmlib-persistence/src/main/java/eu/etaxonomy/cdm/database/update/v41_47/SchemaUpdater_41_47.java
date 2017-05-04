@@ -53,9 +53,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 		String stepName;
 		String tableName;
 		ISchemaUpdaterStep step;
-		String query;
 		String newColumnName;
-		String oldColumnName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
@@ -80,21 +78,21 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //subtree filter
         stepName= "Add geo filter MN table to WorkingSet";
         String firstTableName = "WorkingSet";
-        String secondTableName = "NamedArea";
-        String secondTableAlias = "geoFilter";
-        boolean hasSortIndex = false;
-        boolean secondTableInKey = true;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        String secondTableAlias = "NamedArea";
+        String secondTableName = "DefinedTermBase";
+        String attributeName = "geoFilter";
+        boolean isList = ! IS_LIST;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
         stepList.add(step);
 
         //subtree filter
         stepName= "Add subtree filter MN table to WorkingSet";
         firstTableName = "WorkingSet";
         secondTableName = "TaxonNode";
-        secondTableAlias = "taxonSubtreeFilter";
-        hasSortIndex = false;
-        secondTableInKey = true;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        secondTableAlias = null;
+        attributeName = "taxonSubtreeFilter";
+        isList = ! IS_LIST;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
         stepList.add(step);
 
         //#6258
@@ -113,20 +111,18 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         stepName= "Add blockedBy_id to Registration";
         firstTableName = "Registration";
         secondTableName = "Registration";
-        secondTableAlias = "blockedBy";
-        hasSortIndex = false;
-        secondTableInKey = true;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        attributeName = "blockedBy";
+        isList = ! IS_LIST;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
         stepList.add(step);
 
         //add type designations
         stepName= "Add type designations to Registration";
         firstTableName = "Registration";
         secondTableName = "TypeDesignationBase";
-        secondTableAlias = "typeDesignations";
-        hasSortIndex = false;
-        secondTableInKey = true;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, INCLUDE_AUDIT, hasSortIndex, secondTableInKey);
+        attributeName = "typeDesignations";
+        isList = false;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
         stepList.add(step);
 
         //#5258
@@ -136,6 +132,15 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         newColumnName = "accessed";
         step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
         stepList.add(step);
+
+        //#6535 update termtype for CdmMetaData (int => string)
+
+        //ModelUpdateResult
+
+        //Remove termupdater and allow update only from version 4.0
+
+
+
 
         return stepList;
     }
