@@ -1169,7 +1169,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         if (result.isOk()){
 
-            synonym = HibernateProxyHelper.deproxy(this.load(synonym.getUuid()), Synonym.class);
+            synonym = HibernateProxyHelper.deproxy(synonym, Synonym.class);
 
             //remove synonym
             Taxon accTaxon = synonym.getAcceptedTaxon();
@@ -1181,19 +1181,19 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 result.addUpdatedObject(accTaxon);
             }
             this.saveOrUpdate(synonym);
+            dao.flush();
 
-            //TODO remove name from homotypical group?
-
-            //remove synonym (if necessary)
             TaxonNameBase<?,?> name = synonym.getName();
             synonym.setName(null);
+
             dao.delete(synonym);
+
 
             //remove name if possible (and required)
             if (name != null && config.isDeleteNameIfPossible()){
 
-                    DeleteResult nameDeleteResult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
-                    if (nameDeleteResult.isAbort()){
+                    DeleteResult nameDeleteResult = nameService.delete(name, config.getNameDeletionConfig());
+                    if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
                     	result.addExceptions(nameDeleteResult.getExceptions());
                     	result.addRelatedObject(name);
                     }
