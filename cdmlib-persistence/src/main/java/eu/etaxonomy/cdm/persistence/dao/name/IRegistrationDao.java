@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.reference.IReference;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -37,22 +36,23 @@ public interface IRegistrationDao extends IAnnotatableDao<Registration> {
      * <code>propertyPaths</code> <b>please refer to:</b>
      * {@link IBeanInitializer#initialize(Object, List)}
      *
-     * @param limit
-     *            the maximum number of entities returned (can be null to return
-     *            all entities)
-     * @param start
      * @param reference
-     *            filters the Registration by the reference of the nomenclatural act for which the Registration as been created.
-     *            The name and all type designations associated with the Registration are sharing the same  citation and citation detail.
-     * @param orderHints
-     *            Supports path like <code>orderHints.propertyNames</code> which
-     *            include *-to-one properties like createdBy.username or
-     *            authorTeam.persistentTitleCache
+     *            filters the Registration by the reference of the nomenclatural act
+     *            for which the Registration has been created.
+     *            The name and all type designations associated with the Registration
+     *            are sharing the same  reference.
+     *            If <code>null</code> all registrations with a name or type designation
+     *            that has no reference are returned. Also those registrations
+     *            having no name and type designation at all.
+     * @param limit
+     *            the maximum number of entities returned (can be <code>null</code>
+     *            to return all entities)
+     * @param start
      * @param propertyPaths
      * @return
      * @throws DataAccessException
      */
-    public List<Registration> list(Integer limit, Integer start, IReference reference, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<Registration> list(IReference reference, Integer limit, Integer start, List<String> propertyPaths);
 
     /**
      * Counts the Registration instances stored in the database.

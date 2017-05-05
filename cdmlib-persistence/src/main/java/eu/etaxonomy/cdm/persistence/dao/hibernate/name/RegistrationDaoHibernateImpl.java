@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -18,7 +19,6 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.reference.IReference;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -42,15 +42,48 @@ public class RegistrationDaoHibernateImpl extends AnnotatableDaoImpl<Registratio
      * {@inheritDoc}
      */
     @Override
-    public List<Registration> list(Integer limit, Integer start, IReference reference, List<OrderHint> orderHints,
+    public List<Registration> list(IReference reference, Integer limit, Integer start,
             List<String> propertyPaths) {
 
-        Query query = getSession().createQuery("from Registration order by uuid");
-        // TODO complete ....
-        query.setFirstResult(start);
-        query.setMaxResults(limit);
+        if (reference != null && reference.getId() == 0){
+            return Collections.emptyList();
+        }
 
-        return null;
+        String hql = "SELECT DISTINCT r "
+                + " FROM Registration r LEFT JOIN r.typeDesignations desig "
+                + "     LEFT JOIN r.name n "
+                + " WHERE (n IS NOT NULL AND n.nomenclaturalReference =:ref)"
+                + "     OR desig.citation =:ref "
+                + " ORDER BY r.id ";
+        if (reference == null){
+            hql = "SELECT DISTINCT r "
+                    + " FROM Registration r LEFT JOIN r.typeDesignations desig "
+                    + "    LEFT JOIN r.name n"
+                    + " WHERE (r.name IS NULL AND size(r.typeDesignations) = 0 ) "
+                    + "     OR (n IS NOT NULL AND r.name.nomenclaturalReference IS NULL ) "
+                    + "     OR (size(r.typeDesignations) > 0 AND desig.citation IS NULL )  "
+                    + " ORDER BY r.id ";
+        }
+
+        Query query = getSession().createQuery(hql);
+        if (reference != null){
+            query.setParameter("ref", reference);
+        }
+
+        // TODO complete ....
+        if(limit != null /*&&  !doCount*/) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        //TODO order hints do not work with queries
+
+        List<Registration> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
     }
 
     /**

@@ -181,5 +181,12 @@ public class Registration extends AnnotatableEntity {
     public Set<TypeDesignationBase> getTypeDesignations() {return typeDesignations;}
     public void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {this.typeDesignations = typeDesignations;}
 
+    public void addTypeDesignation(TypeDesignationBase desig) {
+        this.typeDesignations.add(desig);
+    }
+    public void removeTypeDesignation(TypeDesignationBase desig) {
+        this.typeDesignations.remove(desig);
+    }
+
 
 }
