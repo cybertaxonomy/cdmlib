@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.name;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.dao.DataAccessException;
 
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.reference.IReference;
+import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 
@@ -23,7 +25,8 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
  * @since May 2, 2017
  *
  */
-public interface IRegistrationDao extends IAnnotatableDao<Registration> {
+public interface IRegistrationDao
+            extends IAnnotatableDao<Registration> {
 
 
     /**
@@ -44,6 +47,7 @@ public interface IRegistrationDao extends IAnnotatableDao<Registration> {
      *            If <code>null</code> all registrations with a name or type designation
      *            that has no reference are returned. Also those registrations
      *            having no name and type designation at all.
+     * @param includedStatus
      * @param limit
      *            the maximum number of entities returned (can be <code>null</code>
      *            to return all entities)
@@ -52,27 +56,17 @@ public interface IRegistrationDao extends IAnnotatableDao<Registration> {
      * @return
      * @throws DataAccessException
      */
-    public List<Registration> list(IReference reference, Integer limit, Integer start, List<String> propertyPaths);
+    public List<Registration> list(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
+            Integer limit, Integer start, List<String> propertyPaths);
 
     /**
      * Counts the Registration instances stored in the database.
      *
-     * For detailed description see the according list method {@link #list(Integer, Integer, User, List, List)}
-     *
-     * @param limit
-     *            the maximum number of entities returned (can be null to return
-     *            all entities)
-     * @param start
-     * @param submitter
-     *            filters the Registration by the submitter, see {@see Registration#getSubmitter()}
-     * @param orderHints
-     *            Supports path like <code>orderHints.propertyNames</code> which
-     *            include *-to-one properties like createdBy.username or
-     *            authorTeam.persistentTitleCache
-     * @param propertyPaths
+     * For detailed description see the according list method
+     * {@link #list(Optional, Collection, Integer, Integer, List)}}
      *
      * @return
      */
-    Integer count(IReference reference);
+    public Long count(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus);
 
 }

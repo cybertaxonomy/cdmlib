@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.dao.DataAccessException;
 
@@ -17,7 +18,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
-import eu.etaxonomy.cdm.model.reference.IReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -44,19 +45,24 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @param reference
      *            filters the Registration by the reference of the nomenclatural act for which the
      *            Registration as been created. The name and all type designations associated with
-     *            the Registration are sharing the same  citation and citation detail.
-     * @param includeStatus
+     *            the Registration are sharing the same  citation.
+     *            If the Optional itself is <code>null</code> the parameter is neglected.
+     *            If Optional contains the value <code>null</code> all registrations with a name
+     *            or type designation that has no reference are returned.
+     *            Also those registrations having no name and type designation at all.
+     * @param includedStatus
      *            filters the Registration by the RegistrationStatus. Only Registration having one of the
      *            supplied status will included.
-     * @param orderHints
-     *            Supports path like <code>orderHints.propertyNames</code> which
-     *            include *-to-one properties like createdBy.username or
-     *            authorTeam.persistentTitleCache
+//     * @param orderHints
+//     *            Supports path like <code>orderHints.propertyNames</code> which
+//     *            include *-to-one properties like createdBy.username or
+//     *            authorTeam.persistentTitleCache
      * @param propertyPaths
      * @return
      * @throws DataAccessException
      */
-    public Pager<Registration> page(Integer pageSize, Integer pageIndex, IReference reference, Collection<RegistrationStatus> includeStatus, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<Registration> page(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * Returns a sublist of Registration instances stored in the database. A maximum
@@ -73,7 +79,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      *                   can be null, equivalent of starting at the beginning of the recordset)
      * @param submitter
      *            The user who submitted the Registration
-     * @param includeStatus
+     * @param includedStatus
      *            filters the Registration by the RegistrationStatus. Only Registration having one of
      *            the supplied status will included.
      * @param orderHints
@@ -84,7 +90,8 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @return
      * @throws DataAccessException
      */
-    public Pager<Registration> page(Integer pageSize, Integer pageIndex, User submitter, Collection<RegistrationStatus> includeStatus, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
 
