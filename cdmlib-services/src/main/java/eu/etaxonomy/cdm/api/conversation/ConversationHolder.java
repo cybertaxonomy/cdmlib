@@ -54,11 +54,11 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  * <p>
  * Given the above conditions, this class manages long running sessions by providing the following methods,
  * <ul>
- *  <li>{@link #bind()} : binds the session owned by this conversation to the resource map</li>
- *  <li>{@link #startTransaction()} : starts a transaction</li>
+ *  <li>{@link #bind()} : binds the session owned by this conversation to the resource map.</li>
+ *  <li>{@link #startTransaction()} : starts a transaction.</li>
  *  <li>{@link #commit()} : commits the current transaction, with the option of restarting a new transaction.</li>
  *  <li>{@link #unbind()} : unbinds the session owned by this conversation from the resource map.</li>
- *  <li>{@link #close()} : closes the session owned by this conversation</li>
+ *  <li>{@link #close()} : closes the session owned by this conversation.</li>
  * </ul>
  * <p>
  * With the exception of {@link #unbind()} (which should be called explicitly), the above sequence must be strictly followed to
