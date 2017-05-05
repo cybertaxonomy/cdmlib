@@ -37,9 +37,11 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  * <p>
  * This behaviour essentially revolves around the resources map in the {@link org.springframework.transaction.support.TransactionSynchronizationManager TransactionSynchronizationManager}.
  * This resources map contains two entries of interest,
- *  - (Autowired) {@link org.hibernate.SessionFactory} mapped to the {@link org.springframework.orm.hibernate5.SessionHolder}
- *  - (Autowired) {@link javax.sql.DataSource} mapped to the {@link org.springframework.jdbc.datasource.ConnectionHolder}
- *  <p>
+ * <ul>
+ *  <li>(Autowired) {@link org.hibernate.SessionFactory} mapped to the {@link org.springframework.orm.hibernate5.SessionHolder}</li>
+ *  <li>(Autowired) {@link javax.sql.DataSource} mapped to the {@link org.springframework.jdbc.datasource.ConnectionHolder}</li>
+ * </ul>
+ * <p>
  * The SessionHolder object itself contains the {@link org.hibernate.Session Session} as well as the {@link org.hibernate.Transaction object.
  * The ConnectionHolder contains the (JDBC) {@link java.sql.Connection Connection} to the database. For every action to do with the
  * transaction object it is required to have both entries present in the resources. Both the session as well as the connection
@@ -51,11 +53,13 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  * is in fact how hibernate implements the default 'session-per-request' pattern internally.
  * <p>
  * Given the above conditions, this class manages long running sessions by providing the following methods,
- * - {@link #bind()} : binds the session owned by this conversation to the resource map
- * - {@link #startTransaction()} : starts a transaction
- * - {@link #commit()} : commits the current transaction, with the option of restarting a new transaction.
- * - {@link #unbind()} : unbinds the session owned by this conversation from the resource map.
- * - {@link #close()} : closes the session owned by this conversation
+ * <ul>
+ *  <li>{@link #bind()} : binds the session owned by this conversation to the resource map</li>
+ *  <li>{@link #startTransaction()} : starts a transaction</li>
+ *  <li>{@link #commit()} : commits the current transaction, with the option of restarting a new transaction.</li>
+ *  <li>{@link #unbind()} : unbinds the session owned by this conversation from the resource map.</li>
+ *  <li>{@link #close()} : closes the session owned by this conversation</li>
+ * </ul>
  * <p>
  * With the exception of {@link #unbind()} (which should be called explicitly), the above sequence must be strictly followed to
  * maintain a consistent session state. Even though it is possible to interweave multiple conversations at the same time, for a
