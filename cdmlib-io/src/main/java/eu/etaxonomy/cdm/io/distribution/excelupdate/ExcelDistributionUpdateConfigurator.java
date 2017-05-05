@@ -66,6 +66,16 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
 
 
     @Override
+    public boolean isValid(){
+        if (this.areaVocabularyUuid != null && (this.getStream() != null || this.getSource() != null)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    @Override
     public Reference getSourceReference() {
         if (this.sourceReference == null){
             sourceReference = ReferenceFactory.newGeneric();
