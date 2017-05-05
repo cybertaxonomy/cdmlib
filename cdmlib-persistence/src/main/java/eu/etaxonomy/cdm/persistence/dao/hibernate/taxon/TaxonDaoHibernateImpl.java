@@ -327,8 +327,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             String commonNameSubSelect = subSelects[3];
 
 
-            logger.debug("taxonSubselect: " + taxonSubselect != null ? taxonSubselect: "NULL");
-            logger.debug("synonymSubselect: " + synonymSubselect != null ? synonymSubselect: "NULL");
+            if (logger.isDebugEnabled()) {
+                logger.debug("taxonSubselect: " + (taxonSubselect != null ? taxonSubselect: "NULL"));
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("synonymSubselect: " + (synonymSubselect != null ? synonymSubselect: "NULL"));
+            }
 
             Query subTaxon = null;
             Query subSynonym = null;
@@ -346,8 +350,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     subTaxon.setParameter("classification", classification);
 
                 }
-
-
             }
 
             if(doSynonyms){
@@ -381,10 +383,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
                 if(classification != null){
                     subCommonNames.setParameter("classification", classification);
-
                 }
-
-
             }
 
             List<Integer> taxa = new ArrayList<Integer>();

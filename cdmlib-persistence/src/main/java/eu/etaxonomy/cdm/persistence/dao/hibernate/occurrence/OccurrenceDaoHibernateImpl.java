@@ -28,6 +28,7 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -222,9 +223,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        for(SpecimenOrObservationBase occurrence : list(null,null)) { // re-index all taxon base
+        for(SpecimenOrObservationBase<?> occurrence : list(null,null)) { // re-index all taxon base
 
-            for(DeterminationEvent determination : (Set<DeterminationEvent>)occurrence.getDeterminations()) {
+            for(DeterminationEvent determination : occurrence.getDeterminations()) {
                 Hibernate.initialize(determination.getActor());
                 Hibernate.initialize(determination.getTaxon());
             }
@@ -237,9 +238,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                     Hibernate.initialize(derivedUnit.getCollection().getInstitute());
                 }
                 Hibernate.initialize(derivedUnit.getStoredUnder());
-                SpecimenOrObservationBase original = derivedUnit.getOriginalUnit();
+                SpecimenOrObservationBase<?> original = derivedUnit.getOriginalUnit();
                 if(original != null && original.isInstanceOf(FieldUnit.class)) {
-                    FieldUnit fieldUnit = original.deproxy(original, FieldUnit.class);
+                    FieldUnit fieldUnit = CdmBase.deproxy(original, FieldUnit.class);
                     Hibernate.initialize(fieldUnit.getGatheringEvent());
                     if(fieldUnit.getGatheringEvent() != null) {
                         Hibernate.initialize(fieldUnit.getGatheringEvent().getActor());
@@ -288,6 +289,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
         addOrder(criteria,orderHints);
 
+        @SuppressWarnings("unchecked")
         List<SpecimenOrObservationBase> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -330,6 +332,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
         addOrder(criteria,orderHints);
 
+        @SuppressWarnings("unchecked")
         List<SpecimenOrObservationBase> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -359,11 +362,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 addOrder(criteria,orderHints);
             }
 
+            @SuppressWarnings("unchecked")
             List<T> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,

@@ -51,6 +51,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  */
 public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
+    private static final long serialVersionUID = -3214410418410044139L;
+
     private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
 
     protected static final boolean IS_CORE = true;
@@ -61,10 +63,6 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
     private String serverFileName = "-dwca_export-cdm.zip";
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.CdmIoBase#countSteps()
-     */
     @Override
     public int countSteps() {
         List<TaxonNode> allNodes =  getClassificationService().getAllNodes();

@@ -844,7 +844,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param start
      * @param criteria
      */
-    private void addLimitAndStart(Integer limit, Integer start, Criteria criteria) {
+    protected void addLimitAndStart(Integer limit, Integer start, Criteria criteria) {
         if(limit != null) {
             if(start != null) {
                 criteria.setFirstResult(start);

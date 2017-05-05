@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -22,22 +22,22 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
  * @created 08.09.2008
  */
 public interface IMediaDao extends IIdentifiableDao<Media> {
-	
+
 	/**
 	 * Return a count of MediaKeys, optionally filtered by the parameters passed.
-	 * 
+	 *
 	 * @param taxonomicScope a Set of Taxon instances that define the taxonomic scope of the key (can be null)
 	 * @param geoScopes a Set of NamedArea instances that define the geospatial scope of the key (can be null)
 	 * @return a count of MediaKey instances
 	 */
 	public int countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes);
-	
+
 	/**
-	 * Return a List of MediaKeys, optionally filtered by the parameters passed. The MediaKey 
+	 * Return a List of MediaKeys, optionally filtered by the parameters passed. The MediaKey
 	 * instances have the following properties initialized:
-	 * 
+	 *
 	 * MediaKey.title
-	 * 
+	 *
 	 * @param taxonomicScope a Set of Taxon instances that define the taxonomic scope of the key (can be null)
 	 * @param geoScopes a Set of NamedArea instances that define the geospatial scope of the key (can be null)
 	 * @param pageSize The maximum number of keys returned (can be null for all keys)
@@ -46,24 +46,26 @@ public interface IMediaDao extends IIdentifiableDao<Media> {
 	 * @return a List of MediaKey instances
 	 */
 	public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-	
+
 	/**
 	 * Return a count of the rights for this media entity
-	 * 
+	 *
 	 * @param t The media entity
 	 * @return a count of Rights instances
 	 */
+    @Override
     public int countRights(Media t);
-	
+
 	/**
 	 * Return a List of the rights for this media entity
-	 * 
+	 *
 	 * @param t The media entity
 	 * @param pageSize The maximum number of rights returned (can be null for all rights)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of Rights instances
 	 */
-	public List<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	@Override
+    public List<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 }

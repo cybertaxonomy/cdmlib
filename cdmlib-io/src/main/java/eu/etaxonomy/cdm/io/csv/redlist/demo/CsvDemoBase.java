@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -51,31 +51,29 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  */
 public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurator, CsvDemoExportState, IExportTransformer> implements ICdmExport<CsvDemoExportConfigurator, CsvDemoExportState>{
-	private static final Logger logger = Logger.getLogger(CsvDemoBase.class);
-	
-	protected static final boolean IS_CORE = true;
-	
-	
-	protected Set<Integer> existingRecordIds = new HashSet<Integer>();
-	protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
-	
-	
+    private static final long serialVersionUID = -2962456879635841019L;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#countSteps()
-	 */
+    private static final Logger logger = Logger.getLogger(CsvDemoBase.class);
+
+	protected static final boolean IS_CORE = true;
+
+
+	protected Set<Integer> existingRecordIds = new HashSet<>();
+	protected Set<UUID> existingRecordUuids = new HashSet<>();
+
+
 	@Override
 	public int countSteps() {
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 		return allNodes.size();
 	}
 
-	
-	
+
+
 	/**
-	 * Returns the list of {@link TaxonNode taxon nodes} that are part in one of the given {@link Classification classifications} 
+	 * Returns the list of {@link TaxonNode taxon nodes} that are part in one of the given {@link Classification classifications}
 	 * and do have a {@link Taxon} attached (empty taxon nodes should not but do exist in CDM databases).
-	 * If <code>classificationList</code> is <code>null</code> or empty then all {@link TaxonNode taxon nodes} of all 
+	 * If <code>classificationList</code> is <code>null</code> or empty then all {@link TaxonNode taxon nodes} of all
 	 * {@link Classification classifications} are returned.<BR>
 	 * Preliminary implementation. Better implement API method for this.
 	 * @return
@@ -85,7 +83,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 		if (classificationList != null && classificationList.isEmpty()){
 			classificationList = null;
 		}
-		
+
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 		List<TaxonNode> result = new ArrayList<TaxonNode>();
 		for (TaxonNode node : allNodes){
@@ -105,8 +103,8 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Creates the locationId, locality, countryCode triple
 	 * @param record
@@ -132,7 +130,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 	protected String getTaxonLogString(TaxonBase<?> taxon) {
 		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
 	}
-	
+
 
 	/**
 	 * @param el
@@ -141,7 +139,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 	protected boolean recordExists(CdmBase el) {
 		return existingRecordIds.contains(el.getId());
 	}
-	
+
 
 	/**
 	 * @param sec
@@ -149,7 +147,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 	protected void addExistingRecord(CdmBase cdmBase) {
 		existingRecordIds.add(cdmBase.getId());
 	}
-	
+
 	/**
 	 * @param el
 	 * @return
@@ -157,14 +155,14 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 	protected boolean recordExistsUuid(CdmBase el) {
 		return existingRecordUuids.contains(el.getUuid());
 	}
-	
+
 	/**
 	 * @param sec
 	 */
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
 	}
-	
+
 
 	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
@@ -178,7 +176,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * @param config
@@ -196,7 +194,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 		FileOutputStream fos = new FileOutputStream(f);
 		return fos;
 	}
-	
+
 
 	/**
 	 * @param config
@@ -208,7 +206,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 	 */
 	protected XMLStreamWriter createXmlStreamWriter(CsvTaxExportStateRedlist state, String fileName)
 			throws IOException, FileNotFoundException, XMLStreamException {
-		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		OutputStream os;
 		boolean useZip = state.isZip();
 		if (useZip){
@@ -219,7 +217,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 		XMLStreamWriter  writer = factory.createXMLStreamWriter(os);
 		return writer;
 	}
-	
+
 
 	/**
 	 * @param coreTaxFileName
@@ -229,9 +227,9 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state) 
+	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state)
 					throws IOException, FileNotFoundException, UnsupportedEncodingException {
-		
+
 		OutputStream os;
 		boolean useZip = state.isZip();
 		if (useZip){
@@ -240,13 +238,13 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 			os = createFileOutputStream(state.getConfig(), fileName);
 		}
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF8"), true);
-		
+
 		return writer;
 	}
-	
 
 
-	
+
+
 	/**
 	 * Closes the writer
 	 * @param writer
@@ -257,9 +255,9 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 			writer.close();
 		}
 	}
-	
 
-	
+
+
 	/**
 	 * Closes the writer.
 	 * Note: XMLStreamWriter does not close the underlying stream.

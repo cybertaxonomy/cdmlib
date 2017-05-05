@@ -368,14 +368,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     /**
      * TODO candidate for harmonization
-     * new name getNames
-     */
-    public List<TaxonNameBase> getAllNames(int limit, int start){
-        return dao.list(limit, start);
-    }
-
-    /**
-     * TODO candidate for harmonization
      * new name getNomenclaturalStatus
      */
     @Override

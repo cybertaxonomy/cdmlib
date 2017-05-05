@@ -46,7 +46,10 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
-public class IdentifiableDaoBase<T extends IdentifiableEntity> extends AnnotatableDaoImpl<T> implements IIdentifiableDao<T>{
+public class IdentifiableDaoBase<T extends IdentifiableEntity>
+        extends AnnotatableDaoImpl<T>
+        implements IIdentifiableDao<T>{
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
 

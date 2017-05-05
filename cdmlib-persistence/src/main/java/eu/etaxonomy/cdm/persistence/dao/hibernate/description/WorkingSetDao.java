@@ -36,8 +36,8 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 
 	@Override
     public Map<DescriptionBase, Set<DescriptionElementBase>> getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize,	Integer pageNumber,	List<String> propertyPaths) {
-		checkNotInPriorView("WorkingSetDao.getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths)");
-		Query query = getSession().createQuery("select description from WorkingSet workingSet join workingSet.descriptions description order by description.titleCache asc");
+		checkNotInPriorView("WorkingSetDao.getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
+		Query query = getSession().createQuery("SELECT description FROM WorkingSet workingSet JOIN workingSet.descriptions description ORDER BY description.titleCache ASC");
 
 		if(pageSize != null) {
 			query.setMaxResults(pageSize);
@@ -48,7 +48,7 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 	        }
 	    }
 		List<DescriptionBase> descriptions = query.list();
-		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<DescriptionBase, Set<DescriptionElementBase>>();
+		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
 		for(DescriptionBase description : descriptions) {
 			Criteria criteria = getSession().createCriteria(DescriptionElementBase.class);
 			criteria.add(Restrictions.eq("inDescription", description));
@@ -58,7 +58,7 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 
 			List<DescriptionElementBase> r = criteria.list();
 			defaultBeanInitializer.initializeAll(r, propertyPaths);
-			result.put(description, new HashSet<DescriptionElementBase>(r));
+			result.put(description, new HashSet<>(r));
 		}
 		return result;
 	}

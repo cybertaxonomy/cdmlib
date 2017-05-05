@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
@@ -28,37 +28,38 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 @Repository
 public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> implements
 		ICollectionDao {
-	
+
 	public CollectionDaoHibernateImpl() {
 		super(Collection.class);
 		indexedClasses = new Class[1];
 		indexedClasses[0] = Collection.class;
 	}
 
-	public List<Collection> getCollectionByCode(String code) {
+	@Override
+    public List<Collection> getCollectionByCode(String code) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Criteria crit = getSession().createCriteria(Collection.class);
     		crit.add(Restrictions.eq("code", code));
-		
-		    return (List<Collection>)crit.list();
+
+		    return crit.list();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Collection.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("code").eq(code));
-			return (List<Collection>)query.getResultList();
+			return query.getResultList();
 		}
 	}
 
 	@Override
 	public void rebuildIndex() {
-		 FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			
-			for(Collection collection : list(null,null)) { // re-index all taxon base
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-				Hibernate.initialize(collection.getSuperCollection());
-				Hibernate.initialize(collection.getInstitute());
-				fullTextSession.index(collection);
-			}
-			fullTextSession.flushToIndexes();
+		for(Collection collection : list(null,null)) { // re-index all taxon base
+
+			Hibernate.initialize(collection.getSuperCollection());
+			Hibernate.initialize(collection.getInstitute());
+			fullTextSession.index(collection);
+		}
+		fullTextSession.flushToIndexes();
 	}
 }
