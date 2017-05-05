@@ -145,6 +145,18 @@ public class Registration extends AnnotatableEntity {
         return new Registration();
     }
 
+    public static Registration NewInstance(String identifier, String specificIdentifier,
+            TaxonNameBase name, Set<TypeDesignationBase> typeDesignations){
+        Registration result = new Registration();
+        result.setIdentifier(identifier);
+        result.setSpecificIdentifier(specificIdentifier);
+        result.setName(name);
+        if (typeDesignations != null){
+            result.setTypeDesignations(typeDesignations);
+        }
+        return result;
+    }
+
 // **************** CONSTRUCTOR ****************/
 
     private Registration(){}
@@ -169,7 +181,13 @@ public class Registration extends AnnotatableEntity {
     public void setInstitution(Institution institution) {this.institution = institution;}
 
     public TaxonNameBase getName() {return name;}
-    public void setName(TaxonNameBase name) {this.name = name;}
+    public void setName(TaxonNameBase name) {
+        if (this.name != null && !this.name.equals(name)){
+            name.getRegistrations().remove(this);
+        }
+        this.name = name;
+        this.name.getRegistrations().add(this);
+    }
 
     public User getSubmitter() {return submitter;}
     public void setSubmitter(User submitter) {this.submitter = submitter;}
@@ -179,13 +197,21 @@ public class Registration extends AnnotatableEntity {
     private void setBlockedBy(Set<Registration> blockedBy) {this.blockedBy = blockedBy;}
 
     public Set<TypeDesignationBase> getTypeDesignations() {return typeDesignations;}
-    public void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {this.typeDesignations = typeDesignations;}
-
-    public void addTypeDesignation(TypeDesignationBase desig) {
-        this.typeDesignations.add(desig);
+    public void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
+        this.typeDesignations = typeDesignations;
     }
-    public void removeTypeDesignation(TypeDesignationBase desig) {
-        this.typeDesignations.remove(desig);
+
+    public void addTypeDesignation(TypeDesignationBase designation) {
+        this.typeDesignations.add(designation);
+        if (!designation.getRegistrations().contains(this)){
+            designation.getRegistrations().add(this);
+        }
+    }
+    public void removeTypeDesignation(TypeDesignationBase designation) {
+        this.typeDesignations.remove(designation);
+        if (designation.getRegistrations().contains(this)){
+            designation.getRegistrations().remove(this);
+        }
     }
 
 

@@ -18,6 +18,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -30,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -48,13 +50,13 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
  * @see		SpecimenTypeDesignation
  * @author  a.mueller
  * @created 07.08.2008
- * @version 1.0
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
     "typifiedNames",
     "notDesignated",
-    "typeStatus"
+    "typeStatus",
+    "registrations",
 })
 @XmlSeeAlso({
     NameTypeDesignation.class,
@@ -86,6 +88,18 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = TypeDesignationStatusBase.class)
     private T typeStatus;
+
+    //******* REGISTRATION *****************/
+
+    @XmlElementWrapper(name = "Registrations")
+    @XmlElement(name = "Registration")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(mappedBy="typeDesignations", fetch= FetchType.LAZY)
+    @NotNull
+    @IndexedEmbedded(depth=1)
+    private Set<Registration> registrations = new HashSet<>();
+
 
 // **************** CONSTRUCTOR *************************************/
 
@@ -208,6 +222,14 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         if (taxonName.getTypeDesignations().contains(this)){
             taxonName.removeTypeDesignation(this);
         }
+    }
+
+    /**
+     * Returns the {@link Registration registrations} available for this
+     * type designation.
+     */
+    public Set<Registration> getRegistrations() {
+        return this.registrations;
     }
 
     public abstract void removeType();

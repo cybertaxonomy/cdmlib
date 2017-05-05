@@ -825,6 +825,12 @@ public interface ITaxonNameBase
      */
     public int compareToName(TaxonNameBase<?,?> otherName);
 
+    /**
+     * This method returns als {@link Registration registrations} for the given name.
+     * @return
+     */
+    public Set<Registration> getRegistrations();
+
 
 
 }

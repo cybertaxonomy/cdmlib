@@ -56,7 +56,7 @@ public class RegistrationDaoHibernateImpl
         Query query = makeReferenceQuery(reference, includedStatus, true);
         @SuppressWarnings("unchecked")
         List<Long> list = query.list();
-        return list.isEmpty()? 0 : list.get(0);
+        return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
     /**

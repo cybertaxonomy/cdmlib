@@ -132,6 +132,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "status",
     "descriptions",
     "taxonBases",
+    "registrations",
 
     "nameCache",
     "genusOrUninomial",
@@ -321,6 +322,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     private Reference nomenclaturalReference;
+
+    @XmlElementWrapper(name = "Registrations")
+    @XmlElement(name = "Registration")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
+    @NotNull
+    @IndexedEmbedded(depth=1)
+    private Set<Registration> registrations = new HashSet<>();
 
 //****** Non-ViralName attributes ***************************************/
 
@@ -2694,7 +2704,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Override
     @Transient
     public Set<Taxon> getTaxa(){
-        Set<Taxon> result = new HashSet<Taxon>();
+        Set<Taxon> result = new HashSet<>();
         for (TaxonBase taxonBase : this.taxonBases){
             if (taxonBase instanceof Taxon){
                 result.add((Taxon)taxonBase);
@@ -2715,7 +2725,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Override
     @Transient
     public Set<Synonym> getSynonyms() {
-        Set<Synonym> result = new HashSet<Synonym>();
+        Set<Synonym> result = new HashSet<>();
         for (TaxonBase taxonBase : this.taxonBases){
             if (taxonBase instanceof Synonym){
                 result.add((Synonym)taxonBase);
@@ -2723,6 +2733,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return result;
     }
+
+    //******* REGISTRATION *****************/
+
+    @Override
+    public Set<Registration> getRegistrations() {
+        return this.registrations;
+    }
+
 
 // ************* RELATIONSHIPS *****************************/
 
