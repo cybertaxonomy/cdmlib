@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
+import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
@@ -241,6 +242,17 @@ public class IOServiceImpl implements IIOService {
         ImportResult result = new ImportResult();
 
         result = cdmImport.invoke(config);
+        return result;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportResult updateDistributionData(ExcelDistributionUpdateConfigurator configurator) {
+        ImportResult result = new ImportResult();
+        result = cdmImport.invoke(configurator);
         return result;
     }
 
