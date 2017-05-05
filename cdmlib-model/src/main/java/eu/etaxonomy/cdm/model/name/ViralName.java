@@ -47,10 +47,12 @@ public class ViralName
             extends TaxonNameBase<ViralName, INameCacheStrategy> {
     private static final long serialVersionUID = -6201649691028218290L;
 
+    private static final NomenclaturalCode code = NomenclaturalCode.ICVCN;
+
 // ************* CONSTRUCTORS *************/
 
     protected ViralName(){
-		super();
+		super(code);
 	}
 
 	/**
@@ -61,7 +63,7 @@ public class ViralName
 	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
 	 */
 	protected ViralName(Rank rank) {
-		super(rank);
+		super(code, rank);
 	}
 
 // ************************* METHODS **************************/
@@ -79,7 +81,7 @@ public class ViralName
 	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICVCN;
+		return code;
 	}
 
 

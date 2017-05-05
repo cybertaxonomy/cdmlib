@@ -46,11 +46,13 @@ public class BacterialName
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BacterialName.class);
 
+    private static final NomenclaturalCode code = NomenclaturalCode.ICNB;
+
 
 	// ************* CONSTRUCTORS *************/
 
 	protected BacterialName(){
-		super();
+		super(code);
 		this.cacheStrategy = BacterialNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -71,7 +73,7 @@ public class BacterialName
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	protected BacterialName(Rank rank, HomotypicalGroup homotypicalGroup) {
-		super(rank, homotypicalGroup);
+		super(code, rank, homotypicalGroup);
 		this.cacheStrategy = BacterialNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -92,7 +94,7 @@ public class BacterialName
 	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICNB;
+		return code;
 
 	}
 

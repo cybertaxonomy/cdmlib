@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
@@ -149,6 +150,16 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
+        //#6367 Add nameType column to TaxonNameBase
+        stepName = "Add nameType column to TaxonNameBase";
+        tableName = "TaxonNameBase";
+        newColumnName = "nameType";
+        int length = 15;
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        updateNameTypes(stepList);
+
 
         //#6535 update termtype for CdmMetaData (int => string)
 
@@ -162,6 +173,34 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         return stepList;
     }
 
+
+    /**
+     * @param stepList
+     */
+    private void updateNameTypes(List<ISchemaUpdaterStep> stepList) {
+        updateSingleNameType(stepList, "ViralName", "ICVCN");
+        updateSingleNameType(stepList, "NonViralName", "NonViral");
+        updateSingleNameType(stepList, "BotanicalName", "ICNAFP");
+        updateSingleNameType(stepList, "ZoologicalName", "ICZN");
+        updateSingleNameType(stepList, "CultivarPlantName", "ICNCP");
+        updateSingleNameType(stepList, "BacterialName", "ICNB");
+    }
+
+    /**
+     * @param uuid the uuid
+     * @param oldSymbol
+     * @param newSybol
+     */
+    private void updateSingleNameType(List<ISchemaUpdaterStep> stepList,
+            String dtype, String nameType) {
+
+        String stepName = "Update nameType for " + dtype;
+        String query = "UPDATE @@TaxonNameBase@@ tnb "
+                + " SET nameType = '" + nameType + "'"
+                + " WHERE dtype = '" + dtype + "'" ;
+        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNameBase", -99);
+        stepList.add(simpleStep);
+    }
 
     @Override
 	public ISchemaUpdater getNextUpdater() {

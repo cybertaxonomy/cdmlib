@@ -66,7 +66,9 @@ public class TestModelUpdate {
     		if (schema == DbSchemaValidation.CREATE){
     		    System.out.println("fillData");
     		    appCtr.getCommonService().createFullSampleData();
+    		    appCtr.getNameService().list(null, null, null, null, null);
     		}
+
 
     		appCtr.close();
  		}catch (Exception e) {

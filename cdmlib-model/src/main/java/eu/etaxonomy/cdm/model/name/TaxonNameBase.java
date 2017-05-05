@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
@@ -65,11 +66,14 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -114,6 +118,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNameBase", propOrder = {
+    "nameType",
     "appendedPhrase",
     "nomenclaturalMicroReference",
     "nomenclaturalReference",
@@ -175,6 +180,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
+
+    /**
+     * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
+     * and in it's {@link TermVocabulary vocabulary}.
+     */
+    @XmlAttribute(name ="NameType")
+    @Column(name="nameType", length=15)
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.NomenclaturalCode")}
+    )
+    @Audited //needed ?
+    private NomenclaturalCode nameType;
 
     @XmlElement(name = "FullTitleCache")
     @Column(length=800, name="fullTitleCache")  //see #1592
@@ -512,13 +530,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     //see TaxonNameFactory
 
-// *********************** PARSER STATIC *******************************/
-
-
 
 // ************* CONSTRUCTORS *************/
     /**
      * Class constructor: creates a new empty taxon name.
+     * @param code
      *
      * @see #TaxonNameBase(Rank)
      * @see #TaxonNameBase(HomotypicalGroup)
@@ -526,6 +542,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     protected TaxonNameBase() {
         super();
+        setNameCacheStrategy();
+    }
+    /**
+     * Class constructor: creates a new empty taxon name.
+     * @param code
+     *
+     * @see #TaxonNameBase(Rank)
+     * @see #TaxonNameBase(HomotypicalGroup)
+     * @see #TaxonNameBase(Rank, HomotypicalGroup)
+     */
+    protected TaxonNameBase(NomenclaturalCode type) {
+        super();
+        this.nameType = type;
         setNameCacheStrategy();
     }
     /**
@@ -537,8 +566,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    		 #TaxonNameBase(HomotypicalGroup)
      * @see    		 #TaxonNameBase(Rank, HomotypicalGroup)
      */
-    protected TaxonNameBase(Rank rank) {
-        this(rank, null);
+    protected TaxonNameBase(NomenclaturalCode code, Rank rank) {
+        this(code, rank, null);
     }
     /**
      * Class constructor: creates a new taxon name instance
@@ -551,8 +580,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    					 #TaxonNameBase(Rank)
      * @see    					 #TaxonNameBase(Rank, HomotypicalGroup)
      */
-    protected TaxonNameBase(HomotypicalGroup homotypicalGroup) {
-        this(null, homotypicalGroup);
+    protected TaxonNameBase(NomenclaturalCode type, HomotypicalGroup homotypicalGroup) {
+        this(type, null, homotypicalGroup);
     }
 
     /**
@@ -569,8 +598,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    					 #TaxonNameBase(Rank)
      * @see    					 #TaxonNameBase(HomotypicalGroup)
      */
-    protected TaxonNameBase(Rank rank, HomotypicalGroup homotypicalGroup) {
+    protected TaxonNameBase(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
         super();
+        this.nameType = type;
         this.setRank(rank);
         if (homotypicalGroup == null){
             homotypicalGroup = new HomotypicalGroup();
@@ -613,8 +643,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    protected TaxonNameBase(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        this(rank, homotypicalGroup);
+    protected TaxonNameBase(NomenclaturalCode type, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        this(type, rank, homotypicalGroup);
         setGenusOrUninomial(genusOrUninomial);
         setInfraGenericEpithet (infraGenericEpithet);
         setSpecificEpithet(specificEpithet);

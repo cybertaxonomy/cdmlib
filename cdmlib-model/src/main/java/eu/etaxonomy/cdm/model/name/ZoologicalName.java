@@ -49,6 +49,8 @@ public class ZoologicalName
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalName.class);
 
+    private static final NomenclaturalCode code = NomenclaturalCode.ICZN;
+
 
 	// ************* CONSTRUCTORS *************/
 	/**
@@ -60,7 +62,7 @@ public class ZoologicalName
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
 	 */
 	protected ZoologicalName() {
-		super();
+		super(code);
 	    this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -79,7 +81,7 @@ public class ZoologicalName
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
 	 */
 	protected ZoologicalName(Rank rank, HomotypicalGroup homotypicalGroup) {
-		super(rank, homotypicalGroup);
+		super(code, rank, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -116,7 +118,7 @@ public class ZoologicalName
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	protected ZoologicalName (Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+		super(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -137,7 +139,7 @@ public class ZoologicalName
 	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICZN;
+		return code;
 	}
 
 

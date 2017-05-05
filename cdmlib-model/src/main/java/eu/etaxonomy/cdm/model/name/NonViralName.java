@@ -61,21 +61,33 @@ public class NonViralName<T extends NonViralName<?>>
 
     private static final long serialVersionUID = -9083811681449792683L;
 
+    private static final NomenclaturalCode code = NomenclaturalCode.ICZN;
+
 // ************************** CONSTRUCTORS *************/
 
     //needed by hibernate
     protected NonViralName(){
-        super();
+        super(code);
+    }
+
+    protected NonViralName(NomenclaturalCode code){
+        super(code);
     }
 
     protected NonViralName(Rank rank, HomotypicalGroup homotypicalGroup) {
-        super(rank, homotypicalGroup);
+        super(code, rank, homotypicalGroup);
+    }
+
+    protected NonViralName(NomenclaturalCode code, Rank rank, HomotypicalGroup homotypicalGroup) {
+        super(code, rank, homotypicalGroup);
     }
 
     protected NonViralName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+        super(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
     }
-
+    protected NonViralName(NomenclaturalCode code, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        super(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+    }
 
 //*********************** CLONE ********************************************************/
 

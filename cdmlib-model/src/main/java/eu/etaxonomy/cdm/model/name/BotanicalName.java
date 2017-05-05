@@ -50,6 +50,8 @@ public class BotanicalName
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 
+    private static final NomenclaturalCode code = NomenclaturalCode.ICNAFP;
+
 //    IBotanicalName,
 
     //ICNAFP
@@ -91,9 +93,14 @@ public class BotanicalName
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	protected BotanicalName(){
-		super();
+		super(code);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
+	protected BotanicalName(NomenclaturalCode code){
+        super(code);
+        this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
+    }
+
 	/**
 	 * Class constructor: creates a new botanical taxon name instance
 	 * only containing its {@link Rank rank},
@@ -109,9 +116,14 @@ public class BotanicalName
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	protected BotanicalName(Rank rank, HomotypicalGroup homotypicalGroup) {
-		super(rank, homotypicalGroup);
+		super(code, rank, homotypicalGroup);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
+    protected BotanicalName(NomenclaturalCode code, Rank rank, HomotypicalGroup homotypicalGroup) {
+        super(code, rank, homotypicalGroup);
+        this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
+    }
+
 	/**
 	 * Class constructor: creates a new botanical taxon name instance
 	 * containing its {@link Rank rank},
@@ -144,10 +156,14 @@ public class BotanicalName
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	protected BotanicalName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+	protected BotanicalName(NomenclaturalCode code, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		super(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
+    protected BotanicalName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        super(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+        this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
+    }
 
 
 //*************************
@@ -166,7 +182,7 @@ public class BotanicalName
 	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICNAFP;
+		return code;
 	}
 
 

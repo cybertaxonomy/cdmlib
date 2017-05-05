@@ -78,7 +78,30 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
-	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN","ViralName");
+	@XmlEnumValue("ICVCN")
+	ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN","ViralName"),
+//
+//	//Any
+//	@XmlEnumValue("Any")
+//    Any(UUID.fromString("348f2a2f-366f-4c8c-bb15-c90b937886ca"), "Any taxon name","TaxonNameBase"),
+
+
+	//NonViral
+    @XmlEnumValue("NonViral")
+    NonViral(UUID.fromString("04f88497-a66a-41b1-9b98-0dd22df6307f"), "NonViral","TaxonNameBase"),
+//
+//	//Fungi
+//    @XmlEnumValue("Fungi")
+//	Fungi(UUID.fromString("c6bb280d-2468-4738-bb29-973f74412100"), "Fungi", "BotanicalName"),
+//
+//	//Plant
+//    @XmlEnumValue("Plant")
+//	Plant(UUID.fromString("9669c889-25c5-48ab-9f8e-fd47a6218f83"), "Plant", "BotanicalName"),
+//
+//	//Algae
+//    @XmlEnumValue("Algae")
+//	Algae(UUID.fromString("abc09250-ea76-449b-b292-90acd61f8659"), "Algae", "BotanicalName"),
+    ;
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 
@@ -152,7 +175,10 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		case ICVCN:
 			result = TaxonNameFactory.NewViralInstance(rank);
 			break;
-		default:
+		case NonViral:
+            result = TaxonNameFactory.NewNonViralInstance(rank);
+            break;
+        default:
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
 			result = null;
 		}
@@ -172,8 +198,8 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
      * @see             TaxonNameBase#NewViralInstance(Rank)
 	 */
 	@Transient
-	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
-		Class<? extends T> result;
+	public <T extends TaxonNameBase> Class<T> getCdmClass(){
+		Class<T> result;
 		switch (this){
 		case ICNAFP:
 			result = (Class<T>)BotanicalName.class;
@@ -190,7 +216,10 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		case ICVCN:
 			result = (Class<T>)ViralName.class;
 			break;
-		default:
+		case NonViral:
+            result = (Class<T>)NonViralName.class;
+            break;
+        default:
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
 			result = null;
 		}
@@ -208,7 +237,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		case ICZN:
 			return "valid";
 		default:
-			logger.error("Not implemented yet");
+			logger.warn("AcceptedTaxonStatusLabel not yet implemented for " + name());
 			return "accepted";
 		}
 	}
@@ -224,8 +253,8 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		case ICZN:
 			return "invalid";
 		default:
-			logger.error("Not implemented yet");
-			return "synonym";
+		    logger.warn("SynonymStatusLabel not yet implemented for " + name());
+            return "synonym";
 		}
 	}
 

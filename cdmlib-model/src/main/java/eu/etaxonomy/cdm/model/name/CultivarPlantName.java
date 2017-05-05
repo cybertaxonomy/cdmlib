@@ -45,6 +45,8 @@ public class CultivarPlantName
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CultivarPlantName.class);
 
+    private static final NomenclaturalCode code = NomenclaturalCode.ICNCP;
+
 
 	// ************* CONSTRUCTORS *************/
 	/**
@@ -55,7 +57,7 @@ public class CultivarPlantName
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	public CultivarPlantName(){
-		super();
+		super(code);
 	}
 
 	/**
@@ -72,7 +74,7 @@ public class CultivarPlantName
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	protected CultivarPlantName(Rank rank, HomotypicalGroup homotypicalGroup) {
-		super(rank, homotypicalGroup);
+		super(code, rank, homotypicalGroup);
 	}
 
 
@@ -91,7 +93,7 @@ public class CultivarPlantName
 	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICNCP;
+		return code;
 	}
 
 

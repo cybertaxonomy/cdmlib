@@ -64,7 +64,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for its rank",constraintViolations.isEmpty());
+        assertTrue("There should be no constraint violations as this name has the correct epithets for its rank", constraintViolations.isEmpty());
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet(null); // at the default level, this property can be null
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
+        assertFalse("There should be a constraint violation as this name does not have a specific epithet", constraintViolations.isEmpty());
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectEpithetsForRankValidator.class);
 	}
 

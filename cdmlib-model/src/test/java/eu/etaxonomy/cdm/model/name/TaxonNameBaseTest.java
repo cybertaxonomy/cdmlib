@@ -62,10 +62,10 @@ public class TaxonNameBaseTest {
 
 
 	private class TaxonNameBaseTestClass extends TaxonNameBase<TaxonNameBaseTestClass, INameCacheStrategy<TaxonNameBaseTestClass>>{
-		public TaxonNameBaseTestClass(){super();}
-		public TaxonNameBaseTestClass(Rank rank){super(rank);}
-		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);}
-		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(rank, hg);}
+		public TaxonNameBaseTestClass(){super(null);}
+		public TaxonNameBaseTestClass(Rank rank){super(null, rank);}
+		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(null, hg);}
+		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
 		@Override
 		public void setCacheStrategy(INameCacheStrategy strategy){}
 		@Override
