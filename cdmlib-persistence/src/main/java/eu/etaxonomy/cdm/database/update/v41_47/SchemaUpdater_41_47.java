@@ -151,16 +151,8 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
-        //#6367 Add nameType column to TaxonNameBase
-        stepName = "Add nameType column to TaxonNameBase";
-        tableName = "TaxonNameBase";
-        newColumnName = "nameType";
-        int length = 15;
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-        stepList.add(step);
-
-        updateNameTypes(stepList);
-
+        //#6361 and children
+        mergeTaxonName(stepList);
 
         //#6535 update termtype for CdmMetaData (int => string)
 
@@ -170,13 +162,31 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
 
 
-
         return stepList;
     }
 
 
     /**
-     * @param stepList
+     * #6361 and children
+     */
+    private void mergeTaxonName(List<ISchemaUpdaterStep> stepList) {
+
+        //#6367 Add nameType column to TaxonNameBase
+        String stepName = "Add nameType column to TaxonNameBase";
+        String tableName = "TaxonNameBase";
+        String newColumnName = "nameType";
+        int length = 15;
+        ISchemaUpdaterStep step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //#6367 #6368
+        updateNameTypes(stepList);
+
+
+    }
+
+    /**
+     * #6367
      */
     private void updateNameTypes(List<ISchemaUpdaterStep> stepList) {
         updateSingleNameType(stepList, "ViralName", "ICVCN");
