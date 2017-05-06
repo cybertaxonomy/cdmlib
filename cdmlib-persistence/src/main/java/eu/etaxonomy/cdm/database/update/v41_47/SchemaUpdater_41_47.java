@@ -350,6 +350,15 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //#6367 #6368
         updateNameTypes(stepList);
 
+        // update anamorphic
+        stepName = "Update anamorphic ";
+        String query = "UPDATE @@TaxonNameBase@@ tnb "
+                + " SET anamorphic = @FALSE@ "
+                + " WHERE anamorphic IS NULL " ;
+        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNameBase", -99);
+        stepList.add(simpleStep);
+
+
 
     }
 
