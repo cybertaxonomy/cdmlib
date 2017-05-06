@@ -98,49 +98,49 @@ public class NameMustFollowCodeTest extends ValidationTestBase {
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setBreed("Breed");
         constraintViolations  = validator.validate(nonViralName);
-        assertFalse("There should be a constraint violation as a pure NonViralNamen must not have a breed", constraintViolations.isEmpty());
+        assertFalse("There should be a constraint violation as pure NonViralNames must not have a breed", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setOriginalPublicationYear(1987);
         constraintViolations  = validator.validate(nonViralName);
-        assertFalse("There should be a constraint violation as a pure NonViralNamen must not have an original publication year", constraintViolations.isEmpty());
+        assertFalse("There should be a constraint violation as pure NonViralNames must not have an original publication year", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setPublicationYear(2001);
         constraintViolations  = validator.validate(nonViralName);
-        assertFalse("There should be a constraint violation as a pure NonViralNamen must not have a publication year", constraintViolations.isEmpty());
+        assertFalse("There should be a constraint violation as pure NonViralNames must not have a publication year", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setSubGenusAuthorship("SubGenusAuthor");
         constraintViolations  = validator.validate(nonViralName);
-        assertFalse("There should be a constraint violation as a pure NonViralNamen must not have a subgenus author", constraintViolations.isEmpty());
+        assertFalse("There should be a constraint violation as pure NonViralNames must not have a subgenus author", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setNameApprobation("Name approbation");
         constraintViolations  = validator.validate(nonViralName);
-        assertFalse("There should be a constraint violation as a pure NonViralNamen must not have a name approbation", constraintViolations.isEmpty());
+        assertFalse("There should be a constraint violation as pure NonViralNames must not have a name approbation", constraintViolations.isEmpty());
 
         //Valid
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setMonomHybrid(true);
         constraintViolations  = validator.validate(nonViralName);
-        assertTrue("There should be no constraint violation as a NonViralNamen may have a hybrid flag set", constraintViolations.isEmpty());
+        assertTrue("There should be no constraint violation as NonViralNames may have a hybrid flag set", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setGenusOrUninomial("Genus");
         constraintViolations  = validator.validate(nonViralName);
-        assertTrue("There should be no constraint violation as a NonViralNamen may have a genus name set", constraintViolations.isEmpty());
+        assertTrue("There should be no constraint violation as NonViralNames may have a genus name set", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         nonViralName.setNameCache("NameCache");
         constraintViolations  = validator.validate(nonViralName);
-        assertTrue("There should be no constraint violation as a NonViralNamen may have the name cache set", constraintViolations.isEmpty());
+        assertTrue("There should be no constraint violation as NonViralNames may have the name cache set", constraintViolations.isEmpty());
 
         nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         TaxonNameBase<?,?> childName = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
         nonViralName.addHybridChild(childName, HybridRelationshipType.FIRST_PARENT(), null);
         constraintViolations  = validator.validate(nonViralName);
-        assertTrue("There should be no constraint violation as a NonViralNamen may have a hybrid child", constraintViolations.isEmpty());
+        assertTrue("There should be no constraint violation as NonViralNames may have a hybrid child", constraintViolations.isEmpty());
 
         //TBC
 	}

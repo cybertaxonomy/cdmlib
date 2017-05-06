@@ -1166,7 +1166,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Creates a {@link NonViralName} object depending on the defined {@link NomenclaturalCode}
+	 * Creates a {@link INonViralName} object depending on the defined {@link NomenclaturalCode}
 	 * and the given parameters.
 	 * @param state
 	 * @param rank

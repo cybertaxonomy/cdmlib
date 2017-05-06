@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Creates a special sort column to allows nomenclatorical ordering of taxa and names.
- * This class bridge can handle all {@link TaxonBase} and {@link NonViralName}s
+ * This class bridge can handle all {@link TaxonBase} and {@link INonViralName}s
  * instances. {@link ViralNames} are not supported!
  * <p>
  * Ignores the <code>name</code> parameter!

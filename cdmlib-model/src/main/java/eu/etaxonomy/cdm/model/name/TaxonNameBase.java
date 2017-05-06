@@ -658,9 +658,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param   nomenclaturalReference  the nomenclatural reference where <i>this</i> non viral taxon name was published
      * @param   nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
      * @param   homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
-     * @see     #NonViralName()
-     * @see     #NonViralName(Rank, HomotypicalGroup)
-     * @see     #NewInstance(Rank, HomotypicalGroup)
+     * @see     #NewInstance(NomenclaturalCode, Rank, HomotypicalGroup)
+     * @see     #NewInstance(NomenclaturalCode, Rank, String, String, String, String, TeamOrPersonBase, Reference, String, HomotypicalGroup)
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy

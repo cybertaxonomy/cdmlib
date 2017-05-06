@@ -21,7 +21,7 @@
     </mapping>
     
      <mapping>
-        <class-a>eu.etaxonomy.cdm.model.name.NonViralName</class-a>
+        <class-a>eu.etaxonomy.cdm.model.name.TaxonNameBase</class-a>
         <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord</class-b>
        <field>
             <a>titleCache</a>
