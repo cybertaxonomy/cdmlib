@@ -16,9 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
 
 
@@ -35,7 +33,7 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 			TaxonNameBase<?,?> from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonNameBase.class);
 			TaxonNameBase<?,?> to = CdmBase.deproxy(nameRelationship.getToName(), TaxonNameBase.class);
 
-			if(from instanceof NonViralName && to instanceof NonViralName) {
+			if(from.isNonViral() && to.isNonViral()) {
 				INonViralName fromName =  from;
 				INonViralName toName = to;
 
@@ -60,7 +58,7 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 
 				//compare nomRefs and details for zoological names
 				//why only for zooNames?
-				if(fromName instanceof ZoologicalName && toName instanceof ZoologicalName) {
+				if(fromName.isZoological() && toName.isZoological()) {
 					if(fromName.getNomenclaturalReference() != null && !fromName.getNomenclaturalReference().equals(toName.getNomenclaturalReference())) {
 						valid = false;
 						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("fromName").addNode("nomenclaturalReference").addConstraintViolation();

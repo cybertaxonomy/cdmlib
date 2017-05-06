@@ -392,8 +392,8 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonNameBase>
           if (name == null){
                result = null;
            }else{
-               if (name instanceof ZoologicalName){
-                   result = (((ZoologicalName)name).getPublicationYear());
+               if (name.isZoological()){
+                   result = name.getPublicationYear();
                }else{
                    Reference ref = (Reference) name.getNomenclaturalReference();
                    if (ref == null){

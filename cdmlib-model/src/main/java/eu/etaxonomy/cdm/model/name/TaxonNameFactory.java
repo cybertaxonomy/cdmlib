@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -23,6 +24,15 @@ public class TaxonNameFactory {
     static private INonViralNameParser<?> nameParser = new NonViralNameParserImpl();
 
  // *************** FACTORY METHODS ********************************/
+
+
+//    /**
+//     * @param code
+//     * @return
+//     */
+//    public static Class<? extends IdentifiableEntity> NewNameInstance(NomenclaturalCode code) {
+//        code.getNewTaxonNameInstance(rank)
+//    }
 
     /**
      * Creates a new non viral taxon name instance
@@ -38,8 +48,8 @@ public class TaxonNameFactory {
      * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public static NonViralName NewNonViralInstance(Rank rank){
-        return new NonViralName(rank, null);
+    public static TaxonNameBase NewNonViralInstance(Rank rank){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.NonViral, rank, null);
     }
 
     /**
@@ -60,8 +70,8 @@ public class TaxonNameFactory {
      * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public static NonViralName NewNonViralInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new NonViralName(rank, homotypicalGroup);
+    public static TaxonNameBase NewNonViralInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.NonViral, rank, homotypicalGroup);
     }
 
 
@@ -71,8 +81,8 @@ public class TaxonNameFactory {
      * @param   rank  the rank to be assigned to <i>this</i> viral taxon name
      * @see     #ViralName(Rank)
      */
-    public static ViralName NewViralInstance(Rank rank){
-        return new ViralName(rank);
+    public static TaxonNameBase NewViralInstance(Rank rank){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICVCN, rank, null);
     }
 
     /**
@@ -87,8 +97,8 @@ public class TaxonNameFactory {
      * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public static BacterialName NewBacterialInstance(Rank rank){
-        return new BacterialName(rank, null);
+    public static TaxonNameBase NewBacterialInstance(Rank rank){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNB, rank, null);
     }
 
     /**
@@ -107,8 +117,8 @@ public class TaxonNameFactory {
      * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public static BacterialName NewBacterialInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new BacterialName(rank, homotypicalGroup);
+    public static IBacterialName NewBacterialInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNB, rank, homotypicalGroup);
     }
 
 
@@ -123,8 +133,8 @@ public class TaxonNameFactory {
      * @see             #NewZoologicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
      * @see             eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
      */
-    public static ZoologicalName NewZoologicalInstance(Rank rank){
-        return new ZoologicalName(rank, null);
+    public static TaxonNameBase NewZoologicalInstance(Rank rank){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICZN, rank, null);
     }
 
     /**
@@ -142,8 +152,8 @@ public class TaxonNameFactory {
      * @see    #ZoologicalName(Rank, HomotypicalGroup)
      * @see    eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
      */
-    public static ZoologicalName NewZoologicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new ZoologicalName(rank, homotypicalGroup);
+    public static TaxonNameBase NewZoologicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICZN, rank, homotypicalGroup);
     }
     /**
      * Creates a new zoological taxon name instance
@@ -175,8 +185,13 @@ public class TaxonNameFactory {
      * @see     #ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
      * @see     eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
      */
-    public static ZoologicalName NewZoologicalInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        return new ZoologicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+    public static TaxonNameBase NewZoologicalInstance(Rank rank,
+            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
+            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICZN, rank,
+            genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+            combinationAuthorship, nomenclaturalReference, nomenclMicroRef,
+            homotypicalGroup);
     }
 
     /**
@@ -190,8 +205,8 @@ public class TaxonNameFactory {
      * @see             #NewBotanicalInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
      * @see             eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
      */
-    public static BotanicalName NewBotanicalInstance(Rank rank){
-        return new BotanicalName(rank, null);
+    public static TaxonNameBase NewBotanicalInstance(Rank rank){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNAFP, rank, null);
     }
     /**
      * Creates a new botanical taxon name instance
@@ -208,8 +223,8 @@ public class TaxonNameFactory {
      * @see    #BotanicalName(Rank, HomotypicalGroup)
      * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
      */
-    public static BotanicalName NewBotanicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new BotanicalName(rank, homotypicalGroup);
+    public static IBotanicalName NewBotanicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNAFP, rank, homotypicalGroup);
     }
     /**
      * Creates a new botanical taxon name instance
@@ -241,8 +256,11 @@ public class TaxonNameFactory {
      * @see     ZoologicalName#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
      * @see     eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
      */
-    public static  BotanicalName NewBotanicalInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        return new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+    public static  TaxonNameBase NewBotanicalInstance(Rank rank,
+            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
+            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNAFP, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+            combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
     }
 
 
@@ -256,8 +274,8 @@ public class TaxonNameFactory {
      * @see             #NewInstance(Rank, HomotypicalGroup)
      * @see             eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
      */
-    public static CultivarPlantName NewCultivarInstance(Rank rank){
-        return new CultivarPlantName(rank, null);
+    public static TaxonNameBase NewCultivarInstance(Rank rank){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNCP, rank, null);
     }
 
     /**
@@ -274,8 +292,8 @@ public class TaxonNameFactory {
      * @see    #CultivarPlantName(Rank, HomotypicalGroup)
      * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
      */
-    public static CultivarPlantName NewCultivarInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return new CultivarPlantName(rank, homotypicalGroup);
+    public static ICultivarPlantName NewCultivarInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+        return TaxonNameBase.NewInstance(NomenclaturalCode.ICNCP, rank, homotypicalGroup);
     }
 
 
@@ -291,7 +309,7 @@ public class TaxonNameFactory {
      * @param   fullNameString  the string to be parsed
      * @return                  the new botanical taxon name
      */
-    public static BotanicalName PARSED_BOTANICAL(String fullNameString){
+    public static TaxonNameBase PARSED_BOTANICAL(String fullNameString){
         return PARSED_BOTANICAL(fullNameString, Rank.GENUS());
     }
 
@@ -306,11 +324,11 @@ public class TaxonNameFactory {
      * @param   rank            the rank of the taxon name
      * @return                  the new botanical taxon name
      */
-    public static BotanicalName PARSED_BOTANICAL(String fullNameString, Rank rank){
+    public static TaxonNameBase PARSED_BOTANICAL(String fullNameString, Rank rank){
         if (nameParser == null){
             nameParser = new NonViralNameParserImpl();
         }
-        return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICNAFP,  rank);
+        return (TaxonNameBase)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICNAFP,  rank);
     }
 
 
@@ -325,7 +343,7 @@ public class TaxonNameFactory {
      * @param   fullNameAndReferenceString  the string to be parsed
      * @return                              the new botanical taxon name
      */
-    public static BotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString){
+    public static IBotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString){
         return PARSED_BOTANICAL_REFERENCE(fullNameAndReferenceString, Rank.GENUS());
     }
 
@@ -341,11 +359,11 @@ public class TaxonNameFactory {
      * @param   rank                        the rank of the taxon name
      * @return                              the new botanical taxon name
      */
-    public static BotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString, Rank rank){
+    public static IBotanicalName PARSED_BOTANICAL_REFERENCE(String fullNameAndReferenceString, Rank rank){
         if (nameParser == null){
             nameParser = new NonViralNameParserImpl();
         }
-        return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICNAFP, rank);
+        return (IBotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICNAFP, rank);
     }
 
 
@@ -361,7 +379,7 @@ public class TaxonNameFactory {
      * @param   fullNameString  the string to be parsed
      * @return                  the new zoological taxon name
      */
-    public static ZoologicalName PARSED_ZOOLOGICAL(String fullNameString){
+    public static IZoologicalName PARSED_ZOOLOGICAL(String fullNameString){
         return PARSED_ZOOLOGICAL(fullNameString, Rank.GENUS());
     }
 
@@ -375,11 +393,40 @@ public class TaxonNameFactory {
      * @param   rank            the rank of the taxon name
      * @return                  the new zoological taxon name
      */
-    public static ZoologicalName PARSED_ZOOLOGICAL(String fullNameString, Rank rank){
+    public static IZoologicalName PARSED_ZOOLOGICAL(String fullNameString, Rank rank){
         if (nameParser == null){
             nameParser  = new NonViralNameParserImpl();
         }
-        return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
+        return (IZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
+    }
+
+
+    /**
+     * @param rank
+     * @param genusOrUninomial
+     * @param infraGenericEpithet
+     * @param specificEpithet
+     * @param infraSpecificEpithet
+     * @param combinationAuthorship
+     * @param nomenclaturalReference
+     * @param nomenclMicroRef
+     * @param homotypicalGroup
+     * @return
+     */
+    public static INonViralName NewNonViralInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+            String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference, String nomenclMicroRef,
+            HomotypicalGroup homotypicalGroup) {
+        return TaxonNameBase.NewInstance(NomenclaturalCode.NonViral, rank, genusOrUninomial, infraGenericEpithet, specificEpithet,
+                infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef,
+                homotypicalGroup);
+    }
+
+    /**
+     * @param rank
+     * @return
+     */
+    public static TaxonNameBase<?, ?> NewFungusInstance(Rank rank) {
+        return TaxonNameBase.NewInstance(NomenclaturalCode.Fungi, rank, null);
     }
 
 }

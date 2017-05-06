@@ -56,6 +56,7 @@ import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -82,10 +83,13 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -95,7 +99,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
 import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
+import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
+import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 
@@ -162,7 +169,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "publicationYear",
     "originalPublicationYear",
 
-//    "anamorphic",
+    "anamorphic",
 
     "cultivarName"
 })
@@ -170,12 +177,18 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="TaxonNameBase", indexes = { @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
+@Table(appliesTo="TaxonNameBase", indexes = {
+        @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),
+        @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 @NameMustFollowCode
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
+@CorrectEpithetsForRank(groups = Level2.class)
+@NameMustHaveAuthority(groups = Level2.class)
+@NoDuplicateNames(groups = Level3.class)
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
+public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
-                IBotanicalName, ICultivarPlantName,
+                IBotanicalName, ICultivarPlantName, IFungusName,
                 IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable {
 
     private static final long serialVersionUID = -791164269603409712L;
@@ -190,7 +203,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Column(name="nameType", length=15)
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.NomenclaturalCode")}
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.NomenclaturalCode")}
     )
     @Audited //needed ?
     private NomenclaturalCode nameType;
@@ -535,10 +548,47 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Column(length=255)
     private String cultivarName;
 
+    // ************** FUNGUS name attributes
+    //to indicate that the type of the name is asexual or not
+    @XmlElement(name ="IsAnamorphic")
+    private boolean anamorphic = false;
 
 // *************** FACTORY METHODS ********************************/
 
     //see TaxonNameFactory
+    /**
+     * @param code
+     * @param rank
+     * @param homotypicalGroup
+     * @return
+     */
+    protected static TaxonNameBase NewInstance(NomenclaturalCode code, Rank rank,
+            HomotypicalGroup homotypicalGroup) {
+        TaxonNameBase<?,?> result = new TaxonNameBase<>(code, rank, homotypicalGroup);
+        return result;
+    }
+
+
+    /**
+     * @param icnafp
+     * @param rank2
+     * @param genusOrUninomial2
+     * @param infraGenericEpithet2
+     * @param specificEpithet2
+     * @param infraSpecificEpithet2
+     * @param combinationAuthorship2
+     * @param nomenclaturalReference2
+     * @param nomenclMicroRef
+     * @param homotypicalGroup2
+     * @return
+     */
+    public static TaxonNameBase NewInstance(NomenclaturalCode code, Rank rank, String genusOrUninomial,
+            String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
+            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
+            String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+        TaxonNameBase result = new TaxonNameBase<>(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+        return result;
+    }
 
 
 // ************* CONSTRUCTORS *************/
@@ -554,45 +604,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         super();
         setNameCacheStrategy();
     }
-    /**
-     * Class constructor: creates a new empty taxon name.
-     * @param code
-     *
-     * @see #TaxonNameBase(Rank)
-     * @see #TaxonNameBase(HomotypicalGroup)
-     * @see #TaxonNameBase(Rank, HomotypicalGroup)
-     */
-    protected TaxonNameBase(NomenclaturalCode type) {
-        super();
-        this.nameType = type;
-        setNameCacheStrategy();
-    }
-    /**
-     * Class constructor: creates a new taxon name
-     * only containing its {@link Rank rank}.
-     *
-     * @param  rank  the rank to be assigned to <i>this</i> taxon name
-     * @see    		 #TaxonNameBase()
-     * @see    		 #TaxonNameBase(HomotypicalGroup)
-     * @see    		 #TaxonNameBase(Rank, HomotypicalGroup)
-     */
-    protected TaxonNameBase(NomenclaturalCode code, Rank rank) {
-        this(code, rank, null);
-    }
-    /**
-     * Class constructor: creates a new taxon name instance
-     * only containing its {@link HomotypicalGroup homotypical group}.
-     * The new taxon name will be also added to the set of taxon names
-     * belonging to this homotypical group.
-     *
-     * @param  homotypicalGroup  the homotypical group to which <i>this</i> taxon name belongs
-     * @see    					 #TaxonNameBase()
-     * @see    					 #TaxonNameBase(Rank)
-     * @see    					 #TaxonNameBase(Rank, HomotypicalGroup)
-     */
-    protected TaxonNameBase(NomenclaturalCode type, HomotypicalGroup homotypicalGroup) {
-        this(type, null, homotypicalGroup);
-    }
+
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -610,10 +622,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     protected TaxonNameBase(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
         super();
-        this.nameType = type;
+        setNameType(type);
         this.setRank(rank);
         if (homotypicalGroup == null){
-            homotypicalGroup = new HomotypicalGroup();
+            homotypicalGroup = HomotypicalGroup.NewInstance();
         }
         homotypicalGroup.addTypifiedName(this);
         this.homotypicalGroup = homotypicalGroup;
@@ -666,8 +678,20 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
     private void setNameCacheStrategy(){
-        if (getClass() == NonViralName.class){
+        if (getNameType() == null){
+            this.cacheStrategy = null;
+        }else if (this.cacheStrategy != null){
+           //
+        }else if (getNameType() == NomenclaturalCode.NonViral){
             this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
+        }else if (getNameType().isBotanical()){
+            this.cacheStrategy = (S)BotanicNameDefaultCacheStrategy.NewInstance();
+        }else if (getNameType() == NomenclaturalCode.ICZN){
+            this.cacheStrategy = (S)ZooNameDefaultCacheStrategy.NewInstance();
+        }else if (getNameType() == NomenclaturalCode.ICNB){
+            this.cacheStrategy = (S)BacterialNameDefaultCacheStrategy.NewInstance();;
+        }else if (getNameType() == NomenclaturalCode.ICVCN){
+            this.cacheStrategy = super.getCacheStrategy();
         }
     }
 
@@ -775,6 +799,17 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     }
 
 // ****************** GETTER / SETTER ****************************/
+
+    @Override
+    public NomenclaturalCode getNameType() {
+        return nameType;
+    }
+
+    @Override
+    public void setNameType(NomenclaturalCode nameType) {
+        this.nameType = nameType;
+        setNameCacheStrategy();
+    }
 
     /**
      * Returns the boolean value of the flag intended to protect (true)
@@ -1148,18 +1183,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         this.binomHybrid = binomHybrid;
     }
 
-    /**
-     * Returns the boolean value of the flag indicating whether <i>this</i> botanical
-     * taxon name is the name of an infraspecific hybrid (true) or not (false).
-     * In this case the term "notho-" (optionally abbreviated "n-") is used as
-     * a prefix to the term denoting the infraspecific rank of <i>this</i> botanical
-     * taxon name. If this flag is set no other hybrid flags may be set.
-     *
-     * @return  the boolean value of the isTrinomHybrid flag
-     * @see     #isHybridFormula()
-     * @see     #isMonomHybrid()
-     * @see     #isBinomHybrid()
-     */
     @Override
     public boolean isTrinomHybrid(){
         return this.trinomHybrid;
@@ -1177,12 +1200,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     // ****************** VIRAL NAME ******************/
 
-    /**
-     * Returns the accepted acronym (an assigned abbreviation) string for <i>this</i>
-     * viral taxon name. For instance PCV stays for Peanut Clump Virus.
-     *
-     * @return  the string containing the accepted acronym of <i>this</i> viral taxon name
-     */
     @Override
     public String getAcronym(){
         return this.acronym;
@@ -1198,46 +1215,17 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     // ****************** BACTERIAL NAME ******************/
 
-    /**
-     * Returns the string containing the authorship with the year and details
-     * of the reference in which the subgenus included in the scientific name
-     * of <i>this</i> bacterial taxon name was published.
-     * For instance if the bacterial taxon name is
-     * 'Bacillus (subgen. Aerobacillus Donker 1926, 128) polymyxa' the subgenus
-     * authorship string is 'Donker 1926, 128'.
-     *
-     * @return  the string containing the complete subgenus' authorship
-     *          included in <i>this</i> bacterial taxon name
-     */
     @Override
     public String getSubGenusAuthorship(){
         return this.subGenusAuthorship;
     }
 
-    /**
-     * @see  #getSubGenusAuthorship()
-     */
     @Override
     public void setSubGenusAuthorship(String subGenusAuthorship){
         this.subGenusAuthorship = subGenusAuthorship;
     }
 
-    /**
-     * Returns the string representing the reason for the approbation of <i>this</i>
-     * bacterial taxon name. Bacterial taxon names are valid or approved
-     * according to:
-     * <ul>
-     * <li>the approved list, c.f.r. IJSB 1980 (AL)
-     * <li>the validation list, in IJSB after 1980 (VL)
-     * </ul>
-     * or
-     * <ul>
-     * <li>are validly published as paper in IJSB after 1980 (VP).
-     * </ul>
-     * IJSB is the acronym for International Journal of Systematic Bacteriology.
-     *
-     * @return  the string with the source of the approbation for <i>this</i> bacterial taxon name
-     */
+
     @Override
     public String getNameApprobation(){
         return this.nameApprobation;
@@ -1253,11 +1241,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     //************ Zoological Name
 
-    /**
-     * Returns the breed name string for <i>this</i> animal (zoological taxon name).
-     *
-     * @return  the string containing the breed name for <i>this</i> zoological taxon name
-     */
+
     @Override
     public String getBreed(){
         return this.breed;
@@ -1270,15 +1254,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         this.breed = StringUtils.isBlank(breed) ? null : breed;
     }
 
-    /**
-     * Returns the publication year (as an integer) for <i>this</i> zoological taxon
-     * name. If the publicationYear attribute is null and a nomenclatural
-     * reference exists the year could be computed from the
-     * {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference}.
-     *
-     * @return  the integer representing the publication year for <i>this</i> zoological taxon name
-     * @see     #getOriginalPublicationYear()
-     */
+
     @Override
     public Integer getPublicationYear() {
         return publicationYear;
@@ -1291,19 +1267,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         this.publicationYear = publicationYear;
     }
 
-    /**
-     * Returns the publication year (as an integer) of the original validly
-     * published species epithet for <i>this</i> zoological taxon name. This only
-     * applies for zoological taxon names that are no {@link TaxonNameBase#isOriginalCombination() original combinations}.
-     * If the originalPublicationYear attribute is null the year could be taken
-     * from the publication year of the corresponding original name (basionym)
-     * or from the {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference} of the basionym
-     * if it exists.
-     *
-     * @return  the integer representing the publication year of the original
-     *          species epithet corresponding to <i>this</i> zoological taxon name
-     * @see     #getPublicationYear()
-     */
+
     @Override
     public Integer getOriginalPublicationYear() {
         return originalPublicationYear;
@@ -1318,15 +1282,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     // **** Cultivar Name ************
 
-    /**
-     * Returns the characteristical cultivar name part string assigned to <i>this</i>
-     * cultivar taxon name. In the scientific name "Clematis alpina 'Ruby'" for
-     * instance this characteristical string is "Ruby". This part of the name is
-     * governed by the International Code for the Nomenclature of Cultivated
-     * Plants and the string should include neither quotes nor + signs
-     * (these elements of the name cache string will be generated by the
-     * {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}).
-     */
+
     @Override
     public String getCultivarName(){
         return this.cultivarName;
@@ -1338,6 +1294,20 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Override
     public void setCultivarName(String cultivarName){
         this.cultivarName = StringUtils.isBlank(cultivarName) ? null : cultivarName;
+    }
+
+    // **************** Fungus Name
+    @Override
+    public boolean isAnamorphic(){
+        return this.anamorphic;
+    }
+
+    /**
+     * @see  #isAnamorphic()
+     */
+    @Override
+    public void setAnamorphic(boolean anamorphic){
+        this.anamorphic = anamorphic;
     }
 
 
@@ -1407,8 +1377,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 //********* METHODS **************************************/
 
     @Override
+    public S getCacheStrategy() {
+        setNameCacheStrategy();
+        return this.cacheStrategy;
+    }
+
+    @Override
     public String generateFullTitle(){
-        if (cacheStrategy == null){
+        if (getCacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
@@ -1429,14 +1405,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         this.setProtectedFullTitleCache(protectCache);
     }
 
-    /**
-      * Needs to be implemented by those classes that handle autonyms (e.g. botanical names).
-      **/
+   /** Checks if this name is an autonym.<BR>
+    * An autonym is a taxon name that has equal specific and infra specific epithets.<BR>
+    * {@link http://ibot.sav.sk/icbn/frameset/0010Ch2Sec1a006.htm#6.8. Vienna Code §6.8}
+    * or a taxon name that has equal generic and infrageneric epithets (A22.2).<BR>
+    * Only relevant for botanical names.
+    * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
+    */
     @Override
     @Transient
     public boolean isAutonym(){
-        return false;
+        if (isBotanical()){
+            if (this.getRank() != null && this.getSpecificEpithet() != null && this.getInfraSpecificEpithet() != null &&
+                this.isInfraSpecific() && this.getSpecificEpithet().trim().equals(this.getInfraSpecificEpithet().trim())){
+                return true;
+            }else if (this.getRank() != null && this.getGenusOrUninomial() != null && this.getInfraGenericEpithet() != null &&
+                    this.isInfraGeneric() && this.getGenusOrUninomial().trim().equals(this.getInfraGenericEpithet().trim())){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
+
 
     @Override
     @Transient
@@ -1555,7 +1548,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     @Override
     public String generateAuthorship(){
-        if (cacheStrategy == null){
+        if (getCacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
@@ -1921,7 +1914,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     #getNameCache()
      */
     protected String generateNameCache(){
-        if (cacheStrategy == null){
+        if (getCacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.toString());
             return null;
         }else{
@@ -3140,11 +3133,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @return  null
      * @see  	#isCodeCompliant()
      * @see  	#getHasProblem()
+     * @deprecated use {@link #getNameType()} instead
      */
     @Override
+    @Deprecated
+    @Transient
+    @java.beans.Transient
     public NomenclaturalCode getNomenclaturalCode() {
-        logger.warn("TaxonNameBase has no specific Code defined. Use subclasses");
-        return null;
+        return nameType;
     }
 
 
@@ -3533,6 +3529,35 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             return null;
         }
 
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public boolean isNonViral() {
+        return nameType.isNonViral();
+    }
+
+    @Override
+    public boolean isZoological(){
+        return nameType.isZoological();
+    }
+    @Override
+    public boolean isBotanical() {
+        return nameType.isBotanical();
+    }
+    @Override
+    public boolean isCultivar() {
+        return nameType.isCultivar();
+    }
+    @Override
+    public boolean isBacterial() {
+        return nameType.isBacterial();
+    }
+    @Override
+    public boolean isViral() {
+        return nameType.isViral();
     }
 
 }

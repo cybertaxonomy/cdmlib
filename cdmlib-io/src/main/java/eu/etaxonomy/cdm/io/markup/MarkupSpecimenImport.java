@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -143,7 +142,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			String message = "There is no name in a homotypical group. Can't create the specimen type";
 			fireWarningEvent(message, parentEvent, 8);
 		} else {
-			firstName = CdmBase.deproxy(names.iterator().next(),NonViralName.class);
+			firstName = CdmBase.deproxy(names.iterator().next());
 		}
 
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);

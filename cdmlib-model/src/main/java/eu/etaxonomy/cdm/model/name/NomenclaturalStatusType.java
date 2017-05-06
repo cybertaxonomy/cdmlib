@@ -828,7 +828,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		NomenclaturalStatusType result = null;
 
 		//TODO handle undefined names correctly
-		boolean isZooname = name.getNomenclaturalCode().equals(NomenclaturalCode.ICZN);
+		boolean isZooname = name.getNameType().equals(NomenclaturalCode.ICZN);
 
 		Map<String, UUID> map = isZooname ? zooAbbrevMap : abbrevMap;
 		if (map == null ){

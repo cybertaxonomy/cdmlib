@@ -15,7 +15,6 @@ import javax.validation.ConstraintValidatorContext;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -38,7 +37,7 @@ public class ChildTaxaMustDeriveNameFromParentValidator implements
         if (parent != null && child != null && parent.getName() != null && child.getName() != null){
             TaxonNameBase<?,?> parentNameBase = CdmBase.deproxy(parent.getName(), TaxonNameBase.class);
             TaxonNameBase<?,?> childNameBase = CdmBase.deproxy(child.getName(), TaxonNameBase.class);
-            if(parentNameBase instanceof NonViralName && childNameBase instanceof NonViralName) {
+            if(parentNameBase.isNonViral() && childNameBase.isNonViral()) {
                 INonViralName parentName = parentNameBase;
                 INonViralName childName = childNameBase;
 

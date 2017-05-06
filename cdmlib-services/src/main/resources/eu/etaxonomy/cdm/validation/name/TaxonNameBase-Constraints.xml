@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping ../validation-mapping-1.0.xsd">
     <default-package>eu.etaxonomy.cdm.model.name</default-package>
-    <bean class="NonViralName" ignore-annotations="false">
+    <bean class="TaxonNameBase" ignore-annotations="false">
                
     </bean>
     <constraint-definition annotation="eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames">

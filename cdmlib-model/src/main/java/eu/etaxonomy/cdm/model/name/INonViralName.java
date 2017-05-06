@@ -538,6 +538,4 @@ public interface INonViralName extends ITaxonNameBase{
     * @see  #isMonomHybrid()
     */
    public void setTrinomHybrid(boolean trinomHybrid);
-
-
 }

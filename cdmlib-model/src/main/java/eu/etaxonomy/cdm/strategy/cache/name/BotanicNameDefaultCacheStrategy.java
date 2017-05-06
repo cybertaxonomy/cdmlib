@@ -14,15 +14,18 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 
 /**
  * T
  * @author a.mueller
  *
  */
-public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
-	@SuppressWarnings("unused")
+public class BotanicNameDefaultCacheStrategy<T extends IBotanicalName>
+            extends NonViralNameDefaultCacheStrategy<T>
+            implements  INonViralNameCacheStrategy<T> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = 2679554971446197111L;
 

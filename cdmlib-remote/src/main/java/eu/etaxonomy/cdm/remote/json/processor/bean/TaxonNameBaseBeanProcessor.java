@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -66,9 +65,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
         if(!skipTaggedName){
             json.element("taggedName", bean.getTaggedName(), jsonConfig);
         }
-        if(bean instanceof NonViralName){
-            json.element("nameCache", bean.getNameCache(), jsonConfig);
-        }
+        json.element("nameCache", bean.getNameCache(), jsonConfig);
         return json;
     }
 

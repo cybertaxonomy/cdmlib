@@ -96,7 +96,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * Class constructor: creates a new homotypical group instance with an
 	 * empty set of typified {@link TaxonNameBase taxon names}.
 	 */
-	public HomotypicalGroup() {
+	protected HomotypicalGroup() {
 		super();
 	}
 

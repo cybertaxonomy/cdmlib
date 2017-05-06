@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -169,9 +168,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		assertTrue("Return value for import.invoke should be true", result);
 
 		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonNameBase.class));
-		List<BotanicalName> listNames = nameService.list(BotanicalName.class, 100, 0, null, null);
+		List<TaxonNameBase> listNames = nameService.list(TaxonNameBase.class, 100, 0, null, null);
 
-		for (BotanicalName name: listNames){
+		for (TaxonNameBase name: listNames){
 		    System.out.println(name.getTitleCache());
 		}
 		/*

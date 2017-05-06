@@ -36,8 +36,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -163,16 +162,16 @@ public class NonViralNameParserImplTest {
         //Uninomials
         IZoologicalName milichiidae = (IZoologicalName)parser.parseSimpleName("Milichiidae", NomenclaturalCode.ICZN, null);
         assertEquals("Family rank expected", Rank.FAMILY(), milichiidae.getRank());
-        BotanicalName crepidinae = (BotanicalName)parser.parseSimpleName("Crepidinae", ICNAFP, null);
+        IBotanicalName crepidinae = (IBotanicalName)parser.parseSimpleName("Crepidinae", ICNAFP, null);
         assertEquals("Family rank expected", Rank.SUBTRIBE(), crepidinae.getRank());
-        BotanicalName abies = (BotanicalName)parser.parseSimpleName("Abies", ICNAFP, null);
+        IBotanicalName abies = (IBotanicalName)parser.parseSimpleName("Abies", ICNAFP, null);
         assertEquals("Family rank expected", Rank.GENUS(), abies.getRank());
 
         abies.addParsingProblem(ParserProblem.CheckRank);
         parser.parseSimpleName(abies, "Abies", abies.getRank(), true);
         assertTrue(abies.getParsingProblems().contains(ParserProblem.CheckRank));
 
-        BotanicalName rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", ICNAFP, null);
+        IBotanicalName rosa = (IBotanicalName)parser.parseSimpleName("Rosaceae", ICNAFP, null);
         assertTrue("Rosaceae have rank family", rosa.getRank().equals(Rank.FAMILY()));
         assertTrue("Rosaceae must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
         parser.parseSimpleName(rosa, "Rosaceaex", abies.getRank(), true);
@@ -180,7 +179,7 @@ public class NonViralNameParserImplTest {
         assertTrue("Rosaceaex must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
 
         //repeat but remove warning after first parse
-        rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", ICNAFP, null);
+        rosa = (IBotanicalName)parser.parseSimpleName("Rosaceae", ICNAFP, null);
         assertTrue("Rosaceae have rank family", rosa.getRank().equals(Rank.FAMILY()));
         assertTrue("Rosaceae must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
         rosa.removeParsingProblem(ParserProblem.CheckRank);
@@ -202,21 +201,21 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Mullerister", zooName.getInfraGenericEpithet());
         Assert.assertEquals(Integer.valueOf(1843), zooName.getOriginalPublicationYear());
         //zoo as referenced name
-        zooName = (ZoologicalName)parser.parseFullName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
+        zooName = (IZoologicalName)parser.parseFullName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
         Assert.assertTrue(zooName.getParsingProblems().isEmpty());
         Assert.assertEquals("Mullerister", zooName.getInfraGenericEpithet());
         Assert.assertEquals(Integer.valueOf(1843), zooName.getOriginalPublicationYear());
 
         //bot as full Name
         String botSpeciesWithSubgenus = "Bacanius (Mullerister) rombophorus (Aube) Mill.";
-        BotanicalName botName = (BotanicalName)parser.parseFullName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.GENUS());
+        IBotanicalName botName = (IBotanicalName)parser.parseFullName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.GENUS());
         Assert.assertTrue(botName.getParsingProblems().isEmpty());
         Assert.assertEquals("Mullerister", botName.getInfraGenericEpithet());
         Assert.assertEquals("rombophorus", botName.getSpecificEpithet());
         Assert.assertEquals("Aube", botName.getBasionymAuthorship().getTitleCache());
 
         //bot as referenced Name
-        botName = (BotanicalName)parser.parseReferencedName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.GENUS());
+        botName = parser.parseReferencedName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.GENUS());
         Assert.assertTrue(botName.getParsingProblems().isEmpty());
         Assert.assertEquals("Mullerister", botName.getInfraGenericEpithet());
         Assert.assertEquals("rombophorus", botName.getSpecificEpithet());
@@ -224,7 +223,7 @@ public class NonViralNameParserImplTest {
 
         //bot without author
         String botSpeciesWithSubgenusWithoutAuthor = "Bacanius (Mullerister) rombophorus";
-        botName = (BotanicalName)parser.parseReferencedName(botSpeciesWithSubgenusWithoutAuthor, NomenclaturalCode.ICNAFP, Rank.GENUS());
+        botName = parser.parseReferencedName(botSpeciesWithSubgenusWithoutAuthor, NomenclaturalCode.ICNAFP, Rank.GENUS());
         Assert.assertTrue(botName.getParsingProblems().isEmpty());
         Assert.assertEquals("Mullerister", botName.getInfraGenericEpithet());
         Assert.assertEquals("rombophorus", botName.getSpecificEpithet());
@@ -267,7 +266,7 @@ public class NonViralNameParserImplTest {
         INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getBasionymAuthorship();
         assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitle());
 
-        BotanicalName nameBasionymExAuthor2 = (BotanicalName)parser.parseFullName("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", null, Rank.SPECIES());
+        IBotanicalName nameBasionymExAuthor2 = (IBotanicalName)parser.parseFullName("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", null, Rank.SPECIES());
         assertEquals("Washingtonia", nameBasionymExAuthor2.getGenusOrUninomial());
         assertEquals("filifera", nameBasionymExAuthor2.getSpecificEpithet());
         assertEquals("H.Wendl.", nameBasionymExAuthor2.getExCombinationAuthorship().getNomenclaturalTitle());
@@ -341,7 +340,7 @@ public class NonViralNameParserImplTest {
 
 
         //Autonym
-        BotanicalName autonymName = (BotanicalName)parser.parseFullName("Abies alba Mill. var. alba", ICNAFP, null);
+        IBotanicalName autonymName = (IBotanicalName)parser.parseFullName("Abies alba Mill. var. alba", ICNAFP, null);
         assertFalse("Autonym should be parsable", autonymName.hasProblem());
 
 
@@ -1834,7 +1833,7 @@ public class NonViralNameParserImplTest {
         TeamOrPersonBase[] authorArray = new TeamOrPersonBase[4];
         try {
             DateTime start = DateTime.now();
-            parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, BotanicalName.class);
+            parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
             DateTime end = DateTime.now();
             Duration duration = new Duration(start, end);
             long seconds = duration.getStandardSeconds();
@@ -1875,9 +1874,9 @@ public class NonViralNameParserImplTest {
 
     @Test
     public final void testNomenclaturalStatus() {
-        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
         name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-        BotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY());
+        IBotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY());
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());

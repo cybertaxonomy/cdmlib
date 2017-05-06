@@ -16,7 +16,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -43,22 +43,22 @@ public class TaxonNodeByNameComparatorTest {
 
         Reference sec = ReferenceFactory.newBook();
 
-        BotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
         botname_1.setNameCache(nameCache_1, true);
         Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
 
-        BotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
         botname_2.setNameCache(nameCache_2, true);
         Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
 
-        BotanicalName botname_3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_3 = "Epilobium lamyi";
         botname_3.setNameCache(nameCache_3, true);
         Taxon taxon_3 = Taxon.NewInstance(botname_3, sec);
 
-        BotanicalName botname_4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_4 = "Epilobium tournefortii";
         botname_4.setNameCache(nameCache_4, true);
         Taxon taxon_4 = Taxon.NewInstance(botname_4, sec);
@@ -78,14 +78,14 @@ public class TaxonNodeByNameComparatorTest {
        // Collections.sort(taxonNodes, taxonNodeByNameComparator);
         int i = 0;
         logger.debug("order using default settings");
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_2, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_1, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_3, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_4, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
 
         // order without ignoring hybrid signs
         taxonNodeByNameComparator.setIgnoreHybridSign(false);
@@ -94,14 +94,14 @@ public class TaxonNodeByNameComparatorTest {
 
         i = 0;
         logger.debug("order without ignoring hybrid signs");
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_3, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_4, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_1, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_2, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
 
     }
 
@@ -111,12 +111,12 @@ public class TaxonNodeByNameComparatorTest {
 
         Reference sec = ReferenceFactory.newBook();
 
-        BotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
         botname_1.setNameCache(nameCache_1, true);
         Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
 
-        BotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
         botname_2.setNameCache(nameCache_2, true);
         Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
@@ -150,27 +150,27 @@ public class TaxonNodeByNameComparatorTest {
 
         Reference sec = ReferenceFactory.newBook();
 
-        BotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
         botname_1.setNameCache(nameCache_1, true);
         Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
 
-        BotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
         botname_2.setNameCache(nameCache_2, true);
         Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
 
-        BotanicalName botname_3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_3 = "Epilobium lamyi";
         botname_3.setNameCache(nameCache_3, true);
         Taxon taxon_3 = Taxon.NewInstance(botname_3, sec);
 
-        BotanicalName botname_4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_4 = "Epilobium tournefortii";
         botname_4.setNameCache(nameCache_4, true);
         Taxon taxon_4 = Taxon.NewInstance(botname_4, sec);
 
-        BotanicalName botname_5 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName botname_5 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         String nameCache_5= "Epilobium hirsutum L.";
         botname_5.setNameCache(nameCache_5, true);
         Taxon taxon_5 = Taxon.NewInstance(botname_5, sec);
@@ -191,28 +191,28 @@ public class TaxonNodeByNameComparatorTest {
 
         int i = 0;
         logger.debug("order using default settings");
-        logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_1, ((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_2, ((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_3, ((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_4, ((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
+        logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        logger.debug(taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_4, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
         TaxonNode result = classification.addChildTaxon(taxon_5, 2, null, null);
         Assert.assertTrue(result.getSortIndex() == 2);
 
         i = 0;
 
-        logger.debug(((BotanicalName)classification.getChildNodes().get(i).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_1, ((BotanicalName)classification.getChildNodes().get(i).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)classification.getChildNodes().get(i++).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_2, ((BotanicalName)classification.getChildNodes().get(i).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)classification.getChildNodes().get(i++).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_5, ((BotanicalName)classification.getChildNodes().get(i).getTaxon().getName()).getNameCache());
-        logger.debug(((BotanicalName)classification.getChildNodes().get(i++).getTaxon().getName()).getNameCache());
-        Assert.assertEquals(nameCache_3, ((BotanicalName)classification.getChildNodes().get(i).getTaxon().getName()).getNameCache());
+        logger.debug(classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_1, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        logger.debug(classification.getChildNodes().get(i++).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_2, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        logger.debug(classification.getChildNodes().get(i++).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_5, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        logger.debug(classification.getChildNodes().get(i++).getTaxon().getName().getNameCache());
+        Assert.assertEquals(nameCache_3, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
 
     }
 

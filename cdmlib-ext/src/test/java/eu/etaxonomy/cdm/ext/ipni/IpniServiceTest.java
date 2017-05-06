@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -172,7 +171,7 @@ public class IpniServiceTest {
 		String publicationTitle = "";
 		IpniRank rankToReturn = IpniRank.valueOf(Rank.SUBSPECIES());
 
-		List<BotanicalName> nameList = service1.getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, publicationTitle, rankToReturn, config, services);
+		List<IBotanicalName> nameList = service1.getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, publicationTitle, rankToReturn, config, services);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 
 

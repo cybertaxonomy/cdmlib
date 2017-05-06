@@ -33,9 +33,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -125,7 +123,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			boolean isNomRef = false;
 			if (isNotBlank(strType)){
 				if (strType.matches("Botanical Protologue")){
-					if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
+					if (taxon.getName() != null && reference != null && taxon.getName().isNonViral()){
 						INonViralName nvn = taxon.getName();
 						nvn.setNomenclaturalReference(reference);
 						isNomRef = true;
@@ -139,14 +137,14 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			if (isNomRef == false && config.isGuessNomenclaturalReferences()){
 				//if reference equals in author and year we assume that it is the nom ref
 				//this information is usually only available for ICZN names
-				if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
+				if (taxon.getName() != null && reference != null && taxon.getName().isNonViral()){
 					INonViralName nvn = taxon.getName();
 					String taxonAuthor = nvn.getAuthorshipCache();
 					String refAuthor = reference.getAuthorship().getNomenclaturalTitle();
 					Integer combYear = null;
 					Integer origYear = null;
-					if (nvn.isInstanceOf(ZoologicalName.class)){
-						IZoologicalName zooName = CdmBase.deproxy(nvn, ZoologicalName.class);
+					if (nvn.isZoological()){
+						IZoologicalName zooName = (IZoologicalName)CdmBase.deproxy(nvn);
 						combYear = zooName.getPublicationYear();
 						origYear = zooName.getOriginalPublicationYear();
 					}

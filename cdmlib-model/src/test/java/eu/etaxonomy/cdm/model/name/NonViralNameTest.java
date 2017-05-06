@@ -25,7 +25,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -51,8 +51,8 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		nonViralName1 = new BotanicalName();
-		nonViralName2 = new BotanicalName();
+		nonViralName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		nonViralName2 = TaxonNameFactory.NewBotanicalInstance(null);
 	}
 
 	/**
@@ -108,9 +108,9 @@ public class NonViralNameTest extends EntityTestBase {
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
-		INomenclaturalReference article = ReferenceFactory.newArticle();
+		Reference article = ReferenceFactory.newArticle();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		INonViralName nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
+		INonViralName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
 		assertEquals("infraGen", nonViralName.getInfraGenericEpithet());
 		assertEquals("species", nonViralName.getSpecificEpithet() );
@@ -374,7 +374,7 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
 
 
-		INonViralName clone = (INonViralName)((NonViralName)nonViralName1).clone();
+		INonViralName clone = (INonViralName)(nonViralName1).clone();
 		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
 		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
 		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());

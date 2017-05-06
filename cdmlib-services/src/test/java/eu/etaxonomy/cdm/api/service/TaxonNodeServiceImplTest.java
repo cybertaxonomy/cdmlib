@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -467,7 +466,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNotNull(t1);
         newTaxon = (Taxon)taxonService.load(taxUUID);
         assertNull(newTaxon);
-        BotanicalName name = (BotanicalName)nameService.load(nameUUID);
+        IBotanicalName name = nameService.load(nameUUID);
         assertNull(name);
 
 
@@ -895,31 +894,31 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Classification checklist = Classification.NewInstance("Checklist");
         checklist.setUuid(classificationUuid);
 
-        BotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        IBotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         abiesName.setGenusOrUninomial("Abies");
         Taxon abies = Taxon.NewInstance(abiesName, null);
         abies.setUuid(abiesUuid);
 
-        BotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesAlbaName.setGenusOrUninomial("Abies");
         abiesAlbaName.setSpecificEpithet("alba");
         Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
         abiesAlba.setUuid(abiesAlbaUuid);
 
-        BotanicalName abiesAlbaSubBrotaName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+        IBotanicalName abiesAlbaSubBrotaName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
         abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
         abiesAlbaSubBrotaName.setSpecificEpithet("alba");
         abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
         Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
         abiesAlbaSubBrota.setUuid(abiesAlbaSubBrotaUuid);
 
-        BotanicalName abiesPalmaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName abiesPalmaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesPalmaName.setGenusOrUninomial("Abies");
         abiesPalmaName.setSpecificEpithet("palma");
         Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
         abiesPalma.setUuid(abiesPalmaUuid);
 
-        BotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        IBotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         pinusName.setGenusOrUninomial("Pinus");
         Taxon pinus = Taxon.NewInstance(pinusName, null);
         pinus.setUuid(pinusUuid);

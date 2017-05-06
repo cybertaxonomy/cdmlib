@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
@@ -88,11 +87,11 @@ public class DatabaseMappingTest {
 		Assert.assertNotNull("Result should not be null", result);
 		Assert.assertFalse("Result should not be empty", result.isEmpty());
 
-		boolean exists = mapping.exists(sourceNS, sourceId, BotanicalName.class);
+		boolean exists = mapping.exists(sourceNS, sourceId, TaxonNameBase.class);
 		Assert.assertTrue("Mapping should exist", exists);
-		exists = mapping.exists(sourceNS + "xyz", sourceId, BotanicalName.class);
+		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonNameBase.class);
 		Assert.assertFalse("Mapping with wrong namespace should not exist", exists);
-		exists = mapping.exists(sourceNS + "xyz", sourceId, BotanicalName.class);
+		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonNameBase.class);
 		Assert.assertFalse("Mapping with wrong ID should not exist", exists);
 
 	}

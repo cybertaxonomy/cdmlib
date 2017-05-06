@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -121,7 +120,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param name
 	 * @return
 	 */
-	public List<NonViralName> getNamesByNameCache(String nameCache);
+	public List<TaxonNameBase> getNamesByNameCache(String nameCache);
 
 	/**
 	 * Returns all NonViralNames with a title cache that matches the given string
@@ -132,7 +131,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
+	public List<TaxonNameBase> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
 
 	/**
 	 * Returns all NonViralNames with a name cache that matches the given string
@@ -143,7 +142,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
+	public List<TaxonNameBase> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
 
 	/**
 	 * @param name

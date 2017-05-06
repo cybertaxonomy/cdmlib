@@ -49,6 +49,10 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 public interface ITaxonNameBase
         extends IIdentifiableEntity, IParsable, IRelated, IMatchable, Cloneable{
 
+
+    public NomenclaturalCode getNameType();
+    public void setNameType(NomenclaturalCode nameType);
+
     public Object clone();
 
     public String generateFullTitle();
@@ -833,5 +837,40 @@ public interface ITaxonNameBase
     public Set<Registration> getRegistrations();
 
 
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICZN} or
+     * any sub type and is supposed to be handled via {@link IZoologicalName}
+     */
+    public boolean isZoological();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#NonViral} or
+     * any sub type and is supposed to be handled via {@link INonViralName}
+     */
+    public boolean isNonViral();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNAFP} or
+     * any sub type and is supposed to be handled via {@link IBotanicalName}
+     */
+    public boolean isBotanical();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNCP} or
+     * any sub type and is supposed to be handled via {@link ICultivarPlantName}
+     */
+    boolean isCultivar();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNB} or
+     * any sub type and is supposed to be handled via {@link IBacterialName}
+     */
+    boolean isBacterial();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICVCN} or
+     * any sub type and is supposed to be handled via {@link IViralName}
+     */
+    boolean isViral();
 
 }

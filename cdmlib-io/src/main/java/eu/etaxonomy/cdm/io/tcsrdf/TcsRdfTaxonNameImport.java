@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
@@ -223,7 +222,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				}
 			}
 
-			if (nameBase instanceof NonViralName){
+			if (nameBase.isNonViral()){
 				INonViralName nonViralName = nameBase;
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"genusPart");
 				String strGenusPart;

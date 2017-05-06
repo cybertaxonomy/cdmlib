@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -658,7 +657,7 @@ private TaxonNameBase<?,?> findBestMatchingNames(GbifResponse item, SpecimenImpo
    //TODO
     if (item.getScientificName() != null){
 
-       List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
+       List<TaxonNameBase> names = findExistingNames(item.getScientificName().getNameCache(), state);
        if (!names.isEmpty()){
            TaxonNameBase<?,?> result = names.get(0);
            Set<DeterminationEvent> detEvents = item.getDerivedUnitFacade().baseUnit().getDeterminations();
@@ -686,7 +685,7 @@ private TaxonNameBase<?,?> findBestMatchingNames(GbifResponse item, SpecimenImpo
  * @param state
  * @return
  */
-private List<NonViralName> findExistingNames(String nameCache, SpecimenImportStateBase state) {
+private List<TaxonNameBase> findExistingNames(String nameCache, SpecimenImportStateBase state) {
     return getNameService().findNamesByNameCache(nameCache, MatchMode.LIKE, null);
 }
 

@@ -35,8 +35,6 @@ import org.apache.lucene.util.BytesRef;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -167,9 +165,9 @@ public class LuceneSearch {
         if (type.equals(TaxonBase.class)) {
             returnType = Taxon.class;
         }
-        if (type.equals(TaxonNameBase.class)) {
-            returnType = NonViralName.class;
-        }
+//        if (type.equals(TaxonNameBase.class)) {
+//            returnType = NonViralName.class;
+//        }
         return returnType;
     }
 

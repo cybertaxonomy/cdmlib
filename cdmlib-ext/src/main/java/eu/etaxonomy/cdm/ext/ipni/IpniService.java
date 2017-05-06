@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -884,7 +883,7 @@ public class IpniService  implements IIpniService{
 
 
 	@Override
-    public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
+    public List<IBotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
 			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
 			Rank rankInRangeToReturn,
@@ -895,7 +894,7 @@ public class IpniService  implements IIpniService{
 	}
 
 	@Override
-    public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
+    public List<IBotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
 			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
 			IpniRank rankToReturn,

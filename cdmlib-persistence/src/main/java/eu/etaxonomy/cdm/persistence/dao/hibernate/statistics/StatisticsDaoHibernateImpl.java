@@ -44,13 +44,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// TODO remove every commented query related to
 	// DescriptionBase.descriptionSources
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
-	 * countDescriptiveSourceReferences()
-	 */
-
 	private static final int REFERENCE_LINK_RECURSION_DEPTH = 1;
 
 	private static final Logger logger = Logger
@@ -83,20 +76,15 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		// count sources from DescriptionElements:
 		queryStrings
-				.add("select distinct s.citation.uuid from DescriptionElementBase as d "
-						+ "join d.sources as s where s.citation is not null ");
+				.add("SELECT DISTINCT s.citation.uuid "
+				        + " FROM DescriptionElementBase as d "
+						+ " JOIN d.sources as s "
+						+ " WHERE s.citation is not null ");
 
 		return Long.valueOf(processQueriesWithIdDistinctListResult(
 				queryStrings, null).size());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
-	 * countDescriptiveSourceReferences
-	 * (eu.etaxonomy.cdm.model.taxon.Classification)
-	 */
 	@Override
 	public Long countDescriptive(Boolean sourceRef,
 			Classification classification) {
@@ -413,14 +401,16 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// and count the names manually
 		List<String> queryStrings = new ArrayList<String>();
 		queryStrings
-				.add("select distinct tn.taxon.name.nomenclaturalReference.uuid from TaxonNode tn "
-						+ "where tn.classification=:classification "
-						+ "and tn.taxon.name.nomenclaturalReference is not null ");
+				.add("SELECT DISTINCT tn.taxon.name.nomenclaturalReference.uuid "
+				        + " FROM TaxonNode tn "
+						+ " WHERE tn.classification=:classification "
+						+ " AND tn.taxon.name.nomenclaturalReference IS NOT NULL ");
 		queryStrings
-				.add("select distinct s.name.nomenclaturalReference.uuid as c from TaxonNode tn "
-						+ "join tn.taxon.synonyms as s "
-						+ "where tn.classification=:classification "
-						+ "and s.name.nomenclaturalReference is not null ");
+				.add("SELECT DISTINCT s.name.nomenclaturalReference.uuid as c "
+				        + " FROM TaxonNode tn "
+						+ " JOIN tn.taxon.synonyms as s "
+						+ " WHERE tn.classification=:classification "
+						+ "    AND s.name.nomenclaturalReference is not null ");
 
 		return Long.valueOf(processQueriesWithIdDistinctListResult(
 				queryStrings, parameters).size());
@@ -492,23 +482,22 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		// get hybrid relation citations
 		// Taxa:
-		queryStrings.add("select distinct hr.citation.uuid from TaxonNode tn "
+		queryStrings.add("select distinct hr.citation.uuid "
+		        + "from TaxonNode tn "
 				+ "join tn.taxon.name.hybridParentRelations as hr "
 				+ "where tn.classification=:classification "
-				+ "and tn.taxon.name.class=:nonViralName "
-				+ "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null ");
-
-		parameters.put("nonViralName", "NonViralName");
+				+ " and tn.taxon is not null "
+				+ " and tn.taxon.name is not null ");
 
 		// synonyms:
-		queryStrings.add("select distinct hr.citation.uuid from TaxonNode tn "
-				+ "join tn.taxon.synonyms as sy "
-				+ "join sy.name.hybridParentRelations as hr "
+		queryStrings.add("select distinct hr.citation.uuid "
+		        + "from TaxonNode tn "
+				+ " join tn.taxon.synonyms as sy "
+				+ " join sy.name.hybridParentRelations as hr "
 				+ "where tn.classification=:classification "
-				+ "and sy.name.class=:nonViralName and sy is not null "
+				+ " and sy is not null "
 				// TODO: is this case actually possible???
-				+ "and sy.name is not null ");
+				+ " and sy.name is not null ");
 
 		// get name relations references:
 		// -------------------------------------------------------
@@ -806,8 +795,8 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// ---------------------------------------------
 
 		// preparation
-		List<String> queryStrings = new ArrayList<String>();
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		List<String> queryStrings = new ArrayList<>();
+		Map<String, Object> parameters = new HashMap<>();
 
 		parameters.put("classification", classification);
 
@@ -827,24 +816,27 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		// get node relations references:
 		queryStrings
-				.add("select count(distinct tn.referenceForParentChildRelation.id) as c from TaxonNode tn "
+				.add("select count(distinct tn.referenceForParentChildRelation.id) as c "
+				        + "from TaxonNode tn "
 						+ "where tn.classification=:classification "
-						+ "and tn.referenceForParentChildRelation is not null ");
+						+ " and tn.referenceForParentChildRelation is not null ");
 
 		// get sec references
 		// -------------------------------------------------------------------
 		// taxa
 		queryStrings
-				.add("select count(distinct tn.taxon.sec.id) as c from TaxonNode tn "
+				.add("select count(distinct tn.taxon.sec.id) as c "
+				        + "from TaxonNode tn "
 						+ "where tn.classification=:classification "
-						+ "and tn.taxon.sec is not null ");
+						+ " and tn.taxon.sec is not null ");
 
 		// synonyms
 		queryStrings
-				.add("select count(distinct s.sec.id) as c from TaxonNode tn "
+				.add("select count(distinct s.sec.id) as c "
+				        + "from TaxonNode tn "
 						+ "join tn.taxon.synonyms s "
 						+ "where tn.classification=:classification "
-						+ "and sr.relatedFrom.sec is not null ");
+						+ " and sr.relatedFrom.sec is not null ");
 
 		// get relationship citations
 		// ---------------------------------------------------------------
@@ -860,20 +852,18 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		queryStrings.add("select count(distinct hr.citation.id) from TaxonNode tn "
 				+ "join tn.taxon.name.hybridParentRelations as hr "
 				+ "where tn.classification=:classification "
-				+ "and tn.taxon.name.class=:nonViralName "
-				+ "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null ");
+				+ " and tn.taxon is not null "
+				+ " and tn.taxon.name is not null ");
 
-		parameters.put("nonViralName", "NonViralName");
 
 		// synonyms:
 		queryStrings.add("select count(distinct hr.citation.id) from TaxonNode tn "
 				+ "join tn.taxon.synonyms as sy "
 				+ "join sy.name.hybridParentRelations as hr "
 				+ "where tn.classification=:classification "
-				+ "and sy.name.class=:nonViralName " + "and sy is not null "
+				+ " and sy is not null "
 				// TODO: is this case actually possible???
-				+ "and sy.name is not null ");
+				+ " and sy.name is not null ");
 
 		// get name relations references:
 		// -------------------------------------------------------
@@ -889,55 +879,59 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				+ "join tn.taxon.synonyms as sy "
 				+ "join sy.name.relationsFromThisName as nr "
 				+ "where tn.classification=:classification "
-				+ "and sy is not null " // TODO: is this case actually
+				+ " and sy is not null " // TODO: is this case actually
 										// possible???
-				+ "and sy.name is not null ");
+				+ " and sy.name is not null ");
 
 		// get Nomenclatural status citation
 
 		// Taxa:
-		queryStrings.add("select count(distinct s.citation.id) from TaxonNode tn "
+		queryStrings.add("select count(distinct s.citation.id) "
+		        + "from TaxonNode tn "
 				+ "join tn.taxon.name.status as s "
 				+ "where tn.classification=:classification "
-				+ "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null ");
+				+ " and tn.taxon is not null "
+				+ " and tn.taxon.name is not null ");
 
 		// synonyms:
-		queryStrings.add("select count(distinct s.citation.id) from TaxonNode tn "
+		queryStrings.add("select count(distinct s.citation.id) "
+		        + "from TaxonNode tn "
 				+ "join tn.taxon.synonyms as sy "
 				+ "join sy.name.status as s "
 				+ "where tn.classification=:classification "
-				+ "and sy is not null " // TODO: is this case actually
+				+ " and sy is not null " // TODO: is this case actually
 										// possible???
-				+ "and sy.name is not null ");
+				+ " and sy.name is not null ");
 
 		// get sequences which contain citations and publishedIn ------
 		// and contain "Media" which could be of the subtype
 		// "ReferencedMediaBase"
 		// which has a citation
 
-		queryStrings.add("select count(distinct cit.id) from TaxonNode tn "
+		queryStrings.add("select count(distinct cit.id) "
+		        + "from TaxonNode tn "
 				+ "join tn.taxon.descriptions as db "
 
 				+ "join db.describedSpecimenOrObservation as so "
-				+ "join so.sequences as seq " + "join seq.citations as cit "
-
+				+ "join so.sequences as seq "
+				+ "join seq.citations as cit "
 				+ "where so.class=:dnaSample "
-				+ "and tn.classification=:classification "
-				+ "and cit is not null ");
+				+ " and tn.classification=:classification "
+				+ " and cit is not null ");
 
 		// traverse to specimenOrObservation via individualsAssociation
 
-		queryStrings.add("select count(distinct cit.id) from TaxonNode tn "
+		queryStrings.add("select count(distinct cit.id) "
+		        + "from TaxonNode tn "
 				+ "join tn.taxon.descriptions as db "
 				+ "join db.descriptionElements as ia "
 				+ "join ia.associatedSpecimenOrObservation as so "
-				+ "join so.sequences as seq " + "join seq.citations as cit "
-
+				+ "join so.sequences as seq "
+				+ "join seq.citations as cit "
 				+ "where so.class=:dnaSample "
-				+ "and ia.class=:individualsAssociation "
-				+ "and tn.classification=:classification "
-				+ "and cit is not null ");
+				+ " and ia.class=:individualsAssociation "
+				+ " and tn.classification=:classification "
+				+ " and cit is not null ");
 
 		// we do assume, that a name description would not have a
 		// SpecimenOrObservation element
@@ -959,13 +953,13 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		// MAYDO catch error if queries deliver wrong type
 		Query query;
-		Set<UUID> ids = new HashSet<UUID>();
+		Set<UUID> ids = new HashSet<>();
 		List<UUID> queryList;
 		for (String queryString : queryStrings) {
 
 			query = getSession().createQuery(queryString);
 
-			List<String> queryParameters = new ArrayList<String>(
+			List<String> queryParameters = new ArrayList<>(
 					Arrays.asList(query.getNamedParameters()));
 
 			if (parameters != null) {
@@ -980,7 +974,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			queryList = query.list();
 
 			ids.addAll(queryList);
-			System.out.println();
 		}
 		return ids;
 	}
@@ -1008,7 +1001,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			query = getSession().createQuery(queryString);
 
 			//add matching parameters to query
-			List<String> queryParameters = new ArrayList<String>(
+			List<String> queryParameters = new ArrayList<>(
 					Arrays.asList(query.getNamedParameters()));
 
 			if (parameters != null) {
@@ -1061,7 +1054,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		uuids.addAll(children);
 		parents = children;
 		// }
-		List<UUID> uuidList = new ArrayList<UUID>();
+		List<UUID> uuidList = new ArrayList<>();
 		uuidList.addAll(uuids);
 		return uuidList;
 
@@ -1100,7 +1093,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	@Override
 	public void getAllTaxonIds() {
 
-		Set<UUID> uuids = new HashSet<UUID>();
+		Set<UUID> uuids = new HashSet<>();
 
 		// return (List<UUID>) uuids;
 

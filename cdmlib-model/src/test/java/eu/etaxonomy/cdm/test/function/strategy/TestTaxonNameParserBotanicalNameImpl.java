@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
@@ -39,7 +39,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Döhring) D'Müller ex. de Greuther";
 	final private String strNameAbiesBasionymAuthorUe = "Abies alba (Ciardelli) D'Mueller";
 
-	private INonViralNameParser<BotanicalName> parser ;
+	private INonViralNameParser<IBotanicalName> parser ;
 
 /*************** TEST *********************************************/
 

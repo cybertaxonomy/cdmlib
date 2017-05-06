@@ -62,13 +62,7 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 		//assertEquals("Number of TaxonNames should be 16", 16, nameService.count(null));
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

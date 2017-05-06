@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
-  	<TAXONNAMEBASE DTYPE="BotanicalName" NAMETYPE="ICNAFP" UUID="eb41f549-4a70-499b-a9a5-f2314880df07" TITLECACHE="Name1" />
+  	<TAXONNAMEBASE NAMETYPE="ICNAFP" UUID="eb41f549-4a70-499b-a9a5-f2314880df07" TITLECACHE="Name1" />
   	<TYPEDESIGNATIONBASE DTYPE="SpecimenTypeDesignation" UUID="6df85e4c-49fe-4eb5-acde-cf6c0c9fc3c5"/>
 	<SPECIMENOROBSERVATIONBASE DTYPE="DerivedUnit" RECORDBASIS="PS" UUID="f1a7c3b9-169c-4845-9b21-e77f863a8bce" TITLECACHE="Specimen to cascade" PUBLISH="true"/>
 </dataset>

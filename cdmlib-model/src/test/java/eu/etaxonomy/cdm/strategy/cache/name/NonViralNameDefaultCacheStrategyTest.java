@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -67,11 +66,11 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     private static final String referenceTitle = "My Reference";
 
-    private BotanicalName familyName;
-    private BotanicalName genusName;
-    private BotanicalName subGenusName;
-    private BotanicalName speciesName;
-    private BotanicalName subSpeciesName;
+    private IBotanicalName familyName;
+    private IBotanicalName genusName;
+    private IBotanicalName subGenusName;
+    private IBotanicalName speciesName;
+    private IBotanicalName subSpeciesName;
     private TeamOrPersonBase<?> author;
     private TeamOrPersonBase<?> exAuthor;
     private TeamOrPersonBase<?> basAuthor;
@@ -159,21 +158,21 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         assertEquals("Species Name should be Any species", "Any species", speciesName.getNameCache());
         assertEquals("Species Name should be Any species", "Any species", speciesName.getTitleCache());
         assertEquals("subSpeciesNameString should be correct", subSpeciesNameString, subSpeciesName.getNameCache());
-        BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
+        IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
         botName.setGenusOrUninomial("Lepidocaryum");
         botName.setSpecificEpithet("tenue");
         botName.setInfraSpecificEpithet("tenue");
         assertEquals("", "Lepidocaryum tenue var. tenue", botName.getNameCache());
-        BotanicalName specName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName specName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         specName.setGenusOrUninomial("Genus");
         specName.setSpecificEpithet("");
         assertEquals("Empty species string must not result in trailing whitespace", "Genus", specName.getNameCache());
 
         //unranked taxa
         String unrankedCache;
-        BotanicalName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
+        IBotanicalName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
         unrankedName.setGenusOrUninomial("Genus");
-        NonViralNameDefaultCacheStrategy<BotanicalName> strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+        NonViralNameDefaultCacheStrategy<IBotanicalName> strategy = NonViralNameDefaultCacheStrategy.NewInstance();
             //infraspecific
         unrankedName.setInfraSpecificEpithet("infraspecific");
         unrankedName.setSpecificEpithet("species");
@@ -215,7 +214,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         speciesName.setInfraGenericEpithet("Infraabies");
         assertEquals("Species Name should be Abies (Infraabies) alba", "Abies (Infraabies) alba", speciesName.getNameCache());
 
-        BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
+        IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
         botName.setGenusOrUninomial("Lepidocaryum");
         botName.setInfraGenericEpithet("Infralepi");
         botName.setSpecificEpithet("tenue");
@@ -621,7 +620,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
      */
     @Test
     public void testGetTaggedNameSpeciesAggregate() {
-        BotanicalName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
+        IBotanicalName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
         speciesAggregate.setGenusOrUninomial("Mygenus");
         speciesAggregate.setSpecificEpithet("myspecies");
         List<TaggedText> taggedName = strategy.getTaggedName(speciesAggregate);

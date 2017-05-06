@@ -31,9 +31,9 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -86,7 +86,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     public final void createTestDataSet() {
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");
         combAuthor.addTeamMember(Person.NewTitledInstance("Iron Man"));
-        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
         name.setCombinationAuthorship(combAuthor);
         Taxon taxon = Taxon.NewInstance(name, null);
         UUID taxonUuid = taxonService.save(taxon).getUuid();
@@ -117,7 +117,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // since name is lazy loaded the call to getName should fail
         try {
-            CdmBase.deproxy(taxon.getName(),NonViralName.class);
+            CdmBase.deproxy(taxon.getName(), TaxonNameBase.class);
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
 
@@ -136,7 +136,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // since name is lazy loaded the call to getName should fail
         try {
-            CdmBase.deproxy(taxon.getName(),NonViralName.class);
+            CdmBase.deproxy(taxon.getName(),TaxonNameBase.class);
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
 
@@ -158,7 +158,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have values of
         // initialized=false and session=null
 
-        INonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+        INonViralName nvn = CdmBase.deproxy(taxon.getName(),TaxonNameBase.class);
 
         // normally this call should throw a lazy loading exception since
         // the combinationAuthorship object is not initialized, but
@@ -248,7 +248,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // loading the taxon with its taxon name object pre-initialized
         taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
 
-        nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
+        nvn = CdmBase.deproxy(taxon.getName(),TaxonNameBase.class);
         team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
 
         // since a valid session is now attached to teamMembers, forcing the
@@ -274,7 +274,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         combAuthor.addTeamMember(Person.NewTitledInstance("Wolverine"));
 
 
-        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
         name.setCombinationAuthorship(combAuthor);
 
         Taxon taxon = Taxon.NewInstance(name, null);
@@ -369,7 +369,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Test
     public final void testTaxonDescriptionMerge() {
 
-        BotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
         Taxon taxon = Taxon.NewInstance(name, null);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
 

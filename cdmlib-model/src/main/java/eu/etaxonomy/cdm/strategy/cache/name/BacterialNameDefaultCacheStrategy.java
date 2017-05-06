@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.BacterialName;
+import eu.etaxonomy.cdm.model.name.IBacterialName;
 
 /**
  * The bacterial name default cache strategy.
@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.model.name.BacterialName;
  * @author a.mueller
  *
  */
-public class BacterialNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrategy<BacterialName> implements  INonViralNameCacheStrategy<BacterialName> {
+public class BacterialNameDefaultCacheStrategy
+            extends NonViralNameDefaultCacheStrategy<IBacterialName>
+            implements  INonViralNameCacheStrategy<IBacterialName> {
 	private static final long serialVersionUID = 7369285557176649585L;
 	private static final Logger logger = Logger.getLogger(BacterialNameDefaultCacheStrategy.class);
 	final static UUID uuid = UUID.fromString("b97cf0af-2f97-487e-8d06-cbe924f3222a");

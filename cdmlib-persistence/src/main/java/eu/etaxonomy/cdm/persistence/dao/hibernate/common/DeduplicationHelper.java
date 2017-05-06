@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -269,7 +268,7 @@ public class DeduplicationHelper {
 		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.getTaxonBases();
 
-		Type propType = sessionFactory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "taxonBases");
+		Type propType = sessionFactory.getReferencedPropertyType(TaxonNameBase.class.getCanonicalName(), "taxonBases");
 //		Map<?,?> collMetadata = sessionFactory.getAllCollectionMetadata();
 		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
 		CollectionPersister collPersister;

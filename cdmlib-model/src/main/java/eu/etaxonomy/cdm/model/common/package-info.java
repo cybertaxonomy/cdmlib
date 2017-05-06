@@ -121,11 +121,7 @@
         @MetaValue(value = "PolytomousKey", targetEntity = PolytomousKey.class),
         @MetaValue(value = "Media", targetEntity = Media.class),
         @MetaValue(value = "DnaSample", targetEntity = DnaSample.class),
-        @MetaValue(value = "BacterialName", targetEntity = BacterialName.class),
-        @MetaValue(value = "BotanicalName", targetEntity = BotanicalName.class),
-        @MetaValue(value = "CultivarPlantName", targetEntity = CultivarPlantName.class),
-        @MetaValue(value = "ViralName", targetEntity = ViralName.class),
-        @MetaValue(value = "ZoologicalName", targetEntity = ZoologicalName.class),
+        @MetaValue(value = "TaxonNameBase", targetEntity = TaxonNameBase.class),
         @MetaValue(value = "Collection", targetEntity = Collection.class),
         @MetaValue(value = "FieldUnit", targetEntity = FieldUnit.class),
         @MetaValue(value = "DerivedUnit", targetEntity = DerivedUnit.class),
@@ -137,7 +133,6 @@
         @MetaValue(value = "FeatureTree", targetEntity = FeatureTree.class),
         @MetaValue(value = "PhylogeneticTree", targetEntity = PhylogeneticTree.class),
         @MetaValue(value = "MediaSpecimen", targetEntity = MediaSpecimen.class),
-        @MetaValue(value = "NonViralName", targetEntity = NonViralName.class),
         @MetaValue(value = "TermVocabulary", targetEntity = TermVocabulary.class),
         @MetaValue(value = "OrderedTermVocabulary", targetEntity = OrderedTermVocabulary.class),
 
@@ -270,9 +265,6 @@ import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -282,12 +274,10 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;

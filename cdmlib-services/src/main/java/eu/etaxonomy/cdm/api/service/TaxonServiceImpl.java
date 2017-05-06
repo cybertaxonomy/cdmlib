@@ -100,7 +100,6 @@ import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -2254,7 +2253,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                 inferredSynonyms.add(inferredEpithet);
                                 zooHashMap.put(inferredEpithet.getName().getUuid(), inferredEpithet.getName());
-                                taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
+                                taxonNames.add(inferredEpithet.getName().getNameCache());
                             }
 
                             if (doWithMisappliedNames){
@@ -2271,7 +2270,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                     inferredSynonyms.add(inferredEpithet);
                                     zooHashMap.put(inferredEpithet.getName().getUuid(), inferredEpithet.getName());
-                                     taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
+                                     taxonNames.add(inferredEpithet.getName().getNameCache());
                                 }
                             }
 
@@ -2307,7 +2306,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                             inferredSynonyms.add(inferredGenus);
                             zooHashMap.put(inferredGenus.getName().getUuid(), inferredGenus.getName());
-                            taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
+                            taxonNames.add(inferredGenus.getName().getNameCache());
 
 
                         }
@@ -2320,7 +2319,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                 inferredSynonyms.add(inferredGenus);
                                 zooHashMap.put(inferredGenus.getName().getUuid(), inferredGenus.getName());
-                                 taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
+                                 taxonNames.add(inferredGenus.getName().getNameCache());
                             }
                         }
 
@@ -2391,7 +2390,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF());
                                 inferredSynonyms.add(potentialCombination);
                                 zooHashMap.put(potentialCombination.getName().getUuid(), potentialCombination.getName());
-                                 taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
+                                 taxonNames.add(potentialCombination.getName().getNameCache());
 
                             }
 
@@ -2441,7 +2440,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                     taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF());
                                     inferredSynonyms.add(potentialCombination);
                                     zooHashMap.put(potentialCombination.getName().getUuid(), potentialCombination.getName());
-                                     taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
+                                     taxonNames.add(potentialCombination.getName().getNameCache());
                                 }
                             }
                         }

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -53,11 +53,11 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private static final String exBasAuthorString = "ExBas. N.";
 
 	private BotanicNameDefaultCacheStrategy strategy;
-	private BotanicalName familyName;
-	private BotanicalName genusName;
-	private BotanicalName subGenusName;
-	private BotanicalName speciesName;
-	private BotanicalName subSpeciesName;
+	private IBotanicalName familyName;
+	private IBotanicalName genusName;
+	private IBotanicalName subGenusName;
+	private IBotanicalName speciesName;
+	private IBotanicalName subSpeciesName;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;

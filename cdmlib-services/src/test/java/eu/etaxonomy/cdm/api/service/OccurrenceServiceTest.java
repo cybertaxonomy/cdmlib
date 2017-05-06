@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -139,7 +139,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // Derived Unit
         MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
         mediaSpecimen.setCollection(collection);
-        BotanicalName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonNameBase storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         mediaSpecimen.setStoredUnder(storedUnder);
         PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
         preservation.setMedium(DefinedTerm.NewDnaMarkerInstance("medium", "medium", "medium"));// dummy
@@ -371,7 +371,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
         DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
-        BotanicalName name = (BotanicalName) nameService.load(botanicalNameUuid);
+        IBotanicalName name = nameService.load(botanicalNameUuid);
         TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(taxonDEscriptionUuid);
         // check initial state (IndividualsAssociation)
         DescriptionElementBase descriptionElement = taxonDescription.getElements().iterator().next();
@@ -780,7 +780,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
 
         // create name with type specimen
-        BotanicalName name = (BotanicalName) nameService.load(botanicalNameUuid);
+        IBotanicalName name = nameService.load(botanicalNameUuid);
         SpecimenTypeDesignation typeDesignation = (SpecimenTypeDesignation) name.getTypeDesignations().iterator()
                 .next();
 
@@ -1629,9 +1629,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       occurrenceService.save(fossilTypeDesignation);
 
       //NAMES
-      BotanicalName taxonName = TaxonNameFactory.PARSED_BOTANICAL("Campanula patual");
-      BotanicalName synonymName = TaxonNameFactory.PARSED_BOTANICAL("Syno nyma");
-      BotanicalName orphanName = TaxonNameFactory.PARSED_BOTANICAL("Orphanus lonelia");
+      TaxonNameBase taxonName = TaxonNameFactory.PARSED_BOTANICAL("Campanula patual");
+      TaxonNameBase synonymName = TaxonNameFactory.PARSED_BOTANICAL("Syno nyma");
+      TaxonNameBase orphanName = TaxonNameFactory.PARSED_BOTANICAL("Orphanus lonelia");
       taxonName.setUuid(taxonNameUuid);
       synonymName.setUuid(synonymNameUuid);
       orphanName.setUuid(orphanNameUuid);

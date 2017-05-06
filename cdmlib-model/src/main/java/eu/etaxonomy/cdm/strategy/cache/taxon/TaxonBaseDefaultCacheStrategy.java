@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -96,7 +95,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
         if (name != null){
             INameCacheStrategy<TaxonNameBase> nameCacheStrategy = name.getCacheStrategy();
-            if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
+            if (taxonBase.isUseNameCache() && name.isNonViral()){
                 List<TaggedText> nameCacheTags = nameCacheStrategy.getTaggedName(name);
                 tags.addAll(nameCacheTags);
             }else{

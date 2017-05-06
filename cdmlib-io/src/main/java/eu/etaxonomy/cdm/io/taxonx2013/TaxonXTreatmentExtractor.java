@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -2622,10 +2621,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     private ITaxonNameBase parseWithExtension(INonViralNameParser parser, String atomisedNameStr, Rank rank, String followingText, HashMap<String, String> atomisedMap) {
     	Object[] nameExtensionResult = getPossibleExtension(followingText, atomisedMap, nomenclaturalCode);
 
-    	ITaxonNameBase name = parser.parseFullName(atomisedNameStr, nomenclaturalCode, rank);
+    	TaxonNameBase name = (TaxonNameBase)parser.parseFullName(atomisedNameStr, nomenclaturalCode, rank);
     	if (nameExtensionResult != null && nameExtensionResult[0] != null){
     		String ext = (String)nameExtensionResult[0];
-    		ITaxonNameBase extName =parser.parseFullName(atomisedNameStr + " " + ext, nomenclaturalCode, rank);
+    		TaxonNameBase extName = (TaxonNameBase)parser.parseFullName(atomisedNameStr + " " + ext, nomenclaturalCode, rank);
     		if (! extName.hasProblem()){
     			name = extName;
     			this.usedFollowingTextPrefix = ext;
@@ -2635,7 +2634,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     			}
     			if ((Boolean)(nameExtensionResult[2])){
     				//TODO BasionymYear etc.
-    				Integer origYear = ((ZoologicalName)name).getPublicationYear();
+    				Integer origYear = name.getPublicationYear();
     				if (origYear != null){
         				atomisedMap.put(PUBLICATION_YEAR, origYear.toString());
     				}

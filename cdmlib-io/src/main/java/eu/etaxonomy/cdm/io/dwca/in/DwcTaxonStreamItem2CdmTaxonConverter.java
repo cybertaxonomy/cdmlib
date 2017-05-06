@@ -38,12 +38,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -611,14 +608,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
 	private void checkAuthorship(TaxonNameBase<?,?> nameBase, StreamItem item) {
-		if (!nameBase.isInstanceOf(NonViralName.class)){
+		if (!nameBase.isNonViral()){
 			return;
 		}
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
 
 		if (! nameBase.isProtectedTitleCache()){
 			if (StringUtils.isBlank(nameBase.getAuthorshipCache())){
-				if (nameBase.isInstanceOf(BotanicalName.class) || nameBase.isInstanceOf(ZoologicalName.class)){
+				if (nameBase.isBotanical() || nameBase.isZoological()){
 					//TODO can't we also parse NonViralNames correctly ?
 					try {
 						parser.parseAuthors(nameBase, strAuthors);

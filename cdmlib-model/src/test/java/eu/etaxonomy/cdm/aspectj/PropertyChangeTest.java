@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -55,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 		@Test
 		public void testPropertyChangeBoolean() {
-			BotanicalName b = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			TaxonNameBase b = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setAnamorphic(true);
 			assertEquals(b.isAnamorphic(), lastPropValue);

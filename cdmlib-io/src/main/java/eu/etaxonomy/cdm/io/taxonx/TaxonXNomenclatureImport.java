@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -119,7 +118,7 @@ public class TaxonXNomenclatureImport
 		for (Synonym syn : synList){
 			TaxonNameBase<?,?> nameBase = syn.getName();
 			if (nameBase != null){
-				if (nameBase.isInstanceOf(NonViralName.class)){
+				if (nameBase.isNonViral()){
 					if (nameBase.getNameCache().equals(synName)){
 						return syn;  //only first synonym is returned
 					}

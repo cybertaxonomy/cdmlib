@@ -94,8 +94,6 @@ import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -109,7 +107,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -810,12 +807,12 @@ public class FullCoverageDataGenerator {
 
 
 	private void createTaxonName(List<CdmBase> cdmBases) {
-		BacterialName bacName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+		TaxonNameBase<?,?> bacName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
 		bacName.setSubGenusAuthorship("sub Genus author");
 		bacName.setNameApprobation("nameApprobation");
 		handleIdentifiableEntity(bacName);
 
-		CultivarPlantName botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
+		TaxonNameBase<?,?> botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
 		botName.setCultivarName("cultivarName");
 		botName.setGenusOrUninomial("Genus");
@@ -862,7 +859,7 @@ public class FullCoverageDataGenerator {
 				getReference(), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
 
-		ViralName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
+		TaxonNameBase<?,?> viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
 		handleIdentifiableEntity(viralName);
 

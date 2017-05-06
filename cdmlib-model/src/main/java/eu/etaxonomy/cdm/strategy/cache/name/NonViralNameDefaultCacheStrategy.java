@@ -24,14 +24,12 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -859,7 +857,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     		if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
     			String originalNameString;
     			TaxonNameBase<?,?> originalName = nameRel.getFromName();
-    			if (!originalName.isInstanceOf(NonViralName.class)){
+    			if (!originalName.isNonViral()){
     				originalNameString = originalName.getTitleCache();
     			}else{
     				INonViralName originalNvName = CdmBase.deproxy(originalName);

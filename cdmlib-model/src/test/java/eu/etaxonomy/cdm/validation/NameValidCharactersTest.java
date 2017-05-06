@@ -25,7 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 public class NameValidCharactersTest extends ValidationTestBase  {
 	private static final Logger logger = Logger.getLogger(NameValidCharactersTest.class);
 
-	private BotanicalName name;
+	private IBotanicalName name;
 
 	@Before
 	public void setUp() {
@@ -70,7 +70,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 		name.setSpecificEpithet("bals�me�");
 
 
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
@@ -86,7 +86,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 	public final void testAllowedAccents() {
 		name.setSpecificEpithet("bals�mea");
 
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
@@ -101,7 +101,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 	public final void testWithoutCapitalizedUninomial() {
 		name.setGenusOrUninomial("abies");
 
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
@@ -116,7 +116,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 	public final void testWithCapitalizedNonFirstLetterInUninomial() {
 		name.setGenusOrUninomial("ABies");
 
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
@@ -129,7 +129,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
      */
     @Test
     public final void testAuthorship() {
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertNoConstraintOnValidator((Set)constraintViolations, Pattern.class);
 
         name.setAuthorshipCache("", true);

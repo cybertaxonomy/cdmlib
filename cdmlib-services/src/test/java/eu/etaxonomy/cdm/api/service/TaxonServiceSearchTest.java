@@ -60,8 +60,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -635,7 +636,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         t_abies_balsamea.addDescription(d_abies_balsamea_new);
         // set authorshipCache to null to avoid validation exception,
         // this is maybe not needed in future,  see ticket #3344
-        BotanicalName abies_balsamea = HibernateProxyHelper.deproxy(t_abies_balsamea.getName(), BotanicalName.class);
+        IBotanicalName abies_balsamea = CdmBase.deproxy(t_abies_balsamea.getName(), TaxonNameBase.class);
         abies_balsamea.setAuthorshipCache(null);
         printDataSet(System.err, new String[] {"LANGUAGESTRING_AUD"});
         taxonService.saveOrUpdate(t_abies_balsamea);
@@ -1271,35 +1272,35 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         referenceService.save(sec);
         referenceService.save(sec_sensu);
 
-        BotanicalName n_abies = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        IBotanicalName n_abies = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         n_abies.setNameCache("Abies", true);
         Taxon t_abies = Taxon.NewInstance(n_abies, sec);
         taxonService.save(t_abies);
 
-        BotanicalName n_abies_alba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName n_abies_alba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_alba.setNameCache("Abies alba", true);
         Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
         t_abies_alba.setUuid(UUID.fromString(ABIES_ALBA_UUID));
         taxonService.save(t_abies_alba);
 
-        BotanicalName n_abies_subalpina = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName n_abies_subalpina = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_subalpina.setNameCache("Abies subalpina", true);
         Synonym s_abies_subalpina = Synonym.NewInstance(n_abies_subalpina, sec);
         taxonService.save(s_abies_subalpina);
 
-        BotanicalName n_abies_balsamea = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName n_abies_balsamea = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
         t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF());
         taxonService.save(t_abies_balsamea);
 
-        BotanicalName n_abies_grandis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName n_abies_grandis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_grandis.setNameCache("Abies grandis", true);
         Taxon t_abies_grandis = Taxon.NewInstance(n_abies_grandis, sec);
         taxonService.save(t_abies_grandis);
 
-        BotanicalName n_abies_kawakamii = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName n_abies_kawakamii = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_kawakamii.setNameCache("Abies kawakamii", true);
         Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
         t_abies_kawakamii.getTitleCache();
@@ -1311,7 +1312,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
         taxonService.saveOrUpdate(t_abies_kawakamii_sensu_komarov);
 
-        BotanicalName n_abies_lasiocarpa = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName n_abies_lasiocarpa = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
         Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
         taxonService.save(t_abies_lasiocarpa);
@@ -1428,7 +1429,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             String radomName = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(10);
             String radomCommonName = RandomStringUtils.randomAlphabetic(10);
 
-            BotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             name.setNameCache(radomName, true);
             Taxon taxon = Taxon.NewInstance(name, sec);
             taxonService.save(taxon);

@@ -27,9 +27,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -70,7 +70,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testGetHybridRelationships() {
-        BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         assert cryptocoryneGriffithii!= null : "name must exist";
 
         List<HybridRelationship> result = taxonNameDao.getHybridNames(cryptocoryneGriffithii, null, null, null,null,null);
@@ -82,7 +82,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountHybridRelationships() {
-        BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         assert cryptocoryneGriffithii != null : "name must exist";
 
         int count = taxonNameDao.countHybridNames(cryptocoryneGriffithii, null);

@@ -296,7 +296,8 @@
         </name:NameTypeDesignation>
     </TypeDesignations>
     <TaxonomicNames>
-        <name:BotanicalName id="1" uuid="urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        <name:TaxonNameBase id="1" uuid="urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICNAFP</name:nameType>
             <common:TitleCache>Arum gratum Schott</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:NomenclaturalReference>urn-uuid-8528d6ad-b246-4a3b-b30b-cfb8549476c7</name:NomenclaturalReference>
@@ -316,8 +317,9 @@
             <name:IsBinomHybrid>false</name:IsBinomHybrid>
             <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
             <name:IsAnamorphic>false</name:IsAnamorphic>
-        </name:BotanicalName>
-        <name:BotanicalName id="2" uuid="urn-uuid-3f319209-33ea-415d-a333-adc984125fee" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="2" uuid="urn-uuid-3f319209-33ea-415d-a333-adc984125fee" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICNAFP</name:nameType>
             <common:TitleCache>Arum italicum Mill.</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
@@ -333,8 +335,9 @@
             <name:IsBinomHybrid>false</name:IsBinomHybrid>
             <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
             <name:IsAnamorphic>false</name:IsAnamorphic>
-        </name:BotanicalName>
-        <name:BotanicalName id="3" uuid="urn-uuid-580bd9da-6799-4ef5-8711-d22e7ea7c073" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="3" uuid="urn-uuid-580bd9da-6799-4ef5-8711-d22e7ea7c073" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICNAFP</name:nameType>
             <common:TitleCache>Arum L.</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:NomenclaturalReference>urn-uuid-31e92efd-9a28-4c1b-9d74-4aaaf34e4c9e</name:NomenclaturalReference>
@@ -350,8 +353,9 @@
             <name:IsBinomHybrid>false</name:IsBinomHybrid>
             <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
             <name:IsAnamorphic>false</name:IsAnamorphic>
-        </name:BotanicalName>        
-        <name:CultivarPlantName id="4" uuid="urn-uuid-35ff446c-0ec9-4c2f-af0b-a87426b03da7" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>        
+        <name:TaxonNameBase id="4" uuid="urn-uuid-35ff446c-0ec9-4c2f-af0b-a87426b03da7" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICNCP</name:nameType>
             <common:TitleCache>Arum italicum marmoratum Mill.</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:Rank>urn-uuid-fb1aed7b-0869-41d6-984c-6f8b531bfd55</name:Rank>
@@ -368,8 +372,9 @@
             <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
             <name:IsAnamorphic>false</name:IsAnamorphic>
             <name:CultivarName>marmoratum</name:CultivarName>
-        </name:CultivarPlantName>
-        <name:ZoologicalName id="5" uuid="urn-uuid-d399030c-906f-437c-90d2-3f5c89d87376" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="5" uuid="urn-uuid-d399030c-906f-437c-90d2-3f5c89d87376" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICZN</name:nameType>
             <common:TitleCache>Sphinx Linnaeus, 1758</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:NomenclaturalReference>urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9</name:NomenclaturalReference>
@@ -383,8 +388,9 @@
             <name:AuthorshipCache>Linnaeus, 1758</name:AuthorshipCache>
             <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
             <name:ProtectedNameCache>false</name:ProtectedNameCache>
-        </name:ZoologicalName>
-        <name:ZoologicalName id="6" uuid="urn-uuid-51ab21d1-d65b-4fb0-9814-98bd411df231" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="6" uuid="urn-uuid-51ab21d1-d65b-4fb0-9814-98bd411df231" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICZN</name:nameType>
             <common:TitleCache>Acherontia Laspeyres, 1809</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:Rank>urn-uuid-41b86404-51ae-4d44-9080-6cdbdad208fd</name:Rank>
@@ -397,8 +403,9 @@
             <name:AuthorshipCache>Laspeyres, 1809</name:AuthorshipCache>
             <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
             <name:ProtectedNameCache>false</name:ProtectedNameCache>
-        </name:ZoologicalName>
-        <name:ZoologicalName id="7" uuid="urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="7" uuid="urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICZN</name:nameType>
             <common:TitleCache>Sphinx atropos Linnaeus, 1758</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
@@ -419,8 +426,9 @@
             <name:AuthorshipCache>Linnaeus, 1758</name:AuthorshipCache>
             <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
             <name:ProtectedNameCache>false</name:ProtectedNameCache>
-        </name:ZoologicalName>
-        <name:ZoologicalName id="8" uuid="urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="8" uuid="urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICZN</name:nameType>
             <common:TitleCache>Acherontia atropos (Linnaeus, 1758)</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
@@ -443,8 +451,9 @@
             <name:AuthorshipCache>(Linnaeus, 1758)</name:AuthorshipCache>
             <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
             <name:ProtectedNameCache>false</name:ProtectedNameCache>
-        </name:ZoologicalName>
-        <name:ZoologicalName id="9" uuid="urn-uuid-37c1b483-582a-478c-acb0-a49bbc4417e5" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        </name:TaxonNameBase>
+        <name:TaxonNameBase id="9" uuid="urn-uuid-37c1b483-582a-478c-acb0-a49bbc4417e5" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <name:nameType>ICZN</name:nameType>
             <common:TitleCache>Acherontia atropos ab extensa Tutt, 1904</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <name:NomenclaturalMicroReference>pl. II</name:NomenclaturalMicroReference>
@@ -467,6 +476,6 @@
             <name:AuthorshipCache>Tutt, 1904</name:AuthorshipCache>
             <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
             <name:ProtectedNameCache>false</name:ProtectedNameCache>
-        </name:ZoologicalName>
+        </name:TaxonNameBase>
       </TaxonomicNames>
 </DataSet>

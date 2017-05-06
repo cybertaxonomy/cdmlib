@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.strategy.match;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -77,7 +77,7 @@ public class MatchStrategyConfigurator {
 	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 */
 	public static IMatchStrategy getDefaultNonViralNameMatchStrategy() throws MatchException{
-		IMatchStrategy strategy = DefaultMatchStrategy.NewInstance(NonViralName.class);
+		IMatchStrategy strategy = DefaultMatchStrategy.NewInstance(TaxonNameBase.class);
 
 		strategy.setMatchMode("nomenclaturalReference", MatchMode.IGNORE);
 		strategy.setMatchMode("combinationAuthorship", MatchMode.IGNORE);

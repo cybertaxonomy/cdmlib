@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -195,8 +194,8 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
        if (name == null){
             result = null;
         }else{
-            if (name instanceof ZoologicalName){
-                result = (((ZoologicalName)name).getPublicationYear());
+            if (name.isZoological()){
+                result = name.getPublicationYear();
             }else{
                 Reference ref = (Reference) name.getNomenclaturalReference();
                 if (ref == null){

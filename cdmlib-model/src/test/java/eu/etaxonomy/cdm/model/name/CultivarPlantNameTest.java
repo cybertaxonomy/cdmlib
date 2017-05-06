@@ -22,9 +22,9 @@ import org.junit.Test;
  */
 public class CultivarPlantNameTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CultivarPlantName.class);
+	private static final Logger logger = Logger.getLogger(CultivarPlantNameTest.class);
 
-	private static CultivarPlantName name1;
+	private static ICultivarPlantName name1;
 
 
 	/**
@@ -49,7 +49,7 @@ public class CultivarPlantNameTest {
 
 	@Test
 	public void testClone(){
-		CultivarPlantName clone = (CultivarPlantName)name1.clone();
+		ICultivarPlantName clone = (ICultivarPlantName)name1.clone();
 		Assert.assertEquals("Cultivar string should be equal", "cultivarus", clone.getCultivarName());
 //		Assert.assertNotSame("Cultivar string should be not same (but equal)", name1.getCultivarName(), clone.getCultivarName());
 	}

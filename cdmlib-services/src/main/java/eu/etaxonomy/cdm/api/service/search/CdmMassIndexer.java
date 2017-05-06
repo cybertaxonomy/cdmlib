@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -437,9 +436,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.clear();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.IMassIndexer#purge()
-     */
     @Override
     public void purge(IProgressMonitor monitor){
 
@@ -514,7 +510,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public Class[] dictionaryClasses() {
         return new Class[] {
-                NonViralName.class
+                TaxonNameBase.class
                 };
     }
 

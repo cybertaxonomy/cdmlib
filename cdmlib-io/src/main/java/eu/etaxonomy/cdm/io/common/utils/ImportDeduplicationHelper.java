@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -346,7 +345,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                for (HybridRelationship rel : parentRelations){
                    INonViralName parent = rel.getParentName();
                    if (parent != null){
-                       rel.setParentName((NonViralName<?>)getExistingName(state, parent));
+                       rel.setParentName(getExistingName(state, parent));
                    }
                }
                putName(result.getTitleCache(), result);

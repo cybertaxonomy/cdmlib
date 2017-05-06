@@ -16,12 +16,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
 
 /**
@@ -47,32 +42,32 @@ public class NameMustFollowCodeValidator implements
         boolean valid = true;
 
         //CultivarPlantName
-        if (! (name instanceof CultivarPlantName)){
+        if (! (name.isCultivar())){
             if (name.getCultivarName() != null){
                 valid = false;
             }
         }
         //BacterialName
-        if (! (name instanceof BacterialName)){
+        if (! (name.isBacterial())){
             if (isNotNull(name.getSubGenusAuthorship(), name.getNameApprobation())){
                 valid = false;
             }
         }
         //BacterialName
-        if (! (name instanceof ViralName)){
+        if (! (name.isViral())){
             if (name.getAcronym() != null){
                 valid = false;
             }
         }
         //ZoologicalName
-        if (! (name instanceof ZoologicalName)){
+        if (! (name.isZoological())){
             if (isNotNull(name.getBreed(), name.getOriginalPublicationYear()
                     , name.getPublicationYear())){
                 valid = false;
             }
         }
         //NonViralName
-        if (! (name instanceof NonViralName)){
+        if (! (name.isNonViral())){
             if (    isNotNull(name.getGenusOrUninomial(), name.getSpecificEpithet()
                         , name.getInfraGenericEpithet(), name.getInfraSpecificEpithet() )
                     || isNotEmpty(name.getNameRelations() , name.getHybridParentRelations()

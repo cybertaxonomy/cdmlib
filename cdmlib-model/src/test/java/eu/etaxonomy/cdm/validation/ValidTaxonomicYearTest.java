@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -39,11 +39,11 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ValidTaxonomicYearTest.class);
 
-    static Class validatorClass = ValidTaxonomicYearValidator.class;
-    static Class group = Level3.class;
+    static Class<ValidTaxonomicYearValidator> validatorClass = ValidTaxonomicYearValidator.class;
+    static Class<Level3> group = Level3.class;
 
 
-	private BotanicalName name;
+	private IBotanicalName name;
 
 	private Reference beforeLineeRef;
     private Reference afterLineeRef;

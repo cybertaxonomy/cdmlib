@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -46,8 +46,8 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(BasionymsMustShareEpithetsAndAuthorsTest.class);
 
-	private BotanicalName name;
-	private BotanicalName basionymName;
+	private IBotanicalName name;
+	private TaxonNameBase basionymName;
 	private Person author1;
 	private Person author2;
 

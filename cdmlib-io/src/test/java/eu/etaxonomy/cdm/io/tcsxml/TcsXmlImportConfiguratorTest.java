@@ -65,11 +65,10 @@ public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	}
 
 	@Test
-	 @DataSets({
-	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-
-	    })
+	@DataSets({
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	    @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+	})
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
@@ -77,13 +76,7 @@ public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 		assertEquals("Number of TaxonNames should be 16", 16, nameService.count(null));
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

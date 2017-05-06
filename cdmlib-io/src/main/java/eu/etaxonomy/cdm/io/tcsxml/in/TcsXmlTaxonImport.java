@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -153,7 +152,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
-			List<String> elementList = new ArrayList<String>();
+			List<String> elementList = new ArrayList<>();
 
 			//create TaxonName element
 			String strId = elTaxonConcept.getAttributeValue("id");
@@ -320,14 +319,18 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 			if (language != null){
 				logger.warn("language for name not yet implemented. Language for scientific name should always be Latin");
 			}
-			Class<? extends IdentifiableEntity> clazz = NonViralName.class;
-			if (code != null){
-				clazz = code.getCdmClass();
-			}
+			Class<? extends IdentifiableEntity> clazz = TaxonNameBase.class;
 			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
 			if(result == null){
 				logger.warn("Name not found");
 				success.setValue(false);
+			}else{
+			    if (result.getNameType() == null){
+			        if (code == null){
+			            code = NomenclaturalCode.NonViral;
+			        }
+			        result.setNameType(code);
+			    }
 			}
 		}else{
 			logger.warn("Name element is null");

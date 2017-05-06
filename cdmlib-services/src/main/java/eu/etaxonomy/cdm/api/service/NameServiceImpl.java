@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -306,7 +305,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     @Override
     @Deprecated
-    public List<NonViralName> getNamesByNameCache(String nameCache){
+    public List<TaxonNameBase> getNamesByNameCache(String nameCache){
         boolean includeAuthors = false;
         List result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
@@ -320,7 +319,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * findByTitle
      */
     @Override
-    public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
+    public List<TaxonNameBase> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
@@ -332,7 +331,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * findByTitle
      */
     @Override
-    public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
+    public List<TaxonNameBase> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByName(false, nameCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
@@ -859,7 +858,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
 
         //hybrid relationships
-        if (name.isInstanceOf(NonViralName.class)){
+        if (name.isNonViral()){
             INonViralName nvn = name;
             Set<HybridRelationship> parentHybridRelations = nvn.getHybridParentRelations();
             //Hibernate.initialize(parentHybridRelations);

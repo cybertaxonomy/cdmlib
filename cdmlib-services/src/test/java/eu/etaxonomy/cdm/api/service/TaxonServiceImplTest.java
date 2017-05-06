@@ -49,8 +49,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -1198,7 +1198,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             descrUUID = descr.getUuid();
             descrElementUUID = descr.getElements().iterator().next().getUuid();
         }
-        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        IBotanicalName taxonName = nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1214,7 +1214,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        taxonName = nameService.find(SPECIES1_NAME_UUID);
         Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
 
         //descriptionService.find(descrUUID);
@@ -1305,7 +1305,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon speciesTaxon2 = (Taxon)service.find(SPECIES2_UUID);
         speciesTaxon.addTaxonRelation(speciesTaxon2, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
 
-        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        IBotanicalName taxonName = nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1321,7 +1321,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        taxonName = nameService.find(SPECIES1_NAME_UUID);
         Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
 
 
@@ -1405,9 +1405,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
 
-        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        IBotanicalName taxonName = nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
-        BotanicalName fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonNameBase fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1418,7 +1418,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        taxonName = nameService.find(SPECIES1_NAME_UUID);
         Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
         //because of the namerelationship the name cannot be deleted
         assertNotNull(taxonName);
@@ -1707,7 +1707,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon tax = (Taxon)service.find(uuid);
         assertNotNull(tax);
         tax = (Taxon)service.find(misappliedNameUUID);
-        BotanicalName name = (BotanicalName) nameService.find(misNameUUID);
+        IBotanicalName name = nameService.find(misNameUUID);
 
         assertNull(tax);
         assertNull(name);
@@ -1916,7 +1916,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             citationRef.setTitleCache("Sp. lunarum", true);
 
             //genus taxon with Name, combinationAuthor,
-            BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+            IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
             botName.setTitleCache("Hieracium L.", true);
             botName.setGenusOrUninomial("Hieracium");
             botName.setCombinationAuthorship(Person.NewInstance());
@@ -1926,7 +1926,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             genusTaxon.setUuid(GENUS_UUID);
             service.save(genusTaxon);
             //a name that is the basionym of genusTaxon's name
-            BotanicalName basionym = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+            TaxonNameBase basionym = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
             basionym.setTitleCache("Hieracilla DC.", true);
             basionym.setGenusOrUninomial("Hieracilla");
             basionym.setCombinationAuthorship(deCandolle);
@@ -1934,7 +1934,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             botName.addBasionym(basionym, null, null,"216");
             nameService.saveOrUpdate(basionym);
             //species taxon that is the child of genus taxon
-            BotanicalName botSpecies = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            IBotanicalName botSpecies = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies.setTitleCache("Hieracium asturianum Pau", true);
             botSpecies.setGenusOrUninomial("Hieracium");
             botSpecies.setSpecificEpithet("asturianum");
@@ -1952,7 +1952,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //            childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
             classificationService.save(classification);
             //homotypic synonym of childTaxon1
-            BotanicalName botSpecies4= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            IBotanicalName botSpecies4= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies4.setTitleCache("Hieracium gueri DC.", true);
             botSpecies4.setGenusOrUninomial("Hieracium");
             botSpecies4.setSpecificEpithet("gueri");
@@ -1963,7 +1963,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             service.saveOrUpdate(childTaxon);
 
             //2nd child species taxon that is the child of genus taxon
-            BotanicalName botSpecies2= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            IBotanicalName botSpecies2= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
             botSpecies2.setGenusOrUninomial("Hieracium");
             botSpecies2.setSpecificEpithet("wolffii");
@@ -1976,7 +1976,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
             service.saveOrUpdate(childTaxon2);
             //heterotypic synonym of childTaxon2
-            BotanicalName botSpecies3= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            IBotanicalName botSpecies3= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             botSpecies3.setTitleCache("Hieracium lupium DC.", true);
             botSpecies3.setGenusOrUninomial("Hieracium");
             botSpecies3.setSpecificEpithet("lupium");
@@ -1986,7 +1986,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
             service.saveOrUpdate(childTaxon2);
             //missaplied Name for childTaxon2
-            BotanicalName missName= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            IBotanicalName missName= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             missName.setTitleCache("Hieracium lupium DC.", true);
             missName.setGenusOrUninomial("Hieracium");
             missName.setSpecificEpithet("lupium");
@@ -2026,11 +2026,4 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         public Classification getTestClassification(String name){
             return Classification.NewInstance(name);
         }
-
-
-
-
 }
-
-
-

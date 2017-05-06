@@ -36,8 +36,6 @@ import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -362,14 +360,14 @@ public class ClassificationTest {
 
 
 		//init
-		Set<Class<? extends CdmBase>> allCdmClasses = new HashSet<Class<? extends CdmBase>>();
+		Set<Class<? extends CdmBase>> allCdmClasses = new HashSet<>();
 		allCdmClasses.add(TaxonBase.class);
-		allCdmClasses.add(BotanicalName.class);
+		allCdmClasses.add(TaxonNameBase.class);
 
 		int count;
 		do{
 			count = allCdmClasses.size();
-			Set<Class<? extends CdmBase>> iteratorSet = new HashSet<Class<? extends CdmBase>>();
+			Set<Class<? extends CdmBase>> iteratorSet = new HashSet<>();
 			iteratorSet.addAll(allCdmClasses);
 			for (Class<? extends CdmBase> cdmClass : iteratorSet){
 				Method[] methods = cdmClass.getMethods();

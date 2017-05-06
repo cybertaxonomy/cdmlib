@@ -32,9 +32,6 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -42,14 +39,11 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -79,13 +73,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
     public TaxonNameDaoHibernateImpl() {
         super(TaxonNameBase.class);
-        indexedClasses = new Class[6];
-        indexedClasses[0] = BacterialName.class;
-        indexedClasses[1] = BotanicalName.class;
-        indexedClasses[2] = CultivarPlantName.class;
-        indexedClasses[3] = NonViralName.class;
-        indexedClasses[4] = ViralName.class;
-        indexedClasses[5] = ZoologicalName.class;
+        indexedClasses = new Class[1];
+        indexedClasses[0] = TaxonNameBase.class;
     }
 
     @Override
@@ -806,7 +795,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, null);
             TaxonNameBase<?, ?> taxonName = results.iterator().next();
-            if (taxonName.isInstanceOf(ZoologicalName.class)) {
+            if (taxonName.isZoological()) {
                 IZoologicalName zoologicalName = taxonName;
                 return zoologicalName;
             } else {

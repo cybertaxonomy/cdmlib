@@ -16,9 +16,8 @@ import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -60,7 +59,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
 
         if(value instanceof TaxonBase) {
             try {
-                nvn = HibernateProxyHelper.deproxy((TaxonBase) value).getName();
+                nvn = CdmBase.deproxy((TaxonBase) value).getName();
                 if (nvn == null){
                 	return;
                 }

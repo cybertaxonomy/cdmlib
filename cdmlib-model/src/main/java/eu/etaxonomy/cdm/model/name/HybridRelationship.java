@@ -144,7 +144,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	/**
 	 * @see  #getParentName()
 	 */
-	public void setParentName(NonViralName parentName){
+	public void setParentName(INonViralName parentName){
 		this.setRelatedFrom(parentName);
 	}
 
@@ -162,7 +162,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	/**
 	 * @see  #getHybridName()
 	 */
-	public void setHybridName(NonViralName hybridName){
+	public void setHybridName(INonViralName hybridName){
 		this.setRelatedTo(hybridName);
 	}
 

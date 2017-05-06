@@ -47,7 +47,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	private TeamOrPersonBase<?> exBasAuthor;
 
 	private final String familyNameString = "Familia";
-	private final String genusNameString = "Genus";
+//	private final String genusNameString = "Genus";
 	private final String speciesNameString = "Abies alba";
 	private final String subSpeciesNameString = "Abies alba beta";
 	private final String subSpeciesNameStringToParse = "Abies alba subsp. beta";

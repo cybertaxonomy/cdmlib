@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -1148,7 +1147,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             //String queryWOWildcards = getQueryWithoutWildCards(query);
             //MatchMode mm = getMatchModeFromQuery(query);
             logger.info("doGetAcceptedNameSearch()" + request.getRequestURI() + " for query \"" + query);
-            List<NonViralName> nameList = new ArrayList<NonViralName>();
+            List<TaxonNameBase> nameList = new ArrayList<>();
 
             // if "name" search then find by name cache
             if (searchType.equals(NAME_SEARCH)) {

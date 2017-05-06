@@ -22,8 +22,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -42,7 +42,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	private Reference sec;
 	private IZoologicalName name1;
-	private BotanicalName name2;
+	private IBotanicalName name2;
 	private Taxon rootT;
 	private Taxon taxon1;
 	private Synonym synonym1;

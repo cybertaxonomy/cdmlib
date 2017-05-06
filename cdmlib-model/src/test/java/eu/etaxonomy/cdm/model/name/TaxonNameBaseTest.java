@@ -57,14 +57,11 @@ public class TaxonNameBaseTest {
 	@Before
 	public void setUp() throws Exception {
 		nameBase1 = new TaxonNameBaseTestClass(null,null);
-		nameBase2 = new TaxonNameBaseTestClass(Rank.GENUS());
+		nameBase2 = new TaxonNameBaseTestClass(Rank.GENUS(), null);
 	}
 
 
 	private class TaxonNameBaseTestClass extends TaxonNameBase<TaxonNameBaseTestClass, INameCacheStrategy<TaxonNameBaseTestClass>>{
-		public TaxonNameBaseTestClass(){super(null);}
-		public TaxonNameBaseTestClass(Rank rank){super(null, rank);}
-		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(null, hg);}
 		public TaxonNameBaseTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
 		@Override
 		public void setCacheStrategy(INameCacheStrategy strategy){}
@@ -106,20 +103,17 @@ public class TaxonNameBaseTest {
 		assertNotNull(nameBase2);
 		assertEquals(Rank.GENUS(), nameBase2.getRank());
 		Rank rank = null;
-		TaxonNameBase testName = new TaxonNameBaseTestClass(rank);
+		TaxonNameBase testName = new TaxonNameBaseTestClass(rank, null);
 		assertNull(testName.getRank());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#TaxonNameBase(eu.etaxonomy.cdm.model.name.HomotypicalGroup)}.
-	 */
 	@Test
 	public void testTaxonNameBaseHomotypicalGroup() {
 		HomotypicalGroup hg = HomotypicalGroup.NewInstance();
-		TaxonNameBase testHG = new TaxonNameBaseTestClass(hg);
+		TaxonNameBase testHG = new TaxonNameBaseTestClass(null, hg);
 		assertSame(hg, testHG.getHomotypicalGroup());
 		HomotypicalGroup hgNull = null;
-		TaxonNameBase testHGNull = new TaxonNameBaseTestClass(hgNull);
+		TaxonNameBase testHGNull = new TaxonNameBaseTestClass(null, hgNull);
 		assertNotNull(testHGNull.getHomotypicalGroup());
 	}
 

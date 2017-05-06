@@ -26,7 +26,7 @@ import org.springframework.beans.BeanUtils;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -34,8 +34,8 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class BotanicalNameTest extends EntityTestBase{
 	private static final Logger logger = Logger.getLogger(BotanicalNameTest.class);
 
-	private BotanicalName botanicalName1;
-	private BotanicalName botanicalName2;
+	private TaxonNameBase botanicalName1;
+	private IBotanicalName botanicalName2;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -45,8 +45,8 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	@Before
 	public void setUp() throws Exception {
-		botanicalName1 = new BotanicalName();
-		botanicalName2 = new BotanicalName();
+		botanicalName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		botanicalName2 = TaxonNameFactory.NewBotanicalInstance(null);
 	}
 
 /****** TESTS *******************************/
@@ -85,10 +85,10 @@ public class BotanicalNameTest extends EntityTestBase{
 		String specificEpithet = "specEpi";
 		String infraSpecificEpithet = "infraSpecificEpi";
 		TeamOrPersonBase<?> combinationAuthorship = Team.NewInstance();
-		INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
+		Reference nomenclaturalReference = ReferenceFactory.newArticle();
 		String nomenclMicroRef = "microRef";
 		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
-		IBotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+		IBotanicalName fullName = TaxonNameFactory.NewBotanicalInstance(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		assertEquals(Rank.SPECIALFORM(), fullName.getRank());
 		assertEquals("Genus", fullName.getGenusOrUninomial());
 		assertEquals("infraGenericEpi", fullName.getInfraGenericEpithet());
@@ -161,21 +161,21 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setGenusOrUninomial("Aus");
 		botanicalName1.setRank(Rank.GENUS());
 		botanicalName1.setAnamorphic(true);
-		BotanicalName clone = (BotanicalName)botanicalName1.clone();
+		TaxonNameBase clone = (TaxonNameBase)botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", true, clone.isAnamorphic());
 		botanicalName1.setAnamorphic(false);
-		clone = (BotanicalName)botanicalName1.clone();
+		clone = (TaxonNameBase)botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
 	}
 
     @Test
     public void beanTests(){
 //      #5307 Test that BeanUtils does not fail
-        BeanUtils.getPropertyDescriptors(BotanicalName.class);
+//        BeanUtils.getPropertyDescriptors(BotanicalName.class);
         BeanUtils.getPropertyDescriptors(TaxonNameBase.class);
-        BeanUtils.getPropertyDescriptors(NonViralName.class);
-        BeanUtils.getPropertyDescriptors(ZoologicalName.class);
-        BeanUtils.getPropertyDescriptors(ViralName.class);
-        BeanUtils.getPropertyDescriptors(CultivarPlantName.class);
+//        BeanUtils.getPropertyDescriptors(NonViralName.class);
+//        BeanUtils.getPropertyDescriptors(ZoologicalName.class);
+//        BeanUtils.getPropertyDescriptors(ViralName.class);
+//        BeanUtils.getPropertyDescriptors(CultivarPlantName.class);
     }
 }

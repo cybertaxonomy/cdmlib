@@ -87,9 +87,6 @@ import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -99,13 +96,11 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -197,9 +192,9 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
 			    Primer.class,
 			    Sequence.class,
 			    SingleRead.class,
-			    BacterialName.class,
-			    BotanicalName.class,
-			    CultivarPlantName.class,
+//			    BacterialName.class,
+//			    BotanicalName.class,
+//			    CultivarPlantName.class,
 			    HomotypicalGroup.class,
 			    HybridRelationship.class,
 			    HybridRelationshipType.class,
@@ -209,12 +204,13 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
                 NameTypeDesignation.class,
 			    NomenclaturalStatus.class,
 			    NomenclaturalStatusType.class,
-			    NonViralName.class,
+//			    NonViralName.class,
 			    Rank.class,
 			    SpecimenTypeDesignationStatus.class,
                 SpecimenTypeDesignation.class,
-                ViralName.class,
-			    ZoologicalName.class,
+//                ViralName.class,
+//			    ZoologicalName.class,
+                TaxonNameBase.class,
 			    Collection.class,
 			    DerivationEvent.class,
 			    DerivationEventType.class,

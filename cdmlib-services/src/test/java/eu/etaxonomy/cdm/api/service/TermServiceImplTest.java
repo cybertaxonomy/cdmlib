@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -240,7 +240,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         termBase =terms.iterator().next();
         termUUID = termBase.getUuid();
         termBase = termService.load(termUUID);
-        BotanicalName testName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName testName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         Taxon testTaxon = Taxon.NewInstance(testName,null);
         testTaxon.addIdentifier("Test", (DefinedTerm) termBase);
         taxonService.save(testTaxon);

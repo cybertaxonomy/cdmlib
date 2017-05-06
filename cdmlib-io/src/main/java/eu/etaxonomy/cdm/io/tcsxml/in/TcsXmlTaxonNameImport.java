@@ -27,21 +27,20 @@ import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Component("tcsXmlTaxonNameIO")
 public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
-	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameImport.class);
+
+    private static final long serialVersionUID = -1978871518114999061L;
+    private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameImport.class);
 
 	private static int modCount = 5000;
 
@@ -266,7 +265,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 
 
-		List<String> elementList = new ArrayList<String>();
+		List<String> elementList = new ArrayList<>();
 		String idNamespace = "TaxonName";
 		//create TaxonName element
 		String strId = elTaxonName.getAttributeValue("id");
@@ -369,7 +368,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		if (elCanonicalAuthorship != null){
 			Namespace ns = elCanonicalAuthorship.getNamespace();
 
-			if (name instanceof NonViralName){
+			if (name.isNonViral()){
 				INonViralName nonViralName = name;
 
 				String childName = "Simple";
@@ -433,7 +432,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
 		name.setFullTitleCache(simple, cacheProtected);
 
-		if (name instanceof NonViralName){
+		if (name.isNonViral()){
 			INonViralName nonViralName = name;
 			childName = "Uninomial";
 			obligatory = false;
@@ -509,7 +508,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Element elCultivarNameGroup = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
 		String cultivarNameGroup = (elCultivarNameGroup == null)? "" : elCultivarNameGroup.getTextNormalize();
 		if (! "".equals(cultivarNameGroup.trim())){
-			if (name instanceof CultivarPlantName){
+			if (name.isCultivar()){
 				makeCultivarName();
 			}else{
 				logger.warn("Non cultivar name has 'cultivar name group' element. Omitted");
@@ -524,13 +523,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	}
 
 	private void makeGenusReferenceType(TaxonNameBase name, Element elGenus, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
-		if(name instanceof NonViralName){
+		if(name.isNonViral()){
 			INonViralName nonViralName = name;
 			if (elGenus != null){
 			    INonViralName genusReferenceName;
 				//TODO code
-				Class<? extends NonViralName> clazz = NonViralName.class;
+				Class<? extends TaxonNameBase> clazz = TaxonNameBase.class;
 				genusReferenceName = makeReferenceType(elGenus, clazz, taxonNameMap, success);
+				genusReferenceName.setNameType(NomenclaturalCode.NonViral);
 				//Genus is stored either in Genus part (if ref) or in titleCache (if plain text)
 				String genus = genusReferenceName.getGenusOrUninomial()!= null ? genusReferenceName.getGenusOrUninomial(): genusReferenceName.getTitleCache();
 				nonViralName.setGenusOrUninomial(genus);
@@ -565,8 +565,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		if (elYear != null){
 			String year = elYear.getTextNormalize();
 			if (year != null){
-    			if (name instanceof ZoologicalName){
-    				((ZoologicalName)name).setPublicationYear(getIntegerYear(year));
+    			if (name.isZoological()){
+    				name.setPublicationYear(getIntegerYear(year));
     			}else{
     			    TimePeriod period = TimePeriod.NewInstance(getIntegerYear(year));
     			    if (name.getNomenclaturalReference()!= null){

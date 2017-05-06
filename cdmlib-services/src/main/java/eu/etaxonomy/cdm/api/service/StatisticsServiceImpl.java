@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 /**
- * 
+ *
  * @author s.buers Service to provide statistic data of the database elements
  */
 
@@ -39,15 +39,15 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 
 
-	// this does not make sense, we just count nothing if no type is given. 
+	// this does not make sense, we just count nothing if no type is given.
 	// the one who calls this service should check that there are types given!
-//	private static final StatisticsTypeEnum DEFAULT_TYPE=StatisticsTypeEnum.ALL_TAXA; 
+//	private static final StatisticsTypeEnum DEFAULT_TYPE=StatisticsTypeEnum.ALL_TAXA;
 	//TODO create a list with all types.
 
 	// this constant can also be used by the ones that use the service
-	
+
 	private static final IdentifiableEntity<?> ALL_DB = null;
-	
+
 	@Override
 	@Transactional
 	public IdentifiableEntity<?> getFilterALL_DB(){
@@ -70,14 +70,14 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	@Autowired
 	private IStatisticsDao statisticsDao;
-	
+
 	@Autowired
 	private IDescriptionDao descriptionDao;
 
 	/**
 	 * counts all the elements referenced in the configurator from the part of
 	 * the database referenced in the configurator
-	 * 
+	 *
 	 * @param configurators
 	 * @return be aware that a Statistics.countMap might contain "null"
 	 *         {@link Number} values, if the count failed (, if the value is "0"
@@ -88,7 +88,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	public List<Statistics> getCountStatistics(
 			List<StatisticsConfigurator> configurators) {
 
-		statisticsList = new ArrayList<Statistics>();
+		statisticsList = new ArrayList<>();
 
 		for (StatisticsConfigurator statisticsConfigurator : configurators) {
 			// create a Statistics element for each configurator
@@ -134,7 +134,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				counter = Long
 						.valueOf(referenceDao
 								.count(eu.etaxonomy.cdm.model.reference.Reference.class));
-				counter -=statisticsDao.countNomenclaturalReferences(); 
+				counter -=statisticsDao.countNomenclaturalReferences();
 				break;
 
 			case NOMENCLATURAL_REFERENCES:
