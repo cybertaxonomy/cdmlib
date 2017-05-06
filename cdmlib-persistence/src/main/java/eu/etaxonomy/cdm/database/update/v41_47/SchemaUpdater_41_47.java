@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
@@ -358,7 +359,12 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNameBase", -99);
         stepList.add(simpleStep);
 
-
+        //6368
+        stepName = "Remove DTYPE from TaxonNameBase";
+        tableName = "TaxonNameBase";
+        String oldColumnName = "DTYPE";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+        stepList.add(simpleStep);
 
     }
 
