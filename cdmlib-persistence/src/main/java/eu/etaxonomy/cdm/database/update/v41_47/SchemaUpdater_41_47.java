@@ -120,10 +120,11 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //add type designations
         stepName= "Add type designations to Registration";
         firstTableName = "Registration";
+        String firstColumnName = "registrations";
         secondTableName = "TypeDesignationBase";
         attributeName = "typeDesignations";
         isList = false;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, firstColumnName, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
         stepList.add(step);
 
         //#5258

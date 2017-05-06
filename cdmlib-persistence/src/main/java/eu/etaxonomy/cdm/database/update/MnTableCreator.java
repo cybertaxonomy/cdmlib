@@ -54,6 +54,31 @@ public class MnTableCreator extends TableCreator {
 		return result;
 	}
 
+	   /**
+    *
+    * @param stepName The step name
+    * @param firstTableName The name of the first table
+    * @param firstTableAlias The alias for the first table as used in the MN table name
+    * @param firstColumnName The name of the attribute pointing to the first table (this is used for the column name for the
+    *     column pointing to the first table)
+    * @param secondTableName The name of the second table
+    * @param secondTableAlias The alias for the second table as used in the MN table name
+    * @param secondColumnName The name of the attribute pointing to the second table (this is used for the column name for the
+    *    column pointing to the second table)
+    * @param includeAudTable <code>true</code> if also the Audit (_AUD) table should be created
+    * @param hasSortIndex by default <code>false</code> but true for {@link Map maps} (or maybe user defined MN-tables)
+    * @param secondTableInKey should the column that links to the second table also be in the key? This is by default
+    * <code>true</code> but for {@link List lists} should be <code>false</code>.
+    * @return
+    */
+   public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String firstTableAlias, String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
+           boolean includeAudTable, boolean isList, boolean is1toM){
+       MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, firstColumnName, secondTableName, secondTableAlias, secondColumnName,
+               new String[]{}, new String[]{}, null, null,
+               includeAudTable, isList, is1toM, false, false, false);
+       return result;
+   }
+
 // ****************************** CONSTRUCTOR *********************************/
 
 	protected MnTableCreator(String stepName, String firstTableName, String firstTableAlias, String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
