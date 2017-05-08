@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.PropertyNameMatchMode;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
@@ -452,14 +453,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * {@inheritDoc}
      */
     @Override
-    public List<T> list(Class<? extends T> type, String propertyName, Object value, MatchMode matchMode,
+    public List<T> list(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = criterionForType(type);
 
-        if (propertyName != null) {
-            addRestriction(propertyName, value, matchMode, criteria);
-        }
+        addRestrictions(restrictions, criteria);
 
         addLimitAndStart(limit, start, criteria);
         addOrder(criteria, orderHints);
@@ -471,12 +470,35 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     /**
+     * @param restrictions
+     * @param criteria
+     */
+    private void addRestrictions(Map<PropertyNameMatchMode, Collection<? extends Object>> restrictions, Criteria criteria) {
+        List<Criterion> perProperty = new ArrayList<>(restrictions.size());
+        for(PropertyNameMatchMode propMatchMode : restrictions.keySet()){
+            Collection<? extends Object> values = restrictions.get(propMatchMode);
+            if(values != null && !values.isEmpty()){
+                Criterion[] predicates = new Criterion[values.size()];
+                int i = 0;
+                for(Object v : values){
+                    predicates[i++] = createRestriction(propMatchMode.getPropertyName(), v, propMatchMode.getMatchMode());
+                }
+                perProperty.add(Restrictions.or(predicates));
+            }
+        }
+        if(!perProperty.isEmpty()){
+            criteria.add(Restrictions.and(perProperty.toArray(new Criterion[perProperty.size()])));
+        }
+    }
+
+    /**
      * @param propertyName
      * @param value
      * @param matchMode
      * @param criteria
+     * @return
      */
-    private void addRestriction(String propertyName, Object value, MatchMode matchMode, Criteria criteria) {
+    private Criterion createRestriction(String propertyName, Object value, MatchMode matchMode) {
         Criterion restriction;
         if(matchMode == null) {
             restriction = Restrictions.eq(propertyName, value);
@@ -496,20 +518,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
             }
         }
-        criteria.add(restriction);
+        return restriction;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int count(Class<? extends T> type, String propertyName, Object value, MatchMode matchMode) {
+    public int count(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions) {
 
         Criteria criteria = criterionForType(type);
 
-        if (propertyName != null) {
-            addRestriction(propertyName, value, matchMode, criteria);
-        }
+        addRestrictions(restrictions, criteria);
 
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
 

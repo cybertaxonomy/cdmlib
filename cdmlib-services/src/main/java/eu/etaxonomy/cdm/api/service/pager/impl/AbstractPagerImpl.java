@@ -266,20 +266,47 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
 	/**
 	 * Test if the the <code>numberOfResults</code> in the range of the page specified by <code>pageIndex</code> and <code>pageSize</code>.
-	 *
+	 * <p>
 	 * When using this method in a service layer class you will also need to provide the according <code>limit</code> and <code>start</code>
 	 * parameters for dao list methods. The PagerUtil class provides the according methods for the required calculation:
-	 * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}
+	 * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}.<br/>
+     * <b>NOTE:</b> It is highly recommended to use the {@link #limitStartforRange(Long, Integer, Integer)} method instead which already
+     * includes the calculation of <code>limit</code> and <code>start</code>.
 	 *
 	 * @param numberOfResults
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
+	 *
+	 * @deprecated use {@link #limitStartforRange(Long, Integer, Integer)} instead if appropriate.
 	 */
+	@Deprecated
 	public static boolean hasResultsInRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
 		return numberOfResults > 0 // no results at all
 				&& (pageSize == null // page size may be null : return all in this case
 				|| pageIndex != null && numberOfResults > (pageIndex * pageSize));
 	}
+
+	/**
+     * Test if the the <code>numberOfResults</code> in the range of the page specified by <code>pageIndex</code> and <code>pageSize</code>.
+     * And returns the according <code>limit</code> and <code>start</code> values as an array in case the test is successful. If there is no
+     * result in the specified range the return value will be <code>null</code>.
+     * <p>
+     * When using this method in a service layer class you will also need to provide the according <code>limit</code> and <code>start</code>
+     * parameters for dao list methods. The PagerUtil class provides the according methods for the required calculation:
+     * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}
+     *
+     * @param numberOfResults
+     * @param pageIndex
+     * @param pageSize
+     * @return An <code>int</code> array containing limit and start: <code>new int[]{limit, start}</code> or null if there is no result in the range of
+     *  <code>pageIndex</code> and <code>pageSize</code>.
+     */
+    public static int[] limitStartforRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
+        if(hasResultsInRange(numberOfResults, pageIndex, pageSize)){
+            return  new int[]{PagerUtils.limitFor(pageSize), PagerUtils.startFor(pageSize, pageIndex)};
+        }
+        return null;
+    }
 
 }

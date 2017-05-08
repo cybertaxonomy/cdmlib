@@ -78,7 +78,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based,
      *                   can be null, equivalent of starting at the beginning of the recordset)
      * @param submitter
-     *            The user who submitted the Registration
+     *            Limits the result set to Registrations having the given submitter. This filter is ignored if set to <code>null</code>.
      * @param includedStatus
      *            filters the Registration by the RegistrationStatus. Only Registration having one of
      *            the supplied status will included.

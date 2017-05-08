@@ -9,8 +9,11 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +21,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.persistence.dao.common.PropertyNameMatchMode;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -56,33 +60,38 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         long numberOfResults = dao.count(reference, includedStatus);
 
         List<Registration> results = new ArrayList<>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageIndex, pageSize)) {
-            Integer limit = PagerUtils.limitFor(pageSize);
-            Integer start = PagerUtils.startFor(pageSize, pageIndex);
-            results = dao.list(reference, includedStatus, limit, start, propertyPaths);
+        int [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        if(limitStart != null) {
+            results = dao.list(reference, includedStatus, limitStart[0], limitStart[1], propertyPaths);
         }
 
-         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
     /**
      * {@inheritDoc}
-     * TODO: includedStatus not yet implemented
      */
     @Override
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        long numberOfResults = dao.count(Registration.class, "submitter", submitter, null);
-
-        List<Registration> results = new ArrayList<Registration>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageIndex, pageSize)) {
-            Integer limit = PagerUtils.limitFor(pageSize);
-            Integer start = PagerUtils.startFor(pageSize, pageIndex);
-            results = dao.list(Registration.class, "submitter", submitter, null, limit, start, orderHints, propertyPaths);
+        Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions = new HashMap<>();
+        if(submitter != null){
+            restrictions.put(new PropertyNameMatchMode("submitter", MatchMode.EXACT), Arrays.asList(submitter));
+        }
+        if(includedStatus != null && !includedStatus.isEmpty()){
+            restrictions.put(new PropertyNameMatchMode("status", MatchMode.EXACT), includedStatus);
         }
 
-         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
+        long numberOfResults = dao.count(Registration.class, restrictions);
+
+        List<Registration> results = new ArrayList<Registration>();
+        int [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        if(limitStart != null) {
+            results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
 

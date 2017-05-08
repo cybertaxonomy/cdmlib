@@ -225,12 +225,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param type
      *          Restrict the query to objects of a certain class, or null for
      *          all objects of type T or subclasses
-     * @param propertyName
-     *      The name of a entity property.
-     * @param value
-     *      The value for the comparison with the entity property.
-     * @param matchMode
-     *      The comparison method to use. <b>NOTE:</b> For non string type properties you must use
+     * @param restrictions
+     *      This defines a filter for multiple properties represented by the map keys. Sine the keys are of the type
+     *      {@link PropertyNameMatchMode} for each property a single MatchMode is defined. Multiple alternative values
+     *      can be supplied per property, that is the values per property are combined with OR. The per property
+     *      restrictions are combined with AND. </br>
+     *      <b>NOTE:</b> For non string type properties you must use
      *      {@link MatchMode#EXACT}. If set <code>null</code> {@link MatchMode#EXACT} will be used
      *      as default.
      * @param limit
@@ -246,7 +246,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> list(Class<? extends T> type, String propertyName, Object value, MatchMode matchMode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<T> list(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Counts the Cdm entities matching the restrictions defined by
@@ -255,12 +255,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param type
      *          Restrict the query to objects of a certain class, or null for
      *          all objects of type T or subclasses
-     * @param propertyName
-     *      The name of a entity property.
-     * @param value
-     *      The value for the comparison with the entity property.
-     * @param matchMode
-     *      The comparison method to use. <b>NOTE:</b> For non string type properties you must use
+     * @param restrictions
+     *      This defines a filter for multiple properties represented by the map keys. Sine the keys are of the type
+     *      {@link PropertyNameMatchMode} for each property a single MatchMode is defined. Multiple alternative values
+     *      can be supplied per property, that is the values per property are combined with OR. The per property
+     *      restrictions are combined with AND. </br>
+     *      <b>NOTE:</b> For non string type properties you must use
      *      {@link MatchMode#EXACT}. If set <code>null</code> {@link MatchMode#EXACT} will be used
      *      as default.
      * @param criteria
@@ -268,7 +268,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *
      * @return
      */
-    public int count(Class<? extends T> type, String propertyName, Object value, MatchMode matchMode);
+    public int count(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions);
 
     /**
      * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
