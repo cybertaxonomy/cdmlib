@@ -135,30 +135,27 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return delete(name.getUuid());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
-     */
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config) {
-    	DeleteResult result = new DeleteResult();
-       	TaxonNameBase name = dao.load(nameUUID);
+    public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
+        DeleteResult result = new DeleteResult();
 
-    	if (name == null){
-    		result.setAbort();
+
+        if (name == null){
+            result.setAbort();
             return result;
         }
 
-    	try{
-    		result = this.isDeletable(name.getUuid(), config);
+        try{
+            result = this.isDeletable(name, config);
         }catch(Exception e){
-        	result.addException(e);
-        	result.setError();
-        	return result;
+            result.addException(e);
+            result.setError();
+            return result;
         }
         if (result.isOk()){
         //remove references to this name
-        	removeNameRelationshipsByDeleteConfig(name, config);
+            removeNameRelationshipsByDeleteConfig(name, config);
 
            //remove name from homotypical group
             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
@@ -167,25 +164,37 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             }
 
              //all type designation relationships are removed as they belong to the name
-	        deleteTypeDesignation(name, null);
-	//		//type designations
-	//		if (! name.getTypeDesignations().isEmpty()){
-	//			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
-	//			throw new ReferrencedObjectUndeletableException(message);
-	//		}
+            deleteTypeDesignation(name, null);
+    //      //type designations
+    //      if (! name.getTypeDesignations().isEmpty()){
+    //          String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
+    //          throw new ReferrencedObjectUndeletableException(message);
+    //      }
 
 
-	        try{
-	        UUID nameUuid = dao.delete(name);
+            try{
+            UUID nameUuid = dao.delete(name);
 
-	        }catch(Exception e){
-	        	result.addException(e);
-	        	result.setError();
-	        }
-	        return result;
+            }catch(Exception e){
+                result.addException(e);
+                result.setError();
+            }
+            return result;
         }
 
         return result;
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config) {
+
+        TaxonNameBase name = dao.load(nameUUID);
+        return delete(name, config);
     }
 
     @Override
@@ -817,44 +826,44 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return taggedName;
     }
 
-    @Override
-    public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
-    	DeleteResult result = new DeleteResult();
-    	TaxonNameBase name = this.load(nameUUID);
-    	NameDeletionConfigurator nameConfig = null;
-    	if (config instanceof NameDeletionConfigurator){
-    		nameConfig = (NameDeletionConfigurator) config;
-    	}else{
-    		 result.addException(new Exception("The delete configurator should be of the type NameDeletionConfigurator."));
-    		 result.setError();
-    		 return result;
-    	}
 
-    	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
-    		HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
+    public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+        DeleteResult result = new DeleteResult();
 
-    		if (!nameConfig.isIgnoreIsBasionymFor() && homotypicalGroup.getBasionyms().contains(name)){
-       		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
-       		 	result.setAbort();
+        NameDeletionConfigurator nameConfig = null;
+        if (config instanceof NameDeletionConfigurator){
+            nameConfig = (NameDeletionConfigurator) config;
+        }else{
+             result.addException(new Exception("The delete configurator should be of the type NameDeletionConfigurator."));
+             result.setError();
+             return result;
+        }
+
+        if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
+            HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
+
+            if (!nameConfig.isIgnoreIsBasionymFor() && homotypicalGroup.getBasionyms().contains(name)){
+                result.addException(new Exception( "Name can't be deleted as it is a basionym."));
+                result.setAbort();
             }
             if (!nameConfig.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-            	result.addException(new Exception( "Name can't be deleted as it has a basionym."));
-            	result.setAbort();
+                result.addException(new Exception( "Name can't be deleted as it has a basionym."));
+                result.setAbort();
             }
             Set<NameRelationship> relationships = name.getNameRelations();
             for (NameRelationship rel: relationships){
-            	if (!rel.getType().equals(NameRelationshipType.BASIONYM())){
-            		result.addException(new Exception("Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion."));
-            		result.setAbort();
-            		break;
-            	}
+                if (!rel.getType().equals(NameRelationshipType.BASIONYM())){
+                    result.addException(new Exception("Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion."));
+                    result.setAbort();
+                    break;
+                }
             }
         }
 
         //concepts
         if (! name.getTaxonBases().isEmpty()){
-        	result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
-        	result.setAbort();
+            result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
+            result.setAbort();
         }
 
         //hybrid relationships
@@ -863,11 +872,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             Set<HybridRelationship> parentHybridRelations = nvn.getHybridParentRelations();
             //Hibernate.initialize(parentHybridRelations);
             if (! parentHybridRelations.isEmpty()){
-            	result.addException(new Exception("Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion."));
-            	result.setAbort();
+                result.addException(new Exception("Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion."));
+                result.setAbort();
             }
         }
-     	Set<CdmBase> referencingObjects = genericDao.getReferencingObjectsForDeletion(name);
+        Set<CdmBase> referencingObjects = genericDao.getReferencingObjectsForDeletion(name);
         for (CdmBase referencingObject : referencingObjects){
             //DerivedUnit?.storedUnder
             if (referencingObject.isInstanceOf(DerivedUnit.class)){
@@ -917,8 +926,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             result.addException(new Exception(message));
             result.setAbort();
         }
-    	return result;
+        return result;
 
+    }
+
+
+    @Override
+    public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
+        TaxonNameBase name = this.load(nameUUID);
+        return isDeletable(name, config);
     }
 
     @Override
