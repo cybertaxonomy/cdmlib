@@ -60,7 +60,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         long numberOfResults = dao.count(reference, includedStatus);
 
         List<Registration> results = new ArrayList<>();
-        int [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
         if(limitStart != null) {
             results = dao.list(reference, includedStatus, limitStart[0], limitStart[1], propertyPaths);
         }
@@ -86,7 +86,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         long numberOfResults = dao.count(Registration.class, restrictions);
 
         List<Registration> results = new ArrayList<Registration>();
-        int [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
         if(limitStart != null) {
             results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
         }
