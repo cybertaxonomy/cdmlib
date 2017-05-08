@@ -136,7 +136,7 @@ public class OutputModelResultProcessor {
      */
     private String createCsvLine(OutputModelConfigurator config, String[] csvLine) {
         String lineString = "";
-
+        boolean first = true;
         for (String columnEntry: csvLine){
             if (columnEntry == null){
                 columnEntry = "";
@@ -147,7 +147,12 @@ public class OutputModelResultProcessor {
             columnEntry = columnEntry.replace("\r\n", "\\r");
             columnEntry = columnEntry.replace("\r", "\\r");
             columnEntry = columnEntry.replace("\n", "\\r");
-            lineString += config.getFieldsEnclosedBy() + columnEntry + config.getFieldsEnclosedBy() + config.getFieldsTerminatedBy();
+            if (first){
+                lineString += config.getFieldsEnclosedBy() + columnEntry + config.getFieldsEnclosedBy() ;
+                first = false;
+            }else{
+                lineString += config.getFieldsTerminatedBy() + config.getFieldsEnclosedBy() + columnEntry + config.getFieldsEnclosedBy() ;
+            }
         }
 
         return lineString;
