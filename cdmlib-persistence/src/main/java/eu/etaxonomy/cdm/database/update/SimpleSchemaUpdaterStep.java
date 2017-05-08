@@ -65,8 +65,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
      *
      * @param stepName Step name
 	 * @param defaultQuery query
-	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonNameBase
-	 *     (while TaxonNameBase_AUD is the audited table
+	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonName
+	 *     (while TaxonName_AUD is the audited table
 	 * @param adapt preliminary
 	 * @return
 	 */

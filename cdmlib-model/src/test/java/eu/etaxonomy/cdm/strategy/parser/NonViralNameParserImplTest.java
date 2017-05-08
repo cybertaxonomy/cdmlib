@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -622,9 +622,9 @@ public class NonViralNameParserImplTest {
         assertEquals("Title cache must be correct", hybridCache, name1.getTitleCache());
         List<HybridRelationship> orderedRels = name1.getOrderedChildRelationships();
         assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
-        TaxonNameBase<?,?> firstParent = orderedRels.get(0).getParentName();
+        TaxonName firstParent = orderedRels.get(0).getParentName();
         assertEquals("Name must have Abies alba as first hybrid parent", "Abies alba", firstParent.getTitleCache());
-        TaxonNameBase<?,?> secondParent = orderedRels.get(1).getParentName();
+        TaxonName secondParent = orderedRels.get(1).getParentName();
         assertEquals("Name must have Pinus bus as second hybrid parent", "Pinus bus", secondParent.getTitleCache());
         assertEquals("Hybrid name must have the lowest rank ('species') as rank", Rank.SPECIES(), name1.getRank());
         assertNull("Name must not have a genus eptithet", name1.getGenusOrUninomial());
@@ -810,7 +810,7 @@ public class NonViralNameParserImplTest {
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
 //        assertFalse( name.getHybridChildRelations().isEmpty());
 //        for (HybridRelationship rel : name.getHybridChildRelations()){
-//            TaxonNameBase<?,?> parent = rel.getParentName();
+//            TaxonName parent = rel.getParentName();
 //            System.out.println(parent.getTitleCache());
 //        }
     }

@@ -2,7 +2,7 @@
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../service/dataset.xsd">
 <TAXONRELATIONSHIP/> 
 <NAMERELATIONSHIP/>
-<TAXONNAMEBASE/>
+<TAXONNAME/>
 <TAXONBASE/>
 <TAXONNODE/>
 <USERACCOUNT/>

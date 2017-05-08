@@ -22,7 +22,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -43,7 +43,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameCannotBeAcceptedAndSynonymTest.class);
 
-	private TaxonNameBase name1;
+	private TaxonName name1;
 	private IBotanicalName name2;
 	private IBotanicalName name3;
     private Taxon taxon1;

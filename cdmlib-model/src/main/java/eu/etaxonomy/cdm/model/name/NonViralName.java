@@ -46,7 +46,7 @@
 //@XmlType(name = "NonViralName", propOrder = {})
 //@XmlRootElement(name = "NonViralName")
 //@Entity
-//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
 //@Audited
 //@Configurable
 //
@@ -55,7 +55,7 @@
 //@NoDuplicateNames(groups = Level3.class)
 //public class NonViralName3
 ////        <T extends NonViralName<?>>
-////        extends TaxonNameBase<T, INameCacheStrategy>
+////        extends TaxonName<T, INameCacheStrategy>
 //{
 //
 ////    private static final long serialVersionUID = -9083811681449792683L;

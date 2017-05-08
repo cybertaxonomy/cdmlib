@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -392,7 +392,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @param derivedThing
      * @param sec
      */
-    private void setTaxonNameBase(SpecimenSynthesysExcelImportConfigurator config){
+    private void setTaxonName(SpecimenSynthesysExcelImportConfigurator config){
         ITaxonNameBase taxonName = null;
         Taxon taxon = null;
 
@@ -455,7 +455,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = TaxonNameFactory.NewNonViralInstance(null);
                     taxonName.setTitleCache(scientificName, true);
                 }
-                getNameService().save((TaxonNameBase<?,?>)taxonName);
+                getNameService().save((TaxonName<?,?>)taxonName);
                 taxon = Taxon.NewInstance(taxonName, ref); //sec set null
                 getTaxonService().save(taxon);
                 //   refreshTransaction();
@@ -723,7 +723,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
             getOccurrenceService().saveOrUpdate(derivedUnitBase);
 
-            setTaxonNameBase(config);
+            setTaxonName(config);
 
             //         refreshTransaction();
             if (DEBUG) {

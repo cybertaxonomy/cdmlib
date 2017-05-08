@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -73,7 +73,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
     public static final String[] includeTables = new String[]{
         "TAXONBASE",
-        "TAXONNAMEBASE",
+        "TAXONNAME",
         "AGENTBASE",
         "AGENTBASE_AGENTBASE",
         "HOMOTYPICALGROUP"
@@ -117,7 +117,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // since name is lazy loaded the call to getName should fail
         try {
-            CdmBase.deproxy(taxon.getName(), TaxonNameBase.class);
+            CdmBase.deproxy(taxon.getName(), TaxonName.class);
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
 
@@ -136,7 +136,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // since name is lazy loaded the call to getName should fail
         try {
-            CdmBase.deproxy(taxon.getName(),TaxonNameBase.class);
+            CdmBase.deproxy(taxon.getName(),TaxonName.class);
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
 
@@ -158,7 +158,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have values of
         // initialized=false and session=null
 
-        INonViralName nvn = CdmBase.deproxy(taxon.getName(),TaxonNameBase.class);
+        INonViralName nvn = CdmBase.deproxy(taxon.getName(),TaxonName.class);
 
         // normally this call should throw a lazy loading exception since
         // the combinationAuthorship object is not initialized, but
@@ -248,7 +248,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // loading the taxon with its taxon name object pre-initialized
         taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
 
-        nvn = CdmBase.deproxy(taxon.getName(),TaxonNameBase.class);
+        nvn = CdmBase.deproxy(taxon.getName(),TaxonName.class);
         team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
 
         // since a valid session is now attached to teamMembers, forcing the

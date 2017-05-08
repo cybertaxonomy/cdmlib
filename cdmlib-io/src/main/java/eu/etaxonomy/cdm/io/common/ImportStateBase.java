@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -34,11 +33,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
@@ -96,12 +92,12 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
-		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
-		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
+		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<>(service));
 
 		if (getTransformer() == null){
 			IInputTransformer newTransformer = config.getTransformer();

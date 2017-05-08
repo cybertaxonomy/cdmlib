@@ -62,7 +62,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     static{
 //        disabled since no longer needed, see https://dev.e-taxonomy.eu/trac/ticket/4111#comment:8
-//        exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
+//        exculdeMap.put(TaxonName.class, new HashSet<String>());
 
         Set<String> defaultExculdes = new HashSet<String>();
         defaultExculdes.add("createdBy");  //created by is changed by CdmPreDataChangeListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
@@ -79,14 +79,14 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         /*
          * default fields required for each type for which excludes are defined
          */
-//        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
-//        exculdeMap.get(TaxonNameBase.class).add("created");
-//        exculdeMap.get(TaxonNameBase.class).add("updated");
+//        exculdeMap.get(TaxonName.class).add("updatedBy");
+//        exculdeMap.get(TaxonName.class).add("created");
+//        exculdeMap.get(TaxonName.class).add("updated");
 
         /*
          * the specific excludes
          */
-//        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
+//        exculdeMap.get(TaxonName.class).add("taxonBases");
     }
 
 

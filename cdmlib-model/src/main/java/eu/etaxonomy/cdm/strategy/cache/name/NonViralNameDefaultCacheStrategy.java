@@ -31,12 +31,10 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
@@ -54,7 +52,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         extends NameCacheStrategyBase<T>
         implements INonViralNameCacheStrategy<T> {
-	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
+
+    private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
@@ -171,67 +170,21 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 
 //** *****************************************************************************************/
 
-    @Override
-    public String getTitleCache(T nonViralName) {
-    	return getTitleCache(nonViralName, null);
-    }
 
-    @Override
-	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
-    	List<TaggedText> tags = getTaggedTitle(nonViralName);
-		if (tags == null){
-			return null;
-		}else{
-			String result = createString(tags, htmlTagRules);
-		    return result;
-		}
-    }
-
-	@Override
-	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
-		List<TaggedText> tags = getTaggedFullTitle(nonViralName);
-	    if (tags == null){
-	    	return null;
-	    }else{
-	    	String result = createString(tags, htmlTagRules);
-	    	return result;
-	    }
-	}
-
-    @Override
-    public String getFullTitleCache(T nonViralName) {
-    	return getFullTitleCache(nonViralName, null);
-    }
-
-
-    /**
-     * Generates and returns the "name cache" (only scientific name without author teams and year).
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
-    @Override
-    public String getNameCache(T nonViralName) {
-        List<TaggedText> tags = getTaggedName(nonViralName);
-        if (tags == null){
-            return null;
-        }else{
-            String result = createString(tags);
-            return result;
-        }
-    }
 
 
 // ******************* Authorship ******************************/
 
     @Override
-    public String getAuthorshipCache(T nonViralName) {
-        if (nonViralName == null){
+    public String getAuthorshipCache(T taxonName) {
+        if (taxonName == null){
             return null;
         }
         //cache protected
-        if (nonViralName.isProtectedAuthorshipCache() == true) {
-            return nonViralName.getAuthorshipCache();
+        if (taxonName.isProtectedAuthorshipCache() == true) {
+            return taxonName.getAuthorshipCache();
         }
-        return getNonCacheAuthorshipCache(nonViralName);
+        return getNonCacheAuthorshipCache(taxonName);
     }
 
     /**
@@ -358,9 +311,10 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     @Override
     public List<TaggedText> getNomStatusTags(T nonViralName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
+
         Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
         Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
-        List<TaggedText> nomStatusTags = new ArrayList<TaggedText>();
+        List<TaggedText> nomStatusTags = new ArrayList<>();
         while (iterator.hasNext()) {
             NomenclaturalStatus ncStatus = iterator.next();
             // since the NewInstance method of nomencatural status allows null as parameter
@@ -856,7 +810,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 			NameRelationshipType type = nameRel.getType();
     		if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
     			String originalNameString;
-    			TaxonNameBase<?,?> originalName = nameRel.getFromName();
+    			TaxonName originalName = nameRel.getFromName();
     			if (!originalName.isNonViral()){
     				originalNameString = originalName.getTitleCache();
     			}else{
@@ -920,37 +874,53 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 
 
 	@Override
-    public String getLastEpithet(T taxonNameBase) {
-        Rank rank = taxonNameBase.getRank();
+    public String getLastEpithet(T taxonName) {
+        Rank rank = taxonName.getRank();
         if(rank.isGenus() || rank.isSupraGeneric()) {
-            return taxonNameBase.getGenusOrUninomial();
+            return taxonName.getGenusOrUninomial();
         } else if(rank.isInfraGeneric()) {
-            return taxonNameBase.getInfraGenericEpithet();
+            return taxonName.getInfraGenericEpithet();
         } else if(rank.isSpecies()) {
-            return taxonNameBase.getSpecificEpithet();
+            return taxonName.getSpecificEpithet();
         } else {
-            return taxonNameBase.getInfraSpecificEpithet();
+            return taxonName.getInfraSpecificEpithet();
         }
     }
 
 
     /**
-     * @param tags
-     * @return
+     * {@inheritDoc}
      */
-    private String createString(List<TaggedText> tags) {
-        return TaggedCacheHelper.createString(tags);
+    @Override
+    protected List<TaggedText> doGetTaggedTitle(T nonViralName) {
+        List<TaggedText> tags = new ArrayList<>();
+        if (nonViralName.isHybridFormula()){
+            //hybrid formula
+            String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
+            boolean isFirst = true;
+            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            for (HybridRelationship rel: rels){
+                if (! isFirst){
+                    tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
+                }
+                isFirst = false;
+                tags.addAll(getTaggedTitle((T)rel.getParentName()));
+            }
+            return tags;
+        }else if (nonViralName.isAutonym()){
+            //Autonym
+            tags.addAll(handleTaggedAutonym(nonViralName));
+        }else{ //not Autonym
+    //      String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
+
+            List<TaggedText> nameTags = getTaggedName(nonViralName);
+            tags.addAll(nameTags);
+            String authorCache = getAuthorshipCache(nonViralName);
+            if (StringUtils.isNotBlank(authorCache)){
+                tags.add(new TaggedText(TagEnum.authors, authorCache));
+            }
+        }
+        return tags;
     }
-
-    /**
-     * @param tags
-     * @param htmlTagRules
-     * @return
-     */
-    private String createString(List<TaggedText> tags, HTMLTagRules htmlTagRules) {
-        return TaggedCacheHelper.createString(tags, htmlTagRules);
-    }
-
-
 
 }

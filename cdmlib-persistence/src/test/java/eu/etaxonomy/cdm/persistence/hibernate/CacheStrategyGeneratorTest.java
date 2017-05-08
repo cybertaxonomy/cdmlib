@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -101,13 +101,13 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	@ExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
 		//names
-	    TaxonNameBase<?,?> name =  cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
+	    TaxonName<?,?> name =  cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
 		name.setTitleCache(null, false);
 		name.setNameCache(null, false);
 		name.setGenusOrUninomial("Abies");
 		name.setAuthorshipCache("Mill.", true);
 		cdmEntityDaoBase.saveOrUpdate(name);
-		TaxonNameBase<?,?> name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
+		TaxonName<?,?> name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
 		name2.setProtectedFullTitleCache(false);
 		name2.setProtectedTitleCache(false);
 		name2.setProtectedNameCache(false);
@@ -127,19 +127,19 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
 		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
 		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
-		TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name3.setFullTitleCache("Test: MyBook");
 		name3.setTitleCache("Test", true);
 		cdmEntityDaoBase.saveOrUpdate(name3);
-		List<TaxonNameBase> taxa = cdmEntityDaoBase.findByTitle("Test");
+		List<TaxonName> taxa = cdmEntityDaoBase.findByTitle("Test");
 
-		TaxonNameBase<?,?> nameBase = taxa.get (0);
+		TaxonName<?,?> nameBase = taxa.get (0);
 		IBotanicalName botName = nameBase;
 
 		logger.debug("created "+botName.getCreated());
 		logger.debug("updated: " +botName.getUpdated());
 //		IBotanicalName name3 =  (IBotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
-//		printDataSet(System.err, new String[]{"TaxonNameBase", "Reference"});
+//		printDataSet(System.err, new String[]{"TaxonName", "Reference"});
 	}
 
 	/**

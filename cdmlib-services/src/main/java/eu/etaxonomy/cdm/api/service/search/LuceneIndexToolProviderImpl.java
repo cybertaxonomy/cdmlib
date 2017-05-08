@@ -72,7 +72,7 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
         if (type.equals(TaxonBase.class)) {
             return Taxon.class;
         }
-//        if (type.equals(TaxonNameBase.class)) {
+//        if (type.equals(TaxonName.class)) {
 //            return NonViralName.class;
 //        }
         return type;

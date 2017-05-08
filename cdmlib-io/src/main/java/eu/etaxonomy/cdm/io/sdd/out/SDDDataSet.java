@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -210,9 +210,9 @@ public class SDDDataSet {
 
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
-    	@XmlElement(name = "TaxonNameBase", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TaxonNameBase.class),
+    	@XmlElement(name = "TaxonName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TaxonName.class),
     })
-    protected List<TaxonNameBase> taxonomicNames;
+    protected List<TaxonName> taxonomicNames;
 
     @XmlElementWrapper(name = "Taxa")
     @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -367,7 +367,7 @@ public class SDDDataSet {
      *     {@link List<axonNameBase> }
      *
      */
-    public List<TaxonNameBase> getTaxonomicNames() {
+    public List<TaxonName> getTaxonomicNames() {
         return taxonomicNames;
     }
 
@@ -376,10 +376,10 @@ public class SDDDataSet {
      *
      * @param value
      *     allowed object is
-     *     {@link List<TaxonNameBase> }
+     *     {@link List<TaxonName> }
      *
      */
-    public void setTaxonomicNames(List<TaxonNameBase> value) {
+    public void setTaxonomicNames(List<TaxonName> value) {
         this.taxonomicNames = value;
     }
 

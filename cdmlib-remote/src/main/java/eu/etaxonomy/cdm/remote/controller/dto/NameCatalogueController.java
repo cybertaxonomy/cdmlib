@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -86,7 +86,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("name_catalogue")
 @RequestMapping(value = { "/name_catalogue" })
-public class NameCatalogueController extends AbstractController<TaxonNameBase, INameService> implements ResourceLoaderAware {
+public class NameCatalogueController extends AbstractController<TaxonName, INameService> implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
 
@@ -296,7 +296,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a list of {@link NameSearch} objects each corresponding to a
-     *         single query. These are built from {@link TaxonNameBase}
+     *         single query. These are built from {@link TaxonName}
      *         entities which are in turn initialized using
      *         the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
@@ -330,7 +330,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
-     *         single query. These are built from {@link TaxonNameBase} entities
+     *         single query. These are built from {@link TaxonName} entities
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
@@ -493,7 +493,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
-     *         single query. These are built from {@link TaxonNameBase} entities
+     *         single query. These are built from {@link TaxonName} entities
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
@@ -663,7 +663,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameInformation} objects each corresponding to a
-     *         single name uuid. These are built from {@link TaxonNameBase} entities
+     *         single name uuid. These are built from {@link TaxonName} entities
      *         which are in turn initialized using the {@link #NAME_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
@@ -677,7 +677,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
-            TaxonNameBase<?,?> nvn = service.load(UUID.fromString(nameUuid),NAME_INFORMATION_INIT_STRATEGY);
+            TaxonName nvn = service.load(UUID.fromString(nameUuid),NAME_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
             if (nvn != null) {
@@ -860,7 +860,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     for (Synonym syn : syns) {
                         String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
-                        TaxonNameBase<?,?> synnvn = syn.getName();
+                        TaxonName synnvn = syn.getName();
                         String name = synnvn.getTitleCache();
                         String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
@@ -897,7 +897,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
                     for (TaxonRelationship tr : trFromSet) {
                         String titleTo = tr.getToTaxon().getTitleCache();
-                        TaxonNameBase tonvn = tr.getToTaxon().getName();
+                        TaxonName tonvn = tr.getToTaxon().getName();
                         String name = tonvn.getTitleCache();
                         String rank = tonvn.getRank().getTitleCache();
                         String uuid = tr.getToTaxon().getUuid().toString();
@@ -934,7 +934,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
                         String titleFrom = tr.getFromTaxon().getTitleCache();
-                        TaxonNameBase fromnvn = tr.getFromTaxon().getName();
+                        TaxonName fromnvn = tr.getFromTaxon().getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
                         String uuid = tr.getFromTaxon().getUuid().toString();
@@ -968,7 +968,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
-                    TaxonNameBase nvn = synonym.getName();
+                    TaxonName nvn = synonym.getName();
                  // update taxon information object with synonym related data
                     DateTime dt = synonym.getUpdated();
                     String modified = fmt.print(dt);
@@ -997,7 +997,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                         String title = accTaxon.getTitleCache();
                         logger.info("taxon title cache : " + accTaxon.getTitleCache());
 
-                        TaxonNameBase<?,?> accnvn = accTaxon.getName();
+                        TaxonName accnvn = accTaxon.getName();
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
@@ -1090,7 +1090,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
-     *         single query. These are built from {@link TaxonNameBase} entities
+     *         single query. These are built from {@link TaxonName} entities
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
@@ -1120,7 +1120,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
-     *         single query. These are built from {@link TaxonNameBase} entities
+     *         single query. These are built from {@link TaxonName} entities
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
@@ -1147,7 +1147,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             //String queryWOWildcards = getQueryWithoutWildCards(query);
             //MatchMode mm = getMatchModeFromQuery(query);
             logger.info("doGetAcceptedNameSearch()" + request.getRequestURI() + " for query \"" + query);
-            List<TaxonNameBase> nameList = new ArrayList<>();
+            List<TaxonName> nameList = new ArrayList<>();
 
             // if "name" search then find by name cache
             if (searchType.equals(NAME_SEARCH)) {

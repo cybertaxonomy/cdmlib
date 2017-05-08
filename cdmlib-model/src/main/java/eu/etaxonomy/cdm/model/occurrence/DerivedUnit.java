@@ -40,7 +40,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
@@ -125,7 +125,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
-	private TaxonNameBase storedUnder;
+	private TaxonName storedUnder;
 
 	@XmlElement(name = "DerivedFrom")
 	@XmlIDREF
@@ -314,7 +314,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		return barcode;
 	}
 
-	public void setStoredUnder(TaxonNameBase storedUnder) {
+	public void setStoredUnder(TaxonName storedUnder) {
 		this.storedUnder = storedUnder;
 	}
 
@@ -366,7 +366,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		this.collectorsNumber = StringUtils.isBlank(collectorsNumber)? null : collectorsNumber;
 	}
 
-	public TaxonNameBase getStoredUnder() {
+	public TaxonName getStoredUnder() {
 		return storedUnder;
 	}
 

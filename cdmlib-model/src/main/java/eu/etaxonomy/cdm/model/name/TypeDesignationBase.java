@@ -39,13 +39,13 @@ import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 
 /**
- * The (abstract) class representing a typification of one or several {@link TaxonNameBase taxon names}.<BR>
+ * The (abstract) class representing a typification of one or several {@link TaxonName taxon names}.<BR>
  * All taxon names which have a {@link Rank rank} "species aggregate" or lower
  * can only be typified by specimens (a {@link SpecimenTypeDesignation specimen type designation}), but taxon
  * names with a higher rank might be typified by an other taxon name with
  * rank "species" or "genus" (a {@link NameTypeDesignation name type designation}).
  *
- * @see		TaxonNameBase
+ * @see		TaxonName
  * @see		NameTypeDesignation
  * @see		SpecimenTypeDesignation
  * @author  a.mueller
@@ -66,7 +66,10 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ValidTypeDesignation(groups=Level2.class)
-public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>> extends ReferencedEntityBase implements ITypeDesignation {
+public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>>
+        extends ReferencedEntityBase
+        implements ITypeDesignation {
+
     private static final long serialVersionUID = 8622351017235131355L;
 
     @SuppressWarnings("unused")
@@ -81,7 +84,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<TaxonNameBase> typifiedNames = new HashSet<>();
+    private Set<TaxonName> typifiedNames = new HashSet<>();
 
     @XmlElement(name = "TypeStatus")
     @XmlIDREF
@@ -123,7 +126,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @param originalNameString	the taxon name string used originally in the reference source for the new designation
      * @see							#TypeDesignationBase()
      * @see							#isNotDesignated()
-     * @see							TaxonNameBase#getTypeDesignations()
+     * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString) {
         this(citation, citationMicroReference, originalNameString, false);
@@ -142,7 +145,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * 								<i>this</i> type designation
      * @see							#TypeDesignationBase()
      * @see							#isNotDesignated()
-     * @see							TaxonNameBase#getTypeDesignations()
+     * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
         super(citation, citationMicroReference, originalNameString);
@@ -170,18 +173,18 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     }
 
     /**
-     * Returns the set of {@link TaxonNameBase taxon names} typified in <i>this</i>
+     * Returns the set of {@link TaxonName taxon names} typified in <i>this</i>
      * type designation. This is a subset of the taxon names belonging to the
      * corresponding {@link #getHomotypicalGroup() homotypical group}.
      */
     @Override
-    public Set<TaxonNameBase> getTypifiedNames() {
+    public Set<TaxonName> getTypifiedNames() {
         return typifiedNames;
     }
 
     /**
      * Returns the boolean value "true" if it is known that a type does not
-     * exist and therefore the {@link TaxonNameBase taxon name} to which <i>this</i>
+     * exist and therefore the {@link TaxonName taxon name} to which <i>this</i>
      * type designation is assigned must still be typified. Two
      * cases must be differentiated: <BR><ul>
      * <li> a) it is unknown whether a type exists and
@@ -209,7 +212,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @deprecated for bidirectional use only
      */
     @Deprecated
-    protected void addTypifiedName(TaxonNameBase taxonName){
+    protected void addTypifiedName(TaxonName taxonName){
         this.typifiedNames.add(taxonName);
     }
 
@@ -217,7 +220,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @deprecated for bidirectional use only
      */
     @Deprecated
-    protected void removeTypifiedName(TaxonNameBase taxonName){
+    protected void removeTypifiedName(TaxonName taxonName){
         this.typifiedNames.remove(taxonName);
         if (taxonName.getTypeDesignations().contains(this)){
             taxonName.removeTypeDesignation(this);
@@ -253,9 +256,9 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     public Object clone() throws CloneNotSupportedException {
         TypeDesignationBase result = (TypeDesignationBase)super.clone();
 
-        result.typifiedNames = new HashSet<TaxonNameBase>();
-//		for (TaxonNameBase taxonNameBase : getTypifiedNames()){
-//			result.typifiedNames.add(taxonNameBase);
+        result.typifiedNames = new HashSet<>();
+//		for (TaxonName taxonName : getTypifiedNames()){
+//			result.typifiedNames.add(taxonName);
 //		}
 
 

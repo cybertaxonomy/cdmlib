@@ -20,7 +20,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -61,7 +61,7 @@ public class IntextReference extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private TaxonNameBase<?,?> taxonName;
+	private TaxonName taxonName;
 
     @XmlElement(name = "Taxon")
     @XmlIDREF
@@ -142,7 +142,7 @@ public class IntextReference extends VersionableEntity {
         return result;
     }
 
-//	public static IntextReference NewTaxonNameInstance(TaxonNameBase<?,?> taxonName, LanguageStringBase languageString, int start, int end){
+//	public static IntextReference NewTaxonNameInstance(TaxonName taxonName, LanguageStringBase languageString, int start, int end){
 //		return new IntextReference(taxonName, null, null, null, null, null, languageString, start, end);
 //	}
 //
@@ -195,7 +195,7 @@ public class IntextReference extends VersionableEntity {
 	@Deprecated //for hibernate use only
 	private IntextReference(){}
 
-//	private IntextReference(TaxonNameBase<?, ?> taxonName, TaxonBase<?> taxon,
+//	private IntextReference(TaxonName taxonName, TaxonBase<?> taxon,
 //				SpecimenOrObservationBase<?> occurrence, AgentBase<?> agent,
 //				Reference reference, Media media, LanguageStringBase languageString, int start, int end) {
 //			super();
@@ -275,8 +275,8 @@ public class IntextReference extends VersionableEntity {
      */
     private void setTarget(IIntextReferenceTarget target) {
         target = CdmBase.deproxy(target);
-        if (target instanceof TaxonNameBase){
-            this.taxonName = (TaxonNameBase<?,?>)target;
+        if (target instanceof TaxonName){
+            this.taxonName = (TaxonName<?,?>)target;
         }else if (target instanceof TaxonBase){
             this.taxon = (TaxonBase<?>)target;
         }else if (target instanceof SpecimenOrObservationBase){
@@ -328,10 +328,10 @@ public class IntextReference extends VersionableEntity {
        }
    }
 
-//	public TaxonNameBase<?, ?> getTaxonName() {
+//	public TaxonName getTaxonName() {
 //		return taxonName;
 //	}
-//	public void setTaxonName(TaxonNameBase<?, ?> taxonName) {
+//	public void setTaxonName(TaxonName taxonName) {
 //		this.taxonName = taxonName;
 //	}
 //

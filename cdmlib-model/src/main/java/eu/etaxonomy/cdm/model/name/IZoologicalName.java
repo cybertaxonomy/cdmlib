@@ -34,7 +34,7 @@ public interface IZoologicalName extends INonViralName {
     /**
      * Returns the publication year (as an integer) of the original validly
      * published species epithet for <i>this</i> zoological taxon name. This only
-     * applies for zoological taxon names that are no {@link TaxonNameBase#isOriginalCombination() original combinations}.
+     * applies for zoological taxon names that are no {@link TaxonName#isOriginalCombination() original combinations}.
      * If the originalPublicationYear attribute is null the year could be taken
      * from the publication year of the corresponding original name (basionym)
      * or from the {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference} of the basionym

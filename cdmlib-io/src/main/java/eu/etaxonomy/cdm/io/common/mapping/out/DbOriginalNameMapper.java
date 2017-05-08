@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author a.mueller
@@ -52,7 +52,7 @@ public class DbOriginalNameMapper extends DbSingleAttributeExportMapperBase<DbEx
 		if (cdmBase.isInstanceOf(OriginalSourceBase.class)){
 			OriginalSourceBase<?> source = CdmBase.deproxy(cdmBase, OriginalSourceBase.class);
 			String nameString = source.getOriginalNameString();
-			TaxonNameBase<?,?> name = null;
+			TaxonName<?,?> name = null;
 			if (source.isInstanceOf(DescriptionElementSource.class)){
 				DescriptionElementSource descSource = CdmBase.deproxy(source, DescriptionElementSource.class);
 				name = descSource.getNameUsedInSource();

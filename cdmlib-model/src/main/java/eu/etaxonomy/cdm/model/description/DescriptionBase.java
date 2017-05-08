@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * The upmost (abstract) class for a description as a whole (with possibly
  * several {@link DescriptionElementBase elementary information data})
  * for a {@link SpecimenOrObservationBase specimen}, a {@link Taxon taxon}
- * or even a {@link TaxonNameBase taxon name}.
+ * or even a {@link TaxonName taxon name}.
  * <P>
  * This class corresponds to: <ul>
  * <li> DescriptionsSectionType according to the the SDD schema

@@ -23,7 +23,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -58,7 +58,7 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         Optional<Reference> fullNullReferenceOptional = null;
 
         //test name with ref
-        TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(null);
         Optional<Reference> nomRef = Optional.of(ReferenceFactory.newBook());
         name.setNomenclaturalReference(nomRef.get());
         Registration registration = Registration.NewInstance();
@@ -113,7 +113,7 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
 
         //... name without ref
         Registration regWithUnreferenceName = Registration.NewInstance();
-        TaxonNameBase<?,?> nameWithoutRef = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName nameWithoutRef = TaxonNameFactory.NewBotanicalInstance(null);
         regWithUnreferenceName.setName(nameWithoutRef);
         registrationDao.save(regWithUnreferenceName);
         registrationList = registrationDao.list(nullRef, null, null, null, null);
@@ -136,7 +136,7 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
 
 
         //test name and type designation with same ref
-        TaxonNameBase<?,?> additionalName = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName additionalName = TaxonNameFactory.NewBotanicalInstance(null);
         additionalName.setNomenclaturalReference(desigRef.get());
         regWithType.setName(additionalName);
         registrationList = registrationDao.list(desigRef, null, null, null,null);
@@ -164,13 +164,13 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
 
         //> 1
         Registration registration2 = Registration.NewInstance();
-        TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(null);
         name2.setNomenclaturalReference(desigRef.get());
         registration2.setName(name2);
         registrationDao.save(registration2);
 
         Registration registration3 = Registration.NewInstance();
-        TaxonNameBase<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(null);
         name3.setNomenclaturalReference(desigRef.get());
         registration3.setName(name3);
         registrationDao.save(registration3);

@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup;
 
 /**
- * The class for synonyms: these are {@link TaxonBase taxa} the {@link name.TaxonNameBase taxon names}
+ * The class for synonyms: these are {@link TaxonBase taxa} the {@link name.TaxonName taxon names}
  * of which are not used by the {@link TaxonBase#getSec() reference} to designate a real
  * taxon but are mentioned as taxon names that were oder are used by some other
  * unspecified references to designate (at least to some extent) the same
@@ -100,30 +100,30 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 
 //************************************* FACTORY ****************************/
     /**
-     * @see #NewInstance(TaxonNameBase, Reference)
-     * @param taxonNameBase
+     * @see #NewInstance(TaxonName, Reference)
+     * @param taxonName
      * @param sec
      * @return
      */
-    public static Synonym NewInstance(ITaxonNameBase taxonNameBase, Reference sec){
-        return NewInstance(TaxonNameBase.castAndDeproxy(taxonNameBase), sec);
+    public static Synonym NewInstance(ITaxonNameBase taxonName, Reference sec){
+        return NewInstance(TaxonName.castAndDeproxy(taxonName), sec);
     }
 
     /**
      * Creates a new synonym instance with
-     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
      *
-     * @param  taxonNameBase    the taxon name used
+     * @param  TaxonName    the taxon name used
      * @param  sec              the reference using the taxon name
-     * @see                     #Synonym(TaxonNameBase, Reference)
+     * @see                     #Synonym(TaxonName, Reference)
      */
-    public static Synonym NewInstance(TaxonNameBase taxonName, Reference sec){
+    public static Synonym NewInstance(TaxonName taxonName, Reference sec){
         Synonym result = new Synonym(taxonName, sec, null);
         return result;
     }
 
-    public static Synonym NewInstance(TaxonNameBase taxonName, Reference sec, String secDetail){
+    public static Synonym NewInstance(TaxonName taxonName, Reference sec, String secDetail){
         Synonym result = new Synonym(taxonName, sec, secDetail);
         return result;
     }
@@ -132,15 +132,15 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 	/**
 	 * Class constructor: creates a new empty synonym instance.
 	 *
-	 * @see 	#Synonym(TaxonNameBase, Reference)
+	 * @see 	#Synonym(TaxonName, Reference)
 	 */
 	//TODO should be private, but still produces Spring init errors
 	public Synonym(){
 		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
 
-	private Synonym(TaxonNameBase taxonNameBase, Reference sec, String secDetail){
-		super(taxonNameBase, sec, secDetail);
+	private Synonym(TaxonName taxonName, Reference sec, String secDetail){
+		super(taxonName, sec, secDetail);
 		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
 
@@ -175,7 +175,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 
     /**
      * Returns "true" if the proParte flag is set.
-     * This indicates that the {@link name.TaxonNameBase taxon name} used as a
+     * This indicates that the {@link name.TaxonName taxon name} used as a
      * {@link Synonym synonym} designated originally a real taxon which later has
      * been split. In this case the synonym is therefore the synonym of at least
      * two different ("accepted/valid") {@link Taxon taxa}.
@@ -193,7 +193,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 
     /**
      * Returns "true" if the ProParte flag is set.
-     * This indicates that the {@link name.TaxonNameBase taxon name} used as <code>this</code>
+     * This indicates that the {@link name.TaxonName taxon name} used as <code>this</code>
      * {@link Synonym synonym} designated originally a real taxon which later has
      * been lumped together with another one. In this case the
      * ("accepted/valid") {@link Taxon taxon} has therefore at least

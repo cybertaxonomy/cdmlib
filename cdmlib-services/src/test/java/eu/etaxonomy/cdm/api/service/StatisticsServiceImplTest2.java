@@ -454,7 +454,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 
 		commit();
 
-		writeDbUnitDataSetFile(new String[] { "TAXONBASE", "TAXONNAMEBASE",
+		writeDbUnitDataSetFile(new String[] { "TAXONBASE", "TAXONNAME",
 				"TAXONRELATIONSHIP", "REFERENCE",
 				"DESCRIPTIONELEMENTBASE",
 				"DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE",

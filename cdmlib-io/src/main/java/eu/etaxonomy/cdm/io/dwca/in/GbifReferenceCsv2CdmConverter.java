@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -185,7 +185,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 
 	}
 
-	private void createCitation(TaxonDescription desc, Reference ref, TaxonNameBase nameUsedInSource) {
+	private void createCitation(TaxonDescription desc, Reference ref, TaxonName nameUsedInSource) {
 		Feature feature = Feature.CITATION();
 		TextData textData = TextData.NewInstance(feature);
 		DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(ref, null, nameUsedInSource, null);

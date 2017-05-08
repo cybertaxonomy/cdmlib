@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -184,7 +184,7 @@ public class CsvNameExport extends CsvNameExportBase {
         Set<UUID> parentsNodesUUID = new HashSet<UUID>(childrenUuids);
         childrenUuids.clear();
         List<TaxonNode> childrenNodes = new ArrayList<TaxonNode>();
-        TaxonNameBase name;
+        TaxonName name;
 
 
         findChildren(state, childrenUuids, parentsNodesUUID);
@@ -213,7 +213,7 @@ public class CsvNameExport extends CsvNameExportBase {
      * @param familyNode
      */
     private void findChildren(CsvNameExportState state, Set<UUID> childrenUuids, Set<UUID> parentsNodesUUID) {
-        TaxonNameBase name;
+        TaxonName name;
         List<TaxonNode> familyNodes = getTaxonNodeService().find(parentsNodesUUID);
         parentsNodesUUID =new HashSet<UUID>();
         for (TaxonNode familyNode: familyNodes){
@@ -223,7 +223,7 @@ public class CsvNameExport extends CsvNameExportBase {
                 child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
                 Taxon taxon = HibernateProxyHelper.deproxy(child.getTaxon());
                 if (taxon != null){
-                    name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
+                    name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
                     if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
                         childrenUuids.add(child.getUuid());
                         if (child.hasChildNodes()){

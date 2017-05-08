@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -47,7 +47,7 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
     private static final Logger logger = Logger.getLogger(BasionymsMustShareEpithetsAndAuthorsTest.class);
 
 	private IBotanicalName name;
-	private TaxonNameBase basionymName;
+	private TaxonName basionymName;
 	private Person author1;
 	private Person author2;
 
@@ -165,7 +165,7 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
        originalCombination.setSpecificEpithet("aus");
        originalCombination.setCombinationAuthorship(author1);
        originalCombination.setNomenclaturalReference(nomRef);
-       zooName.addBasionym(TaxonNameBase.castAndDeproxy(originalCombination));
+       zooName.addBasionym(TaxonName.castAndDeproxy(originalCombination));
 
 
        Assert.assertEquals(1, zooName.getNameRelations().size());

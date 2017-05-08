@@ -72,7 +72,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		Assert.assertTrue("Invoke should return true", result);
 		//to be continued
-//		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
+//		final String[]tableNames = {"TaxonBase","TaxonName","Classification",
 //                "TaxonNode","HomotypicalGroup"};
 //		commitAndStartNewTransaction(tableNames);
 	}

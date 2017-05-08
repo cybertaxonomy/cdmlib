@@ -19,11 +19,11 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 public class NoDuplicateNamesValidator implements
-		ConstraintValidator<NoDuplicateNames,TaxonNameBase<?,?>> {
+		ConstraintValidator<NoDuplicateNames,TaxonName<?,?>> {
 
 	private static Set<String> includeProperties;
 
@@ -53,11 +53,11 @@ public class NoDuplicateNamesValidator implements
 	public void initialize(NoDuplicateNames noDuplicateNames) { }
 
     @Override
-	public boolean isValid(TaxonNameBase<?,?> name, ConstraintValidatorContext constraintContext) {
+	public boolean isValid(TaxonName<?,?> name, ConstraintValidatorContext constraintContext) {
 		if(name == null) {
 			return true;
 		} else {
-			List<TaxonNameBase> matchingNonViralNames = nameService.list(name, includeProperties, null, null, null, null);
+			List<TaxonName> matchingNonViralNames = nameService.list(name, includeProperties, null, null, null, null);
 			if(matchingNonViralNames.size() > 0) {
 				if(matchingNonViralNames.size() == 1 && matchingNonViralNames.get(0).equals(name)) {
 					return true;

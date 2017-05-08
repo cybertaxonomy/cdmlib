@@ -35,7 +35,7 @@
 //})
 //@XmlRootElement(name = "ZoologicalName")
 //@Entity
-//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
 //@Audited
 //@Configurable
 //public class ZoologicalName4{
@@ -130,7 +130,7 @@
 //	 * @return  the nomenclatural code for animals
 //	 * @see  	NonViralName#isCodeCompliant()
 //	 * @see  	NonViralName#getNomenclaturalCode()
-//	 * @see  	TaxonNameBase#getHasProblem()
+//	 * @see  	TaxonName#getHasProblem()
 //	 */
 ////	@Override
 ////	public NomenclaturalCode getNomenclaturalCode(){

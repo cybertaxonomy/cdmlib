@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -392,7 +392,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     /**
      * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups}
      * that contain {@link Synonym synonyms} that are heterotypic to the given taxon.
-     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName Taxon names} of heterotypic synonyms
      * belong to a homotypical group which cannot be the homotypical group to which the
      * taxon name of the given taxon belongs. This method does not return the homotypic group the given
      * taxon belongs to.<BR>
@@ -467,7 +467,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize, Integer pageNumber);
 
     /**
-     * Returns a list of IdentifiableEntity instances (in particular, TaxonNameBase and TaxonBase instances)
+     * Returns a list of IdentifiableEntity instances (in particular, TaxonName and TaxonBase instances)
      * that match the properties specified in the configurator.
      * @param configurator
      * @return
@@ -776,11 +776,11 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public int countSynonyms(boolean onlyAttachedToTaxon);
 
-    public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
-    public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
+    public List<TaxonName> findIdenticalTaxonNameIds(List<String> propertyPath);
 //
-//    public String getPhylumName(TaxonNameBase name);
+//    public String getPhylumName(TaxonName name);
 
     /**
      * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or

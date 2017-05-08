@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
@@ -169,7 +169,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
         Long totalCount = Long.valueOf(allRecords.size());
 
-        TaxonNameBase<?,?> parentName = null;
+        TaxonName parentName = null;
 
         for(CdmBase record : PagerUtils.pageList(allRecords, pageIndex, pageSize)) {
             if (record.isInstanceOf(TaxonNode.class)){
@@ -219,8 +219,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.find(newAcceptedTaxonNode.getTaxon().getUuid());
         newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon, Taxon.class);
         // Move oldTaxon to newTaxon
-        //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-        TaxonNameBase<?,?> newSynonymName = CdmBase.deproxy(oldTaxon.getName());
+        //TaxonName synonymName = oldTaxon.getName();
+        TaxonName newSynonymName = CdmBase.deproxy(oldTaxon.getName());
         HomotypicalGroup group = CdmBase.deproxy(newSynonymName.getHomotypicalGroup());
         if (synonymType == null){
             if (newSynonymName.isHomotypic(newAcceptedTaxon.getName())){
@@ -231,7 +231,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
         //set homotypic group
-        TaxonNameBase<?,?> newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonNameBase.class);
+        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         // Move Synonym Relations to new Taxon
         Synonym newSynonym = newAcceptedTaxon.addSynonymName(newSynonymName, citation, citationMicroReference,

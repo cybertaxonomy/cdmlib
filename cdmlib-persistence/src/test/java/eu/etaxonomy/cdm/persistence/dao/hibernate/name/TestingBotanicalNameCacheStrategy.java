@@ -24,18 +24,18 @@ public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStra
     }
 
     @Override
-    public String getLastEpithet(IBotanicalName taxonNameBase) {
-        return "test.botanical.lastEpithet"+ taxonNameBase.getId();
+    public String getLastEpithet(IBotanicalName taxonName) {
+        return "test.botanical.lastEpithet"+ taxonName.getId();
     }
 
     @Override
-    public String getNameCache(IBotanicalName taxonNameBase) {
-        return "test.botanical.nameCache"+ taxonNameBase.getId();
+    public String getNameCache(IBotanicalName taxonName) {
+        return "test.botanical.nameCache"+ taxonName.getId();
     }
 
     @Override
-    public String getFullTitleCache(IBotanicalName taxonNameBase) {
-        return "test.botanical.fullTitleCache"+ taxonNameBase.getId();
+    public String getFullTitleCache(IBotanicalName taxonName) {
+        return "test.botanical.fullTitleCache"+ taxonName.getId();
     }
 
     @Override

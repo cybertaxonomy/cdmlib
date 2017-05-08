@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -84,7 +84,7 @@ class BatchValidationUtil {
         // Causes some AOP-related error when calling list() method on it
         //services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getLocationService()));
         services.add(new EntityValidationUnit(Media.class, appConfig.getMediaService()));
-        services.add(new EntityValidationUnit(TaxonNameBase.class, appConfig.getNameService()));
+        services.add(new EntityValidationUnit(TaxonName.class, appConfig.getNameService()));
         services.add(new EntityValidationUnit(SpecimenOrObservationBase.class, appConfig.getOccurrenceService()));
         services.add(new EntityValidationUnit(PolytomousKeyNode.class, appConfig.getPolytomousKeyNodeService()));
         services.add(new EntityValidationUnit(PolytomousKey.class, appConfig.getPolytomousKeyService()));
@@ -105,7 +105,7 @@ class BatchValidationUtil {
         classesToValidate.addAll((List)Arrays.asList(new Class[]{
                 Reference.class,
                 NameRelationship.class,
-                TaxonNameBase.class,
+                TaxonName.class,
                 TypeDesignationBase.class,
                 TaxonBase.class,
                 Synonym.class,

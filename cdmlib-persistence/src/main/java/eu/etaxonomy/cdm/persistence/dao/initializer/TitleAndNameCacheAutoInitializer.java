@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -30,18 +30,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<IdentifiableEntity<?>> {
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.BeanAutoInitializer#initialize(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public void initialize(IdentifiableEntity<?> bean) {
 
         bean = HibernateProxyHelper.deproxy(bean, IdentifiableEntity.class);
         // we will implement a bit of redundancy here in order
         // to avoid too much casting
-        if(bean instanceof TaxonNameBase){
+        if(bean instanceof TaxonName){
             // ---> NonViralName
-            TaxonNameBase n = (TaxonNameBase)bean;
+            TaxonName n = (TaxonName)bean;
             if(!n.isProtectedFullTitleCache())  {
                 n.getFullTitleCache();
             } else if(!bean.isProtectedTitleCache()){
@@ -63,7 +60,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
                  * explicitly in order to trigger the cascade. Otherwise a
                  * LazyInitializationException can occur:
                  *   > failed to lazily initialize a collection of role:
-                 *   > eu.etaxonomy.cdm.model.name.TaxonNameBase.relationsToThisName
+                 *   > eu.etaxonomy.cdm.model.name.TaxonName.relationsToThisName
                  * --------------------------------------------
                  * according code snipped from cachestrategy:
                  *  if (nameCache == null){
@@ -73,9 +70,9 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
                  */
                 n.getTaggedName();
             }
-        } else if(bean instanceof TaxonNameBase) {
-             // ---> TaxonNameBase
-            TaxonNameBase<?,?> n = (TaxonNameBase<?,?>)bean;
+        } else if(bean instanceof TaxonName) {
+             // ---> TaxonName
+            TaxonName n = (TaxonName<?,?>)bean;
             if(!n.isProtectedFullTitleCache())  {
                 n.getFullTitleCache();
             } else if(!bean.isProtectedTitleCache()){
@@ -93,7 +90,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
 
         String result = "";
-        if (TaxonNameBase.class.isAssignableFrom(clazz)){
+        if (TaxonName.class.isAssignableFrom(clazz)){
             result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
             result += String.format(" LEFT JOIN FETCH %s.relationsToThisName relTo LEFT JOIN FETCH relTo.relatedFrom ", beanAlias);
             result += String.format(" LEFT JOIN FETCH %s.combinationAuthorship ", beanAlias);
@@ -108,7 +105,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         }
 
         // throw an exception since LEFT JOIN FETCH is not really working for titleCaches
-        // TODO test if the LEFT JOIN FETCHes are at least working for TaxonNameBase and NonViralName
+        // TODO test if the LEFT JOIN FETCHes are at least working for TaxonName and NonViralName
         throw new Exception();
 
 //        return result;

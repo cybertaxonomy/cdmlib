@@ -1275,14 +1275,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String columnName;
 		int size = 800;
 
-		stepName = "Change length of TaxonNameBase fullTitleCache";
+		stepName = "Change length of TaxonName fullTitleCache";
 		tableName = "TaxonNameBase";
 		columnName = "fullTitleCache";
 		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
 				columnName, size, INCLUDE_AUDIT);
 		stepList.add(step);
 
-		stepName = "Change length of TaxonNameBase title cache";
+		stepName = "Change length of TaxonName title cache";
 		tableName = "TaxonNameBase";
 		columnName = "titleCache";
 		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,

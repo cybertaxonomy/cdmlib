@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
- * ruling {@link TaxonNameBase taxon names}.
+ * ruling {@link TaxonName taxon names}.
  * <P>
  * The standard set of nomenclature code instances will be automatically created
  * as the project starts. But this class allows to extend this standard set by
@@ -82,12 +82,12 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 //
 //	//Any
 //	@XmlEnumValue("Any")
-//    Any(UUID.fromString("348f2a2f-366f-4c8c-bb15-c90b937886ca"), "Any taxon name","TaxonNameBase"),
+//    Any(UUID.fromString("348f2a2f-366f-4c8c-bb15-c90b937886ca"), "Any taxon name","TaxonName"),
 
 
 	//NonViral
     @XmlEnumValue("NonViral")
-    NonViral(UUID.fromString("04f88497-a66a-41b1-9b98-0dd22df6307f"), "NonViral","TaxonNameBase"),
+    NonViral(UUID.fromString("04f88497-a66a-41b1-9b98-0dd22df6307f"), "NonViral","TaxonName"),
 
 	//Fungi
     @XmlEnumValue("Fungus")
@@ -164,19 +164,19 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
 
 	/**
-	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
+	 * Creates a new particular {@link TaxonName taxon name} (botanical, zoological,
 	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
 	 * nomenclature code only containing the given {@link Rank rank}.
 	 *
 	 * @param	rank	the rank of the new taxon name instance
-	 * @see 			TaxonNameBase#NewBotanicalInstance(Rank)
-	 * @see 			TaxonNameBase#NewZoologicalInstance(Rank)
-	 * @see 			TaxonNameBase#NewCultivarInstance(Rank)
-	 * @see 			TaxonNameBase#NewBacterialInstance(Rank)
-	 * @see 			TaxonNameBase#NewViralInstance(Rank)
+	 * @see 			TaxonName#NewBotanicalInstance(Rank)
+	 * @see 			TaxonName#NewZoologicalInstance(Rank)
+	 * @see 			TaxonName#NewCultivarInstance(Rank)
+	 * @see 			TaxonName#NewBacterialInstance(Rank)
+	 * @see 			TaxonName#NewViralInstance(Rank)
 	 */
-	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
-		TaxonNameBase<?,?> result;
+	public TaxonName getNewTaxonNameInstance(Rank rank){
+		TaxonName result;
 
 		switch (this){
 		case ICNAFP:

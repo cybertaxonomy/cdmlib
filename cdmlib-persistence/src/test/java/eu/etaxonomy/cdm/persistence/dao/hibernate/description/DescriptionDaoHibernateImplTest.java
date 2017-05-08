@@ -83,7 +83,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     @SuppressWarnings("unused")
     private static final String[] TABLE_NAMES = new String[] {"DESCRIPTIONBASE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING", "HOMOTYPICALGROUP","LANGUAGESTRING"
-            , "ORIGINALSOURCEBASE", "REFERENCE", "TAXONBASE", "TAXONNAMEBASE", "HIBERNATE_SEQUENCES" };
+            , "ORIGINALSOURCEBASE", "REFERENCE", "TAXONBASE", "TAXONNAME", "HIBERNATE_SEQUENCES" };
 
     @Before
     public void setUp() {

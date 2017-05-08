@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -107,7 +107,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     private static final String[] TABLE_NAMES = new String[] {
         "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
-        , "TAXONNAMEBASE", "TAXONNAMEBASE_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
+        , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
 
 
     @Before
@@ -176,8 +176,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         if (logger.isDebugEnabled()) {
             for (int i = 0; i < results.size(); i++) {
                 String nameCache = "";
-                TaxonNameBase<?,?> taxonNameBase= results.get(i).getName();
-                nameCache = taxonNameBase.getNameCache();
+                TaxonName taxonName= results.get(i).getName();
+                nameCache = taxonName.getNameCache();
                 logger.debug(results.get(i).getClass() + "(" + i +")" +
                         ": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
             }
@@ -1167,16 +1167,16 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //    @Test
     public void createTestDataSet() throws FileNotFoundException {
 //        Classification classification  = Classification.NewInstance("Test");
-//        BotanicalName taxonNameBase = null;
+//        BotanicalName TaxonName = null;
 //        Reference sec = null;
-//        Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
+//        Taxon taxon = Taxon.NewInstance(taxonName, sec);
 //        classification.addChildTaxon(taxon, sec, null);
 //
 //        classificationDao.save(classification);
 //        this.commitAndStartNewTransaction(null);
 //
 //        writeDbUnitDataSetFile(new String[] {
-//                "CLASSIFICATION", "TAXONNAMEBASE",
+//                "CLASSIFICATION", "TAXONNAME",
 //                "REFERENCE","TAXONNODE",
 //                "TAXONBASE","LANGUAGESTRING",
 //                "HIBERNATE_SEQUENCES" // IMPORTANT!!!

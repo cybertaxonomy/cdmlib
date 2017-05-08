@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -145,7 +145,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+        assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonName.class));
         /*
          * Classification
          * - Cichorium
@@ -167,10 +167,10 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		boolean result = defaultImport.invoke(configurator2).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 
-		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonNameBase.class));
-		List<TaxonNameBase> listNames = nameService.list(TaxonNameBase.class, 100, 0, null, null);
+		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonName.class));
+		List<TaxonName> listNames = nameService.list(TaxonName.class, 100, 0, null, null);
 
-		for (TaxonNameBase name: listNames){
+		for (TaxonName name: listNames){
 		    System.out.println(name.getTitleCache());
 		}
 		/*
@@ -210,7 +210,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of TaxonNames is incorrect", 3, nameService.count(TaxonNameBase.class));
+        assertEquals("Number of TaxonNames is incorrect", 3, nameService.count(TaxonName.class));
         /*
          * Classification
          * - Campanula
@@ -247,10 +247,10 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	     *   - Campanula versicolor var. tomentella Hal.
 	     */
 	    assertEquals(4, taxonNodeService.count(TaxonNode.class));
-	    assertEquals(3, nameService.count(TaxonNameBase.class));
+	    assertEquals(3, nameService.count(TaxonName.class));
 	    assertEquals(1, occurrenceService.count(DerivedUnit.class));
 	    boolean varietyFound = false;
-	    for(TaxonNameBase<?, ?> name:nameService.list(TaxonNameBase.class, null, null, null, null)){
+	    for(TaxonName<?, ?> name:nameService.list(TaxonName.class, null, null, null, null)){
 	        if(name.getRank().equals(Rank.VARIETY())){
 	            varietyFound = true;
 	        }
@@ -280,7 +280,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    String nonPreferredNameCache = "Campanula flagellaris";
 	    String preferredNameCache = "Campanula tymphaea";
 	    //Campanula, "Campanula tymphaea Hausskn.", "Campanula flagellaris Halácsy"
-	    assertEquals(3, nameService.count(TaxonNameBase.class));
+	    assertEquals(3, nameService.count(TaxonName.class));
 	    /*
 	     * Classification
 	     *  - Campanula
@@ -560,8 +560,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //                    "DescriptionBase",
 //                    "TaxonBase",
 //                    "TypeDesignationBase",
-//                    "TaxonNameBase",
-//                    "TaxonNameBase_TypeDesignationBase",
+//                    "TaxonName",
+//                    "TaxonName_TypeDesignationBase",
 //                    "HomotypicalGroup",
 //                    "AgentBase",
 //                    "AgentBase_AgentBase",
@@ -737,8 +737,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
                     "DescriptionBase",
                     "TaxonBase",
                     "TypeDesignationBase",
-                    "TaxonNameBase",
-                    "TaxonNameBase_TypeDesignationBase",
+                    "TaxonName",
+                    "TaxonName_TypeDesignationBase",
                     "HomotypicalGroup",
                     "AgentBase",
                     "AgentBase_AgentBase",

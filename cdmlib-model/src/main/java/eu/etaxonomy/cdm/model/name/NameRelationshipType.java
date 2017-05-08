@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing the categories of {@link NameRelationship taxon name relationships} between
- * two {@link TaxonNameBase taxon names}. These name relationship types are
+ * two {@link TaxonName taxon names}. These name relationship types are
  * based on the concrete {@link NomenclaturalCode nomenclatural code} governing
  * the taxon names involved in the name relationship or on decisions taken by
  * the competent authorities; they do not depend on the use made of these
@@ -235,8 +235,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 	/**
 	 * Returns the "orthographic variant" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is an
-	 * orthographic variant of the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * {@link TaxonName taxon name} involved in such a relationship is an
+	 * orthographic variant of the second taxon name. The two {@link TaxonName taxon names}
 	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
 	 * must be almost identical (so one usually does not differentiate them).<BR>
@@ -251,7 +251,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 	/**
-	 * Returns the {@link TaxonNameBase taxon name} as it is spelled in the original
+	 * Returns the {@link TaxonName taxon name} as it is spelled in the original
 	 * publication of the given name. The first (left) name in the relationship takes the role
 	 * of the original spelling whereas the second (right) name takes the role of the
 	 * current/correct spelling.<BR>
@@ -266,8 +266,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 	/**
 	 * Returns the "misspelling" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is a
-	 * misspelling of the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * {@link TaxonName taxon name} involved in such a relationship is a
+	 * misspelling of the second taxon name. The two {@link TaxonName taxon names}
 	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
 	 * must be almost identical (so one usually does not differentiate them).<BR>
@@ -286,8 +286,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "emendation" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is a
-	 * misspelling of the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * {@link TaxonName taxon name} involved in such a relationship is a
+	 * misspelling of the second taxon name. The two {@link TaxonName taxon names}
 	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
 	 * must be almost identical (so one usually does not differentiate them).<BR>
@@ -305,8 +305,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "later homonym" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship should
-	 * have been published after the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * {@link TaxonName taxon name} involved in such a relationship should
+	 * have been published after the second taxon name. The two {@link TaxonName taxon names}
 	 * involved in such a relationship must belong to different
 	 * {@link HomotypicalGroup homotypical groups}, have in general different
 	 * {@link NonViralName#getAuthorshipCache() authorship} and their name parts (excluding infraspecific
@@ -328,7 +328,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 	/**
 	 * Returns the "treated as later homonym" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is
+	 * {@link TaxonName taxon name} involved in such a relationship is
 	 * treated as an homonym although it has been published before the second
 	 * taxon name. The two taxon names involved must belong to different
 	 * {@link HomotypicalGroup homotypical groups} and their name parts (excluding
@@ -348,9 +348,9 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 	/**
 	 * Returns the "later isonym" name relationship type where the first
-	 * {@link TaxonNameBase taxon name} involved has been published after the second taxon name.<BR>
+	 * {@link TaxonName taxon name} involved has been published after the second taxon name.<BR>
 	 * In contrast to the {@link #LATER_HOMONYM() later homonym} relationship the two
-	 * {@link TaxonNameBase taxon names} involved have the type(s) so they belong to the
+	 * {@link TaxonName taxon names} involved have the type(s) so they belong to the
 	 * same {@link HomotypicalGroup homotypical groups}. As later homonyms they have in general
 	 * different {@link NonViralName#getAuthorshipCache() authorship} and their name parts
 	 * must be (almost) identical, so one could be mistaken for the other one.<BR>
@@ -370,7 +370,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 	/**
-	 * Returns the "alternative name" name relationship type. Both {@link TaxonNameBase taxon names}
+	 * Returns the "alternative name" name relationship type. Both {@link TaxonName taxon names}
 	 * involved in such a relationship are family names. The first one is a
 	 * classical name long in use, in some cases, even before 1753 and is considered as
 	 * {@link NomenclaturalStatusType#VALID() valid} and also {@link NomenclaturalStatusType#isLegitimateType() legitimate}
@@ -386,7 +386,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	  return findTermByUuid(uuidAlternativeName);
 	}
 	/**
-	 * Returns the "basionym" name relationship type. The first {@link TaxonNameBase taxon name}
+	 * Returns the "basionym" name relationship type. The first {@link TaxonName taxon name}
 	 * involved in such a relationship is the "basionym" of the second taxon
 	 * name. Both taxon names belong to the same {@link HomotypicalGroup homotypical group}).
 	 * The basionym is the epithet-bringing taxon name (first taxon name
@@ -404,7 +404,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "replaced synonym" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
+	 * {@link TaxonName taxon name} involved in such a relationship is the
 	 * "replaced synonym" of the second taxon name. Both taxon names belong to
 	 * the same {@link HomotypicalGroup homotypical group}. The replaced synonym is the
 	 * first taxon name ever validly published given to the same
@@ -428,7 +428,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	  return findTermByUuid(uuidReplacedSynonym);
 	}
 	/**
-	 * Returns the "conserved against" name relationship type. Both {@link TaxonNameBase taxon names}
+	 * Returns the "conserved against" name relationship type. Both {@link TaxonName taxon names}
 	 * involved in such a relationship belong to the same {@link HomotypicalGroup homotypical group}.
 	 * Competent authorities decided, regardless of the general
 	 * nomenclatural rules, to handle the first one as the "legitimate"
@@ -448,7 +448,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "validated by name" name relationship type. The two
-	 * {@link TaxonNameBase taxon names} involved in such a relationship were published
+	 * {@link TaxonName taxon names} involved in such a relationship were published
 	 * in order to define the same taxonomical group but the first
 	 * (earlier) taxon name was invalidly published whereas the second (later)
 	 * taxon name is the one which was validly published for the first time.<BR>
@@ -462,7 +462,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "later validated by name" name relationship type. The two
-	 * {@link TaxonNameBase taxon names} involved in such a relationship were published
+	 * {@link TaxonName taxon names} involved in such a relationship were published
 	 * in order to define the same taxonomical group but the first
 	 * (earlier) taxon name was invalidly published whereas the second (later)
 	 * taxon name is the one which was validly published for the first time.<BR>
@@ -476,7 +476,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "blocking name" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
+	 * {@link TaxonName taxon name} involved in such a relationship is the
 	 * "blocking name" for the second taxon name. Both taxon names belong to
 	 * different {@link HomotypicalGroup homotypical groups}). The blocking taxon name is the
 	 * {@link Rank#isInfraGeneric() infrageneric} taxon name, already published at the time of

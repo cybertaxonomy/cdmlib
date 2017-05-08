@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -115,14 +115,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDeleteTaxonNameBaseWithNameRelations() {
+    public void testDeleteTaxonNameWithNameRelations() {
 
-        final String[] tableNames = new String[]{"USERACCOUNT", "TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
+        final String[] tableNames = new String[]{"USERACCOUNT", "TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 //        printDataSetWithNull(System.err, true, null);
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName<?,?> nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
@@ -162,16 +162,16 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDeleteTaxonNameBaseConfiguratorWithNameRelations() {
-        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    public void testDeleteTaxonNameConfiguratorWithNameRelations() {
+        final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
 
-//        printDataSet(System.err, new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase",
+//        printDataSet(System.err, new String[]{"TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase",
 //                "DescriptionElementBase",
 //                "AGENTBASE", "USERACCOUNT", "PERMISSIONGROUP", "USERACCOUNT_PERMISSIONGROUP", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL"});
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
@@ -205,12 +205,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    public void testDeleteTaxonNameBaseConfiguratorWithNameRelationsAll() {
-        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    public void testDeleteTaxonNameConfiguratorWithNameRelationsAll() {
+        final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
@@ -244,12 +244,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    public void testDeleteTaxonNameBaseConfiguratorWithHasBasionym() {
-        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    public void testDeleteTaxonNameConfiguratorWithHasBasionym() {
+        final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> basionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName basionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         basionym.setTitleCache("basionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
@@ -289,14 +289,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
    // @Ignore //currently does not run in suite
-    public void testDeleteTaxonNameBaseWithHybridRelations() {
-        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    public void testDeleteTaxonNameWithHybridRelations() {
+        final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> parent = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName parent = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         parent.setTitleCache("parent", true);
-        TaxonNameBase<?,?> child = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName child = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         child.setTitleCache("child", true);
 
         HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
@@ -349,12 +349,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDeleteTaxonNameBaseInConcept() {
-        final String[] tableNames = new String[]{"TaxonNameBase","TaxonBase"};
+    public void testDeleteTaxonNameInConcept() {
+        final String[] tableNames = new String[]{"TaxonName","TaxonBase"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> basionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName basionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         basionym.setTitleCache("basionym", true);
 
         Taxon taxon = Taxon.NewInstance(name1, null);
@@ -368,7 +368,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         if (result.isOk()){
         	Assert.fail("Delete should throw an error as long as name is used in a concept.");
         }
-        TaxonNameBase<?,?> nameBase =nameService.find(name1.getUuid());
+        TaxonName nameBase =nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",nameBase);
         TaxonBase<?> taxonBase = taxonService.find(taxon.getUuid());
         Assert.assertNotNull("Taxon should still be in database",taxonBase);
@@ -396,10 +396,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDeleteTaxonNameBaseAsStoredUnder() {
-        final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
+    public void testDeleteTaxonNameAsStoredUnder() {
+        final String[] tableNames = new String[]{"TaxonName","SpecimenOrObservationBase"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setStoredUnder(name1);
@@ -438,12 +438,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     @Ignore //currently does not run in suite
-    public void testDeleteTaxonNameBaseInSource() {
-        final String[] tableNames = new String[]{"TaxonNameBase","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};
+    public void testDeleteTaxonNameInSource() {
+        final String[] tableNames = new String[]{"TaxonName","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         taxonName.setTitleCache("taxonName", true);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
 
@@ -496,13 +496,13 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
 
-    public void testDeleteTaxonNameBaseAsType() {
-        final String[] tableNames = new String[]{"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
+    public void testDeleteTaxonNameAsType() {
+        final String[] tableNames = new String[]{"TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name used as type", true);
 
-        TaxonNameBase<?,?> higherName = TaxonNameFactory.NewBotanicalInstance(getGenusRank());
+        TaxonName<?,?> higherName = TaxonNameFactory.NewBotanicalInstance(getGenusRank());
         higherName.setTitleCache("genus name", true);
         NameTypeDesignationStatus typeStatus = (NameTypeDesignationStatus)termService.find(NameTypeDesignationStatus.AUTOMATIC().getUuid());
         boolean addToAllHomotypicNames = true;
@@ -540,10 +540,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
 
-    public void testDeleteTaxonNameBase() {
-        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
+    public void testDeleteTaxonName() {
+        final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonName_TypeDesignationBase"};
 
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
 
         //TaxonNameDescription
@@ -614,13 +614,13 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
-        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
+    public void testDeleteTaxonNameWithTypeInHomotypicalGroup() {
+        final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonName_TypeDesignationBase"};
 
         //Type Designations for homotypical group with > 1 names
-        TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1 with type designation", true);
-        TaxonNameBase<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name2.setTitleCache("Name2 with type designation", true);
         name2.setHomotypicalGroup(name1.getHomotypicalGroup());
 
@@ -652,7 +652,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTypeDesignation() {
         final String[] tableNames = new String[]{
-                "TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase",
+                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
                 "SpecimenOrObservationBase"};
 
 //		IBotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
@@ -697,9 +697,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //
 
 
-        TaxonNameBase<?,?> name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-        TaxonNameBase<?,?> name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-        TaxonNameBase<?,?> name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        TaxonName name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        TaxonName name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
@@ -713,7 +713,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-        nameService.deleteTypeDesignation((TaxonNameBase)null, null);
+        nameService.deleteTypeDesignation((TaxonName)null, null);
 
         commitAndStartNewTransaction(tableNames);
 
@@ -808,13 +808,13 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testDeleteTypeDesignationAllNames() {
         final String[] tableNames = new String[]{
-                "TaxonNameBase","TypeDesignationBase",
-                "TaxonNameBase_TypeDesignationBase","SpecimenOrObservationBase"};
+                "TaxonName","TypeDesignationBase",
+                "TaxonName_TypeDesignationBase","SpecimenOrObservationBase"};
 
 
-        TaxonNameBase<?,?> name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-        TaxonNameBase<?,?> name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-        TaxonNameBase<?,?> name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        TaxonName name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        TaxonName name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 

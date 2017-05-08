@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeComparator;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -141,7 +141,7 @@ public class OutputModelClassificationExport
 
         }else{
              try{
-                TaxonNameBase name = taxon.getName();
+                TaxonName name = taxon.getName();
                 handleName(state, name);
                 for (Synonym syn : taxon.getSynonyms()){
                     handleSynonym(state, syn);
@@ -427,7 +427,7 @@ public class OutputModelClassificationExport
      * @param syn
      */
     private void handleSynonym(OutputModelExportState state, Synonym syn) {
-       TaxonNameBase name = syn.getName();
+       TaxonName name = syn.getName();
        handleName(state, name);
 
        OutputModelTable table = OutputModelTable.SYNONYM;
@@ -446,7 +446,7 @@ public class OutputModelClassificationExport
      * @param state
      * @param name
      */
-    private void handleName(OutputModelExportState state, TaxonNameBase name) {
+    private void handleName(OutputModelExportState state, TaxonName name) {
         Rank rank = name.getRank();
         OutputModelTable table = OutputModelTable.SCIENTIFIC_NAME;
         name = HibernateProxyHelper.deproxy(name);
@@ -645,7 +645,7 @@ HomotypicGroupSequenceNumber
      * @param state
      * @param name
      */
-    private void handleIdentifier(OutputModelExportState state, TaxonNameBase name, String[] csvLine, OutputModelTable table) {
+    private void handleIdentifier(OutputModelExportState state, TaxonName name, String[] csvLine, OutputModelTable table) {
         Set<String>  IPNIidentifiers = name.getIdentifiers(DefinedTerm.IPNI_NAME_IDENTIFIER());
         Set<String>  tropicosIdentifiers = name.getIdentifiers(DefinedTerm.TROPICOS_NAME_IDENTIFIER());
         Set<String>  WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
@@ -775,7 +775,7 @@ HomotypicGroupSequenceNumber
      * @param statusString
      * @return
      */
-    private String extractStatusString(TaxonNameBase name, boolean abbrev) {
+    private String extractStatusString(TaxonName name, boolean abbrev) {
         Set<NomenclaturalStatus> status = name.getStatus();
         if (status.isEmpty()){
             return "";
@@ -819,11 +819,11 @@ HomotypicGroupSequenceNumber
         String[] csvLine = new String[table.getSize()];
 
         csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_ID)] = getId(state, group);
-        List<TaxonNameBase> typifiedNames = new ArrayList<>();
+        List<TaxonName> typifiedNames = new ArrayList<>();
         typifiedNames.addAll(group.getTypifiedNames());
         Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(null, true));
         String typifiedNamesString = "";
-        for (TaxonNameBase name: typifiedNames){
+        for (TaxonName name: typifiedNames){
             //Concatenated output string for homotypic group (names and citations) + status + some name relations (e.g. “non”)
 //TODO: nameRelations, which and how to display
 
@@ -885,7 +885,7 @@ HomotypicGroupSequenceNumber
      * @param name
      * @return
      */
-    private String getTropicosTitleCache(TaxonNameBase name) {
+    private String getTropicosTitleCache(TaxonName name) {
         String basionymStart = "(";
         String basionymEnd = ") ";
         String exAuthorSeperator = " ex ";
@@ -1074,7 +1074,7 @@ HomotypicGroupSequenceNumber
      *   TypeDesignatedByRef_Fk
      */
 
-    private void handleTypeDesignations(OutputModelExportState state, TaxonNameBase name){
+    private void handleTypeDesignations(OutputModelExportState state, TaxonName name){
        Set<SpecimenTypeDesignation> typeDesignations = name.getTypeDesignations();
        OutputModelTable table = OutputModelTable.TYPE_DESIGNATION;
        String nameId = getId(state, name);

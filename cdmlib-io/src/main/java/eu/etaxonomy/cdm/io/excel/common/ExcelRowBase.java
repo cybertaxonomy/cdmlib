@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -181,7 +181,7 @@ public abstract class ExcelRowBase {
 		SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
 		designation.setTypeStatus(status);
 	}
-	public void putTypifiedName(int key, TaxonNameBase<?,?> name){
+	public void putTypifiedName(int key, TaxonName name){
 		if (name != null){
 			SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
 			name.addTypeDesignation(designation, false);

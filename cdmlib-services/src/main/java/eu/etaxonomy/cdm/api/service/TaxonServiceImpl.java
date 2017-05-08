@@ -98,7 +98,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -201,9 +201,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Transactional(readOnly = false)
     public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
     	UpdateResult result = new UpdateResult();
-        TaxonNameBase<?,?> synonymName = synonym.getName();
+        TaxonName synonymName = synonym.getName();
         synonymName.removeTaxonBase(synonym);
-        TaxonNameBase<?,?> taxonName = acceptedTaxon.getName();
+        TaxonName taxonName = acceptedTaxon.getName();
         taxonName.removeTaxonBase(acceptedTaxon);
 
         synonym.setName(taxonName);
@@ -224,8 +224,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Transactional(readOnly = false)
     public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) {
         UpdateResult result = new UpdateResult();
-        TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
-        TaxonNameBase<?,?> synonymName = synonym.getName();
+        TaxonName acceptedName = acceptedTaxon.getName();
+        TaxonName synonymName = synonym.getName();
         HomotypicalGroup synonymHomotypicGroup = synonymName.getHomotypicalGroup();
 
         //check synonym is not homotypic
@@ -315,7 +315,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (synonym == null){
             return null;
         }
-        TaxonNameBase<?, ?> synonymName = synonym.getName();
+        TaxonName<?, ?> synonymName = synonym.getName();
 
       /*  // remove synonym from taxon
         toTaxon.removeSynonym(synonym);
@@ -340,7 +340,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public void changeHomotypicalGroupOfSynonym(Synonym synonym, HomotypicalGroup newHomotypicalGroup,
             Taxon targetTaxon, boolean setBasionymRelationIfApplicable){
         // Get synonym name
-        TaxonNameBase synonymName = synonym.getName();
+        TaxonName synonymName = synonym.getName();
         HomotypicalGroup oldHomotypicalGroup = synonymName.getHomotypicalGroup();
 
         // Switch groups
@@ -352,8 +352,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         //add basionym relationship
         if (setBasionymRelationIfApplicable){
-            Set<TaxonNameBase> basionyms = newHomotypicalGroup.getBasionyms();
-            for (TaxonNameBase basionym : basionyms){
+            Set<TaxonName> basionyms = newHomotypicalGroup.getBasionyms();
+            for (TaxonName basionym : basionyms){
                 synonymName.addBasionym(basionym);
             }
         }
@@ -703,12 +703,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
 
-            List<? extends TaxonNameBase<?,?>> names =
+            List<? extends TaxonName<?,?>> names =
                 nameDao.findByName(configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
                         configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
             if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
             if (names.size() > 0) {
-                for (TaxonNameBase<?,?> taxonName : names) {
+                for (TaxonName<?,?> taxonName : names) {
                     if (taxonName.getTaxonBases().size() == 0) {
                         results.add(taxonName);
                         numberNameResults++;
@@ -887,7 +887,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath) {
+    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath) {
         return this.dao.findIdenticalTaxonNames(propertyPath);
     }
 
@@ -1048,7 +1048,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
             }
          }
-         TaxonNameBase name = taxon.getName();
+         TaxonName name = taxon.getName();
          taxon.setName(null);
          this.saveOrUpdate(taxon);
 
@@ -1067,7 +1067,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
              result.addException(new Exception("The Taxon can't be deleted because it is used in a classification."));
 
          }
-            //TaxonNameBase
+            //TaxonName
         if (config.isDeleteNameIfPossible() && result.isOk()){
            // name = HibernateProxyHelper.deproxy(name);
 
@@ -1189,7 +1189,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //#6281
             dao.flush();
 
-            TaxonNameBase<?,?> name = synonym.getName();
+            TaxonName name = synonym.getName();
             synonym.setName(null);
 
             dao.delete(synonym);
@@ -1210,13 +1210,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath) {
+    public List<TaxonName> findIdenticalTaxonNameIds(List<String> propertyPath) {
 
         return this.dao.findIdenticalNamesNew(propertyPath);
     }
 //
 //    @Override
-//    public String getPhylumName(TaxonNameBase name){
+//    public String getPhylumName(TaxonName name){
 //        return this.dao.getPhylumName(name);
 //    }
 
@@ -1371,8 +1371,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Synonym synonym = CdmBase.deproxy(dao.load(oldSynonym.getUuid()), Synonym.class);
         Taxon oldTaxon = CdmBase.deproxy(dao.load(synonym.getAcceptedTaxon().getUuid()), Taxon.class);
         //TODO what if there is no name ?? Concepts may be cached (e.g. via TCS import)
-        TaxonNameBase<?,?> synonymName = synonym.getName();
-        TaxonNameBase<?,?> fromTaxonName = oldTaxon.getName();
+        TaxonName synonymName = synonym.getName();
+        TaxonName fromTaxonName = oldTaxon.getName();
         //set default relationship type
         if (newSynonymType == null){
             newSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
@@ -2209,7 +2209,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 if (!node.isTopmostNode()){
                     TaxonNode parent = node.getParent();
                     parent = CdmBase.deproxy(parent);
-                    TaxonNameBase<?,?> parentName =  parent.getTaxon().getName();
+                    TaxonName parentName =  parent.getTaxon().getName();
                     IZoologicalName zooParentName = CdmBase.deproxy(parentName);
                     Taxon parentTaxon = CdmBase.deproxy(parent.getTaxon());
                     Rank rankOfTaxon = taxonName.getRank();
@@ -2297,7 +2297,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }else if (type.equals(SynonymType.INFERRED_GENUS_OF())){
 
                         for (Synonym synonymRelationOfTaxon:synonymsOfTaxon){
-                            TaxonNameBase synName;
+                            TaxonName synName;
                             IZoologicalName inferredSynName;
 
                             inferredGenus = createInferredGenus(taxon,
@@ -2350,7 +2350,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         IZoologicalName inferredSynName;
                         //for all synonyms of the parent...
                         for (Synonym synonymRelationOfParent:synonyMsOfParent){
-                            TaxonNameBase synName;
+                            TaxonName synName;
                             HibernateProxyHelper.deproxy(synonymRelationOfParent);
 
                             synName = synonymRelationOfParent.getName();
@@ -2401,7 +2401,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                             for (TaxonRelationship parentRelationship: taxonRelListParent){
 
-                                TaxonNameBase misappliedParentName;
+                                TaxonName misappliedParentName;
 
                                 Taxon misappliedParent = parentRelationship.getFromTaxon();
                                 misappliedParentName = misappliedParent.getName();
@@ -2556,7 +2556,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             TaxonBase syn) {
 
         Synonym inferredGenus;
-        TaxonNameBase synName;
+        TaxonName synName;
         IZoologicalName inferredSynName;
         synName =syn.getName();
         HibernateProxyHelper.deproxy(syn);
@@ -2631,10 +2631,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             HashMap<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
             String epithetOfTaxon, String infragenericEpithetOfTaxon,
             String infraspecificEpithetOfTaxon, List<String> taxonNames,
-            TaxonNameBase parentName, TaxonBase syn) {
+            TaxonName parentName, TaxonBase syn) {
 
         Synonym inferredEpithet;
-        TaxonNameBase<?,?> synName;
+        TaxonName synName;
         IZoologicalName inferredSynName;
         HibernateProxyHelper.deproxy(syn);
 
@@ -2851,7 +2851,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         UpdateResult result = new UpdateResult();
         // Create new synonym using concept name
-        TaxonNameBase<?, ?> synonymName = fromTaxon.getName();
+        TaxonName<?, ?> synonymName = fromTaxon.getName();
 
         // Remove concept relation from taxon
         toTaxon.removeTaxon(fromTaxon, oldRelationshipType);
@@ -2896,7 +2896,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String message;
         DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
-            if (!(ref instanceof Taxon || ref instanceof TaxonNameBase )){
+            if (!(ref instanceof Taxon || ref instanceof TaxonName )){
                 message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(ref);
@@ -2911,7 +2911,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String message = null;
         DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
-            if (!(ref instanceof TaxonNameBase)){
+            if (!(ref instanceof TaxonName)){
             	message = null;
                 if (!config.isDeleteSynonymRelations() && (ref instanceof Synonym)){
                     message = "The taxon can't be deleted as long as it has synonyms.";
@@ -3215,7 +3215,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Override
 	public UUID saveOrUpdate(TaxonBase taxonbase){
 	    if (taxonbase.getName()!= null && taxonbase.getName().getId() > 0){
-	        TaxonNameBase name = taxonbase.getName();
+	        TaxonName name = taxonbase.getName();
 	        name = nameService.load(name.getUuid());
 	        taxonbase.setName(name);
 	    }

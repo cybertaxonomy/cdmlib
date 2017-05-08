@@ -87,8 +87,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.ViralNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -124,7 +124,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
  * @created 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaxonNameBase", propOrder = {
+@XmlType(name = "TaxonName", propOrder = {
     "nameType",
     "appendedPhrase",
     "nomenclaturalMicroReference",
@@ -173,26 +173,26 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 
     "cultivarName"
 })
-@XmlRootElement(name = "TaxonNameBase")
+@XmlRootElement(name = "TaxonName")
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="TaxonNameBase", indexes = {
+@Table(appliesTo="TaxonName", indexes = {
         @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),
         @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 @NameMustFollowCode
 @CorrectEpithetsForRank(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
-@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
-public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy>
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
+public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
             extends IdentifiableEntity<S>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
                 IBotanicalName, ICultivarPlantName, IFungusName,
                 IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable {
 
     private static final long serialVersionUID = -791164269603409712L;
-    private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
+    private static final Logger logger = Logger.getLogger(TaxonName.class);
 
 
     /**
@@ -261,8 +261,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name="TaxonNameBase_TypeDesignationBase",
-        joinColumns=@javax.persistence.JoinColumn(name="TaxonNameBase_id"),
+        name="TaxonName_TypeDesignationBase",
+        joinColumns=@javax.persistence.JoinColumn(name="TaxonName_id"),
         inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
     )
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
@@ -562,9 +562,9 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param homotypicalGroup
      * @return
      */
-    protected static TaxonNameBase NewInstance(NomenclaturalCode code, Rank rank,
+    protected static TaxonName NewInstance(NomenclaturalCode code, Rank rank,
             HomotypicalGroup homotypicalGroup) {
-        TaxonNameBase<?,?> result = new TaxonNameBase<>(code, rank, homotypicalGroup);
+        TaxonName<?,?> result = new TaxonName<>(code, rank, homotypicalGroup);
         return result;
     }
 
@@ -582,11 +582,11 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param homotypicalGroup2
      * @return
      */
-    public static TaxonNameBase NewInstance(NomenclaturalCode code, Rank rank, String genusOrUninomial,
+    public static TaxonName NewInstance(NomenclaturalCode code, Rank rank, String genusOrUninomial,
             String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
             TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
             String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        TaxonNameBase result = new TaxonNameBase<>(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+        TaxonName result = new TaxonName<>(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
         return result;
     }
 
@@ -596,13 +596,13 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * Class constructor: creates a new empty taxon name.
      * @param code
      *
-     * @see #TaxonNameBase(Rank)
-     * @see #TaxonNameBase(HomotypicalGroup)
-     * @see #TaxonNameBase(Rank, HomotypicalGroup)
+     * @see #TaxonName(Rank)
+     * @see #TaxonName(HomotypicalGroup)
+     * @see #TaxonName(Rank, HomotypicalGroup)
      */
-    protected TaxonNameBase() {
+    protected TaxonName() {
         super();
-        setNameCacheStrategy();
+//        rectifyNameCacheStrategy();
     }
 
 
@@ -616,11 +616,11 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      *
      * @param  rank  			 the rank to be assigned to <i>this</i> taxon name
      * @param  homotypicalGroup  the homotypical group to which <i>this</i> taxon name belongs
-     * @see    					 #TaxonNameBase()
-     * @see    					 #TaxonNameBase(Rank)
-     * @see    					 #TaxonNameBase(HomotypicalGroup)
+     * @see    					 #TaxonName()
+     * @see    					 #TaxonName(Rank)
+     * @see    					 #TaxonName(HomotypicalGroup)
      */
-    protected TaxonNameBase(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
+    protected TaxonName(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
         super();
         setNameType(type);
         this.setRank(rank);
@@ -629,7 +629,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
         }
         homotypicalGroup.addTypifiedName(this);
         this.homotypicalGroup = homotypicalGroup;
-        setNameCacheStrategy();
+        rectifyNameCacheStrategy();
     }
 
 
@@ -664,7 +664,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    protected TaxonNameBase(NomenclaturalCode type, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+    protected TaxonName(NomenclaturalCode type, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
         this(type, rank, homotypicalGroup);
         setGenusOrUninomial(genusOrUninomial);
         setInfraGenericEpithet (infraGenericEpithet);
@@ -676,7 +676,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     }
 
 
-    private void setNameCacheStrategy(){
+    private void rectifyNameCacheStrategy(){
         if (getNameType() == null){
             this.cacheStrategy = null;
         }else if (this.cacheStrategy != null){
@@ -690,7 +690,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
         }else if (getNameType() == NomenclaturalCode.ICNB){
             this.cacheStrategy = (S)BacterialNameDefaultCacheStrategy.NewInstance();;
         }else if (getNameType() == NomenclaturalCode.ICVCN){
-            this.cacheStrategy = super.getCacheStrategy();
+            this.cacheStrategy = (S) ViralNameDefaultCacheStrategy.NewInstance();
         }
     }
 
@@ -807,7 +807,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     @Override
     public void setNameType(NomenclaturalCode nameType) {
         this.nameType = nameType;
-        setNameCacheStrategy();
+        rectifyNameCacheStrategy();
     }
 
     /**
@@ -1357,8 +1357,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
             return;
         }
 
-        TaxonNameBase<?,?> parent = hybridRelation.getParentName();
-        TaxonNameBase<?,?> child = hybridRelation.getHybridName();
+        TaxonName<?,?> parent = hybridRelation.getParentName();
+        TaxonName<?,?> child = hybridRelation.getHybridName();
         if (this.equals(parent)){
             this.hybridParentRelations.remove(hybridRelation);
             child.hybridChildRelations.remove(hybridRelation);
@@ -1377,7 +1377,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
 
     @Override
     public S getCacheStrategy() {
-        setNameCacheStrategy();
+        rectifyNameCacheStrategy();
         return this.cacheStrategy;
     }
 
@@ -1433,7 +1433,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){
-        return getCacheStrategy().getTaggedTitle(this);
+        S strat = getCacheStrategy();
+        return strat.getTaggedTitle(this);
     }
 
     @Override
@@ -1540,10 +1541,10 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * Generates and returns a concatenated and formated authorteams string
      * including basionym and combination authors of <i>this</i> non viral taxon name
      * according to the strategy defined in
-     * {@link eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonNameBase) INonViralNameCacheStrategy}.
+     * {@link eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonName) INonViralNameCacheStrategy}.
      *
      * @return  the string with the concatenated and formatted author teams for <i>this</i> taxon name
-     * @see     eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonNameBase)
+     * @see     eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonName)
      */
     @Override
     public String generateAuthorship(){
@@ -1551,7 +1552,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return ((INonViralNameCacheStrategy)cacheStrategy).getAuthorshipCache(this);
+            return cacheStrategy.getAuthorshipCache(this);
         }
     }
 
@@ -1622,8 +1623,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @see    #getRelationsToThisName()
      * @see    #getRelationsFromThisName()
      * @see    #addNameRelationship(NameRelationship)
-     * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
-     * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    #addRelationshipToName(TaxonName, NameRelationshipType, String)
+     * @see    #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      */
     @Override
     @Transient
@@ -1635,7 +1636,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     }
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
      * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
      * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
      *
@@ -1645,16 +1646,16 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @return
      * @see    				  #getRelationsToThisName()
      * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    				  #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered){
         return addRelationshipToName(toName, type, null, null, ruleConsidered);
     }
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
      * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
      * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
      *
@@ -1664,11 +1665,11 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @return
      * @see    				  #getRelationsToThisName()
      * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    				  #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
         if (toName == null){
             throw new NullPointerException("Null is not allowed as name for a name relationship");
         }
@@ -1677,7 +1678,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     }
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
      * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
      * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
      *
@@ -1688,16 +1689,16 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param microCitation	  the reference detail for this relation (e.g. page)
      * @see    				  #getRelationsFromThisName()
      * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+     * @see    				  #addRelationshipToName(TaxonName, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered){
         //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
         return this.addRelationshipFromName(fromName, type, null, null, ruleConsidered);
     }
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
      * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
      * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
      *
@@ -1708,11 +1709,11 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param microCitation	  the reference detail for this relation (e.g. page)
      * @see    				  #getRelationsFromThisName()
      * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+     * @see    				  #addRelationshipToName(TaxonName, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
         return fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
     }
 
@@ -1725,8 +1726,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      *
      * @param rel  the name relationship to be added to one of <i>this</i> taxon name's name relationships sets
      * @see    	   #getNameRelations()
-     * @see    	   #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
-     * @see    	   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    	   #addRelationshipToName(TaxonName, NameRelationshipType, String)
+     * @see    	   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      */
     protected void addNameRelationship(NameRelationship rel) {
         if (rel != null ){
@@ -1756,8 +1757,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     @Override
     public void removeNameRelationship(NameRelationship nameRelation) {
 
-        TaxonNameBase fromName = nameRelation.getFromName();
-        TaxonNameBase toName = nameRelation.getToName();
+        TaxonName fromName = nameRelation.getFromName();
+        TaxonName toName = nameRelation.getToName();
 
         if (nameRelation != null) {
             nameRelation.setToName(null);
@@ -1777,7 +1778,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     }
 
     @Override
-    public void removeRelationToTaxonName(TaxonNameBase toTaxonName) {
+    public void removeRelationToTaxonName(TaxonName toTaxonName) {
         Set<NameRelationship> nameRelationships = new HashSet<NameRelationship>();
 //		nameRelationships.addAll(this.getNameRelations());
         nameRelationships.addAll(this.getRelationsFromThisName());
@@ -1825,7 +1826,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      *
      * @see    #getNameRelations()
      * @see    #getRelationsToThisName()
-     * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      */
     @Override
     public Set<NameRelationship> getRelationsFromThisName() {
@@ -1841,7 +1842,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      *
      * @see    #getNameRelations()
      * @see    #getRelationsFromThisName()
-     * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+     * @see    #addRelationshipToName(TaxonName, NameRelationshipType, String)
      */
     @Override
     public Set<NameRelationship> getRelationsToThisName() {
@@ -2025,8 +2026,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     @Transient
-    public TaxonNameBase getBasionym(){
-        Set<TaxonNameBase> basionyms = getBasionyms();
+    public TaxonName getBasionym(){
+        Set<TaxonName> basionyms = getBasionyms();
         if (basionyms.size() == 0){
             return null;
         }else{
@@ -2043,12 +2044,12 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     @Transient
-    public Set<TaxonNameBase> getBasionyms(){
-        Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+    public Set<TaxonName> getBasionyms(){
+        Set<TaxonName> result = new HashSet<>();
         Set<NameRelationship> rels = this.getRelationsToThisName();
         for (NameRelationship rel : rels){
             if (rel.getType()!= null && rel.getType().isBasionymRelation()){
-                TaxonNameBase<?,?> basionym = rel.getFromName();
+                TaxonName<?,?> basionym = rel.getFromName();
                 result.add(basionym);
             }
         }
@@ -2064,10 +2065,10 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      *
      * @param  basionym		the taxon name to be set as the basionym of <i>this</i> taxon name
      * @see  				#getBasionym()
-     * @see  				#addBasionym(TaxonNameBase, String)
+     * @see  				#addBasionym(TaxonName, String)
      */
     @Override
-    public void addBasionym(TaxonNameBase basionym){
+    public void addBasionym(TaxonName basionym){
         addBasionym(basionym, null, null, null);
     }
     /**
@@ -2082,10 +2083,10 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param  ruleConsidered	the string identifying the nomenclatural rule
      * @return
      * @see  					#getBasionym()
-     * @see  					#addBasionym(TaxonNameBase)
+     * @see  					#addBasionym(TaxonName)
      */
     @Override
-    public NameRelationship addBasionym(TaxonNameBase basionym, Reference citation, String microcitation, String ruleConsidered){
+    public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered){
         if (basionym != null){
             return basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
         }else{
@@ -2099,12 +2100,12 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     @Transient
-    public Set<TaxonNameBase> getReplacedSynonyms(){
-        Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+    public Set<TaxonName> getReplacedSynonyms(){
+        Set<TaxonName> result = new HashSet<>();
         Set<NameRelationship> rels = this.getRelationsToThisName();
         for (NameRelationship rel : rels){
             if (rel.getType().isReplacedSynonymRelation()){
-                TaxonNameBase replacedSynonym = rel.getFromName();
+                TaxonName replacedSynonym = rel.getFromName();
                 result.add(replacedSynonym);
             }
         }
@@ -2121,11 +2122,11 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param  basionym			the taxon name to be set as the basionym of <i>this</i> taxon name
      * @param  ruleConsidered	the string identifying the nomenclatural rule
      * @see  					#getBasionym()
-     * @see  					#addBasionym(TaxonNameBase)
+     * @see  					#addBasionym(TaxonName)
      */
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
     @Override
-    public void addReplacedSynonym(TaxonNameBase replacedSynonym, Reference citation, String microcitation, String ruleConsidered){
+    public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered){
         if (replacedSynonym != null){
             replacedSynonym.addRelationshipToName(this, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, ruleConsidered);
         }
@@ -2138,7 +2139,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * previously used as basionym.
      *
      * @see   #getBasionym()
-     * @see   #addBasionym(TaxonNameBase)
+     * @see   #addBasionym(TaxonName)
      */
     @Override
     public void removeBasionyms(){
@@ -2396,7 +2397,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @see 			  				TypeDesignationBase#isNotDesignated()
      */
     @Override
-    public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies,
+    public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies,
                 Reference citation,
                 String citationMicroReference,
                 String originalNameString,
@@ -2429,7 +2430,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @see 			  				TypeDesignationBase#isNotDesignated()
      */
     @Override
-    public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies,
+    public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies,
                 Reference citation,
                 String citationMicroReference,
                 String originalNameString,
@@ -2519,7 +2520,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
             typeDesignation.addTypifiedName(this);
 
             if (addToAllNames){
-                for (TaxonNameBase taxonName : this.getHomotypicalGroup().getTypifiedNames()){
+                for (TaxonName taxonName : this.getHomotypicalGroup().getTypifiedNames()){
                     if (taxonName != this){
                         taxonName.addTypeDesignation(typeDesignation, false);
                     }
@@ -2536,8 +2537,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     private void checkHomotypicalGroup(TypeDesignationBase typeDesignation) {
         if(typeDesignation.getTypifiedNames().size() > 0){
             Set<HomotypicalGroup> groups = new HashSet<HomotypicalGroup>();
-            Set<TaxonNameBase> names = typeDesignation.getTypifiedNames();
-            for (TaxonNameBase taxonName: names){
+            Set<TaxonName> names = typeDesignation.getTypifiedNames();
+            for (TaxonName taxonName: names){
                 groups.add(taxonName.getHomotypicalGroup());
             }
             if (groups.size() > 1){
@@ -2663,7 +2664,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     //TODO protected
     @Override
     public void addTaxonBase(TaxonBase taxonBase){
-        Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
+        Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonName.class});
         ReflectionUtils.makeAccessible(method);
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {this});
         taxonBases.add(taxonBase);
@@ -2677,7 +2678,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     public void removeTaxonBase(TaxonBase taxonBase){
-        Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
+        Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonName.class});
         ReflectionUtils.makeAccessible(method);
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
 
@@ -2768,7 +2769,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @see                   #addHybridChild(BotanicalName, HybridRelationshipType,String )
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
-     * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
     @Override
@@ -2790,7 +2791,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @see                   #addHybridParent(BotanicalName, HybridRelationshipType,String )
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
-     * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
     @Override
@@ -2855,7 +2856,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     public void addDescription(TaxonNameDescription description) {
-        java.lang.reflect.Field field = ReflectionUtils.findField(TaxonNameDescription.class, "taxonName", TaxonNameBase.class);
+        java.lang.reflect.Field field = ReflectionUtils.findField(TaxonNameDescription.class, "taxonName", TaxonName.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, this);
         descriptions.add(description);
@@ -2872,7 +2873,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     public void removeDescription(TaxonNameDescription description) {
-        java.lang.reflect.Field field = ReflectionUtils.findField(TaxonNameDescription.class, "taxonName", TaxonNameBase.class);
+        java.lang.reflect.Field field = ReflectionUtils.findField(TaxonNameDescription.class, "taxonName", TaxonName.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, null);
         descriptions.remove(description);
@@ -2882,7 +2883,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
 
     @Override
     @Transient
-    public void mergeHomotypicGroups(TaxonNameBase name){
+    public void mergeHomotypicGroups(TaxonName name){
         this.getHomotypicalGroup().merge(name.getHomotypicalGroup());
         //HomotypicalGroup thatGroup = name.homotypicalGroup;
         name.setHomotypicalGroup(this.homotypicalGroup);
@@ -2900,7 +2901,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     @Transient
-    public boolean isHomotypic(TaxonNameBase homoTypicName) {
+    public boolean isHomotypic(TaxonName homoTypicName) {
         if (homoTypicName == null) {
             return false;
         }
@@ -2929,14 +2930,14 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     		homotypicalGroup = HomotypicalGroup.NewInstance();
     		homotypicalGroup.addTypifiedName(this);
     	}
-        Set<TaxonNameBase> typifiedNames = homotypicalGroup.getTypifiedNames();
+        Set<TaxonName> typifiedNames = homotypicalGroup.getTypifiedNames();
 
         // Check whether there are any other names in the group
         if (typifiedNames.size() == 1) {
                 return false;
         }
 
-        for (TaxonNameBase<?,?> taxonName : typifiedNames) {
+        for (TaxonName<?,?> taxonName : typifiedNames) {
                 if (!taxonName.equals(this)) {
                         if (! isBasionymFor(taxonName)) {
                                 return false;
@@ -2955,7 +2956,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     @Transient
-    public boolean isBasionymFor(TaxonNameBase newCombinationName) {
+    public boolean isBasionymFor(TaxonName newCombinationName) {
             Set<NameRelationship> relations = newCombinationName.getRelationsToThisName();
             for (NameRelationship relation : relations) {
                     if (relation.getType().equals(NameRelationshipType.BASIONYM()) &&
@@ -2970,7 +2971,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * Creates a basionym relationship to all other names in this names homotypical
      * group.
      *
-     * @see HomotypicalGroup.setGroupBasionym(TaxonNameBase basionymName)
+     * @see HomotypicalGroup.setGroupBasionym(TaxonName basionymName)
      */
     @Override
     @Transient
@@ -3177,7 +3178,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
         Set<NameRelationship> relations = new HashSet<NameRelationship>();
         Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
 
-        for(TaxonNameBase<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
+        for(TaxonName<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
 
             Set<NameRelationship> nameRelations = typifiedName.getRelationsFromThisName();
 
@@ -3203,7 +3204,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
             this.removeNameRelationship(relation);
         }
 
-        for (TaxonNameBase<?, ?> name : homotypicalGroup.getTypifiedNames()) {
+        for (TaxonName<?, ?> name : homotypicalGroup.getTypifiedNames()) {
             if (!name.equals(this)) {
 
                 // First check whether the relationship already exists
@@ -3236,7 +3237,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
         Set<NameRelationship> relations = new HashSet<NameRelationship>();
         Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
 
-        for(TaxonNameBase<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
+        for(TaxonName<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
 
             Set<NameRelationship> nameRelations = typifiedName.getRelationsFromThisName();
 
@@ -3307,7 +3308,7 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
 // ***************** COMPARE ********************************/
 
     @Override
-    public int compareToName(TaxonNameBase<?,?> otherName){
+    public int compareToName(TaxonName<?,?> otherName){
 
         int result = 0;
 
@@ -3388,8 +3389,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param interfacedName
      * @return
      */
-    public static TaxonNameBase castAndDeproxy(ITaxonNameBase interfacedName){
-        return deproxy(interfacedName, TaxonNameBase.class);
+    public static TaxonName castAndDeproxy(ITaxonNameBase interfacedName){
+        return deproxy(interfacedName, TaxonName.class);
     }
 
     /**
@@ -3401,8 +3402,8 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      * @param naminterfacedNames
      * @return
      */
-    public static Set<TaxonNameBase> castAndDeproxy(Set<ITaxonNameBase> naminterfacedNames) {
-        Set<TaxonNameBase> result = new HashSet<>();
+    public static Set<TaxonName> castAndDeproxy(Set<ITaxonNameBase> naminterfacedNames) {
+        Set<TaxonName> result = new HashSet<>();
         for (ITaxonNameBase naminterfacedName : naminterfacedNames){
             result.add(castAndDeproxy(naminterfacedName));
         }
@@ -3427,9 +3428,9 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
      */
     @Override
     public Object clone() {
-        TaxonNameBase<?,?> result;
+        TaxonName<?,?> result;
         try {
-            result = (TaxonNameBase)super.clone();
+            result = (TaxonName)super.clone();
 
             //taxonBases -> empty
             result.taxonBases = new HashSet<>();
@@ -3560,3 +3561,4 @@ public class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStr
     }
 
 }
+

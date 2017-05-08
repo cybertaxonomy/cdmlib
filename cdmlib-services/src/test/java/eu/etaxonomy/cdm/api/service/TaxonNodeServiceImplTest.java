@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -160,7 +160,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		t1 = null;
 		t1 =(Taxon) taxonService.load(uuidT1);
 		t1 = HibernateProxyHelper.deproxy(t1);
-		TaxonNameBase nameT1 = t1.getName();
+		TaxonName nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
 		assertEquals(2, t1.getDescriptions().size());
@@ -173,7 +173,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		t4 = node4.getTaxon();
         UUID uuidT4 = t4.getUuid();
         t4 = (Taxon) taxonService.find(uuidT4);
-        TaxonNameBase name4 = nameService.find(t4.getName().getUuid());
+        TaxonName name4 = nameService.find(t4.getName().getUuid());
         result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail);
         if (result.isError() || result.isAbort()){
             Assert.fail();
@@ -203,7 +203,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 				assertNotNull(syns);
 				if (taxon.equals(t2)){
 				    assertEquals(4,syns.size());
-				    Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
+				    Set<TaxonName> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
 	                assertEquals(typifiedNames.size(),4);
 	                assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
 
@@ -240,14 +240,14 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		//nameRelations
 		t1.getName().addRelationshipFromName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
-		TaxonNameBase<?,?> name1 = t1.getName();
+		TaxonName name1 = t1.getName();
 		UUID name1UUID = name1.getUuid();
 		//taxonRelations
 		t1.addTaxonRelation(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		Synonym t1HomotypSynonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
 
 		t1.addHomotypicSynonym(t1HomotypSynonym);
-		TaxonNameBase<?,?> nameT1 = t1.getName();
+		TaxonName nameT1 = t1.getName();
 		t2 = node2.getTaxon();
 		assertEquals("taxon 1 must have 2 descriptions", 2, t1.getDescriptions().size());
 		assertEquals("taxon 1 must have 2 synonyms", 2, t1.getSynonyms().size());
@@ -634,7 +634,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
 //
 //        writeDbUnitDataSetFile(new String[] {
-//            "TAXONBASE", "TAXONNAMEBASE",
+//            "TAXONBASE", "TAXONNAME",
 //            "TAXONRELATIONSHIP",
 //            "HOMOTYPICALGROUP",
 //            "CLASSIFICATION", "TAXONNODE",
@@ -943,7 +943,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
 
         writeDbUnitDataSetFile(new String[] {
-            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONBASE", "TAXONNAME",
             "TAXONRELATIONSHIP",
             "HOMOTYPICALGROUP",
             "CLASSIFICATION", "TAXONNODE",

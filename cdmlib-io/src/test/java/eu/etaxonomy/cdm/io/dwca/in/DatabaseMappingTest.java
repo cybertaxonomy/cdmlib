@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
@@ -77,7 +77,7 @@ public class DatabaseMappingTest {
 		ICdmDataSource datasource = mapping.getDatabase();
 		Assert.assertNotNull("Datasource should not be null", datasource);
 
-		TaxonNameBase<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(null);
 		int id = 23;
 		botName1.setId(id);
 		String sourceNS = "sourceNS";
@@ -87,11 +87,11 @@ public class DatabaseMappingTest {
 		Assert.assertNotNull("Result should not be null", result);
 		Assert.assertFalse("Result should not be empty", result.isEmpty());
 
-		boolean exists = mapping.exists(sourceNS, sourceId, TaxonNameBase.class);
+		boolean exists = mapping.exists(sourceNS, sourceId, TaxonName.class);
 		Assert.assertTrue("Mapping should exist", exists);
-		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonNameBase.class);
+		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonName.class);
 		Assert.assertFalse("Mapping with wrong namespace should not exist", exists);
-		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonNameBase.class);
+		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonName.class);
 		Assert.assertFalse("Mapping with wrong ID should not exist", exists);
 
 	}

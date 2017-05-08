@@ -9,26 +9,20 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author a.kohlbecker
  * @date Feb 24, 2014
  *
  */
-public class TaxonNameBaseVoter extends CdmPermissionVoter {
+public class TaxonNameVoter extends CdmPermissionVoter {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#getResponsibilityClass()
-     */
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {
-        return TaxonNameBase.class;
+        return TaxonName.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         // we always return true here to allow deleting the reference

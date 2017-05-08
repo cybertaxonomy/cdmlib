@@ -87,7 +87,7 @@
     <!-- name package -->
     
     <mapping> 
-        <class-a>eu.etaxonomy.cdm.model.name.TaxonNameBase</class-a>
+        <class-a>eu.etaxonomy.cdm.model.name.TaxonName</class-a>
         <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName</class-b>
         <field>
           <a>authorshipCache</a>

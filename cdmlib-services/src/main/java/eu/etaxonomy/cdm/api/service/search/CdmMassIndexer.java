@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -497,7 +497,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             indexedClasses.add(DescriptionElementBase.class);
             indexedClasses.add(TaxonBase.class);
             indexedClasses.add(Classification.class);
-            indexedClasses.add(TaxonNameBase.class);
+            indexedClasses.add(TaxonName.class);
             indexedClasses.add(SpecimenOrObservationBase.class);
             indexedClasses.add(TaxonRelationship.class);
         }
@@ -510,7 +510,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public Class[] dictionaryClasses() {
         return new Class[] {
-                TaxonNameBase.class
+                TaxonName.class
                 };
     }
 

@@ -16,8 +16,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A name cache rendering strategy for all TaxonNameBase subclasses.
- * Different TaxonNameBase subclasses could have different strategies.
+ * A name cache rendering strategy for all TaxonName subclasses.
+ * Different TaxonName subclasses could have different strategies.
  *
  * @author a.mueller
  *
@@ -34,7 +34,7 @@ public interface ITaxonCacheStrategy<T extends TaxonBase> extends IIdentifiableE
      * Example: ["Abies"/name,"alba"/name,Rank.SUBSPECIES/rank,"alpina"/name,
      * "Greuther (L.)"/authorship]
      *
-     * @param taxonNameBase
+     * @param taxonName
      * @return the tagged list, <code>null</code> if taxonName is <code>null</code>
      */
     public List<TaggedText> getTaggedTitle(T taxonBase);

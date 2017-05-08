@@ -265,7 +265,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
 	    // 3.
 	    writeDbUnitDataSetFile(new String[] {
-	        "TAXONBASE", "TAXONNAMEBASE",
+	        "TAXONBASE", "TAXONNAME",
 	        "REFERENCE",
 	        "AGENTBASE","HOMOTYPICALGROUP",
 	        "CLASSIFICATION", "TAXONNODE",

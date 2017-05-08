@@ -500,7 +500,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
 
         // 3.
         writeDbUnitDataSetFile(new String[] {
-            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONBASE", "TAXONNAME",
             "REFERENCE",
             "CLASSIFICATION", "TAXONNODE",
             "LANGUAGESTRING", "HOMOTYPICALGROUP",

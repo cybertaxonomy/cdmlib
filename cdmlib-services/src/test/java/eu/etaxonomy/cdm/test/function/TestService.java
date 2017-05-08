@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -98,15 +98,15 @@ public class TestService {
 
 		// load Name list
 		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().list(null,1000, 0,null,null);
-		for (TaxonNameBase tn2: tnList){
+		List<TaxonName> tnList = appCtr.getNameService().list(null,1000, 0,null,null);
+		for (TaxonName tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
 	}
 
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
@@ -141,16 +141,16 @@ public class TestService {
 //			System.out.println(naemRelType.getLabel());
 //		}
 //		System.out.println("=========== NAME LIST =================");
-//		List<TaxonNameBase> nameList = appCtr.getNameService().getNamesByName("Abies%");
+//		List<TaxonName> nameList = appCtr.getNameService().getNamesByName("Abies%");
 //		System.out.println("Size" + nameList.size());
-//		for (TaxonNameBase name : nameList){
+//		for (TaxonName name : nameList){
 //			System.out.println("ABEIS: " + name.getTitleCache());
 //		}
 //	}
 
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Reference ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
@@ -174,7 +174,7 @@ public class TestService {
 
 	public void testTransientRank(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(transientRank);
+		TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(transientRank);
 		Reference ref =  ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 
@@ -225,10 +225,10 @@ public class TestService {
 			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
 
 
-			TaxonNameBase<?,?> name = TaxonNameFactory.NewNonViralInstance(null);
+			TaxonName name = TaxonNameFactory.NewNonViralInstance(null);
 			name.setTitleCache("Abies alba", true);
 
-			TaxonNameBase<?,?> name2 = TaxonNameFactory.NewNonViralInstance(null);
+			TaxonName name2 = TaxonNameFactory.NewNonViralInstance(null);
 			name2.setTitleCache("Abies beta", true);
 
 			//appCtr.getNameService().saveTaxonName(name);

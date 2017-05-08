@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAutho
 import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup;
 
 /**
- * The class representing a relationship between two {@link TaxonNameBase taxon names} according
+ * The class representing a relationship between two {@link TaxonName taxon names} according
  * to the {@link NomenclaturalCode nomenclatural code} which governs both of them.
  * This includes a {@link NameRelationshipType name relationship type} (for instance "later homonym" or
  * "orthographic variant") and the article of the corresponding nomenclatural
@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
 @BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
 public class NameRelationship
-            extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType>
+            extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>
             implements Cloneable{
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);
@@ -74,14 +74,14 @@ public class NameRelationship
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase relatedFrom;
+	private TaxonName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase relatedTo;
+	private TaxonName relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
@@ -102,25 +102,25 @@ public class NameRelationship
 	/**
 	 * Class constructor: creates a new name relationship instance with no
 	 * reference and adds it to the respective
-	 * {@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
+	 * {@link TaxonName#getNameRelations() taxon name relation sets} of both involved names.
 	 *
 	 * @param toName			the taxon name to be set as target for the new name relationship
 	 * @param fromName			the taxon name to be set as source for the new name relationship
 	 * @param type				the relationship type to be assigned to the new name relationship
 	 * @param ruleConsidered	the string indicating the article of the nomenclatural code for the new name relationship
-	 * @see						#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, Reference, String, String)
-	 * @see						TaxonNameBase#addNameRelationship(NameRelationship)
-	 * @see						TaxonNameBase#addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
-	 * @see						TaxonNameBase#addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+	 * @see						#NameRelationship(TaxonName, TaxonName, NameRelationshipType, Reference, String, String)
+	 * @see						TaxonName#addNameRelationship(NameRelationship)
+	 * @see						TaxonName#addRelationshipFromName(TaxonName, NameRelationshipType, String)
+	 * @see						TaxonName#addRelationshipToName(TaxonName, NameRelationshipType, String)
 	 */
-	protected NameRelationship(TaxonNameBase toName, TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered) {
+	protected NameRelationship(TaxonName toName, TaxonName fromName, NameRelationshipType type, String ruleConsidered) {
 		this(toName, fromName, type, null, null, ruleConsidered);
 	}
 
 	/**
 	 * Class constructor: creates a new name relationship instance including
 	 * its {@link  eu.etaxonomy.cdm.model.reference.Reference reference source} and adds it to the respective
-	 *{@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
+	 *{@link TaxonName#getNameRelations() taxon name relation sets} of both involved names.
 	 *
 	 * @param toName				the taxon name to be set as target for the new name relationship
 	 * @param fromName				the taxon name to be set as source for the new name relationship
@@ -128,12 +128,12 @@ public class NameRelationship
 	 * @param citation				the reference source for the new name relationship
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param ruleConsidered		the string indicating the article of the nomenclatural code justifying the new name relationship
-	 * @see							#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String)
-	 * @see							TaxonNameBase#addNameRelationship(NameRelationship)
-	 * @see							TaxonNameBase#addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
-	 * @see							TaxonNameBase#addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+	 * @see							#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String)
+	 * @see							TaxonName#addNameRelationship(NameRelationship)
+	 * @see							TaxonName#addRelationshipFromName(TaxonName, NameRelationshipType, String)
+	 * @see							TaxonName#addRelationshipToName(TaxonName, NameRelationshipType, String)
 	 */
-	protected NameRelationship(TaxonNameBase  toName, TaxonNameBase fromName, NameRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
+	protected NameRelationship(TaxonName  toName, TaxonName fromName, NameRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
 		super(fromName, toName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}
@@ -141,40 +141,40 @@ public class NameRelationship
 	//********* METHODS **************************************/
 
 	/**
-	 * Returns the {@link TaxonNameBase taxon name} that plays the source role
+	 * Returns the {@link TaxonName taxon name} that plays the source role
 	 * in <i>this</i> taxon name relationship.
 	 *
 	 * @see   #getToName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
-	public TaxonNameBase getFromName(){
+	public TaxonName getFromName(){
 		return this.getRelatedFrom();
 	}
 
 	/**
 	 * @see  #getFromName()
 	 */
-	void setFromName(TaxonNameBase fromName){
+	void setFromName(TaxonName fromName){
 		this.setRelatedFrom(fromName);
 	}
 
 	/**
-	 * Returns the {@link TaxonNameBase taxon name} that plays the target role
+	 * Returns the {@link TaxonName taxon name} that plays the target role
 	 * in <i>this</i> taxon name relationship.
 	 *
 	 * @see   #getFromName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
 	@Transient
-	public TaxonNameBase getToName(){
+	public TaxonName getToName(){
 		return this.getRelatedTo();
 	}
 
 	/**
 	 * @see  #getToName()
 	 */
-	void setToName(TaxonNameBase toName){
+	void setToName(TaxonName toName){
 		this.setRelatedTo(toName);
 	}
 
@@ -184,7 +184,7 @@ public class NameRelationship
 	 * the  taxon name(s) of this nomenclatural status).
 	 * The considered rule gives the reason why the
 	 * {@link NomenclaturalStatusType nomenclatural status type} has been
-	 * assigned to the {@link TaxonNameBase taxon name(s)}.
+	 * assigned to the {@link TaxonName taxon name(s)}.
 	 */
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
@@ -199,13 +199,13 @@ public class NameRelationship
 
 	// for extra-package access to relatedFrom use getFromName instead
 	@Override
-    protected TaxonNameBase getRelatedFrom() {
+    protected TaxonName getRelatedFrom() {
 		return relatedFrom;
 	}
 
     // for extra-package access to relatedFrom use getToName instead
 	@Override
-    protected TaxonNameBase getRelatedTo() {
+    protected TaxonName getRelatedTo() {
 		return relatedTo;
 	}
 
@@ -215,12 +215,12 @@ public class NameRelationship
 	}
 
 	@Override
-    protected void setRelatedFrom(TaxonNameBase relatedFrom) {
+    protected void setRelatedFrom(TaxonName relatedFrom) {
 		this.relatedFrom = relatedFrom;
 	}
 
 	@Override
-    protected void setRelatedTo(TaxonNameBase relatedTo) {
+    protected void setRelatedTo(TaxonName relatedTo) {
 		this.relatedTo = relatedTo;
 	}
 
@@ -238,7 +238,7 @@ public class NameRelationship
 	 * modifying only some of the attributes.<BR>
 	 * CAUTION: Cloning a relationship will not add the relationship to the according
 	 * {@link #relatedFrom} and {@link #relatedTo} objects. The method is meant to be used
-	 * mainly for internal purposes (e.g. used within {@link TaxonNameBase#clone()}
+	 * mainly for internal purposes (e.g. used within {@link TaxonName#clone()}
 	 *
 	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
 	 * @see java.lang.Object#clone()

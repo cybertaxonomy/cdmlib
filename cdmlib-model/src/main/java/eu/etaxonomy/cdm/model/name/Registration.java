@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
- * A registration represents a nomenclatural act, either a {@link TaxonNameBase taxon name}
+ * A registration represents a nomenclatural act, either a {@link TaxonName taxon name}
  * registration or a {@link TypeDesignationBase type} registration.
  * <p>
  * The name and all type designations associated with the Registration must share the same citation and citation detail.
@@ -113,7 +113,7 @@ public class Registration extends AnnotatableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
 //    @IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TaxonNameBase name;
+    private TaxonName name;
 
     @XmlElementWrapper(name = "TypeDesignations")
     @XmlElement(name = "TypeDesignation")
@@ -146,7 +146,7 @@ public class Registration extends AnnotatableEntity {
     }
 
     public static Registration NewInstance(String identifier, String specificIdentifier,
-            TaxonNameBase name, Set<TypeDesignationBase> typeDesignations){
+            TaxonName name, Set<TypeDesignationBase> typeDesignations){
         Registration result = new Registration();
         result.setIdentifier(identifier);
         result.setSpecificIdentifier(specificIdentifier);
@@ -180,8 +180,8 @@ public class Registration extends AnnotatableEntity {
     public Institution getInstitution() {return institution;}
     public void setInstitution(Institution institution) {this.institution = institution;}
 
-    public TaxonNameBase getName() {return name;}
-    public void setName(TaxonNameBase name) {
+    public TaxonName getName() {return name;}
+    public void setName(TaxonName name) {
         if (this.name != null && !this.name.equals(name)){
             name.getRegistrations().remove(this);
         }

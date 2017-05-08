@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -87,7 +87,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 		logger.info("start make taxon relations ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
@@ -149,7 +149,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 
 	private int makeBasionymRelations(TcsXmlImportState state,
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, Set<TaxonBase> taxonStore,
+			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonName> taxonNameMap, Set<TaxonBase> taxonStore,
 			Element elTaxonName, Namespace tcsNamespace,
 			ResultWrapper<Boolean> success) {
 
@@ -169,15 +169,15 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			Element elBasionym = XmlHelp.getSingleChildElement(success, elBasionymRelationships, childName, tcsNamespace, obligatory);
 
 			String id = elTaxonName.getAttributeValue("id");
-			TaxonNameBase name = taxonNameMap.get(removeVersionOfRef(id));
+			TaxonName name = taxonNameMap.get(removeVersionOfRef(id));
 
 			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
 
 			String ref = elBasionym.getAttributeValue("ref");
-			TaxonNameBase basionymName = taxonNameMap.get(removeVersionOfRef(ref));
+			TaxonName basionymName = taxonNameMap.get(removeVersionOfRef(ref));
 
 			if (basionymName != null){
-				basionymName = HibernateProxyHelper.deproxy(basionymName, TaxonNameBase.class);
+				basionymName = HibernateProxyHelper.deproxy(basionymName, TaxonName.class);
 				TaxonBase basionym;
 				if (basionymName.getTaxonBases().isEmpty()){
 					 basionym = Synonym.NewInstance(basionymName, null);
@@ -376,8 +376,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 								success.setValue(false);
 							}else{
 								Synonym synonym = (Synonym)fromTaxon;
-								TaxonNameBase<?,?> synName = synonym.getName();
-								TaxonNameBase<?,?> accName = taxonTo.getName();
+								TaxonName synName = synonym.getName();
+								TaxonName accName = taxonTo.getName();
 								if (synName != null && accName != null && synName.isHomotypic(accName)
 											&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
 									synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
@@ -521,7 +521,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 						try{
 							String nameUri = "urn:lsid:ipni.org:names:"+ id;
-							TaxonNameBase name = rdfNameImport.handleRdfElementFromStream(nameStream, rdfConfig, (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE), nameUri);
+							TaxonName name = rdfNameImport.handleRdfElementFromStream(nameStream, rdfConfig, (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE), nameUri);
 							if (name != null){
 								if (name.getTaxa().isEmpty()){
 
@@ -544,7 +544,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				}else{
 					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
-					TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewNonViralInstance(null);
+					TaxonName taxonName = TaxonNameFactory.NewNonViralInstance(null);
 					taxonName.setTitleCache(title, true);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
@@ -571,10 +571,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 
 	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
-		TaxonNameBase<?,?> aboutName = aboutTaxon.getName();
+		TaxonName aboutName = aboutTaxon.getName();
 		if (aboutName != null){
-			Set<TaxonNameBase> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
-			for (TaxonNameBase<?,?> typifiedName : typifiedNames){
+			Set<TaxonName> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
+			for (TaxonName<?,?> typifiedName : typifiedNames){
 				//TODO check if name is part of this tcs file
 				if (typifiedName.equals(aboutName)){
 					continue;

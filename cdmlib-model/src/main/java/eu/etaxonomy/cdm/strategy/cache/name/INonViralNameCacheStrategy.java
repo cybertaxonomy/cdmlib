@@ -8,19 +8,19 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
+import eu.etaxonomy.cdm.model.name.INonViralName;
 
 /**
- * A name cache rendering strategy for all TaxonNameBase subclasses.
- * Different TaxonNameBase subclasses could have different strategies.
+ * A name cache rendering strategy for all TaxonName subclasses.
+ * Different TaxonName subclasses could have different strategies.
  * @author a.mueller
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface INonViralNameCacheStrategy<T extends ITaxonNameBase> extends INameCacheStrategy<T> {
+public interface INonViralNameCacheStrategy<T extends INonViralName> extends INameCacheStrategy<T> {
 
 	/**
-	 * returns the last epithet of the name (i.e. uninomial if generic or above, infrageneric epithet if infrageneric,
+	 * Returns the last epithet of the name (i.e. uninomial if generic or above, infrageneric epithet if infrageneric,
 	 * specific epithet if species and infraspecific epithet if infraspecific, possibly with other information (e.g. ranks
 	 * in infraspecific names, indications of hybrid status etc)).
 	 *
@@ -30,21 +30,8 @@ public interface INonViralNameCacheStrategy<T extends ITaxonNameBase> extends IN
 	 * @param object
 	 * @return
 	 */
-	public String getLastEpithet(T taxonNameBase);
+	public String getLastEpithet(T taxonName);
 
-	/**
-	 * returns the composed scientific taxon name string without authors nor year
-	 * @param object
-	 * @return
-	 */
-	@Override
-    public String getNameCache(T taxonNameBase);
 
-	/**
-	 * returns the composed author string
-	 * @param object
-	 * @return
-	 */
-	public String getAuthorshipCache(T nonViralName);
 
 }

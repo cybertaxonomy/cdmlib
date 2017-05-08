@@ -107,7 +107,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
-		commitAndStartNewTransaction(new String[]{"TAXONNAMEBASE", "ANNOTATION"});
+		commitAndStartNewTransaction(new String[]{"TAXONNAME", "ANNOTATION"});
 		assertEquals("Number of TaxonNames should be 10", 10 /*TODO */, nameService.count(null));
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
 		assertEquals("Number of classifications should be 1", 1, treeList.size());
@@ -231,7 +231,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorship().getTitleCache());
 //		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 //		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
-//		TaxonNameBase nameUsedInSource = source.getNameUsedInSource();
+//		TaxonName nameUsedInSource = source.getNameUsedInSource();
 //		assertNotNull("Name used in source should not be null", nameUsedInSource);
 //		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
 //

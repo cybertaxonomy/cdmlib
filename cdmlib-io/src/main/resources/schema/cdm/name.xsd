@@ -62,14 +62,14 @@
 
   <xs:element name="SpecimenTypeDesignationStatus" type="name:SpecimenTypeDesignationStatus"/>
 
-  <xs:element name="TaxonNameBase" type="name:TaxonNameBase"/>
+  <xs:element name="TaxonName" type="name:TaxonName"/>
 
   <xs:element name="TypeDesignationBase" type="name:TypeDesignationBase"/>
 
   <xs:element name="ViralName">
     <xs:complexType>
       <xs:complexContent>
-        <xs:extension base="name:TaxonNameBase">
+        <xs:extension base="name:TaxonName">
           <xs:sequence>
             <xs:element name="Acronym" type="xs:string" minOccurs="0"/>
           </xs:sequence>
@@ -96,7 +96,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="TaxonNameBase" abstract="true">
+  <xs:complexType name="TaxonName" abstract="true">
     <xs:complexContent>
       <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>
@@ -280,7 +280,7 @@
 
   <xs:complexType name="NonViralName">
     <xs:complexContent>
-      <xs:extension base="name:TaxonNameBase">
+      <xs:extension base="name:TaxonName">
         <xs:sequence>
           <xs:element name="NameCache" type="xs:string" minOccurs="0"/>
           <xs:element name="GenusOrUninomial" type="xs:string" minOccurs="0"/>

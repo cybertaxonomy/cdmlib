@@ -121,7 +121,7 @@
         @MetaValue(value = "PolytomousKey", targetEntity = PolytomousKey.class),
         @MetaValue(value = "Media", targetEntity = Media.class),
         @MetaValue(value = "DnaSample", targetEntity = DnaSample.class),
-        @MetaValue(value = "TaxonNameBase", targetEntity = TaxonNameBase.class),
+        @MetaValue(value = "TaxonName", targetEntity = TaxonName.class),
         @MetaValue(value = "Collection", targetEntity = Collection.class),
         @MetaValue(value = "FieldUnit", targetEntity = FieldUnit.class),
         @MetaValue(value = "DerivedUnit", targetEntity = DerivedUnit.class),
@@ -277,7 +277,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;

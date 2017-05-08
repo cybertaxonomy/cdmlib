@@ -2,6 +2,6 @@
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
   <LSIDAUTHORITY ID="1" CREATED="2009-02-03 17:52:26.0" UUID="aafce7fe-0c5f-42ed-814b-4c7c2c715660" AUTHORITY="ipni.org" PORT="80"/>
   <LSIDAUTHORITY ID="2" CREATED="2009-02-03 17:52:26.0" UUID="4663a2d0-01ca-11de-87af-0800200c9a66" AUTHORITY="example.org" PORT="80"/>
-  <LSIDAUTHORITY_NAMESPACES LSIDAUTHORITY_ID="1" NAMESPACES_MAPKEY="names" NAMESPACES_ELEMENT="eu.etaxonomy.cdm.model.name.TaxonNameBase"/>
-  <LSIDAUTHORITY_NAMESPACES LSIDAUTHORITY_ID="2" NAMESPACES_MAPKEY="names" NAMESPACES_ELEMENT="eu.etaxonomy.cdm.model.name.TaxonNameBase"/>
+  <LSIDAUTHORITY_NAMESPACES LSIDAUTHORITY_ID="1" NAMESPACES_MAPKEY="names" NAMESPACES_ELEMENT="eu.etaxonomy.cdm.model.name.TaxonName"/>
+  <LSIDAUTHORITY_NAMESPACES LSIDAUTHORITY_ID="2" NAMESPACES_MAPKEY="names" NAMESPACES_ELEMENT="eu.etaxonomy.cdm.model.name.TaxonName"/>
 </dataset>

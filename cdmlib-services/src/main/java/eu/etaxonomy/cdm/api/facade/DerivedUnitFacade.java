@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -408,7 +408,7 @@ public class DerivedUnitFacade {
 				facadePath = "" + facadePath; // no change
 				result.add(facadePath);
 			}
-			// storedUnder (TaxonNameBase)
+			// storedUnder (TaxonName)
 			else if (facadePath.startsWith("storedUnder")) {
 				facadePath = "" + facadePath; // no change
 				result.add(facadePath);
@@ -2082,11 +2082,11 @@ public class DerivedUnitFacade {
 
 	// Stored under name
 	@Transient
-	public TaxonNameBase getStoredUnder() {
+	public TaxonName getStoredUnder() {
 		return ! checkDerivedUnit()? null : derivedUnit.getStoredUnder();
 	}
 
-	public void setStoredUnder(TaxonNameBase storedUnder) {
+	public void setStoredUnder(TaxonName storedUnder) {
 		testDerivedUnit();
 		derivedUnit.setStoredUnder(storedUnder);
 	}
@@ -2364,7 +2364,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public DerivedUnit addDuplicate(Collection collection, String catalogNumber,
-			String accessionNumber, TaxonNameBase storedUnder, PreservationMethod preservation){
+			String accessionNumber, TaxonName storedUnder, PreservationMethod preservation){
 		testDerivedUnit();
 		DerivedUnit duplicate = DerivedUnit.NewPreservedSpecimenInstance();
 		duplicate.setDerivedFrom(getDerivationEvent(CREATE));

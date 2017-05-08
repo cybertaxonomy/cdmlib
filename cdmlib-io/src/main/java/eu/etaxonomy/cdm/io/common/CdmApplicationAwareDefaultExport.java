@@ -20,12 +20,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class is an default exporter class that is a spring bean and therefore it knows all other IO classes that are beans
@@ -60,12 +55,12 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
 	public CdmApplicationAwareDefaultExport(){
-		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
-		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
+		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<>(service));
 	}
 
 

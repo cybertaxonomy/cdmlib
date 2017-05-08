@@ -11,15 +11,15 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A name cache rendering strategy for all TaxonNameBase subclasses.
- * Different TaxonNameBase subclasses could have different strategies.
+ * A name cache rendering strategy for all TaxonName subclasses.
+ * Different TaxonName subclasses could have different strategies.
  *
  * @author a.mueller
  *
@@ -36,25 +36,18 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * Example: ["Abies"/name,"alba"/name,Rank.SUBSPECIES/rank,"alpina"/name,
      * "Greuther (L.)"/authorship]
      *
-     * @param taxonNameBase
+     * @param taxonName
      * @return the tagged list, <code>null</code> if taxonName is <code>null</code>
      */
     public List<TaggedText> getTaggedTitle(T taxonName);
 
     /**
-     * Same as {@link #getTaggedTitle(TaxonNameBase)} but also includes the reference and
+     * Same as {@link #getTaggedTitle(TaxonName)} but also includes the reference and
      * the nomenclatural status in the result.
      * @param taxonName
      * @return
      */
     public List<TaggedText> getTaggedFullTitle(T taxonName);
-
-    /**
-     * Same as {@link #getTaggedTitle(TaxonNameBase)} but not including authorship.
-     * @param taxonName
-     * @return
-     */
-    public List<TaggedText> getTaggedName(T taxonName);
 
 
     /**
@@ -72,10 +65,10 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * Returns the full title cache as a string. The full title cache contains
      * the name cache, followed by the nomencl. reference, followed by the
      * nomencl. status
-     * @param taxonNameBase
+     * @param taxonName
      * @return
      */
-    public String getFullTitleCache(T taxonNameBase);
+    public String getFullTitleCache(T taxonName);
 
 	/**
 	 * Returns the full title cache tagged by html tags according to tag rules.
@@ -86,14 +79,6 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
 	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
 
 
-    /**
-     * Returns the name cache as a string.
-     * @param taxonNameBase
-     * @return
-     */
-    public String getNameCache(T taxonNameBase);
-
-
 	/**
 	 * Returns the title cache tagged by html tags according to tag rules.
 	 * @param nonViralName
@@ -101,5 +86,32 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
 	 * @return
 	 */
 	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
+
+	/**
+     * Returns the composed scientific taxon name string without authors nor year.
+     * For viral names this returns <code>null</code>. This may be discussed
+     * as for some functionality the nameCache is crucial and therefore
+     * we maybe prefer to return the titleCache instead.
+     *
+     * @param object
+     * @return
+     */
+    public String getNameCache(T taxonName);
+
+
+
+    /**
+     * Same as {@link #getTaggedTitle(TaxonName)} but not including authorship.
+     * @param taxonName
+     * @return
+     */
+    public List<TaggedText> getTaggedName(T taxonName);
+
+    /**
+     * Returns the composed author string. Returns null for viral names.
+     * @param object
+     * @return
+     */
+    public String getAuthorshipCache(T nonViralName);
 
 }

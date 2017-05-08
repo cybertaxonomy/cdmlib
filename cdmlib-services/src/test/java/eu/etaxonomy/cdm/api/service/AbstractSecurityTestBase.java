@@ -86,7 +86,7 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
         /* User 'taxonEditor':
             - TAXONBASE.[CREATE]
             - TAXONBASE.[UPDATE]
-            - TAXONNAMEBASE.[CREATE,READ]
+            - TAXONNAME.[CREATE,READ]
             - REFERENCE.[CREATE,READ]
 
         */
@@ -107,7 +107,7 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
             - TAXONNODE.[UPDATE,CREATE,DELETE,READ,UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
             - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
             - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
-            - TAXONNAMEBASE.[CREATE,READ]
+            - TAXONNAME.[CREATE,READ]
             - REFERENCE.[CREATE,READ]
          */
         tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
@@ -120,7 +120,7 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
             - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
             - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
             - ROLE_PUBLISH
-            - TAXONNAMEBASE.[CREATE,READ]
+            - TAXONNAME.[CREATE,READ]
             - REFERENCE.[CREATE,READ]
 
          */

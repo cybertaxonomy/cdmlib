@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -88,7 +88,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Service
 @Transactional(readOnly = true)
-public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxonNameDao> implements INameService {
+public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNameDao> implements INameService {
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
     @Autowired
@@ -130,7 +130,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public DeleteResult delete(TaxonNameBase name){
+    public DeleteResult delete(TaxonName name){
         return delete(name.getUuid());
     }
 
@@ -197,7 +197,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public DeleteResult deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
+    public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
     	if(typeDesignation!=null && typeDesignation.getId()!=0){
     		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
     	}
@@ -215,9 +215,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
-            Set<TaxonNameBase> nameSet = new HashSet<TaxonNameBase>(typeDesignation.getTypifiedNames());
+            Set<TaxonName> nameSet = new HashSet<TaxonName>(typeDesignation.getTypifiedNames());
             for (Object o : nameSet){
-                TaxonNameBase singleName = CdmBase.deproxy(o, TaxonNameBase.class);
+                TaxonName singleName = CdmBase.deproxy(o, TaxonName.class);
                 removeSingleDesignation(singleName, typeDesignation);
             }
         }
@@ -228,7 +228,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
-        TaxonNameBase nameBase = load(nameUuid);
+        TaxonName nameBase = load(nameUuid);
         TypeDesignationBase typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
@@ -237,7 +237,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @param name
      * @param typeDesignation
      */
-    private void removeSingleDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation) {
+    private void removeSingleDesignation(TaxonName name, TypeDesignationBase typeDesignation) {
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
             typeDesignation.removeType();
@@ -251,7 +251,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @param name
      * @param config
      */
-    private void removeNameRelationshipsByDeleteConfig(TaxonNameBase<?,?> name, NameDeletionConfigurator config) {
+    private void removeNameRelationshipsByDeleteConfig(TaxonName<?,?> name, NameDeletionConfigurator config) {
         try {
             if (config.isRemoveAllNameRelationships()){
                 Set<NameRelationship> rels = getModifiableSet(name.getNameRelations());
@@ -305,7 +305,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     @Override
     @Deprecated
-    public List<TaxonNameBase> getNamesByNameCache(String nameCache){
+    public List<TaxonName> getNamesByNameCache(String nameCache){
         boolean includeAuthors = false;
         List result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
@@ -319,7 +319,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * findByTitle
      */
     @Override
-    public List<TaxonNameBase> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
+    public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
@@ -331,7 +331,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * findByTitle
      */
     @Override
-    public List<TaxonNameBase> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
+    public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByName(false, nameCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
@@ -431,7 +431,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public List<NameRelationship> listNameRelationships(TaxonNameBase name,	Direction direction, NameRelationshipType type, Integer pageSize,
+    public List<NameRelationship> listNameRelationships(TaxonName name,	Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 
         Integer numberOfResults = dao.countNameRelationships(name, direction, type);
@@ -459,8 +459,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         Builder textQueryBuilder = new Builder();
         textQueryBuilder.setDisableCoord(false);
 
-        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
-        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonName.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonName.class);
 
 //    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
@@ -523,8 +523,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             List<Language> languages,
             boolean highlightFragments) {
 
-        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
-        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonName.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonName.class);
 
 //    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
@@ -554,8 +554,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             boolean highlightFragments) {
         Builder textQueryBuilder = new Builder();
 
-        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
-        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonName.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonName.class);
 
 //    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
@@ -580,7 +580,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public List<SearchResult<TaxonNameBase>> findByNameFuzzySearch(
+    public List<SearchResult<TaxonName>> findByNameFuzzySearch(
             String name,
             float accuracy,
             List<Language> languages,
@@ -608,7 +608,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
         @SuppressWarnings("rawtypes")
-        List<SearchResult<TaxonNameBase>> searchResults = searchResultBuilder.createResultSet(
+        List<SearchResult<TaxonName>> searchResults = searchResultBuilder.createResultSet(
                 topDocs, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         return searchResults;
@@ -700,42 +700,42 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name, Direction direction, NameRelationshipType type, Integer pageSize,
+    public Pager<NameRelationship> pageNameRelationships(TaxonName name, Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, direction, type, pageSize, pageNumber, orderHints, propertyPaths);
         return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
-    public List<NameRelationship> listFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<NameRelationship> listFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<NameRelationship> pageFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
         return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
-    public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<NameRelationship> listToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<NameRelationship> pageToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
         return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
-    public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status,
+    public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status,
             Integer pageSize, Integer pageNumber) {
         return getTypeDesignations(name, status, pageSize, pageNumber, null);
     }
 
     @Override
-    public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status,
+    public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status,
                 Integer pageSize, Integer pageNumber, List<String> propertyPaths){
         Integer numberOfResults = dao.countTypeDesignations(name, status);
 
@@ -752,16 +752,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * rename search
      */
     @Override
-    public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
+    public Pager<TaxonName> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
-        List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
+        List<TaxonName> results = new ArrayList<TaxonName>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-        return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<TaxonName>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -770,10 +770,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
+    public Pager<TaxonName> findByName(Class<? extends TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
          Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 
-         List<TaxonNameBase> results = new ArrayList<>();
+         List<TaxonName> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                 results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
@@ -788,16 +788,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends TaxonNameBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonNameBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateTitleCache(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
-            clazz = TaxonNameBase.class;
+            clazz = TaxonName.class;
         }
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 
     @Override
-    protected void setOtherCachesNull(TaxonNameBase name) {
+    protected void setOtherCachesNull(TaxonName name) {
          if (! name.isProtectedNameCache()){
              name.setNameCache(null, false);
         }
@@ -812,8 +812,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     public List<TaggedText> getTaggedName(UUID uuid) {
-        TaxonNameBase<?,?> taxonNameBase = dao.load(uuid);
-        List<TaggedText> taggedName = taxonNameBase.getTaggedName();
+        TaxonName taxonName = dao.load(uuid);
+        List<TaggedText> taggedName = taxonName.getTaggedName();
         return taggedName;
     }
 
@@ -931,7 +931,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     @Transactional(readOnly = true)
     public UpdateResult setAsGroupsBasionym(UUID nameUuid) {
-        TaxonNameBase name = dao.load(nameUuid);
+        TaxonName name = dao.load(nameUuid);
         UpdateResult result = new UpdateResult();
         name.setAsGroupsBasionym();
         result.addUpdatedObject(name);

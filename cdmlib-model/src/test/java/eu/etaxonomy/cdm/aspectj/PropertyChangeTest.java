@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 	public class PropertyChangeTest implements PropertyChangeListener {
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 		@Test
 		public void testPropertyChange() {
 		    INonViralName b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-			((TaxonNameBase<?,?>)b).addPropertyChangeListener(this);
+			((TaxonName<?,?>)b).addPropertyChangeListener(this);
 			b.setGenusOrUninomial("Abies");
 				assertEquals(b.getGenusOrUninomial(), lastPropValue);
 			b.setGenusOrUninomial("Picea");
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 		@Test
 		public void testPropertyChangeBoolean() {
-			TaxonNameBase b = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			TaxonName b = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setAnamorphic(true);
 			assertEquals(b.isAnamorphic(), lastPropValue);

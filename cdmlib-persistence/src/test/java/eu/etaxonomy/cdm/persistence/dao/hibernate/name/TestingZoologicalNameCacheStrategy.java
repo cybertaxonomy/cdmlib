@@ -24,18 +24,18 @@ public class TestingZoologicalNameCacheStrategy implements INonViralNameCacheStr
     }
 
     @Override
-    public String getLastEpithet(IZoologicalName taxonNameBase) {
-        return "test.zoological.lastEpithet"+ taxonNameBase.getId();
+    public String getLastEpithet(IZoologicalName taxonName) {
+        return "test.zoological.lastEpithet"+ taxonName.getId();
     }
 
     @Override
-    public String getNameCache(IZoologicalName taxonNameBase) {
-        return "test.zoological.nameCache"+ taxonNameBase.getId();
+    public String getNameCache(IZoologicalName taxonName) {
+        return "test.zoological.nameCache"+ taxonName.getId();
     }
 
     @Override
-    public String getFullTitleCache(IZoologicalName taxonNameBase) {
-        return "test.zoological.fullTitleCache"+ taxonNameBase.getId();
+    public String getFullTitleCache(IZoologicalName taxonName) {
+        return "test.zoological.fullTitleCache"+ taxonName.getId();
     }
 
 

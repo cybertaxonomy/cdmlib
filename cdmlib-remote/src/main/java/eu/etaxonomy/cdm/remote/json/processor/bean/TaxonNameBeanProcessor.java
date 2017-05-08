@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -22,9 +22,9 @@ import net.sf.json.JsonConfig;
  * @author a.kohlbecker
  *
  */
-public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNameBase> {
+public class TaxonNameBeanProcessor extends AbstractCdmBeanProcessor<TaxonName> {
 
-    public static final Logger logger = Logger.getLogger(TaxonNameBaseBeanProcessor.class);
+    public static final Logger logger = Logger.getLogger(TaxonNameBeanProcessor.class);
 
     private boolean skipTaggedName = false;
 
@@ -58,7 +58,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
     }
 
     @Override
-    public JSONObject processBeanSecondStep(TaxonNameBase bean, JSONObject json, JsonConfig jsonConfig) {
+    public JSONObject processBeanSecondStep(TaxonName bean, JSONObject json, JsonConfig jsonConfig) {
         if(logger.isDebugEnabled()){
             logger.debug("processing second step" + bean);
         }

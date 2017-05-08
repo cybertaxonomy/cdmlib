@@ -24,7 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -121,7 +121,7 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 
 	@Test
 	public void testIgnoreBidirectionalRelationship() {
-		referringObjectMetadataFactory.get(TaxonNameBase.class);
+		referringObjectMetadataFactory.get(TaxonName.class);
 	}
 
     @Override

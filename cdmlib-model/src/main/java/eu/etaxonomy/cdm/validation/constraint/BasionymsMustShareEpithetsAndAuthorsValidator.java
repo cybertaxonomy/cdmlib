@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
 
 
@@ -30,8 +30,8 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 	public boolean isValid(NameRelationship nameRelationship, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 		if(nameRelationship.getType() != null && nameRelationship.getType().equals(NameRelationshipType.BASIONYM())) {
-			TaxonNameBase<?,?> from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonNameBase.class);
-			TaxonNameBase<?,?> to = CdmBase.deproxy(nameRelationship.getToName(), TaxonNameBase.class);
+			TaxonName<?,?> from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonName.class);
+			TaxonName<?,?> to = CdmBase.deproxy(nameRelationship.getToName(), TaxonName.class);
 
 			if(from.isNonViral() && to.isNonViral()) {
 				INonViralName fromName =  from;

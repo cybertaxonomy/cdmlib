@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -192,12 +192,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         boolean includeAuthors = false;
         List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
         if (doNamesWithoutTaxa){
-        	List<? extends TaxonNameBase<?,?>> nameResult = taxonNameDao.findByName(
+        	List<? extends TaxonName<?,?>> nameResult = taxonNameDao.findByName(
         	        includeAuthors, queryString, matchMode, null, null, null, null);
 
-        	for (TaxonNameBase name: nameResult){
+        	for (TaxonName name: nameResult){
         		if (name.getTaxonBases().size() == 0){
-        			resultObjects.add(new UuidAndTitleCache(TaxonNameBase.class, name.getUuid(), name.getId(), name.getTitleCache()));
+        			resultObjects.add(new UuidAndTitleCache(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache()));
         		}
         	}
         	if (!doSynonyms && !doTaxa && !doCommonNames){
@@ -255,7 +255,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     /**
      * @param clazz
-     * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
+     * @param searchField the field in TaxonName to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
      * @param queryString
      * @param classification TODO
      * @param matchMode
@@ -499,7 +499,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
     /**
-     * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
+     * @param searchField the field in TaxonName to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
      * @param queryString
      * @param classification TODO
      * @param matchMode
@@ -1277,11 +1277,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
         //get all taxa, already in db
-        Query query = getSession().createQuery("from TaxonNameBase t where t.nameCache IN (:taxonList)");
+        Query query = getSession().createQuery("from TaxonName t where t.nameCache IN (:taxonList)");
         query.setParameterList("taxonList", taxonNames);
-        List<TaxonNameBase> taxaInDB = query.list();
+        List<TaxonName> taxaInDB = query.list();
         //compare the original list with the result of the query
-        for (TaxonNameBase taxonName: taxaInDB){
+        for (TaxonName taxonName: taxaInDB){
             String nameCache = taxonName.getNameCache();
             if (taxonNames.contains(nameCache)){
                 taxonNames.remove(nameCache);
@@ -1303,25 +1303,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPaths) {
+    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPaths) {
 
         Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
 
         @SuppressWarnings("unchecked")
-        List<TaxonNameBase> zooNames = query.list();
+        List<TaxonName> zooNames = query.list();
 
         TaxonNameComparator taxComp = new TaxonNameComparator();
         Collections.sort(zooNames, taxComp);
 
-        for (TaxonNameBase<?,?> taxonNameBase: zooNames){
-            defaultBeanInitializer.initialize(taxonNameBase, propertyPaths);
+        for (TaxonName taxonName: zooNames){
+            defaultBeanInitializer.initialize(taxonName, propertyPaths);
         }
 
         return zooNames;
     }
 
     @Override
-    public List<TaxonNameBase> findIdenticalNamesNew(List<String> propertyPaths){
+    public List<TaxonName> findIdenticalNamesNew(List<String> propertyPaths){
 
         //Hole die beiden Source_ids von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
         Query query = getSession().createQuery("Select id from Reference where titleCache like 'Fauna Europaea database'");
@@ -1356,8 +1356,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         query = getSession().createQuery("from ZoologicalName zn where zn.nameCache IN (:identicalNames)");
         query.setParameterList("identicalNames", identicalNames);
-        List<TaxonNameBase> result = query.list();
-        TaxonNameBase temp = result.get(0);
+        List<TaxonName> result = query.list();
+        TaxonName temp = result.get(0);
 
         Iterator<OriginalSourceBase> sources = temp.getSources().iterator();
 
@@ -1371,7 +1371,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //
 //
 //    @Override
-//    public String getPhylumName(TaxonNameBase name){
+//    public String getPhylumName(TaxonName name){
 //        List results = new ArrayList();
 //        try{
 //        Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");

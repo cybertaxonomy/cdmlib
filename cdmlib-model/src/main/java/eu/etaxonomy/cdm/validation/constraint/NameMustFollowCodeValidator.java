@@ -16,11 +16,11 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
 
 /**
- * Validator for name parts. Required since {@link TaxonNameBase} has
+ * Validator for name parts. Required since {@link TaxonName} has
  * no subclasses anymore. This validator checks if the names follow
  * the old sublassing rules.
  * <BR><BR>
@@ -31,13 +31,13 @@ import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
  *
  */
 public class NameMustFollowCodeValidator implements
-        ConstraintValidator<NameMustFollowCode, TaxonNameBase<?,?>> {
+        ConstraintValidator<NameMustFollowCode, TaxonName<?,?>> {
 
     @Override
     public void initialize(NameMustFollowCode nameMustFollowTheirCode) { }
 
     @Override
-    public boolean isValid(TaxonNameBase<?,?> name, ConstraintValidatorContext constraintContext) {
+    public boolean isValid(TaxonName<?,?> name, ConstraintValidatorContext constraintContext) {
         name = CdmBase.deproxy(name);
         boolean valid = true;
 

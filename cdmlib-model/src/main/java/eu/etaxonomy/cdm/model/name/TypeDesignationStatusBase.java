@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
- * for a {@link TaxonNameBase taxon name} or a set of them. Within this set {@link NameRelationshipType#BASIONYM() basionyms}
+ * for a {@link TaxonName taxon name} or a set of them. Within this set {@link NameRelationshipType#BASIONYM() basionyms}
  * or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms}, in case of reclassifications,
  * will be here referred as "type-bringing" taxon names.
  * <P>

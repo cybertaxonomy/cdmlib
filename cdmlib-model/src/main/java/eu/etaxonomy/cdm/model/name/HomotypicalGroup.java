@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
- * The homotypical group class represents a set of {@link TaxonNameBase taxon names} associated
+ * The homotypical group class represents a set of {@link TaxonName taxon names} associated
  * on the base of their typifications. Since it can be asserted that two taxon
  * names are typified by the same type without mentioning the type itself, even
  * taxon names without explicit {@link TypeDesignationBase type designation} can belong
@@ -76,12 +76,12 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
-	protected Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+	protected Set<TaxonName> typifiedNames = new HashSet<>();
 
 // ******************** static methods **************************************/
 	/**
 	 * Creates a new homotypical group instance with an empty set of typified
-	 * {@link TaxonNameBase taxon names}.
+	 * {@link TaxonName taxon names}.
 	 *
 	 * @see #HomotypicalGroup()
 	 */
@@ -94,7 +94,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Class constructor: creates a new homotypical group instance with an
-	 * empty set of typified {@link TaxonNameBase taxon names}.
+	 * empty set of typified {@link TaxonName taxon names}.
 	 */
 	protected HomotypicalGroup() {
 		super();
@@ -103,23 +103,23 @@ public class HomotypicalGroup extends AnnotatableEntity {
 // ********************** GETTER/SETTER/ADDER/REMOVER ********************************/
 
 	/**
-	 * Returns the set of {@link TaxonNameBase taxon names} that belong to <i>this</i> homotypical group.
+	 * Returns the set of {@link TaxonName taxon names} that belong to <i>this</i> homotypical group.
 	 *
 	 * @see	#getSpecimenTypeDesignations()
 	 */
-	public Set<TaxonNameBase> getTypifiedNames() {
+	public Set<TaxonName> getTypifiedNames() {
 		return typifiedNames;
 	}
 
 	/**
-	 * Adds a new {@link TaxonNameBase taxon name} to the set of taxon names that belong
+	 * Adds a new {@link TaxonName taxon name} to the set of taxon names that belong
 	 * to <i>this</i> homotypical group.
 	 *
 	 * @param  typifiedName  the taxon name to be added to <i>this</i> group
 	 * @see 			  	 #getTypifiedNames()
-	 * @see 			  	 #removeTypifiedName(TaxonNameBase)
+	 * @see 			  	 #removeTypifiedName(TaxonName)
 	 */
-	public void addTypifiedName(TaxonNameBase typifiedName) {
+	public void addTypifiedName(TaxonName typifiedName) {
 		if (typifiedName != null){
 			typifiedNames.add(typifiedName);
 			//if (typifiedName.getHomotypicalGroup() != null && !typifiedName.getHomotypicalGroup().equals(this))
@@ -128,24 +128,24 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 
 	/**
-	 * @see #removeTypifiedName(TaxonNameBase, boolean)
+	 * @see #removeTypifiedName(TaxonName, boolean)
 	 * @param typifiedName
 	 */
-	public void removeTypifiedName(TaxonNameBase typifiedName) {
+	public void removeTypifiedName(TaxonName typifiedName) {
 		removeTypifiedName(typifiedName, false);
 	}
 
 
 	/**
-	 * Removes one element from the set of {@link TaxonNameBase taxon names}
+	 * Removes one element from the set of {@link TaxonName taxon names}
 	 * that belong to <i>this</i> homotypical group.
 	 *
 	 * @param  typifiedName	the taxon name which should be removed from the corresponding set
 	 * @param  removeGroup  if <code>true</code> the typified name is given a new
 	 * 						homotypical group
-	 * @see    #addTypifiedName(TaxonNameBase)
+	 * @see    #addTypifiedName(TaxonName)
 	 */
-	public void removeTypifiedName(TaxonNameBase typifiedName, boolean removeGroup) {
+	public void removeTypifiedName(TaxonName typifiedName, boolean removeGroup) {
 		if (removeGroup){
 			HomotypicalGroup newHomotypicalGroup = HomotypicalGroup.NewInstance();
 			typifiedName.setHomotypicalGroup(newHomotypicalGroup);
@@ -155,7 +155,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 
 	/**
-	 * Merges the typified {@link TaxonNameBase taxon names} from one homotypical group into
+	 * Merges the typified {@link TaxonName taxon names} from one homotypical group into
 	 * the set of typified taxon names of <i>this</i> homotypical group.
 	 *
 	 * @param	homotypicalGroupToMerge the homotypical group the typified names of which
@@ -163,9 +163,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 */
 	public void merge(HomotypicalGroup homotypicalGroupToMerge){
 		if (homotypicalGroupToMerge != null){
-			Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+			Set<TaxonName> typifiedNames = new HashSet<>();
 			typifiedNames.addAll(homotypicalGroupToMerge.getTypifiedNames());
-			for (TaxonNameBase typifiedName: typifiedNames){
+			for (TaxonName typifiedName: typifiedNames){
 				this.addTypifiedName(typifiedName);
 			}
 		}
@@ -174,18 +174,18 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} that
-	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
+	 * typify the {@link TaxonName taxon names} belonging to <i>this</i> homotypical group
 	 * including the status of these designations.
 	 *
 	 * @see	#getTypifiedNames()
 	 * @see	#getNameTypeDesignations()
 	 * @see	#getTypeDesignations()
-	 * @see	TaxonNameBase#getSpecimenTypeDesignations()
+	 * @see	TaxonName#getSpecimenTypeDesignations()
 	 */
 	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
-		for (TaxonNameBase taxonName : typifiedNames){
+		for (TaxonName taxonName : typifiedNames){
 			result.addAll(taxonName.getSpecimenTypeDesignations());
 		}
 		return result;
@@ -193,18 +193,18 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Returns the set of {@link NameTypeDesignation name type designations} that
-	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
+	 * typify the {@link TaxonName taxon names} belonging to <i>this</i> homotypical group
 	 * including the status of these designations.
 	 *
 	 * @see	#getTypifiedNames()
 	 * @see	#getSpecimenTypeDesignations()
 	 * @see	#getTypeDesignations()
-	 * @see	TaxonNameBase#getNameTypeDesignations()
+	 * @see	TaxonName#getNameTypeDesignations()
 	 */
 	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations(){
 		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
-		for (TaxonNameBase taxonName : typifiedNames){
+		for (TaxonName taxonName : typifiedNames){
 			result.addAll(taxonName.getNameTypeDesignations());
 		}
 		return result;
@@ -213,19 +213,19 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Returns the set of all {@link TypeDesignationBase type designations} that
-	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
+	 * typify the {@link TaxonName taxon names} belonging to <i>this</i> homotypical group
 	 * (this includes either {@link NameTypeDesignation name type designations} or
 	 * {@link SpecimenTypeDesignation specimen type designations}).
 	 *
 	 * @see	#getTypifiedNames()
 	 * @see	#getNameTypeDesignations()
 	 * @see	#getSpecimenTypeDesignations()
-	 * @see	TaxonNameBase#getTypeDesignations()
+	 * @see	TaxonName#getTypeDesignations()
 	 */
 	@Transient
 	public Set<TypeDesignationBase> getTypeDesignations(){
 		Set<TypeDesignationBase> result = new HashSet<TypeDesignationBase>();
-		for (TaxonNameBase taxonName : typifiedNames){
+		for (TaxonName taxonName : typifiedNames){
 			result.addAll(taxonName.getTypeDesignations());
 		}
 		return result;
@@ -236,17 +236,17 @@ public class HomotypicalGroup extends AnnotatableEntity {
      * Creates a basionym relationship to all other names in this names homotypical
      * group.
      *
-     * @see HomotypicalGroup.setGroupBasionym(TaxonNameBase basionymName)
+     * @see HomotypicalGroup.setGroupBasionym(TaxonName basionymName)
      *
      * @param basionymName
      * @throws IllegalArgumentException if basionymName is not member in this homotypical group
      */
 	@Transient
-	public void setGroupBasionym(TaxonNameBase basionymName) throws IllegalArgumentException{
+	public void setGroupBasionym(TaxonName basionymName) throws IllegalArgumentException{
     	setGroupBasionym(basionymName, null, null, null);
     }
 
-	public void setGroupBasionym(TaxonNameBase basionymName, Reference citation, String microCitation, String ruleConsidered)
+	public void setGroupBasionym(TaxonName basionymName, Reference citation, String microCitation, String ruleConsidered)
     			throws IllegalArgumentException {
     	if (! typifiedNames.contains(basionymName)){
         	throw new IllegalArgumentException("Name to be set as basionym/original combination must be part of the homotypical group but is not");
@@ -254,11 +254,11 @@ public class HomotypicalGroup extends AnnotatableEntity {
         if (typifiedNames.size() < 2){return;}
 //
     	//Add new relations
-        Set<TaxonNameBase> typified = new HashSet<TaxonNameBase>();
-        for (TaxonNameBase name : typifiedNames){
+        Set<TaxonName> typified = new HashSet<>();
+        for (TaxonName name : typifiedNames){
         	typified.add(name);
         }
-        for (TaxonNameBase name : typified) {
+        for (TaxonName name : typified) {
     		if (!name.equals(basionymName)) {
 		    	name.addRelationshipFromName(basionymName, NameRelationshipType.BASIONYM(), citation, microCitation, ruleConsidered);
 			}
@@ -274,7 +274,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
      *
      * @param basionymName
      */
-     public static void removeGroupBasionym(TaxonNameBase basionymName) {
+     public static void removeGroupBasionym(TaxonName basionymName) {
     	 HomotypicalGroup homotypicalGroup = basionymName.getHomotypicalGroup();
          Set<NameRelationship> relations = basionymName.getRelationsFromThisName();
          Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
@@ -309,13 +309,13 @@ public class HomotypicalGroup extends AnnotatableEntity {
 //     */
 //    public void guessAndSetBasionym(){
 //         Map<String, INonViralName> candidates = new HashMap<>();
-//         for (TaxonNameBase<?,?> typifiedName : this.typifiedNames){
+//         for (TaxonName<?,?> typifiedName : this.typifiedNames){
 //             if (! typifiedName.protectedAuthorshipCache && nvn.getBasionymAuthorship() == null){
 //                 candidates.add(typifiedName);
 //             }
 //         }
 //         if (candidates.size() == 1){
-//             for (TaxonNameBase<?,?> typifiedName : this.typifiedNames){
+//             for (TaxonName<?,?> typifiedName : this.typifiedNames){
 //                 removeGroupBasionym(typifiedName);
 //             }
 //             this.setGroupBasionym(candidates.iterator().next());
@@ -331,9 +331,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @return
 	 */
 	@Transient
-	public Set<TaxonNameBase> getUnrelatedNames(){
+	public Set<TaxonName> getUnrelatedNames(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, true);
-		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		Set<TaxonName> result = new HashSet<>();
 		result.addAll(this.getTypifiedNames());
 		for (NameRelationship nameRelationship : set){
 			result.remove(nameRelationship.getFromName());
@@ -348,9 +348,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @return
 	 */
 	@Transient
-	public Set<TaxonNameBase> getNewCombinations(){
+	public Set<TaxonName> getNewCombinations(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, true);
-		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		Set<TaxonName> result = new HashSet<>();
 		for (NameRelationship nameRelationship : set){
 			result.add(nameRelationship.getToName());
 		}
@@ -365,9 +365,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @return
 	 */
 	@Transient
-	public Set<TaxonNameBase> getBasionymsOrReplacedSynonyms(){
+	public Set<TaxonName> getBasionymsOrReplacedSynonyms(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, true);
-		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		Set<TaxonName> result = new HashSet<>();
 		for (NameRelationship nameRelationship : set){
 			result.add(nameRelationship.getFromName());
 		}
@@ -379,9 +379,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @return
 	 */
 	@Transient
-	public Set<TaxonNameBase> getBasionyms(){
+	public Set<TaxonName> getBasionyms(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, false);
-		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		Set<TaxonName> result = new HashSet<>();
 		for (NameRelationship nameRelationship : set){
 			result.add(nameRelationship.getFromName());
 		}
@@ -393,9 +393,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @return
 	 */
 	@Transient
-	public Set<TaxonNameBase> getReplacedSynonym(){
+	public Set<TaxonName> getReplacedSynonym(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(false, true);
-		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		Set<TaxonName> result = new HashSet<>();
 		for (NameRelationship nameRelationship : set){
 			result.add(nameRelationship.getFromName());
 		}
@@ -423,9 +423,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@Transient
 	private Set<NameRelationship> getBasionymOrReplacedSynonymRelations(boolean doBasionym, boolean doReplacedSynonym){
 		Set<NameRelationship> result = new HashSet<NameRelationship>();
-		Set<TaxonNameBase> names = this.getTypifiedNames();
+		Set<TaxonName> names = this.getTypifiedNames();
 		if (names.size() > 1){
-			for (TaxonNameBase name : names){
+			for (TaxonName name : names){
 				Set nameRels = name.getNameRelations();
 				//TODO make getNameRelations generic
 				for (Object obj : nameRels){
@@ -451,7 +451,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 
 	private boolean testRelatedNameInThisGroup(NameRelationship nameRel){
-		TaxonNameBase toName = nameRel.getToName();
+		TaxonName toName = nameRel.getToName();
 		return (this.getTypifiedNames().contains(toName));
 	}
 

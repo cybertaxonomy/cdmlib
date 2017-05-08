@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
 /**
@@ -359,12 +360,94 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNameBase", -99);
         stepList.add(simpleStep);
 
-        //6368
+        //#6368 Remove DTYPE
         stepName = "Remove DTYPE from TaxonNameBase";
         tableName = "TaxonNameBase";
         String oldColumnName = "DTYPE";
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
-        stepList.add(simpleStep);
+        stepList.add(step);
+
+        //#6368
+        chnageTaxonNameTableName(stepList);
+
+    }
+
+    /**
+     * #6368
+     */
+    private void chnageTaxonNameTableName(List<ISchemaUpdaterStep> stepList) {
+
+        //Update
+        String oldName = "TaxonNameBase";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_Annotation";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_Credit";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_Extension";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_Identifier";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_Marker";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_NomenclaturalStatus";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_OriginalSourceBase";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_RightsInfo";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        oldName = "TaxonNameBase_TypeDesignationBase";
+        changeSingleTaxonNameTableName(stepList, oldName);
+
+        //hibernate sequence
+        String stepName = "Update hibernate sequence entry name for TaxonNameBase";
+        String query = "UPDATE hibernate_sequences SET sequence_name = 'TaxonName' WHERE sequence_name = 'TaxonNameBase'";
+        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
+
+        //grantedauthority for taxonnamebase
+        stepName = "Update GrantedAuthorityImpl for TaxonNameBase";
+        query = "UPDATE GrantedAuthorityImpl " +
+                " SET authority = Replace (authority, 'TAXONNAMEBASE','TAXONNAME') " +
+                " WHERE authority like '%TAXONNAMEBASE%' ";
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
+
+
+        //LSIDAuthority_namespaces for taxonnamebase
+        stepName = "Upate LSIDAuthority_namespaces for TaxonNameBase";
+        query = "UPDATE LSIDAuthority_namespaces " +
+                " SET namespaces_element = Replace (namespaces_element, 'TaxonNameBase','TaxonName') " +
+                " WHERE namespaces_element like '%TaxonNameBase%' ";
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
+    }
+
+    /**
+     * @param #6368
+     */
+    private void changeSingleTaxonNameTableName(List<ISchemaUpdaterStep> stepList, String oldTableName) {
+        String stepName = "Rename " +  oldTableName;
+        String newTableName = oldTableName.replace("TaxonNameBase", "TaxonName");
+        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        if (oldTableName.contains("_")){
+            stepName = "Rename " +  oldTableName + ".taxonNameBase_id";
+            String oldColumnName = "TaxonNameBase_id";
+            String newColumnName = "TaxonName_id";
+            step = ColumnNameChanger.NewIntegerInstance(stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+            stepList.add(step);
+        }
 
     }
 

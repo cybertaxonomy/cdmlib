@@ -99,7 +99,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -210,7 +210,7 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
                 SpecimenTypeDesignation.class,
 //                ViralName.class,
 //			    ZoologicalName.class,
-                TaxonNameBase.class,
+                TaxonName.class,
 			    Collection.class,
 			    DerivationEvent.class,
 			    DerivationEventType.class,
@@ -315,6 +315,10 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
         if (tableName.equals("Rights")){
             tableName = "RightsInfo";
         }
+        if (tableName.equals("TaxonName")){
+            tableName = "TaxonNameBase";
+        }
+
         String casedTable = caseType.transformTo(table);
         String mnTable = caseType.transformTo(tableName + "_" + table);
         return sql.replace("@table", casedTable)
@@ -397,7 +401,7 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
         }
     }
 
-    private static Map<Class, Class> specificClasses = new HashMap<Class, Class>();
+    private static Map<Class, Class> specificClasses = new HashMap<>();
     static{
         specificClasses.put(TeamOrPersonBase.class, AgentBase.class);
         specificClasses.put(TermVocabulary.class, TermVocabulary.class);
@@ -406,9 +410,6 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
         specificClasses.put(OrderedTermVocabulary.class, TermVocabulary.class);
         specificClasses.put(Rights.class, Rights.class);
         specificClasses.put(RelationshipTermBase.class, DefinedTermBase.class);
-
-
-
 
     }
 

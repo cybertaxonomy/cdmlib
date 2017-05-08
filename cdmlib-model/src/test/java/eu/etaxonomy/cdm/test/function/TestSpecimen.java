@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -57,7 +57,7 @@ public class TestSpecimen {
 		Reference sec = ReferenceFactory.newDatabase();
 		String fullNameString = "Acanthostyles saucechicoensis (Hieron.) R.M. King & H. Rob.";
 		INonViralName name = NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
-		TaxonNameBase botanicalName = TaxonNameBase.castAndDeproxy(name);
+		TaxonName botanicalName = TaxonName.castAndDeproxy(name);
 		Taxon taxon = Taxon.NewInstance(botanicalName, sec);
 
 		Collection collection = Collection.NewInstance();

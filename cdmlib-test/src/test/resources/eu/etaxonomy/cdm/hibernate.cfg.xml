@@ -164,7 +164,7 @@
       <mapping class="eu.etaxonomy.cdm.model.name.Registration"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.TaxonNameBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.TaxonName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
       <!-- Occurrence Package -->
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Collection"/>

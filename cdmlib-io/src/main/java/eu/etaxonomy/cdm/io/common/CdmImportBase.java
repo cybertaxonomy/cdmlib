@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -1026,7 +1026,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * If false only taxon description being no image galleries are considered.
 	 * @return
 	 */
-	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase name, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonNameDescription getTaxonNameDescription(TaxonName name, boolean isImageGallery, boolean createNewIfNotExists) {
 		Reference ref = null;
 		return getTaxonNameDescription(name, ref, isImageGallery, createNewIfNotExists);
 	}
@@ -1038,7 +1038,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
-	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase<?,?> name, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonNameDescription getTaxonNameDescription(TaxonName<?,?> name, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonNameDescription result = null;
 		Set<TaxonNameDescription> descriptions= name.getDescriptions();
 		for (TaxonNameDescription description : descriptions){

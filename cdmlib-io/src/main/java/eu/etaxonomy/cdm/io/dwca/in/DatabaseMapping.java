@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -268,7 +268,7 @@ public class DatabaseMapping implements IImportMapping {
 
 	private void initDatasource(String file) {
 		getDatabase(file);
-		shortCuts.put("TaxonNameBase", TaxonNameBase.class);
+		shortCuts.put("TaxonName", TaxonName.class);
 		shortCuts.put("Taxon", Taxon.class);
 		shortCuts.put("Synonym", Synonym.class);
 		shortCuts.put("Reference", Reference.class);

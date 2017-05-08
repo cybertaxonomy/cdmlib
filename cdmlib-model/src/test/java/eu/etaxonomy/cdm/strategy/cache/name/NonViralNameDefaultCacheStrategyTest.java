@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -312,7 +312,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testOriginalSpelling() {
     	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
-    	TaxonNameBase<?,?> originalName = (TaxonNameBase<?,?>)speciesName.clone();
+    	TaxonName originalName = (TaxonName<?,?>)speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
@@ -331,7 +331,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
-    	TaxonNameBase<?,?> originalSpelling = (TaxonNameBase<?,?>)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
+    	TaxonName originalSpelling = (TaxonName<?,?>)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
     	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());

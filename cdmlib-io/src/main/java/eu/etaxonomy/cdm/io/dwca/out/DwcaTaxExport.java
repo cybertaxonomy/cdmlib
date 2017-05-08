@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -109,7 +109,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 				INonViralName name = taxon.getName();
 				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
-				TaxonNameBase<?, ?> basionym = name.getBasionym();
+				TaxonName basionym = name.getBasionym();
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
 					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false, config);
@@ -157,7 +157,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			INonViralName name = synonym.getName();
 			//????
 			Taxon parent = null;
-			TaxonNameBase<?, ?> basionym = name.getBasionym();
+			TaxonName basionym = name.getBasionym();
 
 			if (! this.recordExists(synonym)){
 				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial, config);
@@ -175,7 +175,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			INonViralName name = misappliedName.getName();
 			//????
 			Taxon parent = null;
-			TaxonNameBase<?, ?> basionym = name.getBasionym();
+			TaxonName basionym = name.getBasionym();
 
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false, config);
@@ -198,7 +198,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param type
 	 */
 	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, INonViralName name,
-			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification,
+			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, DwcaTaxExportConfigurator config) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());

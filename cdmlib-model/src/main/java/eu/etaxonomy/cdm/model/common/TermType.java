@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -145,7 +145,7 @@ public enum TermType implements IEnumTerm<TermType>{
 
     //10
     /**
-     * Term type for the taxonomic nomenclatural status of a {@link TaxonNameBase taxon name}.
+     * Term type for the taxonomic nomenclatural status of a {@link TaxonName taxon name}.
      * @see NomenclaturalStatus
      */
     @XmlEnumValue("NomenclaturalStatusType")
@@ -153,7 +153,7 @@ public enum TermType implements IEnumTerm<TermType>{
 
     //11
     /**
-     * Term type for the type of a name relationship between {@link TaxonNameBase taxon names}
+     * Term type for the type of a name relationship between {@link TaxonName taxon names}
      * @see NameRelationship
      */
     @XmlEnumValue("NameRelationshipType")
@@ -161,7 +161,7 @@ public enum TermType implements IEnumTerm<TermType>{
 
     //12
     /**
-     * Term type for the type of a hybrid relationship between {@link TaxonNameBase taxon names}
+     * Term type for the type of a hybrid relationship between {@link TaxonName taxon names}
      * @see HybridRelationship
      */
     @XmlEnumValue("HybridRelationshipType")

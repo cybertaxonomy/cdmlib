@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 /**
  * The class representing the response from the CDM Remote Web Service API to a single name search query.
- * All information contained in this class originates from a call to {@link TaxonNameBase taxon names}
+ * All information contained in this class originates from a call to {@link TaxonName taxon names}
  * <P>
  * 
  * @author c.mathew

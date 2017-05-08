@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -149,7 +149,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				break;
 
 			case TAXON_NAMES:
-				counter = Long.valueOf(taxonNameDao.count(TaxonNameBase.class));
+				counter = Long.valueOf(taxonNameDao.count(TaxonName.class));
 				break;
 
 			case DESCRIPTIVE_SOURCE_REFERENCES:

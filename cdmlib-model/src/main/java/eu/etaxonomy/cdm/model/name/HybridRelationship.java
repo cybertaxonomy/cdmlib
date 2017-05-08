@@ -68,14 +68,14 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase<?,?> relatedFrom;
+	private TaxonName<?,?> relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase<?,?> relatedTo;
+	private TaxonName<?,?> relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
@@ -103,7 +103,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	 * @param type				the relationship type to be assigned to the new hybrid relationship
 	 * @param ruleConsidered	the string indicating the article of the ICBN for the hybrid taxon name
 	 * @see						#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, Reference, String, String)
-	 * @see						TaxonNameBase#addHybridRelationship(HybridRelationship)
+	 * @see						TaxonName#addHybridRelationship(HybridRelationship)
 	 */
 	protected HybridRelationship(INonViralName hybridName, INonViralName parentName, HybridRelationshipType type, String ruleConsidered) {
 		this(hybridName, parentName, type, null, null, ruleConsidered);
@@ -121,7 +121,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param ruleConsidered		the string indicating the article of the ICBN for the hybrid taxon name
 	 * @see							#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String)
-	 * @see							TaxonNameBase#addHybridRelationship(HybridRelationship)
+	 * @see							TaxonName#addHybridRelationship(HybridRelationship)
 	 */
 	protected HybridRelationship(INonViralName  hybridName, INonViralName parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
 		super(parentName, hybridName, type, citation, citationMicroReference);
@@ -138,7 +138,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
-	public TaxonNameBase getParentName(){
+	public TaxonName getParentName(){
 		return this.getRelatedFrom();
 	}
 	/**
@@ -156,7 +156,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
 	@Transient
-	public TaxonNameBase getHybridName(){
+	public TaxonName getHybridName(){
 		return this.getRelatedTo();
 	}
 	/**
@@ -183,12 +183,12 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	}
 
 	@Override
-    protected TaxonNameBase getRelatedFrom() {
+    protected TaxonName getRelatedFrom() {
 		return relatedFrom;
 	}
 
 	@Override
-    protected TaxonNameBase getRelatedTo() {
+    protected TaxonName getRelatedTo() {
 		return relatedTo;
 	}
 
@@ -199,12 +199,12 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 
 	@Override
     protected void setRelatedFrom(INonViralName relatedFrom) {
-		this.relatedFrom = TaxonNameBase.castAndDeproxy(relatedFrom);
+		this.relatedFrom = TaxonName.castAndDeproxy(relatedFrom);
 	}
 
 	@Override
     protected void setRelatedTo(INonViralName relatedTo) {
-		this.relatedTo = TaxonNameBase.castAndDeproxy(relatedTo);
+		this.relatedTo = TaxonName.castAndDeproxy(relatedTo);
 	}
 
 	@Override
@@ -222,8 +222,8 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 		if (compareType != 0){
 			return compareType;
 		}else{
-		    TaxonNameBase<?,?> related1 = this.getRelatedFrom();
-		    TaxonNameBase<?,?> related2 = rel2.getRelatedFrom();
+		    TaxonName<?,?> related1 = this.getRelatedFrom();
+		    TaxonName<?,?> related2 = rel2.getRelatedFrom();
 			if (related1 != related2){
 				related1 = this.getRelatedTo();
 				related2 = rel2.getRelatedTo();
@@ -247,7 +247,7 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 	 * modifying only some of the attributes.<BR>
 	 * CAUTION: Cloning a relationship will not add the relationship to the according
 	 * {@link #relatedFrom} and {@link #relatedTo} objects. The method is meant to be used
-	 * mainly for internal purposes (e.g. used within {@link TaxonNameBase#clone()}
+	 * mainly for internal purposes (e.g. used within {@link TaxonName#clone()}
 	 *
 	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
 	 * @see java.lang.Object#clone()

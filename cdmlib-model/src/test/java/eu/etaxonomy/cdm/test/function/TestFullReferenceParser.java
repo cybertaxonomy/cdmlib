@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.test.function;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -27,7 +27,7 @@ public class TestFullReferenceParser {
 
 	private boolean test(){
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
-		TaxonNameBase nameToBeFilled = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName nameToBeFilled = TaxonNameFactory.NewBotanicalInstance(null);
 		String fullReference = "Abies alba Mill.,  Sp.   Pl. 4: 455. 1987.";
 		boolean makeEmpty = false;
 		Rank rank = null;

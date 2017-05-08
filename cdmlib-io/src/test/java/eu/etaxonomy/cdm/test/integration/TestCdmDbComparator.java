@@ -180,15 +180,15 @@ public class TestCdmDbComparator {
 //			"TaxonBase_Marker",
 //			"TaxonBase_OriginalSource",
 //			"TaxonBase_Rights",
-			"TaxonNameBase",
-//			"TaxonNameBase_Annotation",
-//			"TaxonNameBase_Extension",
-//			"TaxonNameBase_HybridRelationship",
-//			"TaxonNameBase_Marker",
-//			"TaxonNameBase_NomenclaturalStatus",
-//			"TaxonNameBase_OriginalSource",
-//			"TaxonNameBase_Rights",
-//			"TaxonNameBase_TypeDesignationBase",
+			"TaxonName",
+//			"TaxonName_Annotation",
+//			"TaxonName_Extension",
+//			"TaxonName_HybridRelationship",
+//			"TaxonName_Marker",
+//			"TaxonName_NomenclaturalStatus",
+//			"TaxonName_OriginalSource",
+//			"TaxonName_Rights",
+//			"TaxonName_TypeDesignationBase",
 			"TaxonRelationship",
 //			"TaxonRelationship_Annotation",
 //			"TaxonRelationship_Marker",
@@ -452,7 +452,7 @@ public class TestCdmDbComparator {
 		List<Representation> representations = appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0);
 		List<SpecimenOrObservationBase> specimenOrObservationBases = appCtr.getOccurrenceService().list(null,MAX_ROWS, 0,null,null);
 //		List<TaxonBase> taxonBases = appCtr.getTaxonService().getAllTaxa(MAX_ROWS, 0);
-//		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().getAllNames(MAX_ROWS, 0);
+//		List<TaxonName> taxonNames = appCtr.getNameService().getAllNames(MAX_ROWS, 0);
 		//List<TaxonRelationship> taxonRelationships = appCtr.getTaxonService().getAllTaxonRelationships(MAX_ROWS, 0);
 		List<TermVocabulary> termVocabularies = appCtr.getVocabularyService().list(null,MAX_ROWS, 0,null,null);
 		List<TypeDesignationBase> typeDesignationBases = appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0);

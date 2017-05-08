@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import io.swagger.annotations.Api;
@@ -35,7 +35,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("name")
 @RequestMapping(value = {"/name"})
-public class NameListController extends AbstractIdentifiableListController<TaxonNameBase, INameService> {
+public class NameListController extends AbstractIdentifiableListController<TaxonName, INameService> {
 
     @Override
     @Autowired
@@ -44,7 +44,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
-    public Pager<TaxonNameBase> doFindTitleCache(
+    public Pager<TaxonName> doFindTitleCache(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -63,7 +63,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
     }
 
     @RequestMapping(value = "findByName", method = RequestMethod.GET)
-    public Pager<TaxonNameBase> doFindByName(
+    public Pager<TaxonName> doFindByName(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -73,6 +73,6 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
+        return service.findByTitle(TaxonName.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
     }
 }

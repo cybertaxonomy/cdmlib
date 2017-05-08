@@ -130,9 +130,9 @@
         <entry key="eu.etaxonomy.cdm.model.reference.Reference">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
+        <entry key="eu.etaxonomy.cdm.model.name.TaxonName">
           <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBaseBeanProcessor">
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBeanProcessor">
             <property name="skipTaggedName" value="true" />
           </bean>
         </entry>
@@ -318,9 +318,9 @@
           </property>
          </bean>  
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
+        <entry key="eu.etaxonomy.cdm.model.name.TaxonName">
           <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBaseBeanProcessor" />
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBeanProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.model.name.NameRelationship">
           <bean

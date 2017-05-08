@@ -18,7 +18,7 @@ import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -68,7 +68,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
                 /* IGNORE */
             }
 
-        }else if(value instanceof TaxonNameBase){
+        }else if(value instanceof TaxonName){
             nvn = (INonViralName)value;
         }
         if(nvn == null) {

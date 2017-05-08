@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -87,7 +87,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			DerivedUnit specimen = facade.innerDerivedUnit();
 
 			if (isType){
-				TaxonNameBase<?,?> name = taxon.getName();
+				TaxonName name = taxon.getName();
 				if (typeStatus.isInstanceOf(SpecimenTypeDesignationStatus.class)){
 					SpecimenTypeDesignationStatus status = CdmBase.deproxy(typeStatus, SpecimenTypeDesignationStatus.class);
 					name.addSpecimenTypeDesignation(specimen, status, null, null, null, false, true);

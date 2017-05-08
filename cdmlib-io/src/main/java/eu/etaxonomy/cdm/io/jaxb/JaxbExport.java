@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -159,7 +159,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
         int agentRows = numberOfRows;
         int definedTermBaseRows = numberOfRows;
         int referenceBaseRows = numberOfRows;
-        int taxonNameBaseRows = numberOfRows;
+        int taxonNameRows = numberOfRows;
         int taxonBaseRows = numberOfRows;
         int taxonNodeRows = numberOfRows;
         int relationshipRows = numberOfRows;
@@ -228,10 +228,10 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
         }
 
         if (jaxbExpConfig.isDoTaxonNames() == true) {
-            if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
-            logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+            if (taxonNameRows == 0) { taxonNameRows = getNameService().count(TaxonName.class); }
+            logger.info("# TaxonName: " + taxonNameRows);
             //logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-            dataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
+            dataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
         }
 
 

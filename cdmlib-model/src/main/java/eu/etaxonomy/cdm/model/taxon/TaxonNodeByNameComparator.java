@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * Comparator that compares two TaxonNode instances by the titleCache of their referenced names.
@@ -94,7 +94,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
 
         String titleCache = null;
         if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
-            TaxonNameBase<?,?> name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName(), TaxonNameBase.class);
+            TaxonName name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName(), TaxonName.class);
 
             if (name.isNonViral()){
                 if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}

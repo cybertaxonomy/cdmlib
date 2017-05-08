@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -136,18 +136,18 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	@Override
-    public TaxonNameBase parseReferencedName(String fullReferenceString) {
+    public TaxonName parseReferencedName(String fullReferenceString) {
 		return parseReferencedName(fullReferenceString, null, null);
 	}
 
 	@Override
-    public TaxonNameBase parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
+    public TaxonName parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullReferenceString == null){
 			return null;
 		}else{
 		    INonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
 			parseReferencedName(result, fullReferenceString, rank, MAKE_EMPTY);
-			return TaxonNameBase.castAndDeproxy(result);
+			return TaxonName.castAndDeproxy(result);
 		}
 	}
 
@@ -383,7 +383,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 	//TODO make it an Array of status
 	/**
-	 * Extracts a {@link NomenclaturalStatus} from the reference String and adds it to the @link {@link TaxonNameBase}.
+	 * Extracts a {@link NomenclaturalStatus} from the reference String and adds it to the @link {@link TaxonName}.
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String
 	 */
@@ -406,7 +406,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			statusMatcher.find();
 			statusString = statusMatcher.group(0);
 			try {
-			    TaxonNameBase<?,?> nameToBeFilledCasted =  TaxonNameBase.castAndDeproxy(nameToBeFilled);
+			    TaxonName nameToBeFilledCasted =  TaxonName.castAndDeproxy(nameToBeFilled);
 				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, nameToBeFilledCasted);
 				if (! existingStatusTypeSet.contains(nomStatusType)){
 					NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
@@ -1467,7 +1467,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 
 	private void makeEmpty(INonViralName name){
-	    TaxonNameBase<?,?> nameToBeFilled = TaxonNameBase.castAndDeproxy(name);
+	    TaxonName nameToBeFilled = TaxonName.castAndDeproxy(name);
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setFullTitleCache(null, false);

@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -636,7 +636,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         t_abies_balsamea.addDescription(d_abies_balsamea_new);
         // set authorshipCache to null to avoid validation exception,
         // this is maybe not needed in future,  see ticket #3344
-        IBotanicalName abies_balsamea = CdmBase.deproxy(t_abies_balsamea.getName(), TaxonNameBase.class);
+        IBotanicalName abies_balsamea = CdmBase.deproxy(t_abies_balsamea.getName(), TaxonName.class);
         abies_balsamea.setAuthorshipCache(null);
         printDataSet(System.err, new String[] {"LANGUAGESTRING_AUD"});
         taxonService.saveOrUpdate(t_abies_balsamea);
@@ -1386,7 +1386,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
 
         writeDbUnitDataSetFile(new String[] {
-            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONBASE", "TAXONNAME",
             "TAXONRELATIONSHIP",
             "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
             "AGENTBASE", "HOMOTYPICALGROUP",

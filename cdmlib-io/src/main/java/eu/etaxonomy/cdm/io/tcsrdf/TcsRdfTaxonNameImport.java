@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -102,7 +102,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	@Override
 	protected void doInvoke(TcsRdfImportState state){
 
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)state.getStore(ICdmIO.TEAM_STORE);
 
@@ -123,7 +123,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 
 		int i = 0;
 
-		TaxonNameBase name;
+		TaxonName name;
 		Property property = root.getProperty(taxonNameNamespace+"authorship");
 
 		ResIterator iterator = root.listSubjectsWithProperty(property, (RDFNode) null);
@@ -152,15 +152,15 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		return ! state.getConfig().isDoTaxonNames();
 	}
 
-	protected TaxonNameBase handleNameModel(Model model, TcsRdfImportConfigurator config, MapWrapper<TaxonNameBase> taxonNameMap, String uri){
+	protected TaxonName handleNameModel(Model model, TcsRdfImportConfigurator config, MapWrapper<TaxonName> taxonNameMap, String uri){
 		Resource nameAbout = model.getResource(uri);
-		TaxonNameBase result = handleNameResource(nameAbout, config);
+		TaxonName result = handleNameResource(nameAbout, config);
 		taxonNameMap.put(uri, result);
 		return result;
 
 	}
 
-	private TaxonNameBase handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
+	private TaxonName handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
 		String idNamespace = "TaxonName";
 
 		StmtIterator stmts = nameAbout.listProperties();
@@ -187,7 +187,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				nomCode = NomenclaturalCode.ICNAFP;
 			}
 
-			TaxonNameBase<?,?> nameBase = nomCode.getNewTaxonNameInstance(rank);
+			TaxonName nameBase = nomCode.getNewTaxonNameInstance(rank);
 
 			Set<String> omitAttributes = null;
 			//makeStandardMapper(nameAbout, nameBase, omitAttributes, standardMappers);
@@ -505,7 +505,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		return null;*/
 	}
 
-	protected TaxonNameBase handleNameElement(Element elTaxonName, Namespace rdfNamespace, Namespace taxonNameNamespace, TcsRdfImportConfigurator config, MapWrapper<TaxonNameBase> taxonNameMap){
+	protected TaxonName handleNameElement(Element elTaxonName, Namespace rdfNamespace, Namespace taxonNameNamespace, TcsRdfImportConfigurator config, MapWrapper<TaxonName> taxonNameMap){
 		String idNamespace = "TaxonName";
 		Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
 
@@ -544,7 +544,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				nomCode = NomenclaturalCode.ICNAFP;
 			}
 
-			TaxonNameBase<?,?> nameBase = nomCode.getNewTaxonNameInstance(rank);
+			TaxonName nameBase = nomCode.getNewTaxonNameInstance(rank);
 
 			Set<String> omitAttributes = null;
 			//makeStandardMapper(elTaxonName, nameBase, omitAttributes, standardMappers);
@@ -681,7 +681,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		return null;
 	}
 
-	public TaxonNameBase handleRdfElementFromStream(InputStream is, TcsRdfImportConfigurator config, MapWrapper<TaxonNameBase> taxonNameMap, String uri){
+	public TaxonName handleRdfElementFromStream(InputStream is, TcsRdfImportConfigurator config, MapWrapper<TaxonName> taxonNameMap, String uri){
 	Model model = ModelFactory.createDefaultModel();
 		try{
 			model.read(is, null);

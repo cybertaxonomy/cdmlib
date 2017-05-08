@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
@@ -40,7 +40,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	private IZoologicalName familyName;
 	private IZoologicalName subGenusName;
 	private IZoologicalName speciesName;
-	private TaxonNameBase<?,ZooNameDefaultCacheStrategy> subSpeciesName;
+	private TaxonName<?,ZooNameDefaultCacheStrategy> subSpeciesName;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
@@ -84,7 +84,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 
 		speciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameString);
-		subSpeciesName =(TaxonNameBase) TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameStringToParse);
+		subSpeciesName =(TaxonName) TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameStringToParse);
 		subSpeciesName.setCacheStrategy(strategy);
 
 		author = Person.NewInstance();

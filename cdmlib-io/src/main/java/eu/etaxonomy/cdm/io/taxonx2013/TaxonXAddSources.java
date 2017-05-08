@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -316,7 +316,7 @@ public class TaxonXAddSources {
      * @param name
      * @param ref
      */
-    public void addSource(Reference reference, TextData textData, TaxonNameBase name, Reference refMods) {
+    public void addSource(Reference reference, TextData textData, TaxonName name, Reference refMods) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -335,14 +335,14 @@ public class TaxonXAddSources {
 
     @SuppressWarnings({ "unused", "rawtypes" })
     private DescriptionElementSource getDescriptionElementSource(Reference reference, Set<DescriptionElementSource> sources,
-            TaxonNameBase originalname, boolean original){
+            TaxonName originalname, boolean original){
         //logger.info("getDescriptionElementSource");
         boolean sourceExists=false;
         DescriptionElementSource source=null;
         for (DescriptionElementSource src : sources){
             String micro = src.getCitationMicroReference();
             Reference r = src.getCitation();
-            TaxonNameBase oname = src.getNameUsedInSource();
+            TaxonName oname = src.getNameUsedInSource();
             try {
                 if (r.getTitleCache().equals(reference.getTitleCache())) {
                     if (oname.getTitleCache().equalsIgnoreCase(originalname.getTitleCache())) {

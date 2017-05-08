@@ -29,13 +29,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * This class represents all piece of information (not ruled by a {@link NomenclaturalCode nomenclatural code})
- * concerning a {@link TaxonNameBase taxon name} like for instance the content of its first
+ * concerning a {@link TaxonName taxon name} like for instance the content of its first
  * publication (protolog) or a picture of this publication.
  *
  * @author a.mueller
@@ -62,7 +62,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @FieldBridge(impl=NotNullAwareIdBridge.class)
-    private TaxonNameBase<?,?> taxonName;
+    private TaxonName<?,?> taxonName;
 
 //******************* FACTORY ********************************************/
 
@@ -75,13 +75,13 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
 
 
     /**
-     * Creates a new taxon name description instance for the given {@link TaxonNameBase name}.
-     * The new taxon name description will be also added to the {@link TaxonNameBase#getDescriptions() set of descriptions}
+     * Creates a new taxon name description instance for the given {@link TaxonName name}.
+     * The new taxon name description will be also added to the {@link TaxonName#getDescriptions() set of descriptions}
      * assigned to the given name.
      *
      * @see	#NewInstance()
      */
-    public static TaxonNameDescription NewInstance(TaxonNameBase name){
+    public static TaxonNameDescription NewInstance(TaxonName name){
         TaxonNameDescription description = new TaxonNameDescription();
         name.addDescription(description);
         return description;
@@ -100,10 +100,10 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
 //************************* GETTER /SETTER ***************************************/
 
     /**
-     * Returns the {@link TaxonNameBase taxon name} to which <i>this</i> taxon name description
+     * Returns the {@link TaxonName taxon name} to which <i>this</i> taxon name description
      * provides additional information not ruled by a {@link NomenclaturalCode nomenclatural code}.
      */
-    public TaxonNameBase<?,?> getTaxonName() {
+    public TaxonName<?,?> getTaxonName() {
         return taxonName;
     }
 

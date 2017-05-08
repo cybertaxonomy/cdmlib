@@ -157,8 +157,8 @@ public class ExcelSpecimenImportExampleTest extends
 //					"DescriptionElementBase", "DescriptionBase", "Extension",
 //					"GatheringEvent", "GatheringEvent_DefinedTermBase",
 //					"LanguageString", "OriginalSourceBase", "Reference",
-//					"TaxonBase", "TaxonNameBase", "TypeDesignationBase",
-//					"TaxonNameBase_TypeDesignationBase",
+//					"TaxonBase", "TaxonName", "TypeDesignationBase",
+//					"TaxonName_TypeDesignationBase",
 //					"SpecimenOrObservationBase", "DefinedTermBase",
 //					"TermVocabulary", "Representation" });
 //			// printDataSet(myOut);

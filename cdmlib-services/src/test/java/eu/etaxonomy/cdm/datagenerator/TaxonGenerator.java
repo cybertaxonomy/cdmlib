@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -72,7 +72,7 @@ public class TaxonGenerator {
         genusTaxon.setUuid(GENUS_UUID);
 
         //a name that is the basionym of genusTaxon's name
-        TaxonNameBase basionym = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        TaxonName basionym = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         basionym.setTitleCache("Hieracilla DC.", true);
         basionym.setGenusOrUninomial("Hieracilla");
         basionym.setCombinationAuthorship(deCandolle);

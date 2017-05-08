@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -23,7 +23,7 @@ public enum SetSpec {
 	TEAM_OR_PERSON("teamOrPerson", "Teams of individuals and individuals", TeamOrPersonBase.class,new SetSpec[]{TEAM,PERSON}),
 	TAXON("taxon","Accepted Taxon Concepts", Taxon.class,null),
 	SYNONYM("synonym","Synonyms", Synonym.class,null),
-	BACTERIAL_NAME("taxonName", "Scientific Taxon Names", TaxonNameBase.class,null),
+	BACTERIAL_NAME("taxonName", "Scientific Taxon Names", TaxonName.class,null),
 	TAXON_DESCRIPTION("taxonDescription","Descriptions of taxonomic concepts",TaxonDescription.class,null),
 	TAXON_NAME_DESCRIPTION("taxonNameDescription","Descriptions of scientific names",TaxonNameDescription.class,null),
 	SPECIMEN_DESCRIPTION("specimenDescription","Descriptions of specimens and occurrences",SpecimenDescription.class,null),

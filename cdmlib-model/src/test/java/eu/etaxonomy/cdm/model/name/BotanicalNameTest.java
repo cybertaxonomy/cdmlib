@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class BotanicalNameTest extends EntityTestBase{
 	private static final Logger logger = Logger.getLogger(BotanicalNameTest.class);
 
-	private TaxonNameBase botanicalName1;
+	private TaxonName botanicalName1;
 	private IBotanicalName botanicalName2;
 
 	@BeforeClass
@@ -161,10 +161,10 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setGenusOrUninomial("Aus");
 		botanicalName1.setRank(Rank.GENUS());
 		botanicalName1.setAnamorphic(true);
-		TaxonNameBase clone = (TaxonNameBase)botanicalName1.clone();
+		TaxonName clone = (TaxonName)botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", true, clone.isAnamorphic());
 		botanicalName1.setAnamorphic(false);
-		clone = (TaxonNameBase)botanicalName1.clone();
+		clone = (TaxonName)botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
 	}
 
@@ -172,7 +172,7 @@ public class BotanicalNameTest extends EntityTestBase{
     public void beanTests(){
 //      #5307 Test that BeanUtils does not fail
 //        BeanUtils.getPropertyDescriptors(BotanicalName.class);
-        BeanUtils.getPropertyDescriptors(TaxonNameBase.class);
+        BeanUtils.getPropertyDescriptors(TaxonName.class);
 //        BeanUtils.getPropertyDescriptors(NonViralName.class);
 //        BeanUtils.getPropertyDescriptors(ZoologicalName.class);
 //        BeanUtils.getPropertyDescriptors(ViralName.class);

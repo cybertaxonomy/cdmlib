@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -20,8 +20,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -32,13 +30,13 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * Writes the SDD XML file. 
- * 
+ * Writes the SDD XML file.
+ *
  * @author h.fradin
  * @created 10.12.2008
  * @version 1.0
@@ -59,7 +57,7 @@ public class PilotOutputDocumentBuilder {
 	public void marshal(SDDDataSet cdmSource, String sddDestination) throws IOException {
 
 		this.cdmSource = cdmSource;
-		Marshaller marshaller;		
+		Marshaller marshaller;
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		logger.info("Start marshalling");
 		writeCDMtoHTML(sddDestination);
@@ -104,7 +102,7 @@ public class PilotOutputDocumentBuilder {
 	 */
 	public String writeTaxonDescriptionsToHTML(Taxon taxon, String texte) throws IOException {
 
-		TaxonNameBase taxonName = taxon.getName();
+		TaxonName taxonName = taxon.getName();
 		String name = taxonName.getTitleCache();
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		for (Iterator<TaxonDescription> td = descriptions.iterator() ; td.hasNext() ;){
@@ -125,7 +123,7 @@ public class PilotOutputDocumentBuilder {
 			texte += "<ul type=\"circle\">\n";
 
 			for (Iterator<? extends DescriptionElementBase> dep = description.getElements().iterator() ; dep.hasNext() ;){
-				DescriptionElementBase descriptionElement = (DescriptionElementBase) dep.next();
+				DescriptionElementBase descriptionElement = dep.next();
 
 				if (descriptionElement instanceof CategoricalData) {
 					CategoricalData categorical = (CategoricalData) descriptionElement;
@@ -133,9 +131,13 @@ public class PilotOutputDocumentBuilder {
 					Representation representation = (Representation) feature.getRepresentations().toArray()[0];
 					texte += "<li>Categorical data associated with feature: <b>" + representation.getLabel() + "</b><br/>\nStates: ";
 					for (Iterator<? extends StateData> sd = categorical.getStateData().iterator() ; sd.hasNext() ;){
-						StateData stateData = (StateData) sd.next();
+						StateData stateData = sd.next();
 						texte += ((Representation) stateData.getState().getRepresentations().toArray()[0]).getLabel();
-						if (sd.hasNext()) texte += "; "; else texte += ".<br/>\n";
+						if (sd.hasNext()) {
+                            texte += "; ";
+                        } else {
+                            texte += ".<br/>\n";
+                        }
 					}
 					texte += "<br/>\n";
 				}
@@ -147,9 +149,11 @@ public class PilotOutputDocumentBuilder {
 					texte += "<li>Quantitative data associated with feature: <b>" + representation.getLabel() + "</b><br/>\n";
 					MeasurementUnit mu = quantitative.getUnit();
 					String unit = ((Representation) mu.getRepresentations().toArray()[0]).getLabel();
-					if (!unit.equals("")) texte += "Measurement unit: " + unit + "<br/>\n";
+					if (!unit.equals("")) {
+                        texte += "Measurement unit: " + unit + "<br/>\n";
+                    }
 					for (Iterator<? extends StatisticalMeasurementValue> smv = quantitative.getStatisticalValues().iterator() ; smv.hasNext() ;){
-						StatisticalMeasurementValue statistical = (StatisticalMeasurementValue) smv.next();
+						StatisticalMeasurementValue statistical = smv.next();
 						texte += ((Representation) statistical.getType().getRepresentations().toArray()[0]).getLabel();
 						texte += " = " + statistical.getValue() + "<br/>\n";
 					}
@@ -161,7 +165,7 @@ public class PilotOutputDocumentBuilder {
 					Feature feature = text.getFeature();
 					Representation representation = (Representation) feature.getRepresentations().toArray()[0];
 					texte += "<li>Text data associated with feature: <b>" + representation.getLabel() + "</b><br/>\n";
-					texte += "Text: " + ((LanguageString) text.getMultilanguageText().get(((Language) text.getMultilanguageText().keySet().toArray()[0]))).getText() + "<br/>\n";
+					texte += "Text: " + text.getMultilanguageText().get((text.getMultilanguageText().keySet().toArray()[0])).getText() + "<br/>\n";
 					texte += "<br/>\n";
 				}
 

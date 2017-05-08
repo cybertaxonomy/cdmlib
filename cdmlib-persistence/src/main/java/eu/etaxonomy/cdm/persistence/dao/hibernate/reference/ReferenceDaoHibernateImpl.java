@@ -166,7 +166,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<Reference> getAllNotNomenclaturalReferencesForPublishing(){
 
 		@SuppressWarnings("unchecked")
-        List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+        List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonName t").list();
 		String queryString = "from Reference b where b not in (:referenceList) and b in (:publish)" ;
 		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
 		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
@@ -181,7 +181,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<Reference> getAllNomenclaturalReferences() {
 		@SuppressWarnings("unchecked")
         List<Reference> references = getSession().createQuery(
-				"SELECT DISTINCT t.nomenclaturalReference FROM TaxonNameBase t").list();
+				"SELECT DISTINCT t.nomenclaturalReference FROM TaxonName t").list();
 		return references;
 	}
 

@@ -203,8 +203,8 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 //                    "DescriptionBase",
 //                    "TaxonBase",
 //                    "TypeDesignationBase",
-//                    "TaxonNameBase",
-//                    "TaxonNameBase_TypeDesignationBase",
+//                    "TaxonName",
+//                    "TaxonName_TypeDesignationBase",
 //                    "HomotypicalGroup"
 //            }, "testDeepDelete_SingleRead");
 //        } catch (FileNotFoundException e) {
@@ -429,8 +429,8 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
                     "DescriptionBase",
                     "TaxonBase",
                     "TypeDesignationBase",
-                    "TaxonNameBase",
-                    "TaxonNameBase_TypeDesignationBase",
+                    "TaxonName",
+                    "TaxonName_TypeDesignationBase",
                     "HomotypicalGroup"
             }, "testDeepDelete_SingleRead");
         } catch (FileNotFoundException e) {

@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IJournal;
@@ -162,9 +162,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				if (isStartingElement(next, NOM)) {
 					// TODO should we check if the type is always a species, is
 					// this a rule?
-					TaxonNameBase<?,?> speciesName = TaxonNameBase.castAndDeproxy(
+					TaxonName speciesName = TaxonName.castAndDeproxy(
 					        handleNom(state, reader, next, null));
-					for (TaxonNameBase<?, ?> name : homotypicalGroup
+					for (TaxonName<?, ?> name : homotypicalGroup
 							.getTypifiedNames()) {
 						name.addNameTypeDesignation(speciesName, null, null,
 								null, status, false, false, false, false);
@@ -622,7 +622,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 			}
-			taxon.addSynonymName(TaxonNameBase.castAndDeproxy(name), synonymType);
+			taxon.addSynonymName(TaxonName.castAndDeproxy(name), synonymType);
 		} else {
 			name = taxon.getName();
 		}
@@ -633,7 +633,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			XMLEvent parentEvent, INonViralName nvn, TaxonRelationship misappliedRel) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
-		TaxonNameBase<?,?> name = TaxonNameBase.castAndDeproxy(nvn);
+		TaxonName name = TaxonName.castAndDeproxy(nvn);
 		state.setCitation(true);
 		boolean hasRefPart = false;
 		Map<String, String> refMap = new HashMap<>();
@@ -659,7 +659,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 
-	private void doCitation(MarkupImportState state, TaxonNameBase<?,?> name,
+	private void doCitation(MarkupImportState state, TaxonName name,
 			String classValue, TaxonRelationship misappliedRel,
 			Reference reference, String microCitation,
 			XMLEvent parentEvent) {

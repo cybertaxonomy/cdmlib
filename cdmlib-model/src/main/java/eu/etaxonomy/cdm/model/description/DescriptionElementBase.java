@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for a piece of information) about
- * a {@link SpecimenOrObservationBase specimen}, a {@link Taxon taxon} or even a {@link TaxonNameBase taxon name}.
+ * a {@link SpecimenOrObservationBase specimen}, a {@link Taxon taxon} or even a {@link TaxonName taxon name}.
  * A concrete description element assigns descriptive data to one {@link Feature feature}.<BR>
  * Experts use the word feature for the property itself but not for the actual
  * description element. Therefore naming this class FeatureBase would have
@@ -455,7 +455,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @param nameUsedInSource the taxon name used in the source
      * @param originalNameString the name as text used in the source
      */
-    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
         DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
         addSource(newSource);
     }

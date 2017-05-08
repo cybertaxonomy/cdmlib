@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -184,7 +184,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
 		int referenceBaseRows = numberOfRows;
-		int taxonNameBaseRows = numberOfRows;
+		int taxonNameRows = numberOfRows;
 		int taxonBaseRows = numberOfRows;
 		int relationshipRows = numberOfRows;
 		int occurrencesRows = numberOfRows;
@@ -237,10 +237,10 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		}
 
 		if (sddExpConfig.isDoTaxonNames() == true) {
-			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
-			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+			if (taxonNameRows == 0) { taxonNameRows = getNameService().count(TaxonName.class); }
+			logger.info("# TaxonName: " + taxonNameRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
+			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoHomotypicalGroups() == true) {

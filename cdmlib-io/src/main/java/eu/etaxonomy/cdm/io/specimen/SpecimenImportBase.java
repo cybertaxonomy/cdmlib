@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -97,8 +97,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 
 
-	protected TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
-	    TaxonNameBase<?, ?> taxonName = null;
+	protected TaxonName getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
+	    TaxonName taxonName = null;
         SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 
         //check atomised name data for rank
@@ -121,10 +121,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if(config.isIgnoreAuthorship() && parsedName!=null){// && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
-                String nameCache = TaxonNameBase.castAndDeproxy(parsedName).getNameCache();
-                List<TaxonNameBase> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
+                String nameCache = TaxonName.castAndDeproxy(parsedName).getNameCache();
+                List<TaxonName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
                 if (!names.isEmpty()){
-                     taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names), state);
+                     taxonName = getBestMatchingName(scientificName, new ArrayList<>(names), state);
                 }
                 if (taxonName == null && !names.isEmpty()){
                     taxonName = names.get(0);
@@ -132,15 +132,15 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
             } else {
                 //search for existing names
-                List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
+                List<TaxonName> names = getNameService().listByTitle(TaxonName.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
                 taxonName = getBestMatchingName(scientificName, names, state);
                 //still nothing found -> try with the atomised name full title cache
                 if(taxonName==null && atomisedTaxonName!=null){
-                    names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                    names = getNameService().listByTitle(TaxonName.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
                     taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names, state);
                     //still nothing found -> try with the atomised name title cache
                     if(taxonName==null){
-                        names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                        names = getNameService().listByTitle(TaxonName.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
                         taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names, state);
                     }
                 }
@@ -150,7 +150,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if(taxonName==null && atomisedTaxonName!=null){
-            taxonName = (TaxonNameBase<?, ?>) atomisedTaxonName;
+            taxonName = (TaxonName<?, ?>) atomisedTaxonName;
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
             if(taxonName.hasProblem()){
@@ -179,10 +179,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         return taxonName;
     }
 
-	 protected TaxonNameBase<?, ?> getBestMatchingName(String scientificName, java.util.Collection<TaxonNameBase> names, STATE state){
-	        Set<TaxonNameBase> namesWithAcceptedTaxa = new HashSet<TaxonNameBase>();
-	        List<TaxonNameBase> namesWithAcceptedTaxaInClassification = new ArrayList<TaxonNameBase>();
-	        for (TaxonNameBase name : names) {
+	 protected TaxonName getBestMatchingName(String scientificName, java.util.Collection<TaxonName> names, STATE state){
+	        Set<TaxonName> namesWithAcceptedTaxa = new HashSet<>();
+	        List<TaxonName> namesWithAcceptedTaxaInClassification = new ArrayList<>();
+	        for (TaxonName name : names) {
 	            if(!name.getTaxa().isEmpty()){
 	                Set<Taxon> taxa = name.getTaxa();
 	                for (Taxon taxon:taxa){
@@ -224,7 +224,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        //no names with accepted taxa found -> check accepted taxa of synonyms
 	        List<Taxon> taxaFromSynonyms = new ArrayList<>();
-	        for (TaxonNameBase name : names) {
+	        for (TaxonName name : names) {
 	            Set<TaxonBase> taxonBases = name.getTaxonBases();
 	            for (TaxonBase taxonBase : taxonBases) {
 	                if(taxonBase.isInstanceOf(Synonym.class)){
@@ -312,7 +312,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state
 	     * @return the corresponding Botanical or Zoological or... name
 	     */
-	    protected TaxonNameBase<?,?> setTaxonNameByType(
+	    protected TaxonName setTaxonNameByType(
 	            HashMap<String, String> atomisedMap, String fullName, STATE state) {
 	        boolean problem = false;
 	        if (logger.isDebugEnabled()){
@@ -320,7 +320,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid())) {
-	            TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewZoologicalInstance(null);
+	            TaxonName taxonName = TaxonNameFactory.NewZoologicalInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));
@@ -379,7 +379,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getUuid())) {
-	            TaxonNameBase taxonName = (TaxonNameBase)parseScientificName(fullName, state, state.getReport(), null);
+	            TaxonName taxonName = (TaxonName)parseScientificName(fullName, state, state.getReport(), null);
 	            if (taxonName != null){
 	                return taxonName;
 	            }
@@ -439,7 +439,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNB.getUuid())) {
-	            TaxonNameBase taxonName = TaxonNameFactory.NewBacterialInstance(null);
+	            TaxonName taxonName = TaxonNameFactory.NewBacterialInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
 	            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "SubGenus")));
@@ -478,7 +478,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Cultivar")) {
-	            TaxonNameBase taxonName = TaxonNameFactory.NewCultivarInstance(null);
+	            TaxonName taxonName = TaxonNameFactory.NewCultivarInstance(null);
 
 	            if (taxonName.hasProblem()) {
 	                logger.info("pb ICNCP");
@@ -492,11 +492,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        if (problem) {
 	            logger.info("Problem im setTaxonNameByType ");
-	            TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewNonViralInstance(null);
+	            TaxonName taxonName = TaxonNameFactory.NewNonViralInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            return taxonName;
 	        }
-	        TaxonNameBase<?,?> tn = TaxonNameFactory.NewNonViralInstance(null);
+	        TaxonName tn = TaxonNameFactory.NewNonViralInstance(null);
 	        return tn;
 	    }
 
@@ -567,8 +567,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            return cdmRepository.getDescriptionService().saveOrUpdate(CdmBase.deproxy(cdmBase, DescriptionBase.class));
 	        }else if (cdmBase.isInstanceOf(TaxonBase.class)){
 	            return cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
-	        }else if (cdmBase.isInstanceOf(TaxonNameBase.class)){
-	            return cdmRepository.getNameService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNameBase.class));
+	        }else if (cdmBase.isInstanceOf(TaxonName.class)){
+	            return cdmRepository.getNameService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonName.class));
 	        }else if (cdmBase.isInstanceOf(TaxonNode.class)){
                 return cdmRepository.getTaxonNodeService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNode.class));
             }else{
@@ -785,7 +785,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        if(rank!=null){
 	            if (rank.isLower(Rank.GENUS() )){
 	                String genusOrUninomial = nvname.getGenusOrUninomial();
-	                TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(genusOrUninomial, Rank.GENUS(), preferredFlag, state, -1);
+	                TaxonName taxonName = getOrCreateTaxonName(genusOrUninomial, Rank.GENUS(), preferredFlag, state, -1);
 	                genus = getOrCreateTaxonForName(taxonName, state);
 	                if (genus == null){
 	                    logger.debug("The genus should not be null " + taxonName);
@@ -799,7 +799,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                String prefix = nvname.getGenusOrUninomial();
 	                String name = nvname.getInfraGenericEpithet();
 	                if (name != null){
-	                    TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SUBGENUS(), preferredFlag, state, -1);
+	                    TaxonName taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SUBGENUS(), preferredFlag, state, -1);
 	                    subgenus = getOrCreateTaxonForName(taxonName, state);
 	                    if (preferredFlag) {
 	                        parent = linkParentChildNode(genus, subgenus, classification, state);
@@ -811,7 +811,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                    String name = nvname.getInfraGenericEpithet();
 	                    String spe = nvname.getSpecificEpithet();
 	                    if (spe != null){
-	                        TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name+" "+spe, Rank.SPECIES(), preferredFlag, state, -1);
+	                        TaxonName taxonName = getOrCreateTaxonName(prefix+" "+name+" "+spe, Rank.SPECIES(), preferredFlag, state, -1);
 	                        species = getOrCreateTaxonForName(taxonName, state);
 	                        if (preferredFlag) {
 	                            parent = linkParentChildNode(subgenus, species, classification, state);
@@ -822,7 +822,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                    String prefix = nvname.getGenusOrUninomial();
 	                    String name = nvname.getSpecificEpithet();
 	                    if (name != null){
-	                        TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SPECIES(), preferredFlag, state, -1);
+	                        TaxonName taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SPECIES(), preferredFlag, state, -1);
 	                        species = getOrCreateTaxonForName(taxonName, state);
 	                        if (preferredFlag) {
 	                            parent = linkParentChildNode(genus, species, classification, state);
@@ -831,7 +831,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                }
 	            }
 	            if (rank.isLower(Rank.INFRASPECIES())){
-	                TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(nvname.getFullTitleCache(), Rank.SUBSPECIES(), preferredFlag, state, -1);
+	                TaxonName taxonName = getOrCreateTaxonName(nvname.getFullTitleCache(), Rank.SUBSPECIES(), preferredFlag, state, -1);
 	                subspecies = getOrCreateTaxonForName(taxonName, state);
 	                if (preferredFlag) {
 	                    parent = linkParentChildNode(species, subspecies, classification, state);
@@ -891,14 +891,14 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        return null;
 	    }
 
-	    protected Taxon getOrCreateTaxonForName(TaxonNameBase<?, ?> taxonNameBase, STATE state){
-	        if (taxonNameBase != null){
-    	        Set<Taxon> acceptedTaxa = taxonNameBase.getTaxa();
+	    protected Taxon getOrCreateTaxonForName(TaxonName taxonName, STATE state){
+	        if (taxonName != null){
+    	        Set<Taxon> acceptedTaxa = taxonName.getTaxa();
     	        if(acceptedTaxa.size()>0){
     	            Taxon firstAcceptedTaxon = acceptedTaxa.iterator().next();
     	            if(acceptedTaxa.size()>1){
     	                String message = "More than one accepted taxon was found for taxon name: "
-    	                        + taxonNameBase.getTitleCache() + "!\n" + firstAcceptedTaxon + "was chosen for "+state.getDerivedUnitBase();
+    	                        + taxonName.getTitleCache() + "!\n" + firstAcceptedTaxon + "was chosen for "+state.getDerivedUnitBase();
     	                state.getReport().addInfoMessage(message);
     	                logger.warn(message);
     	            }
@@ -907,14 +907,14 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     	            }
     	        }
     	        else{
-    	            Set<TaxonBase> taxonAndSynonyms = taxonNameBase.getTaxonBases();
+    	            Set<TaxonBase> taxonAndSynonyms = taxonName.getTaxonBases();
     	            for (TaxonBase taxonBase : taxonAndSynonyms) {
     	                if(taxonBase.isInstanceOf(Synonym.class)){
     	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
     	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();
     	                    if(acceptedTaxonOfSynonym == null){
     	                        String message = "No accepted taxon could be found for taxon name: "
-    	                                + taxonNameBase.getTitleCache()
+    	                                + taxonName.getTitleCache()
     	                                + "!";
     	                        state.getReport().addInfoMessage(message);
     	                        logger.warn(message);
@@ -925,7 +925,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     	                }
     	            }
     	        }
-    	        Taxon taxon = Taxon.NewInstance(taxonNameBase, state.getRef());
+    	        Taxon taxon = Taxon.NewInstance(taxonName, state.getRef());
     	        save(taxon, state);
     	        state.getReport().addTaxon(taxon);
     	        logger.info("Created new taxon "+ taxon);
@@ -988,7 +988,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     	                state.getDataHolder().setNomenclatureCode(identification.getCode());
     	            }
 	            }
-	            TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(scientificName, null, preferredFlag, state, i);
+	            TaxonName taxonName = getOrCreateTaxonName(scientificName, null, preferredFlag, state, i);
 	            Taxon taxon = getOrCreateTaxonForName(taxonName, state);
 	            addTaxonNode(taxon, state,preferredFlag);
 	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate());
@@ -1099,7 +1099,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                }
 	                specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid());
 	                //Designation
-	                TaxonNameBase<?,?> name = taxon.getName();
+	                TaxonName name = taxon.getName();
 	                SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
 
 	                designation.setTypeStatus(specimenTypeDesignationstatus);

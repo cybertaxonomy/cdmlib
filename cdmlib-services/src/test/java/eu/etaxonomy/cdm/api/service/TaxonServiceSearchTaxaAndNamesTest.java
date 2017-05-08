@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -653,11 +653,11 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         if (logger.isDebugEnabled()) {
             for (int i = 0; i < list.size(); i++) {
                 String nameCache = "";
-                if (list.get(i) instanceof TaxonNameBase) {
-                    nameCache = ((TaxonNameBase)list.get(i)).getNameCache();
+                if (list.get(i) instanceof TaxonName) {
+                    nameCache = ((TaxonName)list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
-                    TaxonNameBase<?,?> taxonNameBase = ((TaxonBase) list.get(i)).getName();
-                    nameCache = taxonNameBase.getNameCache();
+                    TaxonName taxonName = ((TaxonBase) list.get(i)).getName();
+                    nameCache = taxonName.getNameCache();
                 } else {
                 }
                 logger.log(level, list.get(i).getClass() + "(" + i + ")" + ": Name Cache = " + nameCache + ", Title Cache = "
@@ -746,11 +746,11 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         //
         // 2 Names without taxa
         //
-        TaxonNameBase n_abies_borisiiregis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonName n_abies_borisiiregis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_borisiiregis.setNameCache("Abies borisii-regis", true);
         nameService.save(n_abies_borisiiregis);
 
-        TaxonNameBase n_abies_lasio = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonName n_abies_lasio = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_lasio.setNameCache("Abies lasio", true);
         nameService.save(n_abies_lasio);
 
@@ -823,7 +823,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
 
         writeDbUnitDataSetFile(new String[] {
-            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONBASE", "TAXONNAME",
             "TAXONRELATIONSHIP",
             "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
             "AGENTBASE", "HOMOTYPICALGROUP",

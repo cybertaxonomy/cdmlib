@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
@@ -100,22 +100,22 @@ public class SDDDocumentBuilder {
 	private DOMSerializer domi;
 	private SDDDataSet cdmSource;
 
-	private final Map<Person, String> agents = new HashMap<Person, String>();
-	private final Map<TaxonNameBase<?,?>, String> taxonNames = new HashMap<TaxonNameBase<?,?>, String>();
-	private final Map<Feature, String> characters = new HashMap<Feature, String>();
-	private final Map<FeatureNode, String> featureNodes = new HashMap<FeatureNode, String>();
-	private final Map<Feature, String> descriptiveConcepts = new HashMap<Feature, String>();
-	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<TaxonDescription, String>();
-	private final Map<Media, String> medias = new HashMap<Media, String>();
-	private final Map<State, String> states = new HashMap<State, String>();
-	private final Map<Reference, String> articles = new HashMap<Reference, String>();
-	private final Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
-	private final Map<DefinedTerm, String> modifiers = new HashMap<DefinedTerm, String>();
-	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
-	private final Map<NamedArea, String> namedAreas = new HashMap<NamedArea, String>();
-	private final Map<DerivedUnit, String> specimens = new HashMap<DerivedUnit, String>();
+	private final Map<Person, String> agents = new HashMap<>();
+	private final Map<TaxonName, String> taxonNames = new HashMap<>();
+	private final Map<Feature, String> characters = new HashMap<>();
+	private final Map<FeatureNode, String> featureNodes = new HashMap<>();
+	private final Map<Feature, String> descriptiveConcepts = new HashMap<>();
+	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<>();
+	private final Map<Media, String> medias = new HashMap<>();
+	private final Map<State, String> states = new HashMap<>();
+	private final Map<Reference, String> articles = new HashMap<>();
+	private final Map<VersionableEntity, String> featuretrees = new HashMap<>();
+	private final Map<DefinedTerm, String> modifiers = new HashMap<>();
+	private final Map<TaxonNode, String> taxonNodes = new HashMap<>();
+	private final Map<NamedArea, String> namedAreas = new HashMap<>();
+	private final Map<DerivedUnit, String> specimens = new HashMap<>();
 
-	private final Map<VersionableEntity, String> features = new HashMap<VersionableEntity, String>();
+	private final Map<VersionableEntity, String> features = new HashMap<>();
 	private int agentsCount = 0;
 	private int articlesCount = 0;
 	private int codedDescriptionsCount = 0;
@@ -656,7 +656,7 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < cdmSource.getTaxonomicNames().size(); i++) {
 				ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
-				TaxonNameBase tnb = cdmSource.getTaxonomicNames().get(i);
+				TaxonName tnb = cdmSource.getTaxonomicNames().get(i);
 
 				taxonNamesCount = buildReference(tnb, taxonNames, ID,
 						elTaxonName, "t", taxonNamesCount);
@@ -849,14 +849,14 @@ public class SDDDocumentBuilder {
 
 		Taxon taxon = taxonDescription.getTaxon();
 		if (taxon != null) {
-			TaxonNameBase taxonNameBase = taxon.getName();
-			if (taxonNameBase != null) {
-				String ref = taxonNames.get(taxonNameBase);
+			TaxonName taxonName = taxon.getName();
+			if (taxonName != null) {
+				String ref = taxonNames.get(taxonName);
 				if (!ref.equals("")) {
-					ElementImpl taxonName = new ElementImpl(document,
+					ElementImpl taxonNameEl = new ElementImpl(document,
 							TAXON_NAME);
-					taxonName.setAttribute(REF, ref);
-					scope.appendChild(taxonName);
+					taxonNameEl.setAttribute(REF, ref);
+					scope.appendChild(taxonNameEl);
 				}
 			}
 		}

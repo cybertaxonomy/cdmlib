@@ -315,7 +315,7 @@ public class NonViralNameTest extends EntityTestBase {
 		INonViralName nonViralName1 = TaxonNameFactory.NewNonViralInstance(null);
 		assertEquals(0, nonViralName1.getHybridParentRelations().size());
 		assertEquals(0, nonViralName1.getHybridChildRelations().size());
-		TaxonNameBase<?,?> botanicalName2 = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName botanicalName2 = TaxonNameFactory.NewNonViralInstance(null);
 		botanicalName2.addHybridRelationship(null);
 	}
 
@@ -325,7 +325,7 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(0, botanicalName1.getHybridParentRelations().size());
 		assertEquals(0, botanicalName1.getHybridChildRelations().size());
 		IBotanicalName femaleParent = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonNameBase<?,?> maleParent = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName maleParent = TaxonNameFactory.NewNonViralInstance(null);
 		IZoologicalName child = TaxonNameFactory.NewZoologicalInstance(null);
 
 		botanicalName1.addHybridParent(femaleParent, HybridRelationshipType.FEMALE_PARENT(), null);
@@ -389,13 +389,13 @@ public class NonViralNameTest extends EntityTestBase {
 
 		//hybrid parents of clone
 		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getHybridChildRelations().size());
-		Set<TaxonNameBase> parentSet = new HashSet<>();
-		Set<TaxonNameBase> childSet = new HashSet<>();
+		Set<TaxonName> parentSet = new HashSet<>();
+		Set<TaxonName> childSet = new HashSet<>();
 		for (Object object : clone.getHybridChildRelations()){
 			HybridRelationship childRelation = (HybridRelationship)object;
-			TaxonNameBase<?,?> relatedFrom = childRelation.getRelatedFrom();
+			TaxonName relatedFrom = childRelation.getRelatedFrom();
 			parentSet.add(relatedFrom);
-			TaxonNameBase<?,?> relatedTo = childRelation.getRelatedTo();
+			TaxonName relatedTo = childRelation.getRelatedTo();
 			childSet.add(relatedTo);
 		}
 		Assert.assertTrue("Parent set should contain parent1", parentSet.contains(parent));

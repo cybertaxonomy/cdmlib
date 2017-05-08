@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
@@ -568,7 +568,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     		for(TaxonNode tNode:listOfTaxonNodes){
     			//take that taxonNode as parent and remove from list with all it possible children
     			//FIXME NPE for name
-    			TaxonNameBase name = tNode.getTaxon().getName();
+    			TaxonName name = tNode.getTaxon().getName();
     			if(name.getNameCache().equalsIgnoreCase(genus)){
     				TaxonNode clone = (TaxonNode) tNode.clone();
     				if(!tNode.hasChildNodes()){
@@ -598,9 +598,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     		if(parentNode == null){
     			//if no match found in list, create parentNode
     			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-    			TaxonNameBase<?,?> taxonNameBase = (TaxonNameBase<?,?>)parser.parseFullName(genus);
+    			TaxonName<?,?> TaxonName = (TaxonName<?,?>)parser.parseFullName(genus);
     			//TODO Sec via configurator
-    			Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
+    			Taxon taxon = Taxon.NewInstance(TaxonName, null);
     			parentNode = newClassification.addChildTaxon(taxon, 0, null, null);
     			result.addUpdatedObject(parentNode);
     		}
@@ -877,7 +877,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
         result.setTaxonLabel(taxonBase.getTitleCache());
 
-        TaxonNameBase<?,?> name = taxonBase.getName();
+        TaxonName<?,?> name = taxonBase.getName();
         result.setNameUuid(name.getUuid());
         result.setNameLabel(name.getTitleCache());
         result.setNameWithoutAuthor(name.getNameCache());

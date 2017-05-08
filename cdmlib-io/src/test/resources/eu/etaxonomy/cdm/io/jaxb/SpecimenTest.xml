@@ -113,7 +113,7 @@
         </occurrence:DerivationEvent>
     </EventBases>    
     <TaxonomicNames>
-        <name:TaxonNameBase id="1" uuid="urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        <name:TaxonName id="1" uuid="urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40" hasProblem="false" problemStarts="-1" problemEnds="-1">
           <name:nameType>ICZN</name:nameType>
           <common:TitleCache>Aus aus L., 1758</common:TitleCache>
           <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
@@ -122,7 +122,7 @@
           <name:AuthorshipCache>L., 1758</name:AuthorshipCache>
           <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
           <name:ProtectedNameCache>false</name:ProtectedNameCache>  
-        </name:TaxonNameBase>
+        </name:TaxonName>
     </TaxonomicNames>
     <TaxonBases>
         <taxon:Taxon id="1" uuid="urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c" isDoubtful="false">

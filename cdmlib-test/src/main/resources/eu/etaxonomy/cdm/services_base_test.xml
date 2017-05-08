@@ -48,7 +48,7 @@
     <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="mappingLocations">
             <set>
-                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml</value>
+                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonName-Constraints.xml</value>
             </set>
         </property>
     </bean>

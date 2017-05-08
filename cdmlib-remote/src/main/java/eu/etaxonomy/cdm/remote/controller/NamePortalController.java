@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,8 +29,9 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import io.swagger.annotations.Api;
 
 /**
  * The NamePortalController class is a Spring MVC Controller.
@@ -47,8 +46,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
  * <blockquote>
  * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}</b>
  *
- * Get the {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
- * The returned TaxonNameBase is initialized by
+ * Get the {@link TaxonName} instance identified by the <code>{name-uuid}</code>.
+ * The returned TaxonName is initialized by
  * the following strategy: -- NONE --
  * </blockquote>
  *
@@ -59,7 +58,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 @Controller
 @Api("portal_name")
 @RequestMapping(value = {"/portal/name/{uuid}"})
-public class NamePortalController extends BaseController<TaxonNameBase, INameService>
+public class NamePortalController extends BaseController<TaxonName, INameService>
 {
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -98,7 +97,7 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 
     /**
      * Get the list of {@link TypeDesignationBase}s of the
-     * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+     * {@link TaxonName} instance identified by the <code>{name-uuid}</code>.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
      *
@@ -116,14 +115,14 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
     public List<TypeDesignationBase> doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         ModelAndView mv = new ModelAndView();
-        TaxonNameBase tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
+        TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
     }
 
     /**
      * Get the list of {@link TaxonNameDescription}s of the Name associated with the
-     * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+     * {@link TaxonName} instance identified by the <code>{name-uuid}</code>.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;descriptions</b>
      *
@@ -140,7 +139,7 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
     public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGetNameDescriptions()" + request.getRequestURI());
-        TaxonNameBase tnb = service.load(uuid, null);
+        TaxonName tnb = service.load(uuid, null);
         Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
         return p.getRecords();
     }

@@ -38,7 +38,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -89,7 +89,7 @@ public class DeterminationEvent extends EventBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TaxonNameBase<?,?> taxonName;
+    private TaxonName<?,?> taxonName;
 
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
@@ -130,7 +130,7 @@ public class DeterminationEvent extends EventBase {
 		return result;
 	}
 
-	public static DeterminationEvent NewInstance(TaxonNameBase name, SpecimenOrObservationBase identifiedUnit ){
+	public static DeterminationEvent NewInstance(TaxonName name, SpecimenOrObservationBase identifiedUnit ){
 		DeterminationEvent result = new DeterminationEvent();
 		result.setTaxonName(name);
 		result.setIdentifiedUnit(identifiedUnit);
@@ -158,11 +158,11 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	/*** @param taxon    the */
-	public void setTaxonName(TaxonNameBase taxonName){
+	public void setTaxonName(TaxonName taxonName){
 		this.taxonName = taxonName;
 	}
 
-	public TaxonNameBase getTaxonName(){
+	public TaxonName getTaxonName(){
 		return this.taxonName;
 	}
 

@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -132,7 +132,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 	 * @param name
 	 */
 	private String getNamePart(TaxonBase<?> taxonBase) {
-		TaxonNameBase<?,?> taxonName = taxonBase.getName();
+		TaxonName taxonName = taxonBase.getName();
 		String result = taxonName.getTitleCache();
 		//use name cache instead of title cache if required
 		if (taxonBase.isUseNameCache()){
@@ -158,7 +158,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             return tags;
         }else{
             //name
-            TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = taxonBase.getName();
+            TaxonName<?,INameCacheStrategy<TaxonName>> name = taxonBase.getName();
             if (name != null){
                 //TODO
                 List<TaggedText> nameTags = name.getCacheStrategy().getTaggedTitle(name);

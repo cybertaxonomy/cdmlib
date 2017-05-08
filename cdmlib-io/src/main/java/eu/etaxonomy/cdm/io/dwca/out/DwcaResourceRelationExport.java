@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -150,8 +150,8 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				Set<NameRelationship> rels = name.getNameRelations();
 				for (NameRelationship rel : rels){
 					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
-					IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName(), TaxonNameBase.class);
-					IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName(), TaxonNameBase.class);
+					IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName(), TaxonName.class);
+					IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName(), TaxonName.class);
 					boolean isInverse = false;
 					if(subject == name){
 						subject = taxon;
@@ -218,7 +218,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		//TODO missing
 		record.setRelatioshipEstablishedDate(null);
 		record.setRelationshipRemarks(rel.getAnnotations());
-		if (object.isInstanceOf(TaxonNameBase.class)){
+		if (object.isInstanceOf(TaxonName.class)){
 			record.setScientificName(object.getTitleCache());
 		}
 

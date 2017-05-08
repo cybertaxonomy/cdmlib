@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -777,7 +777,7 @@ public class Reference
 
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This
-	 * indicates that a {@link TaxonNameBase taxon name} has been originally
+	 * indicates that a {@link TaxonName taxon name} has been originally
 	 * published in <i>this</i> reference following the rules of a
 	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalCode nomenclature code} and is therefore used for
 	 * nomenclatural citations. This flag will be set as soon as <i>this</i>

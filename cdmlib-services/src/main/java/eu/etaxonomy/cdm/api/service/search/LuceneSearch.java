@@ -165,7 +165,7 @@ public class LuceneSearch {
         if (type.equals(TaxonBase.class)) {
             returnType = Taxon.class;
         }
-//        if (type.equals(TaxonNameBase.class)) {
+//        if (type.equals(TaxonName.class)) {
 //            returnType = NonViralName.class;
 //        }
         return returnType;

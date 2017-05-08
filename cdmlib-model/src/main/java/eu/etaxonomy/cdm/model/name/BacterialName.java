@@ -33,7 +33,7 @@
 //})
 //@XmlRootElement(name = "BacterialName")
 //@Entity
-//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
 //@Audited
 //@Configurable
 //public class BacterialName4{
@@ -87,7 +87,7 @@
 //	 *
 //	 * @return  the nomenclatural code for bacteria
 //	 * @see  	NonViralName#isCodeCompliant()
-//	 * @see  	TaxonNameBase#getHasProblem()
+//	 * @see  	TaxonName#getHasProblem()
 //	 */
 ////	public NomenclaturalCode getNomenclaturalCode(){
 ////		return code;

@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 
  /**
@@ -26,7 +26,7 @@ public interface INomenclaturalReference  extends IReference{
 
 	/**
      * Returns the citation string including the details (micro reference) information
-     * from {@link TaxonNameBase taxon name}.
+     * from {@link TaxonName taxon name}.
      * E.g. if the references title cache is <i>L., Sp. Pl. 3. 1757</i> the nomenclatural citation
      * may be something like <i>L., Sp. Pl. 3: 45. 1757</i>
      *

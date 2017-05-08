@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.util.Collection;
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -63,7 +63,7 @@ public interface IBeanInitializer {
      * initialized nested properties of properties with unlimited depth.
      * <ul>
      * <li><code>name</code>: initializes {@link Taxon#getName()}</li>
-     * <li><code>name.rank</code>: initializes {@link Taxon#getName()}.{@link TaxonNameBase#getRank() getRank()}</li>
+     * <li><code>name.rank</code>: initializes {@link Taxon#getName()}.{@link TaxonName#getRank() getRank()}</li>
      * <li><code>name.$</code>: initializes all *ToOne relations of the {@link Taxon#getName()}</li>
      * </ul>
      *

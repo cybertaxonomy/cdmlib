@@ -54,7 +54,7 @@ public class PersonDefaultCacheStrategy
 		return person.getNomenclaturalTitle();
 	}
 
-   @Override
+    @Override
     public String getTitleCache(Person person) {
         String result = "";
         if (isNotBlank(person.getLastname() ) ){
@@ -74,7 +74,6 @@ public class PersonDefaultCacheStrategy
         return person.toString();
     }
 
-	/**
      * @param result
      * @param person
      * @return
@@ -110,9 +109,6 @@ public class PersonDefaultCacheStrategy
 		return person.toString();
 	}
 
-	/**
-	 *
-	 */
 	private String addFirstNamePrefixSuffix(String oldString, Person person) {
 		String result = oldString;
 		result = CdmUtils.concat(" ", person.getFirstname(), result);

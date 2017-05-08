@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -293,7 +293,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -313,13 +313,13 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
 	}
 
-	private void testLocalHsql() throws DataSourceNotFoundException{
+	private void testLocalHsql(){
 		CdmApplicationController appCtr = null;
 		try {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
@@ -429,8 +429,8 @@ public class Datasource {
 //			 CdmPersistentDataSource.NewInstance("localH2");
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 		try {
-		    TaxonNameBase<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-			TaxonNameBase<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		    TaxonName<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			TaxonName<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			IBotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
 			UUID uuid1 = botName1.getUuid();

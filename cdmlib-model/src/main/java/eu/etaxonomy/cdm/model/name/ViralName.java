@@ -38,11 +38,11 @@
 //@XmlType(name = "", propOrder = {})
 //@XmlRootElement(name = "ViralName")
 //@Entity
-//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
 //@Audited
 //@Configurable
 //public class ViralName5{
-////            extends TaxonNameBase<ViralName, INameCacheStrategy> {
+////            extends TaxonName<ViralName, INameCacheStrategy> {
 ////    private static final long serialVersionUID = -6201649691028218290L;
 ////
 ////    private static final NomenclaturalCode code = NomenclaturalCode.ICVCN;
@@ -58,7 +58,7 @@
 //	 * only containing its {@link Rank rank}.
 //	 *
 //	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
-//	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
+//	 * @see 	TaxonName#TaxonName(Rank)
 //	 */
 ////	protected ViralName(Rank rank) {
 ////		super(code, rank);
@@ -70,12 +70,12 @@
 //	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 //	 * the construction of <i>this</i> viral taxon name, that is the
 //	 * International Code of Virus Classification and Nomenclature.
-//	 * This method overrides the getNomenclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
+//	 * This method overrides the getNomenclaturalCode method from {@link TaxonName TaxonName}.
 //	 *
 //	 * @return  the nomenclatural code for viruses
 //	 * @see  	#isCodeCompliant()
-//	 * @see  	TaxonNameBase#getHasProblem()
-//	 * @see  	TaxonNameBase#getNomenclaturalCode()
+//	 * @see  	TaxonName#getHasProblem()
+//	 * @see  	TaxonName#getNomenclaturalCode()
 //	 */
 ////	@Override
 ////	public NomenclaturalCode getNomenclaturalCode(){
@@ -90,7 +90,7 @@
 //	 * a new instance that differs only slightly from <i>this</i> viral name by
 //	 * modifying only some of the attributes.
 //	 *
-//	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#clone()
+//	 * @see eu.etaxonomy.cdm.model.name.TaxonName#clone()
 //	 * @see java.lang.Object#clone()
 //	 */
 //	@Override

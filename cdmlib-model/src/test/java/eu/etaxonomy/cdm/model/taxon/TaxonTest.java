@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -187,9 +187,9 @@ public class TaxonTest extends EntityTestBase {
 
     @Test
     public void testAddHomotypicSynonymName(){
-        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
-        TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
         // add a synonym to the taxon
         Synonym synonym1 = taxon.addHomotypicSynonymName(synonymName1);
         // get the homotypic group of that synonym
@@ -200,9 +200,9 @@ public class TaxonTest extends EntityTestBase {
     }
     @Test
     public void testAddHomotypicSynonym(){
-        TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(null);
         Taxon taxon = Taxon.NewInstance(taxonName, null);
-        TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
         Synonym synonym = Synonym.NewInstance(synonymName1, null);
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
@@ -217,10 +217,10 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddRemoveSynonymInSameGroup(){
-		TaxonNameBase<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(null);
 		Taxon taxon = Taxon.NewInstance(taxonName, null);
-		TaxonNameBase<?,?> synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonNameBase<?,?> synonymName2 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName synonymName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName synonymName2 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		// add a synonym to the taxon
 		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1);

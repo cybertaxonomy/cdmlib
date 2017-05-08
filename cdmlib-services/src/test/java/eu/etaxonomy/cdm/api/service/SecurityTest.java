@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -258,11 +258,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonNameBase<?,?> newName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+        TaxonName newName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
         newName.setTitleCache("Newby taxonEditor", true);
         UUID uuid = nameService.saveOrUpdate(newName);
         commitAndStartNewTransaction(null);
-        TaxonNameBase<?,?> savedName = nameService.load(uuid);
+        TaxonName savedName = nameService.load(uuid);
         assertEquals(newName, savedName);
     }
 
@@ -276,7 +276,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        TaxonNameBase<?,?> n_acherontia_thetis = taxon.getName();
+        TaxonName n_acherontia_thetis = taxon.getName();
 
         Reference sec = ReferenceFactory.newGeneric();
         sec.setUuid(UUID.fromString("bd7e4a15-6403-49a9-a6df-45b46fa99efd"));
@@ -914,7 +914,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
-//    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAMEBASE.[UPDATE])
+//    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAME.[UPDATE])
     @Test
     public void testAcceptedTaxonToSynomym(){
 

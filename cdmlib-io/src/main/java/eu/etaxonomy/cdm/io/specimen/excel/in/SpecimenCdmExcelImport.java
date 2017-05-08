@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -405,7 +405,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		boolean isFirstDetermination = true;
 		DeterminationLight commonDetermination = row.getCommonDetermination();
 		Taxon commonTaxon = null;
-		TaxonNameBase<?,?> commonName = null;
+		TaxonName commonName = null;
 
 		boolean hasCommonTaxonInfo = (commonDetermination == null) ? false : commonDetermination.hasTaxonInformation();
 		if (hasCommonTaxonInfo && commonDetermination != null){
@@ -465,7 +465,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			}
 
 			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
-				TaxonNameBase<?,?> name;
+				TaxonName name;
 
 				if (!hasCommonTaxonInfo){
 					name = findBestMatchingName(state, determinationLight);
@@ -683,13 +683,13 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		return name;
 	}
 
-	private TaxonNameBase findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
+	private TaxonName findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
 
 		INonViralName name = makeTaxonName(state, determinationLight);
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
 		//TODO
-		List<TaxonNameBase> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT, null, null, null, null, null).getRecords();
+		List<TaxonName> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT, null, null, null, null, null).getRecords();
 		if (matchingNames.size() > 0){
 			return matchingNames.get(0);
 		} else if (matchingNames.size() > 0){
@@ -831,13 +831,13 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 
-	private TaxonNameBase<?,?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
-		TaxonNameBase<?,?> result = null;
+	private TaxonName getTaxonName(SpecimenCdmExcelImportState state, String name) {
+		TaxonName result = null;
 		result = state.getName(name);
 		if (result != null){
 			return result;
 		}
-		List<TaxonNameBase> list = getNameService().findByTitle(null, name, null, null, null, null, null, null).getRecords();
+		List<TaxonName> list = getNameService().findByTitle(null, name, null, null, null, null, null, null).getRecords();
 		//TODO better strategy to find best name, e.g. depending on the classification it is used in
 		if (! list.isEmpty()){
 			result = list.get(0);
@@ -845,7 +845,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (result == null){
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
-			result = (TaxonNameBase<?,?>)parser.parseFullName(name, code, null);
+			result = (TaxonName<?,?>)parser.parseFullName(name, code, null);
 
 		}
 		if (result != null){

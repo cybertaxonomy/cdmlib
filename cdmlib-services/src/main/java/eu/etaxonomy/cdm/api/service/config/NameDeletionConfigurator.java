@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 /**
  * This class is used to configure name deletion.
  * 
- * @see INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase)
+ * @see INameService#delete(eu.etaxonomy.cdm.model.name.TaxonName)
  * 
  * @author a.mueller
  * @date 19.09.2011

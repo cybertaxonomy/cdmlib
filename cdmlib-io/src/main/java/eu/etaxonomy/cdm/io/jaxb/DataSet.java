@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -235,9 +235,9 @@ public class DataSet implements IExportData {
 
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
-    	@XmlElement(name = "TaxonNameBase", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TaxonNameBase.class),
+    	@XmlElement(name = "TaxonName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TaxonName.class),
      })
-    protected List<TaxonNameBase> taxonomicNames = new ArrayList<>();
+    protected List<TaxonName> taxonomicNames = new ArrayList<>();
 
     @XmlElementWrapper(name = "TaxonBases")
     @XmlElements({
@@ -377,7 +377,7 @@ public class DataSet implements IExportData {
      *     {@link List<axonNameBase> }
      *
      */
-    public List<TaxonNameBase> getTaxonomicNames() {
+    public List<TaxonName> getTaxonomicNames() {
         return taxonomicNames;
     }
 
@@ -386,10 +386,10 @@ public class DataSet implements IExportData {
      *
      * @param value
      *     allowed object is
-     *     {@link List<TaxonNameBase> }
+     *     {@link List<TaxonName> }
      *
      */
-    public void setTaxonomicNames(List<TaxonNameBase> value) {
+    public void setTaxonomicNames(List<TaxonName> value) {
         this.taxonomicNames = value;
     }
 

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -49,11 +49,11 @@ public class HomotypicGroupTaxonComparatorTest {
     private Calendar cal1;
     private Calendar cal2;
     private Calendar cal3;
-    private TaxonNameBase botName1;
-    private TaxonNameBase botName2;
-    private TaxonNameBase botName3;
-    private TaxonNameBase botName4;
-    private TaxonNameBase botName5;
+    private TaxonName botName1;
+    private TaxonName botName2;
+    private TaxonName botName3;
+    private TaxonName botName4;
+    private TaxonName botName5;
 
     private List<TaxonBase<?>> list;
 

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -89,7 +89,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	}
 //
 //	/**
-//	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#setName(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
+//	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#setName(eu.etaxonomy.cdm.model.name.TaxonName)}.
 //	 */
 //	@Test
 //	public final void testSetName() {
@@ -146,7 +146,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	public final void testClone(){
 
-		TaxonNameBase<?,?> test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		String genus = "test";
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);
@@ -166,7 +166,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	   @Test
 	   public void testCompareTo() {
 
-	       TaxonNameBase<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       TaxonName<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
 	       abies.setNameCache("Abies");
 	       abies.setTitleCache("Abies", true);
 	       Reference sec = ReferenceFactory.newArticle();
@@ -174,7 +174,7 @@ public class TaxonBaseTest extends EntityTestBase {
 
 	       Taxon abiesTaxon = Taxon.NewInstance(abies, sec);
 
-	       TaxonNameBase<?,?> abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       TaxonName abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
 	       abiesMill.setNameCache("Abies");
 	       abiesMill.setTitleCache("Abies Mill.", true);
 	       Taxon abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);

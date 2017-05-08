@@ -113,7 +113,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	//
 	// parameters.put("classification", classification);
 	//
-	// // TaxonNameBase description elements for taxa:
+	// // TaxonName description elements for taxa:
 	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
 	// + "join tn.taxon.name.descriptions as d "
 	// + "join d.descriptionElements as de "
@@ -123,7 +123,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// + "and tn.taxon.name is not null "
 	// + "and des.citation is not null ");
 	//
-	// // TaxonNameBase description elements for synonyms:
+	// // TaxonName description elements for synonyms:
 	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
 	// + "join tn.taxon.synonyms as sy "
 	// + "join sy.name.descriptions as d "
@@ -215,14 +215,14 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		parameters.put("classification", classification);
 
-		// TaxonNameBase description elements for taxa:
+		// TaxonName description elements for taxa:
 		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
 				+ "join tn.taxon.name.descriptions as d " + sourceRefJoins
 				+ "where tn.classification=:classification "
 				+ "and tn.taxon is not null "
 				+ "and tn.taxon.name is not null " + sourceRefWhere);
 
-		// TaxonNameBase description elements for synonyms:
+		// TaxonName description elements for synonyms:
 		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
 				+ "join tn.taxon.synonyms as sy "
 				+ "join sy.name.descriptions as d " + sourceRefJoins
@@ -380,7 +380,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
     public Long countNomenclaturalReferences() {
 		Query query = getSession()
 				.createQuery(
-						"select count(distinct nomenclaturalReference) from TaxonNameBase ");
+						"select count(distinct nomenclaturalReference) from TaxonName ");
 		return (Long) query.uniqueResult();
 	}
 

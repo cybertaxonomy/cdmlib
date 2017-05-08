@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -65,7 +65,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 		logger.info("start make TaxonNames ...");
 		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
@@ -109,7 +109,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 
 			try {
-				TaxonNameBase<?,?> nameBase;
+				TaxonName nameBase;
 				NomenclaturalCode nomCode = TcsXmlTransformer.nomCodeString2NomCode(strNomenclaturalCode);
 				if (nomCode != null){
 					nameBase = nomCode.getNewTaxonNameInstance(rank);
@@ -194,7 +194,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			taxonNameMap.put(removeVersionOfRef(strId), handleTaxonNameElement(elTaxonName, success, state));
 		}
 		logger.info(i + " names handled");
-		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
+		Collection<? extends TaxonName> col = taxonNameMap.objects();
 		getNameService().save((Collection)col);
 
 		logger.info("end makeTaxonNames ...");
@@ -257,10 +257,10 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return result;
 	}
 
-	public TaxonNameBase handleTaxonNameElement(Element elTaxonName,  ResultWrapper<Boolean> success, TcsXmlImportState state){
+	public TaxonName handleTaxonNameElement(Element elTaxonName,  ResultWrapper<Boolean> success, TcsXmlImportState state){
 		Namespace tcsNamespace = state.getConfig().getTcsXmlNamespace();
 		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 
@@ -285,7 +285,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 
 		try {
-			TaxonNameBase<?,?> nameBase;
+			TaxonName nameBase;
 			NomenclaturalCode nomCode = TcsXmlTransformer.nomCodeString2NomCode(strNomenclaturalCode);
 			if (nomCode != null){
 				nameBase = nomCode.getNewTaxonNameInstance(rank);
@@ -364,7 +364,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 
 
-	private void makeCanonicalAuthorship(TaxonNameBase name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+	private void makeCanonicalAuthorship(TaxonName name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
 		if (elCanonicalAuthorship != null){
 			Namespace ns = elCanonicalAuthorship.getNamespace();
 
@@ -411,14 +411,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 	}
 
-	private void makeMicroReference(TaxonNameBase name, Element elMicroReference, ResultWrapper<Boolean> success){
+	private void makeMicroReference(TaxonName name, Element elMicroReference, ResultWrapper<Boolean> success){
 		if (elMicroReference != null){
 			String microReference = elMicroReference.getTextNormalize();
 			name.setNomenclaturalMicroReference(microReference);
 		}
 	}
 
-	private void makeCanonicalName(TaxonNameBase name, Element elCanonicalName, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
+	private void makeCanonicalName(TaxonName name, Element elCanonicalName, MapWrapper<TaxonName> taxonNameMap, ResultWrapper<Boolean> success){
 		boolean cacheProtected = false;
 
 		if (elCanonicalName == null){
@@ -522,13 +522,13 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		//logger.warn("'makeCultivarName' Not yet implemented");
 	}
 
-	private void makeGenusReferenceType(TaxonNameBase name, Element elGenus, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
+	private void makeGenusReferenceType(TaxonName name, Element elGenus, MapWrapper<TaxonName> taxonNameMap, ResultWrapper<Boolean> success){
 		if(name.isNonViral()){
 			INonViralName nonViralName = name;
 			if (elGenus != null){
 			    INonViralName genusReferenceName;
 				//TODO code
-				Class<? extends TaxonNameBase> clazz = TaxonNameBase.class;
+				Class<? extends TaxonName> clazz = TaxonName.class;
 				genusReferenceName = makeReferenceType(elGenus, clazz, taxonNameMap, success);
 				genusReferenceName.setNameType(NomenclaturalCode.NonViral);
 				//Genus is stored either in Genus part (if ref) or in titleCache (if plain text)
@@ -544,7 +544,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	}
 
-	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
+	private void makePublishedIn(TaxonName name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		if (elPublishedIn != null && name != null){
 			Class<Reference> clazz = Reference.class;
 			Reference ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
@@ -561,7 +561,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 	}
 
-	private void makeYear(TaxonNameBase name, Element elYear, ResultWrapper<Boolean> success){
+	private void makeYear(TaxonName name, Element elYear, ResultWrapper<Boolean> success){
 		if (elYear != null){
 			String year = elYear.getTextNormalize();
 			if (year != null){

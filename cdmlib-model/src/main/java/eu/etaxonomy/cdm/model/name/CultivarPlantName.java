@@ -34,7 +34,7 @@
 //@XmlType(name = "", propOrder = {})
 //@XmlRootElement(name = "CultivarPlantName")
 //@Entity
-//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
 //@Audited
 //@Configurable
 //public class CultivarPlantName3{
@@ -88,7 +88,7 @@
 //	 *
 //	 * @return  the nomenclatural code for cultivated plants
 //	 * @see  	NonViralName#isCodeCompliant()
-//	 * @see  	TaxonNameBase#getHasProblem()
+//	 * @see  	TaxonName#getHasProblem()
 //	 */
 ////	public NomenclaturalCode getNomenclaturalCode(){
 ////		return code;

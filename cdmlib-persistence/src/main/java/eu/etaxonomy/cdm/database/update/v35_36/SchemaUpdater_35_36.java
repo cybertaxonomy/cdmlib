@@ -152,7 +152,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         step = TableCreator.NewAnnotatableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //authorTeam -> authorship for TaxonNameBase #4332
+        //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.combinationAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "combinationAuthorTeam_id";
@@ -160,7 +160,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //authorTeam -> authorship for TaxonNameBase #4332
+        //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.exCombinationAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "exCombinationAuthorTeam_id";
@@ -168,7 +168,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //authorTeam -> authorship for TaxonNameBase #4332
+        //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.basionymAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "basionymAuthorTeam_id";
@@ -176,7 +176,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //authorTeam -> authorship for TaxonNameBase #4332
+        //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.exBasionymAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "exBasionymAuthorTeam_id";

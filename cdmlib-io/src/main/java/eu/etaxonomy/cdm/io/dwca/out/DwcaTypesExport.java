@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -191,7 +191,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		record.setTypeStatus(status);
 		record.setTypeDesignatedBy( (designation == null || designation.getCitation()==null)? null: designation.getCitation().getTitleCache());
 
-		TaxonNameBase<?,?> scientificName = getScientificName(facade);
+		TaxonName scientificName = getScientificName(facade);
 		if (scientificName != null){
 			record.setScientificName(scientificName.getTitleCache());
 			record.setTaxonRank(scientificName.getRank());
@@ -241,7 +241,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		return true;
 	}
 
-	private TaxonNameBase<?,?> getScientificName(DerivedUnitFacade facade) {
+	private TaxonName<?,?> getScientificName(DerivedUnitFacade facade) {
 		Set<DeterminationEvent> detEvents = facade.getDeterminations();
 		for (DeterminationEvent detEvent : detEvents){
 			if (detEvent.getPreferredFlag()== true || detEvents.size()==1){

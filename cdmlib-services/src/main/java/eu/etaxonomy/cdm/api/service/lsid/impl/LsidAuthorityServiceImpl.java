@@ -85,7 +85,7 @@ public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 				new HTTPLocation("CATEDataHTTPPort", lsidDomain, lsidPort, "/authority/data.do") };
 	}
 
-	protected LSIDMetadataPort[] getMetadataLocations(LSID lsid) throws LSIDServerException {
+	protected LSIDMetadataPort[] getMetadataLocations(LSID lsid) {
 		return new LSIDMetadataPort[] {
 				new HTTPLocation("CATEMetadataHTTPPort", lsidDomain, lsidPort, "/authority/metadata.do")
 		};

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -46,7 +46,7 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
     private NameTypeDesignation nameDesignation;
     private SpecimenTypeDesignation specimenDesignation;
     private IBotanicalName name1;
-    private TaxonNameBase name2;
+    private TaxonName name2;
     private DerivedUnit specimen;
 
 

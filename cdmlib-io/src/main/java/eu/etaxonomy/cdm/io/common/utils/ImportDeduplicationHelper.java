@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
@@ -65,7 +65,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
 
 
     private IMatchStrategy referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
-    private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonNameBase.class);
+    private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
 
 
 // ************************** FACTORY *******************************/
@@ -364,8 +364,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
    private void initNameMap(STATE state) {
        if (!nameMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
-           List<TaxonNameBase<?,?>> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
-           for (TaxonNameBase<?,?> name : existingNames){
+           List<TaxonName<?,?>> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
+           for (TaxonName<?,?> name : existingNames){
                putName(name.getTitleCache(), name);
            }
           nameMapIsInitialized = true;

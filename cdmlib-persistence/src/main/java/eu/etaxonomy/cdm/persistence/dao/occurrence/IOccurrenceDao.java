@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -45,7 +45,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param determinedAs the taxon name that these specimens are determined to belong to
      * @return
      */
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonNameBase determinedAs);
+    public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonName determinedAs);
 
     /**
      * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
@@ -65,7 +65,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return
      * @throws DataAccessException
      */
-    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
 	 * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
@@ -129,7 +129,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      */
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
-            TaxonNameBase associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -165,7 +165,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      */
     public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
-            TaxonNameBase associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -254,7 +254,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 */
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxonName(Class<T> type,
-            TaxonNameBase associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+            TaxonName associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Lists all instances of {@link SpecimenOrObservationBase} which are associated with the <code>taxon</code> specified as parameter.
@@ -262,7 +262,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * <ul>
 	 * <li>The {@link IndividualsAssociation} elements in a {@link TaxonDescription} contain {@link DerivedUnit}s</li>
 	 * <li>{@link SpecimenTypeDesignation}s may be associated with any {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
-	 * <li>A {@link Taxon} or a {@link TaxonNameBase} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li>
+	 * <li>A {@link Taxon} or a {@link TaxonName} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li>
 	 * </ul>
 	 *
 	 * @param <T>

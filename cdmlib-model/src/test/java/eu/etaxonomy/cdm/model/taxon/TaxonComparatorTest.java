@@ -22,7 +22,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -119,7 +119,7 @@ public class TaxonComparatorTest {
      */
     private String getYear(TaxonBase<?> taxon) {
         String year = "";
-        TaxonNameBase<?,?> tnb = taxon.getName();
+        TaxonName tnb = taxon.getName();
         if (tnb.isZoological()){
             year = String.valueOf(tnb.getPublicationYear());
         }else{
