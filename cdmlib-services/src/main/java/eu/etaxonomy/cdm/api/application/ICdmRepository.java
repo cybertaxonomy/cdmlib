@@ -62,17 +62,19 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
 public interface ICdmRepository{
 
 
+    /**
+     * Starts a read only Transaction
+     */
     public TransactionStatus startTransaction();
 
     public TransactionStatus startTransaction(Boolean readOnly);
 
     public void commitTransaction(TransactionStatus tx);
 
-
 	public Object getBean(String string);
 
 
-	   /**
+	/**
      * @return
      */
     public IAnnotationService getAnnotationService();
