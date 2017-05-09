@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.dao.common.PropertyNameMatchMode;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
@@ -453,7 +453,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * {@inheritDoc}
      */
     @Override
-    public List<T> list(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions,
+    public  List<T> list(Class<? extends T> type, List<Restriction<?>> restrictions,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = criterionForType(type);
@@ -473,10 +473,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param restrictions
      * @param criteria
      */
-    private void addRestrictions(Map<PropertyNameMatchMode, Collection<? extends Object>> restrictions, Criteria criteria) {
+    private void addRestrictions(List<Restriction<?>> restrictions, Criteria criteria) {
         List<Criterion> perProperty = new ArrayList<>(restrictions.size());
-        for(PropertyNameMatchMode propMatchMode : restrictions.keySet()){
-            Collection<? extends Object> values = restrictions.get(propMatchMode);
+        for(Restriction<?> propMatchMode : restrictions){
+            Collection<? extends Object> values = propMatchMode.getValues();
             if(values != null && !values.isEmpty()){
                 Criterion[] predicates = new Criterion[values.size()];
                 int i = 0;
@@ -525,7 +525,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * {@inheritDoc}
      */
     @Override
-    public int count(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions) {
+    public int count(Class<? extends T> type, List<Restriction<?>> restrictions) {
 
         Criteria criteria = criterionForType(type);
 

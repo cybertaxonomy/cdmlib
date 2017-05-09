@@ -9,11 +9,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.persistence.dao.common.PropertyNameMatchMode;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -75,12 +72,12 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions = new HashMap<>();
+        List<Restriction<? extends Object>> restrictions = new ArrayList<>();
         if(submitter != null){
-            restrictions.put(new PropertyNameMatchMode("submitter", MatchMode.EXACT), Arrays.asList(submitter));
+            restrictions.add(new Restriction<User>("submitter", MatchMode.EXACT, submitter));
         }
         if(includedStatus != null && !includedStatus.isEmpty()){
-            restrictions.put(new PropertyNameMatchMode("status", MatchMode.EXACT), includedStatus);
+            restrictions.add(new Restriction<RegistrationStatus>("status", MatchMode.EXACT, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
         }
 
         long numberOfResults = dao.count(Registration.class, restrictions);

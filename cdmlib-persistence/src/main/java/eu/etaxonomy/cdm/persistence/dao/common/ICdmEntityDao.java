@@ -227,7 +227,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *          all objects of type T or subclasses
      * @param restrictions
      *      This defines a filter for multiple properties represented by the map keys. Sine the keys are of the type
-     *      {@link PropertyNameMatchMode} for each property a single MatchMode is defined. Multiple alternative values
+     *      {@link Restriction} for each property a single MatchMode is defined. Multiple alternative values
      *      can be supplied per property, that is the values per property are combined with OR. The per property
      *      restrictions are combined with AND. </br>
      *      <b>NOTE:</b> For non string type properties you must use
@@ -246,7 +246,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> list(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<T> list(Class<? extends T> type, List<Restriction<?>> restrictions, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Counts the Cdm entities matching the restrictions defined by
@@ -257,7 +257,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *          all objects of type T or subclasses
      * @param restrictions
      *      This defines a filter for multiple properties represented by the map keys. Sine the keys are of the type
-     *      {@link PropertyNameMatchMode} for each property a single MatchMode is defined. Multiple alternative values
+     *      {@link Restriction} for each property a single MatchMode is defined. Multiple alternative values
      *      can be supplied per property, that is the values per property are combined with OR. The per property
      *      restrictions are combined with AND. </br>
      *      <b>NOTE:</b> For non string type properties you must use
@@ -268,7 +268,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *
      * @return
      */
-    public int count(Class<? extends T> type, Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions);
+    public int count(Class<? extends T> type, List<Restriction<?>> restrictions);
 
     /**
      * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.

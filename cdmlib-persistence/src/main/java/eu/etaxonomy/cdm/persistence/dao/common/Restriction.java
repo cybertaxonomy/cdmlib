@@ -8,28 +8,36 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
+ *
  * @author a.kohlbecker
  * @since May 8, 2017
  *
  */
-public class PropertyNameMatchMode {
+public class Restriction<T extends Object> {
 
     private String propertyName;
 
     private MatchMode matchMode;
 
-
+    private List<T> values = null;
 
     /**
      * @param propertyName
      * @param matchMode
      */
-    public PropertyNameMatchMode(String propertyName, MatchMode matchMode) {
+    public Restriction(String propertyName, MatchMode matchMode, T ... values ) {
         this.propertyName = propertyName;
         this.matchMode = matchMode;
+        if(values.length > 0){
+            this.setValues(Arrays.asList(values));
+        }
     }
 
     /**
@@ -58,6 +66,31 @@ public class PropertyNameMatchMode {
      */
     public void setMatchMode(MatchMode matchMode) {
         this.matchMode = matchMode;
+    }
+
+    /**
+     * @return the values, never <code>null</code>
+     */
+    public List<T> getValues() {
+        if(values == null){
+            values = new ArrayList<>();
+        }
+        return values;
+    }
+
+    /**
+     * @param values the values to set
+     */
+    public void setValues(List<T> values) {
+        this.values = values;
+    }
+
+    /**
+     *
+     * @param value
+     */
+    public void addValue(T value){
+        getValues().add(value);
     }
 
 

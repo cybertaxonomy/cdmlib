@@ -15,10 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.After;
@@ -36,7 +33,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.common.PropertyNameMatchMode;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -262,7 +259,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("AgentDaoImplTest.xml")
     public void testListPeopleFiltered() {
 
-        Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions = new HashMap<>();
+        List<Restriction<?>> restrictions = new ArrayList<>();
         List<AgentBase> result = agentDao.list(null, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertNotNull("list() should return a list",result);
         Assert.assertEquals("list() should return 9 AgentBase entities in the current view", 9 ,result.size());
@@ -270,15 +267,15 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         List<AgentBase>  personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() should return 5 Persons entities", 5, personResults.size());
 
-        Collection<String> values = new ArrayList<>();
-        PropertyNameMatchMode firstNameExact = new PropertyNameMatchMode("firstname", MatchMode.EXACT);
-        restrictions.put(firstNameExact,  values);
+        Restriction<String> firstNameExact = new Restriction<>("firstname", MatchMode.EXACT);
+        restrictions.add(firstNameExact);
 
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() empty value lists should be ignored", 5, personResults.size());
 
-        values.add("Ben");
-        restrictions.put(firstNameExact, values);
+        firstNameExact.addValue("Ben");
+        restrictions.clear();
+        restrictions.add(firstNameExact);
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() should return 1 AgentBase entity having the firstname 'Ben'", 1 ,personResults.size());
     }
@@ -287,18 +284,19 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("AgentDaoImplTest.xml")
     public void testCountPeopleFiltered() {
 
-        Map<PropertyNameMatchMode,  Collection<? extends Object>> restrictions = new HashMap<>();
+        List<Restriction<?>> restrictions = new ArrayList<>();
         Assert.assertEquals("count() should return 9 AgentBase entities", 9 , agentDao.count(null, restrictions));
 
         Assert.assertEquals("count() should return 5 Persons entities", 5, agentDao.count(Person.class, restrictions));
 
-        Collection<String> values = new ArrayList<>();
-        PropertyNameMatchMode firstNameExact = new PropertyNameMatchMode("firstname", MatchMode.EXACT);
-        restrictions.put(firstNameExact,  values);
+        Restriction<String> firstNameExact = new Restriction<>("firstname", MatchMode.EXACT);
+        restrictions.add(firstNameExact);
+
         Assert.assertEquals("count() empty value lists should be ignored", 5, agentDao.count(Person.class, restrictions));
 
-        values.add("Ben");
-        restrictions.put(firstNameExact, values);
+        firstNameExact.addValue("Ben");
+        restrictions.clear();
+        restrictions.add(firstNameExact);
         Assert.assertEquals("count() should return 1 Persons entity having the firstname 'Ben'", 1 , agentDao.count(Person.class, restrictions));
     }
 
