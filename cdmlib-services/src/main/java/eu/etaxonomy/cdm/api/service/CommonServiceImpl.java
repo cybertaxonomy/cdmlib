@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -324,11 +324,11 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
-    public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData() {
-        Map<MetaDataPropertyName, CdmMetaData> result = new HashMap<MetaDataPropertyName, CdmMetaData>();
+    public Map<CdmMetaDataPropertyName, CdmMetaData> getCdmMetaData() {
+        Map<CdmMetaDataPropertyName, CdmMetaData> result = new HashMap<>();
         List<CdmMetaData> metaDataList = genericDao.getMetaData();
         for (CdmMetaData metaData : metaDataList){
-            MetaDataPropertyName propertyName = metaData.getPropertyName();
+            CdmMetaDataPropertyName propertyName = metaData.getPropertyName();
             result.put(propertyName, metaData);
         }
         return result;

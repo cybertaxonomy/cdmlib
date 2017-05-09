@@ -27,6 +27,7 @@ import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 import eu.etaxonomy.cdm.model.common.IKeyTerm;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.RankClass;
@@ -109,7 +110,10 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
             //RegistrationStatus
 			}else if (clazz.equals(RegistrationStatus.class)){
                 return RegistrationStatus.getByKey(val);
-			}else{
+            //CdmMetaDataPropertyName
+            }else if (clazz.equals(CdmMetaDataPropertyName.class)){
+                return CdmMetaDataPropertyName.getByKey(val);
+            }else{
 	        	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
 	        }
 		}

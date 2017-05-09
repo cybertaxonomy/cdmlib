@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 
 /**
@@ -167,7 +167,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             }
             ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
             if(tables.first()){
-                ResultSet resultSet = connection.createStatement().executeQuery(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                ResultSet resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
                 String version = null;
                 if(resultSet.next()){
                     version = resultSet.getString(1);

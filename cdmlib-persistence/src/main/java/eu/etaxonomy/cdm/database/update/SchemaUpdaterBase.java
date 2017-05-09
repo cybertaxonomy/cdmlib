@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * Base class for updating a schema.
@@ -50,10 +52,16 @@ public abstract class SchemaUpdaterBase extends UpdaterBase<ISchemaUpdaterStep, 
 	@Override
 	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 			int intSchemaVersion = 0;
-			String sqlUpdateSchemaVersion = "UPDATE %s SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
-			sqlUpdateSchemaVersion = String.format(sqlUpdateSchemaVersion, caseType.transformTo("CdmMetaData"), this.targetVersion);
+			String sqlUpdateSchemaVersionOld = "UPDATE %s SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
+			sqlUpdateSchemaVersionOld = String.format(sqlUpdateSchemaVersionOld, caseType.transformTo("CdmMetaData"));
+			String sqlUpdateSchemaVersion = "UPDATE %s SET value = '" + this.targetVersion + "' WHERE propertyname = '%s'";
+			sqlUpdateSchemaVersion = String.format(sqlUpdateSchemaVersion, caseType.transformTo("CdmMetaData"), CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getKey());
+
+			boolean isPriorTo4_7 = CdmMetaData.compareVersion("4.6.0.0", this.targetVersion, 2, monitor)>0;
+
+			String sql = isPriorTo4_7 ? sqlUpdateSchemaVersionOld : sqlUpdateSchemaVersion;
 			try {
-				int n = datasource.executeUpdate(sqlUpdateSchemaVersion);
+				int n = datasource.executeUpdate(sql);
 				return n > 0;
 
 			} catch (Exception e) {

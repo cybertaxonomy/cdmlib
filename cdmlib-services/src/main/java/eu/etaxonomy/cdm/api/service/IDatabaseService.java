@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * Service interface which provides functionality to directly access database
@@ -116,6 +116,6 @@ public interface IDatabaseService {
 	public boolean isDbEmpty() throws CdmSourceException;
 
 
-	public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
+	public Map<CdmMetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
 
 }

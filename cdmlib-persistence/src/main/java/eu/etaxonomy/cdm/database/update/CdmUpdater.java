@@ -101,20 +101,22 @@ public class CdmUpdater {
 
         ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
         // TODO do we really always update the terms??
-        ITermUpdater currentTermUpdater = getCurrentTermUpdater();
+//        ITermUpdater currentTermUpdater = getCurrentTermUpdater();
 
         int steps = currentSchemaUpdater.countSteps(datasource, monitor, caseType);
-        steps += currentTermUpdater.countSteps(datasource, monitor, caseType);
+//        steps += currentTermUpdater.countSteps(datasource, monitor, caseType);
         steps++;  //for hibernate_sequences update
 
-        String taskName = "Update to schema version " + currentSchemaUpdater.getTargetVersion() + " and to term version " + currentTermUpdater.getTargetVersion(); //+ currentSchemaUpdater.getVersion();
+        String taskName = "Update to schema version " + currentSchemaUpdater.getTargetVersion()
+//                    + " and to term version " + currentTermUpdater.getTargetVersion(); //+ currentSchemaUpdater.getVersion()
+                ;
         monitor.beginTask(taskName, steps);
 
         try {
             datasource.startTransaction();
             result &= currentSchemaUpdater.invoke(datasource, monitor, caseType);
             if (result == true){
-                result &= currentTermUpdater.invoke(datasource, monitor, caseType);
+//                result &= currentTermUpdater.invoke(datasource, monitor, caseType);
                 updateHibernateSequence(datasource, monitor, caseType);
             }
             if (result == false){

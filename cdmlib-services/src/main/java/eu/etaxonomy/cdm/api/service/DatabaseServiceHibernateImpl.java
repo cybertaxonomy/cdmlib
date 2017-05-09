@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 
 
@@ -133,7 +133,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	@Override
 	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
-			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
 			throw new CdmSourceException(e.getMessage());
 		}
@@ -192,10 +192,10 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 
 
 	@Override
-	public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
-		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
+	public Map<CdmMetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
+		Map<CdmMetaDataPropertyName, String> cdmMetaDataMap = new HashMap<CdmMetaDataPropertyName, String>();
 
-		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()){
+		for(CdmMetaDataPropertyName mdpn : CdmMetaDataPropertyName.values()){
 			String value = null;
 			try {
 				value = (String)getSingleValue(mdpn.getSqlQuery());

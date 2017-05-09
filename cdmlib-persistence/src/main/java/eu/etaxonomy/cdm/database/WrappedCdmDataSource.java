@@ -22,7 +22,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * This class is a wrapper class to wrap an {@link javax.sql.DataSource} to an
@@ -151,7 +151,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	@Override
 	public String getDbSchemaVersion() throws CdmSourceException {
 		try {
-			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
 			throw new CdmSourceException(e.getMessage());
 		}
@@ -200,7 +200,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	}
 
 	@Override
-	public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
+	public Map<CdmMetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
 		//TODO is it possible/required to build a meta data map here?
 		throw new UnsupportedOperationException("getMetaDataMap() not supported by WrappedCdmDataSource");
 	}

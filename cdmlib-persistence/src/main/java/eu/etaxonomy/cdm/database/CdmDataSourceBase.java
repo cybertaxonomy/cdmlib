@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.config.CdmSource;
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * @author a.mueller
@@ -153,7 +153,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 	@Override
 	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
-			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
 			throw new CdmSourceException(e.getMessage());
 		}
@@ -279,10 +279,10 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
 
     @Override
-    public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
-		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
+    public Map<CdmMetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
+		Map<CdmMetaDataPropertyName, String> cdmMetaDataMap = new HashMap<CdmMetaDataPropertyName, String>();
 
-		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()) {
+		for(CdmMetaDataPropertyName mdpn : CdmMetaDataPropertyName.values()) {
 			String value = null;
 			try {
 				value = (String)getSingleValue(mdpn.getSqlQuery());

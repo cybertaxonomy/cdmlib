@@ -12,14 +12,22 @@ package eu.etaxonomy.cdm.model.metadata;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.mueller
@@ -27,9 +35,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @Entity
 public class CdmMetaData extends CdmBase{
-	private static final long serialVersionUID = -3033376680593279078L;
+
+    private static final long serialVersionUID = -3033376680593279078L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
+
+	private static final String UNNAMED = "- UNNAMED -";
+
 
 	/* It is a little bit confusing that this specific information is located in
 	 * a generic class for metadata. Think about moving the schema version
@@ -46,26 +58,8 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-//	private static final String dbSchemaVersion = "4.0.0.0.201604200000";
 //	private static final String dbSchemaVersion = "4.1.0.0.201607300000";
   private static final String dbSchemaVersion = "4.7.0.0.201710040000";
-
-
-
-
-	/**
-	 * @return a list of default metadata objects
-	 */
-	public static final List<CdmMetaData> defaultMetaData(){
-		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
-		// schema version
-		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
-		//term version
-		result.add(new CdmMetaData(MetaDataPropertyName.TERMS_VERSION, termsVersion));
-		// database create time
-		result.add(new CdmMetaData(MetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
-		return result;
-	}
 
 	/**
 	 * The version number for the terms loaded by the termloader (csv-files)
@@ -86,36 +80,21 @@ public class CdmMetaData extends CdmBase{
 //	private static final String termsVersion = "4.0.0.0.201604200000";
 
 
-	public enum MetaDataPropertyName{
-		DB_SCHEMA_VERSION,
-		TERMS_VERSION,
- 		DB_CREATE_DATE,
-		DB_CREATE_NOTE,
-		INSTANCE_NAME,
-		INSTANCE_ID;
-
-
-		public String getSqlQuery(){
-			return "SELECT value FROM CdmMetaData WHERE propertyname=" + this.ordinal();
-		}
-	}
-
 	/* END OF CONFUSION */
-	private MetaDataPropertyName propertyName;
+
+	   /**
+     * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
+     * and in it's {@link TermVocabulary vocabulary}.
+     */
+    @XmlAttribute(name ="PropertyName")
+    @Column(name="propertyName", length=20)
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
+    )
+	private CdmMetaDataPropertyName propertyName;
 	private String value;
 
-
-	/**
-	 * Method to retrieve a CDM Libraries meta data
-	 * @return
-	 */
-	public static final List<CdmMetaData> propertyList(){
-		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
-		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
-		result.add(new CdmMetaData(MetaDataPropertyName.TERMS_VERSION, termsVersion));
-		result.add(new CdmMetaData(MetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
-		return result;
-	}
 
 //********************* Constructor *********************************************/
 
@@ -126,25 +105,46 @@ public class CdmMetaData extends CdmBase{
 		super();
 	}
 
-	public CdmMetaData(MetaDataPropertyName propertyName, String value) {
+	public CdmMetaData(CdmMetaDataPropertyName propertyName, String value) {
 		super();
 		this.propertyName = propertyName;
 		this.value = value;
 	}
 
-//****************** instance methods ****************************************/
+// ******************** STATIC **********************************/
+
+
+    /**
+     * @return a list of default metadata objects
+     */
+    public static final List<CdmMetaData> defaultMetaData(){
+        List<CdmMetaData> result = new ArrayList<>();
+        // schema version
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
+        //term version
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.TERMS_VERSION, termsVersion));
+        // database create time
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_ID, UUID.randomUUID().toString()));
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_NAME, UNNAMED));
+        return result;
+    }
+
+
+
+//****************** instance methods ****************************/
 
 	/**
 	 * @return the propertyName
 	 */
-	public MetaDataPropertyName getPropertyName() {
+	public CdmMetaDataPropertyName getPropertyName() {
 		return propertyName;
 	}
 
 	/**
 	 * @param propertyName the propertyName to set
 	 */
-	public void setPropertyName(MetaDataPropertyName propertyName) {
+	public void setPropertyName(CdmMetaDataPropertyName propertyName) {
 		this.propertyName = propertyName;
 	}
 

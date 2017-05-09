@@ -1,23 +1,21 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.model.metadata;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
  * @author e.-m.lee
@@ -45,8 +43,8 @@ public class CdmMetaDataTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#propertyList()}.
 	 */
 	@Test
-	public void testPropertyList() {
-		List<CdmMetaData> propList = CdmMetaData.propertyList();
+	public void testDefaultMetaData() {
+		List<CdmMetaData> propList = CdmMetaData.defaultMetaData();
 		assertNotNull(propList);
 	}
 

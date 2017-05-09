@@ -92,7 +92,7 @@ public class Registration extends AnnotatableEntity {
     private DateTime registrationDate;
 
     @XmlAttribute(name ="Status")
-    @Column(name="status")
+    @Column(name="status", length=10)
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.RegistrationStatus")}
     )

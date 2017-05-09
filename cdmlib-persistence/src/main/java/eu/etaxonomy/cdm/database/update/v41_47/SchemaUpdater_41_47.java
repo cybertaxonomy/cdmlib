@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
@@ -26,6 +27,11 @@ import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 /**
  * @author a.mueller
  * @created 16.04.2016
+ */
+/**
+ * @author a.mueller
+ * @date 09.05.2017
+ *
  */
 public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
@@ -103,7 +109,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
                 "institution_id","name_id","submitter_id"};
         String[] referencedTables = new String[]{null, null, null, null,
                 "AgentBase","TaxonNameBase","User"};
-        String[] columnTypes = new String[]{"string_255","string_255","datetime","string_255","int","int","int"};
+        String[] columnTypes = new String[]{"string_255","string_255","datetime","string_10","int","int","int"};
         step = TableCreator.NewAnnotatableInstance(stepName, tableName,
                 columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
         stepList.add(step);
@@ -155,6 +161,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         mergeTaxonName(stepList);
 
         //#6535 update termtype for CdmMetaData (int => string)
+        updateTermTypeForCdmMetaDataPropertyName(stepList);
 
         //ModelUpdateResult
 
@@ -165,6 +172,48 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         return stepList;
     }
 
+
+    /**
+     * #6535 update termtype for CdmMetaData (int => string)
+     */
+    private void updateTermTypeForCdmMetaDataPropertyName(List<ISchemaUpdaterStep> stepList) {
+        String stepName = "Rename CdmMetaData.propertyName column";
+        String tableName = "CdmMetaData";
+        String oldColumnName = "propertyName";
+        String newColumnName = "propertyNameOld";
+        ISchemaUpdaterStep step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //... create new column
+        stepName = "Create new CdmMetaData.propertyName column";
+        tableName = "CdmMetaData";
+        newColumnName = "propertyName";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 20, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "SCHEMA_VERSION", 1 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "TERM_VERSION", 2 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "CREATED", 3 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "CREATE_NOTE", 4 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "INST_NAME", 5 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "INST_ID", 6 );
+
+    }
+
+
+    /**
+     * @param stepList
+     * @param name
+     * @param index
+     */
+    private void updateSingleTermTypeForCdmMetaDataPropertyName(List<ISchemaUpdaterStep> stepList,
+            String name, int index) {
+        String stepName = "Update value for " + name;
+        String query = "UPDATE @@CdmMetaData@@ SET propertyName = '"+name+"' WHERE propertyNameOld = "+index;
+        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
+
+    }
 
     /**
      * #6361 and children

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * Provides metadata information corresponding ti the underlying CDM Datasource.
@@ -57,7 +57,7 @@ public class MetadataServiceImpl implements IMetadataService {
      * {@inheritDoc}
      */
     @Override
-    public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
+    public Map<CdmMetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
         return databaseService.getCdmMetadataMap();
     }
 
