@@ -862,7 +862,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     				INonViralName originalNvName = CdmBase.deproxy(originalName);
     				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
     			}
-    			originalNameStrings.add("[as " + UTF8.QUOT_DBL_LOW9 + originalNameString + UTF8.QUOT_DBL_LEFT + "]");
+    			originalNameStrings.add("(as " + UTF8.QUOT_DBL_LEFT + originalNameString + UTF8.QUOT_DBL_RIGHT + ")");
     		}
 		}
     	if (originalNameStrings.size() > 0){
