@@ -117,7 +117,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     //
     //			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
     //			Class referencedClass = referencedCdmBase.getClass();
-    //			Set<CdmBase> result = new HashSet<CdmBase>();
+    //			Set<CdmBase> result = new HashSet<>();
     //			logger.debug("Referenced Class: " + referencedClass.getName());
     //
     //			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
@@ -208,7 +208,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     //	}
     //
     //	private Set<Field> getFields(Class clazz){
-    //		Set<Field> result = new HashSet<Field>();
+    //		Set<Field> result = new HashSet<>();
     //		for (Field field: clazz.getDeclaredFields()){
     //			if (!Modifier.isStatic(field.getModifiers())){
     //				result.add(field);
@@ -222,7 +222,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     //	}
     //
     //	private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class itemClass, Class otherClazz, CdmBase item, boolean isCollection){
-    //		Set<CdmBase> result = new HashSet<CdmBase>();
+    //		Set<CdmBase> result = new HashSet<>();
     //		if (isCollection){
     //			result.addAll(genericDao.getCdmBasesWithItemInCollection(itemClass, otherClazz, field.getName(), item));
     //		}else{

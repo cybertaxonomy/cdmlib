@@ -21,9 +21,9 @@ import java.util.UUID;
  */
 public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 
-	private static Map<Class<? extends IEnumTerm<?>>,EnumeratedTermVoc<?>> vocsMap= new HashMap<Class<? extends IEnumTerm<?>>, EnumeratedTermVoc<?>>();
+	private static Map<Class<? extends IEnumTerm<?>>,EnumeratedTermVoc<?>> vocsMap= new HashMap<>();
 
-	private final Map<T,SingleEnumTerm<T>> lookup = new HashMap<T, SingleEnumTerm<T>>();
+	private final Map<T,SingleEnumTerm<T>> lookup = new HashMap<>();
 
 //	public interface EnumTerm<R extends EnumTerm<?>> extends ISimpleTerm<R>{
 //		public String getKey();
