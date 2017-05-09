@@ -24,7 +24,7 @@ public class AccountStore {
 
     private static Logger logger = Logger.getLogger(AccountStore.class);
 
-    public final static File accountsFile = new File(CdmUtils.perUserCdmFolder + File.separator + ".dbaccounts.properties");
+    public final static File accountsFile = new File(CdmUtils.PER_USER_CDM_FOLDER + File.separator + ".dbaccounts.properties");
 
     public static String getAccountsFileName(){
         try {

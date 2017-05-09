@@ -39,28 +39,46 @@ public class CdmUtils {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
 
+    // ============= TODO externalize into CdmFileUtils class ? ========== //
+
+    private static final String USER_HOME = System.getProperty("user.home");
+
     /**
      * The per user cdm folder name: ".cdmLibrary"
      */
-    private static final String cdmFolderName = ".cdmLibrary";
-
-    static final String userHome = System.getProperty("user.home");
+    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
 
     /**
      * The per user cdm folder "~/.cdmLibrary"
      */
-    public final static File perUserCdmFolder = new File(userHome + File.separator + cdmFolderName );
+    public final static File PER_USER_CDM_FOLDER = new File(USER_HOME + File.separator + CDM_FOLDER_NAME );
+
+    /**
+     * suggested sub folder for web app related data and configurations.
+     * Each webapp instance should use a dedicated subfolder or file
+     * which is named by the data source bean id.
+     */
+    public static final String SUBFOLDER_WEBAPP = "remote-webapp";
 
     static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
 
-    //folder seperator
-    static String folderSeperator;
+    //folder separator
+    static String folderSeparator;
 
     public static File getCdmHomeDir() {
-        return new File(perUserCdmFolder + File.separator);
+        return new File(PER_USER_CDM_FOLDER + File.separator);
     }
 
-	public static File getCdmSubDir(String dirName) {
+	/**
+	 * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
+	 * If the sub folder does not exist it will be created.
+	 *
+	 * @param dirName
+	 * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
+	 *
+	 * @see {@link #SUBFOLDER_WEBAPP}
+	 */
+	public static File getCdmHomeSubDir(String dirName) {
 
 		File folder = new File(getCdmHomeDir(), dirName);
 		// if the directory does not exist, create it
@@ -73,6 +91,7 @@ public class CdmUtils {
 		return folder;
 	}
 
+	// ============= END of CdmFileUtils ========== //
 
     /**
      * Returns the an InputStream for a read-only source
@@ -104,15 +123,15 @@ public class CdmUtils {
      * @return
      */
     static public String getFolderSeperator(){
-        if (folderSeperator == null){
+        if (folderSeparator == null){
             URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
             if ( url != null && ! urlIsJarOrBundle(url) ){
-                folderSeperator =  File.separator;
+                folderSeparator =  File.separator;
             }else{
-                folderSeperator = "/";
+                folderSeparator = "/";
             }
         }
-        return folderSeperator;
+        return folderSeparator;
     }
 
 

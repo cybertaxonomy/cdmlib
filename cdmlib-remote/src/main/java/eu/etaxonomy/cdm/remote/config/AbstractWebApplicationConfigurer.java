@@ -47,7 +47,7 @@ public abstract class AbstractWebApplicationConfigurer {
             userDefinedProperties = new Properties();
             try {
                 InputStream in = new FileInputStream(
-                            CdmUtils.perUserCdmFolder
+                            CdmUtils.PER_USER_CDM_FOLDER
                             + java.io.File.separator
                             + CDMLIB_REMOTE_PROPERTIES
                     );
