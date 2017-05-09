@@ -32,6 +32,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
+ * Util class for consistent access to and creation of per instance application configuration files.
+ *
  * @author a.mueller
  * @author a.kohlbecker
  */
@@ -73,14 +75,42 @@ public class CdmUtils {
 	 * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
 	 * If the sub folder does not exist it will be created.
 	 *
-	 * @param dirName
+	 * @param subFolderName
 	 * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
 	 *
 	 * @see {@link #SUBFOLDER_WEBAPP}
 	 */
-	public static File getCdmHomeSubDir(String dirName) {
+	public static File getCdmHomeSubDir(String subFolderName) {
 
-		File folder = new File(getCdmHomeDir(), dirName);
+		File parentFolder = getCdmHomeDir();
+        return ensureSubfolderExists(parentFolder, subFolderName);
+	}
+
+	/**
+     * Returns a instance specific folder folder in  {@link #CDM_FOLDER_NAME}/<code>subFolderName</code>
+     * Non existing folders will be created.
+     *
+     * @param subFolderName
+     *      The name of a subfolded. In most cases this will be {@link #SUBFOLDER_WEBAPP}
+     * @param instanceName
+     *      The name of the application instance. The name should be related to the data source id.
+     * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
+     *
+     * @see {@link #SUBFOLDER_WEBAPP}
+     */
+    public static File getCdmInstanceSubDir(String subFolderName, String instanceName) {
+
+        File subfolder = ensureSubfolderExists(getCdmHomeDir(), subFolderName);
+        return ensureSubfolderExists(subfolder, instanceName);
+    }
+
+    /**
+     * @param subFolderName
+     * @param parentFolder
+     * @return
+     */
+    private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
+        File folder = new File(parentFolder, subFolderName);
 		// if the directory does not exist, create it
 		if (!folder.exists()) {
 			if (!folder.mkdir()) {
@@ -89,7 +119,7 @@ public class CdmUtils {
 			}
 		}
 		return folder;
-	}
+    }
 
 	// ============= END of CdmFileUtils ========== //
 
