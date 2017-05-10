@@ -1181,6 +1181,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 result.addUpdatedObject(accTaxon);
             }
             this.saveOrUpdate(synonym);
+            //#6281
             dao.flush();
 
             TaxonNameBase<?,?> name = synonym.getName();
