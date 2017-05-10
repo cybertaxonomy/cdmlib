@@ -74,15 +74,15 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         List<Restriction<? extends Object>> restrictions = new ArrayList<>();
         if(submitter != null){
-            restrictions.add(new Restriction<User>("submitter", MatchMode.EXACT, submitter));
+            restrictions.add(new Restriction<>("submitter", MatchMode.EXACT, submitter));
         }
         if(includedStatus != null && !includedStatus.isEmpty()){
-            restrictions.add(new Restriction<RegistrationStatus>("status", MatchMode.EXACT, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
+            restrictions.add(new Restriction<>("status", MatchMode.EXACT, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
         }
 
         long numberOfResults = dao.count(Registration.class, restrictions);
 
-        List<Registration> results = new ArrayList<Registration>();
+        List<Registration> results = new ArrayList<>();
         Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
         if(limitStart != null) {
             results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
