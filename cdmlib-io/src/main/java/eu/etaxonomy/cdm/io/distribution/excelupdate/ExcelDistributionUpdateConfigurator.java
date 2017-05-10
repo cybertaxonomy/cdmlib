@@ -88,6 +88,10 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
         return sourceReference;
     }
 
+    protected boolean needsNomenclaturalCode() {
+        return false;
+    }
+
 // ********************** GETTER / SETTER **************************/
 
     public UUID getAreaVocabularyUuid() {
