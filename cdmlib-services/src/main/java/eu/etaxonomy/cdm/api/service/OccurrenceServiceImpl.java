@@ -1225,6 +1225,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
 
+
+
         DeleteResult deleteResult = isDeletable(specimen.getUuid(), config);
         if (!deleteResult.isOk()) {
             return deleteResult;
@@ -1297,7 +1299,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
         }
+        if (specimen instanceof FieldUnit){
+            FieldUnit fieldUnit = HibernateProxyHelper.deproxy(specimen, FieldUnit.class);
+            GatheringEvent event = fieldUnit.getGatheringEvent();
+            fieldUnit.setGatheringEvent(null);
 
+
+        }
         deleteResult.includeResult(delete(specimen));
 
         return deleteResult;
