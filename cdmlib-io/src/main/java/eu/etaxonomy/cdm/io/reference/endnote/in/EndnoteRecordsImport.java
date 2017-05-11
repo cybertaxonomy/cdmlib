@@ -2090,12 +2090,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(EndnoteImportState state){
-		EndnoteImportConfigurator tcsConfig = state.getConfig();
-		return (! tcsConfig.isDoRecords());
+		return false;
 	}
 }

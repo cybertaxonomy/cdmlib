@@ -5,12 +5,11 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -22,66 +21,58 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
-public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(EndnoteImportConfigurator.class);
-	
+public class EndnoteImportConfigurator
+            extends ImportConfiguratorBase<EndnoteImportState, URI> {
+
+    private static final long serialVersionUID = 2763770696094215281L;
+    private static final Logger logger = Logger.getLogger(EndnoteImportConfigurator.class);
+
+    //TODO
+    private static IInputTransformer defaultTransformer = null;
+
+
+    //  rdfNamespace
+    private Namespace endnoteNamespace;
+
+// *********************** FACTORY ****************************/
+
 	public static EndnoteImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new EndnoteImportConfigurator(uri, destination);
 	}
-	
-	private boolean doRecords = true;
-//	private boolean doSpecimen = true;
 
-	private Method functionRecordsDetailed = null; 
-	private IEndnotePlaceholderClass placeholderClass;
-	
-	//TODO
-	private static IInputTransformer defaultTransformer = null;
+// ******************** CONSTRUCTOR ************************************/
 
-	
-	//	rdfNamespace
-	Namespace EndnoteNamespace;
+    private EndnoteImportConfigurator() {
+        super(defaultTransformer);
+    }
+
+    /**
+     * @param url
+     * @param destination
+     */
+    private EndnoteImportConfigurator(URI uri, ICdmDataSource destination) {
+        super(defaultTransformer);
+        setSource(uri);
+        setDestination(destination);
+    }
+
+
 
 	@Override
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			EndnoteRecordsImport.class
 		};
-	};
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
-	private EndnoteImportConfigurator() {
-		super(defaultTransformer);
-//		setSource(url);
-//		setDestination(destination);
 	}
-	
-	/**
-	 * @param url
-	 * @param destination
-	 */
-	private EndnoteImportConfigurator(URI uri, ICdmDataSource destination) {
-		super(defaultTransformer);
-		setSource(uri);
-		setDestination(destination);
-	}
-	
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
-	public EndnoteImportState getNewState() {
+	@Override
+    public EndnoteImportState getNewState() {
 		return new EndnoteImportState(this);
 	}
 
@@ -106,18 +97,15 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 		}
 		return null;
 	}
-	
+
 	private boolean makeNamespaces(Element root){
-		EndnoteNamespace = root.getNamespace();
-		if (EndnoteNamespace == null){
+		endnoteNamespace = root.getNamespace();
+		if (endnoteNamespace == null){
 			logger.warn("At least one Namespace is NULL");
 		}
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -129,91 +117,23 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 		return sourceReference;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
 			return this.getSource().toString();
 		}
 	}
-	
+
+// ********************* GETTER / SETTER *****************************/
+
 	public Namespace getEndnoteNamespace() {
-		return EndnoteNamespace;
+		return endnoteNamespace;
 	}
 
 	public void setEndnoteNamespace(Namespace EndnoteNamespace) {
-		this.EndnoteNamespace = EndnoteNamespace;
-	}
-	
-
-	/**
-	 * @return the funMetaDataDetailed
-	 */
-	public Method getFunctionRecordsDetailed() {
-		if (functionRecordsDetailed == null){
-			//TODO!!!
-		//	functionRecordsDetailed = getDefaultFunction(EndnoteRecordsImport.class, "defaultRecordsDetailedFunction");
-		}
-		return functionRecordsDetailed;
-		
+		this.endnoteNamespace = EndnoteNamespace;
 	}
 
-	/**
-	 * @param funMetaDataDetailed the funMetaDataDetailed to set
-	 */
-	public void setFunctionRecordsDetailed(Method functionRecordsDetailed) {
-		this.functionRecordsDetailed = functionRecordsDetailed;
-	}
-	
-	/**
-	 * @return the doMetaData
-	 */
-	public boolean isDoRecords() {
-		return doRecords;
-	}
-
-	/**
-	 * @param doMetaData the doMetaData to set
-	 */
-	public void setDoRecords(boolean doRecords) {
-		this.doRecords = doRecords;
-	}
-
-	/**
-	 * @return the doSpecimen
-	 */
-//	public boolean isDoSpecimen() {
-//		return doSpecimen;
-//	}
-
-	/**
-	 * @param doSpecimen the doSpecimen to set
-	 */
-//	public void setDoSpecimen(boolean doSpecimen) {
-//		this.doSpecimen = doSpecimen;
-//	}
-
-	/**
-	 * @return the placeholderClass
-	 */
-	public IEndnotePlaceholderClass getPlaceholderClass() {
-		if (placeholderClass == null){
-			placeholderClass = new IEndnotePlaceholderClass();
-		}
-		return placeholderClass;
-	}
-
-	/**
-	 * @param placeholderClass the placeholderClass to set
-	 */
-	public void setPlaceholderClass(IEndnotePlaceholderClass placeholderClass) {
-		this.placeholderClass = placeholderClass;
-	}
-
-
-
-	
 }
