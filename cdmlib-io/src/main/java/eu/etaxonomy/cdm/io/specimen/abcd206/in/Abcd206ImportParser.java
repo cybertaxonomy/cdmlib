@@ -40,7 +40,7 @@ public class Abcd206ImportParser {
 
             group = root.getChildNodes();
             for (int i = 0; i < group.getLength(); i++) {
-                if (group.item(i).getNodeName().equals(state.getPrefix() + "Identifications")) {
+                if (group.item(i).getNodeName().equals( state.getPrefix()+ "Identifications")) {
                     group = group.item(i).getChildNodes();
                     break;
                 }
@@ -73,10 +73,10 @@ public class Abcd206ImportParser {
             abcdFieldGetter.getAssociatedUnitIds(root);
             abcdFieldGetter.getUnitNotes(root);
             boolean referencefound = abcdFieldGetter.getReferences(root);
-            if (!referencefound && state.getRef() != null) {
-                String[]a = {state.getRef().getTitleCache(),"",""};
-                state.getDataHolder().getReferenceList().add(a);
-            }
+//            if (!referencefound && state.getRef() != null) {
+//                String[]a = {state.getRef().getTitleCache(),"",""};
+//                state.getDataHolder().getReferenceList().add(a);
+//            }
 
         } catch (Exception e) {
             logger.info("Error occured while parsing XML file" + e);

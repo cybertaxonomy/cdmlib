@@ -118,6 +118,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 try {
 
                    response = queryService.query(config.getOccurenceQuery(), sourceUri);
+                   state.setActualAccessPoint(sourceUri);
 
                 }catch(Exception e){
                     logger.error("An error during ABCD import");
@@ -161,12 +162,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         }
                     }
                     if (state.getRef() == null){
-                        state.setRef(ReferenceFactory.newGeneric());
-                        state.getRef().setTitle("ABCD classic");
-                        state.getRef().setUri(sourceUri);
+                        if (state.getConfig().getSourceReference() != null){
+                            state.setRef(state.getConfig().getSourceReference());
+                        }else{
+                            state.setRef(ReferenceFactory.newGeneric());
+
+                            if (state.getConfig().getSourceReferenceTitle() != null){
+                                state.getRef().setTitle(state.getConfig().getSourceReferenceTitle());
+                            } else{
+                                state.getRef().setTitle("ABCD Import Source Reference");
+                            }
+                        }
+
                     }
                 }
             //}
+
             save(state.getRef(), state);
             state.getConfig().setSourceReference(state.getRef());
 
@@ -647,6 +658,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 save(reference, state);
                 IdentifiableSource sour = getIdentifiableSource(reference, citationDetail);
+                sour.getCitation().setUri(state.getActualAccessPoint());
                 sour.setType(OriginalSourceType.PrimaryTaxonomicSource);
                 try{
                     if (sour.getCitation() != null){
@@ -672,6 +684,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 //            if(issTmp!=null) {
 //                osbSet.addAll(issTmp);
 //            }
+
             IdentifiableSource sour = getIdentifiableSource(state.getRef(),null);
             String idInSource = derivedUnitFacade.getAccessionNumber() != null? derivedUnitFacade.getAccessionNumber():derivedUnitFacade.getCatalogNumber();
             sour.getCitation().setUri(state.getActualAccessPoint());
@@ -765,6 +778,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         //TODO: push state (think of implementing stack architecture for state
         DerivedUnit currentUnit = state.getDerivedUnitBase();
         DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
+        URI currentAccessPoint = state.getActualAccessPoint();
         String currentPrefix = state.getPrefix();
         Element item = null;
         if (itemObject instanceof Element){
@@ -778,6 +792,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     Element unitAssociation = (Element)unitAssociationList.item(k);
                     UnitAssociationParser unitAssociationParser = new UnitAssociationParser(currentPrefix, state.getReport(), state.getCdmRepository());
                     UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation);
+
                     state.setActualAccessPoint(associationWrapper.getAccesPoint());
                     if(associationWrapper!=null){
                         NodeList associatedUnits = associationWrapper.getAssociatedUnits();
@@ -865,6 +880,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         //TODO: pop state
         state.reset();
         state.setDerivedUnitBase(currentUnit);
+        state.setActualAccessPoint(currentAccessPoint);
         state.setPrefix(currentPrefix);
     }
 

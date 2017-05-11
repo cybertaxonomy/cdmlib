@@ -98,6 +98,9 @@ public class SpecimenDataHolder {
      * @return the atomisedIdentificationList
      */
     public List<HashMap<String, String>> getAtomisedIdentificationList() {
+        if (atomisedIdentificationList == null){
+            atomisedIdentificationList = new ArrayList<HashMap<String,String>>();
+        }
         return atomisedIdentificationList;
     }
 
@@ -403,6 +406,9 @@ public class SpecimenDataHolder {
      * @return the identificationList
      */
     public List<Identification> getIdentificationList() {
+        if (identificationList == null){
+            identificationList = new ArrayList<Identification>();
+        }
         return identificationList;
     }
 

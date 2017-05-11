@@ -967,6 +967,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            if (config.getNomenclaturalCode() != null){
 	                if (config.getNomenclaturalCode() != null){
 	                    state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().toString());
+
 	                }
 	            }
 	        }
@@ -1165,25 +1166,18 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        TaxonDescription taxonDescription = null;
 	        Set<TaxonDescription> descriptions= taxon.getDescriptions();
-//	        if (((Abcd206ImportConfigurator) state.getConfig()).isInteractWithUser()){
-//	            if(!state.isDescriptionGroupSet()){
-//	                taxonDescription = sui.askForDescriptionGroup(descriptions);
-//	                state.setDescriptionGroup(taxonDescription);
-//	                state.setDescriptionGroupSet(true);
-//	            }else{
-//	                taxonDescription=state.getDescriptionGroup();
+	       if (!descriptions.isEmpty()){ taxonDescription = descriptions.iterator().next();}
+
+//	            for (TaxonDescription description : descriptions){
+//	                Set<IdentifiableSource> sources =  new HashSet<>();
+//	                sources.addAll(description.getTaxon().getSources());
+//	                sources.addAll(description.getSources());
+//	                for (IdentifiableSource source:sources){
+//	                    if(state.getRef().equals(source.getCitation())) {
+//	                        taxonDescription = description;
+//	                    }
+//	                }
 //	            }
-//	        } else {
-	            for (TaxonDescription description : descriptions){
-	                Set<IdentifiableSource> sources =  new HashSet<>();
-	                sources.addAll(description.getTaxon().getSources());
-	                sources.addAll(description.getSources());
-	                for (IdentifiableSource source:sources){
-	                    if(state.getRef().equals(source.getCitation())) {
-	                        taxonDescription = description;
-	                    }
-	                }
-	            }
 	      //  }
 	        if (taxonDescription == null){
 	            taxonDescription = TaxonDescription.NewInstance(taxon, false);

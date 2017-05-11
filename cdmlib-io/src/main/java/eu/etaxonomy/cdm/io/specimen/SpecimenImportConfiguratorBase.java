@@ -51,7 +51,7 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     private boolean addMediaAsMediaSpecimen = false;
     private boolean reuseExistingMetaData = true;
 
-    private static String sourceReferenceTitle = null;
+    private String sourceReferenceTitle = null;
 
     private String taxonReference = null;
     private boolean addIndividualsAssociationsSuchAsSpecimenAndObservations = true;

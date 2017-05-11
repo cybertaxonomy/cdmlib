@@ -300,9 +300,7 @@ public class Abcd206XMLFieldGetter {
         String[] refDetails =new String[3];
 
         for (int k = 0; k < results.getLength(); k++) {
-            System.out.println(results.item(k).getNodeName());
-            System.out.println(results.item(k).getTextContent());
-            if (results.item(k).getNodeName().equals(prefix + "SourceReference")) {
+           if (results.item(k).getNodeName().equals(prefix + "SourceReference")) {
                 reference = results.item(k).getChildNodes();
                 for (int l = 0; l < reference.getLength(); l++) {
                     if (reference.item(l).getNodeName().equals(prefix + "TitleCitation")) {
@@ -762,8 +760,6 @@ public class Abcd206XMLFieldGetter {
                                         dataHolder.knownABCDelements.add(path);
                                         path = "";
                                         dataHolder.setGatheringDepthUnit(facts.item(l).getTextContent());
-                                    } else{
-                                        System.out.println(facts.item(l).getNodeName() + " " + facts.item(l).getTextContent());
                                     }
                                 }
                             }
@@ -784,12 +780,9 @@ public class Abcd206XMLFieldGetter {
             group = root.getElementsByTagName(prefix + "MultiMediaObjects");
             for (int i = 0; i < group.getLength(); i++) {
                 multimedias = group.item(i).getChildNodes();
-                System.out.println(multimedias.getLength());
-                for (int j = 0; j < multimedias.getLength(); j++) {
-                    System.out.println("new multimedia object" + multimedias.item(j).getNodeName());
 
+                for (int j = 0; j < multimedias.getLength(); j++) {
                     if (multimedias.item(j).getNodeName().equals(prefix + "MultiMediaObject")) {
-                        System.out.println("new multimedia object");
                         multimedia = multimedias.item(j).getChildNodes();
                         Map<String,String> mediaObjectMap = new HashMap<String, String>();
                         String fileUri = "";
@@ -844,8 +837,6 @@ public class Abcd206XMLFieldGetter {
 
 
                               // TODO: mediaObjectMap.put("IPR",multimedia.item(k).getTextContent());
-                            } else{
-                                System.out.println(multimedia.item(k).getNodeName() + " " + multimedia.item(k).getTextContent());
                             }
 
                         }
@@ -871,7 +862,6 @@ public class Abcd206XMLFieldGetter {
                         childrenUnitAssociations = childrenAssociations.item(j).getChildNodes();
                         String[] associatedUnitId = new String[2];
                         for (int k = 0; k < childrenUnitAssociations.getLength(); k++) {
-                            System.err.println(childrenUnitAssociations.item(k).getNodeName());
                             if (childrenUnitAssociations.item(k).getNodeName().equals(prefix + "UnitID")) {
                                 associatedUnitId[0]= childrenUnitAssociations.item(k).getTextContent();
 
@@ -882,7 +872,6 @@ public class Abcd206XMLFieldGetter {
                             }
                             if (childrenUnitAssociations.item(k).getNodeName().equals(prefix +"DatasetAccessPoint")){
                                 associatedUnitId[1]= childrenUnitAssociations.item(k).getTextContent();
-                                System.err.println(childrenUnitAssociations.item(k).getTextContent());
                             }
                         }
                         dataHolder.addAssociatedUnitId(associatedUnitId);
