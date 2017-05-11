@@ -320,6 +320,9 @@ public class ExcelDistributionUpdate
     protected boolean isIgnore(ExcelDistributionUpdateState state) {
         return false;
     }
-
+    @Override
+    protected boolean needsNomenclaturalCode() {
+        return false;
+    }
 
 }
