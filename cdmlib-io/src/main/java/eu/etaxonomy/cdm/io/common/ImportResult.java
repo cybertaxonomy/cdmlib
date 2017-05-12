@@ -100,6 +100,9 @@ public class ImportResult extends IoResultBase implements Serializable {
     public Map<String, Integer> getNewRecords() {
         return clone(newRecords);
     }
+    public Integer getNewRecords(Class<? extends CdmBase> clazz) {
+        return clone(newRecords).get(clazz.getSimpleName());
+    }
 
     public Map<String, Integer> getUpdatedRecords() {
         return clone(updatedRecords);
@@ -121,18 +124,33 @@ public class ImportResult extends IoResultBase implements Serializable {
         return clone(deletedRecords);
     }
 
+    //new records
     public void addNewRecord(String clazz){
         addNewRecords(clazz, 1);
     }
     public void addNewRecords(String clazz, int count){
         addRecord(newRecords, clazz, count);
     }
+    public void addNewRecords(Class<? extends CdmBase> clazz, int count){
+        addRecord(newRecords, clazz.getSimpleName(), count);
+    }
+    public void addNewRecord(CdmBase newRecord) {
+        this.addNewRecord(CdmBase.deproxy(newRecord).getClass().getSimpleName());
+    }
+
+
+    //updated records
     public void addUpdatedRecord(String clazz){
         addUpdatedRecords(clazz, 1);
     }
     public void addUpdatedRecords(String clazz, int count){
         addRecord(updatedRecords, clazz, count);
     }
+    public void addUpdatedRecord(CdmBase updatedRecord) {
+        this.addUpdatedRecord(CdmBase.deproxy(updatedRecord).getClass().getSimpleName());
+    }
+
+    //deleted
     public void addDeletedRecord(String clazz){
         addDeletedRecords(clazz, 1);
     }
@@ -151,12 +169,7 @@ public class ImportResult extends IoResultBase implements Serializable {
         }
     }
 
-    public void addNewRecord(CdmBase newRecord) {
-        this.addNewRecord(CdmBase.deproxy(newRecord).getClass().getSimpleName());
-    }
-    public void addUpdatedRecord(CdmBase updatedRecord) {
-        this.addUpdatedRecord(CdmBase.deproxy(updatedRecord).getClass().getSimpleName());
-    }
+
     public void addDeletedRecord(CdmBase deletedRecord) {
         this.addDeletedRecord(CdmBase.deproxy(deletedRecord).getClass().getSimpleName());
     }

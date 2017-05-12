@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.io.reference.ris.in;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +30,21 @@ public class RisRecordReader {
     private int lineNo = 0;
     private String lineNoStr;
 
-    public static final Map<RisReferenceTag, String>  EOF = new HashMap<>();
+    public static final Map<RisReferenceTag, List<RisValue>>  EOF = new HashMap<>();
     private static final String NL = "\n";
+
+    protected class RisValue{
+        RisReferenceTag tag;
+        String value;
+        String location;
+        public RisValue(String value, String location, RisReferenceTag tag) {
+            this.value = value; this.location = "line " + location; this.tag = tag;
+        }
+        @Override
+        public String toString() {
+            return location + ": " + tag + ": " + value;
+        }
+    }
 
 
     /**
@@ -40,12 +55,11 @@ public class RisRecordReader {
         this.state = state;
     }
 
-    public Map<RisReferenceTag, String> readRecord(){
+    public Map<RisReferenceTag, List<RisValue>> readRecord(){
         try {
-            Map<RisReferenceTag, String> result = new HashMap<>();
+            Map<RisReferenceTag, List<RisValue>> result = new HashMap<>();
             String line;
             int count = 0;
-            boolean started = false;
             RisReferenceTag lastType = null;
             while ((line = lineReader.readLine()) != null) {
                 lineNo++;
@@ -53,11 +67,15 @@ public class RisRecordReader {
                    continue;
                }
                RisReferenceTag type;
+               if (Integer.valueOf(line.toCharArray()[0]).equals(65279)  ){ //remove BOM cotrol character if encoding is not correctly working
+                   line = line.substring(1);
+               }
+
                if (matchesRisLine(line)){
                    type = RisReferenceTag.TY;
                    if (isTypeLine(line)){
                        type = RisReferenceTag.TY;
-                       result.put(type, replaceTag(line));
+                       addTaggedValue(type, result, line, lineNo);
                        count++;
                    }else if (isErLine(line)){
                        return result;
@@ -74,7 +92,7 @@ public class RisRecordReader {
                            String message = "Unknown reference type %s . Reference attribute could not be added";
                            state.getResult().addWarning(message, lineNo);
                        }else{
-                           result.put(type, replaceTag(line));
+                           addTaggedValue(type, result, line, lineNo);
                        }
                        count++;
                    }
@@ -82,12 +100,13 @@ public class RisRecordReader {
                        lastType = type;
                    }
                }else{
-                   if (started){
+                   if (result.size() > 0){
                        //add to prior
-                       String prior = result.get(lastType);
-                       result.put(lastType, prior + NL + line);
+                       List<RisValue> priorList = result.get(lastType);
+                       RisValue priorValue = priorList.get(priorList.size()-1);
+                       priorValue.value = priorValue + NL + line;
                    }else{
-                       String message = lineNoStr + "RIS record does not start with TY. Can't create record";
+                       String message = "RIS record does not start with TY. Can't create record";
                        state.getResult().addError(message, lineNo);
                    }
 
@@ -108,6 +127,24 @@ public class RisRecordReader {
 
 
     /**
+     * @param result
+     * @param line
+     * @param lineNo2
+     * @return
+     */
+    private void addTaggedValue(RisReferenceTag tag, Map<RisReferenceTag, List<RisValue>> result, String line, int lineNo) {
+        String value = replaceTag(line);
+        List<RisValue> list = result.get(tag);
+        if (list == null){
+            list = new ArrayList<>();
+            result.put(tag, list);
+        }
+        RisValue risValue = new RisValue(value, "" + lineNo, tag);
+        list.add(risValue);
+        return;
+    }
+
+    /**
      * @param line
      * @return
      */
@@ -116,35 +153,21 @@ public class RisRecordReader {
     }
 
 
-    private static final String risLineReStr = "[A-Z1-9]{2}\\s\\s-\\s.*";
-    private static final String typeLineReStr = "TY\\s\\s-\\s.*";
     private static final String erLineReStr = "ER\\s\\s-\\s+";
-
-
-    /**
-     * @param line
-     * @return
-     */
     private boolean isErLine(String line) {
         return line.matches(erLineReStr);
     }
 
 
-    /**
-     * @param line
-     * @return
-     */
+    private static final String typeLineReStr = "TY\\s\\s-\\s.*";
     private boolean isTypeLine(String line) {
         return line.matches(typeLineReStr);
     }
 
-
-    /**
-     * @param line
-     * @return
-     */
+    private static final String risLineReStr = "[A-Z1-9]{2}\\s\\s-\\s.*";
     private boolean matchesRisLine(String line) {
-        return line.matches(risLineReStr);
+        boolean matches = line.matches(risLineReStr);
+        return matches;
     }
 
     private boolean isBlank(String str){

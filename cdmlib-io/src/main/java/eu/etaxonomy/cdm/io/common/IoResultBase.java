@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class IoResultBase {
 
-    private List<IoInfo> ioInfos = new ArrayList<>();
+    private List<IoInfo> errors = new ArrayList<>();
     private List<IoInfo> warnings = new ArrayList<>();
     private List<IoInfo> exceptions = new ArrayList<>();
 
@@ -49,16 +49,16 @@ public abstract class IoResultBase {
 
 // ************* GETTERS / SETTERS / ADDERS ***********************/
 
-    public List<IoInfo> getErrors() {return ioInfos;}
-    public void setErrors(List<IoInfo> ioInfos) {this.ioInfos = ioInfos;}
+    public List<IoInfo> getErrors() {return errors;}
+    public void setErrors(List<IoInfo> ioInfos) {this.errors = ioInfos;}
     public void addError(String error) {
-        ioInfos.add(new IoInfo(error, null));
+        errors.add(new IoInfo(error, null));
     }
     public void addError(String error, Exception e) {
-        ioInfos.add(new IoInfo(error, e));
+        errors.add(new IoInfo(error, e));
     }
     public void addError(String message, int location) {
-        ioInfos.add(new IoInfo(message, null, String.valueOf(location)));
+        errors.add(new IoInfo(message, null, String.valueOf(location)));
     }
 
     public List<IoInfo> getWarnings() {return warnings;}
@@ -69,6 +69,9 @@ public abstract class IoResultBase {
     }
     public void addWarning(String message, int location) {
         warnings.add(new IoInfo(message, null, String.valueOf(location)));
+    }
+    public void addWarning(String message, String location) {
+        warnings.add(new IoInfo(message, null, location));
     }
 
     public List<IoInfo> getExceptions() {return exceptions;}
@@ -100,7 +103,7 @@ public abstract class IoResultBase {
      */
     public StringBuffer createReport() {
         StringBuffer report = new StringBuffer("");
-        addErrorReport(report, "Errors", ioInfos);
+        addErrorReport(report, "Errors", errors);
         addErrorReport(report, "Exceptions", exceptions);
         addErrorReport(report, "Warnings", warnings);
         return report;
@@ -126,15 +129,15 @@ public abstract class IoResultBase {
      * @param list
      */
     private void addErrorReport(StringBuffer report, String label, List<IoInfo> list) {
-        if (!ioInfos.isEmpty()){
+        if (!list.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
             for (IoInfo ioInfo : list){
                 String location = ioInfo.location == null ? "" : (ioInfo.location + ": ");
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
                 message = StringUtils.isBlank(message)? "no message" : message;
-                Object stacktrace = ioInfo.exception.getStackTrace();
+                Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
                 String available = (stacktrace == null ? " not" : "");
-                report.append("\n" + location + message + "(stacktrace" + available + ")");
+                report.append("\n" + location + message + "(stacktrace" + available + " available)");
             }
         }
     }

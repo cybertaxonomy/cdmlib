@@ -52,7 +52,7 @@ public class RisReferenceImportConfigurator
      */
     public static IImportConfigurator NewInstance(URL url, ICdmDataSource cdm) throws IOException {
         InputStream stream = url.openStream();
-        InputStreamReader reader = new InputStreamReader(stream);
+        InputStreamReader reader = new InputStreamReader(stream, "UTF8");
         RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(reader, cdm);
         return result;
     }
