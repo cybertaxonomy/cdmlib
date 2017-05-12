@@ -1004,7 +1004,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state : the ABCD import state
 	     */
 	    protected void addTaxonNode(Taxon taxon, STATE state, boolean preferredFlag) {
-	        SpecimenImportConfiguratorBase config = state.getConfig();
+	        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 	        logger.info("link taxon to a taxonNode "+taxon.getTitleCache());
 	        //only add nodes if not already existing in current classification or default classification
 

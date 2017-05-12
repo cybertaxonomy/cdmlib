@@ -123,10 +123,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
          */
         List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, 100, 0, null, null);
         // TODO: this needs to be fixed, the sortindex should never be -1
-//        for (TaxonNode node: nodes){
-//           assertTrue("The sortindex should not be smaller than 0", node.getSortIndex() > -1 );
-//
-//        }
+        for (TaxonNode node: nodes){
+            System.out.println(node.treeIndex());
+            assertTrue("The sortindex should not be smaller than 0", node.getSortIndex() > -1 );
+	}
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());

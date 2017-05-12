@@ -218,7 +218,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             node.setTaxon(null);
         }
 
-        ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+        ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
         for (TaxonNode childNode : childNodes){
             if (childNode != null){
                 node.deleteChildNode(childNode);

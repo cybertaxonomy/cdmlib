@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author p.kelbert
@@ -103,7 +102,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
         state.setPersonStore(authorStore);
         MapWrapper<Reference> referenceStore = (MapWrapper<Reference>)stores.get(ICdmIO.REFERENCE_STORE);
-        MapWrapper<TaxonBase> taxonBaseStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
         URI sourceUri = config.getSourceUri();
         try{
             state.setTx(startTransaction());
@@ -254,7 +252,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());
-                int length = unitsList.getLength();
                 for (int i = 0; i < unitsList.getLength(); i++) {
                     if(state.getConfig().getProgressMonitor().isCanceled()){
                         break;
@@ -297,62 +294,60 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param item
      */
     private void getSiblings(Abcd206ImportState state, Object item, DerivedUnitFacade facade) {
-        NodeList unitAssociationList = null;
-
         String unitId = facade.getCatalogNumber();
 
-            UnitAssociationParser unitParser = new UnitAssociationParser(state.getPrefix(), state.getReport(), state.getCdmRepository());
-            UnitAssociationWrapper unitAssociationWrapper = null;
-            for (URI accessPoint: state.getActualAccesPoint()){
-                unitAssociationWrapper = unitParser.parseSiblings(unitId, accessPoint);
-                if (unitAssociationWrapper.getAssociatedUnits() != null){
-                    break;
-                }
+        UnitAssociationParser unitParser = new UnitAssociationParser(state.getPrefix(), state.getReport(), state.getCdmRepository());
+        UnitAssociationWrapper unitAssociationWrapper = null;
+        for (URI accessPoint: state.getActualAccesPoint()){
+            unitAssociationWrapper = unitParser.parseSiblings(unitId, accessPoint);
+            if (unitAssociationWrapper.getAssociatedUnits() != null){
+                break;
             }
+        }
 
-           DerivedUnit currentUnit = state.getDerivedUnitBase();
-         //  DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
-           FieldUnit currentFieldUnit = facade.getFieldUnit(false);
-            if(unitAssociationWrapper!=null){
-                NodeList associatedUnits = unitAssociationWrapper.getAssociatedUnits();
-                if(associatedUnits!=null){
-                    for(int m=0;m<associatedUnits.getLength();m++){
-                        if(associatedUnits.item(m) instanceof Element){
-                            state.reset();
-                            String associationType = AbcdParseUtility.parseFirstTextContent(((Element) associatedUnits.item(m)).getElementsByTagName(state.getPrefix()+"AssociationType"));
+       DerivedUnit currentUnit = state.getDerivedUnitBase();
+     //  DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
+       FieldUnit currentFieldUnit = facade.getFieldUnit(false);
+        if(unitAssociationWrapper!=null){
+            NodeList associatedUnits = unitAssociationWrapper.getAssociatedUnits();
+            if(associatedUnits!=null){
+                for(int m=0;m<associatedUnits.getLength();m++){
+                    if(associatedUnits.item(m) instanceof Element){
+                        state.reset();
+                        String associationType = AbcdParseUtility.parseFirstTextContent(((Element) associatedUnits.item(m)).getElementsByTagName(state.getPrefix()+"AssociationType"));
 
-                            Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), unitAssociationWrapper.getPrefix()), state);
-                           // logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
+                        Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), unitAssociationWrapper.getPrefix()), state);
+                       // logger.debug("derived unit: " + state.getDerivedUnitBase().toString() + " associated unit: " +state.getDataHolder().getKindOfUnit() + ", " + state.getDataHolder().accessionNumber + ", " + state.getDataHolder().getRecordBasis() + ", " + state.getDataHolder().getUnitID());
 
-                            handleSingleUnit(state, associatedUnits.item(m), false);
+                        handleSingleUnit(state, associatedUnits.item(m), false);
 
-                            DerivedUnit associatedUnit = state.getDerivedUnitBase();
-                            FieldUnit associatedFieldUnit = null;
-                            java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
-                            //ignore field unit if associated unit has more than one
-                            if(associatedFieldUnits.size()>1){
-                                state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
+                        DerivedUnit associatedUnit = state.getDerivedUnitBase();
+                        FieldUnit associatedFieldUnit = null;
+                        java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
+                        //ignore field unit if associated unit has more than one
+                        if(associatedFieldUnits.size()>1){
+                            state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
+                        }
+                        else if(associatedFieldUnits.size()==1){
+                            associatedFieldUnit = associatedFieldUnits.iterator().next();
+                        }
+                        //parent-child relation:
+                        if(associationType.contains("individual") || associationType.contains("culture") || associationType.contains("sample")){
+                            DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit, associatedUnit, DerivationEventType.ACCESSIONING());
+                            if(associatedFieldUnit!=null && associatedFieldUnit != currentFieldUnit){
+                                associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
+                                state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit);
                             }
-                            else if(associatedFieldUnits.size()==1){
-                                associatedFieldUnit = associatedFieldUnits.iterator().next();
-                            }
-                            //parent-child relation:
-                            if(associationType.contains("individual") || associationType.contains("culture") || associationType.contains("sample")){
-                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit, associatedUnit, DerivationEventType.ACCESSIONING());
-                                if(associatedFieldUnit!=null && associatedFieldUnit != currentFieldUnit){
-                                    associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
-                                    state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit);
-                                }
-                                state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
-                            }
-                            save(associatedUnit, state);
+                            state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
+                        }
+                        save(associatedUnit, state);
 
                     }
                 }
             }
         }
-            state.reset();
-            state.setDerivedUnitBase(currentUnit);
+        state.reset();
+        state.setDerivedUnitBase(currentUnit);
 
     }
 
