@@ -185,7 +185,6 @@ public class ImportResult extends IoResultBase implements Serializable {
                 report.append("\n" + key + ": " + records.get(key));
             }
         }
-
     }
 
 
