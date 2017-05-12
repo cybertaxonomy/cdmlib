@@ -248,7 +248,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
-                state.setDefaultClassification(getClassificationService().load(state.getDefaultClassification().getUuid()));
+               // state.setDefaultClassification(getClassificationService().load(state.getDefaultClassification().getUuid()));
                 state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());
