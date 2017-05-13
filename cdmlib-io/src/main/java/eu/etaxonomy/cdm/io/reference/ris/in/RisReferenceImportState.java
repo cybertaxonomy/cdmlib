@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.reference.ris.in;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
@@ -18,11 +21,23 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 public class RisReferenceImportState
         extends ImportStateBase<RisReferenceImportConfigurator, RisReferenceImport>{
 
+    private Map<RisReferenceTag, Integer> unhandled = new HashMap<>();
+
+
     /**
      * @param config
      */
     protected RisReferenceImportState(RisReferenceImportConfigurator config) {
         super(config);
+    }
+
+    public void addUnhandled(RisReferenceTag tag) {
+        Integer x = unhandled.get(tag);
+        unhandled.put(tag, x == null ? 1 : ++x);
+    }
+
+    public Map<RisReferenceTag, Integer> getUnhandled() {
+        return unhandled;
     }
 
 }

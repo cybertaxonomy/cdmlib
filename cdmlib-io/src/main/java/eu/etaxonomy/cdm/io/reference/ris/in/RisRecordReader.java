@@ -78,6 +78,7 @@ public class RisRecordReader {
                        addTaggedValue(type, result, line, lineNo);
                        count++;
                    }else if (isErLine(line)){
+                       addTaggedValue(RisReferenceTag.ER, result, line, lineNo);
                        return result;
                    }else{
                        //TODO

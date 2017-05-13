@@ -84,6 +84,10 @@ public abstract class IoResultBase {
         exceptions.add(new IoInfo(message, e));
         setExceptionState();
     }
+    public void addException(Exception e, String message, String location) {
+        exceptions.add(new IoInfo(message, e, location));
+        setExceptionState();
+    }
 
     protected abstract void setExceptionState();
 
@@ -136,8 +140,8 @@ public abstract class IoResultBase {
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
                 message = StringUtils.isBlank(message)? "no message" : message;
                 Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
-                String available = (stacktrace == null ? " not" : "");
-                report.append("\n" + location + message + "(stacktrace" + available + " available)");
+                String available = (stacktrace != null ? " (stacktrace available)" : "");
+                report.append("\n" + location + message + available);
             }
         }
     }

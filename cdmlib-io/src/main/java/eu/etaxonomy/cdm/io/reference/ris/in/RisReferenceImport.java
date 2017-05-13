@@ -64,7 +64,9 @@ public class RisReferenceImport
             Map<RisReferenceTag, List<RisValue>> next = risReader.readRecord();
             while (next != RisRecordReader.EOF){
                 Reference ref;
+                String location = "";
                 try {
+                    location = recordLocation(state, next);
                     ref = makeReference(state, next);
                     referencesToSave.add(ref);
                     if (ref.getInReference() != null){
@@ -72,7 +74,7 @@ public class RisReferenceImport
                     }
                 } catch (Exception e) {
                     String message = "Unexpected exception during RIS Reference Import";
-                    state.getResult().addException(e, message);
+                    state.getResult().addException(e, message, location);
                 }
 
                 next = risReader.readRecord();
@@ -84,6 +86,14 @@ public class RisReferenceImport
         } catch (Exception e) {
             String message = "Unexpected exception during RIS Reference Import";
             state.getResult().addException(e, message);
+        }
+
+        //unhandled
+        Map<RisReferenceTag, Integer> unhandled = state.getUnhandled();
+        for (RisReferenceTag tag : unhandled.keySet()){
+            String message = "RIS tag %s (%s) not yet handled. n = %d";
+            message = String .format(message, tag.name(), tag.getDescription(), unhandled.get(tag));
+            state.getResult().addWarning(message);
         }
     }
 
@@ -163,7 +173,11 @@ public class RisReferenceImport
         if (doiVal != null){
             DOI doi;
             try {
-                doi = DOI.fromString(doiVal.value);
+                String doiStr = doiVal.value;
+                if (doiStr.toLowerCase().startsWith("doi ")){
+                    doiStr = doiStr.substring(4).trim();
+                }
+                doi = DOI.fromString(doiStr);
                 ref.setDoi(doi);
             } catch (IllegalArgumentException e) {
                 String message = "DOI could not be recognized: " + doiVal.value;
@@ -207,12 +221,24 @@ public class RisReferenceImport
             }
         }
 
-        //
+        //ID
+        RisValue id = getSingleValue(state, record, RisReferenceTag.ID);
+        String idStr = id != null? id.value: null;
+        String recLoc = recordLocation(state, record);
+        ref.addImportSource(idStr, null, state.getConfig().getSourceReference(), recLoc);
+        if (inRef != null){
+            ref.addImportSource(idStr, null, state.getConfig().getSourceReference(), recLoc);
+
+        }
+
+        //remove
+        record.remove(RisReferenceTag.ER);
+        record.remove(RisReferenceTag.TY);
 
         for (RisReferenceTag tag : record.keySet()){
-            //TODO we may want to count them for the whole file and not mention each time when not available
-            String message = "RIS Tag " + tag.name() +  " not yet handled";
-            state.getResult().addWarning(message, record.get(tag).get(0).location);
+//            String message = "RIS Tag " + tag.name() +  " not yet handled";
+//            state.getResult().addWarning(message, record.get(tag).get(0).location);
+            state.addUnhandled(tag);
 
             //TODO add as annotation or extension
         }
@@ -220,6 +246,24 @@ public class RisReferenceImport
         return ref;
     }
 
+
+    /**
+     * @param state
+     * @param record
+     * @return
+     */
+    private String recordLocation(RisReferenceImportState state,
+            Map<RisReferenceTag, List<RisValue>> record) {
+        RisValue typeTag = this.getSingleValue(state, record, RisReferenceTag.TY, false);
+        RisValue erTag = this.getSingleValue(state, record, RisReferenceTag.ER, false);
+
+        String start = typeTag == null ? "??" : typeTag.location;
+        String end = erTag == null ? "??" : erTag.location;
+
+        String result = "line " + CdmUtils.concat("-", start, end);
+
+        return result;
+    }
 
     /**
      * @param state
@@ -343,12 +387,26 @@ public class RisReferenceImport
     private RisValue getSingleValue(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record,
             RisReferenceTag tag) {
+        return getSingleValue(state, record, tag, true);
+    }
+
+    /**
+     * Returns the single value for the given tag
+     * and removes the tag from the record.
+     * If more than 1 value exists this is logged
+     * as a warning.
+     */
+    private RisValue getSingleValue(RisReferenceImportState state,
+            Map<RisReferenceTag, List<RisValue>> record,
+            RisReferenceTag tag, boolean remove) {
         List<RisValue> list = record.get(tag);
         if (list == null){
             return null;
         }
         assertSingle(state, list, tag);
-        record.remove(tag);
+        if (remove){
+            record.remove(tag);
+        }
         return list.get(0);
     }
 
@@ -386,7 +444,7 @@ public class RisReferenceImport
     private ReferenceType makeReferenceType(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record) {
         RisReferenceTag tyTag = RisReferenceTag.TY;
-        RisValue value = this.getSingleValue(state, record, tyTag);
+        RisValue value = this.getSingleValue(state, record, tyTag, false);
         String typeStr = value.value;
         RisRecordType type = RisRecordType.valueOf(typeStr);
         ReferenceType cdmType = type.getCdmReferenceType();
