@@ -663,7 +663,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
 	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
-	    SpecimenOrObservationBase dnaSampleFieldUnit = dnaSample.getDerivedFrom().getOriginals().iterator().next();
+	    SpecimenOrObservationBase<?> dnaSampleFieldUnit = dnaSample.getDerivedFrom().getOriginals().iterator().next();
 	    assertTrue(!specimenFieldUnit.equals(dnaSampleFieldUnit));
 
 	}
