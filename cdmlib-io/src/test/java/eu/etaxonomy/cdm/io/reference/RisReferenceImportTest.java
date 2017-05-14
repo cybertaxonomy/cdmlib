@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author andy
@@ -76,18 +78,23 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 //***************************** TESTS *************************************//
 
 	@Test
-	public void testShort() {
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testShort() {
 		ImportResult result = defaultImport.invoke(configurator);
 		String report = result.createReport().toString();
 		Assert.assertTrue(report.length() > 0);
-//		System.out.println(report);
+		System.out.println(report);
 
 		Integer expected = 2;
 		Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
 		List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
-		Assert.assertEquals("There should be 2 references, the article and the journal", 2, list.size());
+		Assert.assertEquals("There should be 3 references, the article and the journal and the source reference",
+		        3, list.size());
 		for (Reference ref : list){
+		    if (ref.equals(configurator.getSourceReference())){
+		        continue;
+		    }
 		    Assert.assertTrue(ref.getType() == ReferenceType.Article || ref.getType() == ReferenceType.Journal);
 		    if (ref.getType() == ReferenceType.Article){
 		        //title

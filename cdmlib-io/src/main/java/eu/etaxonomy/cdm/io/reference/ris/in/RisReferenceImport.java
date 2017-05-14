@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.reference.ris.in;
 
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -143,6 +144,11 @@ public class RisReferenceImport
             //TODO
         }
 
+        //ST  (remove as same as TI or T1), not handled otherwise
+        RisValue st = getSingleValue(state, record, RisReferenceTag.ST, false); //Short title
+        if (st != null && st.value.equals(ref.getTitle())){
+            record.remove(RisReferenceTag.ST);
+        }
 
         //Author
         List<RisValue> list = getListValue(record, RisReferenceTag.AU);
@@ -182,6 +188,20 @@ public class RisReferenceImport
             } catch (IllegalArgumentException e) {
                 String message = "DOI could not be recognized: " + doiVal.value;
                 state.getResult().addWarning(message, doiVal.location);
+            }
+        }
+
+        //UR
+        RisValue ur = getSingleValue(state, record, RisReferenceTag.UR); //URL
+        if (ur != null){
+            URI uri;
+            try {
+                String urStr = ur.value;
+                uri = URI.create(urStr);
+                ref.setUri(uri);
+            } catch (Exception e) {
+                String message = "URL could not be recognized: " + ur.value;
+                state.getResult().addWarning(message, ur.location);
             }
         }
 
