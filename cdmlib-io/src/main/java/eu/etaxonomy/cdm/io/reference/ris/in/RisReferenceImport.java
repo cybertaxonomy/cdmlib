@@ -110,7 +110,7 @@ public class RisReferenceImport
         ReferenceType type = makeReferenceType(state, record);
         Reference ref = ReferenceFactory.newReference(type);
         Reference inRef = null;
-        if (ref.getType().isSection()){
+        if (hasInRef(ref)){
             ReferenceType inRefType =
                     type == ReferenceType.Article ? ReferenceType.Journal:
                     type == ReferenceType.BookSection ? ReferenceType.Book :
@@ -264,6 +264,14 @@ public class RisReferenceImport
         }
 
         return ref;
+    }
+
+    /**
+     * @param ref
+     * @return
+     */
+    private boolean hasInRef(Reference ref) {
+        return ref.getType() == ReferenceType.BookSection || ref.getType() == ReferenceType.Article ;
     }
 
 

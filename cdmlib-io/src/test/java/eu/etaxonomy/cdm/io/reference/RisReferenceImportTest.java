@@ -146,7 +146,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         String report = result.createReport().toString();
         System.out.println(report);
 
-        Integer expected = 123;  //did not count yet
+        Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
 //        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
