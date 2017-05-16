@@ -38,7 +38,8 @@ import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
-import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
@@ -191,8 +192,8 @@ public class IOServiceImpl implements IIOService {
         ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
         ImportResult result;
         try {
-            if (config instanceof NormalExplicitImportConfigurator){
-                NormalExplicitImportConfigurator excelConfig = (NormalExplicitImportConfigurator)config;
+            if (config instanceof ExcelImportConfiguratorBase){
+                ExcelImportConfiguratorBase excelConfig = (ExcelImportConfiguratorBase)config;
                 //excelConfig.setStream(importData);
             }else{
                 config.setSource(new ByteArrayInputStream(importData));
@@ -251,6 +252,16 @@ public class IOServiceImpl implements IIOService {
      */
     @Override
     public ImportResult updateDistributionData(ExcelDistributionUpdateConfigurator configurator) {
+        ImportResult result = new ImportResult();
+        result = cdmImport.invoke(configurator);
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportResult importRISData(RisReferenceImportConfigurator configurator) {
         ImportResult result = new ImportResult();
         result = cdmImport.invoke(configurator);
         return result;

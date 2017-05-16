@@ -15,10 +15,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  *
  */
 public class RisReferenceImportConfigurator
-        extends ImportConfiguratorBase<RisReferenceImportState, InputStreamReader>{
+        extends ExcelImportConfiguratorBase{
 
     private static final long serialVersionUID = -5982826645441621962L;
     private static IInputTransformer defaultTransformer = null;
@@ -40,34 +41,45 @@ public class RisReferenceImportConfigurator
      * @throws IOException
      * @throws MalformedURLException
      */
-    public static IImportConfigurator NewInstance(URI uri, ICdmDataSource cdm) throws MalformedURLException, IOException {
-        return NewInstance(uri.toURL(), cdm);
+    public static RisReferenceImportConfigurator NewInstance(URI uri, ICdmDataSource cdm) throws MalformedURLException, IOException {
+        RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(uri, cdm);
+        return result;
     }
 
     /**
-     * @param url
+     * @param uri
      * @param object
      * @return
      * @throws IOException
+     * @throws MalformedURLException
      */
-    public static IImportConfigurator NewInstance(URL url, ICdmDataSource cdm) throws IOException {
+
+    public static RisReferenceImportConfigurator NewInstance(URL url, ICdmDataSource cdm) throws IOException {
         InputStream stream = url.openStream();
         InputStreamReader reader = new InputStreamReader(stream, "UTF8");
-        RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(reader, cdm);
+
+        RisReferenceImportConfigurator result = new RisReferenceImportConfigurator();
+        result.setStream(IOUtils.toByteArray(stream));
         return result;
     }
+
+    public static RisReferenceImportConfigurator NewInstance()  {
+        RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(null, null);
+
+        return result;
+    }
+
+
 
     /**
      * @param transformer
      */
     protected RisReferenceImportConfigurator() {
-        super(defaultTransformer);
+        super(null,null);
     }
 
-    protected RisReferenceImportConfigurator(InputStreamReader source, ICdmDataSource cdm) {
-        super(defaultTransformer);
-        this.setSource(source);
-        this.setDestination(cdm);
+    protected RisReferenceImportConfigurator(URI uri, ICdmDataSource cdm) {
+        super(uri, cdm, null);
     }
 
 
@@ -105,6 +117,11 @@ public class RisReferenceImportConfigurator
             }
         }
         return sourceReference;
+    }
+
+    @Override
+    public boolean isValid(){
+        return true;
     }
 
 

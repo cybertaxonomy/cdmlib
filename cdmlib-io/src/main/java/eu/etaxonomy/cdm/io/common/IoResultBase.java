@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public abstract class IoResultBase {
     private List<IoInfo> warnings = new ArrayList<>();
     private List<IoInfo> exceptions = new ArrayList<>();
 
-    public class IoInfo{
+    public class IoInfo implements Serializable{
         String message;
         Exception exception;
         String location;

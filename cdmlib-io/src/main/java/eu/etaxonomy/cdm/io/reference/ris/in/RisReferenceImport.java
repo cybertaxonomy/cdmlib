@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.reference.ris.in;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
@@ -56,8 +57,11 @@ public class RisReferenceImport
         RisReferenceImportConfigurator config = state.getConfig();
         try {
 //            new FileReader(file)
-            InputStreamReader inputReader = config.getSource();
-            RisRecordReader risReader = new RisRecordReader(state, inputReader);
+            byte[] data = config.getStream();
+
+            ByteArrayInputStream stream = new ByteArrayInputStream(data);
+            InputStreamReader reader = new InputStreamReader(stream);
+            RisRecordReader risReader = new RisRecordReader(state, reader);
 
             Set<Reference> referencesToSave = new HashSet<>();
 
