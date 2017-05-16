@@ -98,8 +98,8 @@ public class RisRecordReader {
                            }
                            if (type == null){
                                //TODO
-                               //Sollte aber als als extension trotzdem übergeben werden
-                               String message = "Unknown reference type %s . Reference attribute could not be added. Line was: " + lineOrig ;
+                               //But should be handled as "Extension"
+                               String message = "Unknown reference type %s . Reference attribute could not be added. ";
                                state.getResult().addWarning(message, lineNo);
                            }else{
                                addTaggedValue(type, result, line, lineNo);
@@ -117,16 +117,15 @@ public class RisRecordReader {
                        RisValue priorValue = priorList.get(priorList.size()-1);
                        priorValue.value = priorValue + NL + line;
                    }else{
-                       String message = "RIS record does not start with TY. Can't create record. ";
+                       String message = "RIS record does not start with TY. Can't create record. Line was: " + lineOrig ;
                        state.getResult().addError(message, lineNoStr);
-                       return null;
                    }
 
                }
             }
             if (count>0){
-                String message = lineNoStr + "Unexpected end of file. Some records may not have been imported";
-                state.getResult().addError(message, lineNo);
+                String message = "Unexpected end of file. Some records may not have been imported";
+                state.getResult().addError(message, lineNoStr);
             }
             return EOF;
 
