@@ -59,7 +59,7 @@ public class RisReferenceImportConfigurator
         InputStreamReader reader = new InputStreamReader(stream, "UTF8");
 
         RisReferenceImportConfigurator result = new RisReferenceImportConfigurator();
-        result.setStream(IOUtils.toByteArray(stream));
+        result.setStream(IOUtils.toByteArray(reader));
         return result;
     }
 

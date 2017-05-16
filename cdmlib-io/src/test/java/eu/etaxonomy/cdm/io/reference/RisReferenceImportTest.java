@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.reference;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.List;
@@ -57,24 +56,16 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/reference/RisReferenceImportTest-input.ris";
 
-		FileInputStream inputStream;
         try {
-//            inputStream = new FileInputStream(inputFile);
-//
-//            byte[] data;
-//            data = IOUtils.toByteArray(inputStream);
             URL url = this.getClass().getResource(inputFile);
             assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
 
             String inputFileLong = "/eu/etaxonomy/cdm/io/reference/Acantholimon.ris";
             URL urlLong = this.getClass().getResource(inputFileLong);
             assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
 
-
 			configurator = RisReferenceImportConfigurator.NewInstance(url, null);
 			configLong = RisReferenceImportConfigurator.NewInstance(urlLong, null);
-
 
 
 		} catch (Exception e) {
@@ -160,7 +151,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         String report = result.createReport().toString();
         System.out.println(report);
 
-        Integer expected = 116;  //did not count yet
+        Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
 //        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
