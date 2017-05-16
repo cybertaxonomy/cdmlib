@@ -60,7 +60,7 @@ public class RisReferenceImport
             byte[] data = config.getStream();
 
             ByteArrayInputStream stream = new ByteArrayInputStream(data);
-            InputStreamReader reader = new InputStreamReader(stream);
+            InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
             RisRecordReader risReader = new RisRecordReader(state, reader);
 
             Set<Reference> referencesToSave = new HashSet<>();
