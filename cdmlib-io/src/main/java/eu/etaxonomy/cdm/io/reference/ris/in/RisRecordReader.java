@@ -63,16 +63,21 @@ public class RisRecordReader {
             RisReferenceTag lastType = null;
             boolean startedWithTY = false;
             while ((lineOrig = lineReader.readLine()) != null) {
-                String line = lineOrig;
-                lineNo++;
-                String lineNoStr = "line " + lineNo;
-                if (isBlank(line)){
+               String line = lineOrig;
+               lineNo++;
+               String lineNoStr = "line " + lineNo;
+               if (isBlank(line)){
                    continue;
+               }else if (count == 0 && line.length() > 1 && isTypeLine(line.substring(1))){
+                   line = line.substring(1); //remove BOM cotrol character if encoding is not correctly working
                }
+               // OLD BOM remove
+               //if (Integer.valueOf(line.toCharArray()[0]).equals(65279)  ){ //remove BOM cotrol character if encoding is not correctly working
+               //   line = line.substring(1);
+               //}
+
                RisReferenceTag type;
-               if (Integer.valueOf(line.toCharArray()[0]).equals(65279)  ){ //remove BOM cotrol character if encoding is not correctly working
-                   line = line.substring(1);
-               }
+
 
                if (matchesRisLine(line)){
                    type = RisReferenceTag.TY;
