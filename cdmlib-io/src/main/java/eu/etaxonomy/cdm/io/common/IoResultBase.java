@@ -61,6 +61,9 @@ public abstract class IoResultBase {
     public void addError(String message, int location) {
         errors.add(new IoInfo(message, null, String.valueOf(location)));
     }
+    public void addError(String message, String location) {
+        errors.add(new IoInfo(message, null, location));
+    }
 
     public List<IoInfo> getWarnings() {return warnings;}
     public void setWarnings(List<IoInfo> warnings) {this.warnings = warnings;}

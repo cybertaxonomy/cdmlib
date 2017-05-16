@@ -58,11 +58,14 @@ public class RisRecordReader {
     public Map<RisReferenceTag, List<RisValue>> readRecord(){
         try {
             Map<RisReferenceTag, List<RisValue>> result = new HashMap<>();
-            String line;
+            String lineOrig;
             int count = 0;
             RisReferenceTag lastType = null;
-            while ((line = lineReader.readLine()) != null) {
+            boolean startedWithTY = false;
+            while ((lineOrig = lineReader.readLine()) != null) {
+                String line = lineOrig;
                 lineNo++;
+                String lineNoStr = "line " + lineNo;
                 if (isBlank(line)){
                    continue;
                }
@@ -77,38 +80,46 @@ public class RisRecordReader {
                        type = RisReferenceTag.TY;
                        addTaggedValue(type, result, line, lineNo);
                        count++;
-                   }else if (isErLine(line)){
-                       addTaggedValue(RisReferenceTag.ER, result, line, lineNo);
-                       return result;
+                       startedWithTY = true;
                    }else{
-                       //TODO
-                       try {
-                           type = RisReferenceTag.valueOf(line.substring(0, 2));
-                       } catch (Exception e) {
-                            //type stays null
+                       if (!startedWithTY){
+                           continue;
                        }
-                       if (type == null){
-                           //TODO
-                           //Sollte aber als als extension trotzdem übergeben werden
-                           String message = "Unknown reference type %s . Reference attribute could not be added";
-                           state.getResult().addWarning(message, lineNo);
+                       if (isErLine(line)){
+                           addTaggedValue(RisReferenceTag.ER, result, line, lineNo);
+                           startedWithTY = false;
+                           return result;
                        }else{
-                           addTaggedValue(type, result, line, lineNo);
+                           //TODO
+                           try {
+                               type = RisReferenceTag.valueOf(line.substring(0, 2));
+                           } catch (Exception e) {
+                                //type stays null
+                           }
+                           if (type == null){
+                               //TODO
+                               //Sollte aber als als extension trotzdem übergeben werden
+                               String message = "Unknown reference type %s . Reference attribute could not be added. Line was: " + lineOrig ;
+                               state.getResult().addWarning(message, lineNo);
+                           }else{
+                               addTaggedValue(type, result, line, lineNo);
+                           }
+                           count++;
                        }
-                       count++;
                    }
                    if (type != null){
                        lastType = type;
                    }
                }else{
-                   if (result.size() > 0){
+                   if (startedWithTY){
                        //add to prior
                        List<RisValue> priorList = result.get(lastType);
                        RisValue priorValue = priorList.get(priorList.size()-1);
                        priorValue.value = priorValue + NL + line;
                    }else{
-                       String message = "RIS record does not start with TY. Can't create record";
-                       state.getResult().addError(message, lineNo);
+                       String message = "RIS record does not start with TY. Can't create record. ";
+                       state.getResult().addError(message, lineNoStr);
+                       return null;
                    }
 
                }
