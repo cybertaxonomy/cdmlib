@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -28,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -337,9 +337,9 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @throws ParseException
      */
     Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(Class<? extends SpecimenOrObservationBase> clazz,
-            String queryString, Rectangle boundingBox, List<Language> languages, boolean highlightFragments, Integer pageSize,
-            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException,
-            IOException, ParseException;
+            String queryString, Rectangle boundingBox, List<Language> languages, boolean highlightFragments,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
+            throws IOException, LuceneParseException;
     /**
      * See {@link #listByAssociatedTaxon(Class, Set, String, Integer, Integer, Integer, List, List)}
      *

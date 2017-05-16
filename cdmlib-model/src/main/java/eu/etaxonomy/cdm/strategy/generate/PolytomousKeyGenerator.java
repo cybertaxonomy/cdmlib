@@ -38,9 +38,9 @@ public class PolytomousKeyGenerator {
 	private boolean merge=true; // if this boolean is set to true, branches of the tree will be merged if the corresponding states can be used together without decreasing their score
 
 	private FeatureTree dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
-	private Map<State,Set<Feature>> iIdependencies = new HashMap<State,Set<Feature>>(); // map of a set of Features (value) inapplicables if a State (key) is present
-	private Map<State,Set<Feature>> oAIdependencies = new HashMap<State,Set<Feature>>(); // map of a set of Features (value) only applicables if a State (key) is present
-	private Map<Feature,Set<Feature>> featureDependencies = new HashMap<Feature,Set<Feature>>(); // map of all the sets of features (values) which have dependencies with states of other features (keys)
+	private Map<State,Set<Feature>> iIdependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
+	private Map<State,Set<Feature>> oAIdependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
+	private Map<Feature,Set<Feature>> featureDependencies = new HashMap<>(); // map of all the sets of features (values) which have dependencies with states of other features (keys)
 	private boolean dependenciesON = true; // if this boolean is true, the dependencies are taken into account
 
 

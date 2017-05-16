@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @created 29.01.2009
- * @version 1.0
  */
 public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultIOBase<IImportConfigurator> implements ICdmImporter<T> {
 	@SuppressWarnings("unused")
@@ -33,7 +32,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 		boolean createNew = config.isCreateNew();
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
 		    ImportResult result = new ImportResult();
-		    result.setSuccess(false);
+		    result.setAborted("Application controller could not be started");
 			return result;
 		}else{
 			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)getCdmAppController().getBean("defaultImport");

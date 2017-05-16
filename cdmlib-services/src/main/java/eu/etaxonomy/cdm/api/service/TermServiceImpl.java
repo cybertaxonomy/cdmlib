@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -435,5 +436,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         }
         return result;
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations){
+        return representationDao.saveOrUpdateAll(representations);
+    }
+
 
 }

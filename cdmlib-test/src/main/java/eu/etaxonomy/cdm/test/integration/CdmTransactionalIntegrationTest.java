@@ -358,6 +358,9 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         }
     }
 
+    protected void commitAndStartNewTransaction() {
+        this.commitAndStartNewTransaction(null);
+    }
 
     /**
      * @param tableNames the tables supplied by this array will be <b>printed after</b> the transaction has committed

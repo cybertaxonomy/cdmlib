@@ -52,9 +52,11 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -66,8 +68,8 @@ import eu.etaxonomy.cdm.validation.Level2;
  * E.g.
  * (1) an image can have a tiff and a jpg media representation.
  * (2) an formatted text can have a text/html or an application/pdf representation.
+ *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:34
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -329,7 +331,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         this.mediaCreated = mediaCreated;
     }
 
-    //************* Descriptions
+    //************* Descriptions  *********************/
 
     public Map<Language,LanguageString> getAllDescriptions(){
         if(this.description == null) {
@@ -354,12 +356,19 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         this.description.remove(language);
     }
 
+// ************************ SOURCE ***************************/
+
+    public IdentifiableSource addPrimaryMediaSource(Reference citation, String microCitation) {
+        if (citation == null && microCitation == null){
+            return null;
+        }
+        IdentifiableSource source = IdentifiableSource.NewPrimaryMediaSourceInstance(citation, microCitation);
+        addSource(source);
+        return source;
+    }
+
 //************************* CLONE **************************/
 
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Object clone() throws CloneNotSupportedException{
         Media result = (Media)super.clone();

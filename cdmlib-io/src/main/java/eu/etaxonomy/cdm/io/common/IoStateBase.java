@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,20 +15,20 @@ import org.apache.log4j.Logger;
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
-public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO> {
-//	public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO<IoStateBase<CONFIG, IO>>> {
+public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoStateBase.class);
-	
+
 	private IO currentIO;
 
-	private boolean success = true;
+	protected CONFIG config;
 
-	CONFIG config;
-	
+	private RESULT result;
+
+
+
 	/**
 	 * @return the config
 	 */
@@ -42,7 +42,7 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 	public void setConfig(CONFIG config) {
 		this.config = config;
 	}
-	
+
 	/**
 	 * @param config
 	 */
@@ -65,17 +65,21 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 		return currentIO;
 	}
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-	
-	public void setUnsuccessfull(){
-		this.success = false;
-	}
 
-	public boolean isSuccess() {
-		return success;
-	}
-	
-	
+    /**
+     * @return the result
+     */
+    public RESULT getResult() {
+        return result;
+    }
+
+    /**
+     * @param result the result to set
+     */
+    public void setResult(RESULT result) {
+        this.result = result;
+    }
+
+
+
 }

@@ -10,13 +10,13 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 
+import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
@@ -25,13 +25,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author p.kelbert
  * @created 20.10.2008
- * @version 1.0
- * @param <SOURCE>
  */
-public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends SpecimenImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
+public class Abcd206ImportConfigurator
+        extends SpecimenImportConfiguratorBase<Abcd206ImportConfigurator, Abcd206ImportState, InputStream>
+        implements IMatchingImportConfigurator {
+
+    private static final long serialVersionUID = -7204105522522645681L;
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
-
-
 
 
     //TODO
@@ -108,10 +110,10 @@ public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends Spe
     @Override
     public InputStream getSource(){
         if (super.getSource() != null){
-        	return (InputStream)super.getSource();
+        	return super.getSource();
         }else if (this.sourceUri != null){
         	try {
-				InputStream is = (InputStream) UriUtils.getInputStream(sourceUri);
+				InputStream is = UriUtils.getInputStream(sourceUri);
 				setSource(is);
 				return is;
 			} catch (Exception e) {
@@ -159,8 +161,80 @@ public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends Spe
 
 
 
+@Override
+public String toString(){
+
+    StringBuffer result = new StringBuffer();
+    //the preference value is build like this:
+      //<section1>:true;<section2>:false....
+
+      result.append("ignoreImportOfExistingSpecimen");
+      result.append(":");
+      result.append(this.isIgnoreImportOfExistingSpecimen());
+      result.append(";");
+      result.append("addIndividualsAssociationsSuchAsSpecimenAndObservations");
+      result.append(":");
+      result.append(this.isAddIndividualsAssociationsSuchAsSpecimenAndObservations());
+      result.append(";");
+      result.append("reuseExistingTaxaWhenPossible");
+      result.append(":");
+      result.append(this.isReuseExistingTaxaWhenPossible());
+      result.append(";");
+      result.append("ignoreAuthorship");
+      result.append(":");
+      result.append(this.isIgnoreAuthorship());
+      result.append(";");
+      result.append("addMediaAsMediaSpecimen");
+      result.append(":");
+      result.append(this.isAddMediaAsMediaSpecimen());
+      result.append(";");
+      result.append("reuseExistingMetaData");
+      result.append(":");
+      result.append(this.isReuseExistingMetaData());
+      result.append(";");
+      result.append("reuseExistingDescriptiveGroups");
+      result.append(":");
+      result.append(this.isReuseExistingDescriptiveGroups());
+      result.append(";");
+      result.append("allowReuseOtherClassifications");
+      result.append(":");
+      result.append(this.isAllowReuseOtherClassifications());
+      result.append(";");
+      result.append("deduplicateReferences");
+      result.append(":");
+      result.append(this.isDeduplicateReferences());
+      result.append(";");
+      result.append("deduplicateClassifications");
+      result.append(":");
+      result.append(this.isDeduplicateClassifications());
+      result.append(";");
+      result.append("moveNewTaxaToDefaultClassification");
+      result.append(":");
+      result.append(this.isMoveNewTaxaToDefaultClassification());
+      result.append(";");
+
+      result.append("mapUnitIdToCatalogNumber");
+      result.append(":");
+      result.append(this.isMapUnitIdToCatalogNumber());
+      result.append(";");
+      result.append("mapUnitIdToAccessionNumber");
+      result.append(":");
+      result.append(this.isMapUnitIdToAccessionNumber());
+      result.append(";");
+      result.append("mapUnitIdToBarcode");
+      result.append(":");
+      result.append(this.isMapUnitIdToBarcode());
+      result.append(";");
+
+      result.append("overwriteExistingSpecimens");
+      result.append(":");
+      result.append(this.isOverwriteExistingSpecimens());
+      result.append(";");
 
 
+    return result.toString();
+
+}
 
 
 

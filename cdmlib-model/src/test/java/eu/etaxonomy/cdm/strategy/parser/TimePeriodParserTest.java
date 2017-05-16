@@ -134,7 +134,7 @@ public class TimePeriodParserTest {
 		Assert.assertEquals("1807", tpcorrected.getYear());
 
 	      //„1806‟[1807]
-        String strCorrectedEnPeriod = UTF8.ENGLISH_QUOT_START_LOW + "1806"+UTF8.ENGLISH_QUOT_END_HIGH+"[1807]";
+        String strCorrectedEnPeriod = UTF8.QUOT_DBL_LOW9 + "1806"+UTF8.QUOT_DBL_HIGH_REV9+"[1807]";
         TimePeriod tpcorrectedEn = TimePeriodParser.parseString(strCorrectedEnPeriod);
         assertNotNull(tpcorrectedEn);
         Assert.assertEquals(strCorrectedEnPeriod, tpcorrectedEn.getFreeText());

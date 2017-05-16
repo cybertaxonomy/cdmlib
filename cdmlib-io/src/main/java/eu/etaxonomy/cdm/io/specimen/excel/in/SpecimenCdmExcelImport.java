@@ -73,11 +73,12 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @created 10.05.2011
- * @version 1.0
  */
 @Component
 public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<SpecimenCdmExcelImportState, SpecimenRow>  implements ICdmIO<SpecimenCdmExcelImportState> {
-	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImport.class);
+    private static final long serialVersionUID = 5489033387543936839L;
+
+    private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "Specimen";
 

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,6 +19,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
@@ -31,7 +32,8 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<DwcaMetaDataRecord>();
 	private boolean isZip = false;
 	private ZipOutputStream zos;
-	
+	private List<TaxonNode>  allNodes = new ArrayList<TaxonNode>();
+
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
 		File file = config.getDestination();
@@ -41,18 +43,18 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 				if (! file.exists()){
 						file.createNewFile();
 				}
-				
+
 			  	zos  = new ZipOutputStream( new FileOutputStream(file) ) ;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
-	
+
 	public void addMetaRecord(DwcaMetaDataRecord record){
 		metaRecords.add(record);
 	}
-	
+
 	public List<DwcaMetaDataRecord> getMetaRecords(){
 		return metaRecords;
 	}
@@ -80,7 +82,21 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 			zos.close();
 		}
 	}
-	
+
+    /**
+     * @return the allNodes
+     */
+    public List<TaxonNode> getAllNodes() {
+        return allNodes;
+    }
+
+    /**
+     * @param allNodes the allNodes to set
+     */
+    public void setAllNodes(List<TaxonNode> allNodes) {
+        this.allNodes = allNodes;
+    }
+
 
 
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -60,6 +61,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	public DwcaTaxExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves data from a CDM DB and serializes the CDM to XML.
@@ -79,7 +81,13 @@ public class DwcaTaxExport extends DwcaExportBase {
 		state.addMetaRecord(metaRecord);
 
 		Set<UUID> classificationUuidSet = config.getClassificationUuids();
-		List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
+		List<Classification> classificationList;
+		if (classificationUuidSet.isEmpty()){
+		    classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+		}else{
+		    classificationList = getClassificationService().find(classificationUuidSet);
+		}
+
 		Set<Classification> classificationSet = new HashSet<Classification>();
 		classificationSet.addAll(classificationList);
 
@@ -88,8 +96,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 		try {
 
 			writer = createPrintWriter(fileName, state);
-
-			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
+			List<TaxonNode> allNodes;
+			if (state.getAllNodes().isEmpty()){
+			    getAllNodes(state, classificationSet);
+			}
+			allNodes = state.getAllNodes();
 			int i = 0;
 			for (TaxonNode node : allNodes){
 				i++;
@@ -126,6 +137,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			e.printStackTrace();
 		}
 		finally{
+
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
@@ -418,5 +430,6 @@ public class DwcaTaxExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTaxa();
 	}
+
 
 }

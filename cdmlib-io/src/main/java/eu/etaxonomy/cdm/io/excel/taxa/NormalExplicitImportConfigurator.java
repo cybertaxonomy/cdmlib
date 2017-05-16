@@ -32,7 +32,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	private UUID parentUUID;
 
 
-	private byte[] stream;
+
 
 
 	//	@SuppressWarnings("unchecked")
@@ -127,14 +127,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
         this.parentUUID = parentUUID;
     }
 
-    public byte[] getStream(){
-        return stream;
-    }
 
-
-    public void setStream(byte[] stream) {
-        this.stream = stream;
-    }
 
 
 }

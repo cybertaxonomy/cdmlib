@@ -111,7 +111,7 @@ public class TaxonShortSecCacheStrategyTest {
 		team.addTeamMember((Person)name.getCombinationAuthorship());
 		team.addTeamMember((Person)name.getBasionymAuthorship());
 		name.setCombinationAuthorship(team);
-		System.out.println(taxonBase.generateTitle());
+//		System.out.println(taxonBase.generateTitle());
 		assertEquals("Abies alba (L.) Mill. \u0026 L. sec. Sp.Pl.", taxonBase.generateTitle());
 
 		name = TaxonNameFactory.NewBotanicalInstance(null);

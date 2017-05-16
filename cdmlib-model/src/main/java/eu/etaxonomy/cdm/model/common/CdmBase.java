@@ -231,7 +231,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      * @param propertyName the name of the set as property in <code>this</code> object
      */
     protected <T extends CdmBase> void addToSetWithChangeEvent(Set<T> set, T newItem, String propertyName ){
-        Set<T> oldValue = new HashSet<T>(set);
+        Set<T> oldValue = new HashSet<>(set);
         set.add(newItem);
         firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, set));
     }

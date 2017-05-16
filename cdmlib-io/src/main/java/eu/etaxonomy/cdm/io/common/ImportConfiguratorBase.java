@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -29,13 +32,16 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @created 20.06.2008
- * @param <STATE>
+ * @param <STATE> the import state
  */
 @Component
-public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOURCE> extends IoConfiguratorBase implements IImportConfigurator{
+public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOURCE>
+        extends IoConfiguratorBase
+        implements IImportConfigurator{
 
+    private static final long serialVersionUID = 7223140465020160905L;
 
-	//check
+    //check
 	private CHECK check = CHECK.CHECK_AND_IMPORT;
 
 	//editor
@@ -53,10 +59,14 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	//nullValues
 	private boolean ignoreNull = false;
 
+	private UUID uuidFeatureTree;
+
+	private String featureTreeTitle;
+
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
 
-	private Map<Integer, Feature>  featureMap = new HashMap<Integer, Feature>();
+	private Map<Integer, Feature>  featureMap = new HashMap<>();
 
 	 /* The classification name for the first classification.
 	  * Needs only to be defined if the import does not handle the naming
@@ -88,7 +98,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 
 /* *****************CONSTRUCTOR *****************************/
 
-	public ImportConfiguratorBase(IInputTransformer transformer){
+	protected ImportConfiguratorBase(IInputTransformer transformer){
 		super();
 		setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		this.transformer = transformer;
@@ -392,6 +402,27 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
         askUserForHelp=interaction;
     }
 
+    public UUID getUuidFeatureTree() {
+        return uuidFeatureTree;
+    }
 
+    public void setUuidFeatureTree(UUID uuidFeatureTree) {
+        this.uuidFeatureTree = uuidFeatureTree;
+    }
+
+    public String getFeatureTreeTitle() {
+        return featureTreeTitle;
+    }
+
+    public void setFeatureTreeTitle(String featureTreeTitle) {
+        this.featureTreeTitle = featureTreeTitle;
+    }
+
+
+    private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+
+    protected String getDateString(){
+        return formatter.print(new DateTime());
+    }
 
 }

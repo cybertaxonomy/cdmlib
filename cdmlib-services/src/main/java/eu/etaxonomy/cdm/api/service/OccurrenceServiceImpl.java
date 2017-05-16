@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -786,12 +787,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
             Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle boundingBox, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            List<String> propertyPaths) throws IOException, LuceneParseException {
 
         LuceneSearch luceneSearch = prepareByFullTextSearch(clazz, queryString, boundingBox, languages, highlightFragments);
 
         // --- execute search
-        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet;
+        try {
+            topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        } catch (ParseException e) {
+            LuceneParseException parseException = new LuceneParseException(e.getMessage());
+            parseException.setStackTrace(e.getStackTrace());
+            throw parseException;
+        }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.SPECIMEN_OR_OBSERVATIONBASE, "id");
@@ -1205,11 +1213,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<DerivationEvent> derivationEventsClone = new HashSet<>(derivationEvents);
             for (DerivationEvent derivationEvent : derivationEventsClone) {
                 Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-                for (DerivedUnit derivedUnit : derivatives) {
-                    delete(derivedUnit, config);
+                Iterator<DerivedUnit> it = derivatives.iterator();
+                Set<DerivedUnit> derivativesToDelete = new HashSet<>();
+                while (it.hasNext()) {
+                    DerivedUnit unit = it.next();
+                    derivativesToDelete.add(unit);
+                }
+                for (DerivedUnit unit:derivativesToDelete){
+                    delete(unit, config);
                 }
             }
         }
+
+
 
         DeleteResult deleteResult = isDeletable(specimen.getUuid(), config);
         if (!deleteResult.isOk()) {
@@ -1283,7 +1299,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
         }
+        if (specimen instanceof FieldUnit){
+            FieldUnit fieldUnit = HibernateProxyHelper.deproxy(specimen, FieldUnit.class);
+            GatheringEvent event = fieldUnit.getGatheringEvent();
+            fieldUnit.setGatheringEvent(null);
 
+
+        }
         deleteResult.includeResult(delete(specimen));
 
         return deleteResult;
@@ -1521,6 +1543,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen){
+        if (specimen == null){
+            return null;
+        }
         List<DerivedUnit> childDerivate = new ArrayList<>();
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {

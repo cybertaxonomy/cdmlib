@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
@@ -28,7 +29,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 
 	private int maxRows = 0;
 	private boolean formattedOutput = Boolean.TRUE;
-	private String encoding = "UTF-8"; 
+	private String encoding = "UTF-8";
 
 	private boolean doUsers = true;
 	private boolean doAgentData = true;
@@ -49,47 +50,54 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 
 	private boolean doTypeDesignations = true;
 	private boolean doClassificationData = true;
-	
+
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
-		
-	
-	
+
+	/**
+     *
+     */
+    public JaxbExportConfigurator() {
+        super(null);
+        this.setResultType(ExportResultType.BYTE_ARRAY);
+    }
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public JaxbExportState getNewState() {
+	@Override
+    public JaxbExportState getNewState() {
 		return new JaxbExportState(this);
 	}
 
 	public int getMaxRows() {
 		return maxRows;
 	}
-	
+
 	public void setMaxRows(int maxRows) {
 		this.maxRows = maxRows;
 	}
-	
+
 	public boolean isFormattedOutput() {
 		return formattedOutput;
 	}
-	
+
 	public void setFormattedOutput(boolean formattedOutput) {
 		this.formattedOutput = formattedOutput;
 	}
-	
+
 	public String getEncoding() {
 		return encoding;
 	}
-	
+
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
-	
+
 	public boolean isDoAgentData() {
 		return doAgentData;
 	}
-	
+
 	public void setDoAgentData(boolean doAgentData) {
 		this.doAgentData = doAgentData;
 	}
@@ -97,8 +105,8 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoLanguageData() {
 		return doLanguageData;
 	}
-	
-	
+
+
 	public void setDoLanguageData(boolean doLanguageData) {
 		this.doLanguageData = doLanguageData;
 	}
@@ -106,7 +114,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoFeatureData() {
 		return doFeatureData;
 	}
-	
+
 	public void setDoFeatureData(boolean doFeatureData) {
 		this.doFeatureData = doFeatureData;
 	}
@@ -120,7 +128,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoDescriptions() {
 		return doDescriptions;
 	}
-	
+
 	public void setDoDescriptions(boolean doDescriptions) {
 		this.doDescriptions = doDescriptions;
 	}
@@ -128,7 +136,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoMedia() {
 		return doMedia;
 	}
-	
+
 	public void setDoMedia(boolean doMedia) {
 		this.doMedia = doMedia;
 	}
@@ -136,7 +144,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoReferencedEntities() {
 		return doReferencedEntities;
 	}
-	
+
 	public void setDoReferencedEntities(boolean doReferencedEntities) {
 		this.doReferencedEntities = doReferencedEntities;
 	}
@@ -148,7 +156,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoUsers() {
 		return doUsers;
 	}
-	
+
 	public void setDoSynonyms(boolean doSynonyms) {
 		this.doSynonyms = doSynonyms;
 	}
@@ -157,7 +165,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoTerms() {
 		return doTerms;
 	}
-	
+
 	public void setDoTerms(boolean doTerms) {
 		this.doTerms = doTerms;
 	}
@@ -165,7 +173,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoTermVocabularies() {
 		return doTermVocabularies;
 	}
-	
+
 	public void setDoTermVocabularies(boolean doTermVocabularies) {
 		this.doTermVocabularies = doTermVocabularies;
 	}
@@ -173,25 +181,26 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public boolean isDoHomotypicalGroups() {
 		return doHomotypicalGroups;
 	}
-	
+
 	public void setDoHomotypicalGroups(boolean doHomotypicalGroups) {
 		this.doHomotypicalGroups = doHomotypicalGroups;
 	}
 
-	
+
 //	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
+	@Override
+    protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				JaxbExport.class,
 		};
 	};
 
-	
+
 	public static JaxbExportConfigurator NewInstance(ICdmDataSource source, URI uri) {
 		return new JaxbExportConfigurator(source, uri);
 	}
-	
-	
+
+
 	/**
 	 * @param url
 	 * @param destination
@@ -201,28 +210,31 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 		setDestination(uri);
 		setSource(source);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public URI getDestination() {
+	@Override
+    public URI getDestination() {
 		return super.getDestination();
 	}
 
-	
+
 	/**
 	 * @param file
 	 */
-	public void setDestination(URI uri) {
+	@Override
+    public void setDestination(URI uri) {
 		super.setDestination(uri);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
 	 */
-	public String getDestinationNameString() {
+	@Override
+    public String getDestinationNameString() {
 		if (this.getDestination() == null) {
 			return null;
 		} else {
@@ -237,14 +249,14 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public void setDoTypeDesignations(boolean doTypeDesignations) {
 		this.doTypeDesignations = doTypeDesignations;
 	}
-	
+
 	public boolean isDoOccurrence() {
 		return doOccurrence;
 	}
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
 	}
-	
+
 	private boolean doAuthors = true;
 	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
@@ -266,7 +278,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
-	
+
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
@@ -282,5 +294,5 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	}
 
 
-		
+
 }

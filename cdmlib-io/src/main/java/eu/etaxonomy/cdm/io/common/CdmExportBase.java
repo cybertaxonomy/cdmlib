@@ -19,25 +19,51 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 01.07.2008
- * @version 1.0
  */
-public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TRANSFORM>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends CdmIoBase<STATE> implements ICdmExport<CONFIG, STATE>{
-	private static Logger logger = Logger.getLogger(CdmExportBase.class);
+public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TRANSFORM>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer>
+            extends CdmIoBase<STATE, ExportResult>
+            implements ICdmExport<CONFIG, STATE>{
+
+    private static final long serialVersionUID = 3685030095117254235L;
+
+    private static Logger logger = Logger.getLogger(CdmExportBase.class);
 
     protected ByteArrayOutputStream exportStream;
 
-	public Object getDbId(CdmBase cdmBase, STATE state){
-		logger.warn("Not yet implemented for export base class");
-		return null;
-	}
+    protected ExportDataWrapper<?> exportData;
+
 
 	@Override
-	public  byte[] getByteArray() {
+	public  ExportDataWrapper createExportData() {
 	    if (exportStream != null){
-	        return exportStream.toByteArray();
+	        ExportDataWrapper<byte[]> data = ExportDataWrapper.NewByteArrayInstance();
+	        data.addExportData( exportStream.toByteArray());
+	        return data;
 	    }else{
 	        return null;
 	    }
 	}
 
+    @Override
+    protected ExportResult getNoDataResult(STATE state) {
+        return ExportResult.NewNoDataInstance(((IExportConfigurator)state.config).getResultType());
+    }
+
+    @Override
+    protected ExportResult getDefaultResult(STATE state) {
+        return ExportResult.NewInstance(((IExportConfigurator)state.config).getResultType());
+    }
+
+    @Override
+    public byte[] getByteArray() {
+        if (this.exportStream != null){
+            return this.exportStream.toByteArray();
+        }
+        return null;
+    }
+
+    public Object getDbId(CdmBase cdmBase, STATE state){
+        logger.warn("Not yet implemented for export base class");
+        return null;
+    }
 }

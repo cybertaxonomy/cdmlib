@@ -32,7 +32,9 @@ import eu.etaxonomy.cdm.io.stream.StreamItem;
  *
  */
 public class CsvStream extends ObservableBase implements IIoObservable,IItemStream{
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = -4828538731087241715L;
+
+    @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CsvStream.class);
 
 	private final CSVReader csvReader;

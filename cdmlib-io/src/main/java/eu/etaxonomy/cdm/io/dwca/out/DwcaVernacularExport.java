@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,19 +13,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -39,20 +43,21 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
 	private static final String fileName = "vernacular.txt";
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
 	public DwcaVernacularExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -65,11 +70,26 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		PrintWriter writer = null;
 		try {
 			writer = createPrintWriter(fileName, state);
-			
+
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
-			
-			List<TaxonNode> allNodes =  getAllNodes(null);
+
+			Set<UUID> classificationUuidSet = config.getClassificationUuids();
+            List<Classification> classificationList;
+            if (classificationUuidSet.isEmpty()){
+                classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+            }else{
+                classificationList = getClassificationService().find(classificationUuidSet);
+            }
+
+            Set<Classification> classificationSet = new HashSet<Classification>();
+            classificationSet.addAll(classificationList);
+            List<TaxonNode> allNodes;
+
+            if (state.getAllNodes().isEmpty()){
+                getAllNodes(state, classificationSet);
+            }
+            allNodes = state.getAllNodes();
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -92,7 +112,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 				}
 
 				writer.flush();
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -108,7 +128,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		commitTransaction(txStatus);
 		return;
 	}
-	
+
 
 
 
@@ -126,7 +146,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		record.setLanguage(commonTaxonName.getLanguage());
 		// does not exist in CDM
 		record.setTemporal(null);
-		
+
 		handleArea(record, commonTaxonName.getArea(), taxon, false);
 	}
 
@@ -143,5 +163,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoVernacularNames();
 	}
-	
+
+
+
 }

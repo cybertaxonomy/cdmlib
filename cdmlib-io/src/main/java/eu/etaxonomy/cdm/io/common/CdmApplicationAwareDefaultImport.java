@@ -25,12 +25,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 
 /**
@@ -60,57 +55,63 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
     IService<CdmBase> service = null;
 
     //different type of stores that are used by the known imports
-    Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
+    Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<>();
 
     public CdmApplicationAwareDefaultImport(){
 
-    	stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
-        stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
-        stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
-        stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
-        stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-        stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
+    	stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.TAXON_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<>(service));
     }
 
 
     @Override
     public ImportResult invoke(IImportConfigurator config){
-        if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-            ImportResult result = new ImportResult();
-            result.setSuccess(doCheck(config));
-            return result;
-        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
-            doCheck(config);
-            return doImport(config);
-        }else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
-            return doImport(config);
-        }else{
-            logger.error("Unknown CHECK type");
-            ImportResult result = new ImportResult();
-            result.setSuccess(false);
-            return result;
-        }
-    }
-
-
-    public ImportResult execute(IImportConfigurator config){
         ImportResult result = new ImportResult();
         if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-            result.setSuccess(doCheck(config));
-        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
             boolean success =  doCheck(config);
-            if(success) {
-               result = doImport(config);
+            if (! success){
+                result.setAborted();
             }
-            result.setSuccess(success);
-        } else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
+        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
+            boolean success = doCheck(config);
+            if (success){
+                result = doImport(config);
+            }else{
+                result.setAborted();
+            }
+        }else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
             result = doImport(config);
-        } else{
-            logger.error("Unknown CHECK type");
-            return null;
+        }else{
+            String message = "Unknown CHECK type";
+            logger.error(message);
+            result.addError(message);
         }
         return result;
     }
+
+
+//    public ImportResult execute(IImportConfigurator config){
+//        ImportResult result = new ImportResult();
+//        if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
+//            result.setSuccess(doCheck(config));
+//        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
+//            boolean success =  doCheck(config);
+//            if(success) {
+//               result = doImport(config);
+//            }
+//            result.setSuccess(success);
+//        } else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
+//            result = doImport(config);
+//        } else{
+//            logger.error("Unknown CHECK type");
+//            return null;
+//        }
+//        return result;
+//    }
 
 
     @SuppressWarnings("unchecked")
@@ -130,6 +131,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         ImportStateBase state = config.getNewState();
         state.initialize(config);
+        state.setCheck(true);
 
         //do check for each class
         for (Class<ICdmImport> ioClass: config.getIoClassList()){
@@ -154,6 +156,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         //return
         System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");
+        state.setCheck(false);
         return result;
 
     }
@@ -174,16 +177,22 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
      * Executes the whole
      */
     protected <S extends IImportConfigurator>  ImportResult doImport(S config){
-        ImportResult importResult = new ImportResult();
+        ImportResult result = new ImportResult();
         //validate
         if (config == null){
-            logger.warn("Configuration is null");
-            importResult.setSuccess(false);
-            return importResult;
-        }else if (! config.isValid()){
-            logger.warn("Configuration is not valid");
-            importResult.setSuccess(false);
-            return importResult;
+            String message = "Configuration is null";
+            logger.error(message);
+            result.addError(message);
+            result.setAborted();
+            return result;
+        }
+
+        if (! config.isValid()){
+            String message = "Configuration is not valid";
+            logger.error(message);
+            result.addError(message);
+            result.setAborted();
+            return result;
         }
 
         config.getSourceReference();
@@ -203,42 +212,26 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
-                    importResult.setSuccess(cdmIo.invoke(state));
-                    importResult.addReport(state.getReportAsByteArray());
+                    result = cdmIo.invoke(state);
+                    result.addReport(state.getReportAsByteArray());
                     unRegisterObservers(config, cdmIo);
                 }else{
-                    logger.error("cdmIO was null");
-                    importResult.setSuccess(false);
+                    String message = "cdmIO was null";
+                    logger.error(message);
+                    result.addError(message);
                 }
             } catch (Exception e) {
-                    logger.error(e);
-                    e.printStackTrace();
-                    importResult.setSuccess(false);
+                logger.error(e);
+                e.printStackTrace();
+                result.addException(e);
             }
         }
 
-        //do invoke for each class
-//		for (String ioBean: config.getIoBeans()){
-//			try {
-//				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBean, ICdmIO.class);
-//				if (cdmIo != null){
-//					result &= cdmIo.invoke(config, stores);
-//				}else{
-//					logger.error("cdmIO was null");
-//					result = false;
-//				}
-//			} catch (Exception e) {
-//					logger.error(e);
-//					e.printStackTrace();
-//					result = false;
-//			}
-//
-//		}
-
         logger.info("End import from source '" + config.getSourceNameString()
-                + "' to destination '" + config.getDestinationNameString() + "'"+
-                (importResult.isSuccess()? "(successful)":"(with errors)")) ;
-        return importResult;
+                + "' to destination '" + config.getDestinationNameString() + "'"
+                + "("+ result.toString() + ")"
+                ) ;
+        return result;
     }
 
     /**

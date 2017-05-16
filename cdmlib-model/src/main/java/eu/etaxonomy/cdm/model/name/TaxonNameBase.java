@@ -501,7 +501,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     //Cultivar attribute(s)
 
     //the characteristical name of the cultivar
-    @XmlElement(name = "CultivarName", required = true)
+    @XmlElement(name = "CultivarName")
     //TODO Val #3379
     //@NullOrNotEmpty
     @Column(length=255)
@@ -2026,7 +2026,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
      * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
-     * and to the basionym. The basionym cannot have itself a basionym.
+     * and to the basionym. The basionym cannot have itself as a basionym.
      * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the basionym
      * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
      *
@@ -2042,7 +2042,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
      * and keeps the nomenclatural rule considered for it. The basionym
      * {@link NameRelationship relationship} will be added to <i>this</i> taxon name and to the basionym.
-     * The basionym cannot have itself a basionym.
+     * The basionym cannot have itself as a basionym.
      * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the basionym
      * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
      *
@@ -2976,6 +2976,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             return false;
         }
         return getRank().isGenus();
+    }
+
+    @Override
+    @Transient
+    public boolean isGenusOrSupraGeneric() {
+        return isGenus()|| isSupraGeneric();
     }
     /**
      * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>

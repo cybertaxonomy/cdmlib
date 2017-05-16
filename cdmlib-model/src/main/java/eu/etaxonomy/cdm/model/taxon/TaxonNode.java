@@ -461,7 +461,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        Classification classification = HibernateProxyHelper.deproxy(this.getClassification(), Classification.class);
+        Classification classification = CdmBase.deproxy(this.getClassification());
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         if (classification.isTaxonInTree(taxon)){
             throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
@@ -693,7 +693,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     protected void setParentTreeNode(TaxonNode parent, int index){
         // remove ourselves from the old parent
         TaxonNode formerParent = this.getParent();
-        formerParent = HibernateProxyHelper.deproxy(formerParent, TaxonNode.class);
+        formerParent = CdmBase.deproxy(formerParent);
         if (formerParent != null){
         	//special case, child already exists for same parent
             //FIXME document / check for correctness
@@ -715,10 +715,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         Classification classification = parent.getClassification();
         //FIXME also set the tree index here for performance reasons
-        classification = HibernateProxyHelper.deproxy(classification, Classification.class);
+        classification = CdmBase.deproxy(classification);
         setClassificationRecursively(classification);
         // add this node to the parent's child nodes
-        parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
+        parent = CdmBase.deproxy(parent);
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
@@ -730,7 +730,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         if (parentChildren.contains(this)){
             //avoid duplicates
             if (parentChildren.indexOf(this) < index){
-                index = index -1;
+                index = index-1;
             }
             parentChildren.remove(this);
             parentChildren.add(index, this);
@@ -745,7 +745,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         this.getParent().updateSortIndex(index);
         //only for debugging
         if (! this.getSortIndex().equals(index)){
-        	logger.warn("index and sortindex are not equal: "+  this.getSortIndex() +";" + index);
+        	logger.warn("index and sortindex are not equal: " +  this.getSortIndex() + ";" + index);
         }
 
         // update the children count
@@ -763,19 +763,17 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     	    List<TaxonNode> children = this.getChildNodes();
     	    HHH_9751_Util.removeAllNull(children);
     	    for(int i = index; i < children.size(); i++){
-                	TaxonNode child = children.get(i);
-                	if (child != null){
-        //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
-                		child.setSortIndex(i);
-                	}else{
-                		String message = "A node in a taxon tree must never be null but is (ParentId: %d; sort index: %d; index: %d; i: %d)";
-                		throw new IllegalStateException(String.format(message, getId(), sortIndex, index, i));
-                	}
+            	TaxonNode child = children.get(i);
+            	if (child != null){
+    //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
+            		child.setSortIndex(i);
+            	}else{
+            		String message = "A node in a taxon tree must never be null but is (ParentId: %d; sort index: %d; index: %d; i: %d)";
+            		throw new IllegalStateException(String.format(message, getId(), sortIndex, index, i));
+            	}
             }
 	    }
 	}
-
-
 
 
     /**

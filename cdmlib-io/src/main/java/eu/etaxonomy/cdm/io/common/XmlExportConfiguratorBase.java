@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> extends ExportConfiguratorBase<File, STATE, IExportTransformer> implements IExportConfigurator<STATE, IExportTransformer>{
     private static final long serialVersionUID = 6078292713506530756L;
@@ -46,7 +45,7 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 	   super(transformer);
 	   setSource(cdmSource);
 	   setDestination(destination);
-//	   setState(new XmlExportState<XmlExportConfigurator>());
+
 	}
 
 
@@ -76,23 +75,5 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 			return "";
 		}
 	}
-
-
-//	/**
-//	 * @return the state
-//	 */
-//	public XmlExportState<XmlExportConfigurator> getState() {
-//		return state;
-//	}
-//
-//	/**
-//	 * @param state the state to set
-//	 */
-//	public void setState(BerlinModelExportState<XmlExportConfigurator> state) {
-//		this.state = state;
-//	}
-//
-
-
 
 }

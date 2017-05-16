@@ -45,43 +45,50 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @created 11.05.2009
  */
-public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase> extends IoStateBase<CONFIG, IO> {
-	@SuppressWarnings("unused")
+public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase>
+        extends IoStateBase<CONFIG, IO, ImportResult> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
+
+
+    private boolean success = true;
 
 	//States
 	private boolean isCheck;
 
-	private Map<Object,Classification> treeMap = new HashMap<Object,Classification>();
+	private Map<Object,Classification> treeMap = new HashMap<>();
 
-	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
+	private Map<Reference,UUID> treeUuidMap = new HashMap<>();
 
-	private Map<String,UUID> classificationKeyUuidMap = new HashMap<String,UUID>();
+	private Map<String,UUID> classificationKeyUuidMap = new HashMap<>();
+
+	private Map<String, Object> anyStatusItemMap = new HashMap<>();
 
 	private IInputTransformer inputTransformer;
 
 
-	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
-	private Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
-	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<UUID, AnnotationType>();
-	private Map<UUID, DefinedTerm> identifierTypeMap = new HashMap<UUID, DefinedTerm>();
+	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<>();
+	private Map<UUID, MarkerType> markerTypeMap = new HashMap<>();
+	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<>();
+	private Map<UUID, DefinedTerm> identifierTypeMap = new HashMap<>();
 
-	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
-	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
-	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
-	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
-	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
+	private Map<UUID, NamedArea> namedAreaMap = new HashMap<>();
+	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<>();
+	private Map<UUID, Feature> featureMap = new HashMap<>();
+	private Map<UUID, State> stateTermMap = new HashMap<>();
+	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<>();
 
-	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
-	private Map<UUID, DefinedTerm> modifierMap = new HashMap<UUID, DefinedTerm>();
+	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<>();
+	private Map<UUID, DefinedTerm> modifierMap = new HashMap<>();
 
-	private Map<UUID, PresenceAbsenceTerm> presenceTermMap = new HashMap<UUID, PresenceAbsenceTerm>();
-	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
-	private Map<UUID, TaxonRelationshipType> taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
+	private Map<UUID, PresenceAbsenceTerm> presenceTermMap = new HashMap<>();
+	private Map<UUID, Language> languageMap = new HashMap<>();
+	private Map<UUID, TaxonRelationshipType> taxonRelationshipTypeMap = new HashMap<>();
 
-	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
-	private Map<UUID, Rank> rankMap = new HashMap<UUID, Rank>();
-	private Map<UUID, DefinedTerm> kindOfUnitMap = new HashMap<UUID, DefinedTerm>();
+	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<>();
+	private Map<UUID, Rank> rankMap = new HashMap<>();
+	private Map<UUID, DefinedTerm> kindOfUnitMap = new HashMap<>();
 
 
 
@@ -362,6 +369,15 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		referenceSystemMap.put(referenceSystem.getUuid(), referenceSystem);
 	}
 
+	public Object getStatusItem(String key){
+        return anyStatusItemMap.get(key);
+    }
+
+    public void putStatusItem(String key, Object statusItem){
+        anyStatusItemMap.put(key, statusItem);
+    }
+
+
 
 	//TODO make this abstract or find another way to force that the
 	//transformer exists
@@ -374,7 +390,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	}
 
 	/**
-	 * Returns true, if this import is in validation state. Flase otherwise
+	 * Returns true, if this import is in validation state. False otherwise
 	 * @return
 	 */
 	public boolean isCheck() {
@@ -389,6 +405,18 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		this.isCheck = isCheck;
 	}
 
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public void setUnsuccessfull(){
+        this.success = false;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
     /**
      * Returns the import report as a byte array
      * @return
@@ -396,6 +424,5 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
     public byte[] getReportAsByteArray() {
         return null;
     }
-
 
 }

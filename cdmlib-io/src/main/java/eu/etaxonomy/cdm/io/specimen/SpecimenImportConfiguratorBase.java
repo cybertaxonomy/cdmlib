@@ -25,7 +25,10 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @date 15.07.2016
  *
  */
-public abstract class SpecimenImportConfiguratorBase<STATE extends SpecimenImportStateBase, InputStream>  extends ImportConfiguratorBase<STATE, InputStream> {
+public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase<CONFIG,STATE>, InputStream>
+        extends ImportConfiguratorBase<STATE, InputStream> {
+
+    private static final long serialVersionUID = 4741134251527063988L;
 
     /**
      * @param transformer
@@ -48,7 +51,7 @@ public abstract class SpecimenImportConfiguratorBase<STATE extends SpecimenImpor
     private boolean addMediaAsMediaSpecimen = false;
     private boolean reuseExistingMetaData = true;
 
-    private static String sourceReferenceTitle = null;
+    private String sourceReferenceTitle = null;
 
     private String taxonReference = null;
     private boolean addIndividualsAssociationsSuchAsSpecimenAndObservations = true;

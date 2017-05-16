@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @created 01.07.2008
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
-            extends CdmIoBase<STATE>
+            extends CdmIoBase<STATE, ImportResult>
             implements ICdmImport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8730012744209195616L;
@@ -155,6 +155,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 
 	}
+
+    @Override
+    protected ImportResult getNoDataResult(STATE state) {
+        return ImportResult.NewNoDataInstance();
+    }
+
+    @Override
+    protected ImportResult getDefaultResult(STATE state) {
+        return ImportResult.NewInstance();
+    }
 
 	protected Classification makeTree(STATE state, Reference reference){
 		String treeName = "Classification (Import)";
@@ -605,9 +615,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 				voc.addTerm(stateTerm);
 				getTermService().save(stateTerm);
-			}else{
-				logger.warn("No label provided for new state with uuid " + uuid);
-			}
+			}else if (stateTerm == null){
+                logger.warn("No label provided for new state with uuid " + uuid);
+            }
 			importState.putStateTerm(stateTerm);
 		}
 		return stateTerm;
@@ -1303,7 +1313,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 
-
+	protected Media getImageMedia(String uriString, boolean readMediaData) throws MalformedURLException {
+	    return getImageMedia(uriString, null, readMediaData);
+	}
 
 	/**
 	 * Creates
@@ -1313,16 +1325,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	protected Media getImageMedia(String uriString, boolean readMediaData) throws MalformedURLException {
+	protected Media getImageMedia(String uriString, String uriStrThumb, boolean readMediaData) throws MalformedURLException {
 		if( uriString == null){
 			return null;
 		} else {
-			ImageInfo imageInfo = null;
-			URI uri;
 			uriString = uriString.replace(" ", "%20");  //replace whitespace
 			try {
-				uri = new URI(uriString);
-				try {
+			    ImageInfo imageInfo = null;
+				URI uri = new URI(uriString);
+
+                try {
 					if (readMediaData){
 						logger.info("Read media data from: " + uri);
 						imageInfo = ImageInfo.NewInstance(uri, 0);
@@ -1333,14 +1345,42 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					fireWarningEvent(message, "unknown location", 2, 0);
 				}
 				ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
+
 				MediaRepresentation representation = MediaRepresentation.NewInstance();
+
 				if(imageInfo != null){
 					representation.setMimeType(imageInfo.getMimeType());
 					representation.setSuffix(imageInfo.getSuffix());
 				}
 				representation.addRepresentationPart(imageFile);
 				Media media = Media.NewInstance();
-				media.addRepresentation(representation);
+                media.addRepresentation(representation);
+
+				if (uriStrThumb != null){
+				    ImageInfo imageInfoThumb = null;
+	                uriStrThumb = uriStrThumb.replace(" ", "%20");  //replace whitespace
+	                URI uriThumb = new URI(uriStrThumb);
+	                try {
+	                    if (readMediaData){
+	                        logger.info("Read media data from: " + uriThumb);
+	                        imageInfoThumb = ImageInfo.NewInstance(uriThumb, 0);
+	                    }
+	                } catch (Exception e) {
+	                    String message = "An error occurred when trying to read image meta data for " + uriThumb.toString() + ": " +  e.getMessage();
+	                    logger.warn(message);
+	                    fireWarningEvent(message, "unknown location", 2, 0);
+	                }
+
+	                ImageFile imageFileFhumb = ImageFile.NewInstance(uriThumb, null, imageInfoThumb);
+				    MediaRepresentation reprThumb = MediaRepresentation.NewInstance();
+				    if(imageInfoThumb != null){
+				        reprThumb.setMimeType(imageInfoThumb.getMimeType());
+				        reprThumb.setSuffix(imageInfoThumb.getSuffix());
+	                }
+				    reprThumb.addRepresentationPart(imageFileFhumb);
+				    media.addRepresentation(reprThumb);
+				}
+
 				return media;
 			} catch (URISyntaxException e1) {
 				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  uriString;

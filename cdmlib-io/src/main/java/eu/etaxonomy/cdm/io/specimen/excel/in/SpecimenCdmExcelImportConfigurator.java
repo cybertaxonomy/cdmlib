@@ -27,7 +27,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 05.05.2011
  */
 public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportConfigurator.class);
+    private static final long serialVersionUID = -114046010543496409L;
+    private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new SpecimenCdmExcelTransformer();
 
 	//old
@@ -106,20 +107,11 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
         setInteractWithUser(interact);
     }
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
     public SpecimenCdmExcelImportState getNewState() {
 		return new SpecimenCdmExcelImportState(this);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -131,12 +123,6 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		return sourceReference;
 	}
 
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
 	@Override
     public String getSourceNameString() {
 		if (this.getSource() == null){

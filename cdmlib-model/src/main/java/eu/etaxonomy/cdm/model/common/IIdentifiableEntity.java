@@ -20,8 +20,29 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void setLsid(LSID lsid);
 
+    /**
+     * Returns a title cache String created by the according cache strategy
+     * with the given identifiable entity WITHOUT setting the titleCache
+     * of <code>this</code> object.
+     * This method is meant for internal use and usually not needed for
+     * external use. Use {@link #getTitleCache()} instead.
+     *
+     * @see #getTitleCache()
+     * @return the computed title cache string
+     */
     public String generateTitle();
 
+    /**
+     * Returns the title cache. If the title cache does not
+     * exist yet or if a refresh is required the title cache is
+     * recomputed and stored in the entity.<BR>
+     * It is currently up to the implementing classes
+     * if the cache is recomputed each time or only if the entity
+     * has changed.
+     *
+     * @see #generateTitle()
+     * @return the titleCache
+     */
     public String getTitleCache();
 
     /**
@@ -123,12 +144,14 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     /**
      * Adds an identifier at the given position. For use of
-     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}.
+     * If <code>index</code> is <code>null</code> the identifier is added to the end
+     * of the list.
      * @see #getIdentifiers()
      * @param index the list index
      * @param identifier the identifier
      */
-    public void addIdentifier(int index, Identifier identifier);
+    public void addIdentifier(Integer index, Identifier identifier);
 
     /**
      * Removes an identifier at the given position. For use of

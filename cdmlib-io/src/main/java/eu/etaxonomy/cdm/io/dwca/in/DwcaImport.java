@@ -25,7 +25,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 @Component
 public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaImportState>{
-	private static final Logger logger = Logger.getLogger(DwcaImport.class);
+
+    private static final long serialVersionUID = -4340782092317841321L;
+    private static final Logger logger = Logger.getLogger(DwcaImport.class);
 
 	@Override
 	protected void doInvoke(DwcaImportState state) {

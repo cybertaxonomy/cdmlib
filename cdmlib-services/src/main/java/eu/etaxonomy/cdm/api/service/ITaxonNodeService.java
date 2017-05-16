@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -247,9 +246,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * Depending on the configuration, also synonym secundum will be set.
      * See {@link SetSecundumForSubtreeConfigurator} for further configuration
      * options.
+     * @param b
      * @param configurator
      * @return UpdateResult
      */
-    UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator configurator, IProgressMonitor monitor);
+    UpdateResult setSecundumForSubtree(UUID subtreeUuid,  Reference newSec, boolean includeAcceptedTaxa, boolean includeSynonyms, boolean overwriteExistingAccepted, boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
 }

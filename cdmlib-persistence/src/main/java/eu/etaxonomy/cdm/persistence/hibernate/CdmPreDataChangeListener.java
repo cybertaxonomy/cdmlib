@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -36,11 +35,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 7 Jul 2015
  *
  */
-public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpdateEventListener {
-    private static final long serialVersionUID = -7581071903134036209L;
+public class CdmPreDataChangeListener
+        implements PreInsertEventListener, PreUpdateEventListener {
 
-    static String sep = ITreeNode.separator;
-    static String pref = ITreeNode.treePrefix;
+    private static final long serialVersionUID = -7581071903134036209L;
 
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {

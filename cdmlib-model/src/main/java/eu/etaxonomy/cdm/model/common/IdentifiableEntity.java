@@ -368,24 +368,29 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     	return result;
     }
 
-     @Override
-    public void addIdentifier(int index, Identifier identifier){
+    @Override
+    public void addIdentifier(Integer index, Identifier identifier){
         if (identifier != null){
         	//deduplication
         	int oldIndex = getIdentifiers().indexOf(identifier);
         	if(oldIndex > -1){
         		getIdentifiers().remove(identifier);
-        		if (oldIndex < index){
+        		if (index != null && oldIndex < index){
         			index--;
         		}
         	}
-        	getIdentifiers().add(index, identifier);
+
+        	if (index != null){
+        	    getIdentifiers().add(index, identifier);
+        	}else{
+        	    getIdentifiers().add(identifier);
+        	}
         }
     }
 
     @Override
     public void addIdentifier(Identifier identifier){
-        addIdentifier(getIdentifiers().size(), identifier);
+        addIdentifier(null, identifier);
     }
 
     @Override

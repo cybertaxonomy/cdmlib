@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.CdmUpdater;
 /**
  * This class is meant for functional testing of model changes. It is not meant
  * for running in maven.
+ *
  * @author a.mueller
  * @date 22.05.2015
  * @see CdmUpdater

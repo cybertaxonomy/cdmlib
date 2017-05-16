@@ -201,7 +201,7 @@ public class Language extends DefinedTermBase<Language> {
     private static final UUID uuidGbaya = UUID.fromString("f8fb14ee-eb4e-49fa-b439-ed5deac59daa");
     private static final UUID uuidGermanic_Other = UUID.fromString("d32011e1-faf8-4310-80b1-a79476a8cecc");
     private static final UUID uuidGeorgian = UUID.fromString("fb64b07c-c079-4fda-a803-212a0beca61b");
-    private static final UUID uuidGerman = UUID.fromString("d1131746-e58b-4e80-a865-f5182c9c3073");
+    public static final UUID uuidGerman = UUID.fromString("d1131746-e58b-4e80-a865-f5182c9c3073");
     private static final UUID uuidGeez = UUID.fromString("f42c6f52-1a3c-4965-8dfa-2c828463741c");
     private static final UUID uuidGilbertese = UUID.fromString("b20fa600-5b9b-4714-8dcd-51275a6e1ab0");
     private static final UUID uuidGaelic_ScottishGaelic = UUID.fromString("b5d99800-b40b-4e3d-ada9-610475ffa68b");

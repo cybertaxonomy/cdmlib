@@ -75,6 +75,13 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 
+    public static IdentifiableSource NewPrimaryMediaSourceInstance(Reference citation, String microCitation){
+        IdentifiableSource result = NewInstance(OriginalSourceType.PrimaryMediaSource);
+        result.setCitation(citation);
+        result.setCitationMicroReference(microCitation);
+        return result;
+    }
+
 // ******************************** FIELDS ************************************/
 
 

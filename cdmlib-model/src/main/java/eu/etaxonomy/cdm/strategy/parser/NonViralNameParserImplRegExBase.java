@@ -67,7 +67,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     								//+ "(" + month + ")?)" ;                 // optional month
     //!! also used by TimePeriodParser
     public static String incorrectYearPhrase = "(\"" + correctYearPhrase + "\"|" + correctYearPhrase + "|"
-            + UTF8.ENGLISH_QUOT_START_LOW + correctYearPhrase + UTF8.ENGLISH_QUOT_END_HIGH + ")"
+            + UTF8.QUOT_DBL_LOW9 + correctYearPhrase + UTF8.QUOT_DBL_HIGH_REV9 + ")"
 			+ fWs + "\\[" + singleYear + "\\]"  ;
     protected static String yearPhrase = "(" + correctYearPhrase + "|" + incorrectYearPhrase + ")";
 
@@ -93,7 +93,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
 
     //AuthorString
-    protected static String qm = "[" + UTF8.RIGHT_SINGLE_QUOT + UTF8.ACUTE_ACCENT + "'`]";
+    protected static String qm = "[" + UTF8.QUOT_SINGLE_RIGHT + UTF8.ACUTE_ACCENT + "'`]";
     protected static String authorPart = "(" + "([OdDL]"+qm+"|"+ qm + "t\\s?|ten\\s||l[ae]\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC\\.)I?" + "(" + qm + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|-e|de(n|l|\\sla)?)" ;
     protected static String author = "((" + authorPart + "(" + fWs + "|-)" + ")+" + "(f(il)?\\.|secundus|jun\\.|ter|bis)?|Man in "+qm+"t Veld|Sant"+qm+"Anna)" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
@@ -270,8 +270,10 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String genusOrSupraGenus = "("+hybridFull+")?" + capitalEpiWord;
     protected static String infraGenus = capitalEpiWord + oWs + InfraGenusMarker + oWs + capitalEpiWord;
     protected static String aggrOrGroup = capitalEpiWord + oWs + nonCapitalEpiWord + oWs + aggrOrGroupMarker;
-    protected static String species = genusOrSupraGenus + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
-    protected static String speciesWithInfraGen = genusOrSupraGenus + oWs + "\\(" + capitalEpiWord + "\\)" + oWs + nonCapitalEpiWord;
+    protected static String spNov = "sp\\.(\\s*nov\\.)?(\\s*\\d{1,2})?";
+    protected static String specificEpi = "(" + nonCapitalEpiWord + "|" + spNov + ")";
+    protected static String species = genusOrSupraGenus + oWs + "("+hybridPart+")?" + specificEpi;
+    protected static String speciesWithInfraGen = genusOrSupraGenus + oWs + "\\(" + capitalEpiWord + "\\)" + oWs + specificEpi;
 
     protected static String infraSpecies = species + oWs + infraSpeciesMarker + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String zooInfraSpecies = species + oWs + "(" + infraSpeciesMarker + oWs +")?" + "("+hybridPart+")?" + nonCapitalEpiWord;
@@ -329,6 +331,8 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static Pattern anyBotanicFullNamePattern = Pattern.compile(anyBotanicFullName);
     protected static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
+
+    protected static Pattern spNovPattern = Pattern.compile(spNov);
 
 
 }

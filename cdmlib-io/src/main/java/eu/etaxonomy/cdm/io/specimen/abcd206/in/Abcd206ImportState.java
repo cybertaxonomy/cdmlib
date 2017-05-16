@@ -10,10 +10,12 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -22,31 +24,23 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
-public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportConfigurator<Abcd206ImportState, InputStream>, Abcd206ImportState>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Abcd206ImportState.class);
+public class Abcd206ImportState
+        extends SpecimenImportStateBase<Abcd206ImportConfigurator, Abcd206ImportState>{
 
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Abcd206ImportState.class);
 
 	private String prefix;
 
+	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
 
-	private List<String> associatedUnitIds = new ArrayList<String>();
+	private Set<URI> allAccesPoints = new HashSet<>();
 
-
-
-
-	//private Abcd206DataHolder dataHolder;
-
-
-
+	private URI actualAccessPoint;
 
 
 //****************** CONSTRUCTOR ***************************************************/
-
-
-
 
 
     public Abcd206ImportState(Abcd206ImportConfigurator config) {
@@ -68,12 +62,6 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
         this.dataHolder = dataHolder;
     }
 
-
-
-
-
-
-
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
@@ -90,12 +78,41 @@ public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportCon
         return importStream.toByteArray();
     }
 
-    public void setAssociatedUnitIds(List<String> associatedUnitIds){
+    public void setAssociatedUnitIds(List<String[]> associatedUnitIds){
         this.associatedUnitIds = associatedUnitIds;
     }
 
-    public List<String> getAssociatedUnitIds(){
+    public List<String[]> getAssociatedUnitIds(){
         return this.associatedUnitIds;
+    }
+
+    /**
+     * @return the actualAccesPoint
+     */
+    public Set<URI> getActualAccesPoint() {
+        return allAccesPoints;
+    }
+
+    /**
+     * @param actualAccesPoint the actualAccesPoint to set
+     */
+    public void addActualAccesPoint(URI actualAccesPoint) {
+        this.allAccesPoints.add(actualAccesPoint);
+    }
+
+    /**
+     * @return the actualAccessPoint
+     */
+    public URI getActualAccessPoint() {
+        return actualAccessPoint;
+    }
+
+    /**
+     * @param actualAccessPoint the actualAccessPoint to set
+     */
+    public void setActualAccessPoint(URI actualAccessPoint) {
+        this.addActualAccesPoint(actualAccessPoint);
+        this.actualAccessPoint = actualAccessPoint;
     }
 
 //

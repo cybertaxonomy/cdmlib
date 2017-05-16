@@ -194,7 +194,6 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidLeaflets = UUID.fromString("0efcfbb5-7f7a-454f-985e-50cea6523fef");
 	public static final UUID uuidLeaves = UUID.fromString("378c6d5f-4f8a-4769-b054-50ddaff6f080");
 	public static final UUID uuidBranchlets = UUID.fromString("e63af3b4-aaff-4b4d-a8fe-3b13b79974c8");
-	public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
 	public static final UUID uuidInflorescences = UUID.fromString("c476f5fb-dc06-4408-af36-f48e625f5767");
 	public static final UUID uuidMaleInflorescences = UUID.fromString("374fa3fe-70c2-4ec9-a611-97c62288aeba");
 	public static final UUID uuidFemaleInflorescences = UUID.fromString("179af784-850c-4187-ba1f-cdc9f68970ef");
@@ -1287,8 +1286,8 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Leaflets")){return uuidLeaflets;
 		}else if (key.equalsIgnoreCase("Leaves")){return uuidLeaves;
 		}else if (key.equalsIgnoreCase("Branchlets")){return uuidBranchlets;
-		}else if (key.equalsIgnoreCase("lifeform")){return uuidLifeform;
-		}else if (key.equalsIgnoreCase("habit")){return uuidLifeform;
+		}else if (key.equalsIgnoreCase("lifeform")){return Feature.uuidLifeform;
+		}else if (key.equalsIgnoreCase("habit")){return Feature.uuidLifeform;
 		}else if (key.equalsIgnoreCase("Inflorescences")){return uuidInflorescences;
 		}else if (key.equalsIgnoreCase("Flowers")){return uuidFlowers;
 		}else if (key.equalsIgnoreCase("Sepals")){return uuidSepals;

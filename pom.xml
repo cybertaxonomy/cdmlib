@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>4.6.0</version>
+  <version>4.7.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -46,12 +46,13 @@
 	<jaxb.version>2.2.11</jaxb.version>
 	<cglib.version>3.2.0</cglib.version>
 	<aspectj.version>1.8.8</aspectj.version>
+    <javadoc.opts>-Xdoclint:none</javadoc.opts>
   </properties>
   
   <scm>
     <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib.git</connection>
     <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib.git</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree</url>
   </scm>
   
   <prerequisites>
@@ -225,7 +226,7 @@
     <!-- the cdm internal repository -->
     <repository>
       <id>EditRepository</id>
-      <url>http://wp5.e-taxonomy.eu/mavenrepo/</url>
+      <url>http://cybertaxonomy.eu/mavenrepo/</url>
     </repository>
     <!-- apache incubating repository -->
     <repository>
@@ -361,6 +362,7 @@
           <quiet>true</quiet>
           <detectLinks>true</detectLinks>
           <failOnError>false</failOnError>
+          <additionalparam>${javadoc.opts}</additionalparam>
         </configuration>
         <executions>
           <execution>
@@ -444,8 +446,8 @@
           <fromDir>${project.build.directory}/docbkx/</fromDir>
           <includes>**/*</includes>
           <excludes />
-          <url>scpexe://wp5.e-taxonomy.eu</url>
-          <serverId>wp5.e-taxonomy.eu</serverId>
+          <url>scpexe://cybertaxonomy.eu</url>
+          <serverId>cybertaxonomy.eu</serverId>
           <toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
         </configuration>
         <executions>
@@ -548,6 +550,7 @@
         <version>2.7</version>
         <configuration>
           <detectLinks>true</detectLinks>
+          <additionalparam>${javadoc.opts}</additionalparam>
         </configuration>
       </plugin>
       <plugin>
@@ -625,15 +628,15 @@
   <!-- DISTRIBUTION MANAGEMENT -->
   <distributionManagement>
     <site>
-      <id>wp5.e-taxonomy.eu</id>
+      <id>cybertaxonomy.eu</id>
       <name>CDM Library Website</name>
-      <url>scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
+      <url>scpexe://cybertaxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
     </site>
     <repository>
       <uniqueVersion>false</uniqueVersion>
-      <id>wp5.e-taxonomy.eu</id>
+      <id>cybertaxonomy.eu</id>
       <name>Edit Maven Repository</name>
-      <url>scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
+      <url>scpexe://cybertaxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
       <layout>default</layout>
     </repository>
   </distributionManagement>

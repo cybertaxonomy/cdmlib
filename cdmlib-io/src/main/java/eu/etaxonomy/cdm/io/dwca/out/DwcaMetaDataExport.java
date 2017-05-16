@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
 
 /**
@@ -32,13 +33,14 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
 
 	private static final String fileName = "meta.xml";
-	
+
 	/**
 	 * Constructor
 	 */
 	public DwcaMetaDataExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves the MetaData for a Darwin Core Archive File.
@@ -53,34 +55,34 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		DwcaMetaDataRecord metaDataRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, null);
 		metaDataRecord.setMetaData(true);
 		state.addMetaRecord(metaDataRecord);
-    	
+
 		XMLStreamWriter writer = null;
 		try {
 			writer = createXmlStreamWriter(state, fileName);
-			
+
 			String rootNamespace = "http://rs.tdwg.org/dwc/text/";
 			String rootName = "archive";
-			
+
 			List<DwcaMetaDataRecord> metaRecords = state.getMetaRecords();
-			
-			// create header 
-			writer.writeStartDocument(); 
+
+			// create header
+			writer.writeStartDocument();
 			writer.setDefaultNamespace(rootNamespace);
-			
-				// create root element 
+
+				// create root element
 				writer.writeStartElement(rootName);
 				writer.writeNamespace(null, rootNamespace);
-				
+
 				writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", "http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd");
-				
+
 				for (DwcaMetaDataRecord metaRecord : metaRecords){
 					if (! metaRecord.isMetaData()){
 						writeMetaDataRecord(writer, config, metaRecord);
 					}
 				}
-				writer.writeEndElement(); 
-			writer.writeEndDocument(); 
+				writer.writeEndElement();
+			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
@@ -96,36 +98,36 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		} finally{
 			closeWriter(writer, state);
 		}
-		
+
 		return;
 	}
 
 	private void writeMetaDataRecord(XMLStreamWriter writer,
 			DwcaTaxExportConfigurator config, DwcaMetaDataRecord metaRecord) throws XMLStreamException {
 		if (! metaRecord.hasEntries()){
-			return; 
+			return;
 		}
 		String encoding = config.getEncoding();
 		String linesTerminatedBy = config.getLinesTerminatedBy();
 		String fieldsEnclosedBy = config.getFieldsEnclosedBy();
 		String ignoreHeaderLines = config.isHasHeaderLines()? "1":"0";
 		String fieldsTerminatedBy= config.getFieldsTerminatedBy();
-		
-		// create core element 
+
+		// create core element
 		String elementName = metaRecord.isCore()? "core": "extension";
 		String rowType = metaRecord.getRowType();
 		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy, linesTerminatedBy,ignoreHeaderLines, rowType);
 			String filename = metaRecord.getFileLocation();
 			writeFiles(writer, filename );
 			writeId(writer, metaRecord.isCore());
-			
+
 			List<FieldEntry> entryList = metaRecord.getEntries();
 			for (FieldEntry fieldEntry : entryList){
 				if (fieldEntry.index != 0){
 					writeFieldLine(writer, fieldEntry.index, fieldEntry.term, fieldEntry.defaultValue);
 				}
 			}
-	
+
 		writer.writeEndElement();
 	}
 
@@ -138,7 +140,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		}
 		writer.writeAttribute("term", term.toString());
 		writer.writeEndElement();
-		
+
 	}
 
 	private void writeId(XMLStreamWriter writer, boolean isCore) throws XMLStreamException {
@@ -155,7 +157,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			writer.writeCharacters(filename);
 			writer.writeEndElement();
 		writer.writeEndElement();
-		
+
 	}
 
 	/**
@@ -172,7 +174,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			String linesTerminatedBy, String fieldsEnclosedBy, String fieldsTerminatedBy,
 			String ignoreHeaderLines, String rowType)
 			throws XMLStreamException {
-		writer.writeStartElement(elementName); 
+		writer.writeStartElement(elementName);
 		writer.writeAttribute( "encoding", encoding );
 		writer.writeAttribute( "linesTerminatedBy", linesTerminatedBy );
 		writer.writeAttribute( "fieldsEnclosedBy", fieldsEnclosedBy );
@@ -180,7 +182,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		writer.writeAttribute("ignoreHeaderLines", ignoreHeaderLines);
 		writer.writeAttribute("rowType", rowType);
 	}
-	
+
 
 
 	@Override
@@ -198,5 +200,14 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoMetaData();
 	}
-	
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] getByteArray() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

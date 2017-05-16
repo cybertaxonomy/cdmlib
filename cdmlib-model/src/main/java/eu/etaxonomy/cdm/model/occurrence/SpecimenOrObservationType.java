@@ -309,42 +309,39 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 
 	// *************************** DELEGATE **************************************/
 
-		private static EnumeratedTermVoc<SpecimenOrObservationType> delegateVoc;
-		private IEnumTerm<SpecimenOrObservationType> delegateVocTerm;
+	private static EnumeratedTermVoc<SpecimenOrObservationType> delegateVoc;
+	private IEnumTerm<SpecimenOrObservationType> delegateVocTerm;
 
-		static {
-			delegateVoc = EnumeratedTermVoc.getVoc(SpecimenOrObservationType.class);
-		}
+	static {
+		delegateVoc = EnumeratedTermVoc.getVoc(SpecimenOrObservationType.class);
+	}
 
-		@Override
-		public String getKey(){return delegateVocTerm.getKey();}
+	@Override
+	public String getKey(){return delegateVocTerm.getKey();}
 
-		@Override
-	    public String getMessage(){return delegateVocTerm.getMessage();}
+	@Override
+    public String getMessage(){return delegateVocTerm.getMessage();}
 
-		@Override
-	    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-
-
-		@Override
-	    public UUID getUuid() {return delegateVocTerm.getUuid();}
-
-		@Override
-	    public SpecimenOrObservationType getKindOf() {return delegateVocTerm.getKindOf();}
-
-		@Override
-	    public Set<SpecimenOrObservationType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
-
-		@Override
-		public boolean isKindOf(SpecimenOrObservationType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
-
-		@Override
-	    public Set<SpecimenOrObservationType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
-
-		public static SpecimenOrObservationType getByKey(String key){return delegateVoc.getByKey(key);}
-	    public static SpecimenOrObservationType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+	@Override
+    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
 
+	@Override
+    public UUID getUuid() {return delegateVocTerm.getUuid();}
 
+	@Override
+    public SpecimenOrObservationType getKindOf() {return delegateVocTerm.getKindOf();}
+
+	@Override
+    public Set<SpecimenOrObservationType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+	@Override
+	public boolean isKindOf(SpecimenOrObservationType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+	@Override
+    public Set<SpecimenOrObservationType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+
+	public static SpecimenOrObservationType getByKey(String key){return delegateVoc.getByKey(key);}
+    public static SpecimenOrObservationType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }

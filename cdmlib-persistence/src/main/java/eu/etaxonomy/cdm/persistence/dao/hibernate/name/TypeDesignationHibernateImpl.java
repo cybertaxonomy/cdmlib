@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  *
@@ -24,18 +24,25 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
  *
  */
 @Repository
-public class TypeDesignationHibernateImpl<T extends TypeDesignationBase> 
+public class TypeDesignationHibernateImpl<T extends TypeDesignationBase>
 			extends ReferencedEntityDaoImpl<TypeDesignationBase> implements ITypeDesignationDao {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationHibernateImpl.class);
 
 	public TypeDesignationHibernateImpl() {
-		super(TypeDesignationBase.class); 
+		super(TypeDesignationBase.class);
 	}
 
 	//TODO limit start
-	public List<TypeDesignationBase> getAllTypeDesignations(Integer limit, Integer start) {
+	@Override
+    public List<TypeDesignationBase> getAllTypeDesignations(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
+		if(limit != null){
+		    crit.setMaxResults(limit);
+		}
+		if(start != null){
+		    crit.setFirstResult(start);
+		}
 		List<TypeDesignationBase> results = crit.list();
 		return results;
 	}

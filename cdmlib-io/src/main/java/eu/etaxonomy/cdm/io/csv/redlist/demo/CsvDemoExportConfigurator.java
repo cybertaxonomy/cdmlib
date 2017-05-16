@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -74,10 +75,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 
 	private List<CsvDemoRecord> recordList;
 
-
-
-
-    private List<Feature> features;
+	private List<Feature> features;
 	private String classificationTitleCache;
 	private List<NamedArea> areas;
 
@@ -150,6 +148,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	 */
 	private CsvDemoExportConfigurator(ICdmDataSource source, File destination) {
 		super(destination, source, defaultTransformer);
+		this.resultType = ExportResultType.BYTE_ARRAY;
 	}
 
 	/* (non-Javadoc)

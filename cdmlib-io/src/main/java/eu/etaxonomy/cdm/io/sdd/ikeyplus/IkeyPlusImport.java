@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.plexus.util.StringUtils;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -235,7 +235,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         } else {
             label = node.getStringStates();
         }
-        if (StringUtils.isBlank(label)){
+        if (CdmUtils.isBlank(label)){
             return null;
         }else{
             return KeyStatement.NewInstance(label);

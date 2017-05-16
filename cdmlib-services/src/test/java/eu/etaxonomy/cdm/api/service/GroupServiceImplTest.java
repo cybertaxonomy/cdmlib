@@ -27,8 +27,8 @@ public class GroupServiceImplTest extends CdmIntegrationTest {
 
     @Test
     public void testDeleteGroup(){
-    	GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance();
-    	testAuthority.setAuthority("ADMIN_ALL");
+        String admin_all = "ADMIN_ALL";
+    	GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance(admin_all);
     	Group group = Group.NewInstance("TestGroup");
     	group.addGrantedAuthority(testAuthority);
     	UUID groupUUID =  groupService.saveGroup(group);

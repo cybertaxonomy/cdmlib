@@ -14,10 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -25,12 +26,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
 /**
- * @author a.mueller
- * @created 29.07.2008
- * @version 1.0
+ * @author p.kelber
+ * @created 2012
  */
-public class TaxonXImportConfigurator extends SpecimenImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
-    //	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
+public class TaxonXImportConfigurator
+    extends ImportConfiguratorBase<TaxonXImportState, URI>{
+
+    private static final long serialVersionUID = -7607808010688414010L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 
     private String defaultImportClassification = null;
     //if true the information in the mods part (taxonxHeader)
@@ -113,7 +117,6 @@ public class TaxonXImportConfigurator extends SpecimenImportConfiguratorBase<Tax
         return new TaxonXImportState(this);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public Reference getSourceReference() {
         if (sourceReference == null){
@@ -224,16 +227,10 @@ public class TaxonXImportConfigurator extends SpecimenImportConfiguratorBase<Tax
 
     }
 
-    /**
-     * @return
-     */
     public Map<String, Person> getPersons() {
         return titleCachePerson;
     }
 
-    /**
-     * @param titleCachePerson
-     */
     public void setPersons(Map<String, Person> titleCachePerson) {
         this.titleCachePerson=titleCachePerson;
         //System.out.println(titleCachePerson);
@@ -242,15 +239,12 @@ public class TaxonXImportConfigurator extends SpecimenImportConfiguratorBase<Tax
     public Map<String,UUID> getNamedAreaDecisions() {
         return namedAreaDecisions;
     }
-
     public void setNamedAreaDecisions(Map<String,UUID> namedAreaDecisions) {
         this.namedAreaDecisions = namedAreaDecisions;
     }
-
     public void putNamedAreaDecision(String areaStr,UUID uuid){
         this.namedAreaDecisions.put(areaStr,uuid);
     }
-
     public UUID getNamedAreaDecision(String areaStr){
         return namedAreaDecisions.get(areaStr);
     }

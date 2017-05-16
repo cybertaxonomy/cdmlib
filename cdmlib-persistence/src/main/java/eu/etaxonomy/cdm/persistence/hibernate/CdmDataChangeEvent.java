@@ -23,7 +23,6 @@ import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
-//$Id$
 /**
  * The CrudEvent unifies all CRUD events into one interface.
  * Crud as in Create, Retrieve, Update, Delete. This event will only hold CdmBase objects.
@@ -31,7 +30,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author n.hoffmann
  * @created 24.03.2009
- * @version 1.0
  */
 public class CdmDataChangeEvent extends AbstractEvent{
     private static final long serialVersionUID = 9113025682352080372L;

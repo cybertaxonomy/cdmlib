@@ -14,14 +14,16 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -33,16 +35,14 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>>
         extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
-    private static final long serialVersionUID = 2759164811664484732L;
 
+    private static final long serialVersionUID = 2759164811664484732L;
     private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
+	private ArrayList<HashMap<String, String>> recordList = null;
 
-	ArrayList<HashMap<String, String>> recordList = null;
-
-	private final CdmApplicationController appCtr = null;
 	private ExcelImportConfiguratorBase configurator = null;
 
 
@@ -68,8 +68,9 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 
 		byte[] data = null;
 		// read and save all rows of the excel worksheet
-		if (state.getConfig() instanceof NormalExplicitImportConfigurator && ((NormalExplicitImportConfigurator)state.getConfig()).getStream() != null){
-		    data =  ((NormalExplicitImportConfigurator)state.getConfig()).getStream();
+		if ((state.getConfig() instanceof NormalExplicitImportConfigurator || state.getConfig() instanceof ExcelDistributionUpdateConfigurator) &&
+		        (state.getConfig().getStream() != null || state.getConfig().getStream() != null)){
+		    data =  state.getConfig().getStream();
 		} else{
 		    source = state.getConfig().getSource();
 		}
@@ -84,8 +85,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
                 ByteArrayInputStream stream = new ByteArrayInputStream(data);
                 recordList = ExcelUtils.parseXLS(stream, sheetName);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }else{
     		try {
@@ -184,11 +184,6 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	}
 
 
-	public CdmApplicationController getApplicationController() {
-		return appCtr;
-	}
-
-
 	protected int floatString2IntValue(String value) {
 		int intValue = 0;
 		try {
@@ -218,5 +213,21 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		return result;
 	}
 
-
+    /**
+     * Returns the value of the record map for the given key.
+     * The value is trimmed and empty values are set to <code>null</code>.
+     * @param record
+     * @param originalKey
+     * @return the value
+     */
+    protected String getValue(Map<String, String> record, String originalKey) {
+        String value = record.get(originalKey);
+        if (! StringUtils.isBlank(value)) {
+            if (logger.isDebugEnabled()) { logger.debug(originalKey + ": " + value); }
+            value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
+            return value;
+        }else{
+            return null;
+        }
+    }
 }

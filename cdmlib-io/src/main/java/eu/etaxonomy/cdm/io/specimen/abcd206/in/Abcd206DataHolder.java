@@ -39,11 +39,47 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
 
 
-
-    protected List<String> associatedUnitIds;
+    protected List<String[]> associatedUnitIds;
 
 
     protected String institutionCode;
+    /**
+     * @return the institutionCode
+     */
+    public String getInstitutionCode() {
+        return institutionCode;
+    }
+
+
+
+
+    /**
+     * @param institutionCode the institutionCode to set
+     */
+    public void setInstitutionCode(String institutionCode) {
+        this.institutionCode = institutionCode;
+    }
+
+
+
+
+    /**
+     * @return the collectionCode
+     */
+    public String getCollectionCode() {
+        return collectionCode;
+    }
+
+
+
+
+    /**
+     * @param collectionCode the collectionCode to set
+     */
+    public void setCollectionCode(String collectionCode) {
+        this.collectionCode = collectionCode;
+    }
+
     protected String collectionCode;
 
 
@@ -98,7 +134,7 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         setMultimediaObjects(new HashMap<String,Map<String, String>>());
         setGatheringMultimediaObjects(new HashMap<String,Map<String, String>>());
         setDocSources(new ArrayList<String>());
-        associatedUnitIds = new ArrayList<String>();
+        associatedUnitIds = new ArrayList<String[]>();
     }
 
 
@@ -186,11 +222,11 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         return this.gatheringMethod ;
 
     }
-    public void addAssociatedUnitId(String associatedUnitId){
+    public void addAssociatedUnitId(String[] associatedUnitId){
         this.associatedUnitIds.add(associatedUnitId);
     }
 
-    public List<String> getAssociatedUnitIds(){
+    public List<String[]> getAssociatedUnitIds(){
         return associatedUnitIds;
     }
 

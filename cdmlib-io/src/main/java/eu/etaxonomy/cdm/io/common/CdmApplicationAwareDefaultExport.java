@@ -19,7 +19,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -33,25 +32,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
  */
 
 @Component("defaultExport")
-public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> implements ICdmExporter<T>, ApplicationContextAware {
-	private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultExport.class);
+public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
+        implements ICdmExporter<T>, ApplicationContextAware {
+
+    private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultExport.class);
 
 	protected ApplicationContext applicationContext;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-	 */
 	@Override
     public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-
-//	DbExportStateBase<T> state;
 
 
 	//Constants
@@ -75,52 +70,69 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 
 
 	@Override
-    public boolean invoke(IExportConfigurator config){
+    public ExportResult invoke(IExportConfigurator config){
+	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 		if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
-			return doCheck(config);
+		    boolean success =  doCheck(config);
+		    if (! success){
+		        result.setAborted();
+		    }
 		}else if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_AND_EXPORT)){
-			doCheck(config);
-			return doExport(config);
+		    boolean success = doCheck(config);
+		    if (success){
+		        result = doExport(config);
+		    }else{
+		        result.setAborted();
+		    }
 		}else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
-			return doExport(config);
+			result = doExport(config);
 		}else{
-			logger.error("Unknown CHECK type");
-			return false;
-		}
+            String message = "Unknown CHECK type";
+            logger.error(message);
+            result.addError(message);
+ 		}
+		return result;
 	}
 
 
     public ExportResult execute(IExportConfigurator config) {
-	    ExportResult result = new ExportResult();
+	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 	    if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
-            result.setSuccess(doCheck(config));
-        } else if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_AND_EXPORT)){
-            boolean success =  doCheck(config);
-            if(success) {
-               success = doExport(config, result);
+	        boolean success =  doCheck(config);
+            if (! success){
+                result.setAborted();
             }
-            result.setSuccess(success);
-
+        } else if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_AND_EXPORT)){
+            boolean success = doCheck(config);
+            if (success){
+                result = doExport(config);
+            }else{
+                result.setAborted();
+            }
         } else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
-            doExport(config, result);
+            result = doExport(config);
         } else{
-            logger.error("Unknown CHECK type");
-            return null;
+            String message = "Unknown CHECK type";
+            logger.error(message);
+            result.addError(message);
         }
 	    return result;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected <S extends IExportConfigurator> boolean doCheck(S  config){
-		boolean result = true;
+
+	    boolean result = true;
 
 		//check
 		if (config == null){
 			logger.warn("CdmExportConfiguration is null");
+//			result.setState(ExportResultState.ABORTED);
 			return false;
 		}else if (! config.isValid()){
 			logger.warn("CdmExportConfiguration is not valid");
-			return false;
+//			result.setState(ExportResultState.ABORTED);
+            return false;
 		}
 		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 
@@ -137,13 +149,14 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 					result &= cdmIo.check(state);
 					unRegisterObservers(config, cdmIo);
 				}else{
-					logger.error("cdmIO for class " + (ioClass == null ? "(null)" : ioClass.getSimpleName()) + " was null");
-					result = false;
+				    String message = "cdmIO for class " + (ioClass == null ? "(null)" : ioClass.getSimpleName()) + " was null";
+					logger.error(message);
+					return false;
 				}
 			} catch (Exception e) {
 					logger.error(e);
 					e.printStackTrace();
-					result = false;
+					return false;
 			}
 		}
 
@@ -166,26 +179,28 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		}
 	}
 
-	protected <CONFIG extends IExportConfigurator>  boolean doExport(CONFIG config) {
-	    ExportResult exportResult = new ExportResult();
-	    return doExport(config, exportResult);
 
-	}
 
 	/**
 	 * Executes the whole
 	 */
-	protected <CONFIG extends IExportConfigurator>  boolean doExport(CONFIG config, ExportResult exportResult){
-		boolean result = true;
+	protected <CONFIG extends IExportConfigurator>  ExportResult doExport(CONFIG config){
 		//validate
 		if (config == null){
-			logger.warn("Configuration is null");
-			exportResult.setSuccess(false);
-			return false;
-		}else if (! config.isValid()){
-			logger.warn("Configuration is not valid");
-			exportResult.setSuccess(false);
-			return false;
+		    ExportResult result = ExportResult.NewInstance(null);
+		    String message = "Configuration is null";
+			logger.error(message);
+			result.addError(message);
+			result.setAborted();
+			return result;
+		}
+		ExportResult result = ExportResult.NewInstance(config.getResultType());
+		if (! config.isValid()){
+			String message = "Configuration is not valid";
+		    logger.error(message);
+		    result.addError(message);
+			result.setAborted();
+			return result;
 		}
 
 		System.out.println("Start export from source '" + config.getSourceNameString()
@@ -202,27 +217,28 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 				if (cdmIo != null){
 					//result &= cdmIo.invoke(config, stores);
 					state.setCurrentIO(cdmIo);
-					result &= cdmIo.invoke(state);
-					if (config.getTarget().equals(TARGET.EXPORT_DATA)){
-					    exportResult.addExportData(cdmIo.getByteArray());
-					}
+					result = cdmIo.invoke(state);
+//					if (config.getTarget().equals(TARGET.EXPORT_DATA)){
+//					    result.addExportData(cdmIo.getByteArray());
+//					}
 //					IoState<S> state = null;
 //					result &= cdmIo.invoke(state);
 				}else{
-					logger.error("cdmIO was null");
-					result = false;
-				}
+					String message = "cdmIO was null";
+			        logger.error(message);
+			        result.addError(message);
+			    }
 			} catch (Exception e) {
 					logger.error(e);
 					e.printStackTrace();
-					result = false;
+			        result.addException(e);
 			}
 		}
 
 		System.out.println("End export from source '" + config.getSourceNameString()
-				+ "' to destination '" + config.getDestinationNameString() + "' " +
-				(result? "(successful)":"(with errors)")) ;
-		exportResult.setSuccess(result);
+				+ "' to destination '" + config.getDestinationNameString() + "' "
+				+ "("+ result.toString() + ")"
+				) ;
 		return result;
 	}
 

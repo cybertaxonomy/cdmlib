@@ -94,6 +94,7 @@ public class UnitAssociationParser {
 
                     if(unitAssociationWrapper!=null){
                         unitAssociationWrapper.setAssociationType(associationType);
+                        unitAssociationWrapper.setAccesPoint(datasetAccessPoint);
                         if(unitAssociationWrapper.getAssociatedUnits()!=null && unitAssociationWrapper.getAssociatedUnits().getLength()>1){
                             String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitId);
                             logger.warn(moreThanOneUnitFoundMessage);
@@ -129,28 +130,23 @@ public class UnitAssociationParser {
 
             OccurenceQuery query = new OccurenceQuery(unitID);
 
+
                 InputStream inputStream;
                 try {
-                    inputStream = serviceWrapper.query(query, datasetAccessPoint);
+                    inputStream = serviceWrapper.querySiblings(query, datasetAccessPoint);
 
                     if(inputStream!=null){
                     UnitAssociationWrapper unitAssociationWrapper = null;
                     try {
                         unitAssociationWrapper = AbcdParseUtility.parseUnitsNodeList(inputStream, report);
+
                     } catch (Exception e) {
                         String exceptionMessage = "An exception occurred during parsing of associated units!";
                         logger.error(exceptionMessage, e);
                         report.addException(exceptionMessage, e);
                     }
 
-                    if(unitAssociationWrapper!=null){
 
-                        if(unitAssociationWrapper.getAssociatedUnits()!=null && unitAssociationWrapper.getAssociatedUnits().getLength()>1){
-                            String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitID);
-                            logger.warn(moreThanOneUnitFoundMessage);
-                            report.addInfoMessage(moreThanOneUnitFoundMessage);
-                        }
-                    }
                     return unitAssociationWrapper;
                     }
                     else{

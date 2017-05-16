@@ -257,7 +257,8 @@ public class GbifJsonOccurrenceParser {
                                 name = TaxonNameFactory.NewCultivarInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICVCN.getTitleCache())){
                                 name = TaxonNameFactory.NewViralInstance(rank);
-                            } else {
+                            } else if (string.equals("ICN")){
+                                name = TaxonNameFactory.NewBotanicalInstance(rank);
                             }
                         }else {
                             if (record.has(KINGDOM)){
@@ -275,6 +276,9 @@ public class GbifJsonOccurrenceParser {
                             } else{
                                 name = TaxonNameFactory.NewNonViralInstance(rank);
                             }
+                        }
+                        if (name == null){
+                            name = TaxonNameFactory.NewNonViralInstance(rank);
                         }
                         if (record.has(GENUS)){
                             name.setGenusOrUninomial(record.getString(GENUS));

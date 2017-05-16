@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
-import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
@@ -36,8 +35,11 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.io.common.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
-import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
+import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 
@@ -55,16 +57,16 @@ public class IOServiceImpl implements IIOService {
 
     @Autowired
     @Qualifier("defaultImport")
-    CdmApplicationAwareDefaultImport cdmImport;
+    CdmApplicationAwareDefaultImport<?> cdmImport;
 
     @Autowired
     IProgressMonitorService progressMonitorService;
+//
+//    @Autowired
+//    @Qualifier("defaultUpdate")
+//    CdmApplicationAwareDefaultUpdate cdmUpdate;
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.service.IExportService#export(eu.etaxonomy.cdm.io.common.IExportConfigurator)
-     */
     @Override
     public ExportResult export(IExportConfigurator config) {
         config.setTarget(TARGET.EXPORT_DATA);
@@ -93,12 +95,50 @@ public class IOServiceImpl implements IIOService {
     }
 
     @Override
+    public UUID monitExportData(@SuppressWarnings("rawtypes") final IExportConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+
+                configurator.setProgressMonitor(monitor);
+                ExportResult result = export(configurator);
+//                for(byte[] report : result.getReports()) {
+//                    monitor.addReport(new String(report));
+//                }
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
+    public UUID monitUpdateData(final IImportConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+
+                configurator.setProgressMonitor(monitor);
+                ImportResult result =updateData((SetSecundumForSubtreeConfigurator)configurator);
+
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
         ImportResult result;
         switch(type) {
         case URI:
             if (importData.equals(new byte[1])){
-                result = cdmImport.execute(configurator);
+                result = cdmImport.invoke(configurator);
                 return result;
             }
             return importDataFromUri(configurator, importData);
@@ -107,6 +147,14 @@ public class IOServiceImpl implements IIOService {
         default :
             throw new RuntimeException("Source type is not recongnised");
         }
+    }
+
+    @Override
+    public ImportResult updateData(SetSecundumForSubtreeConfigurator configurator) {
+        ImportResult result;
+
+        result = cdmImport.invoke(configurator);
+        return result;
     }
 
     @Override
@@ -123,7 +171,7 @@ public class IOServiceImpl implements IIOService {
             stream = new FileOutputStream(tempFilePath.toFile());
             stream.write(importData);
             config.setSource(tempFilePath.toUri());
-            result = cdmImport.execute(config);
+            result = cdmImport.invoke(config);
      //       Files.delete(tempFilePath);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -144,13 +192,13 @@ public class IOServiceImpl implements IIOService {
         ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
         ImportResult result;
         try {
-            if (config instanceof NormalExplicitImportConfigurator){
-                NormalExplicitImportConfigurator excelConfig = (NormalExplicitImportConfigurator)config;
-                excelConfig.setStream(importData);
+            if (config instanceof ExcelImportConfiguratorBase){
+                ExcelImportConfiguratorBase excelConfig = (ExcelImportConfiguratorBase)config;
+                //excelConfig.setStream(importData);
             }else{
                 config.setSource(new ByteArrayInputStream(importData));
             }
-            result = cdmImport.execute(config);
+            result = cdmImport.invoke(config);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -161,9 +209,7 @@ public class IOServiceImpl implements IIOService {
     @Override
     public ImportResult importDataFromStream(SpecimenImportConfiguratorBase configurator) {
         ImportResult result = new ImportResult();
-
-            OccurenceQuery query;
-            result = cdmImport.execute(configurator);
+            result = cdmImport.invoke(configurator);
             return result;
     }
 
@@ -171,9 +217,8 @@ public class IOServiceImpl implements IIOService {
     public ImportResult importDataFromStream(List<Abcd206ImportConfigurator> configurators) {
         ImportResult result = new ImportResult();
 
-            OccurenceQuery query;
             for (SpecimenImportConfiguratorBase configurator:configurators){
-                result = cdmImport.execute(configurator);
+                result = cdmImport.invoke(configurator);
             }
             return result;
     }
@@ -198,6 +243,27 @@ public class IOServiceImpl implements IIOService {
         ImportResult result = new ImportResult();
 
         result = cdmImport.invoke(config);
+        return result;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportResult updateDistributionData(ExcelDistributionUpdateConfigurator configurator) {
+        ImportResult result = new ImportResult();
+        result = cdmImport.invoke(configurator);
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImportResult importRISData(RisReferenceImportConfigurator configurator) {
+        ImportResult result = new ImportResult();
+        result = cdmImport.invoke(configurator);
         return result;
     }
 

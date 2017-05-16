@@ -7,3 +7,6 @@
 "ab402e4b-93a0-4311-a85a-696c1498b67d",,"Catalog Number","Catalog number","CAN"
 "26729412-9df6-4cc3-9e5d-501531ca21f0",,"LSID","Life science identifier","LSID"
 "054fd3d1-1961-42f8-b024-b91184ac9e0c",,"Alternative Field Number","Alternative field number","AFN"
+"6205e531-75b0-4f2a-9a9c-b1247fb080ab",,"Tropicos Name Identifier","Tropicos Name Identifier","TNI"
+"009a602f-0ff6-4231-93db-f458e8229aca",,"IPNI Name Identifier","IPNI Name Identifier (not LSID)","INI"
+"048e0cf9-f59c-42dd-bfeb-3a5cba0191c7",,"WFO Name Identifier","World Flora Online Name Identifier","WNI"

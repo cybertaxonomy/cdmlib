@@ -12,9 +12,14 @@ package eu.etaxonomy.cdm.io.common;
  * @author a.babadshanjan
  * @created 17.11.2008
  */
-public interface ICdmExport<CONFIG extends IExportConfigurator, STATE extends ExportStateBase> extends ICdmIO<STATE>{
+public interface ICdmExport<CONFIG extends IExportConfigurator, STATE extends ExportStateBase>
+            extends ICdmIO<STATE>{
 
+
+	public ExportDataWrapper createExportData();
 
 	public byte[] getByteArray();
+
+	public abstract ExportResult invoke(STATE state);
 
 }

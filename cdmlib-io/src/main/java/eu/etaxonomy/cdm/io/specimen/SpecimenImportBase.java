@@ -78,11 +78,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author p.kelbert
  * @created 20.10.2008
  */
-public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends SpecimenImportStateBase>  extends CdmImportBase<CONFIG, STATE> {
+public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends SpecimenImportStateBase>
+        extends CdmImportBase<CONFIG, STATE> {
 
     private static final long serialVersionUID = 4423065367998125678L;
     private static final Logger logger = Logger.getLogger(SpecimenImportBase.class);
-	protected final boolean DEBUG = true;
 
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 
@@ -103,7 +103,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	protected TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
 	    TaxonNameBase<?, ?> taxonName = null;
-        SpecimenImportConfiguratorBase<?,?> config = state.getConfig();
+        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 
         //check atomised name data for rank
         //new name will be created
@@ -266,8 +266,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        ITaxonNameBase taxonName = null;
 	        boolean problem = false;
 
-	        if(DEBUG){
-	            logger.info("parseScientificName " + state.getDataHolder().getNomenclatureCode().toString());
+	        if (logger.isDebugEnabled()){
+	            logger.debug("parseScientificName " + state.getDataHolder().getNomenclatureCode().toString());
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN")) {
@@ -319,8 +319,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    protected TaxonNameBase<?,?> setTaxonNameByType(
 	            HashMap<String, String> atomisedMap, String fullName, STATE state) {
 	        boolean problem = false;
-	        if(DEBUG) {
-	            logger.info("settaxonnamebytype " + state.getDataHolder().getNomenclatureCode().toString());
+	        if (logger.isDebugEnabled()){
+	            logger.debug("settaxonnamebytype " + state.getDataHolder().getNomenclatureCode().toString());
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid())) {
@@ -607,7 +607,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @return DerivedUnitFacade
 	     */
 	    protected DerivedUnitFacade getFacade(STATE state) {
-	        if(DEBUG) {
+	        if (logger.isDebugEnabled()){
 	            logger.info("getFacade()");
 	        }
 	        SpecimenOrObservationType type = null;
@@ -670,7 +670,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                }catch(Exception e){logger.warn("no institution code in the db");}
 	            }
 	        }
-	        if(DEBUG) {
+	        if (logger.isDebugEnabled()){
 	            if(institution !=null) {
 	                logger.info("getinstitution " + institution.toString());
 	            }
@@ -967,6 +967,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            if (config.getNomenclaturalCode() != null){
 	                if (config.getNomenclaturalCode() != null){
 	                    state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().toString());
+
 	                }
 	            }
 	        }
@@ -1003,7 +1004,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param state : the ABCD import state
 	     */
 	    protected void addTaxonNode(Taxon taxon, STATE state, boolean preferredFlag) {
-	        SpecimenImportConfiguratorBase config = state.getConfig();
+	        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 	        logger.info("link taxon to a taxonNode "+taxon.getTitleCache());
 	        //only add nodes if not already existing in current classification or default classification
 
@@ -1066,7 +1067,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    @SuppressWarnings("rawtypes")
         protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade, String identifierStr, String dateStr) {
 	        SpecimenImportConfiguratorBase config = state.getConfig();
-	        if(DEBUG){
+	        if (logger.isDebugEnabled()){
 	            logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
 	        }
 
@@ -1087,13 +1088,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        state.getDerivedUnitBase().addDetermination(determinationEvent);
 
-	        if(DEBUG){
-	            logger.info("NB TYPES INFO: "+ state.getDataHolder().getStatusList().size());
+	        if (logger.isDebugEnabled()){
+	            logger.debug("NB TYPES INFO: "+ state.getDataHolder().getStatusList().size());
 	        }
 	        for (SpecimenTypeDesignationStatus specimenTypeDesignationstatus : state.getDataHolder().getStatusList()) {
 	            if (specimenTypeDesignationstatus != null) {
-	                if(DEBUG){
-	                    logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
+	                if (logger.isDebugEnabled()){
+	                    logger.debug("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
 	                }
 
 	                ICdmRepository cdmAppController = config.getCdmAppController();
@@ -1139,8 +1140,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        if (config.isAddIndividualsAssociationsSuchAsSpecimenAndObservations() && preferredFlag) {
 	            //do not add IndividualsAssociation to non-preferred taxa
-	            if(DEBUG){
-	                logger.info("isDoCreateIndividualsAssociations");
+	            if (logger.isDebugEnabled()){
+	                logger.debug("isDoCreateIndividualsAssociations");
 	            }
 
 	            makeIndividualsAssociation(state, taxon, determinationEvent);
@@ -1156,34 +1157,27 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param determinationEvent:the determinationevent
 	     */
 	    protected void makeIndividualsAssociation(STATE state, Taxon taxon, DeterminationEvent determinationEvent) {
-	        SpecimenImportConfiguratorBase config = state.getConfig();
+	        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 	        SpecimenUserInteraction sui = config.getSpecimenUserInteraction();
 
-	        if (DEBUG) {
+	        if (logger.isDebugEnabled()){
 	            logger.info("MAKE INDIVIDUALS ASSOCIATION");
 	        }
 
 	        TaxonDescription taxonDescription = null;
 	        Set<TaxonDescription> descriptions= taxon.getDescriptions();
-//	        if (((Abcd206ImportConfigurator) state.getConfig()).isInteractWithUser()){
-//	            if(!state.isDescriptionGroupSet()){
-//	                taxonDescription = sui.askForDescriptionGroup(descriptions);
-//	                state.setDescriptionGroup(taxonDescription);
-//	                state.setDescriptionGroupSet(true);
-//	            }else{
-//	                taxonDescription=state.getDescriptionGroup();
+	       if (!descriptions.isEmpty()){ taxonDescription = descriptions.iterator().next();}
+
+//	            for (TaxonDescription description : descriptions){
+//	                Set<IdentifiableSource> sources =  new HashSet<>();
+//	                sources.addAll(description.getTaxon().getSources());
+//	                sources.addAll(description.getSources());
+//	                for (IdentifiableSource source:sources){
+//	                    if(state.getRef().equals(source.getCitation())) {
+//	                        taxonDescription = description;
+//	                    }
+//	                }
 //	            }
-//	        } else {
-	            for (TaxonDescription description : descriptions){
-	                Set<IdentifiableSource> sources =  new HashSet<>();
-	                sources.addAll(description.getTaxon().getSources());
-	                sources.addAll(description.getSources());
-	                for (IdentifiableSource source:sources){
-	                    if(state.getRef().equals(source.getCitation())) {
-	                        taxonDescription = description;
-	                    }
-	                }
-	            }
 	      //  }
 	        if (taxonDescription == null){
 	            taxonDescription = TaxonDescription.NewInstance(taxon, false);
@@ -1465,5 +1459,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	    }
+
 
 }

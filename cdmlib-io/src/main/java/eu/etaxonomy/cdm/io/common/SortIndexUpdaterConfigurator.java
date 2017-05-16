@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 08.07.2016
  *
  */
-public class SortIndexUpdaterConfigurator extends ImportConfiguratorBase<DefaultImportState<SortIndexUpdaterConfigurator>, Object> implements IImportConfigurator{
+public class SortIndexUpdaterConfigurator  extends ImportConfiguratorBase<DefaultImportState<SetSecundumForSubtreeConfigurator>, Object> implements IImportConfigurator{
 
 
     private boolean doTaxonNode = true;
@@ -103,8 +103,6 @@ public class SortIndexUpdaterConfigurator extends ImportConfiguratorBase<Default
         ioClassList = new Class[]{
                      SortIndexUpdaterWrapper.class
         };
-
-
     }
 
 

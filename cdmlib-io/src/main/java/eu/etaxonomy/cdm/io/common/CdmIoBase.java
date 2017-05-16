@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @created 01.07.2008
  */
-public abstract class CdmIoBase<STATE extends IoStateBase> 
-	extends CdmRepository
+public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResultBase>
+	    extends CdmRepository
         implements ICdmIO<STATE>, IIoObservable {
 
     private static final long serialVersionUID = -2216451655392574659L;
@@ -98,28 +98,43 @@ public abstract class CdmIoBase<STATE extends IoStateBase>
 //******************** End Observers *********************************************************
 
 
+
+    public RESULT invoke(STATE state) {
+        if (isIgnore(state)){
+            logger.info("No invoke for " + ioName + " (ignored)");
+            return getNoDataResult(state);
+        }else{
+            updateProgress(state, "Invoking " + ioName);
+            state.setResult(getDefaultResult(state));
+            doInvoke(state);
+            RESULT result = (RESULT)state.getResult();
+            return result;
+        }
+    }
+
+    protected abstract RESULT getNoDataResult(STATE state);
+    protected abstract RESULT getDefaultResult(STATE state);
+
+
+//    //TODO move up to CdmIoBase once ImportResult is used here
+//    @Override
+//    public ImportResult invoke(STATE state) {
+//        if (isIgnore( state)){
+//            logger.info("No invoke for " + ioName + " (ignored)");
+//            return true;
+//        }else{
+//            updateProgress(state, "Invoking " + ioName);
+//            doInvoke(state);
+//            return state.isSuccess();
+//        }
+//    }
+
+
     public int countSteps(){
         return 1;
     }
 
-    @Override
-    public boolean invoke(STATE state) {
-        if (isIgnore( state)){
-            logger.info("No invoke for " + ioName + " (ignored)");
-            return true;
-        }else{
-            updateProgress(state, "Invoking " + ioName);
-            doInvoke(state);
-            return state.isSuccess();
-        }
-    }
 
-    /**
-     * invoke method to be implemented by implementing classes
-     * @param state
-     * @return
-     */
-    protected abstract void doInvoke(STATE state);
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -190,6 +205,12 @@ public abstract class CdmIoBase<STATE extends IoStateBase>
 
     protected abstract boolean doCheck(STATE state);
 
+    /**
+     * invoke method to be implemented by implementing classes
+     * @param state
+     * @return
+     */
+    protected abstract void doInvoke(STATE state);
 
     /**
      * Returns true if this (IO-)class should be ignored during the import/export process.

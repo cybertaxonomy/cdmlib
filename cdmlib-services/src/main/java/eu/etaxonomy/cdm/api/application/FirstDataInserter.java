@@ -283,8 +283,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
                 GrantedAuthorityImpl newGa = grantedAuthorityService.findAuthorityString(a);
 
                 if (newGa == null){
-                    newGa = GrantedAuthorityImpl.NewInstance();
-                    newGa.setAuthority(a);
+                    newGa = GrantedAuthorityImpl.NewInstance(a);
                 }
 
                 group.addGrantedAuthority(newGa);

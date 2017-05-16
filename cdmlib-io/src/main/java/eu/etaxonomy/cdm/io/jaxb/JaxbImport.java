@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -44,26 +44,29 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.babadshanjan
  * @created 13.11.2008
- * @version 1.0
  */
 @Component
-public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<JaxbImportState> {
+public class JaxbImport
+            extends CdmImportBase<JaxbImportConfigurator, JaxbImportState>
+            implements ICdmIO<JaxbImportState> {
 
-	private static final Logger logger = Logger.getLogger(JaxbImport.class);
+    private static final long serialVersionUID = -96388140688227297L;
+    private static final Logger logger = Logger.getLogger(JaxbImport.class);
+
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
-	
+
 
 	/** Reads data from an XML file and stores them into a CDM DB.
-     * 
+     *
      * @param config
      * @param stores (not used)
      */
 
 	@Override
 	protected void doInvoke(JaxbImportState state) {
-			
-		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)state.getConfig();
-    	
+
+		JaxbImportConfigurator jaxbImpConfig = state.getConfig();
+
 		URI uri;
     	String urlFileName = jaxbImpConfig.getSource().toString();
 		try {
@@ -77,7 +80,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		logger.info("Deserializing " + urlFileName + " to DB " ); //+ dbname
 
 		DataSet dataSet = new DataSet();
-		
+
         // unmarshalling XML file
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
@@ -89,21 +92,21 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		} catch (Exception e) {
 			logger.error("Unmarshalling error");
 			e.printStackTrace();
-		} 
-		
+		}
+
 		// save data in DB
 		logger.info("Saving data to DB... "); //+ dbname
-		
+
 		saveData(state, dataSet);
-		
+
 		return;
 	}
 
-	
+
 	/**  Saves data in DB */
 	private void saveData (JaxbImportState state, DataSet dataSet) {
 		JaxbImportConfigurator jaxbImpConfig = state.getConfig();
-		
+
 		boolean success = true;
 		Collection<TaxonBase> taxonBases;
 		List<? extends AgentBase> agents;
@@ -129,17 +132,17 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		try {
 			if (jaxbImpConfig.isDoUser() == true) {
-				/* 
+				/*
 				 * this is a crucial call, otherwise the password will not be set correctly
 				 * and the whole authentication will not work
-				 * 
+				 *
 				 *  a bit preliminary, should be used only if the complete database is replaced
 				 */
 				authenticate(Configuration.adminLogin, Configuration.adminPassword);
-				
+
 				logger.info("Users: " + (users = dataSet.getUsers()).size());
 				for (User user : users) {
-					
+
 					List<User> usersList = getUserService().listByUsername(user.getUsername(),null, null, null, null, null, null);
 					if (usersList.isEmpty()){
 						getUserService().save(user);
@@ -148,7 +151,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 //						user.setId(existingUser.getId());
 //						getUserService().merge(user);
 						//merging does not yet work because of #4102
-						
+
 					}
 				}
 			}
@@ -157,21 +160,21 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			ex.printStackTrace();
 			success = false;
 		}
-		
+
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
 			//txStatus = startTransaction();
 			success &= saveTerms(terms);
-			
+
 			//commitTransaction(txStatus);
 		}
-		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
+		if ((jaxbImpConfig.isDoTermVocabularies() == true)
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
 			//txStatus = startTransaction();
 			success &= saveTermVocabularies(termVocabularies);
-			
+
 		}
-	
+
 		// TODO: Have separate data save methods
 
 //		txStatus = startTransaction();
@@ -188,7 +191,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 //		}
 //		commitTransaction(txStatus);
 
-		
+
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoAuthors() == true) {
@@ -242,7 +245,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
 					logger.info("Homotypical groups: " + homotypicalGroups.size());
 					getNameService().saveAllHomotypicalGroups(homotypicalGroups);
-					
+
 				}
 			}
 		} catch (Exception ex) {
@@ -340,10 +343,10 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			logger.error("Error saving media");
 			success = false;
 		}
-		
+
 		if (jaxbImpConfig.isDoClassificationData() == true) {
 			logger.info("# Classification");
-			
+
 			Collection<TaxonNode> nodes = dataSet.getTaxonNodes();
 			Collection<Classification> classifications = dataSet.getClassifications();
 			getClassificationService().saveTaxonNodeAll(nodes);
@@ -351,19 +354,19 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 				getClassificationService().saveOrUpdate(tree);
 			}
 		}
-		
-		
+
+
 		commitTransaction(txStatus);
 		logger.info("All data saved");
 		if (!success){
 			state.setUnsuccessfull();
 		}
-		
+
 		return;
 
 	}
-	
-	
+
+
 	private boolean saveTermVocabularies(
 			List<TermVocabulary<DefinedTermBase>> termVocabularies) {
 
@@ -392,14 +395,14 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		return success;
 	}
 
-	
+
 	@Override
 	protected boolean doCheck(JaxbImportState state) {
 		boolean result = true;
 		logger.warn("No validation implemented for Jaxb import");
 		return result;
 	}
-	
+
 
 	@Override
 	protected boolean isIgnore(JaxbImportState state) {

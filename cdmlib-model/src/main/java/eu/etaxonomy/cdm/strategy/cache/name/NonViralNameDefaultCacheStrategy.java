@@ -222,13 +222,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     }
 
 
-
-
-
-
-
 // ******************* Authorship ******************************/
-
 
     @Override
     public String getAuthorshipCache(T nonViralName) {
@@ -240,7 +234,6 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
             return nonViralName.getAuthorshipCache();
         }
         return getNonCacheAuthorshipCache(nonViralName);
-
     }
 
     /**
@@ -315,7 +308,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 
     @Override
     public List<TaggedText> getTaggedFullTitle(T nonViralName) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         //null
         if (nonViralName == null){
@@ -333,7 +326,6 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         List<TaggedText> titleTags = getTaggedTitle(nonViralName);
         tags.addAll(titleTags);
 
-
         //reference
         String microReference = nonViralName.getNomenclaturalMicroReference();
         INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
@@ -350,6 +342,8 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
             }
             tags.add(new TaggedText(TagEnum.reference, referenceCache));
         }
+
+        addOriginalSpelling(tags, nonViralName);
 
         //nomenclatural status
         tags.addAll(getNomStatusTags(nonViralName, true, false));
@@ -406,7 +400,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
             return null;
         }
 
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         //TODO how to handle protected fullTitleCache here?
 
@@ -440,6 +434,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
+
         return tags;
     }
 
@@ -453,11 +448,25 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         if (nonViralName == null){
             return null;
         }
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
         Rank rank = nonViralName.getRank();
 
         if (nonViralName.isProtectedNameCache()){
             tags.add(new TaggedText(TagEnum.name, nonViralName.getNameCache()));
+        }else if (nonViralName.isHybridFormula()){
+            //hybrid formula
+            String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
+            boolean isFirst = true;
+            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            for (HybridRelationship rel: rels){
+                if (! isFirst){
+                    tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
+                }
+                isFirst = false;
+                tags.addAll(getTaggedName((T)rel.getParentName()));
+            }
+            return tags;
+
         }else if (rank == null){
             tags = getRanklessTaggedNameCache(nonViralName);
 //		}else if (nonViralName.isInfragenericUnranked()){
@@ -596,7 +605,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     private List<TaggedText> getUninomialTaggedPart(INonViralName nonViralName) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (nonViralName.isMonomHybrid()){
             addHybridPrefix(tags);
@@ -819,6 +828,13 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         return tags;
     }
 
+    protected void addOriginalSpelling(List<TaggedText> tags, INonViralName nonViralName){
+        String originalName = getOriginalNameString(nonViralName, tags);
+        if (StringUtils.isNotBlank(originalName)){
+            tags.add(new TaggedText(TagEnum.name, originalName));
+        }
+    }
+
     /**
      * Adds the tag for the appended phrase if an appended phrase exists
      * @param tags
@@ -826,10 +842,6 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      */
     protected void addAppendedTaggedPhrase(List<TaggedText> tags, INonViralName nonViralName){
         String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
-        String originalName = getOriginalNameString(nonViralName, tags);
-        if (StringUtils.isNotBlank(originalName)){
-            tags.add(new TaggedText(TagEnum.name, originalName));
-        }
         if (StringUtils.isNotEmpty(appendedPhrase)){
             tags.add(new TaggedText(TagEnum.name, appendedPhrase));
         }
@@ -850,7 +862,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     				INonViralName originalNvName = CdmBase.deproxy(originalName);
     				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
     			}
-    			originalNameStrings.add("'" + originalNameString +"'");
+    			originalNameStrings.add("(as " + UTF8.QUOT_DBL_LEFT + originalNameString + UTF8.QUOT_DBL_RIGHT + ")");
     		}
 		}
     	if (originalNameStrings.size() > 0){

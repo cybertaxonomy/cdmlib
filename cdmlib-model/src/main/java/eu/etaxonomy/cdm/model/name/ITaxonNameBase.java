@@ -694,6 +694,7 @@ public interface ITaxonNameBase
      * @see  #isInfraGeneric()
      * @see  #isSpecies()
      * @see  #isInfraSpecific()
+     * @see  #isGenusOrSupraGeneric()
      */
     public boolean isSupraGeneric();
 
@@ -706,8 +707,25 @@ public interface ITaxonNameBase
      * @see  #isInfraGeneric()
      * @see  #isSpecies()
      * @see  #isInfraSpecific()
+     * @see  #isGenusOrSupraGeneric()
      */
     public boolean isGenus();
+
+
+    /**
+     * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
+     * taxon name is the genus rank or higher (<code>true</code>) or not (<code>false</code>).
+     * Non viral names with
+     * genus rank or higher are monomials. Returns false if rank is null.<BR>
+     * This is a shortcut for {@link #isGenus()} || {@link #isSupraGeneric()}
+     *
+     * @see  #isGenus()
+     * @see  #isSupraGeneric()
+     * @see  #isInfraGeneric()
+     * @see  #isSpecies()
+     * @see  #isInfraSpecific()
+     */
+    boolean isGenusOrSupraGeneric();
 
     /**
      * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
@@ -806,6 +824,7 @@ public interface ITaxonNameBase
      * @throws NullPointerException if otherTaxon is <code>null</code>
      */
     public int compareToName(TaxonNameBase<?,?> otherName);
+
 
 
 }

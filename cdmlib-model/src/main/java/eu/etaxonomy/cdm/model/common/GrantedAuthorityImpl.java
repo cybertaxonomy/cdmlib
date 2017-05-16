@@ -35,13 +35,21 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
     @NotNull
     private String authority;
 
+// ********************** FACTORY *********************************/
+
+    public static GrantedAuthorityImpl NewInstance(String authority) {
+        GrantedAuthorityImpl result = new GrantedAuthorityImpl();
+        result.setAuthority(authority);
+        return result;
+    }
+
+// ************* CONSTRUCTOR ********************/
+
     protected GrantedAuthorityImpl() {
         super();
     }
 
-    public static GrantedAuthorityImpl NewInstance() {
-        return new GrantedAuthorityImpl();
-    }
+// *************** GETTER / SETTER ********************/
 
     @Override
     public String getAuthority() {
@@ -51,6 +59,8 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
     public void setAuthority(String authority) {
     	this.authority = authority;
     }
+
+// ******************* METHODS ***********************************/
 
     /**
      * @param o
@@ -62,7 +72,7 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         }
         return 0;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof GrantedAuthority) {
@@ -75,22 +85,20 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
-     */
+// ******************** TO STRING() **************************/
+
     @Override
     public String toString() {
         return getAuthority();
     }
 
-    // *********** CLONE **********************************/
+// ***************** CLONE **********************************/
 
     /**
      * Clones <i>this</i> Granted Authority. This is a shortcut that enables to
      * create a new instance that differs only slightly from <i>this</i> Granted
      * Authority by modifying only some of the attributes.<BR>
-     *
-     *
+
      *
      * @see eu.etaxonomy.cdm.model.common.CdmBase#clone()
      * @see java.lang.Object#clone()
