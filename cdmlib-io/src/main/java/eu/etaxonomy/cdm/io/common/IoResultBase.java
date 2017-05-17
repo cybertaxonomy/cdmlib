@@ -19,13 +19,15 @@ import org.apache.commons.lang3.StringUtils;
  * @date 24.03.2017
  *
  */
-public abstract class IoResultBase {
+public abstract class IoResultBase implements Serializable{
 
+    private static final long serialVersionUID = -2077936463767046918L;
     private List<IoInfo> errors = new ArrayList<>();
     private List<IoInfo> warnings = new ArrayList<>();
     private List<IoInfo> exceptions = new ArrayList<>();
 
     public class IoInfo implements Serializable{
+        private static final long serialVersionUID = -8077358746590123757L;
         String message;
         Exception exception;
         String location;
@@ -47,6 +49,8 @@ public abstract class IoResultBase {
             return exception;
         }
     }
+
+
 
 // ************* GETTERS / SETTERS / ADDERS ***********************/
 
@@ -70,6 +74,7 @@ public abstract class IoResultBase {
     public void addWarning(String warning) {
 //       warnings.add(warning.getBytes(StandardCharsets.UTF_8));
         warnings.add(new IoInfo(warning, null));
+
     }
     public void addWarning(String message, int location) {
         warnings.add(new IoInfo(message, null, String.valueOf(location)));
@@ -142,8 +147,9 @@ public abstract class IoResultBase {
             for (IoInfo ioInfo : list){
                 String location = ioInfo.location == null ? "" : (ioInfo.location + ": ");
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
+
                 message = StringUtils.isBlank(message)? "no message" : message;
-                Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
+               Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
                 String available = (stacktrace != null ? " (stacktrace available)" : "");
                 report.append("\n" + location + message + available);
             }
