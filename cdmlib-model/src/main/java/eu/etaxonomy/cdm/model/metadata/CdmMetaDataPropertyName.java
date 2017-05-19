@@ -38,7 +38,9 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
 //**************** METHODS ****************************/
 
     public String getSqlQuery(){
-        return "SELECT value FROM CdmMetaData WHERE propertyname=" + this.key;
+        return String.format(
+                "SELECT value FROM CdmMetaData WHERE propertyname='%s'",
+                this.key);
     }
 
     /**
@@ -77,6 +79,8 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
 
 // *************************** DELEGATE **************************************/
 
-
+ public static void main(String[] var){
+     System.out.println(DB_SCHEMA_VERSION.getSqlQuery());
+ }
 
 }
