@@ -533,6 +533,9 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 	            logger.warn("Rank for autonym does not exist or is not lower than species !!");
 	        }else{
 	            String infraSpeciesMarker = nonViralName.getRank().getAbbreviation();
+	            if (nonViralName.isTrinomHybrid()){
+	                infraSpeciesMarker = CdmUtils.concat("", NOTHO, infraSpeciesMarker);
+	            }
 	            if (StringUtils.isNotBlank(infraSpeciesMarker)){
 	                tags.add(new TaggedText(TagEnum.rank, infraSpeciesMarker));
 	            }

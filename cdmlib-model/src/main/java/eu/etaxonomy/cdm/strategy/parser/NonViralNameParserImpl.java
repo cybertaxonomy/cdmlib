@@ -20,6 +20,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -840,8 +841,22 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	             authorString = fullNameString.substring(epi[0].length() + 2 + epi[2].length() + 2 + epi[4].length());
 			 }
 			 //autonym
-			 else if (autonymPattern.matcher(fullNameString).matches()){
-				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[epi.length - 2]));
+			 else if (autonymPattern.matcher(fullNameString.replace(UTF8.HYBRID.toString(), "")).matches()){
+			    String infraSpecRankMarker = epi[epi.length - 2];
+			    boolean isTriHybrid = false;
+			    if (infraSpecRankMarker.startsWith(notho)){  //#3868
+                    nameToBeFilled.setTrinomHybrid(true);
+                    infraSpecRankMarker = infraSpecRankMarker.substring(notho.length());
+                    isTriHybrid = true;
+                }else if(infraSpecRankMarker.startsWith("n")){
+                    nameToBeFilled.setTrinomHybrid(true);
+                    infraSpecRankMarker = infraSpecRankMarker.substring(1);
+                    isTriHybrid = true;
+                }
+			    if (epi[1].startsWith(UTF8.HYBRID.toString())) {
+			        nameToBeFilled.setBinomHybrid(true);
+                }
+			    nameToBeFilled.setRank(Rank.getRankByIdInVoc(infraSpecRankMarker));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(epi[epi.length - 1]);

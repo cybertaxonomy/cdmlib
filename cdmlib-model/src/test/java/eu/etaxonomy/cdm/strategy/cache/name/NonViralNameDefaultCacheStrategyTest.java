@@ -670,5 +670,19 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
     }
 
+    @Test //#6656
+    public void testAutonymHybrids(){
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+        name.setGenusOrUninomial("Ophrys");
+        name.setSpecificEpithet("kastelli");
+        name.setInfraSpecificEpithet("kastelli");
+        Team combTeam = Team.NewTitledInstance("E. Klein", "E. Klein");
+        name.setCombinationAuthorship(combTeam);
+        name.setBinomHybrid(true);
+        name.setTrinomHybrid(true);
+
+        Assert.assertEquals("", "Ophrys ×kastelli E. Klein nothosubsp. kastelli", name.getTitleCache());
+    }
+
 
 }
