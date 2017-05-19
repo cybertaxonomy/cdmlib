@@ -18,7 +18,6 @@ import java.net.URL;
 import org.apache.commons.io.IOUtils;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -32,7 +31,7 @@ public class RisReferenceImportConfigurator
         extends ExcelImportConfiguratorBase{
 
     private static final long serialVersionUID = -5982826645441621962L;
-    private static IInputTransformer defaultTransformer = null;
+//    private static IInputTransformer defaultTransformer = null;
 
     /**
      * @param uri

@@ -1610,15 +1610,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @param toName		  the taxon name of the target for this new name relationship
      * @param type			  the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @return
      * @see    				  #getRelationsToThisName()
      * @see    				  #getNameRelations()
      * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
-        addRelationshipToName(toName, type, null, null, ruleConsidered);
-        //		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
+    public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
+        return addRelationshipToName(toName, type, null, null, ruleConsidered);
     }
 
     /**
