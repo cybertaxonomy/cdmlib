@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -681,7 +682,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         name.setBinomHybrid(true);
         name.setTrinomHybrid(true);
 
-        Assert.assertEquals("", "Ophrys ×kastelli E. Klein nothosubsp. kastelli", name.getTitleCache());
+        String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
+        Assert.assertEquals("", expected, name.getTitleCache());
     }
 
 

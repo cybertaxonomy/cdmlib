@@ -560,7 +560,7 @@ public class NonViralNameParserImplTest {
         assertEquals(nameStr, name1.getNameCache());  //we expect the cache strategy to create the same result
 
         //autonym #6656
-        nameStr = "Ophrys ×kastelli E. Klein nothosubsp. kastelli";
+        nameStr = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
