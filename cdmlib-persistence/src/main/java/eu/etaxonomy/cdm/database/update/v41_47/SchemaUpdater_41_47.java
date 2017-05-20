@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
+import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
 /**
@@ -63,6 +64,10 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 		String newColumnName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
+
+	    //#6600 remove Unique indexes from Rights MN tables
+        removeUniqueIndexForRights(stepList);
+
 
 		//#6529
 		//Extend WorkingSet to allow a more fine grained definiton of taxon set
@@ -163,6 +168,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //#6535 update termtype for CdmMetaData (int => string)
         updateTermTypeForCdmMetaDataPropertyName(stepList);
 
+
         //ModelUpdateResult
 
         //Remove termupdater and allow update only from version 4.0
@@ -170,6 +176,80 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
 
         return stepList;
+    }
+
+    /**
+     * @param stepList
+     */
+	//#6600 remove Unique indexes from Rights MN tables
+    private void removeUniqueIndexForRights(List<ISchemaUpdaterStep> stepList) {
+        String tableName;
+        ISchemaUpdaterStep step;
+
+        tableName = "AgentBase_RightsInfo";
+        String columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "Classification_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "Collection_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "DefinedTermBase_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "DescriptionBase_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "FeatureTree_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "Media_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "PolytomousKey_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "Reference_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "SpecimenOrObservationBase_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "TaxonBase_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "TaxonNameBase_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "TermVocabulary_RightsInfo";
+        columnName = "rights_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
     }
 
 
