@@ -17,11 +17,15 @@ public enum UTF8 {
 	EN_DASH_SPATIUM("\u202F\u2013\u202F"),
 	HYBRID ("\u00D7"),   // hybrid sign
 	SHARP_S("\u00DF"),
+    a_UMLAUT("\u00E4"),   //small a umlaut, latin small letter a with diaeresis
+	O_UMLAUT("\u00F6"),   //small o umlaut, latin small letter o with diaeresis
+    U_UMLAUT("\u00FC"),   //small u umlaut, latin small letter u with diaeresis
 	NO_BREAK_SPACE("\u00A0"),
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
-	RIGHT_SINGLE_QUOT("\u2019"), // Right single quotation mark
-	QUOT_DBL_LEFT("\u201c"),  //LEFT DOUBLE QUOTATION MARK Left English quotation mark
+	QUOT_SINGLE_RIGHT("\u2019"), // Right single quotation mark
+	QUOT_SINGLE_HIGH_REV9("\u201b"), // Left high single quotation mark
+    QUOT_DBL_LEFT("\u201c"),  //LEFT DOUBLE QUOTATION MARK Left English quotation mark
 	QUOT_DBL_RIGHT("\u201d"),  //RIGHT DOUBLE QUOTATION MARK Right English quotation mark
     QUOT_DBL_LOW9("\u201e"),  //DOUBLE LOW-9 QUOTATION MARK  Left English quotation mark Low
 	QUOT_DBL_HIGH_REV9("\u201f"),  //DOUBLE HIGH-REVERSED-9 QUOTATION MARK Right English quotation mark -‟-

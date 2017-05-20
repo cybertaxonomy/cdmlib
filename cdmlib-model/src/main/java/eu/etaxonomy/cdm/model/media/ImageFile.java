@@ -95,8 +95,6 @@ public class ImageFile extends MediaRepresentationPart {
 	}
 
 
-
-
 	protected ImageFile(){
 		super();
 	}

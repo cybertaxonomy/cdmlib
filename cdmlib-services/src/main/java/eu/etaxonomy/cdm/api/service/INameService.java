@@ -474,5 +474,12 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 
 	public List<HashMap<String, String>> getNameRecords();
 
+    /**
+     * @param name
+     * @param config
+     * @return
+     */
+    DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config);
+
 
 }

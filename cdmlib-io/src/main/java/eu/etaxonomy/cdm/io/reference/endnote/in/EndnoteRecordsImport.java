@@ -51,8 +51,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  *
  */
 @Component
-public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<EndnoteImportState> {
-	private static final Logger logger = Logger.getLogger(EndnoteRecordsImport.class);
+public class EndnoteRecordsImport
+        extends EndNoteImportBase
+        implements ICdmIO<EndnoteImportState> {
+
+    private static final long serialVersionUID = -8591314328811284619L;
+    private static final Logger logger = Logger.getLogger(EndnoteRecordsImport.class);
 
 	private static int modCount = 1000;
 
@@ -76,20 +80,20 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		MapWrapper<Team> authorMap = (MapWrapper<Team>)state.getStore(ICdmIO.TEAM_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
-		Map<String, Reference> map_article = new HashMap<String, Reference>();
-		Map<String, Reference> map_book = new HashMap<String, Reference>();
-		Map<String, Reference> map_book_section = new HashMap<String, Reference>();
-		Map<String, Reference> map_journal = new HashMap<String, Reference>();
-		Map<String, Reference> map_thesis = new HashMap<String, Reference>();
-		Map<String, Reference> map_patent = new HashMap<String, Reference>();
-		Map<String, Reference> map_proceedings = new HashMap<String, Reference>();
-		Map<String, Reference> map_cdDvd = new HashMap<String, Reference>();
-		Map<String, Reference> map_report = new HashMap<String, Reference>();
-		Map<String, Reference> map_database = new HashMap<String, Reference>();
-		Map<String, Reference> map_webPage = new HashMap<String, Reference>();
-		Map<String, Reference> map_generic = new HashMap<String, Reference>();
-		Map<String, Reference> map_printSeries = new HashMap<String, Reference>();
-		Map<String, Reference> map_personalCommunication = new HashMap<String, Reference>();
+		Map<String, Reference> map_article = new HashMap<>();
+		Map<String, Reference> map_book = new HashMap<>();
+		Map<String, Reference> map_book_section = new HashMap<>();
+		Map<String, Reference> map_journal = new HashMap<>();
+		Map<String, Reference> map_thesis = new HashMap<>();
+		Map<String, Reference> map_patent = new HashMap<>();
+		Map<String, Reference> map_proceedings = new HashMap<>();
+		Map<String, Reference> map_cdDvd = new HashMap<>();
+		Map<String, Reference> map_report = new HashMap<>();
+		Map<String, Reference> map_database = new HashMap<>();
+		Map<String, Reference> map_webPage = new HashMap<>();
+		Map<String, Reference> map_generic = new HashMap<>();
+		Map<String, Reference> map_printSeries = new HashMap<>();
+		Map<String, Reference> map_personalCommunication = new HashMap<>();
 
 		IReferenceService referenceService = getReferenceService();
 
@@ -2090,12 +2094,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(EndnoteImportState state){
-		EndnoteImportConfigurator tcsConfig = state.getConfig();
-		return (! tcsConfig.isDoRecords());
+		return false;
 	}
 }

@@ -31,6 +31,7 @@ public enum OutputModelTable {
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
     FACT_SOURCES("FactSources", factSourcesColumns())
+
     ;
 
     //Taxon/Synonym
@@ -62,6 +63,7 @@ public enum OutputModelTable {
     protected static final String VOLUME = "Volume";
     protected static final String YEAR = "Year";
     protected static final String AUTHORSHIP_TITLE = "Authorship";
+
 
     protected static final String IN_REFERENCE = "inReference";
     protected static final String INSTITUTION = "Institution";
@@ -194,6 +196,7 @@ public enum OutputModelTable {
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
     }
 
+
     final static String[]  factSourcesColumns() {
         return new String[]{FACT_FK, REFERENCE_FK, NAME_IN_SOURCE_FK, FACT_TYPE};
     }
@@ -211,7 +214,7 @@ public enum OutputModelTable {
 
     }
     final static String[] simpleFactsColumns() {
-        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
+        return new String[]{FACT_ID, TAXON_FK, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
 
     }
    final static String[] nomenclaturalAuthorColumns() {
@@ -249,7 +252,7 @@ public enum OutputModelTable {
     }
     final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
-                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI};
+                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI};
     }
 
     final static String[] typeDesignationColumns(){

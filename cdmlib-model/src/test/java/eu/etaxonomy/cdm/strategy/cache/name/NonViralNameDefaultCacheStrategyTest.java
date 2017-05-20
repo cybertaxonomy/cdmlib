@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -318,14 +319,14 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
 
     	speciesName.addRelationshipFromName(originalName, origSpellingType, null);
-    	Assert.assertEquals("Abies alba [as \u201ealpa\u201c]", speciesName.getFullTitleCache());
+    	Assert.assertEquals("Abies alba (as \u201calpa\u201d)", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
     	originalName.setGenusOrUninomial("Apies");
     	speciesName.setNameCache(null, false);
     	//TODO update cache of current name (species name)
-    	Assert.assertEquals("Abies alba [as \u201eApies alpa\u201c]", speciesName.getFullTitleCache());
+    	Assert.assertEquals("Abies alba (as \u201cApies alpa\u201d)", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
@@ -335,18 +336,18 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
-    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \u201eglabratus\u201c]", correctName.getFullTitleCache());
+    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
 
     	correctName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference [as \u201eglabratus\u201c]", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
         citationRef.setProtectedTitleCache(false);
         citationRef.setTitle("Sp. Pl.");
         citationRef.setDatePublished(TimePeriodParser.parseString("1988"));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \u201eglabratus\u201c]", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \u201eglabratus\u201c], nom. illeg.", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 (as \u201cglabratus\u201d), nom. illeg.", correctName.getFullTitleCache());
 
     	//TODO add more tests when specification of exact behaviour is clearer
 
@@ -668,6 +669,21 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	name.setExCombinationAuthorship(exCombTeam);
 
     	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
+    }
+
+    @Test //#6656
+    public void testAutonymHybrids(){
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+        name.setGenusOrUninomial("Ophrys");
+        name.setSpecificEpithet("kastelli");
+        name.setInfraSpecificEpithet("kastelli");
+        Team combTeam = Team.NewTitledInstance("E. Klein", "E. Klein");
+        name.setCombinationAuthorship(combTeam);
+        name.setBinomHybrid(true);
+        name.setTrinomHybrid(true);
+
+        String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
+        Assert.assertEquals("", expected, name.getTitleCache());
     }
 
 

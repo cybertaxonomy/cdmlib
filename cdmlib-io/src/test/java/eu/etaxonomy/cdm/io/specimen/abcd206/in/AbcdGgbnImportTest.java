@@ -122,17 +122,19 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
          *   - Campanula bononiensis
          */
         List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, 100, 0, null, null);
+        // TODO: this needs to be fixed, the sortindex should never be -1
         for (TaxonNode node: nodes){
             if (node.getTaxon() != null){
-                System.out.println(node.getTaxon().getTitleCache() + " - ");
-            } else{
-                System.out.println("no taxon..." + node.getClassification().getId());
+                assertTrue("The sortindex should not be smaller than 0", node.getSortIndex() > -1 );
             }
         }
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+
+        //test for sortindex=-1
+
 
 	}
 
@@ -661,7 +663,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
 	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
-	    SpecimenOrObservationBase dnaSampleFieldUnit = dnaSample.getDerivedFrom().getOriginals().iterator().next();
+	    SpecimenOrObservationBase<?> dnaSampleFieldUnit = dnaSample.getDerivedFrom().getOriginals().iterator().next();
 	    assertTrue(!specimenFieldUnit.equals(dnaSampleFieldUnit));
 
 	}

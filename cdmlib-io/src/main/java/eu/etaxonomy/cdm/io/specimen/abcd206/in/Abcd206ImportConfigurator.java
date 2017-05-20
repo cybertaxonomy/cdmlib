@@ -161,8 +161,80 @@ public class Abcd206ImportConfigurator
 
 
 
+@Override
+public String toString(){
+
+    StringBuffer result = new StringBuffer();
+    //the preference value is build like this:
+      //<section1>:true;<section2>:false....
+
+      result.append("ignoreImportOfExistingSpecimen");
+      result.append(":");
+      result.append(this.isIgnoreImportOfExistingSpecimen());
+      result.append(";");
+      result.append("addIndividualsAssociationsSuchAsSpecimenAndObservations");
+      result.append(":");
+      result.append(this.isAddIndividualsAssociationsSuchAsSpecimenAndObservations());
+      result.append(";");
+      result.append("reuseExistingTaxaWhenPossible");
+      result.append(":");
+      result.append(this.isReuseExistingTaxaWhenPossible());
+      result.append(";");
+      result.append("ignoreAuthorship");
+      result.append(":");
+      result.append(this.isIgnoreAuthorship());
+      result.append(";");
+      result.append("addMediaAsMediaSpecimen");
+      result.append(":");
+      result.append(this.isAddMediaAsMediaSpecimen());
+      result.append(";");
+      result.append("reuseExistingMetaData");
+      result.append(":");
+      result.append(this.isReuseExistingMetaData());
+      result.append(";");
+      result.append("reuseExistingDescriptiveGroups");
+      result.append(":");
+      result.append(this.isReuseExistingDescriptiveGroups());
+      result.append(";");
+      result.append("allowReuseOtherClassifications");
+      result.append(":");
+      result.append(this.isAllowReuseOtherClassifications());
+      result.append(";");
+      result.append("deduplicateReferences");
+      result.append(":");
+      result.append(this.isDeduplicateReferences());
+      result.append(";");
+      result.append("deduplicateClassifications");
+      result.append(":");
+      result.append(this.isDeduplicateClassifications());
+      result.append(";");
+      result.append("moveNewTaxaToDefaultClassification");
+      result.append(":");
+      result.append(this.isMoveNewTaxaToDefaultClassification());
+      result.append(";");
+
+      result.append("mapUnitIdToCatalogNumber");
+      result.append(":");
+      result.append(this.isMapUnitIdToCatalogNumber());
+      result.append(";");
+      result.append("mapUnitIdToAccessionNumber");
+      result.append(":");
+      result.append(this.isMapUnitIdToAccessionNumber());
+      result.append(";");
+      result.append("mapUnitIdToBarcode");
+      result.append(":");
+      result.append(this.isMapUnitIdToBarcode());
+      result.append(";");
+
+      result.append("overwriteExistingSpecimens");
+      result.append(":");
+      result.append(this.isOverwriteExistingSpecimens());
+      result.append(";");
 
 
+    return result.toString();
+
+}
 
 
 

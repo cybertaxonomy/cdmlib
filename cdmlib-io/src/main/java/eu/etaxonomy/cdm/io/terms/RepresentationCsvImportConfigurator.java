@@ -14,6 +14,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.SimpleImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -78,8 +79,15 @@ public class RepresentationCsvImportConfigurator
      */
     @Override
     public Reference getSourceReference() {
-        // TODO Auto-generated method stub
-        return null;
+        if (this.sourceReference == null){
+            sourceReference = ReferenceFactory.newGeneric();
+            if (this.getSource() == null){
+                sourceReference.setTitleCache("Term Representation Import " + getDateString(), true);
+            }else{
+                sourceReference.setTitleCache(getSource().toString(), true);
+            }
+        }
+        return sourceReference;
     }
 
 }

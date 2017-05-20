@@ -1181,19 +1181,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 result.addUpdatedObject(accTaxon);
             }
             this.saveOrUpdate(synonym);
+            //#6281
+            dao.flush();
 
-            //TODO remove name from homotypical group?
-
-            //remove synonym (if necessary)
             TaxonNameBase<?,?> name = synonym.getName();
             synonym.setName(null);
+
             dao.delete(synonym);
+
 
             //remove name if possible (and required)
             if (name != null && config.isDeleteNameIfPossible()){
 
-                    DeleteResult nameDeleteResult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
-                    if (nameDeleteResult.isAbort()){
+                    DeleteResult nameDeleteResult = nameService.delete(name, config.getNameDeletionConfig());
+                    if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
                     	result.addExceptions(nameDeleteResult.getExceptions());
                     	result.addRelatedObject(name);
                     }
@@ -3083,7 +3084,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
-        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
+        List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
 

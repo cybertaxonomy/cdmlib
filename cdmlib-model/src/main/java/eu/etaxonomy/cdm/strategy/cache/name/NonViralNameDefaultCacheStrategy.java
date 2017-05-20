@@ -533,6 +533,9 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 	            logger.warn("Rank for autonym does not exist or is not lower than species !!");
 	        }else{
 	            String infraSpeciesMarker = nonViralName.getRank().getAbbreviation();
+	            if (nonViralName.isTrinomHybrid()){
+	                infraSpeciesMarker = CdmUtils.concat("", NOTHO, infraSpeciesMarker);
+	            }
 	            if (StringUtils.isNotBlank(infraSpeciesMarker)){
 	                tags.add(new TaggedText(TagEnum.rank, infraSpeciesMarker));
 	            }
@@ -862,7 +865,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     				INonViralName originalNvName = CdmBase.deproxy(originalName);
     				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
     			}
-    			originalNameStrings.add("[as " + UTF8.QUOT_DBL_LOW9 + originalNameString + UTF8.QUOT_DBL_LEFT + "]");
+    			originalNameStrings.add("(as " + UTF8.QUOT_DBL_LEFT + originalNameString + UTF8.QUOT_DBL_RIGHT + ")");
     		}
 		}
     	if (originalNameStrings.size() > 0){
