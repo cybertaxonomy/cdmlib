@@ -78,7 +78,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
 
 	//presence base
-	private static final UUID uuidP=UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
+	public static final UUID uuidPresent=UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
 	private static final UUID uuidPD=UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
 
 	//presence
@@ -285,7 +285,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	 * @see #ABSENT()
 	 */
 	public static final PresenceAbsenceTerm PRESENT(){
-		return getTermByUuid(uuidP);
+		return getTermByUuid(uuidPresent);
 	}
 
 	/**
