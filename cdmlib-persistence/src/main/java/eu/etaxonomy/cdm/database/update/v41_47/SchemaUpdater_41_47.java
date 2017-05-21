@@ -180,6 +180,33 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = InitialsUpdater.NewInstance();
         stepList.add(step);
 
+        //#6663
+        //Add "lastRetrieved" to Reference
+        stepName = "Add 'lastRetrieved' to Reference";
+        tableName = "Reference";
+        newColumnName = "lastRetrieved";
+        step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
+        stepList.add(step);
+
+        stepName = "Add externalId to Reference";
+        tableName = "Reference";
+        newColumnName = "externalId";
+        length = 255;
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Add externalLink to Reference";
+        tableName = "Reference";
+        newColumnName = "externalLink";
+        step = ColumnAdder.NewClobInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Add authorityType to Reference";
+        tableName = "Reference";
+        newColumnName = "authorityType";
+        length = 10;
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+        stepList.add(step);
 
         //ModelUpdateResult
 

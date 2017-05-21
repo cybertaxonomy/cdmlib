@@ -113,7 +113,11 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "school",
     "organization",
     "inReference",
-    "accessed"
+    "accessed",
+    "lastRetrieved",
+    "externalId",
+    "externalLink",
+    "authorityType"
 })
 @XmlRootElement(name = "Reference")
 @Entity
@@ -348,6 +352,38 @@ public class Reference
     @Match(MatchMode.IGNORE)
 	private boolean cacheStrategyRectified = false;
 
+    //attributes for externally managed
+
+//    @XmlElement (name = "LastRetrieved", type= String.class)
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
+    @Type(type="dateTimeUserType")
+    //TODO needed??
+    @Basic(fetch = FetchType.LAZY)
+    private DateTime lastRetrieved;
+
+    @XmlElement(name ="ExternalId" )
+//    @Field
+//    @Match(MatchMode.EQUAL)  //TODO check if this is correct
+    @NullOrNotEmpty
+    @Column(length=255)
+    private String externalId;
+
+    //Actionable link on e.g. on a webservice
+    @XmlElement(name = "ExternalLink")
+    @Field(analyze = Analyze.NO)
+    @Type(type="uriUserType")
+    private URI externalLink;
+
+    @XmlAttribute(name ="authority")
+    @Column(name="authorityType", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.AuthorityType")}
+    )
+//    @NotNull
+    private AuthorityType authorityType;
+
+// *********************** CONSTRUCTOR ************************/
+
     protected Reference(){
 		this(ReferenceType.Generic);  //just in case someone uses constructor
 	}
@@ -361,6 +397,9 @@ public class Reference
 		}
 		this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
 	}
+
+// *********************** LISTENER ************************/
+
 
 	@Override
     public void initListener(){
