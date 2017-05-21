@@ -168,6 +168,18 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //#6535 update termtype for CdmMetaData (int => string)
         updateTermTypeForCdmMetaDataPropertyName(stepList);
 
+        //##6661 Add initials to agent base
+        stepName = "Add initials to AgentBase";
+        tableName = "AgentBase";
+        newColumnName = "initials";
+        int length = 50;
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Update initials and firstname";
+        step = InitialsUpdater.NewInstance();
+        stepList.add(step);
+
 
         //ModelUpdateResult
 

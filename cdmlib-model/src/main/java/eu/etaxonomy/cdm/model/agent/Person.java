@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import javassist.compiler.ast.Keyword;
 
 /**
@@ -62,6 +63,7 @@ import javassist.compiler.ast.Keyword;
 @XmlType(name = "Person", propOrder = {
 	    "prefix",
 	    "firstname",
+	    "initials",
 	    "lastname",
 	    "suffix",
 	    "lifespan",
@@ -90,6 +92,12 @@ public class Person extends TeamOrPersonBase<Person>{
 //    @NullOrNotEmpty
     @Column(length=255)
 	private String firstname;
+
+    @XmlElement(name = "FirstName")
+    @Field
+    @NullOrNotEmpty
+    @Column(length=50)
+    private String initials;
 
     @XmlElement(name = "LastName")
     @Field
@@ -263,6 +271,23 @@ public class Person extends TeamOrPersonBase<Person>{
 	public void setFirstname(String firstname){
 		this.firstname = StringUtils.isBlank(firstname) ? null : firstname;
 	}
+
+    /**
+     * Returns the initials of this person as used in bibliographic
+     * references. Usually these are the first letters of each firstname
+     * followed by "." per firstname. For East Asian names it may
+     * be the first 2 letters. Also dashes are kept.
+     * @return the initials
+     */
+    public String getInitials(){
+        return this.initials;
+    }
+    /**
+     * @see  #getInitals()
+     */
+    public void setInitials(String initials){
+        this.initials = isBlank(initials) ? null : initials;
+    }
 
 
 	/**

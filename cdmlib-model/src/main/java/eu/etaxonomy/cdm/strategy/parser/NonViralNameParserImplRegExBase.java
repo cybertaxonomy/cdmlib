@@ -39,6 +39,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String anyEnd = ".*" + end;
     protected static String oWs = "\\s+"; //obligatory whitespaces
     protected static String fWs = "\\s*"; //facultative whitespcace
+    protected static String dotSpaceOrBoth = "((?<=\\.)|\\s+)+";
 
     public static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
     protected static String capital2LetterWord = "\\p{javaUpperCase}\\p{javaLowerCase}+";

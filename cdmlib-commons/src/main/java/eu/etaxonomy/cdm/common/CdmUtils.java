@@ -625,4 +625,22 @@ public class CdmUtils {
         return (isNotBlank(str1) && str1.equals(str2));
     }
 
+    /**
+     * Compares if str1 and str2 is equal when ignoring whitespaces.
+     * Returns <code>true</code> if both or <code>null</code> or
+     * whitespace ignore equal.
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static boolean equalsIgnoreWS(String str1, String str2) {
+        if (str1 == null){
+            return str2 == null;
+        }else if (str2 == null){
+            return false;
+        }else{
+            return str1.replaceAll("\\s", "").equals(str2.replaceAll("\\s", ""));
+        }
+    }
+
 }

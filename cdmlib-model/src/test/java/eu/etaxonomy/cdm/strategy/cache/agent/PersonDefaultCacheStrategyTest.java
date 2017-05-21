@@ -124,6 +124,105 @@ public class PersonDefaultCacheStrategyTest {
 		person3.setFirstname("Klaus");
 		Assert.assertEquals("Person3 title cache should be Klaus", "Klaus", person3.getTitleCache());
 	}
-	
-	
+
+	@Test
+    public final void testInitialsFromFirstname(){
+	    PersonDefaultCacheStrategy formatter = PersonDefaultCacheStrategy.NewInstance();
+	    boolean force = true;
+
+	    String firstname = null;
+        Assert.assertNull(formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "";
+        Assert.assertEquals("", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "  ";
+        Assert.assertEquals("We expect blanks to be trimmed", "", formatter.getInitialsFromFirstname(firstname, force));
+
+	    firstname = "John Michael ";
+	    Assert.assertEquals("J.M.", formatter.getInitialsFromFirstname(firstname, force));
+
+	    firstname = "Walter G.";
+        Assert.assertEquals("W.G.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "A.L.";
+        Assert.assertEquals("A.L.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "A.Ludw. W.";
+        Assert.assertEquals("A.L.W.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "A. Ludw.  Norbert W.";
+        Assert.assertEquals("A.L.N.W.", formatter.getInitialsFromFirstname(firstname, force));
+
+        force = false;
+        firstname = "A. Ludw.  Norbert W.";
+        Assert.assertEquals("A.Ludw.N.W.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "W.-H.";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "W.-Henning";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "W.-Henn.";
+        Assert.assertEquals("W.-Henn.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Wolf-Henning";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Wolf\u2013 Henning";
+        Assert.assertEquals("W.\u2013H.", formatter.getInitialsFromFirstname(firstname, force));
+
+
+        firstname = "W";
+        Assert.assertEquals("W.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "W K";
+        Assert.assertEquals("W.K.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "WK";
+        Assert.assertEquals("W.K.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "WKH";
+        Assert.assertEquals("W.K.H.", formatter.getInitialsFromFirstname(firstname, force));
+
+
+        //force
+        force = true;
+        firstname = "W.-H.";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "W.-Henning";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "W.-Henn.";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Wolf-Henning";
+        Assert.assertEquals("W.-H.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "W";
+        Assert.assertEquals("W.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "W K";
+        Assert.assertEquals("W.K.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "WK";
+        Assert.assertEquals("W.K.", formatter.getInitialsFromFirstname(firstname, force));
+
+        firstname = "WKH";
+        Assert.assertEquals("W.K.H.", formatter.getInitialsFromFirstname(firstname, force));
+
+        force = false;
+        firstname = "Pe. Y.";
+        Assert.assertEquals("Pe.Y.", formatter.getInitialsFromFirstname(firstname, force));
+
+
+        //must not throw exception (exact result may change in future)
+        firstname = "W.-H.-";
+        Assert.assertEquals("W.-H.-", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "W.-Hennin-";
+        Assert.assertEquals("W.-H.-", formatter.getInitialsFromFirstname(firstname, force));
+
+        force = false;
+        firstname = "W.-H.-";
+        Assert.assertEquals("W.-H.-", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "W.-Hennin-";
+        Assert.assertEquals("W.-H.-", formatter.getInitialsFromFirstname(firstname, force));
+
+	}
+
 }
