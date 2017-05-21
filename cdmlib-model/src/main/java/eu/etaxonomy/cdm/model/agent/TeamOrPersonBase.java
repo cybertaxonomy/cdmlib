@@ -109,6 +109,13 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         return result;
     }
 
+   @Transient
+    public String getFullTitle() {
+        @SuppressWarnings("unchecked")
+        T agent = (T)this;
+        return this.getCacheStrategy().getFullTitle(agent);
+    }
+
     /**
      * @param result
      * @return

@@ -89,8 +89,10 @@ public class IpniServiceTest {
 
 			Assert.assertEquals("There should be exactly 1 result for 'Greuter'", 1, authorList.size());
 			Person author = authorList.get(0);
-			//title cache
-			Assert.assertEquals("Title Cache for Greuter should be 'Werner Rodolfo Greuter'", "Werner Rodolfo Greuter", author.getTitleCache());
+			//full title
+			Assert.assertEquals("Full title for Greuter should be 'Werner Rodolfo Greuter'", "Werner Rodolfo Greuter", author.getFullTitle());
+            //title cache
+            Assert.assertEquals("Title cache for Greuter should be 'Greuter, W.R.'", "Greuter, W.R.", author.getTitleCache());
 			//alternative names
 			Assert.assertEquals("One extension for the alternative name should exist", 1, author.getExtensions().size());
 			Extension alternativeName = author.getExtensions().iterator().next();

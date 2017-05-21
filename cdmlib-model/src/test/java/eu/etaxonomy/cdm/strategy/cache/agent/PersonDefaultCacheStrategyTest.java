@@ -94,9 +94,9 @@ public class PersonDefaultCacheStrategyTest {
 	@Test
 	public final void testGetNomenclaturalTitleCache(){
 		Assert.assertNotNull("person1 nomenclatural title must not to be null", person1.getNomenclaturalTitle());
-		Assert.assertEquals("Person1 nomenclatural title should be created by elements", "Dr1. P1FN P1LN Suff1", person1.getNomenclaturalTitle());
+		Assert.assertEquals("Person1 nomenclatural title should be taken from titleCache", "P1LN, P.", person1.getNomenclaturalTitle());
 		person1.setSuffix(null);
-		Assert.assertEquals("Person1 title should be Dr1. P1FN P1LN", "Dr1. P1FN P1LN", person1.getNomenclaturalTitle());
+		Assert.assertEquals("Person1 title should be taken from titleCache", "P1LN, P.", person1.getNomenclaturalTitle());
 		//peson2
 		Assert.assertEquals("Person2 title should be P2NomT", "P2NomT", person2.getNomenclaturalTitle());
 		//person3
@@ -108,21 +108,74 @@ public class PersonDefaultCacheStrategyTest {
 
 
 	@Test
-	public final void testGetTitleCache(){
-		Assert.assertNotNull("person1 title cache must not to be null", person1.getTitleCache());
-		Assert.assertEquals("Person1 title cache should be created by elements", "Dr1. P1FN P1LN Suff1", person1.getTitleCache());
+	public final void testGetTitleCacheAdaptedFromOldVersion(){
+	    Assert.assertNotNull("person1 title cache must not to be null", person1.getTitleCache());
+		Assert.assertEquals("Person1 title cache should be created by lastname and computed initials", "P1LN, P.", person1.getTitleCache());
 		person1.setSuffix(null);
-		Assert.assertEquals("Person1 title cache should be Dr1. P1FN P1LN", "Dr1. P1FN P1LN", person1.getTitleCache());
+		Assert.assertEquals("Person1 title cache should be Dr1. P1FN P1LN", "P1LN, P.", person1.getTitleCache());
 		//peson2
-		Assert.assertEquals("Person2 title cache should be P2NomT", "P2FN P2LN P2Suff", person2.getTitleCache());
+		Assert.assertEquals("Person2 title cache should be P2NomT", "P2LN, P.", person2.getTitleCache());
 		//person3
 		Assert.assertNotNull("person3 title cache must not to be null", person3.getTitleCache());
 		Assert.assertTrue("Person3 title cache must not be empty", StringUtils.isNotBlank(person3.getTitleCache()));
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title cache should start with Person#0", "Person#0", person3.getTitleCache().substring(0, 8));
 		person3.setFirstname("Klaus");
-		Assert.assertEquals("Person3 title cache should be Klaus", "Klaus", person3.getTitleCache());
+		Assert.assertEquals("Person3 title cache should be Klaus", "K.", person3.getTitleCache());
 	}
+
+	@Test
+    public final void testGetTitleCache(){
+        Person pers = Person.NewInstance();
+        pers.setLastname("Last");
+        pers.setInitials("E.M.");
+
+        String expected = "Last, E.M.";
+	    Assert.assertNotNull("pers title cache must not to be null", pers.getTitleCache());
+        Assert.assertEquals("pers title cache should be created by lastname and initials",
+                expected, pers.getTitleCache());
+
+        pers.setSuffix("xyz");
+        Assert.assertEquals("Suffix should not influence title cache",
+                expected, pers.getTitleCache());
+        pers.setPrefix("abc");
+        Assert.assertEquals("Prefix should not influence title cache",
+                expected, pers.getTitleCache());
+
+        pers.setFirstname("First");
+        Assert.assertEquals("Firstname should not influence title cache if initials are set",
+                expected, pers.getTitleCache());
+
+        pers.setInitials(null);
+        expected = "Last, F.";
+        Assert.assertEquals("Initials should be computed from firstname if not set manually",
+                expected, pers.getTitleCache());
+    }
+
+
+    @Test
+    public final void testGetFullTitle(){
+        Assert.assertNotNull("person1 full titlemust not to be null", person1.getFullTitle());
+        Assert.assertEquals("Person1 full title should be created by elements",
+                "Dr1. P1FN P1LN Suff1", person1.getFullTitle());
+        person1.setSuffix(null);
+        Assert.assertEquals("Person1 full title should be Dr1. P1FN P1LN",
+                "Dr1. P1FN P1LN", person1.getFullTitle());
+        //peson2
+        Assert.assertEquals("Person2 full title should be P2NomT",
+                "P2FN P2LN P2Suff", person2.getFullTitle());
+        //person3
+        Assert.assertNotNull("person3 full title must not to be null",
+                person3.getFullTitle());
+        Assert.assertTrue("Person3 full title must not be empty",
+                StringUtils.isNotBlank(person3.getFullTitle()));
+        //don't take to serious, may be also something different, but not empty
+        Assert.assertEquals("Person3 full title should start with Person#0",
+                "Person#0", person3.getFullTitle().substring(0, 8));
+        person3.setFirstname("Klaus");
+        Assert.assertEquals("Person3 full title should be Klaus",
+                "Klaus", person3.getFullTitle());
+    }
 
 	@Test
     public final void testInitialsFromFirstname(){

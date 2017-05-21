@@ -54,24 +54,58 @@ public class PersonDefaultCacheStrategy
 		return person.getNomenclaturalTitle();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INomenclaturalAuthorCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-	 */
-	public String getTitleCache(Person person) {
+   @Override
+    public String getTitleCache(Person person) {
+        String result = "";
+        if (isNotBlank(person.getLastname() ) ){
+            result = person.getLastname();
+            result = addInitials(result, person);
+            return result;
+        }else{
+            result = person.getNomenclaturalTitle();
+            if (StringUtils.isNotBlank(result)){
+                return result;
+            }
+            result = addInitials("", person);
+            if (StringUtils.isNotBlank(result)){
+                return result;
+            }
+        }
+        return person.toString();
+    }
+
+	/**
+     * @param result
+     * @param person
+     * @return
+     */
+    private String addInitials(String existing, Person person) {
+        String result = existing;
+        String initials = person.getInitials();
+        if (isBlank(initials)){
+            boolean forceFirstLetter = false;
+            initials = getInitialsFromFirstname(person.getFirstname(), forceFirstLetter);
+        }
+        result = CdmUtils.concat(", ", result, initials);
+        return result;
+    }
+
+
+    @Override
+    public String getFullTitle(Person person) {
 		String result = "";
-		if (StringUtils.isNotBlank(person.getLastname() ) ){
-			result = person.getLastname();
-			result = addFirstNamePrefixSuffix(result, person);
-			return result;
-		}else{
-			result = person.getNomenclaturalTitle();
-			if (StringUtils.isNotBlank(result)){
-				return result;
-			}
-			result = addFirstNamePrefixSuffix("", person);
-			if (StringUtils.isNotBlank(result)){
-				return result;
-			}
+		result = person.getLastname();
+		result = addFirstNamePrefixSuffix(result, person);
+		if (isNotBlank(result)){
+		    return result;
+		}
+	    result = person.getNomenclaturalTitle();
+	    if (isNotBlank(result)){
+	        return result;
+	    }
+	    result = addFirstNamePrefixSuffix("", person);
+	    if (isNotBlank(result)){
+	        return result;
 		}
 		return person.toString();
 	}

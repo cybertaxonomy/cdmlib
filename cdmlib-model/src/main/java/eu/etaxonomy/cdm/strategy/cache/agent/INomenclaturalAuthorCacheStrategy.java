@@ -21,7 +21,21 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
 	 * @param agent person or team
 	 * @return the nomenclatural title
 	 */
-	public String getNomenclaturalTitle(T object);
+	public String getNomenclaturalTitle(T agent);
+
+	/**
+     * Returns full name of a person or a team as used in written language.
+     * This is not the same as the abbreviated version used for bibliographic
+     * references which is handled in
+     * {@link #getTitleCache(eu.etaxonomy.cdm.model.common.IIdentifiableEntity)}.
+     *
+     * NOTE: This is formatting used for {@link #getTitleCache(eu.etaxonomy.cdm.model.common.IIdentifiableEntity)}
+     * prior to CDM version 4.7
+     *
+     * @param object
+     * @return
+     */
+    public String getFullTitle(T object);
 
 
 }
