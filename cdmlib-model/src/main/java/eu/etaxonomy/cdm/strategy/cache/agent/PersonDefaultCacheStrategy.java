@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
@@ -20,10 +20,10 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
  * @author AM
- *
  */
-public class PersonDefaultCacheStrategy extends StrategyBase implements
-		INomenclaturalAuthorCacheStrategy<Person> {
+public class PersonDefaultCacheStrategy
+        extends StrategyBase
+        implements INomenclaturalAuthorCacheStrategy<Person> {
 	private static final long serialVersionUID = -6184639515553953112L;
 
 	@SuppressWarnings("unused")
@@ -36,26 +36,21 @@ public class PersonDefaultCacheStrategy extends StrategyBase implements
 	static public PersonDefaultCacheStrategy NewInstance(){
 		return new PersonDefaultCacheStrategy();
 	}
-	
-	/**
-	 * 
-	 */
+
+// ******************** CONSTRUCTOR **********************************/
 	private PersonDefaultCacheStrategy() {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
+
+
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INomenclaturalAuthorCacheStrategy#getNomenclaturalTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-	 */
-	public String getNomenclaturalTitle(Person person) {
+	@Override
+    public String getNomenclaturalTitle(Person person) {
 		return person.getNomenclaturalTitle();
 	}
 
@@ -82,13 +77,13 @@ public class PersonDefaultCacheStrategy extends StrategyBase implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private String addFirstNamePrefixSuffix(String oldString, Person person) {
 		String result = oldString;
-		result = CdmUtils.concat(" ", person.getFirstname(), result); 
-		result = CdmUtils.concat(" ", person.getPrefix(), result); 
-		result = CdmUtils.concat(" ", result, person.getSuffix()); 
+		result = CdmUtils.concat(" ", person.getFirstname(), result);
+		result = CdmUtils.concat(" ", person.getPrefix(), result);
+		result = CdmUtils.concat(" ", result, person.getSuffix());
 		return result;
 	}
 

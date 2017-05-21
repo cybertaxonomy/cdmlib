@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 /**
  * @author a.mueller
  * @created 29.09.2009
- * @version 1.0
  */
 public class PersonDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -35,7 +34,7 @@ public class PersonDefaultCacheStrategyTest {
 	private static Person person1;
 	private static Person person2;
 	private static Person person3;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -48,8 +47,8 @@ public class PersonDefaultCacheStrategyTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		
-		
+
+
 	}
 
 	/**
@@ -58,20 +57,20 @@ public class PersonDefaultCacheStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		person1 = Person.NewInstance();
-		
+
 		person1.setFirstname("P1FN");
 		person1.setLastname("P1LN");
 		person1.setPrefix("Dr1.");
 		person1.setSuffix("Suff1");
-		
+
 		person2 = Person.NewInstance();
 		person2.setNomenclaturalTitle("P2NomT");
 		person2.setLastname("P2LN");
 		person2.setFirstname("P2FN");
 		person2.setSuffix("P2Suff");
-		
+
 		person3 = Person.NewInstance(); //empty person
-		
+
 	}
 
 	/**
@@ -80,9 +79,9 @@ public class PersonDefaultCacheStrategyTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
 //**************************************** TESTS **************************************
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy#NewInstance()}.
 	 */
@@ -106,7 +105,7 @@ public class PersonDefaultCacheStrategyTest {
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getNomenclaturalTitle().substring(0, 8));
 	}
-	
+
 
 	@Test
 	public final void testGetTitleCache(){

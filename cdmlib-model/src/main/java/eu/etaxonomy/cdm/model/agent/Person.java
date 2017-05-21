@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -251,7 +250,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getPrefix()
 	 */
 	public void setPrefix(String prefix){
-		this.prefix = StringUtils.isBlank(prefix) ? null : prefix;
+		this.prefix = isBlank(prefix) ? null : prefix;
 	}
 
 
@@ -269,7 +268,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getFirstname()
 	 */
 	public void setFirstname(String firstname){
-		this.firstname = StringUtils.isBlank(firstname) ? null : firstname;
+		this.firstname = isBlank(firstname) ? null : firstname;
 	}
 
     /**
@@ -303,7 +302,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLastname()
 	 */
 	public void setLastname(String lastname){
-		this.lastname = StringUtils.isBlank(lastname) ? null : lastname;
+		this.lastname = isBlank(lastname) ? null : lastname;
 	}
 
 
@@ -318,7 +317,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getSuffix()
 	 */
 	public void setSuffix(String suffix){
-		this.suffix = StringUtils.isBlank(suffix) ? null: suffix;
+		this.suffix = isBlank(suffix) ? null: suffix;
 	}
 
 
@@ -348,26 +347,6 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.lifespan = lifespan;
 	}
 
-//	/**
-//	 * Generates the "full" name string of <i>this</i> person according to the strategy
-//	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
-//	 * The used attributes are:
-//	 * {@link #getPrefix() prefix}, {@link #getFirstname() firstname}, {@link #getLastname() lastname} and {@link #getSuffix() suffix}.
-//	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
-//	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-//	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-//	 *
-//	 * @return  the string with the full name of <i>this</i> person
-//	 */
-//	@Override
-//	public String generateTitle() {
-//		String title = null;
-//		if (cacheStrategy != null) {
-//		title = cacheStrategy.getTitleCache(this);
-//		}
-//        return title;
-//	}
-
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -388,8 +367,6 @@ public class Person extends TeamOrPersonBase<Person>{
 			e.printStackTrace();
 			return null;
 		}
-
-
 	}
 
 }
