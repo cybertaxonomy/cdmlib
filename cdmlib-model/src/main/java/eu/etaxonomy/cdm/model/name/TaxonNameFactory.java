@@ -223,7 +223,7 @@ public class TaxonNameFactory {
      * @see    #BotanicalName(Rank, HomotypicalGroup)
      * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
      */
-    public static IBotanicalName NewBotanicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+    public static TaxonName NewBotanicalInstance(Rank rank, HomotypicalGroup homotypicalGroup){
         return TaxonName.NewInstance(NomenclaturalCode.ICNAFP, rank, homotypicalGroup);
     }
     /**
