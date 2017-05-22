@@ -838,7 +838,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	//TODO implementation must be improved when matching of taxon names with existing names is implemented
 	//=> the assumption that the only description is the description added by this import
 	//is wrong then
-	private TaxonNameDescription getNameDescription(TaxonName<?,?> name) {
+	private TaxonNameDescription getNameDescription(TaxonName name) {
 		Set<TaxonNameDescription> descriptions = name.getDescriptions();
 		if (descriptions.size()>1){
 			throw new IllegalStateException("Implementation does not yet support names with multiple descriptions");

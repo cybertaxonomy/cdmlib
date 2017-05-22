@@ -598,7 +598,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     		if(parentNode == null){
     			//if no match found in list, create parentNode
     			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-    			TaxonName<?,?> TaxonName = (TaxonName<?,?>)parser.parseFullName(genus);
+    			TaxonName TaxonName = (TaxonName)parser.parseFullName(genus);
     			//TODO Sec via configurator
     			Taxon taxon = Taxon.NewInstance(TaxonName, null);
     			parentNode = newClassification.addChildTaxon(taxon, 0, null, null);
@@ -877,7 +877,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
         result.setTaxonLabel(taxonBase.getTitleCache());
 
-        TaxonName<?,?> name = taxonBase.getName();
+        TaxonName name = taxonBase.getName();
         result.setNameUuid(name.getUuid());
         result.setNameLabel(name.getTitleCache());
         result.setNameWithoutAuthor(name.getNameCache());

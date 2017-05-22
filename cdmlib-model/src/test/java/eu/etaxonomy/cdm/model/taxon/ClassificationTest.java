@@ -64,11 +64,11 @@ public class ClassificationTest {
 	private static Taxon taxon3;
 	private static Taxon taxon12;
 	private static Taxon taxon121;
-	private static TaxonName<?,?> taxonName1;
-	private static TaxonName<?,?> taxonName2;
-	private static TaxonName<?,?> taxonName3;
-	private static TaxonName<?,?> taxonName12;
-	private static TaxonName<?,?> taxonName121;
+	private static TaxonName taxonName1;
+	private static TaxonName taxonName2;
+	private static TaxonName taxonName3;
+	private static TaxonName taxonName12;
+	private static TaxonName taxonName121;
 	private static Reference ref1;
 	private static Reference ref2;
 	private static Reference ref3;
@@ -129,7 +129,7 @@ public class ClassificationTest {
 	 */
 	@Test
 	public void testAddRoot() {
-		TaxonName<?,?> synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonNode1.setSynonymToBeUsed(synonym);
@@ -230,7 +230,7 @@ public class ClassificationTest {
 	@Test
 	public void testAddParentChild() {
 
-		TaxonName<?,?> synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
 		rootNode.setSynonymToBeUsed(synonym);
@@ -346,7 +346,7 @@ public class ClassificationTest {
 		//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
 
 
-		TaxonName<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name.setTitleCache("A dummy name", true);
 		result.add(name);
 		Reference ref = ReferenceFactory.newBook();

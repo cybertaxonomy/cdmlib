@@ -89,7 +89,7 @@ public class DeterminationEvent extends EventBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TaxonName<?,?> taxonName;
+    private TaxonName taxonName;
 
 	@XmlElement(name = "Modifier")
 	@XmlIDREF

@@ -72,7 +72,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             }
         } else if(bean instanceof TaxonName) {
              // ---> TaxonName
-            TaxonName n = (TaxonName<?,?>)bean;
+            TaxonName n = (TaxonName)bean;
             if(!n.isProtectedFullTitleCache())  {
                 n.getFullTitleCache();
             } else if(!bean.isProtectedTitleCache()){

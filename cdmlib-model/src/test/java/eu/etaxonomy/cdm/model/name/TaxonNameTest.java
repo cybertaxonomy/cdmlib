@@ -61,7 +61,7 @@ public class TaxonNameTest {
 	}
 
 
-	private class TaxonNameTestClass extends TaxonName<TaxonNameTestClass, INameCacheStrategy>{
+	private class TaxonNameTestClass extends TaxonName{
 		public TaxonNameTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
 		@Override
 		public void setCacheStrategy(INameCacheStrategy strategy){}
@@ -822,7 +822,7 @@ public class TaxonNameTest {
 		description.addElement(textData);
 
 		//CLONE
-		TaxonName<?,?> clone = (TaxonName)taxonName1.clone();
+		TaxonName clone = (TaxonName)taxonName1.clone();
 		TaxonName genusClone = (TaxonName)genusName.clone();
 		assertSame("Rank should be same", taxonName1.getRank(), clone.getRank());
 		assertTrue("TaxonBases should not be cloned", clone.getTaxonBases().isEmpty());

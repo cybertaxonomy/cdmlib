@@ -188,7 +188,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     private Taxon getTaxon() {
         Reference sec = getReference();
-        TaxonName<?, ?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         Taxon taxon = Taxon.NewInstance(name, sec);
         return taxon;
 

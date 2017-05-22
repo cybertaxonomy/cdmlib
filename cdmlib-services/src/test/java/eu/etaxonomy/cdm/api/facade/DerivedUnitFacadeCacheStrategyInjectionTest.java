@@ -105,7 +105,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
     private final String exsiccatum = "Greuter, Pl. Dahlem. 456";
     private final String accessionNumber = "8909756";
     private final String catalogNumber = "UU879873590";
-    private final TaxonName<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+    private final TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
     private final String collectorsNumber = "234589913A34";
     private final Collection collection = Collection.NewInstance();
 

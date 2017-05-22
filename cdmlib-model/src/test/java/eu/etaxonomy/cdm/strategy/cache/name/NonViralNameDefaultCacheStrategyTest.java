@@ -312,7 +312,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testOriginalSpelling() {
     	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
-    	TaxonName originalName = (TaxonName<?,?>)speciesName.clone();
+    	TaxonName originalName = (TaxonName)speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
@@ -331,7 +331,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
-    	TaxonName originalSpelling = (TaxonName<?,?>)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
+    	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
     	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());

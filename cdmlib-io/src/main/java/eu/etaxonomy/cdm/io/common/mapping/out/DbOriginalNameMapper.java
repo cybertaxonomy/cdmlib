@@ -52,7 +52,7 @@ public class DbOriginalNameMapper extends DbSingleAttributeExportMapperBase<DbEx
 		if (cdmBase.isInstanceOf(OriginalSourceBase.class)){
 			OriginalSourceBase<?> source = CdmBase.deproxy(cdmBase, OriginalSourceBase.class);
 			String nameString = source.getOriginalNameString();
-			TaxonName<?,?> name = null;
+			TaxonName name = null;
 			if (source.isInstanceOf(DescriptionElementSource.class)){
 				DescriptionElementSource descSource = CdmBase.deproxy(source, DescriptionElementSource.class);
 				name = descSource.getNameUsedInSource();

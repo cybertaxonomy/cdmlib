@@ -309,13 +309,13 @@ public class HomotypicalGroup extends AnnotatableEntity {
 //     */
 //    public void guessAndSetBasionym(){
 //         Map<String, INonViralName> candidates = new HashMap<>();
-//         for (TaxonName<?,?> typifiedName : this.typifiedNames){
+//         for (TaxonName typifiedName : this.typifiedNames){
 //             if (! typifiedName.protectedAuthorshipCache && nvn.getBasionymAuthorship() == null){
 //                 candidates.add(typifiedName);
 //             }
 //         }
 //         if (candidates.size() == 1){
-//             for (TaxonName<?,?> typifiedName : this.typifiedNames){
+//             for (TaxonName typifiedName : this.typifiedNames){
 //                 removeGroupBasionym(typifiedName);
 //             }
 //             this.setGroupBasionym(candidates.iterator().next());

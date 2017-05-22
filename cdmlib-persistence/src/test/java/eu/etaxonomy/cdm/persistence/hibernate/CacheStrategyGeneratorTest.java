@@ -101,13 +101,13 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	@ExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
 		//names
-	    TaxonName<?,?> name =  cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
+	    TaxonName name =  cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
 		name.setTitleCache(null, false);
 		name.setNameCache(null, false);
 		name.setGenusOrUninomial("Abies");
 		name.setAuthorshipCache("Mill.", true);
 		cdmEntityDaoBase.saveOrUpdate(name);
-		TaxonName<?,?> name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
+		TaxonName name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
 		name2.setProtectedFullTitleCache(false);
 		name2.setProtectedTitleCache(false);
 		name2.setProtectedNameCache(false);
@@ -127,13 +127,13 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
 		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
 		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
-		TaxonName<?,?> name3 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name3.setFullTitleCache("Test: MyBook");
 		name3.setTitleCache("Test", true);
 		cdmEntityDaoBase.saveOrUpdate(name3);
 		List<TaxonName> taxa = cdmEntityDaoBase.findByTitle("Test");
 
-		TaxonName<?,?> nameBase = taxa.get (0);
+		TaxonName nameBase = taxa.get (0);
 		IBotanicalName botName = nameBase;
 
 		logger.debug("created "+botName.getCreated());

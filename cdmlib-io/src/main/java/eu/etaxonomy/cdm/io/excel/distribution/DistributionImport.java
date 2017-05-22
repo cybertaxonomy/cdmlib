@@ -186,7 +186,7 @@ public class DistributionImport
     		}
 
     		// get the taxa for the matching names
-    		for(TaxonName<?,?> dbTaxonName: taxonNames) {
+    		for(TaxonName dbTaxonName: taxonNames) {
 
     			Set<Taxon> taxa = dbTaxonName.getTaxa();
     			if (taxa.isEmpty()) {

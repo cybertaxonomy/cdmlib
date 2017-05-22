@@ -40,10 +40,10 @@ public class BasionymRelationCreatorTest {
     private Synonym synonym1;
     private Synonym synonym2;
     private Synonym synonym3;
-    private TaxonName<?,?> accName1;
-    private TaxonName<?,?> synName1;
-    private TaxonName<?,?> synName2;
-    private TaxonName<?,?> synName3;
+    private TaxonName accName1;
+    private TaxonName synName1;
+    private TaxonName synName2;
+    private TaxonName synName3;
     private Person person1;
     private Person person2;
     private Person person3;

@@ -59,7 +59,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	@DataSet("CdmDeleteListenerTest.xml")
 	@ExpectedDataSet
 	public void testOnDelete() throws Exception {
-		TaxonName<?,?> name = taxonNameDao.findByUuid(uuid);
+		TaxonName name = taxonNameDao.findByUuid(uuid);
 		/**
 		 * Ended up with some horrible hibernate errors otherwise
 		 */

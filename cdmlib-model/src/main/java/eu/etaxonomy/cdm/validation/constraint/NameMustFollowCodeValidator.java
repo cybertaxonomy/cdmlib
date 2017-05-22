@@ -31,13 +31,13 @@ import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
  *
  */
 public class NameMustFollowCodeValidator implements
-        ConstraintValidator<NameMustFollowCode, TaxonName<?,?>> {
+        ConstraintValidator<NameMustFollowCode, TaxonName> {
 
     @Override
     public void initialize(NameMustFollowCode nameMustFollowTheirCode) { }
 
     @Override
-    public boolean isValid(TaxonName<?,?> name, ConstraintValidatorContext constraintContext) {
+    public boolean isValid(TaxonName name, ConstraintValidatorContext constraintContext) {
         name = CdmBase.deproxy(name);
         boolean valid = true;
 

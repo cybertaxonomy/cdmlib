@@ -68,14 +68,14 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonName<?,?> relatedFrom;
+	private TaxonName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonName<?,?> relatedTo;
+	private TaxonName relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
@@ -222,8 +222,8 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
 		if (compareType != 0){
 			return compareType;
 		}else{
-		    TaxonName<?,?> related1 = this.getRelatedFrom();
-		    TaxonName<?,?> related2 = rel2.getRelatedFrom();
+		    TaxonName related1 = this.getRelatedFrom();
+		    TaxonName related2 = rel2.getRelatedFrom();
 			if (related1 != related2){
 				related1 = this.getRelatedTo();
 				related2 = rel2.getRelatedTo();

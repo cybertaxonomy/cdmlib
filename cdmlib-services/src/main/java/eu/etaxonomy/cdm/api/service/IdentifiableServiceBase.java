@@ -273,7 +273,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				if (entity.getTitleCache() != null){
 					//System.err.println(entity.getTitleCache());
 				}else{
-				    //System.err.println("no titleCache" + ((TaxonName<?,?>)entity).getNameCache());
+				    //System.err.println("no titleCache" + ((TaxonName)entity).getNameCache());
 				}
 			}
 			saveOrUpdate(entitiesToUpdate);

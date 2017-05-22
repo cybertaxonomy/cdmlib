@@ -492,10 +492,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 //	@Ignore
 	public void testMergeCdmBaseReferenceAndIdentifiable() throws MergeException {
 
-		TaxonName<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
-		TaxonName<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
 		TaxonName zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
@@ -622,10 +622,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 //	@Ignore
 	public void testMergeTaxonNameAndTaxon() throws MergeException {
-	    TaxonName<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+	    TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
-		TaxonName<?,?> name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
 		IBotanicalName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -869,11 +869,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidAbiesAlba = UUID.fromString("6ed56b43-7cca-4c3b-bb90-7576da81c072");
 
         // CREATE DATA
-        TaxonName<?,?> pinusAlba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonName pinusAlba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         pinusAlba.setTitleCache("BotanicalName1", true);
         pinusAlba.setUuid(uuidPinusAlba);
 
-        TaxonName<?,?> abiesAlba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonName abiesAlba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesAlba.setTitleCache("Abies alba", true);
         abiesAlba.setUuid(uuidAbiesAlba);
 
@@ -912,7 +912,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	public void testReallocatePersonTeam() throws MergeException {
 
-	    TaxonName<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+	    TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
 		IBook book1 = ReferenceFactory.newBook();

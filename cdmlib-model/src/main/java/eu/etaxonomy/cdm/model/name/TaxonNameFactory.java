@@ -425,7 +425,7 @@ public class TaxonNameFactory {
      * @param rank
      * @return
      */
-    public static TaxonName<?, ?> NewFungusInstance(Rank rank) {
+    public static TaxonName NewFungusInstance(Rank rank) {
         return TaxonName.NewInstance(NomenclaturalCode.Fungi, rank, null);
     }
 

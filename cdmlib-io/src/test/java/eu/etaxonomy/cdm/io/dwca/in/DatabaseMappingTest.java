@@ -77,7 +77,7 @@ public class DatabaseMappingTest {
 		ICdmDataSource datasource = mapping.getDatabase();
 		Assert.assertNotNull("Datasource should not be null", datasource);
 
-		TaxonName<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName botName1 = TaxonNameFactory.NewBotanicalInstance(null);
 		int id = 23;
 		botName1.setId(id);
 		String sourceNS = "sourceNS";

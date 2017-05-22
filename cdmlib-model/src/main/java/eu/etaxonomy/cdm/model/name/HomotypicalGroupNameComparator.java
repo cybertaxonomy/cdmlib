@@ -130,9 +130,9 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
          * @param name2 second name to compare
          * @return compare value according to the {@link Comparator#compare(Object, Object)} contract.
          */
-        private int handleSameBasionym(TaxonName<?, ?> basionym,
-                TaxonName<?, ?> name1,
-                TaxonName<?, ?> name2) {
+        private int handleSameBasionym(TaxonName basionym,
+                TaxonName name1,
+                TaxonName name2) {
 
             if (basionym.equals(name1)){
                 return -1;
@@ -149,7 +149,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
          * @param basionym2
          * @return
          */
-        private int compareBasionyms(TaxonName<?,?> basionym1Orig, TaxonName basionym2Orig) {
+        private int compareBasionyms(TaxonName basionym1Orig, TaxonName basionym2Orig) {
             //one taxon is first in group
             TaxonName basionym1 = getFirstNameInGroup(basionym1Orig);
             TaxonName basionym2 = getFirstNameInGroup(basionym2Orig);
@@ -180,7 +180,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
          * @param basionym
          * @return
          */
-        private TaxonName<?, ?> getFirstNameInGroup(TaxonName<?, ?> basionym) {
+        private TaxonName getFirstNameInGroup(TaxonName basionym) {
             for (NameRelationship nameRel : basionym.getRelationsFromThisName()){
                 if (nameRel.getType() != null && nameRel.getType().equals(NameRelationshipType.BASIONYM())){
                     if (nameRel.getToName().equals(firstNameInGroup)){
@@ -196,13 +196,13 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
          * @return
          */
         @SuppressWarnings("rawtypes")
-        private Set<TaxonName> getReplacedSynonymClosure(TaxonName<?, ?> name) {
+        private Set<TaxonName> getReplacedSynonymClosure(TaxonName name) {
             Set<TaxonName> set = name.getReplacedSynonyms();
             if (set.isEmpty()){
                 return set;
             }
             Set<TaxonName> result = new HashSet<TaxonName>();
-            for (TaxonName<?,?> replSyn : set){
+            for (TaxonName replSyn : set){
                 boolean notYetContained = result.add(replSyn);
                 if (notYetContained){
                     result.addAll(replSyn.getReplacedSynonyms());
@@ -215,10 +215,10 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
          * @param name
          * @return
          */
-        private TaxonName getPreferredInBasionymGroup(TaxonName<?,?> name) {
+        private TaxonName getPreferredInBasionymGroup(TaxonName name) {
             Set<TaxonName> candidates = new HashSet<>();
             //get all final basionyms, except for those being part of a basionym circle
-            for (TaxonName<?,?> candidate : name.getBasionyms()){
+            for (TaxonName candidate : name.getBasionyms()){
                 if (candidate != null
                         && candidate.getHomotypicalGroup().equals(name.getHomotypicalGroup())
                         && !hasBasionymCircle(candidate, null)){
@@ -234,7 +234,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
             }else{
                 TaxonName result = candidates.iterator().next();
                 candidates.remove(result);
-                for(TaxonName<?,?> candidate : candidates){
+                for(TaxonName candidate : candidates){
                     if (this.compare(result, candidate) > 0){
                         result = candidate;
                     }
@@ -247,7 +247,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
          * @param candidate
          * @return
          */
-        private boolean hasBasionymCircle(TaxonName<?, ?> name, Set<TaxonName<?,?>> existing) {
+        private boolean hasBasionymCircle(TaxonName name, Set<TaxonName> existing) {
             if (existing == null){
                 existing = new HashSet<>();
             }
@@ -336,7 +336,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
         * without status nom. illeg.
         * @return
         */
-       protected int compare(TaxonName<?,?> name1, TaxonName name2, boolean includeNomIlleg) {
+       protected int compare(TaxonName name1, TaxonName name2, boolean includeNomIlleg) {
            int result;
 
            //dates
@@ -386,7 +386,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
            return result;
        }
 
-       private Integer getIntegerDate(TaxonName<?,?> name){
+       private Integer getIntegerDate(TaxonName name){
            Integer result;
 
           if (name == null){
@@ -420,7 +420,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
            return result;
        }
 
-       protected int compareNomIlleg(TaxonName<?,?> taxonName1, TaxonName taxonName2) {
+       protected int compareNomIlleg(TaxonName taxonName1, TaxonName taxonName2) {
            int isNomIlleg1 = isNomIlleg(taxonName1);
            int isNomIlleg2 = isNomIlleg(taxonName2);
            return isNomIlleg1 - isNomIlleg2;

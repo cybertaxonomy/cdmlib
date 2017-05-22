@@ -512,7 +512,7 @@ public class TaxonXNomenclatureImport
 				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				for(String collectionString : collectionStrings){
 					if (taxonBase != null){
-						TaxonName<?,?> taxonName = taxonBase.getName();
+						TaxonName taxonName = taxonBase.getName();
 						if (taxonName != null){
 							Reference citation = null;
 							String citationMicroReference = null;

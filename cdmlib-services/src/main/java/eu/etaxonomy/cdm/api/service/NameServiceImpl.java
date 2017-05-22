@@ -251,7 +251,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      * @param name
      * @param config
      */
-    private void removeNameRelationshipsByDeleteConfig(TaxonName<?,?> name, NameDeletionConfigurator config) {
+    private void removeNameRelationshipsByDeleteConfig(TaxonName name, NameDeletionConfigurator config) {
         try {
             if (config.isRemoveAllNameRelationships()){
                 Set<NameRelationship> rels = getModifiableSet(name.getNameRelations());

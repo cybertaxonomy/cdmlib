@@ -1344,7 +1344,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     associatedTaxa.add(determinationEvent.getTaxon());
                 }
                 if(determinationEvent.getTaxonName()!=null){
-                    associatedTaxa.addAll(determinationEvent.getTaxonName().getTaxonBases());
+                    associatedTaxa.addAll((Collection)determinationEvent.getTaxonName().getTaxonBases());
                 }
             }
         }

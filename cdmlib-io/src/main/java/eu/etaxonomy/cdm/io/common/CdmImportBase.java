@@ -1038,7 +1038,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
-	public TaxonNameDescription getTaxonNameDescription(TaxonName<?,?> name, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonNameDescription getTaxonNameDescription(TaxonName name, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonNameDescription result = null;
 		Set<TaxonNameDescription> descriptions= name.getDescriptions();
 		for (TaxonNameDescription description : descriptions){

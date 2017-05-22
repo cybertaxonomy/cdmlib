@@ -241,7 +241,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		return true;
 	}
 
-	private TaxonName<?,?> getScientificName(DerivedUnitFacade facade) {
+	private TaxonName getScientificName(DerivedUnitFacade facade) {
 		Set<DeterminationEvent> detEvents = facade.getDeterminations();
 		for (DeterminationEvent detEvent : detEvents){
 			if (detEvent.getPreferredFlag()== true || detEvents.size()==1){

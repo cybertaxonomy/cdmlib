@@ -30,8 +30,8 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 	public boolean isValid(NameRelationship nameRelationship, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 		if(nameRelationship.getType() != null && nameRelationship.getType().equals(NameRelationshipType.BASIONYM())) {
-			TaxonName<?,?> from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonName.class);
-			TaxonName<?,?> to = CdmBase.deproxy(nameRelationship.getToName(), TaxonName.class);
+			TaxonName from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonName.class);
+			TaxonName to = CdmBase.deproxy(nameRelationship.getToName(), TaxonName.class);
 
 			if(from.isNonViral() && to.isNonViral()) {
 				INonViralName fromName =  from;

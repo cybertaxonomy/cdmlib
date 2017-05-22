@@ -164,7 +164,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 					// this a rule?
 					TaxonName speciesName = TaxonName.castAndDeproxy(
 					        handleNom(state, reader, next, null));
-					for (TaxonName<?, ?> name : homotypicalGroup
+					for (TaxonName name : homotypicalGroup
 							.getTypifiedNames()) {
 						name.addNameTypeDesignation(speciesName, null, null,
 								null, status, false, false, false, false);

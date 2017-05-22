@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 public class NoDuplicateNamesValidator implements
-		ConstraintValidator<NoDuplicateNames,TaxonName<?,?>> {
+		ConstraintValidator<NoDuplicateNames,TaxonName> {
 
 	private static Set<String> includeProperties;
 
@@ -53,7 +53,7 @@ public class NoDuplicateNamesValidator implements
 	public void initialize(NoDuplicateNames noDuplicateNames) { }
 
     @Override
-	public boolean isValid(TaxonName<?,?> name, ConstraintValidatorContext constraintContext) {
+	public boolean isValid(TaxonName name, ConstraintValidatorContext constraintContext) {
 		if(name == null) {
 			return true;
 		} else {

@@ -182,8 +182,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
-public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
-            extends IdentifiableEntity<S>
+public class TaxonName
+            extends IdentifiableEntity<INameCacheStrategy>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
                 IBotanicalName, ICultivarPlantName, IFungusName,
                 IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable {
@@ -561,7 +561,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
      */
     protected static TaxonName NewInstance(NomenclaturalCode code, Rank rank,
             HomotypicalGroup homotypicalGroup) {
-        TaxonName<?,?> result = new TaxonName<>(code, rank, homotypicalGroup);
+        TaxonName result = new TaxonName(code, rank, homotypicalGroup);
         return result;
     }
 
@@ -583,7 +583,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
             String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
             TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
             String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-        TaxonName result = new TaxonName<>(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+        TaxonName result = new TaxonName(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
         return result;
     }
 
@@ -679,15 +679,15 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
         }else if (this.cacheStrategy != null){
            //
         }else if (getNameType() == NomenclaturalCode.NonViral){
-            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType().isBotanical()){
-            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICZN){
-            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICNB){
-            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();;
+            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();;
         }else if (getNameType() == NomenclaturalCode.ICVCN){
-            this.cacheStrategy = (S) ViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = ViralNameDefaultCacheStrategy.NewInstance();
         }
     }
 
@@ -1354,8 +1354,8 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
             return;
         }
 
-        TaxonName<?,?> parent = hybridRelation.getParentName();
-        TaxonName<?,?> child = hybridRelation.getHybridName();
+        TaxonName parent = hybridRelation.getParentName();
+        TaxonName child = hybridRelation.getHybridName();
         if (this.equals(parent)){
             this.hybridParentRelations.remove(hybridRelation);
             child.hybridChildRelations.remove(hybridRelation);
@@ -1373,7 +1373,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
 //********* METHODS **************************************/
 
     @Override
-    public S getCacheStrategy() {
+    public INameCacheStrategy getCacheStrategy() {
         rectifyNameCacheStrategy();
         return this.cacheStrategy;
     }
@@ -1430,7 +1430,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){
-        S strat = getCacheStrategy();
+        INameCacheStrategy strat = getCacheStrategy();
         return strat.getTaggedTitle(this);
     }
 
@@ -2046,7 +2046,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
         Set<NameRelationship> rels = this.getRelationsToThisName();
         for (NameRelationship rel : rels){
             if (rel.getType()!= null && rel.getType().isBasionymRelation()){
-                TaxonName<?,?> basionym = rel.getFromName();
+                TaxonName basionym = rel.getFromName();
                 result.add(basionym);
             }
         }
@@ -2934,7 +2934,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
                 return false;
         }
 
-        for (TaxonName<?,?> taxonName : typifiedNames) {
+        for (TaxonName taxonName : typifiedNames) {
                 if (!taxonName.equals(this)) {
                         if (! isBasionymFor(taxonName)) {
                                 return false;
@@ -3175,7 +3175,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
         Set<NameRelationship> relations = new HashSet<NameRelationship>();
         Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
 
-        for(TaxonName<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
+        for(TaxonName typifiedName : homotypicalGroup.getTypifiedNames()){
 
             Set<NameRelationship> nameRelations = typifiedName.getRelationsFromThisName();
 
@@ -3201,7 +3201,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
             this.removeNameRelationship(relation);
         }
 
-        for (TaxonName<?, ?> name : homotypicalGroup.getTypifiedNames()) {
+        for (TaxonName name : homotypicalGroup.getTypifiedNames()) {
             if (!name.equals(this)) {
 
                 // First check whether the relationship already exists
@@ -3234,7 +3234,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
         Set<NameRelationship> relations = new HashSet<NameRelationship>();
         Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
 
-        for(TaxonName<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
+        for(TaxonName typifiedName : homotypicalGroup.getTypifiedNames()){
 
             Set<NameRelationship> nameRelations = typifiedName.getRelationsFromThisName();
 
@@ -3305,7 +3305,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
 // ***************** COMPARE ********************************/
 
     @Override
-    public int compareToName(TaxonName<?,?> otherName){
+    public int compareToName(TaxonName otherName){
 
         int result = 0;
 
@@ -3425,7 +3425,7 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
      */
     @Override
     public Object clone() {
-        TaxonName<?,?> result;
+        TaxonName result;
         try {
             result = (TaxonName)super.clone();
 

@@ -59,7 +59,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 
 		logger.info("start make taxon name relations ...");
-		MapWrapper<TaxonName<?,?>> taxonNameMap = (MapWrapper<TaxonName<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonName> nameStore = new HashSet<TaxonName>();
@@ -309,7 +309,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	}
 
 
-	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonName<?,?>> taxonNameMap, Set<TaxonName> nameStore, String id, boolean inverse){
+	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonName> taxonNameMap, Set<TaxonName> nameStore, String id, boolean inverse){
 		if (elRelation == null){
 			return false;
 		}

@@ -250,7 +250,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(3, nameService.count(TaxonName.class));
 	    assertEquals(1, occurrenceService.count(DerivedUnit.class));
 	    boolean varietyFound = false;
-	    for(TaxonName<?, ?> name:nameService.list(TaxonName.class, null, null, null, null)){
+	    for(TaxonName name:nameService.list(TaxonName.class, null, null, null, null)){
 	        if(name.getRank().equals(Rank.VARIETY())){
 	            varietyFound = true;
 	        }

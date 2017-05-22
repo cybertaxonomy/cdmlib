@@ -59,7 +59,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	person.setNomenclaturalTitle(nomTitle);
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	person.setContact(getContact());
-    	TaxonName<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+    	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
 
@@ -102,7 +102,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	team.addAnnotation(annotation);
     	team.setContact(getContact());
-    	TaxonName<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+    	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(team);
 
     	service.save(team);
@@ -141,7 +141,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation2 = Annotation.NewDefaultLanguageInstance("Meine annotation2");
     	team.addAnnotation(annotation2);
     	team.setContact(getContact());
-    	TaxonName<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+    	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(team);
     	Person member = Person.NewTitledInstance("Member person");
     	member.setNomenclaturalTitle("Memb. pers.");

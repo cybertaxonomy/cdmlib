@@ -62,7 +62,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @FieldBridge(impl=NotNullAwareIdBridge.class)
-    private TaxonName<?,?> taxonName;
+    private TaxonName taxonName;
 
 //******************* FACTORY ********************************************/
 
@@ -103,7 +103,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
      * Returns the {@link TaxonName taxon name} to which <i>this</i> taxon name description
      * provides additional information not ruled by a {@link NomenclaturalCode nomenclatural code}.
      */
-    public TaxonName<?,?> getTaxonName() {
+    public TaxonName getTaxonName() {
         return taxonName;
     }
 

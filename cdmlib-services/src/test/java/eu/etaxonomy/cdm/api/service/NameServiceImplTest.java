@@ -120,9 +120,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         final String[] tableNames = new String[]{"USERACCOUNT", "TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 //        printDataSetWithNull(System.err, true, null);
 
-        TaxonName<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
-        TaxonName<?,?> nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
+        TaxonName nameWithBasionym = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
@@ -502,7 +502,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name used as type", true);
 
-        TaxonName<?,?> higherName = TaxonNameFactory.NewBotanicalInstance(getGenusRank());
+        TaxonName higherName = TaxonNameFactory.NewBotanicalInstance(getGenusRank());
         higherName.setTitleCache("genus name", true);
         NameTypeDesignationStatus typeStatus = (NameTypeDesignationStatus)termService.find(NameTypeDesignationStatus.AUTOMATIC().getUuid());
         boolean addToAllHomotypicNames = true;

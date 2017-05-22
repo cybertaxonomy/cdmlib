@@ -133,7 +133,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		Rank rank = getRank(csvTaxonRecord, nomCode);
 
 		//name && name published in
-		TaxonName<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank, resultList, sourceReference);
+		TaxonName name = getScientificName(csvTaxonRecord, nomCode, rank, resultList, sourceReference);
 		taxonBase.setName(name);
 
 		//nameAccordingTo
@@ -500,12 +500,12 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private TaxonName<?,?> getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
-		TaxonName<?,?> name = null;
+	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
+		TaxonName name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
 		if (strScientificName != null){
-			name = (TaxonName<?,?>)parser.parseFullName(strScientificName, nomCode, rank);
+			name = (TaxonName)parser.parseFullName(strScientificName, nomCode, rank);
 			if ( rank != null && name != null && name.getRank() != null &&  ! rank.equals(name.getRank())){
 				if (config.isValidateRankConsistency()){
 					String message = "Parsed rank %s (%s) differs from rank %s given by fields 'taxonRank' or 'verbatimTaxonRank'";
@@ -607,7 +607,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
-	private void checkAuthorship(TaxonName<?,?> nameBase, StreamItem item) {
+	private void checkAuthorship(TaxonName nameBase, StreamItem item) {
 		if (!nameBase.isNonViral()){
 			return;
 		}
@@ -677,7 +677,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @return
 	 */
 	private TaxonBase<?> getTaxonBase(StreamItem item) {
-		TaxonName<?,?> name = null;
+		TaxonName name = null;
 		Reference sec = null;
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);

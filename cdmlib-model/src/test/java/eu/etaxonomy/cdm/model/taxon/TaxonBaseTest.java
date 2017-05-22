@@ -166,7 +166,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	   @Test
 	   public void testCompareTo() {
 
-	       TaxonName<?,?> abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+	       TaxonName abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
 	       abies.setNameCache("Abies");
 	       abies.setTitleCache("Abies", true);
 	       Reference sec = ReferenceFactory.newArticle();

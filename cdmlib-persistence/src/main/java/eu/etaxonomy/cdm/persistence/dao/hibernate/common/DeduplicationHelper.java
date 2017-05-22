@@ -265,7 +265,7 @@ public class DeduplicationHelper {
 		//TODO cast
 		getCollectionRoles(clazz, sessionFactory);
 
-		TaxonName<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.getTaxonBases();
 
 		Type propType = sessionFactory.getReferencedPropertyType(TaxonName.class.getCanonicalName(), "taxonBases");

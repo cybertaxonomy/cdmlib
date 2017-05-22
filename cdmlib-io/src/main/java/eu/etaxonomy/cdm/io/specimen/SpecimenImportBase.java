@@ -150,7 +150,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if(taxonName==null && atomisedTaxonName!=null){
-            taxonName = (TaxonName<?, ?>) atomisedTaxonName;
+            taxonName = (TaxonName) atomisedTaxonName;
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
             if(taxonName.hasProblem()){

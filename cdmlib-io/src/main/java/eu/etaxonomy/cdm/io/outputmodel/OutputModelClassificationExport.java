@@ -1074,8 +1074,8 @@ HomotypicGroupSequenceNumber
      *   TypeDesignatedByRef_Fk
      */
 
-    private void handleTypeDesignations(OutputModelExportState state, TaxonName name){
-       Set<SpecimenTypeDesignation> typeDesignations = name.getTypeDesignations();
+    private void handleSpecimenTypeDesignations(OutputModelExportState state, TaxonName name){
+       Set<SpecimenTypeDesignation> typeDesignations = name.getSpecimenTypeDesignations();
        OutputModelTable table = OutputModelTable.TYPE_DESIGNATION;
        String nameId = getId(state, name);
        String[] csvLine = new String[table.getSize()];

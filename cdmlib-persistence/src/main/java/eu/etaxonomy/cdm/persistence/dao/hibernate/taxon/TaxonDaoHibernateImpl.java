@@ -42,9 +42,9 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -192,7 +192,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         boolean includeAuthors = false;
         List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
         if (doNamesWithoutTaxa){
-        	List<? extends TaxonName<?,?>> nameResult = taxonNameDao.findByName(
+        	List<? extends TaxonName> nameResult = taxonNameDao.findByName(
         	        includeAuthors, queryString, matchMode, null, null, null, null);
 
         	for (TaxonName name: nameResult){
@@ -1357,9 +1357,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         query = getSession().createQuery("from ZoologicalName zn where zn.nameCache IN (:identicalNames)");
         query.setParameterList("identicalNames", identicalNames);
         List<TaxonName> result = query.list();
-        TaxonName temp = result.get(0);
+        TaxonName tempName = result.get(0);
 
-        Iterator<OriginalSourceBase> sources = temp.getSources().iterator();
+        Iterator<IdentifiableSource> sources = tempName.getSources().iterator();
 
         TaxonNameComparator taxComp = new TaxonNameComparator();
         Collections.sort(result, taxComp);

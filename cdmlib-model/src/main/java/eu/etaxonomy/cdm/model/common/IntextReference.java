@@ -276,7 +276,7 @@ public class IntextReference extends VersionableEntity {
     private void setTarget(IIntextReferenceTarget target) {
         target = CdmBase.deproxy(target);
         if (target instanceof TaxonName){
-            this.taxonName = (TaxonName<?,?>)target;
+            this.taxonName = (TaxonName)target;
         }else if (target instanceof TaxonBase){
             this.taxon = (TaxonBase<?>)target;
         }else if (target instanceof SpecimenOrObservationBase){

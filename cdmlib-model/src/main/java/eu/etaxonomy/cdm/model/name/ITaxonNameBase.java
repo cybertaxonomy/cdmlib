@@ -828,7 +828,7 @@ public interface ITaxonNameBase
      * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
      * @throws NullPointerException if otherTaxon is <code>null</code>
      */
-    public int compareToName(TaxonName<?,?> otherName);
+    public int compareToName(TaxonName otherName);
 
     /**
      * This method returns als {@link Registration registrations} for the given name.

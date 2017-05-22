@@ -395,7 +395,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
 
-    public List<TaxonName<?,?>> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
+    public List<TaxonName> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
         checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");
         Criteria criteria = getSession().createCriteria(TaxonName.class);
 
@@ -410,13 +410,13 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 criteria.setFirstResult(0);
             }
         }
-        List<TaxonName<?,?>> results = criteria.list();
+        List<TaxonName> results = criteria.list();
         return results;
     }
 
 
     @Override
-    public List<TaxonName<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
+    public List<TaxonName> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
         return searchNames(queryString, MatchMode.BEGINNING, pageSize, pageNumber);
     }
 
@@ -521,7 +521,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
-    public List<? extends TaxonName<?,?>> findByName(boolean doIncludeAuthors,
+    public List<? extends TaxonName> findByName(boolean doIncludeAuthors,
             String queryString, MatchMode matchmode, Integer pageSize,
             Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
@@ -564,14 +564,14 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         @SuppressWarnings("unchecked")
-        List<? extends TaxonName<?,?>> results = crit.list();
+        List<? extends TaxonName> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
     }
 
     @Override
-    public List<? extends TaxonName<?,?>> findByTitle(String queryString,
+    public List<? extends TaxonName> findByTitle(String queryString,
             MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
@@ -594,7 +594,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             }
         }
 
-        List<? extends TaxonName<?,?>> results = crit.list();
+        List<? extends TaxonName> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -619,10 +619,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
         crit.addOrder(Order.asc("uuid"));
 
-        List<? extends TaxonName<?,?>> results = crit.list();
+        List<? extends TaxonName> results = crit.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, propertyPaths);
-            TaxonName<?, ?> taxonName = results.iterator().next();
+            TaxonName taxonName = results.iterator().next();
             return taxonName;
         } else if (results.size() > 1) {
             logger.error("Multiple results for UUID: " + uuid);
@@ -701,7 +701,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
         //TODO improve performance
         boolean includeAuthors = false;
-        List<? extends TaxonName<?,?>> results = findByName(
+        List<? extends TaxonName> results = findByName(
                 includeAuthors,queryString, matchmode, null, null, criteria, null);
         return results.size();
 
@@ -791,10 +791,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         @SuppressWarnings("unchecked")
-        List<? extends TaxonName<?,?>> results = criteria.list();
+        List<? extends TaxonName> results = criteria.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, null);
-            TaxonName<?, ?> taxonName = results.iterator().next();
+            TaxonName taxonName = results.iterator().next();
             if (taxonName.isZoological()) {
                 IZoologicalName zoologicalName = taxonName;
                 return zoologicalName;

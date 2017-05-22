@@ -128,7 +128,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
-    private TaxonName<?,?> name;
+    private TaxonName name;
 
     // The concept reference
     @XmlElement(name = "Sec")
@@ -404,7 +404,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
         otherTaxon = deproxy(otherTaxon);
 
-        TaxonName<?,?> otherName = deproxy(otherTaxon.getName());
+        TaxonName otherName = deproxy(otherTaxon.getName());
         ITaxonNameBase thisName = this.getName();
         if ((otherName == null || thisName == null)){
             if (otherName != thisName){

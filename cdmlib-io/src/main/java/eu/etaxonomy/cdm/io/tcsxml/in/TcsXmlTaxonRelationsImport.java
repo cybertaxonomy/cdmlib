@@ -574,7 +574,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		TaxonName aboutName = aboutTaxon.getName();
 		if (aboutName != null){
 			Set<TaxonName> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
-			for (TaxonName<?,?> typifiedName : typifiedNames){
+			for (TaxonName typifiedName : typifiedNames){
 				//TODO check if name is part of this tcs file
 				if (typifiedName.equals(aboutName)){
 					continue;

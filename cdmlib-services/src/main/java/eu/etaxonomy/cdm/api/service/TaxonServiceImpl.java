@@ -315,7 +315,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (synonym == null){
             return null;
         }
-        TaxonName<?, ?> synonymName = synonym.getName();
+        TaxonName synonymName = synonym.getName();
 
       /*  // remove synonym from taxon
         toTaxon.removeSynonym(synonym);
@@ -703,12 +703,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
 
-            List<? extends TaxonName<?,?>> names =
+            List<? extends TaxonName> names =
                 nameDao.findByName(configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
                         configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
             if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
             if (names.size() > 0) {
-                for (TaxonName<?,?> taxonName : names) {
+                for (TaxonName taxonName : names) {
                     if (taxonName.getTaxonBases().size() == 0) {
                         results.add(taxonName);
                         numberNameResults++;
@@ -2851,7 +2851,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         UpdateResult result = new UpdateResult();
         // Create new synonym using concept name
-        TaxonName<?, ?> synonymName = fromTaxon.getName();
+        TaxonName synonymName = fromTaxon.getName();
 
         // Remove concept relation from taxon
         toTaxon.removeTaxon(fromTaxon, oldRelationshipType);

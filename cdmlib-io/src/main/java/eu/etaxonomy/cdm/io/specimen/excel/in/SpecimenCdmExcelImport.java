@@ -845,7 +845,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (result == null){
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
-			result = (TaxonName<?,?>)parser.parseFullName(name, code, null);
+			result = (TaxonName)parser.parseFullName(name, code, null);
 
 		}
 		if (result != null){

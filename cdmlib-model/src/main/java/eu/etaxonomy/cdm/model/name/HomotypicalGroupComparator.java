@@ -33,7 +33,7 @@ public class HomotypicalGroupComparator implements
 		TaxonComparator taxComparator = new HomotypicGroupTaxonComparator(null);
 		Set<TaxonName> typifiedNames1 = group1.getTypifiedNames();
 		List<TaxonBase> taxonBasesOfTypifiedNames = new ArrayList<>();
-		for (TaxonName<?,?> typifiedName:typifiedNames1){
+		for (TaxonName typifiedName:typifiedNames1){
 			if (!typifiedName.getTaxonBases().isEmpty()){
 				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
 			}
@@ -43,7 +43,7 @@ public class HomotypicalGroupComparator implements
 
 		Set<TaxonName> typifiedNames2 = group2.getTypifiedNames();
 		taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
-		for (TaxonName<?,?> typifiedName:typifiedNames2){
+		for (TaxonName typifiedName:typifiedNames2){
 			if (!typifiedName.getTaxonBases().isEmpty()){
 				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
 			}

@@ -79,7 +79,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
 	String barcode = "B12345678";
-	TaxonName<?,?> taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 

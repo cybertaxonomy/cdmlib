@@ -76,7 +76,7 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 					}
 				}else if (inDescription.isInstanceOf(TaxonNameDescription.class)){
 					TaxonNameDescription nameDescription = CdmBase.deproxy(inDescription, TaxonNameDescription.class);
-					TaxonName<?,?> taxonName = nameDescription.getTaxonName();
+					TaxonName taxonName = nameDescription.getTaxonName();
 					if (isCache){
 						return taxonName.getTitleCache();
 					}else{

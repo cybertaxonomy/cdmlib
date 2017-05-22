@@ -449,9 +449,9 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private List<TaxonName<?,?>> buildNameList( InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<TaxonName> buildNameList( InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceNamesConfigurator config = (IpniServiceNamesConfigurator)iConfig;
-		List<TaxonName<?,?>> result = new ArrayList<>();
+		List<TaxonName> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();

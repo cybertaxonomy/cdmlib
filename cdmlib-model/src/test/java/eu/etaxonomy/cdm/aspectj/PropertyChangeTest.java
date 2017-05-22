@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 		@Test
 		public void testPropertyChange() {
 		    INonViralName b = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-			((TaxonName<?,?>)b).addPropertyChangeListener(this);
+			((TaxonName)b).addPropertyChangeListener(this);
 			b.setGenusOrUninomial("Abies");
 				assertEquals(b.getGenusOrUninomial(), lastPropValue);
 			b.setGenusOrUninomial("Picea");

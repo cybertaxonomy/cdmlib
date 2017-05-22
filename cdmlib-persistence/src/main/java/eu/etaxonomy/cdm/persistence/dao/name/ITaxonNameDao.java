@@ -229,7 +229,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *            set (0 - based)
 	 * @return a List of TaxonName instances
 	 */
-	public List<TaxonName<?, ?>> searchNames(String queryString,
+	public List<TaxonName> searchNames(String queryString,
 			Integer pageSize, Integer pageNumber);
 
 
@@ -252,7 +252,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonName<?, ?>> findByName(boolean doIncludeAuthors,
+	public List<? extends TaxonName> findByName(boolean doIncludeAuthors,
 	        String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
@@ -266,7 +266,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonName<?, ?>> findByTitle(String queryString,
+	public List<? extends TaxonName> findByTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
@@ -281,7 +281,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *
 	 * @return
 	 */
-	public TaxonName<?, ?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+	public TaxonName findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
 
 	/**
 	 * @param queryString

@@ -98,7 +98,7 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		propertyPaths.add("combinationAuthorship");
 		propertyPaths.add("hybridRelationships");
 
-		TaxonName<?,?> sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
+		TaxonName sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();
 		endTransaction();
 

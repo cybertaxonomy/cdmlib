@@ -364,8 +364,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
    private void initNameMap(STATE state) {
        if (!nameMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
-           List<TaxonName<?,?>> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
-           for (TaxonName<?,?> name : existingNames){
+           List<TaxonName> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
+           for (TaxonName name : existingNames){
                putName(name.getTitleCache(), name);
            }
           nameMapIsInitialized = true;

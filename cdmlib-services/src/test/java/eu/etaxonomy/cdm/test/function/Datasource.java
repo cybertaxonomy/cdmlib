@@ -293,7 +293,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonName<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -313,7 +313,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonName<?,?> tn = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName tn = TaxonNameFactory.NewBotanicalInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -429,8 +429,8 @@ public class Datasource {
 //			 CdmPersistentDataSource.NewInstance("localH2");
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 		try {
-		    TaxonName<?,?> botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-			TaxonName<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		    TaxonName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+			TaxonName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			IBotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
 			UUID uuid1 = botName1.getUuid();

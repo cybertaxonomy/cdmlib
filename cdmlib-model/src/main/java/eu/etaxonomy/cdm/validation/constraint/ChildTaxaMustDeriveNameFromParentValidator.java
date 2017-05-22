@@ -35,8 +35,8 @@ public class ChildTaxaMustDeriveNameFromParentValidator implements
         Taxon child = taxonNode.getTaxon();
 
         if (parent != null && child != null && parent.getName() != null && child.getName() != null){
-            TaxonName<?,?> parentNameBase = CdmBase.deproxy(parent.getName(), TaxonName.class);
-            TaxonName<?,?> childNameBase = CdmBase.deproxy(child.getName(), TaxonName.class);
+            TaxonName parentNameBase = CdmBase.deproxy(parent.getName(), TaxonName.class);
+            TaxonName childNameBase = CdmBase.deproxy(child.getName(), TaxonName.class);
             if(parentNameBase.isNonViral() && childNameBase.isNonViral()) {
                 INonViralName parentName = parentNameBase;
                 INonViralName childName = childNameBase;

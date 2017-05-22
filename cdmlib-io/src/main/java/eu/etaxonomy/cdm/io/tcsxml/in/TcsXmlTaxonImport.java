@@ -122,7 +122,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 
 		logger.info("start make TaxonConcepts ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonName<?,?>> taxonNameMap = (MapWrapper<TaxonName<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
 
@@ -311,8 +311,8 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	 * @param elTaxonRelationships
 	 * @param success
 	 */
-	private TaxonName<?, ?> makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonName<?,?>> objectMap, ResultWrapper<Boolean> success){
-		TaxonName<?,?> result = null;
+	private TaxonName makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonName> objectMap, ResultWrapper<Boolean> success){
+		TaxonName result = null;
 		if (elName != null){
 			String language = elName.getAttributeValue("language");
 			//Language
@@ -320,7 +320,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 				logger.warn("language for name not yet implemented. Language for scientific name should always be Latin");
 			}
 			Class<? extends IdentifiableEntity> clazz = TaxonName.class;
-			result = (TaxonName<?,?>)makeReferenceType (elName, clazz , objectMap, success);
+			result = (TaxonName)makeReferenceType (elName, clazz , objectMap, success);
 			if(result == null){
 				logger.warn("Name not found");
 				success.setValue(false);

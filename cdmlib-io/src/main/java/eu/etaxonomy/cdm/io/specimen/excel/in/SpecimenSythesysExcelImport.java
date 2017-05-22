@@ -455,7 +455,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = TaxonNameFactory.NewNonViralInstance(null);
                     taxonName.setTitleCache(scientificName, true);
                 }
-                getNameService().save((TaxonName<?,?>)taxonName);
+                getNameService().save((TaxonName)taxonName);
                 taxon = Taxon.NewInstance(taxonName, ref); //sec set null
                 getTaxonService().save(taxon);
                 //   refreshTransaction();

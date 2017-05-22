@@ -62,7 +62,7 @@ public class BasionymRelationCreator extends StrategyBase {
 
         //compare accepted against synonyms
         for (Synonym synonym: synonyms){
-            TaxonName<?, ?> basionym = compareHomotypic(taxon.getName(), synonym.getName());
+            TaxonName basionym = compareHomotypic(taxon.getName(), synonym.getName());
             if (basionym != null){
                 synonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
                 adaptHomotypicGroup(basionym, taxon.getName(), synonym.getName());
@@ -75,7 +75,7 @@ public class BasionymRelationCreator extends StrategyBase {
             for (int j = i + 1; j < synonymList.size(); j++){
                 Synonym syn1 = synonymList.get(i);
                 Synonym syn2 = synonymList.get(j);
-                TaxonName<?, ?> basionym = compareHomotypic(syn1.getName(), syn2.getName());
+                TaxonName basionym = compareHomotypic(syn1.getName(), syn2.getName());
                 if (basionym != null){
                     adaptHomotypicGroup(basionym, syn1.getName(), syn2.getName());
                     if (taxon.getName().getBasionyms().contains(basionym)){
@@ -92,8 +92,8 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param name
      * @param name2
      */
-    private void adaptHomotypicGroup(TaxonName<?, ?> basionym,
-            TaxonName<?,?> name1, TaxonName<?,?> name2) {
+    private void adaptHomotypicGroup(TaxonName basionym,
+            TaxonName name1, TaxonName name2) {
         if (basionym.equals(name1)){
             if (!name2.getBasionyms().contains(name1)){
                 name2.addBasionym(name1);
@@ -109,15 +109,15 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param name
      * @param name2
      */
-    private TaxonName<?,?> compareHomotypic(TaxonName<?,?> name1, TaxonName<?,?> name2) {
+    private TaxonName compareHomotypic(TaxonName name1, TaxonName name2) {
         if (name1 == null || name2 == null){
             return null;
         }
-        TaxonName<?,?> basionymCandidate = checkAuthors(name1, name2);
+        TaxonName basionymCandidate = checkAuthors(name1, name2);
         if (basionymCandidate == null){
             return null;
         }else{
-            TaxonName<?,?> newCombinationCandidate
+            TaxonName newCombinationCandidate
                 = basionymCandidate == name1? name2: name1;
             boolean isBasionym = compareNameParts(basionymCandidate, newCombinationCandidate);
             if (isBasionym){
@@ -132,8 +132,8 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param basionymCandiate
      * @param newCombinationCandidate
      */
-    private boolean compareNameParts(TaxonName<?, ?> basionymCandidate,
-            TaxonName<?, ?> newCombinationCandidate) {
+    private boolean compareNameParts(TaxonName basionymCandidate,
+            TaxonName newCombinationCandidate) {
         if (basionymCandidate.isGenusOrSupraGeneric() || newCombinationCandidate.isGenusOrSupraGeneric()){
             return false;
         }else if (matchLastNamePart(basionymCandidate, newCombinationCandidate)){
@@ -147,7 +147,7 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param name2
      * @return
      */
-    private TaxonName<?,?> checkAuthors(TaxonName<?, ?> name1, TaxonName<?, ?> name2) {
+    private TaxonName checkAuthors(TaxonName name1, TaxonName name2) {
         if (hasBasionymAuthorOf(name1, name2)){
             return name1;
         }else if (hasBasionymAuthorOf(name2, name1)){
@@ -162,7 +162,7 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param name2
      * @return
      */
-    private boolean hasBasionymAuthorOf(TaxonName<?,?> name1, TaxonName<?,?> name2) {
+    private boolean hasBasionymAuthorOf(TaxonName name1, TaxonName name2) {
         TeamOrPersonBase<?> basAuthor2 = name2.getBasionymAuthorship();
         TeamOrPersonBase<?> combinationAuthor = name1.getCombinationAuthorship();
         TeamOrPersonBase<?> basAuthor1 = name1.getBasionymAuthorship();
@@ -198,7 +198,7 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param newCombination
      * @return
      */
-    public static boolean matchLastNamePart(TaxonName<?,?> name1, TaxonName<?,?> name2) {
+    public static boolean matchLastNamePart(TaxonName name1, TaxonName name2) {
         String lastNamePart1 = name1.getLastNamePart();
         String lastNamePart2 = name2.getLastNamePart();
         if (lastNamePart1 != null && lastNamePart2 != null){

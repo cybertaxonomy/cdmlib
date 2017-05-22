@@ -35,7 +35,7 @@ public class SimpleSpecimen {
 	private DerivationEvent derivationEvent;
 	private DerivedUnit specimen;
 	private Collection collection;
-	private TaxonName<?, ?> storedUnderName;
+	private TaxonName storedUnderName;
 	private String titleCache;
 
 
@@ -95,14 +95,14 @@ public class SimpleSpecimen {
 		/**
 	 * @return the storedUnderName
 	 */
-	public TaxonName<?, ?> getStoredUnderName() {
+	public TaxonName getStoredUnderName() {
 		return storedUnderName;
 	}
 
 	/**
 	 * @param storedUnderName the storedUnderName to set
 	 */
-	public void setStoredUnderName(TaxonName<?, ?> storedUnderName) {
+	public void setStoredUnderName(TaxonName storedUnderName) {
 		this.storedUnderName = storedUnderName;
 	}
 
