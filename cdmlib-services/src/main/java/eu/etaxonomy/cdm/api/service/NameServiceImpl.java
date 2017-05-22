@@ -136,7 +136,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
+    public DeleteResult delete(TaxonName name, NameDeletionConfigurator config) {
         DeleteResult result = new DeleteResult();
 
 
@@ -192,7 +192,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config) {
 
-        TaxonNameBase name = dao.load(nameUUID);
+        TaxonName name = dao.load(nameUUID);
         return delete(name, config);
     }
 
@@ -818,7 +818,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     }
 
 
-    public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
 
         NameDeletionConfigurator nameConfig = null;
@@ -924,7 +924,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
     @Override
     public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
-        TaxonNameBase name = this.load(nameUUID);
+        TaxonName name = this.load(nameUUID);
         return isDeletable(name, config);
     }
 

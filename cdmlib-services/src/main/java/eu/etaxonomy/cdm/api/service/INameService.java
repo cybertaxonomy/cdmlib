@@ -478,7 +478,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonName> {
      * @param config
      * @return
      */
-    DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config);
+    DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
 
 
 }

@@ -206,8 +206,8 @@ public class OutputModelClassificationExport
             if (!distributionFacts.isEmpty()){ handleDistributionFacts(state, taxon, distributionFacts);}
             if (!specimenFacts.isEmpty()){ handleSpecimenFacts(state, taxon, specimenFacts);}
             if (!simpleFacts.isEmpty()){ handleSimpleFacts(state, taxon, simpleFacts);}
-        } else if (cdmBase instanceof TaxonNameBase){
-            TaxonNameBase name = HibernateProxyHelper.deproxy(cdmBase, TaxonNameBase.class);
+        } else if (cdmBase instanceof TaxonName){
+            TaxonName name = CdmBase.deproxy(cdmBase, TaxonName.class);
             Set<TaxonNameDescription> descriptions = name.getDescriptions();
             List<DescriptionElementBase> simpleFacts = new ArrayList<>();
             for (TaxonNameDescription description: descriptions){
@@ -248,7 +248,7 @@ public class OutputModelClassificationExport
                if (cdmBase instanceof Taxon){
                    csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, cdmBase);
                    csvLine[table.getIndex(OutputModelTable.NAME_FK)] = "";
-               }else if (cdmBase instanceof TaxonNameBase){
+               }else if (cdmBase instanceof TaxonName){
                    csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = "";
                    csvLine[table.getIndex(OutputModelTable.NAME_FK)] = getId(state, cdmBase);
                }
@@ -608,7 +608,7 @@ public class OutputModelClassificationExport
             handleHomotypicalGroup(state, group);
         }
         csvLine[table.getIndex(OutputModelTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
-        List<TaxonNameBase> typifiedNames = new ArrayList<>();
+        List<TaxonName> typifiedNames = new ArrayList<>();
         typifiedNames.addAll(group.getTypifiedNames());
         Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(null, true));
         Integer  seqNumber= typifiedNames.indexOf(name);
