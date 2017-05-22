@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import eu.etaxonomy.cdm.model.name.IViralName;
-
 /**
  * A name cache rendering strategy for all TaxonName subclasses.
  * Different TaxonName subclasses could have different strategies.
@@ -17,7 +15,7 @@ import eu.etaxonomy.cdm.model.name.IViralName;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface IViralNameCacheStrategy<T extends IViralName> extends INameCacheStrategy<T> {
+public interface IViralNameCacheStrategy extends INameCacheStrategy {
 
 
 }

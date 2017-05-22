@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
@@ -37,13 +38,13 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
-	private ZooNameDefaultCacheStrategy strategy;
-	private IZoologicalName familyName;
+	private NonViralNameDefaultCacheStrategy strategy;
+	private TaxonName familyName;
 	private IZoologicalName genusName;
-	private IZoologicalName subGenusName;
-	private IZoologicalName speciesName;
-	private IZoologicalName subSpeciesName;
-	private IZoologicalName speciesNameWithInfrGenEpi;
+	private TaxonName subGenusName;
+	private TaxonName speciesName;
+	private TaxonName subSpeciesName;
+	private TaxonName speciesNameWithInfrGenEpi;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
@@ -79,7 +80,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		strategy = ZooNameDefaultCacheStrategy.NewInstance();
+		strategy = NonViralNameDefaultCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
 		genusName = TaxonNameFactory.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 

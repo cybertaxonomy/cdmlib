@@ -25,11 +25,11 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -52,12 +52,12 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private static final String basAuthorString = "Basio, A.";
 	private static final String exBasAuthorString = "ExBas. N.";
 
-	private BotanicNameDefaultCacheStrategy strategy;
-	private IBotanicalName familyName;
-	private IBotanicalName genusName;
-	private IBotanicalName subGenusName;
-	private IBotanicalName speciesName;
-	private IBotanicalName subSpeciesName;
+	private NonViralNameDefaultCacheStrategy strategy;
+	private TaxonName familyName;
+	private TaxonName genusName;
+	private TaxonName subGenusName;
+	private TaxonName speciesName;
+	private TaxonName subSpeciesName;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
@@ -79,7 +79,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	 */
 	@Before
 	public void setUp() throws Exception {
-		strategy = BotanicNameDefaultCacheStrategy.NewInstance();
+		strategy = NonViralNameDefaultCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
 		genusName = TaxonNameFactory.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
 
@@ -132,7 +132,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	 */
 	@Test
 	public final void testNewInstance() {
-		BotanicNameDefaultCacheStrategy<?> cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
+	    NonViralNameDefaultCacheStrategy cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
 		assertNotNull(cacheStrategy);
 	}
 

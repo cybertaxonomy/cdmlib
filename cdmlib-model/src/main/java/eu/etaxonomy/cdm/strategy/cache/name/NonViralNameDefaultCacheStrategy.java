@@ -49,47 +49,40 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * existing methods, e.g. a CacheStrategy for zoological names should overwrite getAuthorAndExAuthor
  * @author a.mueller
  */
-public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
-        extends NameCacheStrategyBase<T>
-        implements INonViralNameCacheStrategy<T> {
+public class NonViralNameDefaultCacheStrategy
+        extends NameCacheStrategyBase
+        implements INonViralNameCacheStrategy {
 
     private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
 
-    protected String NameAuthorSeperator = " ";
-    protected String BasionymStart = "(";
-    protected String BasionymEnd = ")";
-    protected String ExAuthorSeperator = " ex ";
+    protected String nameAuthorSeperator = " ";
+    protected String basionymStart = "(";
+    protected String basionymEnd = ")";
+    protected String exAuthorSeperator = " ex ";
     private static String NOTHO = "notho";
-    protected CharSequence BasionymAuthorCombinationAuthorSeperator = " ";
+    protected CharSequence basionymAuthorCombinationAuthorSeperator = " ";
+
+    protected String zooAuthorYearSeperator = ", ";
+
+
 
     @Override
     public  UUID getUuid(){
         return uuid;
     }
 
+// ************************** FACTORY  ******************************/
 
-    /**
-     * Factory method
-     * @return NonViralNameDefaultCacheStrategy A new instance of  NonViralNameDefaultCacheStrategy
-     */
     public static NonViralNameDefaultCacheStrategy NewInstance(){
         return new NonViralNameDefaultCacheStrategy();
     }
 
-    /**
-     * Factory method
-     * @return NonViralNameDefaultCacheStrategy A new instance of  NonViralNameDefaultCacheStrategy
-     */
-    public static <T extends INonViralName> NonViralNameDefaultCacheStrategy<T> NewInstance(Class<T> clazz){
-        return new NonViralNameDefaultCacheStrategy<T>();
-    }
 
-    /**
-     * Constructor
-     */
+// ************ CONSTRUCTOR *******************/
+
     protected NonViralNameDefaultCacheStrategy(){
         super();
     }
@@ -101,12 +94,10 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     public String getNameAuthorSeperator() {
-        return NameAuthorSeperator;
+        return nameAuthorSeperator;
     }
-
-
     public void setNameAuthorSeperator(String nameAuthorSeperator) {
-        NameAuthorSeperator = nameAuthorSeperator;
+        this.nameAuthorSeperator = nameAuthorSeperator;
     }
 
 
@@ -116,14 +107,11 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     public String getBasionymStart() {
-        return BasionymStart;
+        return basionymStart;
     }
-
-
     public void setBasionymStart(String basionymStart) {
-        BasionymStart = basionymStart;
+        this.basionymStart = basionymStart;
     }
-
 
     /**
      * String the basionym author part ends with e.g. ')'.
@@ -131,12 +119,10 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     public String getBasionymEnd() {
-        return BasionymEnd;
+        return basionymEnd;
     }
-
-
     public void setBasionymEnd(String basionymEnd) {
-        BasionymEnd = basionymEnd;
+        this.basionymEnd = basionymEnd;
     }
 
 
@@ -145,12 +131,10 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     public String getExAuthorSeperator() {
-        return ExAuthorSeperator;
+        return exAuthorSeperator;
     }
-
-
     public void setExAuthorSeperator(String exAuthorSeperator) {
-        ExAuthorSeperator = exAuthorSeperator;
+        this.exAuthorSeperator = exAuthorSeperator;
     }
 
 
@@ -159,12 +143,19 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     public CharSequence getBasionymAuthorCombinationAuthorSeperator() {
-        return BasionymAuthorCombinationAuthorSeperator;
+        return basionymAuthorCombinationAuthorSeperator;
     }
 
 
     public void setBasionymAuthorCombinationAuthorSeperator( CharSequence basionymAuthorCombinationAuthorSeperator) {
-        BasionymAuthorCombinationAuthorSeperator = basionymAuthorCombinationAuthorSeperator;
+        this.basionymAuthorCombinationAuthorSeperator = basionymAuthorCombinationAuthorSeperator;
+    }
+
+    public String getZooAuthorYearSeperator() {
+        return zooAuthorYearSeperator;
+    }
+    public void setZooAuthorYearSeperator(String authorYearSeperator) {
+        this.zooAuthorYearSeperator = authorYearSeperator;
     }
 
 
@@ -176,7 +167,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 // ******************* Authorship ******************************/
 
     @Override
-    public String getAuthorshipCache(T taxonName) {
+    public String getAuthorshipCache(TaxonName taxonName) {
         if (taxonName == null){
             return null;
         }
@@ -193,37 +184,77 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @param nonViralName
      * @return
      */
-    protected String getNonCacheAuthorshipCache(T nonViralName){
+    protected String getNonCacheAuthorshipCache(TaxonName nonViralName){
+        if (nonViralName.getNameType().isZoological()){
+            return this.getZoologicalNonCacheAuthorshipCache(nonViralName);
+        }else{
+            String result = "";
+            INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorship();
+            INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
+            INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
+            INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+            String basionymPart = "";
+            String authorPart = "";
+            //basionym
+            if (basionymAuthor != null || exBasionymAuthor != null){
+                basionymPart = basionymStart + getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor) + basionymEnd;
+            }
+            if (combinationAuthor != null || exCombinationAuthor != null){
+                authorPart = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
+            }
+            result = CdmUtils.concat(basionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
+//        if ("".equals(result)){
+//        	result = null;
+//        }
+            return result;
+        }
+    }
+
+    protected String getZoologicalNonCacheAuthorshipCache(TaxonName nonViralName) {
+        if (nonViralName == null){
+            return null;
+        }
         String result = "";
         INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorship();
         INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
         INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
         INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+        Integer publicationYear = nonViralName.getPublicationYear();
+        Integer originalPublicationYear = nonViralName.getOriginalPublicationYear();
+
         String basionymPart = "";
         String authorPart = "";
         //basionym
-        if (basionymAuthor != null || exBasionymAuthor != null){
-            basionymPart = BasionymStart + getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor) + BasionymEnd;
+        if (basionymAuthor != null || exBasionymAuthor != null || originalPublicationYear != null ){
+            String authorAndEx = getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor);
+            String originalPublicationYearString = originalPublicationYear == null ? null : String.valueOf(originalPublicationYear);
+            String authorAndExAndYear = CdmUtils.concat(zooAuthorYearSeperator, authorAndEx, originalPublicationYearString );
+            basionymPart = basionymStart + authorAndExAndYear + basionymEnd;
         }
         if (combinationAuthor != null || exCombinationAuthor != null){
-            authorPart = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
+            String authorAndEx = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
+            String publicationYearString = publicationYear == null ? null : String.valueOf(publicationYear);
+            authorPart = CdmUtils.concat(zooAuthorYearSeperator, authorAndEx, publicationYearString);
         }
-        result = CdmUtils.concat(BasionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
-//        if ("".equals(result)){
-//        	result = null;
-//        }
+        result = CdmUtils.concat(basionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
+        if (result == null){
+            result = "";
+        }
         return result;
     }
 
+
     /**
-     * Returns the AuthorCache part for a combination of an author and an ex author. This applies on combination authors
-     * as well as on basionym/orginal combination authors.
+     * Returns the AuthorCache part for a combination of an author and an ex author. This applies on
+     * combination authors as well as on basionym/orginal combination authors.
+     * The correct order is exAuthor ex author though some botanist do not know about and do it the
+     * other way round. (see 46.4-46.6 ICBN (Vienna Code, 2006))
+     *
      * @param author the author
      * @param exAuthor the ex-author
      * @return
      */
     protected String getAuthorAndExAuthor(INomenclaturalAuthor author, INomenclaturalAuthor exAuthor){
-        String result = "";
         String authorString = "";
         String exAuthorString = "";
         if (author != null){
@@ -231,13 +262,12 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
         }
         if (exAuthor != null){
             exAuthorString = CdmUtils.Nz(exAuthor.getNomenclaturalTitle());
+            exAuthorString += exAuthorSeperator;
         }
-        if (exAuthorString.length() > 0 ){
-            exAuthorString = exAuthorString + ExAuthorSeperator;
-        }
-        result = exAuthorString + authorString;
+        String result = exAuthorString + authorString;
         return result;
     }
+
 
 
     /**
@@ -258,7 +288,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 // ************* TAGGED NAME ***************************************/
 
     @Override
-    public List<TaggedText> getTaggedFullTitle(T nonViralName) {
+    public List<TaggedText> getTaggedFullTitle(TaxonName nonViralName) {
         List<TaggedText> tags = new ArrayList<>();
 
         //null
@@ -309,7 +339,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     @Override
-    public List<TaggedText> getNomStatusTags(T nonViralName, boolean includeSeparatorBefore,
+    public List<TaggedText> getNomStatusTags(TaxonName nonViralName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
 
         Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
@@ -347,7 +377,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
     }
 
     @Override
-    public List<TaggedText> getTaggedTitle(T nonViralName) {
+    public List<TaggedText> getTaggedTitle(TaxonName nonViralName) {
         if (nonViralName == null){
             return null;
         }
@@ -370,7 +400,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
                 }
                 isFirst = false;
-                tags.addAll(getTaggedTitle((T)rel.getParentName()));
+                tags.addAll(getTaggedTitle(rel.getParentName()));
             }
             return tags;
         }else if (nonViralName.isAutonym()){
@@ -396,7 +426,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @return
      */
     @Override
-    public List<TaggedText> getTaggedName(T nonViralName) {
+    public List<TaggedText> getTaggedName(TaxonName nonViralName) {
         if (nonViralName == null){
             return null;
         }
@@ -415,7 +445,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
                 }
                 isFirst = false;
-                tags.addAll(getTaggedName((T)rel.getParentName()));
+                tags.addAll(getTaggedName(rel.getParentName()));
             }
             return tags;
 
@@ -449,7 +479,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 //***************************** PRIVATES ***************************************/
 
 
-    private boolean isAggregateWithAuthorship(T nonViralName, Rank rank) {
+    private boolean isAggregateWithAuthorship(TaxonName nonViralName, Rank rank) {
 		if (rank == null){
 			return false;
 		}else{
@@ -466,7 +496,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @param nonViralName
      * @return
      */
-    private List<TaggedText> handleTaggedAutonym(T nonViralName) {
+    private List<TaggedText> handleTaggedAutonym(TaxonName nonViralName) {
     	List<TaggedText> tags = null;
     	if (nonViralName.isInfraSpecific()){
 	        //species part
@@ -705,8 +735,13 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(T nonViralName){
-        return getInfraSpeciesTaggedNameCache(nonViralName, true);
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName nonViralName){
+        if (nonViralName.getNameType().isZoological()){
+            boolean includeMarker = ! (nonViralName.isAutonym());
+            return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
+        }else{
+            return getInfraSpeciesTaggedNameCache(nonViralName, true);
+        }
     }
 
     /**
@@ -874,7 +909,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
 
 
 	@Override
-    public String getLastEpithet(T taxonName) {
+    public String getLastEpithet(TaxonName taxonName) {
         Rank rank = taxonName.getRank();
         if(rank.isGenus() || rank.isSupraGeneric()) {
             return taxonName.getGenusOrUninomial();
@@ -892,7 +927,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
      * {@inheritDoc}
      */
     @Override
-    protected List<TaggedText> doGetTaggedTitle(T nonViralName) {
+    protected List<TaggedText> doGetTaggedTitle(TaxonName nonViralName) {
         List<TaggedText> tags = new ArrayList<>();
         if (nonViralName.isHybridFormula()){
             //hybrid formula
@@ -904,7 +939,7 @@ public class NonViralNameDefaultCacheStrategy<T extends INonViralName>
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
                 }
                 isFirst = false;
-                tags.addAll(getTaggedTitle((T)rel.getParentName()));
+                tags.addAll(getTaggedTitle(rel.getParentName()));
             }
             return tags;
         }else if (nonViralName.isAutonym()){

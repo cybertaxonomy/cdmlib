@@ -52,7 +52,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 
-    private NonViralNameDefaultCacheStrategy<INonViralName> strategy;
+    private NonViralNameDefaultCacheStrategy strategy;
 
     private static final String familyNameString = "Familia";
     private static final String genusNameString = "Genus";
@@ -69,8 +69,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     private IBotanicalName familyName;
     private IBotanicalName genusName;
     private IBotanicalName subGenusName;
-    private IBotanicalName speciesName;
-    private IBotanicalName subSpeciesName;
+    private TaxonName speciesName;
+    private TaxonName subSpeciesName;
     private TeamOrPersonBase<?> author;
     private TeamOrPersonBase<?> exAuthor;
     private TeamOrPersonBase<?> basAuthor;
@@ -170,9 +170,9 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
         //unranked taxa
         String unrankedCache;
-        IBotanicalName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
+        TaxonName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
         unrankedName.setGenusOrUninomial("Genus");
-        NonViralNameDefaultCacheStrategy<IBotanicalName> strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+        NonViralNameDefaultCacheStrategy strategy = NonViralNameDefaultCacheStrategy.NewInstance();
             //infraspecific
         unrankedName.setInfraSpecificEpithet("infraspecific");
         unrankedName.setSpecificEpithet("species");
@@ -555,7 +555,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testGetInfraGenericNames(){
         String author = "Anyauthor";
-        INonViralName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SUBGENUS());
+        TaxonName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SUBGENUS());
         nonViralName.setGenusOrUninomial("Genus");
         nonViralName.setInfraGenericEpithet("subgenus");
         nonViralName.setAuthorshipCache(author);
@@ -620,7 +620,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
      */
     @Test
     public void testGetTaggedNameSpeciesAggregate() {
-        IBotanicalName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
+        TaxonName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
         speciesAggregate.setGenusOrUninomial("Mygenus");
         speciesAggregate.setSpecificEpithet("myspecies");
         List<TaggedText> taggedName = strategy.getTaggedName(speciesAggregate);

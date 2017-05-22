@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.IViralName;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  *
  */
 public class ViralNameDefaultCacheStrategy
-        extends NameCacheStrategyBase<IViralName>
-        implements IViralNameCacheStrategy<IViralName> {
+        extends NameCacheStrategyBase
+        implements IViralNameCacheStrategy {
 
     private static final long serialVersionUID = 2732652334900146554L;
     @SuppressWarnings("unused")
@@ -52,7 +52,7 @@ public class ViralNameDefaultCacheStrategy
      * {@inheritDoc}
      */
     @Override
-    protected List<TaggedText> doGetTaggedTitle(IViralName viralName) {
+    protected List<TaggedText> doGetTaggedTitle(TaxonName viralName) {
         List<TaggedText> tags = new ArrayList<>();
         String acronym = viralName.getAcronym();
         tags.add(new TaggedText(TagEnum.name, acronym));
@@ -63,7 +63,7 @@ public class ViralNameDefaultCacheStrategy
      * {@inheritDoc}
      */
     @Override
-    public List<TaggedText> getTaggedName(IViralName taxonName) {
+    public List<TaggedText> getTaggedName(TaxonName taxonName) {
         return null /*this.getTaggedTitle(taxonName)*/;
     }
 
@@ -71,7 +71,7 @@ public class ViralNameDefaultCacheStrategy
      * {@inheritDoc}
      */
     @Override
-    public String getAuthorshipCache(IViralName nonViralName) {
+    public String getAuthorshipCache(TaxonName nonViralName) {
         return null;
     }
 

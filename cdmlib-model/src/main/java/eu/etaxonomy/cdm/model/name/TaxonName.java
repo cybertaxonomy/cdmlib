@@ -83,13 +83,10 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.cache.name.BacterialNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.ViralNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -684,11 +681,11 @@ public class TaxonName<T extends TaxonName<?,?>, S extends INameCacheStrategy>
         }else if (getNameType() == NomenclaturalCode.NonViral){
             this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType().isBotanical()){
-            this.cacheStrategy = (S)BotanicNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICZN){
-            this.cacheStrategy = (S)ZooNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICNB){
-            this.cacheStrategy = (S)BacterialNameDefaultCacheStrategy.NewInstance();;
+            this.cacheStrategy = (S)NonViralNameDefaultCacheStrategy.NewInstance();;
         }else if (getNameType() == NomenclaturalCode.ICVCN){
             this.cacheStrategy = (S) ViralNameDefaultCacheStrategy.NewInstance();
         }

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         extends StrategyBase
@@ -158,7 +157,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             return tags;
         }else{
             //name
-            TaxonName<?,INameCacheStrategy<TaxonName>> name = taxonBase.getName();
+            TaxonName name = taxonBase.getName();
             if (name != null){
                 //TODO
                 List<TaggedText> nameTags = name.getCacheStrategy().getTaggedTitle(name);

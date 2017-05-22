@@ -61,7 +61,7 @@ public class TaxonNameTest {
 	}
 
 
-	private class TaxonNameTestClass extends TaxonName<TaxonNameTestClass, INameCacheStrategy<TaxonNameTestClass>>{
+	private class TaxonNameTestClass extends TaxonName<TaxonNameTestClass, INameCacheStrategy>{
 		public TaxonNameTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
 		@Override
 		public void setCacheStrategy(INameCacheStrategy strategy){}

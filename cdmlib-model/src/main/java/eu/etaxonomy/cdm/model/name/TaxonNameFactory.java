@@ -379,7 +379,7 @@ public class TaxonNameFactory {
      * @param   fullNameString  the string to be parsed
      * @return                  the new zoological taxon name
      */
-    public static IZoologicalName PARSED_ZOOLOGICAL(String fullNameString){
+    public static TaxonName PARSED_ZOOLOGICAL(String fullNameString){
         return PARSED_ZOOLOGICAL(fullNameString, Rank.GENUS());
     }
 
@@ -393,11 +393,11 @@ public class TaxonNameFactory {
      * @param   rank            the rank of the taxon name
      * @return                  the new zoological taxon name
      */
-    public static IZoologicalName PARSED_ZOOLOGICAL(String fullNameString, Rank rank){
+    public static TaxonName PARSED_ZOOLOGICAL(String fullNameString, Rank rank){
         if (nameParser == null){
             nameParser  = new NonViralNameParserImpl();
         }
-        return (IZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
+        return (TaxonName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
     }
 
 

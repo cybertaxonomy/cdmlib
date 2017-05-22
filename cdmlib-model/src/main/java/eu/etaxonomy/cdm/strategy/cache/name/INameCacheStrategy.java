@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -25,7 +24,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifiableEntityCacheStrategy<T> {
+public interface INameCacheStrategy extends IIdentifiableEntityCacheStrategy<TaxonName> {
 
     /**
      * Returns a list of name typified tokens that together make up the name (including authorship etc.).
@@ -39,7 +38,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * @param taxonName
      * @return the tagged list, <code>null</code> if taxonName is <code>null</code>
      */
-    public List<TaggedText> getTaggedTitle(T taxonName);
+    public List<TaggedText> getTaggedTitle(TaxonName taxonName);
 
     /**
      * Same as {@link #getTaggedTitle(TaxonName)} but also includes the reference and
@@ -47,7 +46,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * @param taxonName
      * @return
      */
-    public List<TaggedText> getTaggedFullTitle(T taxonName);
+    public List<TaggedText> getTaggedFullTitle(TaxonName taxonName);
 
 
     /**
@@ -58,7 +57,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      *  should be added after
      * @return
      */
-    public List<TaggedText> getNomStatusTags(T taxonName, boolean includeSeparatorBefore,
+    public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includePostSeparator);
 
     /**
@@ -68,7 +67,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * @param taxonName
      * @return
      */
-    public String getFullTitleCache(T taxonName);
+    public String getFullTitleCache(TaxonName taxonName);
 
 	/**
 	 * Returns the full title cache tagged by html tags according to tag rules.
@@ -76,7 +75,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
 	 * @param htmlTagRules
 	 * @return
 	 */
-	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
+	public String getFullTitleCache(TaxonName nonViralName, HTMLTagRules htmlTagRules);
 
 
 	/**
@@ -85,7 +84,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
 	 * @param htmlTagRules
 	 * @return
 	 */
-	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
+	public String getTitleCache(TaxonName nonViralName, HTMLTagRules htmlTagRules);
 
 	/**
      * Returns the composed scientific taxon name string without authors nor year.
@@ -96,7 +95,7 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * @param object
      * @return
      */
-    public String getNameCache(T taxonName);
+    public String getNameCache(TaxonName taxonName);
 
 
 
@@ -105,13 +104,13 @@ public interface INameCacheStrategy<T extends ITaxonNameBase> extends IIdentifia
      * @param taxonName
      * @return
      */
-    public List<TaggedText> getTaggedName(T taxonName);
+    public List<TaggedText> getTaggedName(TaxonName taxonName);
 
     /**
      * Returns the composed author string. Returns null for viral names.
      * @param object
      * @return
      */
-    public String getAuthorshipCache(T nonViralName);
+    public String getAuthorshipCache(TaxonName nonViralName);
 
 }

@@ -41,9 +41,9 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * @author AM
  */
-public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
+public abstract class NameCacheStrategyBase
         extends StrategyBase
-        implements INameCacheStrategy<T> {
+        implements INameCacheStrategy {
     private static final long serialVersionUID = -2322348388258675517L;
 
     private static final Logger logger = Logger.getLogger(NameCacheStrategyBase.class);
@@ -57,15 +57,9 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
         super();
     }
 
-//    @Override
-//    public abstract String getFullTitleCache(T name);
-//
-//    @Override
-//    public abstract String getFullTitleCache(T name, HTMLTagRules rules);
-
 
     @Override
-    public String getFullTitleCache(T taxonName, HTMLTagRules htmlTagRules) {
+    public String getFullTitleCache(TaxonName taxonName, HTMLTagRules htmlTagRules) {
         List<TaggedText> tags = getTaggedFullTitle(taxonName);
         if (tags == null){
             return null;
@@ -76,7 +70,7 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
     }
 
     @Override
-    public String getFullTitleCache(T taxonName) {
+    public String getFullTitleCache(TaxonName taxonName) {
         return getFullTitleCache(taxonName, null);
     }
 
@@ -87,7 +81,7 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
      * @return
      */
     @Override
-    public List<TaggedText> getNomStatusTags(T nonViralName, boolean includeSeparatorBefore,
+    public List<TaggedText> getNomStatusTags(TaxonName nonViralName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
 
         Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
@@ -130,7 +124,7 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
      * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonName)
      */
     @Override
-    public String getNameCache(T nonViralName) {
+    public String getNameCache(TaxonName nonViralName) {
         List<TaggedText> tags = getTaggedName(nonViralName);
         if (tags == null){
             return null;
@@ -149,12 +143,12 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
      * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
      */
     @Override
-    public String getTitleCache(T nonViralName) {
+    public String getTitleCache(TaxonName nonViralName) {
         return getTitleCache(nonViralName, null);
     }
 
     @Override
-    public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
+    public String getTitleCache(TaxonName nonViralName, HTMLTagRules htmlTagRules) {
         List<TaggedText> tags = getTaggedTitle(nonViralName);
         if (tags == null){
             return null;
@@ -165,7 +159,7 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
     }
 
     @Override
-    public List<TaggedText> getTaggedTitle(T taxonName) {
+    public List<TaggedText> getTaggedTitle(TaxonName taxonName) {
         if (taxonName == null){
             return null;
         }
@@ -182,10 +176,10 @@ public abstract class NameCacheStrategyBase<T extends ITaxonNameBase>
 
     }
 
-    protected abstract List<TaggedText> doGetTaggedTitle(T taxonName);
+    protected abstract List<TaggedText> doGetTaggedTitle(TaxonName taxonName);
 
     @Override
-    public List<TaggedText> getTaggedFullTitle(T nonViralName) {
+    public List<TaggedText> getTaggedFullTitle(TaxonName nonViralName) {
         List<TaggedText> tags = new ArrayList<>();
 
         //null

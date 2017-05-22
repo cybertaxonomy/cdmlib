@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * A name cache rendering strategy for all TaxonName subclasses.
@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface INonViralNameCacheStrategy<T extends INonViralName> extends INameCacheStrategy<T> {
+public interface INonViralNameCacheStrategy extends INameCacheStrategy {
 
 	/**
 	 * Returns the last epithet of the name (i.e. uninomial if generic or above, infrageneric epithet if infrageneric,
@@ -30,7 +30,7 @@ public interface INonViralNameCacheStrategy<T extends INonViralName> extends INa
 	 * @param object
 	 * @return
 	 */
-	public String getLastEpithet(T taxonName);
+	public String getLastEpithet(TaxonName taxonName);
 
 
 
