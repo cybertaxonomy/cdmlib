@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -65,6 +66,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * Test class for {@link DerivedUnitFacade}
@@ -1679,7 +1681,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      *
      */
     @Test
-    @Ignore
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+    })
+   // @Ignore
     public void testNoRecursiveChangeEvents(){
         String username = "username";
         String password = "password";
@@ -1691,7 +1697,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         facade.setLocality("testLocality");
         facade.getTitleCache();
-//		facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);
+	//	facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);
         this.service.save(facade.innerDerivedUnit());
         commitAndStartNewTransaction(null);
     }
