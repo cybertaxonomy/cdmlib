@@ -710,7 +710,7 @@ public class EditGeoServiceUtilities {
             uuids.add(presenceTermVocabUuid);
 
 
-            for(TermVocabulary vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm)) {
+            for(TermVocabulary vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm, null)) {
                 if(!uuids.contains(vocab.getUuid())) {
                     uuids.add(vocab.getUuid());
                 }

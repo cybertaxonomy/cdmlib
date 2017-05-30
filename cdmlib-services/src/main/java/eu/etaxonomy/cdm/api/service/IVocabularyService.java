@@ -66,6 +66,6 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 * @param termType The term type for which the list of vocabularies is desired
 	 * @return a list of vocabularies
 	 */
-	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType);
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths);
 
 }

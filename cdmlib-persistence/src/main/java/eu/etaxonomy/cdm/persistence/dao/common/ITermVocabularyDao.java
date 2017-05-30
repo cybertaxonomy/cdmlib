@@ -66,9 +66,10 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * Return a List of vocabularies that belong to the term type supplied
      *
      * @param termType The term type corresponding to the vocabularies of interest
+     * @param propertyPaths
      * @return a List of vocabularies
      */
-    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType);
+    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths);
 
 
 	/**
