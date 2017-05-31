@@ -49,8 +49,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertPerson2Team(){
     	String fullAuthor = "Original author";
@@ -92,8 +92,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertTeam2Person(){
     	String fullAuthor = "Original author";
@@ -129,8 +129,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertTeam2PersonWithMember(){
     	String fullAuthor = "Original author";
