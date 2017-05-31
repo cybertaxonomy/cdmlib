@@ -94,7 +94,7 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 	 */
 	@Test
 	public void testInitializeManyToOneSubclassProperty() {
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("combinationAuthorship");
 		propertyPaths.add("hybridRelationships");
 
