@@ -145,7 +145,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return
      * 				the newly created concept
      */
-    public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
+    public UpdateResult changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
      * TODO still needed and correct?
@@ -163,7 +163,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * 				the newly created concept
      * @throws DataChangeNoRollbackException
      */
-  public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
+  public 	UpdateResult changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
              TaxonRelationshipType oldRelationshipType,
             SynonymType synonymType) throws DataChangeNoRollbackException;
 
