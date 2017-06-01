@@ -223,8 +223,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     @Transactional(readOnly = false)
-    public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException{
-
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) {
+        UpdateResult result = new UpdateResult();
         TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
         TaxonNameBase<?,?> synonymName = synonym.getName();
         HomotypicalGroup synonymHomotypicGroup = synonymName.getHomotypicalGroup();
@@ -232,11 +232,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         //check synonym is not homotypic
         if (acceptedName.getHomotypicalGroup().equals(synonymHomotypicGroup)){
             String message = "The accepted taxon and the synonym are part of the same homotypical group and therefore can not be both accepted.";
-            throw new HomotypicalGroupChangeException(message);
+            result.addException(new HomotypicalGroupChangeException(message));
+            result.setAbort();
+            return result;
         }
 
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());
         dao.save(newAcceptedTaxon);
+        result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
 
@@ -249,7 +252,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
         }
         dao.saveOrUpdate(acceptedTaxon);
-
+        result.addUpdatedObject(acceptedTaxon);
         if (deleteSynonym){
 
             try {
@@ -259,11 +262,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 this.deleteSynonym(synonym, config);
 
             } catch (Exception e) {
-                logger.info("Can't delete old synonym from database");
+                result.addException(e);
             }
         }
 
-        return newAcceptedTaxon;
+        return result;
     }
 
     @Override
@@ -271,15 +274,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid,
             UUID acceptedTaxonUuid,
             UUID newParentNodeUuid,
-            boolean deleteSynonym) throws HomotypicalGroupChangeException {
+            boolean deleteSynonym)  {
         UpdateResult result = new UpdateResult();
         Synonym synonym = CdmBase.deproxy(dao.load(synonymUuid), Synonym.class);
         Taxon acceptedTaxon = CdmBase.deproxy(dao.load(acceptedTaxonUuid), Taxon.class);
-        Taxon taxon =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, deleteSynonym);
+        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, deleteSynonym);
+        Taxon newTaxon = (Taxon)result.getCdmEntity();
         TaxonNode newParentNode = taxonNodeDao.load(newParentNodeUuid);
-        TaxonNode newNode = newParentNode.addChildTaxon(taxon, null, null);
+        TaxonNode newNode = newParentNode.addChildTaxon(newTaxon, null, null);
         taxonNodeDao.save(newNode);
-        result.addUpdatedObject(taxon);
+        result.addUpdatedObject(newTaxon);
         result.addUpdatedObject(acceptedTaxon);
         result.setCdmEntity(newNode);
         return result;

@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -230,8 +231,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         Taxon taxon = null;
+        UpdateResult result = new UpdateResult();
         try {
-            taxon = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true);
+            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
         }
@@ -239,12 +241,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //test flush (resave deleted object)
         TaxonBase<?> syn = service.find(uuidSyn);
         taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
-        Taxon taxNew = (Taxon)service.find(taxon.getUuid());
+        Taxon taxNew = (Taxon)service.find(result.getCdmEntity().getUuid());
         assertNull(syn);
         assertNotNull(taxWithSyn);
         assertNotNull(taxNew);
 
-        Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, taxon.getSynonyms().size());
+        Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, ((Taxon)result.getCdmEntity()).getSynonyms().size());
     }
 
 
@@ -260,8 +262,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         Taxon taxon = null;
+        UpdateResult result = new UpdateResult();
         try {
-            taxon = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true);
+            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true);
             service.save(taxon);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
@@ -272,7 +275,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //test flush (resave deleted object)
         TaxonBase<?> syn = service.find(uuidSyn);
         taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
-        Taxon taxNew = (Taxon)service.find(taxon.getUuid());
+        Taxon taxNew = (Taxon)service.find(((Taxon)result.getCdmEntity()).getUuid());
         assertNull(syn);
         assertNotNull(taxWithSyn);
         assertNotNull(taxNew);
@@ -757,6 +760,37 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+
+    public final void testDeleteSynonymWithAnnotations(){
+        final String[]tableNames = {
+//                "TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
+//                "HomotypicalGroup","HomotypicalGroup_AUD"
+        };
+
+
+        UUID uuidTaxon2=UUID.fromString("2d9a642d-5a82-442d-8fec-95efa978e8f8");
+        UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
+
+        Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
+        Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
+        taxon2.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF());
+
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("test");
+        synonym1.addAnnotation(annotation);
+        service.saveOrUpdate(synonym1);
+
+        DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
+        if (result.isError()){
+            Assert.fail();
+        }
+        this.commitAndStartNewTransaction(tableNames);
+
+
+    }
+
+
+    @Test
     @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
 
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedName(){
@@ -1196,6 +1230,63 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         		, config, null);
         if (!result.isOk()){
         	Assert.fail();
+        }
+
+
+    }
+
+    @Test
+    @DataSet(value="BlankDataSet.xml")
+    public final void testDeleteTaxonWithAnnotations(){
+
+        //create a small classification
+
+        Taxon testTaxon = getTestTaxon();
+
+        service.save(testTaxon).getUuid();
+
+        Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
+        Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
+        UUID descrUUID = null;
+        UUID descrElementUUID = null;
+        if (descriptionIterator.hasNext()){
+            TaxonDescription descr = descriptionIterator.next();
+            descrUUID = descr.getUuid();
+            descrElementUUID = descr.getElements().iterator().next().getUuid();
+        }
+        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        assertNotNull(taxonName);
+
+        TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
+        config.setDeleteNameIfPossible(false);
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("test");
+        speciesTaxon.addAnnotation(annotation);
+
+
+       // try {
+
+        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
+        if (!result.isOk()){
+            Assert.fail();
+        }
+        commitAndStartNewTransaction(null);
+
+        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
+
+        //descriptionService.find(descrUUID);
+        assertNull(descriptionService.find(descrUUID));
+        assertNull(descriptionService.getDescriptionElementByUuid(descrElementUUID));
+        //assertNull(synName);
+        assertNotNull(taxonName);
+        assertNull(taxon);
+        config.setDeleteNameIfPossible(true);
+        Taxon newTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
+        service.save(newTaxon);
+        result = service.deleteTaxon(newTaxon.getUuid()
+                , config, null);
+        if (!result.isOk()){
+            Assert.fail();
         }
 
 

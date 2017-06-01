@@ -116,7 +116,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		boolean copyCitationInfo = true;
 		Taxon taxon = null;
 		try {
-			taxon = service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym);
+			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym).getCdmEntity();
 			Assert.fail("Change must fail for synonym and taxon in same homotypical group");
 		} catch (HomotypicalGroupChangeException e) {
 			//OK
@@ -125,7 +125,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
 		try {
-			taxon = service.changeSynonymToAcceptedTaxon(s2, t1, deleteSynonym);
+			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s2, t1, deleteSynonym).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e) {
 			Assert.fail("Change must not throw exception for heterotypic synonym change");
 		}
@@ -159,7 +159,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		//run
 		Taxon newTaxon = null;
 		try {
-			newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false);
+			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, false).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e1) {
 			Assert.fail("Invocation of change method should not throw an exception");
 		}

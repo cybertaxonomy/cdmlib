@@ -116,7 +116,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *          in the homotypic group. It is up to the implementing class to
      *          handle this situation via an exception or in another way.
      */
-    public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException;
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException;
 
     /**
      * @param synonymUuid
@@ -948,6 +948,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
+
 
 
 }
