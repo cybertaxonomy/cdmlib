@@ -115,12 +115,17 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		boolean deleteSynonym = false;
 		boolean copyCitationInfo = true;
 		Taxon taxon = null;
-		try {
-			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym).getCdmEntity();
-			Assert.fail("Change must fail for synonym and taxon in same homotypical group");
-		} catch (HomotypicalGroupChangeException e) {
-			//OK
-		}
+
+		UpdateResult result;
+        try {
+            result = service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym);
+            Assert.assertTrue("Change must fail for synonym and taxon in same homotypical group",result.isAbort());
+        } catch (HomotypicalGroupChangeException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+
 		t1.addSynonym(s2, heteroTypicSynonymType);
 		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
@@ -189,8 +194,9 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertTrue("Relationship to s2 must have been concidered in 'for'-loop", iWasHere);
 
 		try {
-			service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false);
-			Assert.fail("The method should throw an exception when invoked on taxa in the same homotypical group");
+			UpdateResult result = service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false);
+
+			Assert.assertTrue("The method should throw an exception when invoked on taxa in the same homotypical group", !result.getExceptions().isEmpty());
 		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		}
@@ -215,7 +221,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		TaxonNameBase<?,?> synonymName = s1.getName();
 		UUID synNameUUID = synonymName.getUuid();
 
-		Taxon newTaxon = service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
+		Taxon newTaxon = (Taxon) service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail).getCdmEntity();
 		//check removeTaxonBase()
 		//UUID s1UUID = service.update(s1);
 		UUID newTaxonUUID = service.save(newTaxon).getUuid();
@@ -229,7 +235,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
 
 		synonymName = s2.getName();
-        newTaxon = service.changeSynonymToRelatedTaxon(s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail);
+        newTaxon = (Taxon)service.changeSynonymToRelatedTaxon(s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail).getCdmEntity();
         //check removeTaxonBase()
         //UUID s1UUID = service.update(s1);
         newTaxonUUID = service.save(newTaxon).getUuid();
