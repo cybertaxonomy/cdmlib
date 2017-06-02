@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -41,7 +42,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 		return uuid;
 	}
 
-   @Override
+    @Override
     public String getTitleCache(T taxonBase) {
         return getTitleCache(taxonBase, null);
     }
@@ -52,7 +53,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             return null;
         }
 
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (taxonBase.isDoubtful()){
             tags.add(new TaggedText(TagEnum.separator, "?"));
@@ -114,7 +115,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     }
 
     private List<TaggedText> getSecundumTags(T taxonBase) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         Reference ref = taxonBase.getSec();
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);
@@ -158,6 +159,112 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (tags == null){
             return null;
         }else{
+            String result = TaggedCacheHelper.createString(tags, htmlTagRules);
+            return result;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TaggedText> getMisappliedTaggedTitle(Taxon taxon) {
+        if (taxon == null){
+            return null;
+        }
+
+        List<TaggedText> tags = new ArrayList<>();
+
+        if (taxon.isDoubtful()){
+            tags.add(new TaggedText(TagEnum.separator, "?"));
+        }
+        if (taxon.isProtectedTitleCache()){
+            //protected title cache
+            tags.add(new TaggedText(TagEnum.name, taxon.getTitleCache()));
+        }else{
+            //name
+            List<TaggedText> nameTags = getMisappliedNameTags(taxon);
+
+            if (nameTags.size() > 0){
+                tags.addAll(nameTags);
+            }else{
+                tags.add(new TaggedText(TagEnum.fullName, "???"));
+            }
+
+            String appendedPhrase = taxon.getAppendedPhrase();
+            List<TaggedText> secTags = new ArrayList<>();;
+            taxon.getSec();
+            if (!hasSecOrAppendedPhrase(taxon)){
+                tags.add(new TaggedText(TagEnum.appendedPhrase, "auct."));
+            }else{
+                if (isNotBlank(taxon.getAppendedPhrase())){
+                    tags.add(new TaggedText(TagEnum.appendedPhrase, taxon.getAppendedPhrase()));
+                }
+                String secSeparator =  "err. sec. ";
+                if (taxon.getSec() != null){
+
+                }
+
+                //ref. //FIXME
+                secTags = getSecundumTags((T)taxon);
+            }
+
+            //not used: we currently use a post-separator in the name tags
+//                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
+//                    secSeparator = "," + secSeparator;
+//                }
+
+            ////FIXME
+            String secSeparator = null;
+            //sec.
+            if (!secTags.isEmpty()){
+                tags.add(new TaggedText(TagEnum.separator, secSeparator));
+                tags.addAll(secTags);
+            }
+
+        }
+        return tags;
+    }
+
+    /**
+     * @param taxon
+     * @return
+     */
+    private boolean hasSecOrAppendedPhrase(Taxon taxon) {
+        return isNotBlank(taxon.getAppendedPhrase())
+                || taxon.getSec() != null
+                || isNotBlank(taxon.getSecMicroReference());
+    }
+
+    private List<TaggedText> getMisappliedNameTags(Taxon taxon) {
+        List<TaggedText> tags = new ArrayList<>();
+        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxon.getName());
+
+        if (name != null){
+            INameCacheStrategy<TaxonNameBase> nameCacheStrategy = name.getCacheStrategy();
+
+            List<TaggedText> nameCacheTags = nameCacheStrategy.getTaggedName(name);
+            tags.addAll(nameCacheTags);
+
+            //FIXME
+            if (StringUtils.isNotBlank(taxon.getAppendedPhrase())){
+                tags.add(new TaggedText(TagEnum.appendedPhrase, taxon.getAppendedPhrase().trim()));
+            }
+        }
+
+        return tags;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMisappliedTitle(Taxon taxon) {
+        List<TaggedText> tags = getMisappliedTaggedTitle(taxon);
+        if (tags == null){
+            return null;
+        }else{
+            HTMLTagRules htmlTagRules = null;
             String result = TaggedCacheHelper.createString(tags, htmlTagRules);
             return result;
         }

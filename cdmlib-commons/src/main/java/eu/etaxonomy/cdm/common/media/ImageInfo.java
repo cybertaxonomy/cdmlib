@@ -14,14 +14,19 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+//import org.apache.sanselan.ImageReadException;
+//import org.apache.sanselan.Sanselan;
+//import org.apache.sanselan.common.IImageMetadata;
+//import org.apache.sanselan.common.ImageMetadata.Item;
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.GenericImageMetadata.GenericImageMetadataItem;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
-import org.apache.sanselan.ImageReadException;
-import org.apache.sanselan.Sanselan;
-import org.apache.sanselan.common.IImageMetadata;
-import org.apache.sanselan.common.ImageMetadata.Item;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 
@@ -110,7 +115,7 @@ public  class ImageInfo extends MediaInfo {
 		InputStream inputStream;
 		try {
 			inputStream = UriUtils.getInputStream(imageUri);
-			org.apache.sanselan.ImageInfo imageInfo = Sanselan.getImageInfo(inputStream, null);
+			org.apache.commons.imaging.ImageInfo imageInfo = Imaging.getImageInfo(inputStream, null);
 
 			setFormatName(imageInfo.getFormatName());
 			setMimeType(imageInfo.getMimeType());
@@ -131,21 +136,24 @@ public  class ImageInfo extends MediaInfo {
 		try {
 			InputStream inputStream = UriUtils.getInputStream(imageUri);
 
-			 IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
+			ImageMetadata mediaData = Imaging.getMetadata(inputStream, null);
 
 			if (mediaData != null){
 				metaData = new HashMap<>();
-				for (Object object : mediaData.getItems()){
-					Item item = (Item) object;
-					if (item.getKeyword().contains("/")){
-						String key = item.getKeyword();
-						//key.replace("/", "");
-						int index = key.indexOf("/");
-						key = key.substring(0, index);
-						metaData.put(key, text(item));
-					}else{
-						metaData.put(item.getKeyword(), text(item));
-					}
+				for (ImageMetadataItem metadataItem : mediaData.getItems()){
+				    if (metadataItem instanceof GenericImageMetadataItem){
+				        GenericImageMetadataItem item = (GenericImageMetadataItem) metadataItem;
+				        if (item.getKeyword().contains("/")){
+				            String key = item.getKeyword();
+				            //key.replace("/", "");
+				            int index = key.indexOf("/");
+				            key = key.substring(0, index);
+				            metaData.put(key, text(item));
+				        }else{
+				            metaData.put(item.getKeyword(), text(item));
+				        }
+
+				    }
 				}
 			}
 		} catch (ImageReadException e) {
@@ -164,7 +172,7 @@ public  class ImageInfo extends MediaInfo {
      * @param item
      * @return
      */
-    private String text(Item item) {
+    private String text(GenericImageMetadataItem item) {
         String  text = item.getText();
         if(text.startsWith("'") && text.endsWith("'")) {
             text = text.substring(1 , text.length() - 1);

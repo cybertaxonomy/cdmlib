@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -23,19 +24,15 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface ITaxonCacheStrategy<T extends TaxonBase> extends IIdentifiableEntityCacheStrategy<T> {
+public interface ITaxonCacheStrategy<T extends TaxonBase>
+        extends IIdentifiableEntityCacheStrategy<T> {
 
     /**
-     * Returns a list of name typified tokens that together make up the name (including authorship etc.).
-     * A token (taggedText) is a string and a type which indicates which part of a name the text
-     * belongs to. Types may be name (indicating a core part of the name, e.g. a name epithet),
-     * author (indicating an authorship part), rank, reference, etc.).
-     * <BR>
-     * Example: ["Abies"/name,"alba"/name,Rank.SUBSPECIES/rank,"alpina"/name,
-     * "Greuther (L.)"/authorship]
+     * Returns a list of typified tokens that together make up the title of
+     * a taxon or synonym including the name part and the secundum part
      *
-     * @param taxonNameBase
-     * @return the tagged list, <code>null</code> if taxonName is <code>null</code>
+     * @param taxonBase accepted taxon or synonym
+     * @return the tagged list, <code>null</code> if taxonBase is <code>null</code>
      */
     public List<TaggedText> getTaggedTitle(T taxonBase);
 
@@ -47,5 +44,23 @@ public interface ITaxonCacheStrategy<T extends TaxonBase> extends IIdentifiableE
 	 * @return
 	 */
 	public String getTitleCache(T taxonBase, HTMLTagRules htmlTagRules);
+
+
+    /**
+     * Returns a list of typified tokens that together make up the title of
+     * a taxon if used as a misapplication
+     *
+     * @param taxon the misapplied taxon
+     * @return the tagged list, <code>null</code> if taxon is <code>null</code>
+     */
+	public List<TaggedText> getMisappliedTaggedTitle(Taxon taxon);
+
+	/**
+	 * Computes the title of an {@link Taxon accepted taxon} if used as
+	 * misapplication
+	 * @param taxon the misapplied taxon
+	 * @return the misapplied title
+	 */
+	public String getMisappliedTitle(Taxon taxon);
 
 }
