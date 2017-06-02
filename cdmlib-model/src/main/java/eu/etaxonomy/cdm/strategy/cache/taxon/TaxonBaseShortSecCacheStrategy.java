@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -296,26 +295,6 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             String result = TaggedCacheHelper.createString(tags, htmlTagRules);
             return result;
         }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<TaggedText> getMisappliedTaggedTitle(Taxon taxon) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getMisappliedTitle(Taxon taxon) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
