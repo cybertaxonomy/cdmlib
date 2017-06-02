@@ -206,8 +206,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * 						 new feature to be created
 	 * @see 				 #Feature()
 	 */
-	protected Feature(String term, String label, String labelAbbrev) {
-		super(TermType.Feature, term, label, labelAbbrev);
+	protected Feature(String description, String label, String labelAbbrev) {
+		super(TermType.Feature, description, label, labelAbbrev);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
 	 *
-	 * @param	description  the string (in the default language) describing the
+	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new feature to be created
 	 * @param	label  		 the string identifying the new feature to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
@@ -231,8 +231,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see 				 #readCsvLine(List, Language)
 	 * @see 				 #NewInstance()
 	 */
-	public static Feature NewInstance(String description, String label, String labelAbbrev){
-		return new Feature(description, label, labelAbbrev);
+	public static Feature NewInstance(String term, String label, String labelAbbrev){
+		return new Feature(term, label, labelAbbrev);
 	}
 
 
