@@ -1254,7 +1254,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             descrUUID = descr.getUuid();
             descrElementUUID = descr.getElements().iterator().next().getUuid();
         }
-        BotanicalName taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        IBotanicalName taxonName = nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1271,7 +1271,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         commitAndStartNewTransaction(null);
 
-        taxonName = (BotanicalName) nameService.find(SPECIES1_NAME_UUID);
+        taxonName = nameService.find(SPECIES1_NAME_UUID);
         Taxon taxon = (Taxon)service.find(SPECIES1_UUID);
 
         //descriptionService.find(descrUUID);
