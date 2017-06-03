@@ -217,7 +217,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see 				 #NewInstance()
 	 */
 	public static Feature NewInstance(String description, String label, String labelAbbrev){
-		return new Feature(term, label, labelAbbrev);
+		return new Feature(description, label, labelAbbrev);
 	}
 
 
