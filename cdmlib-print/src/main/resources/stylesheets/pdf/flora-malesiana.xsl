@@ -318,7 +318,7 @@
 			<fo:inline>
 				<xsl:text> </xsl:text>
 				<xsl:choose>
-					<!-- Lifeform -->
+					<!-- Life-form -->
 					<!-- should not show the feature name -->
 					<xsl:when test="uuid='db9228d3-8bbf-4460-abfe-0b1326c82f8e'">
 						<xsl:for-each select="descriptionelements/descriptionelement">

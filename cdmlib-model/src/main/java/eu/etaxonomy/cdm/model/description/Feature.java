@@ -209,15 +209,15 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
 	 *
-	 * @param	term  		 the string (in the default language) describing the
+	 * @param	description      the string (in the default language) describing the
 	 * 						 new feature to be created
 	 * @param	label  		 the string identifying the new feature to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * @param	labelAbbrev      the string identifying (in abbreviated form) the
 	 * 						 new feature to be created
 	 * @see 				 #readCsvLine(List, Language)
 	 * @see 				 #NewInstance()
 	 */
-	public static Feature NewInstance(String term, String label, String labelAbbrev){
+	public static Feature NewInstance(String description, String label, String labelAbbrev){
 		return new Feature(term, label, labelAbbrev);
 	}
 

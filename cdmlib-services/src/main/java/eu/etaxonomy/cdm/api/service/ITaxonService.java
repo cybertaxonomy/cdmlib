@@ -116,7 +116,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *          in the homotypic group. It is up to the implementing class to
      *          handle this situation via an exception or in another way.
      */
-    public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException;
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException;
 
     /**
      * @param synonymUuid
@@ -145,7 +145,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return
      * 				the newly created concept
      */
-    public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
+    public UpdateResult changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
      * TODO still needed and correct?
@@ -163,7 +163,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * 				the newly created concept
      * @throws DataChangeNoRollbackException
      */
-  public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
+  public 	UpdateResult changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
              TaxonRelationshipType oldRelationshipType,
             SynonymType synonymType) throws DataChangeNoRollbackException;
 
@@ -948,6 +948,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
+
 
 
 }

@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.api.service.config;
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
     private boolean deleteIfUsedInTaxonDescription = false;
     private boolean deleteIfUsedInSpecimenDescription = false;
-    private boolean onlyRemoveFromGallery = false;
+    private boolean onlyRemoveFromGallery = true;
 
     public boolean isDeleteIfUsedInSpecimenDescription() {
         return deleteIfUsedInSpecimenDescription;

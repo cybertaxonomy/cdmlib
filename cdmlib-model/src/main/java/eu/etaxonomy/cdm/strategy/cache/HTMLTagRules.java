@@ -17,10 +17,13 @@ import java.util.TreeSet;
  */
 public class HTMLTagRules {
 
-	private List<TagRule> rules = new ArrayList<HTMLTagRules.TagRule>();
+	private List<TagRule> rules = new ArrayList<>();
 
 	private class TagRule{
-		private TagRule(TagEnum type, String htmlTag){this.type = type; this.htmlTag = htmlTag;}
+		private TagRule(TagEnum type, String htmlTag){
+		    this.type = type;
+		    this.htmlTag = htmlTag;
+		}
 		private TagEnum type;
 		private String htmlTag;
 //		public TagEnum getType(){return this.type;}

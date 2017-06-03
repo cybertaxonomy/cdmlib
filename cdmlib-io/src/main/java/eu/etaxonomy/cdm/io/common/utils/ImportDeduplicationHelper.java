@@ -386,7 +386,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                return right;
            }else if (set.size()>1){
                //TODO
-               logger.warn("More than 1 matching copyright not yet handled");
+               logger.warn("More than 1 matching copyright not yet handled for key: " + key);
            }
            return set.iterator().next();
        }

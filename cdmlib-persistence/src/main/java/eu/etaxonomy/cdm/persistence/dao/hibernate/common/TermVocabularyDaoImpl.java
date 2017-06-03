@@ -122,7 +122,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 
     @Override
-    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
+    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
 
         Criteria criteria = getSession().createCriteria(type);
         criteria.add(Restrictions.eq("termType", termType));
@@ -130,7 +130,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         //this.addOrder(criteria, orderHints);
 
         List<TermVocabulary<T>> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, null);
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
 
