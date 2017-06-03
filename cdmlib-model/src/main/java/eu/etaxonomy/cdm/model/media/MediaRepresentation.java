@@ -90,7 +90,7 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	@OrderColumn(name="sortIndex")
 	@JoinColumn (name = "representation_id",  nullable=false)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
-	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
+	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<>();
 
 
 

@@ -41,7 +41,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 		return uuid;
 	}
 
-   @Override
+    @Override
     public String getTitleCache(T taxonBase) {
         return getTitleCache(taxonBase, null);
     }
@@ -52,7 +52,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             return null;
         }
 
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (taxonBase.isDoubtful()){
             tags.add(new TaggedText(TagEnum.separator, "?"));
@@ -114,7 +114,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     }
 
     private List<TaggedText> getSecundumTags(T taxonBase) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         Reference ref = taxonBase.getSec();
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);
