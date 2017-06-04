@@ -59,15 +59,18 @@ public class TermRepresentationUpdater
 
 
 	@Override
-    public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException{
 
 		String sqlCheckTermExists = " SELECT count(*) as n FROM @@DefinedTermBase@@ WHERE uuid = '" + uuidTerm + "'";
 
 		Long n = (Long)datasource.getSingleValue(caseType.replaceTableNames(sqlCheckTermExists));
 		if (n == 0){
 			String name = label != null ? label : abbrev != null ? abbrev : description;
-			monitor.warning("Term for representations update does not exist. Term not updated: " + CdmUtils.Nz(name) + "(" + uuidTerm + ")");
-			return null;
+			String message = "Term for representations update does not exist. Term not updated: " + CdmUtils.Nz(name) + "(" + uuidTerm + ")";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+			return;
 		}
 
 		//language id
@@ -75,16 +78,19 @@ public class TermRepresentationUpdater
 		if (uuidLanguage != null){
 			langId = getLanguageId(uuidLanguage, datasource, monitor, caseType);
 			if (langId == null){
-				String warning = "Language for language uuid (%s) could not be found. Term representations not updated.";
-				warning = String.format(warning, uuidLanguage.toString());
-				monitor.warning(warning);
-				return null;
+				String message = "Language for language uuid (%s) could not be found. Term representations not updated.";
+				message = String.format(message, uuidLanguage.toString());
+				monitor.warning(message);
+	            result.addError(message, this, "invoke");
+	            return;
 			}
 		}
 
 		Integer repId = getRepresentationId(datasource, monitor, langId, caseType);
 		if (repId == null){
-			return null;
+			String message = "repId is null";
+		    result.addError(message, this, "invoke");
+			return;
 		}
 
 		//standard representation
@@ -103,7 +109,7 @@ public class TermRepresentationUpdater
 			datasource.executeUpdate(sqlUpdateRepresentation);
 		}
 
-		return repId;
+		return;
 	}
 
 	/**

@@ -120,9 +120,10 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
     }
 
     @Override
-    protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
         //we only do have inner steps here
-        return true;
+        return;
     }
 
 

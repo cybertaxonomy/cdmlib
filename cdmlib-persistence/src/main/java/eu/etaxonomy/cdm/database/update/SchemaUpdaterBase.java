@@ -25,7 +25,10 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
  * @date 10.09.2010
  *
  */
-public abstract class SchemaUpdaterBase extends UpdaterBase<ISchemaUpdaterStep, ISchemaUpdater> implements ISchemaUpdater {
+public abstract class SchemaUpdaterBase
+            extends UpdaterBase<ISchemaUpdaterStep, ISchemaUpdater>
+            implements ISchemaUpdater {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterBase.class);
 
@@ -50,19 +53,23 @@ public abstract class SchemaUpdaterBase extends UpdaterBase<ISchemaUpdaterStep, 
 	}
 
 	@Override
-	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+	protected void updateVersion(ICdmDataSource datasource, IProgressMonitor monitor,
+	            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 			int intSchemaVersion = 0;
 			String sqlUpdateSchemaVersionOld = "UPDATE %s SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
 			sqlUpdateSchemaVersionOld = String.format(sqlUpdateSchemaVersionOld, caseType.transformTo("CdmMetaData"));
 			String sqlUpdateSchemaVersion = "UPDATE %s SET value = '" + this.targetVersion + "' WHERE propertyname = '%s'";
 			sqlUpdateSchemaVersion = String.format(sqlUpdateSchemaVersion, caseType.transformTo("CdmMetaData"), CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getKey());
 
-			boolean isPriorTo4_7 = CdmMetaData.compareVersion("4.6.0.0", this.targetVersion, 2, monitor)>0;
+			boolean isPriorTo4_7 = CdmMetaData.compareVersion("4.6.0.0", this.targetVersion, 2, monitor) > 0;
 
 			String sql = isPriorTo4_7 ? sqlUpdateSchemaVersionOld : sqlUpdateSchemaVersion;
 			try {
 				int n = datasource.executeUpdate(sql);
-				return n > 0;
+				if (n == 0){
+				    result.addError("Schema version was not updated", "SchemaUpdaterBase.updateVersion()");
+				}
+				return;
 
 			} catch (Exception e) {
 				monitor.warning("Error when trying to set new schemaversion: ", e);

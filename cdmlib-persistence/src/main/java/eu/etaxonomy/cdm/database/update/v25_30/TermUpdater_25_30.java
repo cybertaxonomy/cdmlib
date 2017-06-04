@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,27 +30,27 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * @date 10.09.2010
  *
  */
-public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
+public class TermUpdater_25_30 extends TermUpdaterBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdater_25_30.class);
-	
+
 	public static final String startTermVersion = "2.5.0.0.201009211255";
 	private static final String endTermVersion = "3.0.0.0.201011170000";
-	
+
 // *************************** FACTORY **************************************/
-	
+
 	public static TermUpdater_25_30 NewInstance(){
 		return new TermUpdater_25_30(startTermVersion, endTermVersion);
 	}
-	
-// *************************** CONSTRUCTOR ***********************************/	
+
+// *************************** CONSTRUCTOR ***********************************/
 
 	protected TermUpdater_25_30(String startTermVersion, String endTermVersion) {
 		super(startTermVersion, endTermVersion);
 	}
-	
-// 
-	
+
+//
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
 	 */
@@ -68,7 +68,7 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		UUID uuidAfterTerm = null ; //UUID.fromString("");
 		list.add( SingleTermUpdater.NewInstance("Add 'confer (cf.)' determination modifier", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
 
-		
+
 		// aff.
 		uuidTerm = DefinedTerm.uuidAffinis;
 		description = "Affinis";
@@ -79,7 +79,7 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		uuidAfterTerm = DefinedTerm.uuidConfer;
 		list.add( SingleTermUpdater.NewInstance("Add 'affinis (aff.)' determination modifier", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
 
-		
+
 		//undefined languages vocabulary
 		UUID uuidUndefLanguagesVoc = UUID.fromString("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28");
 		description = "Undefined Language";
@@ -89,7 +89,7 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		Class termClass = Language.class;
 		VocabularyCreator updater = VocabularyCreator.NewVocabularyInstance(uuidUndefLanguagesVoc, description, label, abbrev, isOrdered, termClass, TermType.Language);
 		list.add(updater);
-		
+
 		// unknown language
 		uuidTerm = Language.uuidUnknownLanguage;
 		description = "Unknown Language";
@@ -114,11 +114,11 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		isOrdered = false;
 		list.add( SingleTermUpdater.NewInstance("Add 'original language' to language vocabulary", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLanguageOfRepresentation, isOrdered, uuidAfterTerm));
 
-				
+
 		return list;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
 	 */

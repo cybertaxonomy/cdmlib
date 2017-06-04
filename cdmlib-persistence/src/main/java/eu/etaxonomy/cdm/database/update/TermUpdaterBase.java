@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,38 +23,48 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * @date 10.09.2010
  *
  */
-public abstract class TermUpdaterBase extends UpdaterBase<ITermUpdaterStep, ITermUpdater> implements ITermUpdater {
+public abstract class TermUpdaterBase
+        extends UpdaterBase<ITermUpdaterStep, ITermUpdater>
+        implements ITermUpdater {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	protected static final UUID uuidFeatureVocabulary = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
-	
+
 	protected TermUpdaterBase(String startTermVersion, String targetTermVersion){
 		this.startVersion = startTermVersion;
 		this.targetVersion = targetTermVersion;
 		list = getUpdaterList();
 	}
-	
+
 	@Override
-	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		int intSchemaVersion = 1;
+	protected void updateVersion(ICdmDataSource datasource, IProgressMonitor monitor,
+	            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+
+	    int intSchemaVersion = 1;
 		String sqlUpdateSchemaVersion = "UPDATE %s SET value = '%s' WHERE propertyname = " +  intSchemaVersion;
 		sqlUpdateSchemaVersion = String.format(sqlUpdateSchemaVersion, caseType.transformTo("CdmMetaData"), this.targetVersion);
 		try {
 			int n = datasource.executeUpdate(sqlUpdateSchemaVersion);
-			return n > 0;
+			if (n == 0){
+			    result.addError("Schema Version could not be updated", "TermUpdaterBase.updateVersion");
+			}
+			return;
 		} catch (Exception e) {
 			monitor.warning("Error when trying to set new schemaversion: ", e);
 			throw new SQLException(e);
 		}
 	}
-	
+
 	protected abstract List<ITermUpdaterStep> getUpdaterList();
 
-	
+
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception{
+	public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws Exception{
 		String currentLibrarySchemaVersion = CdmMetaData.getTermsVersion();
-		return invoke(currentLibrarySchemaVersion, datasource, monitor, caseType);
+		invoke(currentLibrarySchemaVersion, datasource, monitor, caseType, result);
+		return;
 	}
 
 	@Override
@@ -80,7 +90,7 @@ public abstract class TermUpdaterBase extends UpdaterBase<ITermUpdaterStep, ITer
 			throw e;
 		}
 	}
-	
+
 
 
 }

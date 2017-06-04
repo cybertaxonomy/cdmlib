@@ -108,36 +108,34 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase
 
 
 
-	@Override
-	public Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType){
-		boolean result = true;
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 		//non audit
-		result &= invokeQueryMap(datasource, queryMap, caseType); ;
+		invokeQueryMap(datasource, queryMap, caseType, result);
 		//audit
 		if (this.includeAudit){
-			result &= invokeQueryMap(datasource, auditQueryMap, caseType);
+			invokeQueryMap(datasource, auditQueryMap, caseType, result);
 		}else{
 			logger.info("SimpleSchemaUpdaterStep non Audited");
 		}
 
-		return (result == true )? 0 : null;
+		return;
 	}
 
-	private boolean invokeQueryMap(ICdmDataSource datasource, Map<DatabaseTypeEnum, String> queryMap, CaseType caseType) {
-		boolean result = true;
+	private void invokeQueryMap(ICdmDataSource datasource, Map<DatabaseTypeEnum, String> queryMap, CaseType caseType, SchemaUpdateResult result) {
 		String query = queryMap.get(datasource.getDatabaseType());
 		if (query == null){
 			query = queryMap.get(null);
 		}
 		if (query != null){
 			query = doReplacements(query, caseType, datasource);
-			result = executeQuery(datasource, query);
+			executeQuery(datasource, query, result);
 		}else{
-			//TODO exception ?
-			logger.warn("No query found to execute");
+		    result.addError("No query found to execute " + getStepName());
 		}
-		return result;
+		return;
 	}
 
 	private String doReplacements(String query, CaseType caseType, ICdmDataSource datasource) {
@@ -147,11 +145,12 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase
 		return query;
 	}
 
-	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery) {
+	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery, SchemaUpdateResult result) {
 		try {
 			datasource.executeUpdate(replacedQuery);
 		} catch (SQLException e) {
 			logger.error(e);
+			result.addException(e, "Unexpected SQL Exception", getStepName());
 			return false;
 		}
 		return true;

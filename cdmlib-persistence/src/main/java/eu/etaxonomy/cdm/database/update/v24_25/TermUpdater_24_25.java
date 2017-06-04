@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,34 +28,35 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
  * @date 10.09.2010
  *
  */
-public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
-	@SuppressWarnings("unused")
+public class TermUpdater_24_25 extends TermUpdaterBase {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdater_24_25.class);
-	
+
 	public static final String startTermVersion = "2.4.2.2.201006011715";
 	private static final String endTermVersion = "2.5.0.0.201009211255";
-	
+
 // *************************** FACTORY **************************************/
-	
+
 	public static TermUpdater_24_25 NewInstance(){
 		return new TermUpdater_24_25(startTermVersion, endTermVersion);
 	}
-	
-// *************************** CONSTRUCTOR ***********************************/	
+
+// *************************** CONSTRUCTOR ***********************************/
 
 	protected TermUpdater_24_25(String startTermVersion, String endTermVersion) {
 		super(startTermVersion, endTermVersion);
 	}
-	
-// 
-	
+
+//
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
 	 */
 	@Override
 	protected List<ITermUpdaterStep> getUpdaterList() {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
-		
+
 		// comb. illeg.
 		UUID uuidTerm = UUID.fromString("d901d455-4e01-45cb-b653-01a840b97eed");
 		String description = "Combination Illegitimate";
@@ -65,7 +66,7 @@ public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 		UUID uuidVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
 		UUID uuidAfterTerm = UUID.fromString("f858e619-7b7f-4225-913b-880a2143ec83");
 		list.add( SingleTermUpdater.NewInstance("Add comb. illeg. status", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
-		
+
 		//Habitat
 		uuidTerm = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
 		description = "Habitat";
@@ -95,10 +96,10 @@ public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 		uuidVocabulary = uuidFeatureVocabulary;
 		uuidAfterTerm = null;
 		list.add( SingleTermUpdater.NewInstance("Add chromosome number feature", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidEnglish, false, null));
-		
+
 		return list;
 	}
-	
+
 	@Override
 	public ITermUpdater getNextUpdater() {
 		return TermUpdater_25_30.NewInstance();

@@ -43,17 +43,21 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 		this.indexColumn = indexColumn;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		try {
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try {
 			if (checkExists(datasource, caseType)){
 				String updateQuery = getUpdateQueryString(tableName, datasource, caseType, monitor);
 				datasource.executeUpdate(updateQuery);
 			}
-			return true;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
-			return false;
+		    String message = e.getMessage();
+            monitor.warning(message, e);
+            logger.warn(message);
+            result.addException(e, message, this, "invoke");
+            return;
 		}
 	}
 

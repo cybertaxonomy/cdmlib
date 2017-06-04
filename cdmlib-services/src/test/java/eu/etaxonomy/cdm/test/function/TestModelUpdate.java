@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
@@ -47,7 +48,10 @@ public class TestModelUpdate {
  		try {
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
-				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+				SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource,
+				        DefaultProgressMonitor.NewInstance());
+				String report = result.createReport().toString();
+				System.out.println(report);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

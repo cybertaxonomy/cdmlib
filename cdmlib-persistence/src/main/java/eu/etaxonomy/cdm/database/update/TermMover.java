@@ -56,17 +56,19 @@ public class TermMover
 		this.termUuids = terms;
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
- 		//get new vocabulary id
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        //get new vocabulary id
 		String sql = " SELECT id FROM %s WHERE uuid = '%s'";
 		Integer id = (Integer)datasource.getSingleValue(String.format(sql,
 				caseType.transformTo("TermVocabulary") , this.uuidNewVocabulary));
 		if (id == null || id == 0){
-			String messageString = "New vocabulary ("+uuidNewVocabulary+") does not exist. Can't move terms";
-			monitor.warning(messageString);
-			logger.warn(messageString);
-			return null;
+			String message = "New vocabulary ("+uuidNewVocabulary+") does not exist. Can't move terms";
+			monitor.warning(message);
+			logger.warn(message);
+			result.addError(message, this, "invoke");
+			return;
 		}
 
 		//check if in use
@@ -76,7 +78,7 @@ public class TermMover
 			datasource.executeUpdate(sql);
 		}
 
-		return 0;
+		return;
 	}
 
 	public TermMover addTermUuid(UUID uuid){

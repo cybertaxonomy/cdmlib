@@ -9,12 +9,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * Interface which represents a CDM model update step. See {@link CdmUpdater}
  * for further documentation or implementing classes for examples.
- * 
+ *
  * @see CdmUpdater
  * @see ISchemaUpdater
  * @see ISchemaUpdater
  * @see ITermUpdaterStep
- * 
+ *
  * @see CdmUpdater
  * @author a.mueller
  *
@@ -22,14 +22,16 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public interface ISchemaUpdaterStep {
 
 	/**
-	 * 
+	 *
 	 * @param datasource
 	 * @param monitor
-	 * @param caseType 
+	 * @param caseType
+	 * @param result
 	 * @return identifier of newly created term
 	 * @throws SQLException
 	 */
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
+	public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws SQLException;
 
 	public void setStepName(String stepName);
 
@@ -40,5 +42,6 @@ public interface ISchemaUpdaterStep {
 	public boolean isIgnoreErrors();
 
 	public void setIgnoreErrors(boolean ignoreErrors);
+
 
 }

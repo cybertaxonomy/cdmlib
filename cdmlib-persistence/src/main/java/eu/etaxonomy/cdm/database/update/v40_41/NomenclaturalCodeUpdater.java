@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -46,14 +47,15 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase implements I
 		super(stepName);
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 	    String existsSql = " SELECT count(*) FROM @@CdmPreference@@ "
 	            + " WHERE key_predicate = 'model.name.NC' AND key_subject = '/'";
 	    existsSql = caseType.replaceTableNames(existsSql);
 	    if (((Number)datasource.getSingleValue(existsSql)).intValue() > 0 ){
-	        return 0;
+	        return;
 	    }
 
 	    String sql = "SELECT count(DTYPE) as n, DTYPE FROM @@TaxonNameBase@@ "
@@ -75,7 +77,7 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase implements I
 	        }
 	    }
 
-	    return 0;
+	    return;
 	}
 
 

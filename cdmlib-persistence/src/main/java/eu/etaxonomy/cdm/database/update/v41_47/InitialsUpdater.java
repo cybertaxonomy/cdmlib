@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 
@@ -49,25 +50,49 @@ public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdat
 
 
 
-
     @Override
-    public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
-        PersonDefaultCacheStrategy formatter = PersonDefaultCacheStrategy.NewInstance();
+        try {
+            PersonDefaultCacheStrategy formatter = PersonDefaultCacheStrategy.NewInstance();
 
-        String sqlCopyFirstname = "UPDATE AgentBase SET initials = firstname WHERE DTYPE='Person'"
-                + " AND firstname IS NOT NULL ";
+            String sqlCopyFirstname = "UPDATE AgentBase SET initials = firstname WHERE DTYPE='Person'"
+                    + " AND firstname IS NOT NULL ";
 
-        String sqlRemoveFirstname = "UPDATE AgentBase SET firstname = %s, initials = '%s' WHERE id = %d";
+            String sqlRemoveFirstname = "UPDATE AgentBase SET firstname = %s, initials = '%s' WHERE id = %d";
 
-        String sqlSelectInitials = "SELECT id, firstname FROM AgentBase WHERE DTYPE='Person'"
-                + " AND firstname IS NOT NULL ";
+            String sqlSelectInitials = "SELECT id, firstname FROM AgentBase WHERE DTYPE='Person'"
+                    + " AND firstname IS NOT NULL ";
 
-        datasource.executeUpdate(sqlCopyFirstname);
+            datasource.executeUpdate(sqlCopyFirstname);
 
-        ResultSet rs = datasource.executeQuery(sqlSelectInitials);
-        while (rs.next()){
+            ResultSet rs = datasource.executeQuery(sqlSelectInitials);
+            while (rs.next()){
+                handleSingel(datasource, formatter, sqlRemoveFirstname, rs, monitor, result);
+            }
+        } catch (Exception e) {
+            String message = e.getMessage();
+            monitor.warning(message, e);
+            result.addException(e, message, this, "invoke");
+        }
 
+        return;
+    }
+
+
+
+    /**
+     * @param datasource
+     * @param formatter
+     * @param sqlRemoveFirstname
+     * @param rs
+     * @param monitor
+     * @throws SQLException
+     */
+    private void handleSingel(ICdmDataSource datasource, PersonDefaultCacheStrategy formatter,
+            String sqlRemoveFirstname, ResultSet rs, IProgressMonitor monitor, SchemaUpdateResult result) throws SQLException {
+        try {
             Integer id = rs.getInt("id");
             String firstname = rs.getString("firstname");
 
@@ -93,9 +118,11 @@ public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdat
             String sql = String.format(sqlRemoveFirstname, firstnameSql, initialsSql, id);
             //remove old relationship
             datasource.executeUpdate(sql);
+        } catch (Exception e) {
+            String message = e.getMessage();
+            monitor.warning(message, e);
+            result.addException(e, message, this, "invoke");
         }
-
-        return 0;
     }
 
 }

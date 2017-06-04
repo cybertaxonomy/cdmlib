@@ -61,14 +61,14 @@ public class ColumnTypeChanger
 		this.referencedTable = referencedTable;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
-		try {
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try {
 
 			String updateQuery;
 			if (this.isNotNull){
-				updateQuery = getNotNullUpdateQuery(tableName, datasource, monitor);
+				updateQuery = getNotNullUpdateQuery(tableName);
 				datasource.executeUpdate(updateQuery);
 			}
 
@@ -82,18 +82,21 @@ public class ColumnTypeChanger
 				datasource.executeUpdate(updateQuery);
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, columnName, referencedTable, caseType);
+				TableCreator.makeForeignKey(tableName, datasource, monitor, columnName, referencedTable, caseType, result);
 			}
 
-			return result;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
-			logger.error(e);
-			return false;
+		    String message = "Unhandled exception when trying to change column type for " +
+                    columnName + " for table " +  tableName;
+            monitor.warning(message, e);
+            logger.error(e);
+            result.addException(e, message, getStepName());
+            return;
 		}
 	}
 
-	private String getNotNullUpdateQuery(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private String getNotNullUpdateQuery(String tableName) {
 		String query = " UPDATE %s SET %s = %S WHERE %s IS NULL ";
 		String defaultValueStr = String.valueOf(this.defaultValue);
 		if (this.defaultValue instanceof Integer){

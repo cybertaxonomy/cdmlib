@@ -29,7 +29,9 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * @date 16.11.2010
  *
  */
-public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>> implements IUpdater<U> {
+public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>>
+            implements IUpdater<U> {
+
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 
 	protected List<T> list;
@@ -37,9 +39,11 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	protected String targetVersion;
 
 
-	protected abstract boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
+	protected abstract void updateVersion(ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws SQLException;
 
-	protected abstract String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
+	protected abstract String getCurrentVersion(ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType) throws SQLException;
 
 	@Override
 	public int countSteps(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType){
@@ -83,21 +87,25 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 
 
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception{
+	public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws Exception{
 		String currentLibrarySchemaVersion = CdmMetaData.getDbSchemaVersion();
-		return invoke(currentLibrarySchemaVersion, datasource, monitor, caseType);
+		invoke(currentLibrarySchemaVersion, datasource, monitor, caseType, result);
 	}
 
 	@Override
-	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception{
-		boolean result = true;
-		String datasourceVersion;
+	public void invoke(String targetVersion, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) throws Exception{
+
+	    String datasourceVersion;
 
 		try {
 			datasourceVersion = getCurrentVersion(datasource, monitor, caseType);
 		} catch (SQLException e1) {
-			monitor.warning("SQLException", e1);
-			return false;
+		    String message = "SQLException";
+			monitor.warning(message, e1);
+			result.addException(e1, message, "UpdaterBase.invoke");
+			return;
 		}
 
 
@@ -112,7 +120,8 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		if (! isDatasourceBeforeMyTargetVersion){
 			String warning = "Target version ("+targetVersion+") is not before updater target version ("+this.targetVersion+"). Nothing to update.";
 			monitor.warning(warning);
-			return true;
+			result.addWarning(warning);
+			return;
 		}
 
 		if (isAfterMyStartVersion && isBeforeMyTargetVersion){
@@ -129,7 +138,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				monitor.warning(warning, exeption);
 				throw exeption;
 			}
-			result &= getPreviousUpdater().invoke(startVersion, datasource, monitor, caseType);
+			getPreviousUpdater().invoke(startVersion, datasource, monitor, caseType, result);
 		}
 
 
@@ -141,43 +150,43 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			throw exeption;
 		}
 
-		if (result == false){
-			return result;
+		if (!result.isSuccess()){
+			return;
 		}
 //		datasource.startTransaction();  transaction already started by CdmUpdater
 		try {
 			for (T step : list){
-				result &= handleSingleStep(datasource, monitor, result, step, false, caseType);
-				if (result == false){
+				handleSingleStep(datasource, monitor, result, step, false, caseType);
+				if (!result.isSuccess()){
 					break;
 				}
 			}
-			if (result == true){
-				result &= updateVersion(datasource, monitor, caseType);
+			if (result.isSuccess()){
+				updateVersion(datasource, monitor, caseType, result);
 			}else{
 				datasource.rollback();
 			}
 
 		} catch (Exception e) {
 			datasource.rollback();
-			logger.error("Error occurred while trying to run updater: " + this.getClass().getName());
-			result = false;
+			String message = "Error occurred while trying to run updater: " + this.getClass().getName();
+			logger.error(message);
+			result.addException(e, message, "UpdaterBase.invoke");
 		}
-		return result;
+		return;
 
 	}
 
 //	protected abstract boolean handleSingleStep(ICdmDataSource datasource,	IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step, boolean isInnerStep) throws Exception;
 
-	protected boolean handleSingleStep(ICdmDataSource datasource, IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step, boolean isInnerStep, CaseType caseType)
+	protected void handleSingleStep(ICdmDataSource datasource, IProgressMonitor monitor, SchemaUpdateResult result, ISchemaUpdaterStep step, boolean isInnerStep, CaseType caseType)
 			throws Exception {
 		try {
 			monitor.subTask(step.getStepName());
-			Integer invokeResult = step.invoke(datasource, monitor, caseType);
-			result &= (invokeResult != null);
+			step.invoke(datasource, monitor, caseType, result);
 			for (ISchemaUpdaterStep innerStep : step.getInnerSteps()){
-				result &= handleSingleStep(datasource, monitor, result, innerStep, true, caseType);
-				if (!result){
+				handleSingleStep(datasource, monitor, result, innerStep, true, caseType);
+				if (!result.isSuccess()){
 				    break;
 				}
 			}
@@ -185,11 +194,12 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				monitor.worked(1);
 //			}
 		} catch (Exception e) {
-			monitor.warning("Monitor: Exception occurred while handling single schema updating step", e);
+		    String message = "Monitor: Exception occurred while handling single schema updating step";
+			monitor.warning(message, e);
 			datasource.rollback();
-			result = false;
+			result.addException(e, message, "handleSingleStep:" + step.getStepName());
 		}
-		return result;
+		return;
 	}
 
 	protected boolean isAfterMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {

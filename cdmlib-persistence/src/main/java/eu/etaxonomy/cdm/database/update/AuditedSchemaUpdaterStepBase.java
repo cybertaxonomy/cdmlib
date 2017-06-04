@@ -41,17 +41,17 @@ public abstract class AuditedSchemaUpdaterStepBase extends SchemaUpdaterStepBase
         this.tableName = tableName;
     }
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		boolean result = true;
-		isAuditing = false;
-		result &= invokeOnTable(caseType.transformTo(tableName), datasource, monitor, caseType);
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        isAuditing = false;
+		invokeOnTable(caseType.transformTo(tableName), datasource, monitor, caseType, result);
 		if (includeAudTable){
 			String aud = "_AUD";
 			isAuditing = true;
-			result &= invokeOnTable(caseType.transformTo(tableName + aud), datasource, monitor, caseType);
+			invokeOnTable(caseType.transformTo(tableName + aud), datasource, monitor, caseType, result);
 		}
-		return (result == true )? 0 : null;
+		return;
 	}
 
 	/**
@@ -60,8 +60,10 @@ public abstract class AuditedSchemaUpdaterStepBase extends SchemaUpdaterStepBase
 	 * @param datasource the data source
 	 * @param monitor the monitor
 	 * @param caseType the caseType (in case other tables are also affected
+	 * @param result
 	 * @return
 	 */
-	protected abstract boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType);
+	protected abstract void invokeOnTable(String tableName, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result);
 
 }

@@ -205,9 +205,9 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
+	protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result)  {
 		try {
-			boolean result = true;
 			//CREATE
 			String updateQuery = "CREATE TABLE @tableName (";
 			//AUDIT
@@ -253,13 +253,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			datasource.executeUpdate(updateQuery);
 
 			//Foreign Keys
-			result &= createForeignKeys(tableName, isAuditing, datasource, monitor, caseType);
+			createForeignKeys(tableName, isAuditing, datasource, monitor, caseType, result);
 
-			return result;
+			return;
 		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);
 			logger.error(e);
-			return false;
+			result.addException(e, e.getMessage(), "TableCreator.invokeOnTable");
+			return;
 		}
 	}
 
@@ -280,45 +281,51 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	}
 
 
-	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
+	private void createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
 		if (includeCdmBaseAttributes){
 			//updatedBy
 		    if (! this.excludeVersionableAttributes){
 				String attribute = "updatedby";
 				String referencedTable = "UserAccount";
-				result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+				makeForeignKey(tableName, datasource, monitor, attribute,
+				        referencedTable, caseType, result);
 			}
 
 		    //createdBy
 			String attribute = "createdby";
 			String referencedTable = "UserAccount";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+			makeForeignKey(tableName, datasource, monitor, attribute,
+			        referencedTable, caseType, result);
 
 		}
 		if (isAudit){
 		    //REV
 			String attribute = "REV";
 			String referencedTable = "AuditEvent";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+			makeForeignKey(tableName, datasource, monitor, attribute,
+			        referencedTable, caseType, result);
 		}
 		if (this.includeEventBase){
 			//actor
 		    String attribute = "actor_id";
 			String referencedTable = "AgentBase";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+			makeForeignKey(tableName, datasource, monitor, attribute,
+			        referencedTable, caseType, result);
 		}
 		for (ColumnAdder adder : this.columnAdders){
 			if (adder.getReferencedTable() != null){
-				result &= makeForeignKey(tableName, datasource, monitor, adder.getNewColumnName(), adder.getReferencedTable(), caseType);
+				makeForeignKey(tableName, datasource, monitor, adder.getNewColumnName(),
+				        adder.getReferencedTable(), caseType, result);
 			}
 		}
-		return result;
+		return;
 	}
 
 
-    public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, String attribute, String referencedTable, CaseType caseType) {
-		boolean result = true;
+    public static void makeForeignKey(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, String attribute, String referencedTable, CaseType caseType,
+            SchemaUpdateResult result) {
 
 		referencedTable = caseType.transformTo(referencedTable);
 
@@ -359,21 +366,23 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 				String message = "Problem when creating Foreign Key for " + tableName +"." + attribute +": " + e.getMessage();
 				monitor.warning(message);
 				logger.warn(message, e);
-				return true;   //we do not interrupt update if only foreign key generation did not work
+				result.addWarning(message);
+				return;   //we do not interrupt update if only foreign key generation did not work
 			}
-			return result;
+			return;
 		}else{
 		    //create only index
 			IndexAdder indexAdder = IndexAdder.NewIntegerInstance("Add index instead of Foreign Key", tableName, columnName);
 			try {
-                indexAdder.invoke(datasource, monitor, caseType);
+                indexAdder.invoke(datasource, monitor, caseType, result);
             } catch (Exception e) {
                 String message = "Problem when creating index instead of Foreign Key for " + tableName +"." + columnName +": " + e.getMessage();
                 monitor.warning(message);
                 logger.warn(message, e);
-                return true;   //we do not interrupt update if only index generation did not work
+                result.addWarning(message);
+                return;   //we do not interrupt update if only index generation did not work
             }
-		    return result;
+		    return;
 		}
 	}
 

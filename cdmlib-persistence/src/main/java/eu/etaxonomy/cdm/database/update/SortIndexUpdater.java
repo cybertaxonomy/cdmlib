@@ -79,18 +79,18 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 		this.baseValue = baseValue;
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		boolean result = true;
-		result &= addColumn(tableName, datasource);
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+		addColumn(tableName, datasource, result);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= addColumn(caseType.transformTo(tableName + aud), datasource);
+			addColumn(caseType.transformTo(tableName + aud), datasource, result);
 		}
-		return (result == true )? 0 : null;
+		return;
 	}
 
-	private boolean addColumn( String tableName, ICdmDataSource datasource) throws SQLException {
+	private void addColumn( String tableName, ICdmDataSource datasource, SchemaUpdateResult result) throws SQLException {
 		//Note: caseType not required here
 	    Map<Integer, Set<Integer>> indexMap ;
 	    if (tableName == null){
@@ -99,7 +99,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	    indexMap = makeIndexMap(tableName, datasource);
 	    updateIndices(tableName, datasource, indexMap);
 
-		return true;
+		return;
 	}
 
 	public String createIndexMapQuery(){

@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.etaxonomy.cdm.common.IoResultBase;
+
 
 /**
  * @author cmathew

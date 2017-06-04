@@ -44,7 +44,8 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 
 
 	@Override
-	public abstract Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
+	public abstract void invoke (ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws SQLException;
 
 
 	@Override

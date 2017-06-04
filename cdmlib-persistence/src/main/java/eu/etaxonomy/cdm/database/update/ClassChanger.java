@@ -19,8 +19,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class ClassChanger
-       extends AuditedSchemaUpdaterStepBase
-       implements ISchemaUpdaterStep {
+       extends AuditedSchemaUpdaterStepBase{
 
     private static final Logger logger = Logger.getLogger(ClassChanger.class);
 
@@ -51,8 +50,8 @@ public class ClassChanger
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
+	protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
 		try {
 			if (true){
 				String updateQuery = getDtypeUpdateQueryString(tableName, datasource, monitor);
@@ -70,11 +69,13 @@ public class ClassChanger
 //				updateIdentifiables(tableName, datasource, monitor, caseType);
 //			}
 
-			return result;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
+		    String message = "Unhandled exception " + e.getMessage() + " in invokeOnTable";
+			monitor.warning(message, e);
 			logger.error(e);
-			return false;
+			result.addException(e, message, "ClassChanger.invokeOnTable");
+			return;
 		}
 	}
 

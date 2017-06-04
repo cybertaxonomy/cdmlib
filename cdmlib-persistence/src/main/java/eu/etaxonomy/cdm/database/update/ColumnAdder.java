@@ -85,10 +85,11 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 		return this;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
-		try {
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+
+        try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
 
@@ -106,14 +107,16 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 				logger.warn("Default Value not implemented for type " + defaultValue.getClass().getName());
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType);
+				TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType, result);
 			}
-
-			return result;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
+		    String message = "Unhandled exception when trying to add column " +
+		            newColumnName + " for table " +  tableName;
+			monitor.warning(message, e);
 			logger.error(e);
-			return false;
+			result.addException(e, message, getStepName());
+			return;
 		}
 	}
 

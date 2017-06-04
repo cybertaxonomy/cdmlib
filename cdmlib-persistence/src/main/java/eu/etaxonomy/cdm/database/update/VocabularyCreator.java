@@ -60,15 +60,18 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 
 // ******************************* METHODS *************************************************/
 
-	@Override
-    public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
-		ResultSet rs;
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        ResultSet rs;
 
 		String sqlCheckTermExists = " SELECT count(*) as n FROM @@TermVocabulary@@ WHERE uuid = '" + uuidVocabulary + "'";
 		Long n = (Long)datasource.getSingleValue(caseType.replaceTableNames(sqlCheckTermExists));
 		if (n != 0){
-			monitor.warning("Vocabulary already exists: " + label + "(" + uuidVocabulary + ")");
-			return null;
+		    String message = "Vocabulary already exists: " + label + "(" + uuidVocabulary + ")";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+			return;
 		}
 
 
@@ -79,9 +82,10 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		if (rs.next()){
 			vocId = rs.getInt("maxId");
 		}else{
-			String warning = "No vocabularies do exist yet. Can't create vocabulary!";
-			monitor.warning(warning);
-			return null;
+			String message = "No vocabularies do exist yet. Can't create vocabulary!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+            return;
 		}
 
 
@@ -108,9 +112,10 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		if (rs.next()){
 			langId = rs.getInt("id");
 		}else{
-			String warning = "Term for default language (English) not  does not exist!";
-			monitor.warning(warning);
-			return null;
+			String message = "Term for default language (English) not  does not exist!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+            return;
 		}
 
 		//representation
@@ -120,9 +125,10 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		if (rs.next()){
 			repId = rs.getInt("maxId");
 		}else{
-			String warning = "No representations do exist yet. Can't update terms!";
-			monitor.warning(warning);
-			return null;
+			String message = "No representations do exist yet. Can't update terms!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+            return;
 		}
 
 		UUID uuidRepresentation = UUID.randomUUID();
@@ -137,7 +143,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 
 		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertMN));
 
-		return vocId;
+		return;
 	}
 
 

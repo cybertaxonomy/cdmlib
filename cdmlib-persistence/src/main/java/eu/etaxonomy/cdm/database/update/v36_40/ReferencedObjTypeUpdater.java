@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -144,8 +145,9 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase implements I
 		super(stepName);
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 	    //TODO should better be read from eu.etaxonomy.cdm.model.common.package-info @AnyMetaDef
 		try {
@@ -252,12 +254,14 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase implements I
 			    updateSingleClass(datasource, monitor, caseType, annotatableClass);
 			}
 
-			return 0;
+			return;
 
 		} catch (Exception e) {
-			monitor.warning(e.getMessage(), e);
-			logger.warn(e.getMessage());
-			return null;
+		    String message = e.getMessage();
+            monitor.warning(message, e);
+            logger.warn(message);
+            result.addException(e, message, this, "invoke");
+            return;
 		}
 	}
 

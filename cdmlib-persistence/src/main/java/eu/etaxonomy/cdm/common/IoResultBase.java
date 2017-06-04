@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.common;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class IoResultBase implements Serializable{
 
     private static final long serialVersionUID = -2077936463767046918L;
+
     private List<IoInfo> errors = new ArrayList<>();
     private List<IoInfo> warnings = new ArrayList<>();
     private List<IoInfo> exceptions = new ArrayList<>();

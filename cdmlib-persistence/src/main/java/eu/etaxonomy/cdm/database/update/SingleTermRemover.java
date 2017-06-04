@@ -60,57 +60,65 @@ public class SingleTermRemover
 		this.checkUsedQueries = checkUsedQueries;
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
- 		//get term id
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        //get term id
 		String sql = " SELECT id FROM %s WHERE uuid = '%s'";
 		Integer id = (Integer)datasource.getSingleValue(String.format(sql,
 				caseType.transformTo("DefinedTermBase"), this.uuidTerm));
 		if (id == null || id == 0){
-			return 0;
+			return;
 		}
 
 		//check if in use
 		if (checkTermInUse(datasource, monitor, id, caseType)){
-			return 0;
+			return;
 		}
 
 		//if not ... remove
-		removeTerm(datasource, monitor, id, caseType);
+		removeTerm(datasource, monitor, id, caseType, result);
 
-		return 0;
+		return;
 	}
 
-	private void removeTerm(ICdmDataSource datasource, IProgressMonitor monitor, int id, CaseType caseType) throws SQLException {
+	private void removeTerm(ICdmDataSource datasource, IProgressMonitor monitor, int id,
+	        CaseType caseType, SchemaUpdateResult result) {
 
-		//get representation ids
-		List<Integer> repIDs = new ArrayList<Integer>();
-		getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation", caseType );
-		getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation", caseType);
+		try {
+            //get representation ids
+            List<Integer> repIDs = new ArrayList<>();
+            getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation", caseType );
+            getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation", caseType);
 
-		//remove MN table
-		String sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
-		sql = String.format(sql, caseType.transformTo("DefinedTermBase_Representation"), id);
-		datasource.executeUpdate(sql);
-		sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
-		sql = String.format(sql, caseType.transformTo("RelationshipTermBase_inverseRepresentation"), id);
-		datasource.executeUpdate(sql);
+            //remove MN table
+            String sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
+            sql = String.format(sql, caseType.transformTo("DefinedTermBase_Representation"), id);
+            datasource.executeUpdate(sql);
+            sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
+            sql = String.format(sql, caseType.transformTo("RelationshipTermBase_inverseRepresentation"), id);
+            datasource.executeUpdate(sql);
 
-		//remove representations
-		for (Integer repId : repIDs){
-			sql = " DELETE FROM %s WHERE id = %d ";
-			sql = String.format(sql,
-					caseType.transformTo("Representation"),
-					repId);
-			datasource.executeUpdate(sql);
-		}
+            //remove representations
+            for (Integer repId : repIDs){
+            	sql = " DELETE FROM %s WHERE id = %d ";
+            	sql = String.format(sql,
+            			caseType.transformTo("Representation"),
+            			repId);
+            	datasource.executeUpdate(sql);
+            }
 
-		//remove term
-		sql = " DELETE FROM %s WHERE id = %d";
-		sql = String.format(sql,
-				caseType.transformTo("DefinedTermBase"),
-				id);
-		datasource.executeUpdate(sql);
+            //remove term
+            sql = " DELETE FROM %s WHERE id = %d";
+            sql = String.format(sql,
+            		caseType.transformTo("DefinedTermBase"),
+            		id);
+            datasource.executeUpdate(sql);
+        } catch (SQLException e) {
+            String message = e.getMessage();
+            monitor.warning(message, e);
+            result.addException(e, message, this, "removeTerm");
+        }
 	}
 
 	private void getRepIds(ICdmDataSource datasource, int id,

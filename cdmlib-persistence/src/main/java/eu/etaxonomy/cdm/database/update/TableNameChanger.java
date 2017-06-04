@@ -41,20 +41,23 @@ public class TableNameChanger
 		this.includeAudTable = includeAudTable;
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		boolean result = true;
-		result &= invokeOnTable(caseType.transformTo(oldName), caseType.transformTo(newName), datasource, monitor);
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+		invokeOnTable(caseType.transformTo(oldName), caseType.transformTo(newName),
+		        datasource, monitor, result);
 		updateHibernateSequence(datasource, monitor, newName, oldName); //no result&= as hibernateSequence problems may not lead to a complete fail
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= invokeOnTable(caseType.transformTo(oldName + aud), caseType.transformTo(newName + aud), datasource, monitor);
+			invokeOnTable(caseType.transformTo(oldName + aud), caseType.transformTo(newName + aud),
+			        datasource, monitor, result);
 		}
-		return (result == true )? 0 : null;
+		return;
 	}
 
 	//does not support AuditedSchemaUpdaterStepBase signature
-	private boolean invokeOnTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private void invokeOnTable(String oldName, String newName, ICdmDataSource datasource,
+	        IProgressMonitor monitor, SchemaUpdateResult result) {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.MySQL)){
@@ -66,8 +69,10 @@ public class TableNameChanger
 			updateQuery = "EXEC sp_rename '@oldName', '@newName'";
 		}else{
 			updateQuery = null;
-			monitor.warning("Update step '" + this.getStepName() + "' is not supported by " + type.getName());
-			return false;
+			String message ="Update step '" + this.getStepName() + "' is not supported by " + type.getName();
+			monitor.warning(message);
+			result.addError(message, getStepName() + ", TableNameChanger.invokeOnTable");
+            return;
 		}
 		updateQuery = updateQuery.replace("@oldName", oldName);
 		updateQuery = updateQuery.replace("@newName", newName);
@@ -77,9 +82,10 @@ public class TableNameChanger
 			String message = "Could not perform rename table operation";
 			monitor.warning("Could not perform rename table operation", e);
 			logger.warn(message+ ": "  + e.getMessage());
-			return false;
+			result.addException(e, message, getStepName() + ", TableNameChanger.invokeOnTable");
+			return;
 		}
-		return true;
+		return;
 	}
 
 	/**

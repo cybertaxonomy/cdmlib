@@ -45,10 +45,10 @@ public class TreeIndexUpdater
 		this.indexColumnName = indexColumnName == null ? this.indexColumnName : indexColumnName;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		try{
-			boolean result = true;
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try{
 
 	//		String charType = "CHAR";  //TODO may depend on database type
 
@@ -129,13 +129,16 @@ public class TreeIndexUpdater
 			if (n > 0){
 				String message = "There are tree nodes with no tree index in %s. This indicates that there is a problem in the tree structure of 1 or more classifications.";
 				logger.error(String.format(message, tableName));
+				result.addWarning(message, getStepName() + ", TreeIndexUpdater.invokeOnTable");
 			}
 
-			return result;
+			return;
 		}catch(Exception e){
-			monitor.warning(e.getMessage(), e);
-			logger.error(e.getMessage());
-			return false;
+		    String message = e.getMessage();
+			monitor.warning(message, e);
+			logger.error(message);
+			result.addException(e, message, getStepName() + ", TreeIndexUpdater.invokeOnTable");
+			return;
 		}
 	}
 

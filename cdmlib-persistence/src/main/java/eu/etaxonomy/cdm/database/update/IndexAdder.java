@@ -54,25 +54,27 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 		this.length = length;
 	}
 
-
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		//remove 2-fold constraint
-		boolean result= true;
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        //remove 2-fold constraint
 //		result &= removeExistingConstraint(datasource, caseType);
-		result &= createColumnConstraint(datasource, caseType);
-		return result ? 1 : null;
+		createColumnConstraint(datasource, caseType, result);
+		return;
 	}
 
-	private boolean createColumnConstraint(ICdmDataSource datasource, CaseType caseType) {
+	private void createColumnConstraint(ICdmDataSource datasource,
+	        CaseType caseType, SchemaUpdateResult result) {
 		try {
 		    String constraintName = StringUtils.uncapitalize(tableName) + columnName + "Index";
 			String updateQuery = getCreateQuery(datasource, caseType, tableName, constraintName, columnName);
 			datasource.executeUpdate(updateQuery);
-			return true;
+			return;
 		} catch (Exception e) {
-			logger.warn("Unique index for " + columnName + " could not be created");
-			return false;
+		    String message = "Unique index for " + columnName + " could not be created";
+			logger.warn(message);
+			result.addException(e, message, "IndexAdder.createColumnConstraint");
+			return;
 		}
 	}
 

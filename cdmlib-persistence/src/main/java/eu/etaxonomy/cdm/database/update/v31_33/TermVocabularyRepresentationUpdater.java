@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -51,7 +52,8 @@ public class TermVocabularyRepresentationUpdater
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+	public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 		try {
 			String sql = String.format(
@@ -98,11 +100,13 @@ public class TermVocabularyRepresentationUpdater
 				datasource.executeUpdate(sql);
 			}
 
-			return 0;
+			return;
 		} catch (Exception e) {
-			monitor.warning(e.getMessage(), e);
-			logger.warn(e.getMessage());
-			return null;
+		    String message = e.getMessage();
+            monitor.warning(message, e);
+            logger.warn(message);
+            result.addException(e, message, this, "invoke");
+            return;
 		}
 	}
 
