@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
-import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
@@ -140,40 +139,6 @@ public class CdmUpdaterTest {
 
 		//test correct schema version string
 		Assert.assertEquals(CdmMetaData.getDbSchemaVersion(), currentUpdater.getTargetVersion());
-	}
-
-	@Test
-	public void testRecursiveCallTermUpdater(){
-		CdmUpdater updater = new CdmUpdater();
-		ITermUpdater currentUpdater = null;
-		try {
-			Method method =  CdmUpdater.class.getDeclaredMethod("getCurrentTermUpdater");
-			method.setAccessible(true);
-			currentUpdater = (ITermUpdater)method.invoke(updater);
-		} catch (Exception e) {
-			Assert.fail("CdmUpdater.getCurrentTermUpdater not found:" + e.getMessage());;
-		}
-		Assert.assertNotNull("Current Updater must not be null", currentUpdater);
-		ITermUpdater lastUpdater = null;
-		ITermUpdater tmpUpdater = currentUpdater;
-		int i = 0;
-		//get very first term updater available (= TermUpdater_24_25) by recursive call to getPreviousUpdater
-		while (tmpUpdater.getPreviousUpdater() != null && i++<1000){
-			tmpUpdater = tmpUpdater.getPreviousUpdater();
-			lastUpdater = tmpUpdater;
-		}
-
-		Assert.assertEquals(TermUpdater_24_25.class, lastUpdater.getClass());
-
-		i = 0;
-		while (tmpUpdater.getNextUpdater() != null && i++<1000){
-			tmpUpdater = tmpUpdater.getNextUpdater();
-			lastUpdater = tmpUpdater;
-		}
-		Assert.assertEquals("Current term updater not found by recursive call firstUpdater.getNextUpdater()", currentUpdater.getClass(), lastUpdater.getClass());
-
-		//test correct schema version string
-		Assert.assertEquals(CdmMetaData.getTermsVersion(), currentUpdater.getTargetVersion());
 	}
 
 }
