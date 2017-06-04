@@ -21,9 +21,12 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 /**
  * Common updater base class for updating schema or terms.
  *
+ * Note: prior to v4.8 this was a common base class for {@link SchemaUpdaterBase}
+ * and term updater. Since v4.8 we do not have a term updater anymore.
+ * Therefore in future this class could be merged with {@link SchemaUpdaterBase}
+ *
  * @see CdmUpdater
  * @see ISchemaUpdater
- * @see ITermUpdater
  *
  * @author a.mueller
  * @date 16.11.2010
@@ -32,7 +35,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>>
             implements IUpdater<U> {
 
-	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
+	private static final Logger logger = Logger.getLogger(UpdaterBase.class);
 
 	protected List<T> list;
 	protected String startVersion;
