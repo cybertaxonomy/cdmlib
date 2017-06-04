@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,16 +20,16 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @date 15.12.2010
  */
-public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpdater> implements ITermUpdaterStep{
+public class LanguageLabelUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LanguageLabelUpdater.class);
 
 	private static final String stepName = "Update language labels by full language name";
-	
+
 // **************************** STATIC METHODS ********************************/
 
 	public static final LanguageLabelUpdater NewInstance(){
-		return new LanguageLabelUpdater(stepName);	
+		return new LanguageLabelUpdater(stepName);
 	}
 
 	protected LanguageLabelUpdater(String stepName) {
@@ -38,11 +38,11 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpd
 
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
-		
+
 		try {
 			//update representation label
 			String sql;
-			sql = " UPDATE @@Representation@@ " + 
+			sql = " UPDATE @@Representation@@ " +
 				" SET label = text " +
 				" WHERE id IN ( SELECT MN.representations_id " +
 					" FROM @@DefinedTermBase@@ lang " +
@@ -50,15 +50,15 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpd
 					" WHERE lang.DTYPE = 'Language' " +
 					" )";
 			datasource.executeUpdate(caseType.replaceTableNames(sql));
-			
+
 			//update term titleCache
-			sql = " UPDATE @@DefinedTermBase@@ dtb " + 
-				  " SET titleCache = " +  
+			sql = " UPDATE @@DefinedTermBase@@ dtb " +
+				  " SET titleCache = " +
 						" ( " +
 						" SELECT rep.label  " +
-						" FROM @@DefinedTermBase_Representation@@ MN " + 
+						" FROM @@DefinedTermBase_Representation@@ MN " +
 						" INNER JOIN @@Representation@@ rep ON MN.representations_id = rep.id " +
-						" WHERE dtb.id = MN.DefinedTermBase_id AND rep.language_id = @langId) " + 
+						" WHERE dtb.id = MN.DefinedTermBase_id AND rep.language_id = @langId) " +
 					" WHERE dtb.DTYPE = 'Language'";
 			String englishId = String.valueOf(getEnglishLanguageId(datasource, monitor, caseType));
 			if (englishId == null){
@@ -66,7 +66,7 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpd
 			}
 			sql = sql.replace("@langId", englishId);
 			datasource.executeUpdate(caseType.replaceTableNames(sql));
-			
+
 			return 0;
 		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);
@@ -75,5 +75,5 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpd
 		}
 	}
 
-	
+
 }

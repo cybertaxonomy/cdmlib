@@ -22,8 +22,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 2015-03-20
  * @author a.mueller
  */
-public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase<ClassBaseTypeUpdater> {
-	@SuppressWarnings("unused")
+public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
 
 	private final boolean includeIdentifiableEntity;

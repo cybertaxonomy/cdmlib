@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
  * @date 16.09.2010
  *
  */
-public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> {
+public class IndexAdder extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(IndexAdder.class);
 
 	private String tableName;

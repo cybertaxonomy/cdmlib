@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,41 +23,44 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * TODO does not yet check all DefinedTermBase_XXX tables except for representations.
  * TODO Does also not handle AUD tables
  * TODO Does not handle orderindex
- * 
+ *
  * @author a.mueller
  * @date 06.09.2013
  *
  */
-public class TermMover extends SchemaUpdaterStepBase<TermMover> implements ITermUpdaterStep{
-	private static final Logger logger = Logger.getLogger(TermMover.class);
-	
+public class TermMover
+            extends SchemaUpdaterStepBase
+            implements ITermUpdaterStep{
+
+    private static final Logger logger = Logger.getLogger(TermMover.class);
+
 	public static final TermMover NewInstance(String stepName, UUID newVocabulary, String uuidTerm){
 		List<String> terms = new ArrayList<String>();
 		terms.add(uuidTerm);
-		return new TermMover(stepName, newVocabulary, terms);	
+		return new TermMover(stepName, newVocabulary, terms);
 	}
-	
+
 
 	public static final TermMover NewInstance(String stepName, UUID newVocabulary, List<String> terms){
-		return new TermMover(stepName, newVocabulary, terms);	
+		return new TermMover(stepName, newVocabulary, terms);
 	}
-	
-	
+
+
 	private String uuidNewVocabulary ;
 	private List<String> termUuids = new ArrayList<String>();
-	
+
 
 	private TermMover(String stepName, UUID newVocabulary, List<String> terms) {
 		super(stepName);
 		this.uuidNewVocabulary = newVocabulary.toString();
-		this.termUuids = terms; 
+		this.termUuids = terms;
 	}
 
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
  		//get new vocabulary id
 		String sql = " SELECT id FROM %s WHERE uuid = '%s'";
-		Integer id = (Integer)datasource.getSingleValue(String.format(sql, 
+		Integer id = (Integer)datasource.getSingleValue(String.format(sql,
 				caseType.transformTo("TermVocabulary") , this.uuidNewVocabulary));
 		if (id == null || id == 0){
 			String messageString = "New vocabulary ("+uuidNewVocabulary+") does not exist. Can't move terms";
@@ -65,14 +68,14 @@ public class TermMover extends SchemaUpdaterStepBase<TermMover> implements ITerm
 			logger.warn(messageString);
 			return null;
 		}
-		
+
 		//check if in use
 		for (String uuid : this.termUuids){
 			sql = " UPDATE %s SET vocabulary_id = %d WHERE uuid = '%s' ";
 			sql = String.format(sql, caseType.transformTo("DefinedTermBase"), id, uuid);
 			datasource.executeUpdate(sql);
 		}
-		
+
 		return 0;
 	}
 
@@ -80,7 +83,7 @@ public class TermMover extends SchemaUpdaterStepBase<TermMover> implements ITerm
 		this.termUuids.add(uuid.toString());
 		return this;
 	}
-	
+
 
 
 }

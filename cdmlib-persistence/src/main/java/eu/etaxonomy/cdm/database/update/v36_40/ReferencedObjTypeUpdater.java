@@ -129,7 +129,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @date 25.04.2016
  */
-public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedObjTypeUpdater> implements ITermUpdaterStep{
+public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
 	private static final Logger logger = Logger.getLogger(ReferencedObjTypeUpdater.class);
 
 	private static final String stepName = "Update referenced obj_type";

@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeChanger> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
+public class ColumnTypeChanger
+        extends AuditedSchemaUpdaterStepBase {
+
+    private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
 
 	private final String columnName;
 	private final String newColumnType;

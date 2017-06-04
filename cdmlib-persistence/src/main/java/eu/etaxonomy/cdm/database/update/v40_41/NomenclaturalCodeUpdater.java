@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @author a.mueller
  * @date 13.10.2016
  */
-public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase<NomenclaturalCodeUpdater> implements ITermUpdaterStep{
+public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
     private static final Logger logger = Logger.getLogger(NomenclaturalCodeUpdater.class);
 
 	private static final String stepName = "Update nomenclatural code";

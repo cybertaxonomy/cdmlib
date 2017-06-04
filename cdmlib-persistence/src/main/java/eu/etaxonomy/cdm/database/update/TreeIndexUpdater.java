@@ -20,8 +20,11 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  * @date 09.08.2013
  *
  */
-public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpdater> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
+public class TreeIndexUpdater
+        extends AuditedSchemaUpdaterStepBase
+        implements ISchemaUpdaterStep {
+
+    private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
 
 	private String indexColumnName = "treeIndex";
 	private final String treeIdColumnName;

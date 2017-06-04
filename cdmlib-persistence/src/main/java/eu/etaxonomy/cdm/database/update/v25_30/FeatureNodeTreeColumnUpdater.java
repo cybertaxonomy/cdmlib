@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,17 +24,17 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 16.09.2010
  *
  */
-public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureNodeTreeColumnUpdater> implements ISchemaUpdaterStep {
+public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(FeatureNodeTreeColumnUpdater.class);
-	
+
 	private String treeTableName;
 	private String nodeTableName;
 	private boolean includeAudTable;
-	
+
 	public static final FeatureNodeTreeColumnUpdater NewInstance(String stepName, boolean includeAudTable){
 		return new FeatureNodeTreeColumnUpdater(stepName, includeAudTable);
 	}
-	
+
 	protected FeatureNodeTreeColumnUpdater(String stepName,  boolean includeAudTable) {
 		super(stepName);
 		this.treeTableName = "FeatureTree";
@@ -57,7 +57,7 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 		try{
 			String resulsetQuery = "SELECT id, root_id FROM @treeTableName ORDER BY id";
 			resulsetQuery = resulsetQuery.replace("@treeTableName", treeTableName);
-	
+
 			ResultSet rs = datasource.executeQuery(resulsetQuery);
 			while (rs.next()){
 				Integer treeId = rs.getInt("id");
@@ -67,8 +67,8 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 				updateQuery = updateQuery.replace("@treeId", treeId.toString());
 				updateQuery = updateQuery.replace("@rootId", rootId.toString());
 				datasource.executeUpdate(updateQuery);
-			}	
-			
+			}
+
 			String countQuery = "SELECT count(*) FROM @nodeTableName WHERE featuretree_id IS NULL";
 			countQuery = countQuery.replace("@nodeTableName", nodeTableName);
 			Long countMissingTrees = (Long)datasource.getSingleValue(countQuery);
@@ -78,7 +78,7 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 						"SET child.featuretree_id = parent.featuretree_id WHERE child.featuretree_id IS NULL";
 				updateQuery = updateQuery.replace("@nodeTableName", nodeTableName);
 	//			updateQuery = updateQuery.replace("@treeId", treeId.toString());
-					
+
 				datasource.executeUpdate(updateQuery);
 				Long oldCountMissingTrees = countMissingTrees;
 				countMissingTrees = (Long)datasource.getSingleValue(countQuery);

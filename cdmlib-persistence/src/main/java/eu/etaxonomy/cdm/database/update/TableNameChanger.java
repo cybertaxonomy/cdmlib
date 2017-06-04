@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,17 +21,19 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(TableNameChanger.class);
-	
+public class TableNameChanger
+            extends SchemaUpdaterStepBase{
+
+    private static final Logger logger = Logger.getLogger(TableNameChanger.class);
+
 	private String oldName;
 	private String newName;
 	private boolean includeAudTable;
-	
+
 	public static final TableNameChanger NewInstance(String stepName, String oldName, String newName, boolean includeAudTable){
 		return new TableNameChanger(stepName, oldName, newName, includeAudTable);
 	}
-	
+
 	protected TableNameChanger(String stepName, String oldName, String newName, boolean includeAudTable) {
 		super(stepName);
 		this.oldName = oldName;
@@ -81,7 +83,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 	}
 
 	/**
-	 * 
+	 *
 	 * @param datasource
 	 * @param monitor
 	 * @param table
@@ -91,7 +93,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 	private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor, String newName, String oldName){
 		try{
 			//TODO do we need to "case" this table name?
-			String sql = " UPDATE hibernate_sequences SET sequence_name = '%s' WHERE sequence_name = '%s'";	
+			String sql = " UPDATE hibernate_sequences SET sequence_name = '%s' WHERE sequence_name = '%s'";
 			datasource.executeUpdate(String.format(sql, newName ,oldName));
 			return true;
 		} catch (Exception e) {
@@ -100,7 +102,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 			logger.error(message);
 			return false;
 		}
-		
+
 	}
 
 }

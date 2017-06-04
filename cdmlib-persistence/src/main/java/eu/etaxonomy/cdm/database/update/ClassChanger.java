@@ -18,8 +18,11 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(ClassChanger.class);
+public class ClassChanger
+       extends AuditedSchemaUpdaterStepBase
+       implements ISchemaUpdaterStep {
+
+    private static final Logger logger = Logger.getLogger(ClassChanger.class);
 
 	private final String newClassName;
 	private final String[] oldClassNames;

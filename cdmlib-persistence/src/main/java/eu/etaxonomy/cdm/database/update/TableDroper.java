@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(TableDroper.class);
+public class TableDroper
+        extends AuditedSchemaUpdaterStepBase{
+
+    private static final Logger logger = Logger.getLogger(TableDroper.class);
 
 	private boolean ifExists = true;
 

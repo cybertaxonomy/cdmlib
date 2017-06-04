@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,15 +32,18 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
  * @author a.mueller
  * @date 15.12.2013
  */
-public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<TermVocabularyRepresentationUpdater> implements ITermUpdaterStep{
-	private static final Logger logger = Logger.getLogger(TermVocabularyRepresentationUpdater.class);
+public class TermVocabularyRepresentationUpdater
+            extends SchemaUpdaterStepBase
+            implements ITermUpdaterStep{
 
-	private static final String stepName = "Update term vocabulary representations";
-	
+    private static final Logger logger = Logger.getLogger(TermVocabularyRepresentationUpdater.class);
+
+    private static final String stepName = "Update term vocabulary representations";
+
 // **************************** STATIC METHODS ********************************/
 
 	public static final TermVocabularyRepresentationUpdater NewInstance(){
-		return new TermVocabularyRepresentationUpdater(stepName);	
+		return new TermVocabularyRepresentationUpdater(stepName);
 	}
 
 	protected TermVocabularyRepresentationUpdater(String stepName) {
@@ -49,7 +52,7 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		
+
 		try {
 			String sql = String.format(
 					" SELECT id " +
@@ -57,8 +60,8 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 					" WHERE dtb.uuid = '%s'",
 					 caseType.transformTo("DefinedTermBase"),
 					 Language.uuidEnglish);
-			String languageId = String.valueOf((Number)datasource.getSingleValue(sql));
-			
+			String languageId = String.valueOf(datasource.getSingleValue(sql));
+
 			//for each vocabulary
 			for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
 				//read vocabulary from terms files
@@ -67,13 +70,13 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 				String [] nextLine = reader.readNext();
 				TermVocabulary<?> voc = TermVocabulary.NewInstance(TermType.Unknown);
 				voc.readCsvLine(arrayedLine(nextLine));
-				
+
 				//get uuid, label and description for the vocabulary
 				UUID uuid = voc.getUuid();
 				Representation repEN = voc.getRepresentations().iterator().next();
 				String label = repEN.getLabel();
 				String description = repEN.getText();
-				
+
 				//find representation in database
 				sql = caseType.replaceTableNames(
 						" SELECT rep.uuid " +
@@ -83,18 +86,18 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 						" WHERE voc.uuid = '%s' AND rep.language_id = %s");
 				sql = String.format(sql, uuid.toString(), languageId);
 				String repUuid = (String)datasource.getSingleValue(sql);
-				
+
 				//update with correct label and representation
 				sql = " UPDATE %s SET label = '%s', text = '%s' WHERE uuid = '%s'";
 				sql = String.format(sql, caseType.transformTo("Representation"), label, description, repUuid);
-				
+
 				//update vocabulary titleCache
 				sql = " UPDATE %s SET titleCache = '%s' WHERE uuid = '%s'";
 				sql = String.format(sql, caseType.transformTo("TermVocabulary"), label, uuid);
-				
+
 				datasource.executeUpdate(sql);
-			}	
-			
+			}
+
 			return 0;
 		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);
@@ -102,7 +105,7 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 			return null;
 		}
 	}
-	
+
 	private List<String> arrayedLine(String [] nextLine){
 		ArrayList<String> csvTermAttributeList = new ArrayList<String>(8);
 		for (String col : nextLine){
@@ -114,5 +117,5 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 		return csvTermAttributeList;
 	}
 
-	
+
 }

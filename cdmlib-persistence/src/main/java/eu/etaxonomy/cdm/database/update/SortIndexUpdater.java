@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.mueller
  * @date 16.09.2010
  */
-public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> {
+public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
 
 	private final String tableName;

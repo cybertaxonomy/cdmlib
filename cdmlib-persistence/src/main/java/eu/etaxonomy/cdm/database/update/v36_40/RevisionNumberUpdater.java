@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @date 25.04.2016
  */
-public class RevisionNumberUpdater extends SchemaUpdaterStepBase<RevisionNumberUpdater> implements ITermUpdaterStep{
+public class RevisionNumberUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
 
 
 // **************************** STATIC METHODS ********************************/

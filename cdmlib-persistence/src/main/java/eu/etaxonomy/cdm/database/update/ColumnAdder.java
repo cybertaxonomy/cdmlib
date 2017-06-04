@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> {
+public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
 
 	private final String newColumnName;

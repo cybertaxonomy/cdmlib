@@ -27,7 +27,10 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 14.11.2016
  *
  */
-public class SynonymDeduplicator extends SchemaUpdaterStepBase<SynonymDeduplicator> implements ITermUpdaterStep{
+public class SynonymDeduplicator
+            extends SchemaUpdaterStepBase
+            implements ITermUpdaterStep{
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(SynonymDeduplicator.class);
 

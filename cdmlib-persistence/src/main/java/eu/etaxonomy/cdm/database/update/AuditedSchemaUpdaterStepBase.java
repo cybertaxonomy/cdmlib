@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  * @param <T>
  */
-public abstract class AuditedSchemaUpdaterStepBase<T extends AuditedSchemaUpdaterStepBase<T>> extends SchemaUpdaterStepBase<T> implements ISchemaUpdaterStep {
+public abstract class AuditedSchemaUpdaterStepBase extends SchemaUpdaterStepBase {
 
 	protected String tableName;
 	protected boolean includeAudTable;

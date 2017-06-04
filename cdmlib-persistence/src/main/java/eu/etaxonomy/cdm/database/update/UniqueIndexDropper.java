@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndexDropper> {
+public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(UniqueIndexDropper.class);
 

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.mueller
  * @date 2015-05-21
  */
-public class MnTableRemover extends AuditedSchemaUpdaterStepBase<TableCreator> implements ISchemaUpdaterStep {
+public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
 
 	private final String fkColumnName;  //new column in child table which points to the parent table
 	private final String mnParentFkColumnName;  //column in MN table which points to the parent table

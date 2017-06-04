@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
  * @date 21.05.2017
  *
  */
-public class InitialsUpdater extends SchemaUpdaterStepBase<InitialsUpdater> implements ITermUpdaterStep{
+public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(InitialsUpdater.class);
 
