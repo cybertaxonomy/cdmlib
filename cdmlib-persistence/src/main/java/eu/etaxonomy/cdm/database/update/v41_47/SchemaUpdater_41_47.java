@@ -67,8 +67,14 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
-	    //#6600 remove Unique indexes from Rights MN tables
+	    //#6600 remove unique indexes from Rights MN tables
         removeUniqueIndexForRights(stepList);
+
+        //#5149 remove unique index on Sequence_Reference.citations_id
+        tableName = "Sequence_Reference";
+        String columnName = "citations_id";
+        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
+        stepList.add(step);
 
 
         //#6340 nom status invalid updater
