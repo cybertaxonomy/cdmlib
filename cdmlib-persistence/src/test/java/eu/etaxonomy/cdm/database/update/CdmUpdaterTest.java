@@ -116,7 +116,8 @@ public class CdmUpdaterTest {
 
 			currentUpdater = (ISchemaUpdater)method.invoke(updater);
 		} catch (Exception e) {
-			Assert.fail("CdmUpdater.getCurrentSchemaUpdater not found:" + e.getMessage());;
+			Assert.fail("CdmUpdater.getCurrentSchemaUpdater not found:" + e.getMessage());
+			return;
 		}
 		ISchemaUpdater lastUpdater = null;
 		ISchemaUpdater tmpUpdater = currentUpdater;
