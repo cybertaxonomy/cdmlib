@@ -47,9 +47,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             e.printStackTrace();
         }
 
-        File pwd = new File("pom.xml");
-
-
+//        File pwd = new File("pom.xml");
 //        System.err.println(pwd.getAbsolutePath());
     }
 
@@ -78,9 +76,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             }
         }
 
-        File pwd = new File("pom.xml");
-
-
+//        File pwd = new File("pom.xml");
 //        System.err.println(pwd.getAbsolutePath());
     }
 
