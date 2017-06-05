@@ -71,6 +71,10 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         removeUniqueIndexForRights(stepList);
 
 
+        //#6340 nom status invalid updater
+        step = NomStatusInvalidUpdater.NewInstance();
+        stepList.add(step);
+
 		//#6529
 		//Extend WorkingSet to allow a more fine grained definiton of taxon set
 		//min rank

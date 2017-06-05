@@ -74,7 +74,7 @@ public class SchemaUpdateResult extends IoResultBase{
     @Override
     public StringBuffer createReport() {
         boolean isSuccess = isSuccess();
-        String strSuccess = "Schemaupdate ended " +  (isSuccess ? "successful" : "with errors");
+        String strSuccess = "Schema-Update ended " +  (isSuccess ? "successful" : "with errors");
         StringBuffer superReport = super.createReport();
         superReport.insert(0, strSuccess + "\n");
         return superReport;
