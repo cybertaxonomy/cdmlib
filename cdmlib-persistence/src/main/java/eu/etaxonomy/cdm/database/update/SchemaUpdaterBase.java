@@ -40,9 +40,6 @@ public abstract class SchemaUpdaterBase
 	protected static final boolean IS_M_TO_M = false;
 
 
-//	private List<ISchemaUpdaterStep> list;
-
-
 	protected abstract List<ISchemaUpdaterStep> getUpdaterList();
 
 
@@ -90,6 +87,4 @@ public abstract class SchemaUpdaterBase
 			throw e;
 		}
 	}
-
-
 }

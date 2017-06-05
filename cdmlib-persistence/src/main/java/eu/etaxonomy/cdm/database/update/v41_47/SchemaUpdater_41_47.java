@@ -125,7 +125,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         String[] columnNames = new String[]{"identifier","specificIdentifier","registrationDate","status",
                 "institution_id","name_id","submitter_id"};
         String[] referencedTables = new String[]{null, null, null, null,
-                "AgentBase","TaxonNameBase","User"};
+                "AgentBase","TaxonNameBase","UserAccount"};
         String[] columnTypes = new String[]{"string_255","string_255","datetime","string_10","int","int","int"};
         step = TableCreator.NewAnnotatableInstance(stepName, tableName,
                 columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);

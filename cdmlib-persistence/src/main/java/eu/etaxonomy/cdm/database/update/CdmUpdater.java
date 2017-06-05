@@ -90,21 +90,6 @@ public class CdmUpdater {
         CaseType caseType = CaseType.caseTypeOfDatasource(datasource);
 
         ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
-        try {
-            String dbSchemaVersion = datasource.getDbSchemaVersion();
-            if (CdmMetaData.compareVersion(dbSchemaVersion, "4.0.0.0", 3, monitor)<0){
-                String message = "Schema version of the database is prior to version 4.0.0.\n"
-                        + "Versions prior to 4.0.0 need to be updated by an EDIT Platform prior to version 4.7 but not "
-                        + "lower than version 4.0.\n"
-                        + "Please update first to version 4.0.0 (or higher) and run then the schema updater with the current"
-                        + "version again";
-                result.addError(message, "CdmUpdater.updateToCurrentVersion");
-            }
-        } catch (Exception e) {
-            result.addException(e, "Unexpected exception when checking dbSchemaVersion", "CdmUpdater.updateToCurrentVersion");
-            return result;
-        }
-
 
         int steps = currentSchemaUpdater.countSteps(datasource, monitor, caseType);
         steps++;  //for hibernate_sequences update

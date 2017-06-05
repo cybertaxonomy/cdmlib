@@ -88,8 +88,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		return result;
 	}
 
-
-	@Override
+    @Override
 	public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
 	        CaseType caseType, SchemaUpdateResult result) throws Exception{
 		String currentLibrarySchemaVersion = CdmMetaData.getDbSchemaVersion();
@@ -111,6 +110,9 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			return;
 		}
 
+		if (isBefore4_0_0(datasourceVersion, monitor, result)){
+		    return;
+		}
 
 		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceVersion, monitor);
 		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceVersion, monitor);
@@ -144,8 +146,6 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			getPreviousUpdater().invoke(startVersion, datasource, monitor, caseType, result);
 		}
 
-
-
 		if (isBeforeMyTargetVersion){
 			String warning = "Target version ("+targetVersion+") is lower than updater target version ("+this.targetVersion+")";
 			RuntimeException exeption = new RuntimeException(warning);
@@ -177,10 +177,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			result.addException(e, message, "UpdaterBase.invoke");
 		}
 		return;
-
 	}
-
-//	protected abstract boolean handleSingleStep(ICdmDataSource datasource,	IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step, boolean isInnerStep) throws Exception;
 
 	protected void handleSingleStep(ICdmDataSource datasource, IProgressMonitor monitor, SchemaUpdateResult result, ISchemaUpdaterStep step, boolean isInnerStep, CaseType caseType)
 			throws Exception {
@@ -194,7 +191,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				}
 			}
 //			if (! isInnerStep){
-				monitor.worked(1);
+			monitor.worked(1);
 //			}
 		} catch (Exception e) {
 		    String message = "Monitor: Exception occurred while handling single schema updating step";
@@ -204,6 +201,23 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		}
 		return;
 	}
+
+	   /**
+     * @param datasourceVersion
+     * @param monitor
+     * @param result
+     * @return
+     */
+    private boolean isBefore4_0_0(String datasourceVersion, IProgressMonitor monitor, SchemaUpdateResult result) {
+        if (CdmMetaData.compareVersion(datasourceVersion, "4.0.0.0", 3, monitor) < 0){
+            String message = "Schema version of the database is prior to version 4.0.0.\n"
+                    + "Versions prior to 4.0.0 need to be updated by an EDIT Platform between 4.0 and 4.7 (including both).\n"
+                    + "Please update first to version 4.0.0 (or higher) before updating to the current version.";
+            result.addError(message, "CdmUpdater.updateToCurrentVersion");
+            return true;
+        }
+        return false;
+    }
 
 	protected boolean isAfterMyStartVersion(String dataSourceSchemaVersion, IProgressMonitor monitor) {
 		int depth = 4;
