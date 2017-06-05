@@ -237,6 +237,17 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
+        //#6226 remove orphaned PolytomousKeyNodes
+        stepName = "remove orphaned PolytomousKeyNodes";
+        String query = " DELETE FROM @@PolytomousKeyNode@@ WHERE key_id NOT IN (SELECT id FROM @@PolytomousKey@@)";
+        String aud_query = " DELETE FROM @@PolytomousKeyNode_AUD@@ WHERE key_id NOT IN (SELECT id FROM @@PolytomousKey_AUD@@)";
+        step = SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepName, query, aud_query, -99);
+        stepList.add(step);
+
+        //#6226 remove orphaned key statements
+        step = OrphanedKeyStatementRemover.NewInstance();
+        stepList.add(step);
+
         return stepList;
     }
 

@@ -38,17 +38,6 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase
 // *************************** FACTORY ********************************/
 
 	/**
-	 * Deprecated method
-	 * @deprecated use  {@link #NewNonAuditedInstance(String, String)},
-	 * {@link #NewAuditedInstance(String, String, boolean, String)},
-	 * or {@link #NewExplicitAuditedInstance(String, String, String)} instead
-	 */
-	@Deprecated
-	public static SimpleSchemaUpdaterStep NewInstance(String stepName, String defaultQuery, int adapt){
-		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
-	}
-
-	/**
      * Simple schema updater with update query only for non_AUD tables.
 	 *
 	 * @param stepName step name
@@ -90,6 +79,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase
 
 
 //************************ CONSTRUCTOR ***********************************/
+
 	private SimpleSchemaUpdaterStep(String stepName, String defaultQuery, boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
 		super(stepName);
 		this.includeAudit = includeAudit;
