@@ -79,7 +79,6 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -115,7 +114,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
     private Map<String,Reference> publications = new HashMap<>();
     private Map<String,State> states = new HashMap<>();
     private Map<String,TaxonDescription> taxonDescriptions = new HashMap<>();
-    private Map<String,INonViralName> taxonNames = new HashMap<>();
+    private Map<String,TaxonName> taxonNames = new HashMap<>();
     private Map<String,MeasurementUnit> units = new HashMap<>();
     private Map<String,TaxonNode> taxonNodes = new HashMap<>();
     private Map<String,NamedArea> namedAreas = new HashMap<>();
@@ -1901,7 +1900,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 						for (Element elNode : listNodes){
 							String idN = elNode.getAttributeValue("id");
-							ITaxonNameBase tnb = null;
+							TaxonName tnb = null;
 							if (!idN.equals("")) {
 								Element elTaxonName = elNode.getChild("TaxonName", sddNamespace);
 								String refTN = elTaxonName.getAttributeValue("ref");

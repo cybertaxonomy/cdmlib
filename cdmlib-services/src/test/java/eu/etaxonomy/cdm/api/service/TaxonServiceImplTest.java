@@ -764,7 +764,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     public final void testDeleteSynonymWithAnnotations(){
         final String[]tableNames = {
-//                "TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
+//                "TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
 //                "HomotypicalGroup","HomotypicalGroup_AUD"
         };
 

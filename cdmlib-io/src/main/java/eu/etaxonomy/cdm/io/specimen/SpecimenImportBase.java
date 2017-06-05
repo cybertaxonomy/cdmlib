@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -103,7 +102,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
         //check atomised name data for rank
         //new name will be created
-        ITaxonNameBase atomisedTaxonName = null;
+        TaxonName atomisedTaxonName = null;
         if (rank==null && unitIndexInAbcdFile>=0 && ((state.getDataHolder().getAtomisedIdentificationList() != null && !state.getDataHolder().getAtomisedIdentificationList().isEmpty())|| state.getDataHolder().getAtomisedIdentificationList().size() > 0)) {
             atomisedTaxonName = setTaxonNameByType(state.getDataHolder().getAtomisedIdentificationList().get(unitIndexInAbcdFile), scientificName, state);
             if(atomisedTaxonName!=null){
@@ -111,7 +110,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
         }
         if(config.isReuseExistingTaxaWhenPossible()){
-            ITaxonNameBase parsedName = atomisedTaxonName;
+            TaxonName parsedName = atomisedTaxonName;
             if(parsedName==null){
 
                 parsedName = parseScientificName(scientificName, state, state.getReport(), rank);
@@ -150,7 +149,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if(taxonName==null && atomisedTaxonName!=null){
-            taxonName = (TaxonName) atomisedTaxonName;
+            taxonName = atomisedTaxonName;
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
             if(taxonName.hasProblem()){
@@ -256,10 +255,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @return a parsed name
 	     */
 
-	    protected ITaxonNameBase parseScientificName(String scientificName, STATE state, SpecimenImportReport report, Rank rank) {
+	    protected TaxonName parseScientificName(String scientificName, STATE state, SpecimenImportReport report, Rank rank) {
 
 	        NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
-	        ITaxonNameBase taxonName = null;
+	        TaxonName taxonName = null;
 	        boolean problem = false;
 
 	        if (logger.isDebugEnabled()){
@@ -267,25 +266,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        if (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICZN, rank);
+	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICZN, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
+	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, rank);
+	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Cultivar") || state.getDataHolder().getNomenclatureCode().toString().contains("ICNCP")) {
-	            taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, rank);
+	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
@@ -379,7 +378,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getUuid())) {
-	            TaxonName taxonName = (TaxonName)parseScientificName(fullName, state, state.getReport(), null);
+	            TaxonName taxonName = parseScientificName(fullName, state, state.getReport(), null);
 	            if (taxonName != null){
 	                return taxonName;
 	            }

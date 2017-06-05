@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -393,7 +392,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @param sec
      */
     private void setTaxonName(SpecimenSynthesysExcelImportConfigurator config){
-        ITaxonNameBase taxonName = null;
+        TaxonName taxonName = null;
         Taxon taxon = null;
 
         String scientificName="";
@@ -455,7 +454,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = TaxonNameFactory.NewNonViralInstance(null);
                     taxonName.setTitleCache(scientificName, true);
                 }
-                getNameService().save((TaxonName)taxonName);
+                getNameService().save(taxonName);
                 taxon = Taxon.NewInstance(taxonName, ref); //sec set null
                 getTaxonService().save(taxon);
                 //   refreshTransaction();
@@ -509,12 +508,12 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         return (Taxon) getTaxonService().find(taxon.getUuid());
     }
 
-    private ITaxonNameBase parseScientificName(String scientificName){
+    private TaxonName parseScientificName(String scientificName){
         if (DEBUG) {
             logger.debug("in parseScientificName");
         }
         NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
-        ITaxonNameBase taxonName = null;
+        TaxonName taxonName = null;
         boolean problem=false;
 
         if (DEBUG) {
@@ -528,24 +527,24 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
         if (nomenclatureCode.toString().equals("Zoological")){
-            taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN,null);
+            taxonName = (TaxonName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN,null);
             if (taxonName.hasProblem()) {
                 problem=true;
             }
         }
         if (nomenclatureCode.toString().equals("Botanical")){
-            taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNAFP,null);
+            taxonName  = (TaxonName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNAFP,null);
             if (taxonName.hasProblem()) {
                 problem=true;
             }}
         if (nomenclatureCode.toString().equals("Bacterial")){
-            taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
+            taxonName = (TaxonName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
             if (taxonName.hasProblem()) {
                 problem=true;
             }
         }
         if (nomenclatureCode.toString().equals("Cultivar")){
-            taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP, null);
+            taxonName = (TaxonName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP, null);
             if (taxonName.hasProblem()) {
                 problem=true;
             }

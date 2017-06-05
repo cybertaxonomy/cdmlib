@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -223,14 +222,14 @@ public abstract class NameCacheStrategyBase
 
     }
 
-    protected void addOriginalSpelling(List<TaggedText> tags, ITaxonNameBase name){
+    protected void addOriginalSpelling(List<TaggedText> tags, TaxonName name){
         String originalName = getOriginalNameString(name, tags);
         if (StringUtils.isNotBlank(originalName)){
             tags.add(new TaggedText(TagEnum.name, originalName));
         }
     }
 
-    private String getOriginalNameString(ITaxonNameBase currentName, List<TaggedText> originalNameTaggs) {
+    private String getOriginalNameString(TaxonName currentName, List<TaggedText> originalNameTaggs) {
         List<String> originalNameStrings = new ArrayList<>(1);
         currentName = CdmBase.deproxy(currentName);
         //Hibernate.initialize(currentName.getRelationsToThisName());
@@ -256,7 +255,7 @@ public abstract class NameCacheStrategyBase
         }
     }
 
-    private String makeOriginalNameString(ITaxonNameBase currentName, INonViralName originalName,
+    private String makeOriginalNameString(TaxonName currentName, INonViralName originalName,
             List<TaggedText> currentNameTags) {
         //use cache if necessary
         String cacheToUse = null;

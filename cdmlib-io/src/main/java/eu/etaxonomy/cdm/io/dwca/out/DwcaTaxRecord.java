@@ -19,10 +19,10 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
@@ -409,7 +409,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	public String getScientificNameId() {
 		return scientificNameId.getId();
 	}
-	public void setScientificNameId(ITaxonNameBase scientificNameId) {
+	public void setScientificNameId(TaxonName scientificNameId) {
 		this.scientificNameId.setId(scientificNameId);
 	}
 

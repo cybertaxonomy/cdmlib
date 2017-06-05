@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -500,7 +499,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
      */
     private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase, String synonymNameStr) {
         NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
-        ITaxonNameBase name = null;
+        TaxonName name = null;
         if (nc.isKindOf(NomenclaturalCode.ICZN)){
             name = TaxonNameFactory.NewZoologicalInstance(taxonBase.getName().getRank());
         }else if (nc.isKindOf(NomenclaturalCode.ICNAFP)){

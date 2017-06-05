@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -1583,7 +1582,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
 
-    private boolean addFollowingTextToName(ITaxonNameBase nameToBeFilled, String followingText) {
+    private boolean addFollowingTextToName(TaxonName nameToBeFilled, String followingText) {
     	if (nameToBeFilled != null && StringUtils.isNotBlank(followingText)){
     		if (! followingText.matches("\\d\\.?")){
 
@@ -2139,7 +2138,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 if(newNameStatus != null){
                                 	nameToBeFilled.setAppendedPhrase(newNameStatus);
                                 }
-                                sourceHandler.addSource(refMods, nameToBeFilled);
+                                sourceHandler.addSource(refMods, TaxonName.castAndDeproxy(nameToBeFilled));
 
                                 if (nameToBeFilled.getNomenclaturalReference() == null) {
                                     acceptedTaxon= Taxon.NewInstance(nameToBeFilled,refMods);
@@ -2216,7 +2215,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }else if (childName.equalsIgnoreCase("tax:bibref")){
             	logger.warn(childName + " still preliminary");
 
-            	INonViralName currentName = currentMyName == null ? null : currentMyName.getTaxonName();
+            	TaxonName currentName = currentMyName == null ? null : currentMyName.getTaxonName();
             	boolean handled = addFollowingTextToName (currentName, childNode.getTextContent() );
             	if (! handled){
             		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());
@@ -2226,7 +2225,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if(!stringIsEmpty(freetext.trim())) {;
                 if (! freetext.matches("\\d\\.?")){
-                    INonViralName currentName = currentMyName == null ? null : currentMyName.getTaxonName();
+                    TaxonName currentName = currentMyName == null ? null : currentMyName.getTaxonName();
                 	boolean handled = false;
                 	if (currentName != null && !wasSynonym){
                 		handled = addFollowingTextToName (currentName, childNode.getTextContent() );
@@ -2437,14 +2436,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         boolean parseNameManually=false;
         INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
-        ITaxonNameBase  nameToBeFilledTest ;
+        TaxonName nameToBeFilledTest ;
 
         //if selected the atomised version
         if(newName==atomisedNameStr){
             nameToBeFilledTest = parseWithExtension(parser, atomisedNameStr, rank, followingText, atomisedMap);
             if (nameToBeFilledTest.hasProblem()){
                 addProblemNameToFile("ato",atomisedNameStr,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
-                nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode, rank);
+                nameToBeFilledTest = (TaxonName)parser.parseFullName(fullName, nomenclaturalCode, rank);
                 if (nameToBeFilledTest.hasProblem()){
                     addProblemNameToFile("full",fullName,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
                     parseNameManually=true;
@@ -2454,7 +2453,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             nameToBeFilledTest = parseWithExtension(parser, atomisedNameStr, rank, followingText, atomisedMap);
             if (nameToBeFilledTest.hasProblem()){
                 addProblemNameToFile("fullversion",fullName, nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
-                nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode,rank);
+                nameToBeFilledTest = (TaxonName)parser.parseFullName(fullName, nomenclaturalCode,rank);
                 parseNameManually=true;
                 if(!originalName.equalsIgnoreCase(atomisedNameStr)) {
                     addNameDifferenceToFile(originalName,atomisedNameStr);
@@ -2579,14 +2578,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         boolean parseNameManually=false;
         INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
-        ITaxonNameBase  nameToBeFilledTest = null;
+        TaxonName  nameToBeFilledTest = null;
 
         //if selected the atomised version
         if(newName==atomisedNameStr){
             nameToBeFilledTest = parseWithExtension(parser, atomisedNameStr, rank, followingText, atomisedMap);
             if (nameToBeFilledTest.hasProblem()){
         	    addProblemNameToFile("ato",atomisedNameStr,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
-                nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode,rank);
+                nameToBeFilledTest = (TaxonName)parser.parseFullName(fullName, nomenclaturalCode,rank);
                 if (nameToBeFilledTest.hasProblem()){
                     addProblemNameToFile("full",fullName,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
                     parseNameManually=true;
@@ -2596,7 +2595,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             nameToBeFilledTest = parseWithExtension(parser, fullName , rank, followingText, atomisedMap);
             if (nameToBeFilledTest.hasProblem()){
                 addProblemNameToFile("fullversion",fullName,nomenclaturalCode,rank, nameToBeFilledTest.getParsingProblems().toString());
-                nameToBeFilledTest = parser.parseFullName(fullName, nomenclaturalCode,rank);
+                nameToBeFilledTest = (TaxonName)parser.parseFullName(fullName, nomenclaturalCode,rank);
                 parseNameManually=true;
                 if(!originalName.equalsIgnoreCase(atomisedNameStr)) {
                     addNameDifferenceToFile(originalName,atomisedNameStr);
@@ -2618,7 +2617,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     }
 
-    private ITaxonNameBase parseWithExtension(INonViralNameParser parser, String atomisedNameStr, Rank rank, String followingText, HashMap<String, String> atomisedMap) {
+    private TaxonName parseWithExtension(INonViralNameParser parser, String atomisedNameStr, Rank rank, String followingText, HashMap<String, String> atomisedMap) {
     	Object[] nameExtensionResult = getPossibleExtension(followingText, atomisedMap, nomenclaturalCode);
 
     	TaxonName name = (TaxonName)parser.parseFullName(atomisedNameStr, nomenclaturalCode, rank);
@@ -3826,7 +3825,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         /**
          * @param nameToBeFilledTest
          */
-        public void setParsedName(ITaxonNameBase nameToBeFilledTest) {
+        public void setParsedName(TaxonName nameToBeFilledTest) {
             this.taxonName = TaxonName.castAndDeproxy(nameToBeFilledTest);
 
         }
@@ -4732,7 +4731,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         boolean insertAsExisting =false;
         List<Taxon> existingTaxa = new ArrayList<Taxon>();
         try {
-            existingTaxa = getMatchingTaxa(tnb);
+            existingTaxa = getMatchingTaxa(TaxonName.castAndDeproxy(tnb));
         } catch (Exception e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -4830,7 +4829,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @return
      */
     @SuppressWarnings("rawtypes")
-    private List<Taxon> getMatchingTaxa(ITaxonNameBase tnb) {
+    private List<Taxon> getMatchingTaxa(TaxonName tnb) {
         //logger.info("getMatchingTaxon");
     	if (tnb.getTitleCache() == null){
     		tnb.setTitleCache(tnb.toString(), tnb.isProtectedTitleCache());

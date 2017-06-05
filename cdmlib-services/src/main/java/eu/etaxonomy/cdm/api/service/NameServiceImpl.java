@@ -184,10 +184,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         return result;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config) {

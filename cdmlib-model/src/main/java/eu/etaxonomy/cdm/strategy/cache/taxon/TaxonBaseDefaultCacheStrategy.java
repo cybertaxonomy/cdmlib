@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -91,7 +90,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private <X extends ITaxonNameBase> List<TaggedText> getNameTags(T taxonBase) {
+    private <X extends TaxonName> List<TaggedText> getNameTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
