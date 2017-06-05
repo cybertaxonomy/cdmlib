@@ -87,7 +87,7 @@ public class CdmUtils {
 	}
 
 	/**
-     * Returns a instance specific folder folder in  {@link #CDM_FOLDER_NAME}/<code>subFolderName</code>
+     * Returns an instance specific folder folder in  {@link #CDM_FOLDER_NAME}/<code>subFolderName</code>
      * Non existing folders will be created.
      *
      * @param subFolderName
@@ -110,15 +110,20 @@ public class CdmUtils {
      * @return
      */
     private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
-        File folder = new File(parentFolder, subFolderName);
+        if (!parentFolder.exists()){
+            if (!parentFolder.mkdir()) {
+                throw new RuntimeException("Parent folder could not be created: " + parentFolder.getAbsolutePath());
+            }
+        }
+
+        File subfolder = new File(parentFolder, subFolderName);
 		// if the directory does not exist, create it
-		if (!folder.exists()) {
-			if (!folder.mkdir()) {
-				// TODO throw some Exception
-				return null;
+		if (!subfolder.exists()) {
+			if (!subfolder.mkdir()) {
+				throw new RuntimeException("Subfolder could not be created: " + subfolder.getAbsolutePath());
 			}
 		}
-		return folder;
+		return subfolder;
     }
 
 	// ============= END of CdmFileUtils ========== //
