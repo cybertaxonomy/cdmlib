@@ -139,6 +139,9 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
      public boolean isViral() {
          return this == NomenclaturalCode.ICVCN;
      }
+     public boolean isFungus() {
+         return this == NomenclaturalCode.Fungi;
+     }
 
 
 	public static NomenclaturalCode fromString(String string){
