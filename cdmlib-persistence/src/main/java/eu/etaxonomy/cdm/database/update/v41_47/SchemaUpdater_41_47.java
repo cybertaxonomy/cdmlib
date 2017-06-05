@@ -222,6 +222,20 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
+        //#5817 rename relationshipTermBase_inverseRepresentation
+        stepName = "Rename relationshipTermBase_inverseRepresentation";
+        String oldName = "RelationshipTermBase_inverseRepresentation";
+        String newName = "TermBase_inverseRepresentation";
+        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //#5817 rename TermBase_inverseRepresentation.relationshipTermBase_id
+        stepName = "Rename relationshipTermBase_inverseRepresentation.relationshipTermBase_id";
+        tableName = newName;
+        String oldColumnName = "relationshipTermBase_id";
+        newColumnName = "term_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
 
         return stepList;
     }

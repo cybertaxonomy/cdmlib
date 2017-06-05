@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -76,10 +77,12 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>> ex
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
+	@JoinTable(name="TermBase_inverseRepresentation",
+        joinColumns=@JoinColumn(name="term_id")
+    )
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(depth = 2)
-	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
+	private Set<Representation> inverseRepresentations = new HashSet<>();
 
     @XmlElement(name = "inverseSymbol")
     @Column(length=30)

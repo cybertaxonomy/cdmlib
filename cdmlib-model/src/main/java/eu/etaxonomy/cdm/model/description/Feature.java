@@ -146,8 +146,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElementWrapper(name = "InverseRepresentations")
     @XmlElement(name = "Representation")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @JoinTable(name="RelationshipTermBase_inverseRepresentation",
-            joinColumns=@JoinColumn(name="relationshiptermbase_id")
+    @JoinTable(name="TermBase_inverseRepresentation",
+        joinColumns=@JoinColumn(name="term_id")
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(depth = 2)
