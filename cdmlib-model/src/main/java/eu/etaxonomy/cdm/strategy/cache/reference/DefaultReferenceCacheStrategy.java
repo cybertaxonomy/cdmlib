@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -135,6 +138,28 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
             result = titleCacheJournal(reference, isNotAbbrev);
         }else{
             result = titleCacheDefaultReference(reference, isNotAbbrev);
+        }
+        if (reference.getType() == ReferenceType.WebPage){
+            //might become UTF8.EN_DASH in future
+            result = CdmUtils.concat(" - ", result, reference.getUri().toString());
+        }
+        if(reference.getAccessed() != null){
+            //TODO still a bit preliminary, also brackets may change in future
+            result = result + " [accessed " + getAccessedString(reference.getAccessed()) +"]";
+        }
+        return result;
+    }
+
+
+    /**
+     * @param accessed
+     * @return
+     */
+    private String getAccessedString(DateTime accessed) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+        String result = formatter.print(accessed);
+        if (result.endsWith(" 00:00")){
+            result = result.replace(" 00:00", "");
         }
         return result;
     }
