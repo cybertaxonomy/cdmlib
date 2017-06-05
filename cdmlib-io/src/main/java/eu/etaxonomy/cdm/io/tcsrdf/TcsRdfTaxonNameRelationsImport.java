@@ -27,11 +27,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsImport.class);
+    private static final long serialVersionUID = 3886480984730604589L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsImport.class);
 
 	private static int modCount = 5000;
 

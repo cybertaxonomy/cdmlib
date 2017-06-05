@@ -36,11 +36,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
+    private static final long serialVersionUID = 7473543276142564219L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 

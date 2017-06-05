@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 public final class TcsRdfTransformer {
 	@SuppressWarnings("unused")
@@ -74,7 +73,7 @@ public final class TcsRdfTransformer {
 		String tcsSubVariety =  "subvariety";
 		String tcsForm =  "form";
 
-		
+
 		String tcsAbbFamily = "fam.";
 		String tcsAbbrSubFamily =  "subfam.";
 		String tcsAbbrTribe =  "trib.";
@@ -94,7 +93,7 @@ public final class TcsRdfTransformer {
 		String tcsAbbrInfraspecUnranked ="[infrasp.unranked]";
 		String tcsAbbrInfragenUnranked ="[infragen.unranked]";
 		String tcsAbbrNothoSubSpecies = "nothosubsp.";
-		
+
 		if (strRank == null){return null;
 		}else{
 			strRank = strRank.toLowerCase();
@@ -136,7 +135,7 @@ public final class TcsRdfTransformer {
 	 */
 	public static NomenclaturalCode nomCodeString2NomCode (String nomCode) throws UnknownCdmTypeException{
 
-		
+
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonName#";
 		String tcsBotanical = tcsRoot + "botanical";
 		String tcsICBN = tcsRoot + "ICBN";

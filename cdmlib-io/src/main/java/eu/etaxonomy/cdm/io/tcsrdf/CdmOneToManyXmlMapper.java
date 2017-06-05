@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,8 +14,8 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.io.common.mapping.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
+import eu.etaxonomy.cdm.io.common.mapping.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -32,11 +32,9 @@ public class CdmOneToManyXmlMapper<ONE extends CdmBase, MANY extends CdmBase, SI
 		super(oneClass, manyClass, singleAttributeName, singleAttributesMappers);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IXmlMapper#mapsSource(org.jdom.Content, org.jdom.Element)
-	 */
-	public boolean mapsSource(Content content, Element parentElement) {
+
+	@Override
+    public boolean mapsSource(Content content, Element parentElement) {
 		if (! (content instanceof Element)){
 			return false;
 		}
@@ -54,12 +52,12 @@ public class CdmOneToManyXmlMapper<ONE extends CdmBase, MANY extends CdmBase, SI
 				}
 			}else if (thisNamespace.equals(element.getNamespace())){
 				return true;
-			}	
+			}
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Returns the namespace for the source element sourceElement. If not defined it returns the namespace
 	 * of the parent element.
@@ -68,9 +66,9 @@ public class CdmOneToManyXmlMapper<ONE extends CdmBase, MANY extends CdmBase, SI
 	 * @return
 	 */
 	private Namespace getSourceNamespace(String sourceElement, Element parentElement){
-		//TODO 
+		//TODO
 		//namespaces for single attributes not yet implemented
 		return parentElement.getNamespace();
 	}
-	
+
 }

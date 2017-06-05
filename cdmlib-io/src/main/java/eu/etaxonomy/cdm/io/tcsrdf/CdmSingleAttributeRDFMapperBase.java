@@ -11,16 +11,19 @@ import eu.etaxonomy.cdm.io.common.mapping.IRdfMapper;
 import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
 
 
+/**
+ * @author a.mueller
+ */
 public abstract class CdmSingleAttributeRDFMapperBase extends
 		CdmSingleAttributeMapperBase implements IRdfMapper {
 
-	
+
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(CdmSingleAttributeXmlMapperBase.class);
-		
+
 		protected String sourceNameSpace;
 
-		
+
 		/**
 		 * @param sourceElementString
 		 * @param sourceNamespace
@@ -30,8 +33,8 @@ public abstract class CdmSingleAttributeRDFMapperBase extends
 			super(sourceElementString, cdmAttributeString);
 			this.sourceNameSpace = subject;
 		}
-		
-		
+
+
 		/**
 		 * Uses the Namespace of the parent Element
 		 * @param sourceElementString
@@ -39,22 +42,23 @@ public abstract class CdmSingleAttributeRDFMapperBase extends
 		 */
 		protected CdmSingleAttributeRDFMapperBase(String sourceElementString, String cdmAttributeString){
 			super(sourceElementString, cdmAttributeString);
-			
+
 		}
 
 		public String getSourceElement(){
 			return super.getSourceAttribute();
 		}
 
-		public String getDestinationAttribute(){
+		@Override
+        public String getDestinationAttribute(){
 			return super.getDestinationAttribute();
 		}
-		
-		
+
+
 		public String getSourceNamespace(){
 			return sourceNameSpace;
 		}
-		
+
 		/**
 		 * Returns the namespace. If namespace is null, return parentElement namespace
 		 * @param parentElement
@@ -69,8 +73,9 @@ public abstract class CdmSingleAttributeRDFMapperBase extends
 				return null;
 			}
 		}
-		
-		public boolean mapsSource(Resource content, Statement statement){
+
+		@Override
+        public boolean mapsSource(Resource content, Statement statement){
 			if (! (content instanceof Element)){
 				return false;
 			}
@@ -94,8 +99,9 @@ public abstract class CdmSingleAttributeRDFMapperBase extends
 			return true;
 		}
 
-		public String toString(){
+		@Override
+        public String toString(){
 			//TODO
 			return this.getSourceElement();
-		}	
+		}
 	}

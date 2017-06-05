@@ -48,11 +48,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameImport.class);
+    private static final long serialVersionUID = -2547422867292051979L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameImport.class);
 
 	private static int modCount = 5000;
 
@@ -163,10 +164,10 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	private TaxonName handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
 		String idNamespace = "TaxonName";
 
-		StmtIterator stmts = nameAbout.listProperties();
-		while(stmts.hasNext()){
-			System.out.println(stmts.next().getPredicate().toString());
-		}
+//		StmtIterator stmts = nameAbout.listProperties();
+//		while(stmts.hasNext()){
+//			System.out.println(stmts.next().getPredicate().toString());
+//		}
 
 		Property prop = nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"nomenclaturalCode");
 		Statement stateNomenclaturalCode = nameAbout.getProperty(prop);
