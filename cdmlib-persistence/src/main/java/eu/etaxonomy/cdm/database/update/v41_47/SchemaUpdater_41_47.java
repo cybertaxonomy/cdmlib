@@ -23,8 +23,8 @@ import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
+import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
 /**
@@ -210,10 +210,13 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //ModelUpdateResult
-
-        //Remove termupdater and allow update only from version 4.0
-
+        //#6472 add key to IntextReference
+        stepName = "Add key to IntextReference";
+        tableName = "IntextReference";
+        newColumnName = "key_id";
+        referencedTable = "PolytomousKey";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
 
 
         return stepList;
@@ -368,14 +371,14 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         stepList.add(step);
 
         //#6368
-        chnageTaxonNameTableName(stepList);
+        changeTaxonNameTableName(stepList);
 
     }
 
     /**
      * #6368
      */
-    private void chnageTaxonNameTableName(List<ISchemaUpdaterStep> stepList) {
+    private void changeTaxonNameTableName(List<ISchemaUpdaterStep> stepList) {
 
         //Update
         String oldName = "TaxonNameBase";
