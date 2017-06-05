@@ -46,6 +46,7 @@ public class TestModelUpdate {
 
 
  		try {
+// 		    int n = dataSource.executeUpdate("UPDATE CdmMetaData SET value = '3.1.0.0.201607300000' WHERE propertyname = 0 ");
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
 				SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource,
@@ -137,7 +138,8 @@ public class TestModelUpdate {
 
  		try {
 			CdmUpdater updater = new CdmUpdater();
-			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			System.out.println(result.createReport());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
