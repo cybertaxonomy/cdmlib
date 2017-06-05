@@ -318,14 +318,14 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
 
     	speciesName.addRelationshipFromName(originalName, origSpellingType, null);
-    	Assert.assertEquals("Abies alba (as \u201calpa\u201d)", speciesName.getFullTitleCache());
+    	Assert.assertEquals("Abies alba [as \"alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
     	originalName.setGenusOrUninomial("Apies");
     	speciesName.setNameCache(null, false);
     	//TODO update cache of current name (species name)
-    	Assert.assertEquals("Abies alba (as \u201cApies alpa\u201d)", speciesName.getFullTitleCache());
+    	Assert.assertEquals("Abies alba [as \"Apies alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
@@ -335,18 +335,18 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
-    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
+    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \"glabratus\"]", correctName.getFullTitleCache());
 
     	correctName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference [as \"glabratus\"]", correctName.getFullTitleCache());
         citationRef.setProtectedTitleCache(false);
         citationRef.setTitle("Sp. Pl.");
         citationRef.setDatePublished(TimePeriodParser.parseString("1988"));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"]", correctName.getFullTitleCache());
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 (as \u201cglabratus\u201d), nom. illeg.", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
 
     	//TODO add more tests when specification of exact behaviour is clearer
 

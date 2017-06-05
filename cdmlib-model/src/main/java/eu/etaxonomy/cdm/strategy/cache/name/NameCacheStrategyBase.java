@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -244,7 +243,7 @@ public abstract class NameCacheStrategyBase
                     INonViralName originalNvName = CdmBase.deproxy(originalName);
                     originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
                 }
-                originalNameStrings.add("[as " + UTF8.QUOT_DBL_LOW9 + originalNameString + UTF8.QUOT_DBL_LEFT + "]");
+                originalNameStrings.add("[as \"" + originalNameString + "\"]");
             }
         }
         if (originalNameStrings.size() > 0){

@@ -21,13 +21,10 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -818,13 +815,6 @@ public class NonViralNameDefaultCacheStrategy
         return tags;
     }
 
-    protected void addOriginalSpelling(List<TaggedText> tags, INonViralName nonViralName){
-        String originalName = getOriginalNameString(nonViralName, tags);
-        if (StringUtils.isNotBlank(originalName)){
-            tags.add(new TaggedText(TagEnum.name, originalName));
-        }
-    }
-
     /**
      * Adds the tag for the appended phrase if an appended phrase exists
      * @param tags
@@ -836,76 +826,6 @@ public class NonViralNameDefaultCacheStrategy
             tags.add(new TaggedText(TagEnum.name, appendedPhrase));
         }
     }
-
-    private String getOriginalNameString(INonViralName currentName, List<TaggedText> originalNameTaggs) {
-		List<String> originalNameStrings = new ArrayList<>(1);
-		currentName = CdmBase.deproxy(currentName);
-		//Hibernate.initialize(currentName.getRelationsToThisName());
-    	for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
-			NameRelationshipType type = nameRel.getType();
-    		if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
-    			String originalNameString;
-    			TaxonName originalName = nameRel.getFromName();
-    			if (!originalName.isNonViral()){
-    				originalNameString = originalName.getTitleCache();
-    			}else{
-    				INonViralName originalNvName = CdmBase.deproxy(originalName);
-    				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
-    			}
-    			originalNameStrings.add("(as " + UTF8.QUOT_DBL_LEFT + originalNameString + UTF8.QUOT_DBL_RIGHT + ")");
-    		}
-		}
-    	if (originalNameStrings.size() > 0){
-    		String result = CdmUtils.concat("", originalNameStrings.toArray(new String[originalNameStrings.size()])) ;
-	    	return result;
-    	}else{
-    		return null;
-    	}
-	}
-
-
-	private String makeOriginalNameString(INonViralName currentName, INonViralName originalName,
-	        List<TaggedText> currentNameTags) {
-		//use cache if necessary
-		String cacheToUse = null;
-		if (originalName.isProtectedNameCache() && StringUtils.isNotBlank(originalName.getNameCache())){
-			cacheToUse = originalName.getNameCache();
-		}else if (originalName.isProtectedTitleCache() && StringUtils.isNotBlank(originalName.getTitleCache())){
-			cacheToUse = originalName.getTitleCache();
-		}else if (originalName.isProtectedFullTitleCache() && StringUtils.isNotBlank(originalName.getFullTitleCache())){
-			cacheToUse = originalName.getFullTitleCache();
-		}
-		if (cacheToUse != null){
-			return cacheToUse;
-		}
-		//use atomized data
-		//get originalNameParts array
-		String originalNameString = originalName.getNameCache();
-		if (originalNameString == null){
-			originalNameString = originalName.getTitleCache();
-		}
-		if (originalNameString == null){  //should not happen
-			originalNameString = originalName.getFullTitleCache();
-		}
-		String[] originalNameSplit = originalNameString.split("\\s+");
-
-		//get current name parts
-		String currentNameString = createString(currentNameTags);
-		String[] currentNameSplit = currentNameString.split("\\s+");
-
-		//compute string
-		String result = originalNameString;
-		for (int i = 0; i < Math.min(originalNameSplit.length, currentNameSplit.length); i++){
-			if (originalNameSplit[i].equals(currentNameSplit[i])){
-				result = result.replaceFirst(originalNameSplit[i], "").trim();
-			}
-		}
-		//old
-//		if (originalName.getGenusOrUninomial() != null && originalName.getGenusOrUninomial().equals(currentName.getGenusOrUninomial())){
-//
-//		}
-		return result;
-	}
 
 
 	@Override
