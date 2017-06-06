@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.application;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,6 +184,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
 	private ICdmPermissionEvaluator permissionEvaluator;
+	@Autowired
+    private SessionFactory factory;
 
 	//	@Autowired
 	//@Qualifier("mainService")
@@ -482,7 +486,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		context.setAuthentication(authentication);
 	}
 
-
     @Override
     public IRightsService getRightsService() {
         return rightsService;
@@ -492,4 +495,26 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     public IRegistrationService getRegistrationService() {
         return registrationService;
     }
+
+    public SessionFactory getSessionFactory() {
+        return factory;
+    }
+
+    /**
+     * Returns the current session.
+     * A new Session will be opened in case of a HiernateExecption occurs when getting the current Session.
+     *
+     * @return
+     */
+    public Session getSession(){
+        Session session ;
+        try {
+            session = factory.getCurrentSession();
+        } catch (HibernateException e) {
+            logger.info("Opening new session in turn of a HibernateException: " + e.getMessage());
+            session = factory.openSession();
+        }
+        return session;
+    }
+
 }
