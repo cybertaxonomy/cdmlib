@@ -95,7 +95,7 @@ public class Person extends TeamOrPersonBase<Person>{
     @XmlElement(name = "FirstName")
     @Field
     @NullOrNotEmpty
-    @Column(length=50)
+    @Column(length=80)
     private String initials;
 
     @XmlElement(name = "LastName")

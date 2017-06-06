@@ -69,7 +69,7 @@ public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdat
 
             ResultSet rs = datasource.executeQuery(sqlSelectInitials);
             while (rs.next()){
-                handleSingel(datasource, formatter, sqlRemoveFirstname, rs, monitor, result);
+                handleSingle(datasource, formatter, sqlRemoveFirstname, rs, monitor, result);
             }
         } catch (Exception e) {
             String message = e.getMessage();
@@ -90,7 +90,7 @@ public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdat
      * @param monitor
      * @throws SQLException
      */
-    private void handleSingel(ICdmDataSource datasource, PersonDefaultCacheStrategy formatter,
+    private void handleSingle(ICdmDataSource datasource, PersonDefaultCacheStrategy formatter,
             String sqlRemoveFirstname, ResultSet rs, IProgressMonitor monitor, SchemaUpdateResult result) throws SQLException {
         try {
             Integer id = rs.getInt("id");
@@ -114,6 +114,9 @@ public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdat
                 firstnameSql = " firstname ";
                 initialsSql = initialsForced;
             }
+            if (initialsSql!= null){
+                initialsSql = initialsSql.replace("'", "\\'");
+            }
 
             String sql = String.format(sqlRemoveFirstname, firstnameSql, initialsSql, id);
             //remove old relationship
@@ -121,7 +124,7 @@ public class InitialsUpdater extends SchemaUpdaterStepBase implements ITermUpdat
         } catch (Exception e) {
             String message = e.getMessage();
             monitor.warning(message, e);
-            result.addException(e, message, this, "invoke");
+            result.addException(e, message, this, "handleSingle");
         }
     }
 

@@ -184,7 +184,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         stepName = "Add initials to AgentBase";
         tableName = "AgentBase";
         newColumnName = "initials";
-        int length = 50;
+        int length = 80;
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
         stepList.add(step);
 
