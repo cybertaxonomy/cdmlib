@@ -404,6 +404,12 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 
     @Override
     @Transactional(readOnly = false)
+    public UUID delete(CdmBase instance) {
+        return genericDao.delete(instance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public UUID saveOrUpdate(CdmBase newInstance) {
         return genericDao.saveOrUpdate(newInstance);
     }
@@ -414,7 +420,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances) {
         //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
         //and generally the saveAll method should work for other CdmBase types with generics removed
-        return (Map)originalSourceDao.saveAll((Collection)newInstances);
+        return originalSourceDao.saveAll((Collection)newInstances);
     }
 
     @Override
@@ -422,7 +428,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     public <T extends CdmBase> Map<UUID,T> saveOrUpdate(Collection<T> newInstances) {
         //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
         //and generally the saveAll method should work for other CdmBase types with generics removed
-        return (Map)originalSourceDao.saveOrUpdateAll((Collection)newInstances);
+        return originalSourceDao.saveOrUpdateAll((Collection)newInstances);
     }
 
 
