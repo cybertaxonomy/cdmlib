@@ -344,6 +344,12 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
     public <T extends CdmBase> Map<UUID,T> saveOrUpdate(Collection<T> entities);
 
     /**
+     * @param instance
+     * @return
+     */
+    public UUID delete(CdmBase instance);
+
+    /**
      * @param mergeFirstId
      * @param mergeSecondId
      * @param clazz
