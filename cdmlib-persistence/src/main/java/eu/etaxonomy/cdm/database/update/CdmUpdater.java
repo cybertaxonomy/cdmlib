@@ -101,6 +101,7 @@ public class CdmUpdater {
             datasource.startTransaction();
             currentSchemaUpdater.invoke(datasource, monitor, caseType, result);
             if (result.isSuccess()){
+                //TODO should not run if no update was necesssary
                 updateHibernateSequence(datasource, monitor, caseType, result);
             }
             if (!result.isSuccess()){
