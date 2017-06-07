@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -76,15 +77,37 @@ public abstract class SchemaUpdaterBase
 
 	@Override
 	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		int intSchemaVersion = 0;
-		String sqlSchemaVersion = caseType.replaceTableNames( "SELECT value FROM @@CdmMetaData@@ WHERE propertyname = " +  intSchemaVersion);
-
+		String sqlSchemaVersion = caseType.replaceTableNames( "SELECT value FROM @@CdmMetaData@@ WHERE propertyname = 'SCHEMA_VERSION'");
 		try {
-			String value = (String)datasource.getSingleValue(sqlSchemaVersion);
-			return value;
-		} catch (SQLException e) {
-			monitor.warning("Error when trying to receive schemaversion: ", e);
-			throw e;
-		}
+            String value = (String)datasource.getSingleValue(sqlSchemaVersion);
+            return value;
+		} catch (Exception e) {
+		    //looks like propertyname is still integer;
+		    //ATTENTION: the below SQL returns all records if run against CdmMetaData with propertyname being a string
+		    sqlSchemaVersion = caseType.replaceTableNames( "SELECT value FROM @@CdmMetaData@@ WHERE propertyname = 0 ORDER BY propertyname");
+		    try {
+		        ResultSet rs = datasource.executeQuery(sqlSchemaVersion);
+		        boolean hasMoreThanOneRecord = false;
+		        String result = null;
+		        while(rs.next()){
+		            if (hasMoreThanOneRecord){
+		                String message = "Reading schema version from database returns more than 1 record";
+		                monitor.warning(message);
+		                throw new RuntimeException(message);
+		            }
+		            result = rs.getString("value");
+		        }
+		        if (result == null){
+		            String message = "Reading schema version from database returned no result";
+                    monitor.warning(message);
+                    throw new RuntimeException(message);
+		        }
+		        return result;
+		    } catch (SQLException e1) {
+		        monitor.warning("Error when trying to receive schemaversion: ", e1);
+		        throw e;
+		    }
+        }
+
 	}
 }
