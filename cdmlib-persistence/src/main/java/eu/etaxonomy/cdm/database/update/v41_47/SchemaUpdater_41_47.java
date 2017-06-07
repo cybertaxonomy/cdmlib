@@ -350,13 +350,19 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 20, ! INCLUDE_AUDIT);
         stepList.add(step);
 
-        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "SCHEMA_VERSION", 1 );
-        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "TERM_VERSION", 2 );
-        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "CREATED", 3 );
-        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "CREATE_NOTE", 4 );
-        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "INST_NAME", 5 );
-        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "INST_ID", 6 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "SCHEMA_VERSION", 0);
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "TERM_VERSION", 1 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "CREATED", 2 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "CREATE_NOTE", 3 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "INST_NAME", 4 );
+        updateSingleTermTypeForCdmMetaDataPropertyName(stepList, "INST_ID", 5 );
 
+        //... create new column
+        stepName = "Remove column CdmMetaData.propertyNameOld";
+        tableName = "CdmMetaData";
+        oldColumnName = "propertyNameOld";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
     }
 
 
