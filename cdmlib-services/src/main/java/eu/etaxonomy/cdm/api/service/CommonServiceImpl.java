@@ -272,6 +272,12 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         IMergeStrategy mergeStrategy;
         T mergeFirst = (T) genericDao.find(clazz, mergeFirstUuid);
         T mergeSecond = (T) genericDao.find(clazz, mergeSecondUuid);
+        if (mergeFirst == null){
+            throw new MergeException("The merge target is not available anymore.");
+        }
+        if (mergeSecond == null){
+            throw new MergeException("The merge candidate is not available anymore.");
+        }
         mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
         merge(mergeFirst, mergeSecond, mergeStrategy);
     }
