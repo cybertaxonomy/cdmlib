@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
 /**
  * @author a.mueller
  * @created Nov 08, 2010
- * @version 1.0
  */
 public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 

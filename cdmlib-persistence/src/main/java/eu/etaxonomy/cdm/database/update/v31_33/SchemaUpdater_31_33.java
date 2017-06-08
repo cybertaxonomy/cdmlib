@@ -79,8 +79,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
 	private static final String endSchemaVersion = "3.3.0.0.201309240000";
 
-	// ********************** FACTORY METHOD
-	// *******************************************
+	// ********************** FACTORY METHOD*************************************
 
 	public static SchemaUpdater_31_33 NewInstance() {
 		return new SchemaUpdater_31_33();

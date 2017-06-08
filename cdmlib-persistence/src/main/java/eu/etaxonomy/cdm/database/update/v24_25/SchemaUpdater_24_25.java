@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.update.v25_30.SchemaUpdater_25_30;
  * @date 10.09.2010
  *
  */
-public class SchemaUpdater_24_25 extends SchemaUpdaterBase implements ISchemaUpdater {
+public class SchemaUpdater_24_25 extends SchemaUpdaterBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_24_25.class);
 	private static final String startSchemaVersion = "2.4.1.2.201004231015";
