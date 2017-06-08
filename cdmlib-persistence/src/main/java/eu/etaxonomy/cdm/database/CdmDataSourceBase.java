@@ -155,7 +155,11 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 		try {
 			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());
+		    try {
+	            return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
+	        } catch (SQLException e1) {
+	            throw new CdmSourceException(e1.getMessage());
+	        }
 		}
 	}
 
@@ -280,14 +284,18 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
     @Override
     public Map<CdmMetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
-		Map<CdmMetaDataPropertyName, String> cdmMetaDataMap = new HashMap<CdmMetaDataPropertyName, String>();
+		Map<CdmMetaDataPropertyName, String> cdmMetaDataMap = new HashMap<>();
 
 		for(CdmMetaDataPropertyName mdpn : CdmMetaDataPropertyName.values()) {
 			String value = null;
 			try {
 				value = (String)getSingleValue(mdpn.getSqlQuery());
-			} catch (SQLException e) {
-				throw new CdmSourceException(this.toString(), e.getMessage());
+			} catch (SQLException e1) {
+			    try {
+	                value = (String)getSingleValue(mdpn.getSqlQueryOld());
+	            } catch (SQLException e) {
+	                throw new CdmSourceException(this.toString(), e.getMessage());
+	            }
 			}
 			if(value != null) {
 				cdmMetaDataMap.put(mdpn, value);

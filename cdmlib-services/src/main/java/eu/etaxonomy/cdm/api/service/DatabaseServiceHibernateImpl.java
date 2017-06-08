@@ -134,8 +134,12 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
 			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
-		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());
+		} catch (SQLException e1) {
+		    try {
+	            return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
+	        } catch (SQLException e) {
+	            throw new CdmSourceException(e.getMessage());
+	        }
 		}
 	}
 
@@ -193,14 +197,18 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 
 	@Override
 	public Map<CdmMetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
-		Map<CdmMetaDataPropertyName, String> cdmMetaDataMap = new HashMap<CdmMetaDataPropertyName, String>();
+		Map<CdmMetaDataPropertyName, String> cdmMetaDataMap = new HashMap<>();
 
 		for(CdmMetaDataPropertyName mdpn : CdmMetaDataPropertyName.values()){
 			String value = null;
 			try {
 				value = (String)getSingleValue(mdpn.getSqlQuery());
-			} catch (SQLException e) {
-				throw new CdmSourceException(e.getMessage());
+			} catch (SQLException e1) {
+			    try {
+	                value = (String)getSingleValue(mdpn.getSqlQueryOld());
+	            } catch (SQLException e) {
+	                throw new CdmSourceException(e.getMessage());
+	            }
 			}
 			if(value != null) {
 				cdmMetaDataMap.put(mdpn, value);

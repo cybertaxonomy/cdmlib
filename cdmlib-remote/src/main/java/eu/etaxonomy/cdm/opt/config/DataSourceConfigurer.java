@@ -167,7 +167,16 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             }
             ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
             if(tables.first()){
-                ResultSet resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                ResultSet resultSet;
+                try {
+                    resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                } catch (Exception e) {
+                    try {
+                        resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
+                    } catch (Exception e1) {
+                        throw e1;
+                    }
+                }
                 String version = null;
                 if(resultSet.next()){
                     version = resultSet.getString(1);

@@ -152,8 +152,12 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	public String getDbSchemaVersion() throws CdmSourceException {
 		try {
 			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
-		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());
+		} catch (SQLException e1) {
+		    try {
+	            return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
+	        } catch (SQLException e) {
+	            throw new CdmSourceException(e.getMessage());
+	        }
 		}
 	}
 

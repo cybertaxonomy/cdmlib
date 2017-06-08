@@ -15,24 +15,26 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 
 public enum CdmMetaDataPropertyName implements IKeyTerm{
-	DB_SCHEMA_VERSION("Schema Version","SCHEMA_VERSION"),
-	TERMS_VERSION("Term Version","TERM_VERSION"),
-	DB_CREATE_DATE("Created","CREATED"),
-	DB_CREATE_NOTE("Create Note","CREATE_NOTE"),
-	INSTANCE_NAME("CDM Instance Name","INST_NAME"),
-	INSTANCE_ID("CDM Instance ID","INST_ID");
+	DB_SCHEMA_VERSION("Schema Version","SCHEMA_VERSION", 0),
+	TERMS_VERSION("Term Version","TERM_VERSION", 1),
+	DB_CREATE_DATE("Created","CREATED", 2),
+	DB_CREATE_NOTE("Create Note","CREATE_NOTE", 3),
+	INSTANCE_NAME("CDM Instance Name","INST_NAME", 4),
+	INSTANCE_ID("CDM Instance ID","INST_ID", 5);
 
 	// **************** END ENUM **********************/
 
     private String label;
     private String key;
+    private int oldPropertyId;
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermType.class);
 
-    private CdmMetaDataPropertyName(String label, String key){
+    private CdmMetaDataPropertyName(String label, String key, int oldPropertyId){
         this.label = label;
         this.key = key;
+        this.oldPropertyId = oldPropertyId;
     }
 
 //**************** METHODS ****************************/
@@ -42,6 +44,18 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
                 "SELECT value FROM CdmMetaData WHERE propertyname='%s'",
                 this.key);
     }
+
+    /**
+     * SQL query with propertyName still being an int attribute
+     * @return
+     */
+    public String getSqlQueryOld(){
+        return String.format(
+                "SELECT value FROM CdmMetaData WHERE propertyname=%d",
+                this.oldPropertyId);
+    }
+
+
 
     /**
      * {@inheritDoc}
@@ -77,10 +91,5 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
         return null;
     }
 
-// *************************** DELEGATE **************************************/
-
- public static void main(String[] var){
-     System.out.println(DB_SCHEMA_VERSION.getSqlQuery());
- }
 
 }
