@@ -239,6 +239,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
+        if(baseRank != null){
+            baseRank = (Rank) termDao.load(baseRank.getUuid());
+        }
         List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
         pathToRoot.add(thisNode);
 
