@@ -363,6 +363,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         oldColumnName = "propertyNameOld";
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
         stepList.add(step);
+
     }
 
 

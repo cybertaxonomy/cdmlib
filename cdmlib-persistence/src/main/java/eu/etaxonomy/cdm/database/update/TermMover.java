@@ -28,9 +28,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 06.09.2013
  *
  */
-public class TermMover
-            extends SchemaUpdaterStepBase
-            implements ITermUpdaterStep{
+public class TermMover extends SchemaUpdaterStepBase{
 
     private static final Logger logger = Logger.getLogger(TermMover.class);
 

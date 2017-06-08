@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -28,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @date 25.04.2016
  */
-public class RevisionNumberUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class RevisionNumberUpdater extends SchemaUpdaterStepBase{
 
 
 // **************************** STATIC METHODS ********************************/

@@ -28,8 +28,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class SingleTermRemover
-        extends SchemaUpdaterStepBase
-        implements ITermUpdaterStep{
+        extends SchemaUpdaterStepBase{
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);

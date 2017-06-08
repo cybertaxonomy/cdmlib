@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -34,8 +33,7 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
  * @date 15.12.2013
  */
 public class TermVocabularyRepresentationUpdater
-            extends SchemaUpdaterStepBase
-            implements ITermUpdaterStep{
+            extends SchemaUpdaterStepBase{
 
     private static final Logger logger = Logger.getLogger(TermVocabularyRepresentationUpdater.class);
 

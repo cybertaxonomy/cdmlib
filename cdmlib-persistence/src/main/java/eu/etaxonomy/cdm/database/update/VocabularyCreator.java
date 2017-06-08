@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * @date 10.09.2010
  *
  */
-public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class VocabularyCreator extends SchemaUpdaterStepBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VocabularyCreator.class);
 

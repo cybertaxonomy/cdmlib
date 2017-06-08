@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -23,8 +22,8 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @date 15.12.2010
  */
-public class LanguageLabelUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
-	@SuppressWarnings("unused")
+public class LanguageLabelUpdater extends SchemaUpdaterStepBase{
+
 	private static final Logger logger = Logger.getLogger(LanguageLabelUpdater.class);
 
 	private static final String stepName = "Update language labels by full language name";

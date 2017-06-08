@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -26,8 +25,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 15.12.2013
  */
 public class SpecimenMediaMoverUpdater
-            extends SchemaUpdaterStepBase
-            implements ITermUpdaterStep{
+            extends SchemaUpdaterStepBase{
 
     private static final Logger logger = Logger.getLogger(SpecimenMediaMoverUpdater.class);
 

@@ -25,8 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class TermRepresentationUpdater
-            extends SchemaUpdaterStepBase
-            implements ITermUpdaterStep{
+            extends SchemaUpdaterStepBase {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermRepresentationUpdater.class);

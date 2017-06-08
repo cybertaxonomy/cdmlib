@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -29,7 +28,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 05.06.2017
  *
  */
-public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OrphanedKeyStatementRemover.class);
 
