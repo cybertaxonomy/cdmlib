@@ -558,9 +558,16 @@ public class NonViralNameParserImplTest {
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
         assertEquals(nameStr, name1.getNameCache());  //we expect the cache strategy to create the same result
 
-        //autonym #6656
+        //hybrid autonym #6656
         nameStr = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
         name1 = parser.parseFullName(nameStr);
+        assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+        assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
+        assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
+        assertFalse("Name must not be protected", name1.isProtectedTitleCache());
+        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
+
+        name1 = parser.parseReferencedName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
