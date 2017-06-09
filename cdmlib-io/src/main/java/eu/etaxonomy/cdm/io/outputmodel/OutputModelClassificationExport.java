@@ -292,6 +292,7 @@ public class OutputModelClassificationExport
 
         for (DescriptionElementBase element: specimenFacts){
             if (element instanceof IndividualsAssociation){
+                csvLine = new String[table.getSize()];
                 IndividualsAssociation indAssociation = (IndividualsAssociation)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
                 handleSource(state, element, table);
@@ -1082,6 +1083,7 @@ HomotypicGroupSequenceNumber
        String nameId = getId(state, name);
        String[] csvLine = new String[table.getSize()];
         for (SpecimenTypeDesignation specimenType: typeDesignations){
+            csvLine = new String[table.getSize()];
             DerivedUnit specimen = specimenType.getTypeSpecimen();
             if (state.getSpecimenFromStore(specimen.getId()) == null){
                 handleSpecimen(state, specimen);
