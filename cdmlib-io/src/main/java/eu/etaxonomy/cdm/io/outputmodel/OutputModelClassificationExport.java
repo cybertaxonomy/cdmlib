@@ -359,6 +359,7 @@ public class OutputModelClassificationExport
 
         for (DescriptionElementBase element: distributionFacts){
             if (element instanceof Distribution){
+                csvLine = new  String[table.getSize()];
                 Distribution distribution = (Distribution)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
                 handleSource(state, element, table);
@@ -382,6 +383,7 @@ public class OutputModelClassificationExport
 
         for (DescriptionElementBase element: commonNameFacts){
             if (element instanceof CommonTaxonName){
+                csvLine = new  String[table.getSize()];
                 CommonTaxonName commonName = (CommonTaxonName)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
                 handleSource(state, element, table);
