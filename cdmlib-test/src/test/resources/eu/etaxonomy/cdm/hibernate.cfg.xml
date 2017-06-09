@@ -127,6 +127,7 @@
       <mapping class="eu.etaxonomy.cdm.model.location.Country"/>
       <!-- Media Package -->
       <mapping class="eu.etaxonomy.cdm.model.media.AudioFile"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.ExternalLink"/>
       <mapping class="eu.etaxonomy.cdm.model.media.ImageFile"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Media"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>
