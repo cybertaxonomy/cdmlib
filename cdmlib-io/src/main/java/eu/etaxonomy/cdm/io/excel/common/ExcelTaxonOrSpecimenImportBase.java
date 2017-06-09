@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -39,8 +39,8 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 
 	protected static final String CDM_UUID_COLUMN = "(?i)(CdmUuid)";
 	protected static final String IGNORE_COLUMN = "(?i)(Ignore|Not)";
-	
-	
+
+
 	protected static final String RANK_COLUMN = "(?i)(Rank)";
 	protected static final String FULL_NAME_COLUMN = "(?i)(FullName)";
 	protected static final String TAXON_UUID_COLUMN = "(?i)(taxonUuid)";
@@ -48,16 +48,16 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected static final String GENUS_COLUMN = "(?i)(Genus)";
 	protected static final String SPECIFIC_EPITHET_COLUMN = "(?i)(SpecificEpi(thet)?)";
 	protected static final String INFRASPECIFIC_EPITHET_COLUMN = "(?i)(InfraSpecificEpi(thet)?)";
-	
+
 	protected static final String LANGUAGE = "(?i)(Language)";
 
 	@Override
 	protected void analyzeRecord(HashMap<String, String> record, STATE state) {
 		Set<String> keys = record.keySet();
-    	
+
     	ROW row = createDataHolderRow();
     	state.setCurrentRow(row);
-    	
+
     	for (String originalKey: keys) {
     		KeyValue keyValue = makeKeyValue(record, originalKey, state);
     		if (StringUtils.isBlank(keyValue.value)){
@@ -71,13 +71,13 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
     	}
     	return;
 	}
-	
+
 	protected abstract ROW createDataHolderRow();
 
 	/**
 	 * Analyzes a single record value and fills the row instance accordingly.
 	 * @param keyValue
-	 * @param state 
+	 * @param state
 	 * @return
 	 */
 	protected abstract void analyzeSingleValue(KeyValue keyValue, STATE state);
@@ -90,7 +90,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	 */
 	protected class KeyValue{
 		public KeyValue() {}
-		
+
 		//original Key
 		public String originalKey;
 		//value
@@ -109,7 +109,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			return (refType.isLanguage());
 		}
 	}
-	
+
 	public enum SourceType{
 		Author("RefAuthor"),
 		Title("RefTitle"),
@@ -117,17 +117,17 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		RefExtension("RefExt(ension)?"),
 		Language("Lang") //strictly not a reference, so some refactoring/renaming is needed
 		;
-		
+
 		String keyMatch = null;
 		private SourceType(String keyName){
 			this.keyMatch = keyName;
 		}
-		
-		
+
+
 		boolean isLanguage(){
 			return (this.equals(Language));
 		}
-		
+
 		static SourceType byKeyName(String str){
 			if (StringUtils.isBlank(str)){
 				return null;
@@ -135,11 +135,11 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			for (SourceType type : SourceType.values()){
 				if (str.matches("(?i)(" + type.keyMatch + ")")){
 					return type;
-				}	
+				}
 			}
 			return null;
 		}
-		
+
 		static boolean isKeyName(String str){
 			return (byKeyName(str) != null);
 		}
@@ -150,7 +150,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	/**
 	 * @param record
 	 * @param originalKey
-	 * @param state 
+	 * @param state
 	 * @param keyValue
 	 * @return
 	 */
@@ -164,11 +164,11 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		keyValue.key = split[current++];
 		//postfix
 		if (split.length > current && ! isRefType(split[current]) && ! isInteger(split[current]) ){
-			keyValue.postfix = split[current++];	
+			keyValue.postfix = split[current++];
 		}
 		//index
 		if (split.length > current && isInteger(split[current]) ){
-			keyValue.index = Integer.valueOf(split[current++]);	
+			keyValue.index = Integer.valueOf(split[current++]);
 		}else{
 			keyValue.index = 0;
 		}
@@ -193,7 +193,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			//ref index
 			if (split.length > current){
 				 if (isInteger(split[current])){
-					 keyValue.refIndex = Integer.valueOf(split[current++]);	
+					 keyValue.refIndex = Integer.valueOf(split[current++]);
 				 }else{
 					String message = "Ref index expected at position %d of key. But %s is no valid reftype";
 					message = String.format(message, current, split[current]);
@@ -204,7 +204,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			}else {
 				keyValue.refIndex = 0;
 			}
-			
+
 		}
 		if (split.length > current  && ! isIgnore(keyValue.key)){
 			String message = "Key has unexpected part at position %d of key. %s (and following parts) can not be handled";
@@ -213,9 +213,9 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			logger.warn(message);
 			keyValue.hasError = true;
 		}
-		
+
 		//TODO shouldn't we use originalKey here??
-		String value = (String) record.get(indexedKey);
+		String value = record.get(indexedKey);
 		if (! StringUtils.isBlank(value)) {
 			if (logger.isDebugEnabled()) { logger.debug(keyValue.key + ": " + value); }
 			value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
@@ -226,7 +226,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		return keyValue;
 	}
 
-	
+
 	private boolean isIgnore(String key) {
 		return key.matches(IGNORE_COLUMN);
 	}
@@ -240,7 +240,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		String key = keyValue.key;
 		String value = keyValue.value;
 		if (key.matches(CDM_UUID_COLUMN)) {
-			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID	
+			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID
 		}
 		return true;
 	}
@@ -255,7 +255,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		}
 		return false;
 	}
-	
+
 	protected boolean isInteger(String value){
 		try {
 			Integer.valueOf(value);
@@ -264,12 +264,12 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			return false;
 		}
 	}
-	
+
 
 	protected boolean analyzeFeatures(STATE state, KeyValue keyValue) {
 		String key = keyValue.key;
 		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
-	
+
 		if (features.getCount() > 1){
 			String message = "More than one feature found matching key " + key;
 			fireWarningEvent(message, state, 4);
@@ -289,20 +289,20 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			return true;
 		}
 	}
-	
+
 
 	protected void handleExtensions(IdentifiableEntity<?> identifiable, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		List<PostfixTerm> extensions = row.getExtensions();
-		
+
 		for (PostfixTerm exType : extensions){
 			ExtensionType extensionType = state.getPostfixExtensionType(exType.postfix);
-			
+
 			Extension extension = Extension.NewInstance();
 			extension.setType(extensionType);
 			extension.setValue(exType.term);
 			identifiable.addExtension(extension);
 		}
-		
+
 	}
 
 
