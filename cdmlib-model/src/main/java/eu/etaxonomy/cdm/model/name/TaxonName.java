@@ -2279,6 +2279,11 @@ public class TaxonName
         getNomenclaturalSource(true).setCitation(nomenclaturalReference);
         checkNullSource();
     }
+    @Override
+    public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
+        setNomenclaturalReference(CdmBase.deproxy(nomenclaturalReference, Reference.class));
+    }
+
 
 
     /**

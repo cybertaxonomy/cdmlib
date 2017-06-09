@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -353,6 +354,13 @@ public interface ITaxonNameBase
      * @see  #getNomenclaturalReference()
      */
     public void setNomenclaturalReference(Reference nomenclaturalReference);
+
+    /**
+     * Same as setNomenclaturalReferences, to also allow interfaces to be used.
+     * @see #setNomenclaturalReference(Reference)
+     * @param nomenclaturalReference
+     */
+    public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference);
 
     /**
      * Returns the details string of the {@link #getNomenclaturalReference() nomenclatural reference} assigned
