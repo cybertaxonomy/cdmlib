@@ -297,9 +297,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 		}
 
-		state.putTaxon(id, taxonBase);
+		//state.putTaxon(id, taxonBase);
 		taxonBase = getTaxonService().save(taxonBase);
 		taxonDataHolder.setCdmUuid(taxonBase.getUuid());
+		if (id == "0"){
+		    state.putTaxon(taxonNameStr, taxonBase);
+		}else{
+		    state.putTaxon(id, taxonBase);
+		}
 		return;
     }
 
@@ -736,8 +741,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
                 logger.info("Matching taxon/synonym found for " + titleCache);
             }
         }
-        if (taxonBase != null){
-            logger.info("Matching taxon/synonym found for " + titleCache);
+        if (taxonBase != null && taxonBase.getName().getTitleCache().equals(CdmUtils.concat(" ", taxonNameStr, authorStr))){
+            logger.info("Matching taxon/synonym found for " + titleCache + " - "+taxonBase.getTitleCache());
             return null;
         }else {
             taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthorStr, basionymAuthorStr, reference, date, nameStatus, nc);
@@ -783,8 +788,19 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
  				}
 			}
 			if (StringUtils.isNotBlank(reference)) {
+			    String pub = CdmUtils.concat(" ", reference, state.getCurrentRow().getCollation());
+			    String[] split = pub.split(":");
 
 			    INomenclaturalReference ref = parser.parseReferenceTitle(reference, date, true);
+			    if (split.length > 1){
+                    String detail = split[split.length-1];
+                    taxonName.setNomenclaturalMicroReference(detail.trim());
+                    pub = pub.substring(0, pub.length() - detail.length() - 1).trim();
+                }
+
+                ref.setAbbrevTitle(pub);
+
+
 			    if (ref.getAuthorship() == null){
 			        ref.setAuthorship(taxonName.getCombinationAuthorship());
 			    }
@@ -795,9 +811,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
                 }
 
                 ref.setProtectedTitleCache(false);
-
-			    taxonName.setNomenclaturalReference(ref);
-			    taxonName.setNomenclaturalMicroReference(state.getCurrentRow().getCollation());
+                taxonName.setNomenclaturalReference(ref);
+			  //  taxonName.setNomenclaturalMicroReference(state.getCurrentRow().getCollation());
 			}
 		}
 
@@ -824,8 +839,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 			taxonBase = taxon;
 		}
-		taxonBase.getName().addSource(OriginalSourceType.Import, "urn:lsid:ipni.org:names:"+ state.getCurrentRow().getId()+":"+state.getCurrentRow().getVersion(),"TaxonName" ,null, null);
-		taxonBase.addSource(OriginalSourceType.Import, "urn:lsid:ipni.org:names:"+ state.getCurrentRow().getId()+":"+state.getCurrentRow().getVersion(),"TaxonName" ,null, null);
+		taxonBase.getName().addSource(OriginalSourceType.Import, null,"TaxonName" ,null, null);
+		taxonBase.addSource(OriginalSourceType.Import, null,"TaxonName" ,null, null);
 
 		return taxonBase;
 	}
@@ -865,14 +880,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		        state.setClassification(tree);
 		    }
 		}
-		if (sec.equals(childTaxon.getSec())){
+		//if (sec.equals(childTaxon.getSec())){
 		    boolean success =  (null !=  tree.addParentChild(parentTaxon, childTaxon, citation, microCitation));
 			if (success == false){
 				state.setUnsuccessfull();
 			}
-		}else{
-			logger.warn("No relationship added for child " + childTaxon.getTitleCache());
-		}
+//		}else{
+//			logger.warn("No relationship added for child " + childTaxon.getTitleCache());
+//		}
 		return;
 	}
 
