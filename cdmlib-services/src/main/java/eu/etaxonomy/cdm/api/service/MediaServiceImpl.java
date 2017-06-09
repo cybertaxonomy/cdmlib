@@ -126,6 +126,12 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                                 if (desc.getElements().isEmpty()){
                                     taxon.removeDescription(desc);
                                 }
+                            } else {
+                                // this should not be happen, because it is not deletable. see isDeletable
+                                result.setAbort();
+                                message = "The media could not be deleted because it is referenced by a taxon.";
+                                result.addException(new ReferencedObjectUndeletableException(message));
+                                return result;
                             }
                         } else if (description instanceof SpecimenDescription){
                             SpecimenDescription desc = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
@@ -138,6 +144,12 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                                 if (desc.getElements().isEmpty()){
                                     specimen.removeDescription(desc);
                                 }
+                            } else {
+                             // this should not be happen, because it is not deletable. see isDeletable
+                                result.setAbort();
+                                message = "The media could not be deleted because it is referenced by a specimen.";
+                                result.addException(new ReferencedObjectUndeletableException(message));
+                                return result;
                             }
                         }
                     }
@@ -159,7 +171,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             String message = null;
             if (ref instanceof TextData){
                 TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
-                DescriptionBase<?> description = textData.getInDescription();
+                DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
                 if (description.isImageGallery()){
                     if (description instanceof TaxonDescription){
                         TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
