@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -127,6 +128,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "appendedPhrase",
     "nomenclaturalMicroReference",
     "nomenclaturalReference",
+    "nomenclaturalSource",
     "rank",
     "fullTitleCache",
     "protectedFullTitleCache",
@@ -233,14 +235,14 @@ public class TaxonName
 //    @NullOrNotEmpty
     @Column(length=255)
     private String appendedPhrase;
-
-    @XmlElement(name = "NomenclaturalMicroReference")
-    @Field
-    @CacheUpdate(noUpdate ="titleCache")
-    //TODO Val #3379
-//    @NullOrNotEmpty
-    @Column(length=255)
-    private String nomenclaturalMicroReference;
+//
+//    @XmlElement(name = "NomenclaturalMicroReference")
+//    @Field
+//    @CacheUpdate(noUpdate ="titleCache")
+//    //TODO Val #3379
+////    @NullOrNotEmpty
+//    @Column(length=255)
+//    private String nomenclaturalMicroReference;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
@@ -325,15 +327,26 @@ public class TaxonName
 //    @NotNull
     @IndexedEmbedded(depth=1)
     private Rank rank;
+//
+//    @XmlElement(name = "NomenclaturalReference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @CacheUpdate(noUpdate ="titleCache")
+//    @IndexedEmbedded
+//    private Reference nomenclaturalReference;
 
-    @XmlElement(name = "NomenclaturalReference")
+    @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
-    private Reference nomenclaturalReference;
+    private DescriptionElementSource nomenclaturalSource;
+
+
 
     @XmlElementWrapper(name = "Registrations")
     @XmlElement(name = "Registration")
@@ -663,7 +676,10 @@ public class TaxonName
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    protected TaxonName(NomenclaturalCode type, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+    protected TaxonName(NomenclaturalCode type, Rank rank, String genusOrUninomial,
+            String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
+            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
+            String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
         this(type, rank, homotypicalGroup);
         setGenusOrUninomial(genusOrUninomial);
         setInfraGenericEpithet (infraGenericEpithet);
@@ -2223,37 +2239,72 @@ public class TaxonName
         this.rank = rank;
     }
 
-    /**
-     * Returns the {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} of <i>this</i> taxon name.
-     * The nomenclatural reference is here meant to be the one publication
-     * <i>this</i> taxon name was originally published in while fulfilling the formal
-     * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural code}.
-     *
-     * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
-     * @see 	eu.etaxonomy.cdm.model.reference.Reference
-     */
+
     @Override
-    public INomenclaturalReference getNomenclaturalReference(){
-        return this.nomenclaturalReference;
+    public Reference getNomenclaturalReference(){
+        if (this.nomenclaturalSource == null){
+            return null;
+        }
+        return this.nomenclaturalSource.getCitation();
     }
+
+    @Override
+    public DescriptionElementSource getNomenclaturalSource(){
+        return this.nomenclaturalSource;
+    }
+
+    protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
+        if (this.nomenclaturalSource == null){
+            if (!createIfNotExist){
+                return null;
+            }
+            this.nomenclaturalSource = DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference);
+        }
+        return this.nomenclaturalSource;
+    }
+
     /**
      * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
      * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
      * as it is obviously used for nomenclatural purposes.
      *
+     * Shortcut to set the nomenclatural reference.
+     *
      * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
      * @see  #getNomenclaturalReference()
      */
+
     @Override
-    public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
-        if(nomenclaturalReference != null){
-            if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
-                throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");
-            }
-            this.nomenclaturalReference = (Reference)nomenclaturalReference;
-        } else {
-            this.nomenclaturalReference = null;
+    public void setNomenclaturalReference(Reference nomenclaturalReference){
+        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
+        checkNullSource();
+    }
+
+
+    /**
+     *
+     */
+    private void checkNullSource() {
+        if (this.nomenclaturalSource == null){
+            return;
+        }else if (this.nomenclaturalSource.getCitation() != null
+           || this.nomenclaturalSource.getCitationMicroReference() != null
+           || this.nomenclaturalSource.getNameUsedInSource() != null
+           || isBlank(this.nomenclaturalSource.getOriginalNameString())){
+            //TODO what about supplemental data?
+                return;
+        }else{
+            this.nomenclaturalSource = null;
         }
+    }
+
+
+    @Override
+    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
+        if (!OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+        }
+        this.nomenclaturalSource = nomenclaturalSource;
     }
 
     /**
@@ -2285,14 +2336,18 @@ public class TaxonName
     //Details of the nomenclatural reference (protologue).
     @Override
     public String getNomenclaturalMicroReference(){
-        return this.nomenclaturalMicroReference;
+        if (this.nomenclaturalSource == null){
+            return null;
+        }
+        return this.nomenclaturalSource.getCitationMicroReference();
     }
     /**
      * @see  #getNomenclaturalMicroReference()
      */
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        this.nomenclaturalMicroReference = StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
+        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+        checkNullSource();
     }
 
     @Override
