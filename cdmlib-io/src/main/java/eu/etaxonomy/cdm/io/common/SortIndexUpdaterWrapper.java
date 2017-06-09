@@ -87,12 +87,15 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
                     oParentId = row[1];
                     if (oParentId != null){
                         parentId = Integer.valueOf(oParentId.toString());
-                        rowArray = new Integer[2];
-                        rowArray[0]= id;
                         rowArray[1]= parentId;
-                        result.add(rowArray);
 
+                    }else{
+                        rowArray[1]= null;
                     }
+                    rowArray = new Integer[2];
+                    rowArray[0]= id;
+
+                    result.add(rowArray);
                 }
             }
             Map<Integer, Set<Integer>> indexMap =  updater.makeIndexMap(result);
@@ -106,7 +109,7 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
             //Update childrenCount
             if (updater.getTableName().equals("TaxonNode")){
                 query = updater.getChildrenCountQuery();
-                sqlQuery = getAgentService().getSession().createSQLQuery(query);
+                sqlQuery = getTaxonNodeService().getSession().createSQLQuery(query);
                 data = sqlQuery.list();
                 int realCount;
                 int countChildren;
@@ -119,7 +122,7 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
 
                    if (realCount != countChildren){
                        query = updater.getUpdateChildrenCount(realCount, id);
-                       sqlQuery = getAgentService().getSession().createSQLQuery(query);
+                       sqlQuery = getTaxonNodeService().getSession().createSQLQuery(query);
                        int resultInt = sqlQuery.executeUpdate();
                        logger.debug("update all childrenCount "+ resultInt);
                    }
@@ -147,7 +150,7 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
     @Override
     protected boolean doCheck(DefaultImportState<SortIndexUpdaterConfigurator> state) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
 }
