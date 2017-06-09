@@ -102,6 +102,7 @@ public class OutputModelResultProcessor {
                 Map<String, String[]> tableData = result.get(table);
                 OutputModelConfigurator config = state.getConfig();
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
+
                 PrintWriter writer = null;
                 writer = new PrintWriter(exportStream);
                 String[] csvHeaderLine = tableData.get(HEADER);
