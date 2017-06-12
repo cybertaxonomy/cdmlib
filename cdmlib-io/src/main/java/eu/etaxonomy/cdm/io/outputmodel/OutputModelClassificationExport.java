@@ -1033,9 +1033,10 @@ HomotypicGroupSequenceNumber
         csvLine[table.getIndex(OutputModelTable.REFERENCE_ID)] = getId(state, reference);
         //TODO short citations correctly
         String shortCitation = createShortCitation(reference);  //Should be Author(year) like in Taxon.sec
-        csvLine[table.getIndex(OutputModelTable.BIBLIO_SHORT_CITATION)] = reference.getAuthorship() + "("+reference.getYear()+")";
+        csvLine[table.getIndex(OutputModelTable.BIBLIO_SHORT_CITATION)] = shortCitation;
         //TODO get preferred title
         csvLine[table.getIndex(OutputModelTable.REF_TITLE)] = reference.getTitle();
+        csvLine[table.getIndex(OutputModelTable.ABBREV_REF_TITLE)] = reference.getTitle();
         csvLine[table.getIndex(OutputModelTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
         //TBC
         csvLine[table.getIndex(OutputModelTable.EDITION)] = reference.getEdition();
@@ -1084,7 +1085,7 @@ HomotypicGroupSequenceNumber
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                shortCitation += concat + teamMember.getFullTitle();
+                shortCitation += concat + teamMember.getLastname();
             }
 
         }
