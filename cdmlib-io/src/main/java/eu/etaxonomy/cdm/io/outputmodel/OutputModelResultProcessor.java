@@ -9,9 +9,14 @@
 package eu.etaxonomy.cdm.io.outputmodel;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -103,23 +108,29 @@ public class OutputModelResultProcessor {
                 OutputModelConfigurator config = state.getConfig();
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
 
-                PrintWriter writer = null;
-                writer = new PrintWriter(exportStream);
-                String[] csvHeaderLine = tableData.get(HEADER);
-                String lineString = createCsvLine(config, csvHeaderLine);
-                writer.println(lineString);
 
-                for (String key: tableData.keySet()){
-                    if (!key.equals(HEADER)){
-                        String[] csvLine = tableData.get(key);
 
-                        lineString = createCsvLine(config, csvLine);
-                        writer.println(lineString);
+                try{
+                    List<String> data = new ArrayList<String>();
+                    String[] csvHeaderLine = tableData.get(HEADER);
+                    String lineString = createCsvLine(config, csvHeaderLine);
+                    lineString = lineString+ "";
+                    data.add(lineString);
+                    for (String key: tableData.keySet()){
+                        if (!key.equals(HEADER)){
+                            String[] csvLine = tableData.get(key);
+
+                            lineString = createCsvLine(config, csvLine);
+                            data.add(lineString);
+                        }
                     }
+                    IOUtils.writeLines(data,
+                            null,exportStream,
+                            Charset.forName("UTF-8"));
+                } catch(IOException e){
+                    finalResult.addError(e.getMessage());
                 }
-                writer.flush();
 
-                writer.close();
                 finalResult.putExportData(table.getTableName(), exportStream.toByteArray());
 
             }

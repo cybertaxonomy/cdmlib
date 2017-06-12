@@ -83,6 +83,8 @@ public class OutputModelClassificationExport
 
 
     private static final long serialVersionUID = 2518643632756927053L;
+    private static final String STD_TEAM_CONCATINATION = ", ";
+    private static final String FINAL_TEAM_CONCATINATION = " & ";
 
     public OutputModelClassificationExport() {
         super();
@@ -485,7 +487,8 @@ public class OutputModelClassificationExport
         if (name.isProtectedTitleCache()){
             csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] =name.getTitleCache();
         }else{
-            csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = getTropicosTitleCache(name);
+            //TODO: adapt the tropicos titlecache creation
+            csvLine[table.getIndex(OutputModelTable.FULL_NAME_WITH_AUTHORS)] = name.getTitleCache();
         }
         csvLine[table.getIndex(OutputModelTable.FULL_NAME_NO_AUTHORS)] = name.getNameCache();
         csvLine[table.getIndex(OutputModelTable.GENUS_UNINOMIAL)] = name.getGenusOrUninomial();
@@ -1029,7 +1032,7 @@ HomotypicGroupSequenceNumber
         String[] csvLine = new String[table.getSize()];
         csvLine[table.getIndex(OutputModelTable.REFERENCE_ID)] = getId(state, reference);
         //TODO short citations correctly
-        String shortCitation = reference.getAbbrevTitleCache();  //Should be Author(year) like in Taxon.sec
+        String shortCitation = createShortCitation(reference);  //Should be Author(year) like in Taxon.sec
         csvLine[table.getIndex(OutputModelTable.BIBLIO_SHORT_CITATION)] = reference.getAuthorship() + "("+reference.getYear()+")";
         //TODO get preferred title
         csvLine[table.getIndex(OutputModelTable.REF_TITLE)] = reference.getTitle();
@@ -1066,6 +1069,42 @@ HomotypicGroupSequenceNumber
 
     }
 
+
+    /**
+     * @param reference
+     * @return
+     */
+    private String createShortCitation(Reference reference) {
+        TeamOrPersonBase authorship = reference.getAuthorship();
+        String shortCitation = "";
+        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getLastname();}
+        else{
+            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
+            int index = 0;
+            for (Person teamMember : authorTeam.getTeamMembers()){
+                index++;
+                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
+                shortCitation += concat + teamMember.getFullTitle();
+            }
+
+        }
+        if (reference.getYear() != null){
+            shortCitation = shortCitation + "(" + reference.getYear() + ")";
+        }
+        return shortCitation;
+    }
+
+    public static String concatString(Team team, List<Person> teamMembers, int i) {
+        String concat;
+        if (i <= 1){
+            concat = "";
+        }else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size())){
+            concat = STD_TEAM_CONCATINATION;
+        }else{
+            concat = FINAL_TEAM_CONCATINATION;
+        }
+        return concat;
+    }
 
     /*
      * TypeDesignation table
