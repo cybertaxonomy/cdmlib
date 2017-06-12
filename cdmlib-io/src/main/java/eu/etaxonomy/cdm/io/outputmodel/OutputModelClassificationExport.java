@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +29,8 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -293,8 +296,9 @@ public class OutputModelClassificationExport
         String[] csvLine = new String[table.getSize()];
 
         for (DescriptionElementBase element: specimenFacts){
+            csvLine = new String[table.getSize()];
             if (element instanceof IndividualsAssociation){
-                csvLine = new String[table.getSize()];
+
                 IndividualsAssociation indAssociation = (IndividualsAssociation)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
                 handleSource(state, element, table);
@@ -306,17 +310,61 @@ public class OutputModelClassificationExport
                         handleSpecimen(state, derivedUnit);
                         csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
                         csvLine[table.getIndex(OutputModelTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
-                        state.getProcessor().put(table, indAssociation, csvLine, state);
+
                     }else{
                         state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
                     }
 
                 }
+                csvLine[table.getIndex(OutputModelTable.SPECIMEN_NOTES)] = createAnnotationsString(indAssociation.getAnnotations());
+                state.getProcessor().put(table, indAssociation, csvLine, state);
 
-            } else{
-                state.getResult().addError("The specimen description for the taxon " + taxon.getUuid() + " is not of type individual association. Could not be exported. UUID of the description element: " + element.getUuid());
+            } else if (element instanceof TextData){
+                TextData textData = HibernateProxyHelper.deproxy(element, TextData.class);
+                csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, textData);
+                handleSource(state, textData, table);
+                csvLine[table.getIndex(OutputModelTable.SPECIMEN_NOTES)] = createAnnotationsString(textData.getAnnotations());
+
+                csvLine[table.getIndex(OutputModelTable.SPECIMEN_DESCRIPTION)] = createMultilanguageString(textData.getMultilanguageText());
+                state.getProcessor().put(table, element, csvLine, state);
+              //  state.getResult().addError("The specimen description for the taxon " + taxon.getUuid() + " is not of type individual association. Could not be exported. UUID of the description element: " + element.getUuid());
+            }
+
+
+        }
+    }
+
+    /**
+     * @param multilanguageText
+     * @return
+     */
+    private String createMultilanguageString(Map<Language, LanguageString> multilanguageText) {
+       String text = "";
+       int index = multilanguageText.size();
+       for(LanguageString langString: multilanguageText.values()){
+           text += langString.getText();
+           if (index > 1){
+               text += "; ";
+           }
+           index --;
+       }
+
+        return text;
+    }
+
+    /**
+     * @param annotations
+     * @return
+     */
+    private String createAnnotationsString(Set<Annotation> annotations) {
+        StringBuffer strBuff = new StringBuffer();
+        for (Annotation ann:annotations){
+            if (ann.getAnnotationType() == null ||!ann.getAnnotationType().equals(AnnotationType.TECHNICAL())){
+                strBuff.append(ann.getText());
+                strBuff.append("; ");
             }
         }
+        return strBuff.toString();
     }
 
     /**
@@ -1078,10 +1126,16 @@ HomotypicGroupSequenceNumber
     private String createShortCitation(Reference reference) {
         TeamOrPersonBase authorship = reference.getAuthorship();
         String shortCitation = "";
+        if (authorship == null) {
+            return null;
+        }
+        authorship = HibernateProxyHelper.deproxy(authorship);
         if (authorship instanceof Person){ shortCitation = ((Person)authorship).getLastname();}
-        else{
+        else if (authorship instanceof Team){
+
             Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
             int index = 0;
+
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);

@@ -49,6 +49,7 @@ public enum OutputModelTable {
     protected static final String REFERENCE_ID = "Reference_ID";
     protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
     protected static final String REF_TITLE = "Title";
+    protected static final String ABBREV_REF_TITLE = "Abbrev. Title";
     protected static final String DATE_PUBLISHED = "DatePublished";
     protected static final String EDITION = "Edition";
     protected static final String EDITOR= "Editor";
@@ -178,6 +179,9 @@ public enum OutputModelTable {
     protected static final String FACT_CATEGORY = "FactCategory";
 
     // Specimen Facts
+    protected static final String SPECIMEN_NOTES = "Specimen Notes";
+    protected static final String SPECIMEN_DESCRIPTION = "Specimen Description";
+
 
     //Geographic Area Facts
     protected static final String AREA_LABEL = "AreaLabel";
@@ -202,7 +206,7 @@ public enum OutputModelTable {
     }
 
     final static String[] specimenFactsColumns() {
-        return new String[]{FACT_ID, TAXON_FK, SPECIMEN_FK};
+        return new String[]{FACT_ID, TAXON_FK, SPECIMEN_FK, SPECIMEN_DESCRIPTION, SPECIMEN_NOTES};
     }
 
     final static String[] commonNameFactsColumns() {
@@ -251,7 +255,7 @@ public enum OutputModelTable {
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
     }
     final static String[] referenceColumns(){
-        return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
+        return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
                 REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI};
     }
 
