@@ -139,7 +139,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }else{
             result = titleCacheDefaultReference(reference, isNotAbbrev);
         }
-        if (reference.getType() == ReferenceType.WebPage){
+        if (reference.getType() == ReferenceType.WebPage && reference.getUri() != null){
             //might become UTF8.EN_DASH in future
             result = CdmUtils.concat(" - ", result, reference.getUri().toString());
         }
