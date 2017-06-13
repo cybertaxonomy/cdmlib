@@ -891,7 +891,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}
+     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getEcology()}
      * .
      */
     @Test
@@ -950,7 +950,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}
+     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getPlantDescription()}
      * .
      */
     @Test
@@ -1033,6 +1033,94 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 "Plant description data should be 'null' for default language",
                 specimenFacade.getPlantDescription());
 
+    }
+
+    /**
+     * Test method for
+     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getLifeform()}
+     * .
+     */
+    @Test
+    public void testGetSetLifeform() {
+        Feature lifeform = Feature.LIFEFORM();
+        Assert.assertNotNull("Lifeform must exist in testdata",lifeform);
+        Assert.assertNotNull(
+                "An empty life-form data should be created when calling getLifeformAll()",
+                specimenFacade.getLifeformAll());
+        Assert.assertEquals(
+                "An empty life-form data should be created when calling getLifeform()",
+                0, specimenFacade.getLifeformAll().size());
+        specimenFacade.setLifeform("grande", Language.FRENCH());
+        Assert.assertEquals(
+                "Life-form data should exist for 1 language", 1,
+                specimenFacade.getLifeformAll().size());
+        Assert.assertEquals(
+                "Life-form data should be 'grande' for French", "grande",
+                specimenFacade.getLifeform(Language.FRENCH()));
+        Assert.assertNull(
+                "Lifeform data should be null for the default language",
+                specimenFacade.getLifeform());
+        specimenFacade.setLifeform("Very big");
+        Assert.assertEquals(
+                "Life-form data should exist for 2 languages", 2,
+                specimenFacade.getLifeformAll().size());
+        Assert.assertEquals("French life-form data should be 'grande'", "grande",
+                specimenFacade.getLifeform(Language.FRENCH()));
+        Assert.assertEquals(
+                "Default language life-form data should be 'Very big' for the default language",
+                "Very big", specimenFacade.getLifeform());
+        Assert.assertEquals(
+                "Life-form data should be 'Very big' for English",
+                "Very big", specimenFacade.getLifeform());
+
+        specimenFacade.setLifeform("Petite", Language.FRENCH());
+        Assert.assertEquals(
+                "Plant description data should exist for 2 languages", 2,
+                specimenFacade.getLifeformAll().size());
+        Assert.assertEquals("Life-form data should be 'Petite'",
+                "Petite",
+                specimenFacade.getLifeform(Language.FRENCH()));
+        Assert.assertEquals(
+                "Plant description data should be 'Very big' for the default language",
+                "Very big", specimenFacade.getLifeform());
+
+        specimenFacade.setLifeform(null, Language.FRENCH());
+        Assert.assertEquals(
+                "Life-form data should exist for 1 languages", 1,
+                specimenFacade.getLifeformAll().size());
+        Assert.assertEquals(
+                "Life-form data should be 'Very big' for the default language",
+                "Very big", specimenFacade.getLifeform());
+        Assert.assertNull("Life-form data should be 'null' for French",
+                specimenFacade.getLifeform(Language.FRENCH()));
+
+        // test interference with ecology
+        specimenFacade.setEcology("Tres jolie ici", Language.FRENCH());
+        Assert.assertEquals("Ecology data should exist for 1 language", 1,
+                specimenFacade.getEcologyAll().size());
+        Assert.assertEquals(
+                "Ecology data should be 'Tres jolie ici' for French",
+                "Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()));
+        Assert.assertNull(
+                "Ecology data should be null for the default language",
+                specimenFacade.getEcology());
+
+        // repeat above test
+        Assert.assertEquals(
+                "Life-form data should exist for 1 languages", 1,
+                specimenFacade.getLifeformAll().size());
+        Assert.assertEquals(
+                "Lifeform data should be 'Very big' for the default language",
+                "Very big", specimenFacade.getLifeform());
+        Assert.assertNull("Life-form data should be 'null' for French",
+                specimenFacade.getLifeform(Language.FRENCH()));
+
+        specimenFacade.removeLifeform(null);
+        Assert.assertEquals("There should be no life-form left", 0,
+                specimenFacade.getLifeformAll().size());
+        Assert.assertNull(
+                "Life-form data should be 'null' for default language",
+                specimenFacade.getLifeform());
     }
 
     /**
