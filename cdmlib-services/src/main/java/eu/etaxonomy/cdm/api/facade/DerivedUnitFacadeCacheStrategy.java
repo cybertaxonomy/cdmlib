@@ -40,9 +40,13 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
 
-
 	@Override
-	public String getTitleCache(DerivedUnit derivedUnit) {
+    public String getTitleCache(DerivedUnit derivedUnit) {
+	    return getTitleCache(derivedUnit, false);
+	}
+
+
+	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
 		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
 		String result = "";
@@ -52,8 +56,10 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
-			result += fieldStrategy.getFieldData(facade);
 
+			if(!skipFieldUnit){
+			    result += fieldStrategy.getFieldData(facade);
+			}
 			//Exsiccatum
 			String exsiccatum = null;
 			try {
