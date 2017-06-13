@@ -619,10 +619,24 @@ public class OutputModelClassificationExport
                     csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = "";
                 }
             }else{
-                csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = "";
-                csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = "";
-                csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)]= "";
-                csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = "";
+                if (nomRef.getAbbrevTitle() == null){
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = CdmUtils.Nz(nomRef.getAbbrevTitleCache());
+                }else{
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_TITLE)] = CdmUtils.Nz(nomRef.getAbbrevTitle());
+                }
+                if (nomRef.getTitle() == null){
+                    csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = CdmUtils.Nz(nomRef.getTitleCache());
+                }else{
+                    csvLine[table.getIndex(OutputModelTable.FULL_TITLE)] = CdmUtils.Nz(nomRef.getTitle());
+                }
+                TeamOrPersonBase author = nomRef.getAuthorship();
+                if (author != null ){
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getNomenclaturalTitle());
+                    csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
+                }else{
+                    csvLine[table.getIndex(OutputModelTable.ABBREV_REF_AUTHOR)] = "";
+                    csvLine[table.getIndex(OutputModelTable.FULL_REF_AUTHOR)] = "";
+                }
 
             }
         }else{
