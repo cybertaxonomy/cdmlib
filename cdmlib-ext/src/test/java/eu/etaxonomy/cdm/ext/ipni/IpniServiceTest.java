@@ -25,12 +25,13 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * @author a.mueller
  *
  */
-//@Ignore
+@Ignore //preliminary
 public class IpniServiceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);
