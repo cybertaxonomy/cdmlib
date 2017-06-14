@@ -301,6 +301,7 @@ public class OutputModelClassificationExport
 
                 IndividualsAssociation indAssociation = (IndividualsAssociation)element;
                 csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
+                csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
                 handleSource(state, element, table);
                 if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
                     SpecimenOrObservationBase specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
@@ -308,7 +309,7 @@ public class OutputModelClassificationExport
                     if (specimenBase instanceof DerivedUnit){
                         DerivedUnit derivedUnit = (DerivedUnit)specimenBase;
                         handleSpecimen(state, derivedUnit);
-                        csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
+
                         csvLine[table.getIndex(OutputModelTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
 
                     }else{
