@@ -1820,7 +1820,7 @@ public class DerivedUnitFacade {
 	}
 
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
-	    baseUnit().setKindOfUnit(kindOfUnit);
+	    getFieldUnit(true).setKindOfUnit(kindOfUnit);
 	}
 
 

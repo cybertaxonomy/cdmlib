@@ -114,6 +114,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
     LanguageString locality = LanguageString.NewInstance("My locality",
             Language.DEFAULT());
+    DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance("Test kind of unit for field unit", "Test kind of unit", "Tkou");
+
 
     String accessionNumber = "888462535";
     String catalogNumber = "UU879873590";
@@ -172,6 +174,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         fieldUnit.setIndividualCount(individualCount);
         fieldUnit.setSex(sex);
         fieldUnit.setLifeStage(lifeStage);
+        fieldUnit.setKindOfUnit(kindOfUnit);
 
         specimen.setAccessionNumber(accessionNumber);
         specimen.setCatalogNumber(catalogNumber);
@@ -1239,6 +1242,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Sex must be same", sex, specimenFacade.getSex());
         specimenFacade.setSex(null);
         Assert.assertNull("Sex must be null", specimenFacade.getSex());
+    }
+
+
+    /**
+     * Test method for
+     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getSex()}.
+     */
+    @Test
+    public void testGetSetKindOfUnit() {
+        Assert.assertNotNull("Kind-of-unit must not be null", specimenFacade.getKindOfUnit());
+        Assert.assertEquals("Kind-of-unit must be same", kindOfUnit, specimenFacade.getKindOfUnit());
+        specimenFacade.setKindOfUnit(null);
+        Assert.assertNull("Kind-of-unit must be null", specimenFacade.getKindOfUnit());
     }
 
     /**
