@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * @author a.mueller
@@ -71,10 +71,10 @@ public class IpniServiceTest {
 	}
 
 	@Test
-	 @DataSets({
-	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-	        })
+	@DataSets({
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	    @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+	})
 	public void testGetAuthors(){
 		ICdmRepository services = null;
 		IpniServiceAuthorConfigurator config = new IpniServiceAuthorConfigurator();
@@ -154,9 +154,9 @@ public class IpniServiceTest {
 
 	@Test
 	@DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-        })
+    })
 	public void testGetNamesAdvanced(){
 		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = IpniServiceNamesConfigurator.NewInstance();
