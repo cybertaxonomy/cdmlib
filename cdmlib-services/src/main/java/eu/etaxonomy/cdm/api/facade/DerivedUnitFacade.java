@@ -1800,7 +1800,10 @@ public class DerivedUnitFacade {
 	}
 
 	public void setLifeStage(DefinedTerm lifeStage) {
-		getFieldUnit(true).setLifeStage(lifeStage);
+	    FieldUnit fieldUnit = getFieldUnit(lifeStage != null);
+        if (fieldUnit != null){
+            fieldUnit.setLifeStage(lifeStage);
+        }
 	}
 
 	// sex
@@ -1810,7 +1813,10 @@ public class DerivedUnitFacade {
 	}
 
 	public void setSex(DefinedTerm sex) {
-		getFieldUnit(true).setSex(sex);
+	    FieldUnit fieldUnit = getFieldUnit(sex != null);
+        if (fieldUnit != null){
+            fieldUnit.setSex(sex);
+        }
 	}
 
 	// kind of Unit
@@ -1819,8 +1825,16 @@ public class DerivedUnitFacade {
 		return (hasFieldUnit() ? getFieldUnit(true).getKindOfUnit() : null);
 	}
 
+
+	/**
+	 * Sets the kind-of-unit
+	 * @param kindOfUnit
+	 */
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
-	    getFieldUnit(true).setKindOfUnit(kindOfUnit);
+	    FieldUnit fieldUnit = getFieldUnit(kindOfUnit != null);
+	    if (fieldUnit != null){
+	        fieldUnit.setKindOfUnit(kindOfUnit);
+	    }
 	}
 
 
@@ -2490,7 +2504,9 @@ public class DerivedUnitFacade {
 	    }
 	}
 
-
+	/**
+	 * @return true if <code>this.derivedUnit</code> exists
+	 */
 	private boolean checkDerivedUnit()  {
 		if (derivedUnit == null){
 			return false;
