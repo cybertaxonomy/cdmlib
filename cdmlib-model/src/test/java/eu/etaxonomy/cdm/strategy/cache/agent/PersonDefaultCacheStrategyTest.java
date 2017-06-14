@@ -262,6 +262,24 @@ public class PersonDefaultCacheStrategyTest {
         firstname = "Pe. Y.";
         Assert.assertEquals("Pe.Y.", formatter.getInitialsFromFirstname(firstname, force));
 
+        //brackets
+        force = true;
+        firstname = "Constantin (Konstantin) Georg Alexander";
+        Assert.assertEquals("C.G.A.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Franz (Joseph Andreas Nicolaus)";
+        Assert.assertEquals("F.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Viktor V. (W.W.)";
+        Assert.assertEquals("V.V.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "(Georg Ferdinand) Otto";
+        Assert.assertEquals("O.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "(Sébastien-) René";
+        Assert.assertEquals("R.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Joyce (M.) Chismore Lewin";
+        Assert.assertEquals("J.C.L.", formatter.getInitialsFromFirstname(firstname, force));
+        firstname = "Joyce (M.) Chismore Lewin";
+        Assert.assertEquals("J.C.L.", formatter.getInitialsFromFirstname(firstname, force));
+
+//      "Robert. K." wurde auf "Robert. K." gemapped
 
         //must not throw exception (exact result may change in future)
         firstname = "W.-H.-";

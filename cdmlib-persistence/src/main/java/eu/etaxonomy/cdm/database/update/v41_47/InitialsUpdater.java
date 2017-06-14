@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.database.update.v41_47;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -57,14 +58,14 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
             PersonDefaultCacheStrategy formatter = PersonDefaultCacheStrategy.NewInstance();
 
             String sqlCopyFirstname = "UPDATE AgentBase SET initials = firstname WHERE DTYPE='Person'"
-                    + " AND firstname IS NOT NULL ";
+                    + " AND firstname IS NOT NULL AND initials IS NULL ";
 
-            String sqlRemoveFirstname = "UPDATE AgentBase SET firstname = %s, initials = '%s' WHERE id = %d";
+            String sqlRemoveFirstname = "UPDATE AgentBase SET firstname = %s, initials = %s WHERE id = %d";
 
             String sqlSelectInitials = "SELECT id, firstname FROM AgentBase WHERE DTYPE='Person'"
-                    + " AND firstname IS NOT NULL ";
+                    + " AND firstname IS NOT NULL AND initials = firstname ";
 
-            datasource.executeUpdate(sqlCopyFirstname);
+            int n = datasource.executeUpdate(sqlCopyFirstname);
 
             ResultSet rs = datasource.executeQuery(sqlSelectInitials);
             while (rs.next()){
@@ -105,16 +106,23 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
                 firstnameSql = " null ";
                 initialsSql = initialsForced;
             }else if (CdmUtils.equalsIgnoreWS(firstname, initialsAllow)){
-                //firstname has only abbreviations, but not all of them being 1-letter, keep everything
+                //first name has only abbreviations, but not all of them being 1-letter, keep everything
                 firstnameSql = " firstname ";
                 initialsSql = initialsAllow;
             }else {
-                //firstname has non abbreviated parts, keep it as it is and use initials forced as initials
+                //first name has non abbreviated parts, keep it as it is and use initials forced as initials
                 firstnameSql = " firstname ";
                 initialsSql = initialsForced;
             }
             if (initialsSql!= null){
                 initialsSql = initialsSql.replace("'", "\\'");
+            }
+            //handle blank
+            if (StringUtils.isBlank(firstname)){
+                firstnameSql = " null ";
+                initialsSql = " null ";
+            }else {
+                initialsSql = "'" + initialsSql + "'";
             }
 
             String sql = String.format(sqlRemoveFirstname, firstnameSql, initialsSql, id);

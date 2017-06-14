@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -125,11 +127,17 @@ public class PersonDefaultCacheStrategy
         }else if (StringUtils.isBlank(firstname)){
             return "";
         }
+        //remove brackets
+        final String regex = "\\([^)]*\\)";
+        final Pattern pattern = Pattern.compile(regex);
+        final Matcher matcher = pattern.matcher(firstname);
+        firstname = matcher.replaceAll("").replaceAll("\\s\\s", " ");
+
         String result = "";
         String[] splits = firstname.split("((?<=\\.)|\\s+|(?=([\\-\u2013])))+"); // [\\-\u2013]? // (?!=\\s) wasn't successful to trim
         for (String split : splits){
             split = split.trim();
-            if (StringUtils.isBlank(split)){
+            if (StringUtils.isBlank(split) || split.matches("\\(.*\\)")){  //again checking brackets not really necessary
                 continue;
             }
             if (split.matches("^[\\-\u2013].*")){
