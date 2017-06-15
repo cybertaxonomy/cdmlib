@@ -8,27 +8,32 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
  * @author k.luther
  * @date 10.03.2016
  *
  */
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
-    private boolean deleteIfUsedInTaxonDescription = false;
-    private boolean deleteIfUsedInSpecimenDescription = false;
+    private boolean deleteFromAllTaxonDescription = false;
+    private boolean deleteFromAllSpecimenDescription = false;
+    private boolean deleteFromAllNameDescription = false;
+    private boolean deleteFromEveryWhere = false;
     private boolean onlyRemoveFromGallery = true;
+    private CdmBase deleteFrom;
 
     public boolean isDeleteIfUsedInSpecimenDescription() {
-        return deleteIfUsedInSpecimenDescription;
+        return deleteFromAllSpecimenDescription;
     }
     public void setDeleteIfUsedInSpecimenDescription(boolean deleteIfUsedInSpecimenDescription) {
-        this.deleteIfUsedInSpecimenDescription = deleteIfUsedInSpecimenDescription;
+        this.deleteFromAllSpecimenDescription = deleteIfUsedInSpecimenDescription;
     }
     public boolean isDeleteIfUsedInTaxonDescription() {
-        return deleteIfUsedInTaxonDescription;
+        return deleteFromAllTaxonDescription;
     }
     public void setDeleteIfUsedInTaxonDescription(boolean deleteIfUsedInTaxonDescription) {
-        this.deleteIfUsedInTaxonDescription = deleteIfUsedInTaxonDescription;
+        this.deleteFromAllTaxonDescription = deleteIfUsedInTaxonDescription;
     }
     /**
      * @return the onlyRemoveFromGallery
@@ -41,5 +46,23 @@ public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
      */
     public void setOnlyRemoveFromGallery(boolean onlyRemoveFromGallery) {
         this.onlyRemoveFromGallery = onlyRemoveFromGallery;
+    }
+    public boolean isDeleteIfUsedInNameDescription() {
+        return deleteFromAllNameDescription;
+    }
+    public void setDeleteIfUsedInNameDescription(boolean deleteIfUsedInNameDescription) {
+        this.deleteFromAllNameDescription = deleteIfUsedInNameDescription;
+    }
+    public CdmBase getDeleteFrom() {
+        return deleteFrom;
+    }
+    public void setDeleteFrom(CdmBase deleteFrom) {
+        this.deleteFrom = deleteFrom;
+    }
+    public boolean isDeleteFromEveryWhere() {
+        return deleteFromEveryWhere;
+    }
+    public void setDeleteFromEveryWhere(boolean deleteFromEveryWhere) {
+        this.deleteFromEveryWhere = deleteFromEveryWhere;
     }
 }

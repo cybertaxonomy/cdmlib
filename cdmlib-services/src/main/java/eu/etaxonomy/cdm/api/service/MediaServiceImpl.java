@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -161,6 +162,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         return result;
     }
 
+
     @Override
     public DeleteResult isDeletable(UUID mediaUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
@@ -175,7 +177,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                 if (description.isImageGallery()){
                     if (description instanceof TaxonDescription){
                         TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-                        if (desc.getTaxon() == null || mediaConfig.isDeleteIfUsedInTaxonDescription()){
+                        if (desc.getTaxon() == null || mediaConfig.isDeleteIfUsedInTaxonDescription() ){
                             continue;
                         } else{
                             message = "The media can't be deleted because it is referenced by a taxon. ("+desc.getTaxon().getTitleCache()+")";
@@ -188,8 +190,17 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         } else{
                             message = "The media can't be deleted because it is referenced by a specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
                         }
+                    } else if (description instanceof TaxonNameDescription){
+                        TaxonNameDescription desc = HibernateProxyHelper.deproxy(description, TaxonNameDescription.class);
+                        if (desc.getTaxonName() == null || mediaConfig.isDeleteIfUsedInNameDescription()){
+                            continue;
+                        } else{
+                            message = "The media can't be deleted because it is referenced by a specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
+                        }
                     }
                 }
+            } else {
+                message = "The media can't be deleted because it is referenced by a " + ref.getUserFriendlyTypeName() ;
             }
             if (message != null){
                 result.addException(new ReferencedObjectUndeletableException(message));
