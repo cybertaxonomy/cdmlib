@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * the statements of its leads.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:28
  */
 
