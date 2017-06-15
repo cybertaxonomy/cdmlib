@@ -37,7 +37,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Component
 public class DwcaReferenceExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaReferenceExport.class);
+
+    private static final long serialVersionUID = -8334741499089219441L;
+
+    private static final Logger logger = Logger.getLogger(DwcaReferenceExport.class);
 
 	private static final String fileName = "reference.txt";
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Reference";
@@ -78,7 +81,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
                 classificationList = getClassificationService().find(classificationUuidSet);
             }
 
-            Set<Classification> classificationSet = new HashSet<Classification>();
+            Set<Classification> classificationSet = new HashSet<>();
             classificationSet.addAll(classificationList);
             List<TaxonNode> allNodes;
 
@@ -89,7 +92,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			for (TaxonNode node : allNodes){
 				//sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+				Taxon taxon = CdmBase.deproxy(node.getTaxon());
 				Reference sec = taxon.getSec();
 				if (sec != null && ! recordExists(sec)){
 					handleReference(record, sec, taxon);
@@ -130,8 +133,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 
 		record.setISBN_ISSN(StringUtils.isNotBlank(reference.getIsbn())? reference.getIsbn(): reference.getIssn());
 		record.setUri(reference.getUri());
-		//TODO implementation, DOI is extension type
-		record.setDoi(null);
+		record.setDoi(reference.getDoi().toString());
 		record.setLsid(reference.getLsid());
 		//TODO microreference
 		record.setBibliographicCitation(reference.getTitleCache());

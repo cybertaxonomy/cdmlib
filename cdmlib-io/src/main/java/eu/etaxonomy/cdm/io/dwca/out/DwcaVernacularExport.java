@@ -39,7 +39,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Component
 public class DwcaVernacularExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
+    private static final long serialVersionUID = 3169086545830374918L;
+
+    private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
 	private static final String fileName = "vernacular.txt";
@@ -150,7 +152,6 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		handleArea(record, commonTaxonName.getArea(), taxon, false);
 	}
 
-
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
@@ -158,12 +159,8 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		return result;
 	}
 
-
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoVernacularNames();
 	}
-
-
-
 }

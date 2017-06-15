@@ -88,7 +88,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		    classificationList = getClassificationService().find(classificationUuidSet);
 		}
 
-		Set<Classification> classificationSet = new HashSet<Classification>();
+		Set<Classification> classificationSet = new HashSet<>();
 		classificationSet.addAll(classificationList);
 
 
@@ -430,6 +430,5 @@ public class DwcaTaxExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTaxa();
 	}
-
 
 }

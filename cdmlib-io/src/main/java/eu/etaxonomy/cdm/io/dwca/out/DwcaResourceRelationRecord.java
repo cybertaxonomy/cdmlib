@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaResourceRelationRecord.class);
-	
+
 	private DwcaId resourceRelationshipId;
 	private UUID relatedResourceId;
 	private String relationshipOfResource;
@@ -34,17 +34,16 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	private String relationshipEstablishedDate;
 	private Set<Annotation> relationshipRemarks;
 	private String scientificName;
-	
-	
+
+
 	public DwcaResourceRelationRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		resourceRelationshipId = new DwcaId(config);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
+
+
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField("resourceRelationshipID", "http://rs.tdwg.org/dwc/terms/resourceRelationshipID");
 			addKnownField("relatedResourceID", "http://rs.tdwg.org/dwc/terms/relatedResourceID");
@@ -58,22 +57,23 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 //	@Override
 //	public List<String> getHeaderList() {
-//		String[] result = new String[]{"coreid", 
+//		String[] result = new String[]{"coreid",
 //				"resourceRelationshipId",
 //				"relatedResourceId",
-//				"relationshipOfResource", 
-//				"relationshipAccordingTo", 
-//				"relationshipEstablishedDate", 
+//				"relationshipOfResource",
+//				"relationshipAccordingTo",
+//				"relationshipEstablishedDate",
 //				"relationshipRemarks",
 //				"scientificName"
 //		};
 //		return Arrays.asList(result);
 //	}
-	
-	public void write(PrintWriter writer) {
+
+	@Override
+    public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(getResourceRelationshipId(), writer, IS_NOT_FIRST, TermUri.DWC_RESOURCE_RELATIONSHIP_ID);
 		print(relatedResourceId, writer, IS_NOT_FIRST, TermUri.DWC_RELATED_RESOURCE_ID);

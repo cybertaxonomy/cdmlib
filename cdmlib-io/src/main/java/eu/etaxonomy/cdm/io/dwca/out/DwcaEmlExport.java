@@ -37,7 +37,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @Component
 public class DwcaEmlExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaEmlExport.class);
+
+    private static final long serialVersionUID = -1762545757384406718L;
+
+    private static final Logger logger = Logger.getLogger(DwcaEmlExport.class);
 
 	private static final String fileName = "eml.xml";
 

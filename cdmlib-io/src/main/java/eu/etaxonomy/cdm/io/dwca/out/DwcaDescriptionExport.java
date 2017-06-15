@@ -41,7 +41,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Component
 public class DwcaDescriptionExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
+
+    private static final long serialVersionUID = 4756084824053120718L;
+
+    private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Description";
 	private static final String fileName = "description.txt";

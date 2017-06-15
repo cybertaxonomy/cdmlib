@@ -38,7 +38,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Component
 public class DwcaDistributionExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
+
+    private static final long serialVersionUID = -3274468345456407430L;
+
+    private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
 	private static final String fileName = "distribution.txt";
@@ -79,7 +82,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
                 classificationList = getClassificationService().find(classificationUuidSet);
             }
 
-            Set<Classification> classificationSet = new HashSet<Classification>();
+            Set<Classification> classificationSet = new HashSet<>();
             classificationSet.addAll(classificationList);
             List<TaxonNode> allNodes;
 

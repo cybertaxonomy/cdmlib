@@ -116,28 +116,16 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		this.emlRecord = emlRecord;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
 	@Override
 	public File getDestination() {
 		return super.getDestination();
 	}
 
-
-	/**
-	 * @param file
-	 */
 	@Override
 	public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
-	 */
 	@Override
 	public String getDestinationNameString() {
 		if (this.getDestination() == null) {
@@ -147,16 +135,10 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
-	 */
 	@Override
     public DwcaTaxExportState getNewState() {
 		return new DwcaTaxExportState(this);
 	}
-
-
 
 	public boolean isDoTaxa() {
 		return doTaxa;

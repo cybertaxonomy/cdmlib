@@ -30,7 +30,10 @@ import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
  */
 @Component
 public class DwcaMetaDataExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
+
+    private static final long serialVersionUID = -4033439569151252697L;
+
+    private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
 
 	private static final String fileName = "meta.xml";
 
@@ -192,22 +195,10 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoMetaData();
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public byte[] getByteArray() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

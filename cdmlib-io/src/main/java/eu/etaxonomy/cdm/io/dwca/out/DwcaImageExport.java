@@ -41,7 +41,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Component
 public class DwcaImageExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
+    private static final long serialVersionUID = -4997807762779037215L;
+
+    private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
 	private static final String fileName = "images.txt";
@@ -82,7 +84,7 @@ public class DwcaImageExport extends DwcaExportBase {
                 classificationList = getClassificationService().find(classificationUuidSet);
             }
 
-            Set<Classification> classificationSet = new HashSet<Classification>();
+            Set<Classification> classificationSet = new HashSet<>();
             classificationSet.addAll(classificationList);
             List<TaxonNode> allNodes;
 
@@ -91,11 +93,11 @@ public class DwcaImageExport extends DwcaExportBase {
             }
             allNodes = state.getAllNodes();
 			for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+				Taxon taxon = CdmBase.deproxy(node.getTaxon());
 				Set<? extends DescriptionBase<?>> descriptions = taxon.getDescriptions();
 				for (DescriptionBase<?> description : descriptions){
-					for (Object o : description.getElements()){
-						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
+					for (DescriptionElementBase o : description.getElements()){
+						DescriptionElementBase el = CdmBase.deproxy(o);
 						if (el.getMedia().size() > 0){
 							for (Media media: el.getMedia()){
 								for (MediaRepresentation repr : media.getRepresentations()){
