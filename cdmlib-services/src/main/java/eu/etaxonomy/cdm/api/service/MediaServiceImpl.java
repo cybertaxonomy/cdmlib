@@ -171,6 +171,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         MediaDeletionConfigurator mediaConfig = (MediaDeletionConfigurator)config;
         for (CdmBase ref: references){
             String message = null;
+            if (ref instanceof MediaRepresentation){
+                continue;
+            }
             if (ref instanceof TextData){
                 TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
                 DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
