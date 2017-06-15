@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,7 +28,9 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @created 18.04.2011
  */
 public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTaxExportState> {
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = -464609596078614735L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportConfigurator.class);
 
 	private String encoding = "UTF-8";
@@ -37,7 +39,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean hasHeaderLines = true;
 	private String fieldsTerminatedBy=",";
 
-	
+
 	private boolean doTaxa = true;
 	private boolean doResourceRelation = true;
 	private boolean doTypesAndSpecimen = true;
@@ -48,44 +50,48 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doImages = true;
 	private boolean doMetaData = true;
 	private boolean doEml = true;
-	
+
 	private boolean isUseIdWherePossible = false;
-	
-	
+
+
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
-	
+
 	private String defaultBibliographicCitation = null;
-	
+
 	private DwcaEmlRecord emlRecord;
 
-	
+
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 
 	//filter on the classifications to be exported
-	private Set<UUID> classificationUuids = new HashSet<UUID>();   
+	private Set<UUID> classificationUuids = new HashSet<UUID>();
 
 	private String defaultTaxonSource;
 
 	private boolean withHigherClassification = false;
 
 	private String setSeparator = ";";
-	
+
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
-	
-	
+
+
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
 		return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
 	}
 
+//    public static DwcaTaxExportConfigurator NewInstance(TaxonNode subtree, File destinationFolder, DwcaEmlRecord emlRecord) {
+//        return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
+//    }
 
-		@Override
-		@SuppressWarnings("unchecked")
+
+	@Override
+	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				DwcaTaxExport.class
-				,DwcaResourceRelationExport.class 
+				,DwcaResourceRelationExport.class
 				,DwcaTypesExport.class
 				,DwcaVernacularExport.class
 				,DwcaReferenceExport.class
@@ -99,8 +105,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	}
 
 
-	
-	
+
+
 	/**
 	 * @param url
 	 * @param destination
@@ -109,7 +115,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		super(destination, source, defaultTransformer);
 		this.emlRecord = emlRecord;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
@@ -119,7 +125,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		return super.getDestination();
 	}
 
-	
+
 	/**
 	 * @param file
 	 */
@@ -127,7 +133,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
@@ -145,11 +151,12 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public DwcaTaxExportState getNewState() {
+	@Override
+    public DwcaTaxExportState getNewState() {
 		return new DwcaTaxExportState(this);
 	}
-	
-	
+
+
 
 	public boolean isDoTaxa() {
 		return doTaxa;
@@ -222,7 +229,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public List<UUID> getFeatureExclusions() {
 		return featureExclusions;
 	}
-	
+
 	public String getEncoding() {
 		return encoding;
 	}
@@ -319,17 +326,17 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 
 	/**
-	 * The default value for the taxon.source column. This may be a column linking to a url that provides 
-	 * data about the given taxon. The id is replaced by a placeholder, 
+	 * The default value for the taxon.source column. This may be a column linking to a url that provides
+	 * data about the given taxon. The id is replaced by a placeholder,
 	 * e.g. http://wp6-cichorieae.e-taxonomy.eu/portal/?q=cdm_dataportal/taxon/{id}.
 	 * NOTE: This may be replaced in future versions by concrete CDM server implementations.
-	 * 
+	 *
 	 * @return the taxonSourceDefault
 	 */
 	public String getDefaultTaxonSource() {
 		return defaultTaxonSource;
 	}
-	
+
 	public void setDefaultTaxonSource(String taxonSourceDefault) {
 		this.defaultTaxonSource = taxonSourceDefault;
 	}

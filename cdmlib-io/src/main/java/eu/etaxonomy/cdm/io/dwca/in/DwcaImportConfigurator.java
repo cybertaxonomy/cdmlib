@@ -23,7 +23,9 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
  * @created 05.05.2011
  */
 public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaImportState> implements IImportConfigurator {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 6932718596034946336L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 
