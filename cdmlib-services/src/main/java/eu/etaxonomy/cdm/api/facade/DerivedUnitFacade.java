@@ -1824,6 +1824,12 @@ public class DerivedUnitFacade {
 	public DefinedTerm getKindOfUnit() {
 		return (hasFieldUnit() ? getFieldUnit(true).getKindOfUnit() : null);
 	}
+//
+//   @Transient
+//    public DefinedTerm getDerivedUnitKindOfUnit() {
+//       checkDerivedUnit();
+//       return checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null;
+//    }
 
 
 	/**
@@ -1836,6 +1842,12 @@ public class DerivedUnitFacade {
 	        fieldUnit.setKindOfUnit(kindOfUnit);
 	    }
 	}
+
+//    public void setDerivedUnitKindOfUnit(DefinedTerm kindOfUnit) {
+//        testDerivedUnit();
+//
+//        baseUnit().setKindOfUnit(kindOfUnit);
+//    }
 
 
 	// field unit

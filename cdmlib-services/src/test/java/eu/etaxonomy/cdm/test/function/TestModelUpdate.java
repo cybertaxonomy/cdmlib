@@ -100,6 +100,7 @@ public class TestModelUpdate {
         }else if (dbType == DatabaseTypeEnum.H2){
             //H2
             String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
+//            String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_xyz";
             username = "sa";
             CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
             return dataSource;
@@ -126,9 +127,9 @@ public class TestModelUpdate {
 	 */
 	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
+	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
 //	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
-	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
 
 	    String pathInProject = "src\\test\\resources\\h2";
 
@@ -157,7 +158,7 @@ public class TestModelUpdate {
 		System.out.println("Start Datasource");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();
+//		updateRemoteWebappTestH2();  //also updates vaadin and taxedtior model
 
 		System.out.println("\nEnd Datasource");
 	}
