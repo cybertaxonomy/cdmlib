@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.IndexRenamer;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
@@ -414,6 +415,15 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
         //#6368
         changeTaxonNameTableName(stepList);
+
+        //#6717 update index names
+        step = IndexRenamer.NewStringInstance("TaxonName",
+                "taxonNameBaseNameCacheIndex", "taxonNameNameCacheIndex", "nameCache", 255);
+        stepList.add(step);
+
+        step = IndexRenamer.NewStringInstance("TaxonName",
+                "taxonNameBaseTitleCacheIndex", "taxonNameTitleCacheIndex", "titleCache", 333);
+        stepList.add(step);
 
     }
 
