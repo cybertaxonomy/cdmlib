@@ -96,19 +96,15 @@ public class OutputModelResultProcessor {
      * @return
      */
     public void createFinalResult(OutputModelExportState state) {
-        String strToPrint ="";
         ExportResult finalResult = ExportResult.NewInstance(ExportResultType.MAP_BYTE_ARRAY);
 
         if (!result.isEmpty() ){
             //Replace quotes by double quotes
-            String value ;
             for (OutputModelTable table: result.keySet()){
                 //schreibe jede Tabelle in einen Stream...
                 Map<String, String[]> tableData = result.get(table);
                 OutputModelConfigurator config = state.getConfig();
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
-
-
 
                 try{
                     List<String> data = new ArrayList<String>();
@@ -128,7 +124,7 @@ public class OutputModelResultProcessor {
                             null,exportStream,
                             Charset.forName("UTF-8"));
                 } catch(IOException e){
-                    finalResult.addError(e.getMessage());
+                    finalResult.addException(e, e.getMessage());
                 }
 
                 finalResult.putExportData(table.getTableName(), exportStream.toByteArray());

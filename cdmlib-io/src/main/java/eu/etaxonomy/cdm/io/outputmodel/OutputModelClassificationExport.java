@@ -101,24 +101,38 @@ public class OutputModelClassificationExport
      */
     @Override
     protected void doInvoke(OutputModelExportState state) {
-        OutputModelConfigurator config = state.getConfig();
+        try {
+            OutputModelConfigurator config = state.getConfig();
 
-        if (config.getClassificationUuids().isEmpty()){
-            //TODO
-            state.setEmptyData();
-            return;
+            if (config.getClassificationUuids().isEmpty()){
+                //TODO
+                state.setEmptyData();
+                return;
+            }
+            //TODO MetaData
+            for (UUID classificationUuid : config.getClassificationUuids()){
+                handleSingleClassification(state, classificationUuid);
+            }
+            state.getProcessor().createFinalResult(state);
+        } catch (Exception e) {
+            state.getResult().addException(e, "An unexpected error occurred in main method doInvoke() " +
+                    e.getMessage());
         }
-        //TODO MetaData
-        for (UUID classificationUuid : config.getClassificationUuids()){
-            Classification classification = getClassificationService().find(classificationUuid);
+    }
 
+    /**
+     * @param state
+     * @param classificationUuid
+     */
+    private void handleSingleClassification(OutputModelExportState state, UUID classificationUuid) {
+        try {
+            Classification classification = getClassificationService().find(classificationUuid);
 
             if (classification == null){
                 String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
                 //TODO
                 state.getResult().addWarning(message);
             }else{
-//                gtTaxonNodeService().
                 TaxonNode root = classification.getRootNode();
 
                 UUID uuid = root.getUuid();
@@ -129,8 +143,10 @@ public class OutputModelClassificationExport
                     //TODO progress monitor
                 }
             }
+        } catch (Exception e) {
+            state.getResult().addException(e, "An unexpected error occurred when handling classification " +
+                    classificationUuid + ": " + e.getMessage());
         }
-        state.getProcessor().createFinalResult(state);
     }
 
     /**
@@ -167,7 +183,8 @@ public class OutputModelClassificationExport
                 state.getProcessor().put(table, taxon, csvLine, state);
                 handleDescriptions(state, taxon);
              }catch(Exception e){
-                 state.getResult().addError ("An unexpected problem occurred when trying to export taxon with id " + taxon.getId(), e);
+                 state.getResult().addException (e, "An unexpected problem occurred when trying to export "
+                         + "taxon with id " + taxon.getId());
                  state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
              }
        }
@@ -230,7 +247,6 @@ public class OutputModelClassificationExport
                         }
                     }
                 }
-
              }
             if (!simpleFacts.isEmpty()){
                 handleSimpleFacts(state, name, simpleFacts);
@@ -1272,7 +1288,7 @@ public class OutputModelClassificationExport
         return shortCitation;
     }
 
-    public static String concatString(Team team, List<Person> teamMembers, int i) {
+    private static String concatString(Team team, List<Person> teamMembers, int i) {
         String concat;
         if (i <= 1){
             concat = "";
