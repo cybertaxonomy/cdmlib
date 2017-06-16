@@ -372,7 +372,7 @@ public class EditGeoServiceUtilities {
             String geoLayerName = getWMSLayerName(area, mapping);
 
             if(geoLayerName == null){
-               /* IGNORE areas for which no layer is mapped */
+               logger.warn("no wms layer mapping defined for " + area.getLabel());
             } else {
                 Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerName);
                 if (styleMap == null) {
