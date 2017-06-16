@@ -166,7 +166,7 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	 * The extraction of 1 individual/organism out of any kind of sample (usually mixed samples with >1 taxa).
 	 * The resulting individual may be used for a diversity of purposes like pure identification,
 	 * image creation, further derivation, property assignment, ...)
-	 * @return The indidivualization event
+	 * @return The individualization event
 	 */
 	public static final DerivationEventType INDIVIDUAL_SELECTION(){
 		return getTermByUuid(uuidIndividualSelection);
