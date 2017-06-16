@@ -207,10 +207,18 @@ public class OutputModelClassificationExport
                     }
                 }
             }
-            if (!commonNameFacts.isEmpty()){ handleCommonNameFacts(state, taxon, commonNameFacts);}
-            if (!distributionFacts.isEmpty()){ handleDistributionFacts(state, taxon, distributionFacts);}
-            if (!specimenFacts.isEmpty()){ handleSpecimenFacts(state, taxon, specimenFacts);}
-            if (!simpleFacts.isEmpty()){ handleSimpleFacts(state, taxon, simpleFacts);}
+            if (!commonNameFacts.isEmpty()){
+                handleCommonNameFacts(state, taxon, commonNameFacts);
+            }
+            if (!distributionFacts.isEmpty()){
+                handleDistributionFacts(state, taxon, distributionFacts);
+            }
+            if (!specimenFacts.isEmpty()){
+                handleSpecimenFacts(state, taxon, specimenFacts);
+            }
+            if (!simpleFacts.isEmpty()){
+                handleSimpleFacts(state, taxon, simpleFacts);
+            }
         } else if (cdmBase instanceof TaxonName){
             TaxonName name = CdmBase.deproxy(cdmBase, TaxonName.class);
             Set<TaxonNameDescription> descriptions = name.getDescriptions();
@@ -220,12 +228,14 @@ public class OutputModelClassificationExport
                     for (DescriptionElementBase element: description.getElements()){
                         if (!element.getFeature().equals(Feature.PROTOLOGUE())){
                             simpleFacts.add(element);
-                            }
+                        }
                     }
                 }
 
              }
-            if (!simpleFacts.isEmpty()){ handleSimpleFacts(state, cdmBase, simpleFacts);}
+            if (!simpleFacts.isEmpty()){
+                handleSimpleFacts(state, name, simpleFacts);
+            }
         }
 
 
@@ -297,41 +307,32 @@ public class OutputModelClassificationExport
 
         for (DescriptionElementBase element: specimenFacts){
             csvLine = new String[table.getSize()];
+            csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
+            csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
+            handleSource(state, element, table);
+            csvLine[table.getIndex(OutputModelTable.SPECIMEN_NOTES)] = createAnnotationsString(element.getAnnotations());
+
             if (element instanceof IndividualsAssociation){
 
                 IndividualsAssociation indAssociation = (IndividualsAssociation)element;
-                csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, element);
-                csvLine[table.getIndex(OutputModelTable.TAXON_FK)] = getId(state, taxon);
-                handleSource(state, element, table);
                 if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
-                    SpecimenOrObservationBase specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
+                    SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
 
                     if (specimenBase instanceof DerivedUnit){
                         DerivedUnit derivedUnit = (DerivedUnit)specimenBase;
                         handleSpecimen(state, derivedUnit);
-
                         csvLine[table.getIndex(OutputModelTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
-
                     }else{
+                        //field units are not supported
                         state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
                     }
-
                 }
-                csvLine[table.getIndex(OutputModelTable.SPECIMEN_NOTES)] = createAnnotationsString(indAssociation.getAnnotations());
-                state.getProcessor().put(table, indAssociation, csvLine, state);
 
             } else if (element instanceof TextData){
                 TextData textData = HibernateProxyHelper.deproxy(element, TextData.class);
-                csvLine[table.getIndex(OutputModelTable.FACT_ID)] = getId(state, textData);
-                handleSource(state, textData, table);
-                csvLine[table.getIndex(OutputModelTable.SPECIMEN_NOTES)] = createAnnotationsString(textData.getAnnotations());
-
                 csvLine[table.getIndex(OutputModelTable.SPECIMEN_DESCRIPTION)] = createMultilanguageString(textData.getMultilanguageText());
-                state.getProcessor().put(table, element, csvLine, state);
-              //  state.getResult().addError("The specimen description for the taxon " + taxon.getUuid() + " is not of type individual association. Could not be exported. UUID of the description element: " + element.getUuid());
-            }
-
-
+             }
+            state.getProcessor().put(table, element, csvLine, state);
         }
     }
 
