@@ -216,7 +216,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         state.setClassification(Classification.NewInstance(name, state.getRef(), Language.DEFAULT()));
                         //we do not need a default classification when creating an empty new one
                         state.setDefaultClassification(state.getClassification());
-                        save(state.getDefaultClassification(), state);
+                        save(state.getDefaultClassification(false), state);
                     }
                     save(state.getClassification(), state);
                 }
@@ -248,7 +248,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
-               // state.setDefaultClassification(getClassificationService().load(state.getDefaultClassification().getUuid()));
+                if (state.getDefaultClassification(false) != null){ state.setDefaultClassification(getClassificationService().load(state.getDefaultClassification(false).getUuid()));}
+                if (state.getClassification() != null){  state.setClassification(getClassificationService().load(state.getClassification().getUuid()));}
                 state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
                 state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());

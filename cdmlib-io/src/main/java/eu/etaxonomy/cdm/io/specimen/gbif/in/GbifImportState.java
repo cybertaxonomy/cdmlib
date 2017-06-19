@@ -138,7 +138,7 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
 
 
     @Override
-    public Classification getDefaultClassification() {
+    public Classification getDefaultClassification(boolean createIfNotExist) {
         return defaultClassification;
     }
 
@@ -184,71 +184,85 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
     }
 
 
+    @Override
     public List<OriginalSourceBase<?>> getAssociationRefs() {
         return associationRefs;
     }
 
 
+    @Override
     public void setAssociationRefs(List<OriginalSourceBase<?>> associationRefs) {
         this.associationRefs = associationRefs;
     }
 
 
+    @Override
     public boolean isAssociationSourcesSet() {
         return associationSourcesSet;
     }
 
 
+    @Override
     public void setAssociationSourcesSet(boolean associationSourcesSet) {
         this.associationSourcesSet = associationSourcesSet;
     }
 
 
+    @Override
     public List<OriginalSourceBase<?>> getDescriptionRefs() {
         return descriptionRefs;
     }
 
 
+    @Override
     public void setDescriptionRefs(List<OriginalSourceBase<?>> descriptionRefs) {
         this.descriptionRefs = descriptionRefs;
     }
 
 
+    @Override
     public boolean isDescriptionSourcesSet() {
         return descriptionSourcesSet;
     }
 
 
+    @Override
     public void setDescriptionSourcesSet(boolean descriptionSourcesSet) {
         this.descriptionSourcesSet = descriptionSourcesSet;
     }
 
 
+    @Override
     public List<OriginalSourceBase<?>> getDerivedUnitSources() {
         return derivedUnitSources;
     }
 
 
+    @Override
     public void setDerivedUnitSources(List<OriginalSourceBase<?>> derivedUnitSources) {
         this.derivedUnitSources = derivedUnitSources;
     }
 
 
+    @Override
     public boolean isDerivedUnitSourcesSet() {
         return derivedUnitSourcesSet;
     }
 
 
+    @Override
     public void setDerivedUnitSourcesSet(boolean derivedUnitSourcesSet) {
         this.derivedUnitSourcesSet = derivedUnitSourcesSet;
     }
 
 
+    @Override
     public boolean isDescriptionGroupSet() {
         return descriptionGroupSet;
     }
 
 
+    @Override
     public void setDescriptionGroupSet(boolean descriptionGroupSet) {
         this.descriptionGroupSet = descriptionGroupSet;
     }
