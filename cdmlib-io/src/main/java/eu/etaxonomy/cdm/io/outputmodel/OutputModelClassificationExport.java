@@ -1283,7 +1283,7 @@ public class OutputModelClassificationExport
 
         }
         if (reference.getYear() != null){
-            shortCitation = shortCitation + "(" + reference.getYear() + ")";
+            shortCitation = shortCitation + " (" + reference.getYear() + ")";
         }
         return shortCitation;
     }
@@ -1368,7 +1368,7 @@ public class OutputModelClassificationExport
 
                         GatheringEvent gathering = fieldUnit.getGatheringEvent();
                         if (gathering != null){
-                            if (gathering.getLocality() != null){ csvLine[table.getIndex(OutputModelTable.LOCALITY)] = gathering.getLocality().getLanguageLabel();}
+                            if (gathering.getLocality() != null){ csvLine[table.getIndex(OutputModelTable.LOCALITY)] = gathering.getLocality().getText();}
                             if (gathering.getCountry() != null){csvLine[table.getIndex(OutputModelTable.COUNTRY)] = gathering.getCountry().getLabel();}
                             csvLine[table.getIndex(OutputModelTable.COLLECTOR_STRING)] = createCollectorString(state, gathering, fieldUnit);
                             addCollectingAreas(state, gathering);
