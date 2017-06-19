@@ -676,6 +676,13 @@ public class OutputModelClassificationExport
                 nomRef = HibernateProxyHelper.deproxy(nomRef);
                 if (nomRef.getInReference() != null){
                     Reference inReference = nomRef.getInReference();
+                    if (inReference.getDatePublished() != null && nomRef.getDatePublished() == null){
+                        csvLine[table.getIndex(OutputModelTable.DATE_PUBLISHED)] = inReference.getDatePublishedString();
+                        csvLine[table.getIndex(OutputModelTable.YEAR_PUBLISHED)] = inReference.getDatePublished().getYear();
+                    }
+                    if (nomRef.getVolume() == null && inReference.getVolume() != null){
+                        csvLine[table.getIndex(OutputModelTable.VOLUME_ISSUE)] = inReference.getVolume();
+                    }
                     if (inReference.getInReference() != null){
                         inReference = inReference.getInReference();
                     }
