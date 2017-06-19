@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.outputmodel;
+package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +26,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 15.03.2017
  *
  */
-public class OutputModelExportState extends ExportStateBase<OutputModelConfigurator, IExportTransformer>{
+public class CdmLightExportState extends ExportStateBase<CdmLightExportConfigurator, IExportTransformer>{
 
     private ExportResult result;
 
-    private OutputModelResultProcessor processor = new OutputModelResultProcessor(this);
+    private CdmLightExportResultProcessor processor = new CdmLightExportResultProcessor(this);
 
     private TaxonBase actualTaxonBase;
 
@@ -42,7 +42,7 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
     /**
      * @param config
      */
-    protected OutputModelExportState(OutputModelConfigurator config) {
+    protected CdmLightExportState(CdmLightExportConfigurator config) {
         super(config);
         result = ExportResult.NewInstance(config.getResultType());
     }
@@ -69,7 +69,7 @@ public class OutputModelExportState extends ExportStateBase<OutputModelConfigura
     /**
      * @return the processor
      */
-    public OutputModelResultProcessor getProcessor() {
+    public CdmLightExportResultProcessor getProcessor() {
         return processor;
     }
 

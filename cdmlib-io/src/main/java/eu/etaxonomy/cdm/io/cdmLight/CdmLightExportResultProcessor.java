@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.outputmodel;
+package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,18 +28,18 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * @date 16.03.2017
  *
  */
-public class OutputModelResultProcessor {
+public class CdmLightExportResultProcessor {
 
     private static final String HEADER = "HEADER_207dd23a-f877-4c27-b93a-8dbea3234281";
 
-    private Map<OutputModelTable, Map<String,String[]>> result = new HashMap<>();
-    //private OutputModelExportState state;
+    private Map<CdmLightExportTable, Map<String,String[]>> result = new HashMap<>();
+    //private CdmLightExportState state;
 
 
     /**
      * @param state
      */
-    public OutputModelResultProcessor(OutputModelExportState state) {
+    public CdmLightExportResultProcessor(CdmLightExportState state) {
         super();
         //this.state = state;
     }
@@ -49,7 +49,7 @@ public class OutputModelResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(OutputModelTable table, String id, String[] csvLine, OutputModelExportState state) {
+    public void put(CdmLightExportTable table, String id, String[] csvLine, CdmLightExportState state) {
         Map<String,String[]> resultMap = result.get(table);
         if (resultMap == null ){
             resultMap = new HashMap<>();
@@ -72,7 +72,7 @@ public class OutputModelResultProcessor {
 
 
 
-    public boolean hasRecord(OutputModelTable table, String id){
+    public boolean hasRecord(CdmLightExportTable table, String id){
         Map<String, String[]> resultMap = result.get(table);
         if (resultMap == null){
             return false;
@@ -87,7 +87,7 @@ public class OutputModelResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(OutputModelTable table, ICdmBase cdmBase, String[] csvLine, OutputModelExportState state) {
+    public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine, CdmLightExportState state) {
        this.put(table, String.valueOf(cdmBase.getId()), csvLine, state);
     }
 
@@ -95,15 +95,15 @@ public class OutputModelResultProcessor {
     /**
      * @return
      */
-    public void createFinalResult(OutputModelExportState state) {
+    public void createFinalResult(CdmLightExportState state) {
         ExportResult finalResult = ExportResult.NewInstance(ExportResultType.MAP_BYTE_ARRAY);
 
         if (!result.isEmpty() ){
             //Replace quotes by double quotes
-            for (OutputModelTable table: result.keySet()){
+            for (CdmLightExportTable table: result.keySet()){
                 //schreibe jede Tabelle in einen Stream...
                 Map<String, String[]> tableData = result.get(table);
-                OutputModelConfigurator config = state.getConfig();
+                CdmLightExportConfigurator config = state.getConfig();
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
 
                 try{
@@ -142,7 +142,7 @@ public class OutputModelResultProcessor {
      * @param csvLine
      * @return
      */
-    private String createCsvLine(OutputModelConfigurator config, String[] csvLine) {
+    private String createCsvLine(CdmLightExportConfigurator config, String[] csvLine) {
         String lineString = "";
         boolean first = true;
         for (String columnEntry: csvLine){

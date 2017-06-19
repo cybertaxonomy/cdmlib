@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.outputmodel;
+package eu.etaxonomy.cdm.io.cdmLight;
 
 /**
  * An enumeration with each instance representing a table type in the Output Model.
@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.io.outputmodel;
  * @author a.mueller
  * @date 15.03.2017
  */
-public enum OutputModelTable {
+public enum CdmLightExportTable {
     METADATA("Metadata", metaDataColumns()),
     SCIENTIFIC_NAME("ScientificName", nameColumns()),
     NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
@@ -275,7 +275,7 @@ public enum OutputModelTable {
 
 // ************** CONSTRUCTOR *******************/
 
-    private OutputModelTable(String tableName, String[] columnNames){
+    private CdmLightExportTable(String tableName, String[] columnNames){
         this.tableName = tableName;
         this.columnNames = columnNames;
     }

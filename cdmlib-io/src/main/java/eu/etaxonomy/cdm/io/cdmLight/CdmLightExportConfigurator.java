@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.outputmodel;
+package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @date 15.03.2017
  *
  */
-public class OutputModelConfigurator extends ExportConfiguratorBase<File, OutputModelExportState, IExportTransformer>{
+public class CdmLightExportConfigurator extends ExportConfiguratorBase<File, CdmLightExportState, IExportTransformer>{
 
 
     private static final long serialVersionUID = -1562074221435082060L;
@@ -37,7 +37,7 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
     /**
      * @param transformer
      */
-    public OutputModelConfigurator(IExportTransformer transformer) {
+    public CdmLightExportConfigurator(IExportTransformer transformer) {
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
@@ -78,9 +78,9 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
      * {@inheritDoc}
      */
     @Override
-    public OutputModelExportState getNewState() {
+    public CdmLightExportState getNewState() {
 
-        return new OutputModelExportState(this);
+        return new CdmLightExportState(this);
     }
     /**
      * {@inheritDoc}
@@ -94,7 +94,7 @@ public class OutputModelConfigurator extends ExportConfiguratorBase<File, Output
     @SuppressWarnings("unchecked")
     protected void makeIoClassList() {
         ioClassList = new Class[] {
-                OutputModelClassificationExport.class
+                CdmLightClassificationExport.class
         };
     }
 
