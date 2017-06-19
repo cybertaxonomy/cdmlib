@@ -682,6 +682,7 @@ public class OutputModelClassificationExport
                     }
                     if (nomRef.getVolume() == null && inReference.getVolume() != null){
                         csvLine[table.getIndex(OutputModelTable.VOLUME_ISSUE)] = inReference.getVolume();
+                        csvLine[table.getIndex(OutputModelTable.COLLATION)] = createCollatation(name);
                     }
                     if (inReference.getInReference() != null){
                         inReference = inReference.getInReference();
@@ -799,6 +800,40 @@ public class OutputModelClassificationExport
             state.getResult().addException(e, "An unexpected error occurred when handling synonym " +
                     cdmBaseStr(name) + ": " + e.getMessage());
         }
+    }
+
+    /**
+     * @return
+     */
+    private String createCollatation(TaxonName name) {
+        String collation = "";
+        if (name.getNomenclaturalReference() != null){
+            Reference ref = (Reference) name.getNomenclaturalReference();
+            collation = getVolume(ref);
+        }
+        if (name.getNomenclaturalMicroReference() != null){
+            if (!StringUtils.isBlank(collation)){
+                collation += ":";
+            }
+            collation +=name.getNomenclaturalMicroReference();
+        }
+
+        return collation;
+    }
+
+    /**
+     * @param nomenclaturalReference
+     * @return
+     */
+    private String getVolume(Reference reference) {
+        if (reference.getVolume() != null){
+            return reference.getVolume();
+        }else if (reference.getInReference() != null){
+            if (reference.getInReference().getVolume() != null){
+                return reference.getInReference().getVolume();
+            }
+        }
+        return null;
     }
 
     /**
