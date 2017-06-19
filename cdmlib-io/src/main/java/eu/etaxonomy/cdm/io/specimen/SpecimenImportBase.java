@@ -553,7 +553,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        if (cdmBase.isInstanceOf(LanguageString.class)){
 	            return cdmRepository.getTermService().saveLanguageData(CdmBase.deproxy(cdmBase, LanguageString.class));
 	        }else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
-	            return cdmRepository.getOccurrenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class));
+	            SpecimenOrObservationBase specimen = CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class);
+
+	            return cdmRepository.getOccurrenceService().saveOrUpdate(specimen);
 	        }else if (cdmBase.isInstanceOf(Reference.class)){
 	            return cdmRepository.getReferenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, Reference.class));
 	        }else if (cdmBase.isInstanceOf(Classification.class)){
@@ -563,7 +565,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }else if (cdmBase.isInstanceOf(Collection.class)){
 	            return cdmRepository.getCollectionService().saveOrUpdate(CdmBase.deproxy(cdmBase, Collection.class));
 	        }else if (cdmBase.isInstanceOf(DescriptionBase.class)){
-	            return cdmRepository.getDescriptionService().saveOrUpdate(CdmBase.deproxy(cdmBase, DescriptionBase.class));
+	            DescriptionBase description = CdmBase.deproxy(cdmBase, DescriptionBase.class);
+
+	            return cdmRepository.getDescriptionService().saveOrUpdate(description);
 	        }else if (cdmBase.isInstanceOf(TaxonBase.class)){
 	            return cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
 	        }else if (cdmBase.isInstanceOf(TaxonName.class)){
@@ -1008,14 +1012,14 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        if (!existsInClassification(taxon,state.getClassification(), state)){
 	            if(config.isMoveNewTaxaToDefaultClassification()){
 	                //check if node exists in default classification
-	                if (!existsInClassification(taxon, state.getDefaultClassification(), state)){
-	                    addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification());
+	                if (!existsInClassification(taxon, state.getDefaultClassification(true), state)){
+	                    addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification(true));
 	                }
-	            }
-	            else {
+	            }else{
 	                //add non-existing taxon to current classification
 	                addParentTaxon(taxon, state, preferredFlag, state.getClassification());
 	            }
+
 	        }
 	    }
 

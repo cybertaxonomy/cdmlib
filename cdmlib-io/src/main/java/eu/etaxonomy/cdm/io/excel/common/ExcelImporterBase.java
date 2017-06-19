@@ -25,8 +25,10 @@ import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -144,7 +146,12 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
                 secondPass(state);
     			state.incCurrentLine();
     	   	}
-
+    		if (configurator.isDeduplicateReferences()){
+    		    getReferenceService().deduplicate(Reference.class, null, null);
+    		}
+    		if (configurator.isDeduplicateAuthors()){
+                getAgentService().deduplicate(TeamOrPersonBase.class, null, null);
+            }
     		commitTransaction(txStatus);
     	}else{
     		logger.warn("No records found in " + source);

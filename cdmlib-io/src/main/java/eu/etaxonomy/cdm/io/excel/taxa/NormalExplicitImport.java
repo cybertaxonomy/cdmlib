@@ -285,11 +285,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		//protologue
 		for (String protologue : taxonDataHolder.getProtologues()){
 			TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
-			this.getNameDescription(taxonBase.getName()).addElement(textData);
+			this.getNameDescription(taxonBase.getName(), state).addElement(textData);
 			URI uri;
 			try {
 				uri = new URI(protologue);
 				textData.addMedia(Media.NewInstance(uri, null, null, null));
+
 			} catch (URISyntaxException e) {
 				String warning = "URISyntaxException when trying to convert to URI: " + protologue;
 				logger.error(warning);
@@ -379,10 +380,10 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     							if (parentTaxon != null) {
     								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 
-    								Reference sourceRef = state.getConfig().getSourceReference();
+    							//	Reference sourceRef = state.getConfig().getSourceReference();
     								String microCitation = null;
     								Taxon childTaxon = taxon;
-    								makeParent(state, parentTaxon, childTaxon, sourceRef, microCitation);
+    								makeParent(state, parentTaxon, childTaxon, null, microCitation);
     								getTaxonService().saveOrUpdate(childTaxon);
     								state.putTaxon(parentId, parentTaxon);
     							} else {
@@ -420,10 +421,10 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     					    if (parentTaxon != null) {
                                 Taxon taxon = (Taxon)state.getTaxonBase(childId);
 
-                                Reference sourceRef = state.getConfig().getSourceReference();
+                               // Reference sourceRef = state.getConfig().getSourceReference();
                                 String microCitation = null;
                                 Taxon childTaxon = taxon;
-                                makeParent(state, parentTaxon, childTaxon, sourceRef, microCitation);
+                                makeParent(state, parentTaxon, childTaxon, null, microCitation);
                                 getTaxonService().saveOrUpdate(parentTaxon);
                                 state.putTaxon(parentId, parentTaxon);
                             } else {
@@ -790,15 +791,15 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			if (StringUtils.isNotBlank(reference)) {
 			    String pub = CdmUtils.concat(" ", reference, state.getCurrentRow().getCollation());
 			    String[] split = pub.split(":");
-
-			    INomenclaturalReference ref = parser.parseReferenceTitle(reference, date, true);
+			    pub = split[0];
+			    INomenclaturalReference ref = parser.parseReferenceTitle(pub, date, true);
 			    if (split.length > 1){
                     String detail = split[split.length-1];
                     taxonName.setNomenclaturalMicroReference(detail.trim());
-                    pub = pub.substring(0, pub.length() - detail.length() - 1).trim();
+
                 }
 
-                ref.setAbbrevTitle(pub);
+             //   ref.setAbbrevTitle(pub);
 
 
 			    if (ref.getAuthorship() == null){
@@ -817,15 +818,15 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 
 		//Create the taxon
-		Reference sec = state.getConfig().getSourceReference();
+		//Reference sec = state.getConfig().getSourceReference();
 		// Create the status
 		nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 		if (validMarkers.contains(nameStatus)){
-			taxonBase = Taxon.NewInstance(taxonName, sec);
+			taxonBase = Taxon.NewInstance(taxonName, null);
 		}else if (synonymMarkers.contains(nameStatus)){
-			taxonBase = Synonym.NewInstance(taxonName, sec);
+			taxonBase = Synonym.NewInstance(taxonName, null);
 		}else {
-			Taxon taxon = Taxon.NewInstance(taxonName, sec);
+			Taxon taxon = Taxon.NewInstance(taxonName, null);
 			if (nameStatusMarkers.contains(nameStatus)){
 			    if (nameStatus.equals(NOM_ILLEG)){
 			        taxonName.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
@@ -839,8 +840,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 			taxonBase = taxon;
 		}
-		taxonBase.getName().addSource(OriginalSourceType.Import, null,"TaxonName" ,null, null);
-		taxonBase.addSource(OriginalSourceType.Import, null,"TaxonName" ,null, null);
+		taxonBase.getName().addSource(OriginalSourceType.Import, null,"TaxonName" ,state.getConfig().getSourceReference(), null);
+		taxonBase.addSource(OriginalSourceType.Import, null,"TaxonName" ,state.getConfig().getSourceReference(), null);
 
 		return taxonBase;
 	}
@@ -852,14 +853,16 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	//TODO implementation must be improved when matching of taxon names with existing names is implemented
 	//=> the assumption that the only description is the description added by this import
 	//is wrong then
-	private TaxonNameDescription getNameDescription(TaxonName name) {
+	private TaxonNameDescription getNameDescription(TaxonName name, TaxonExcelImportState state) {
 		Set<TaxonNameDescription> descriptions = name.getDescriptions();
 		if (descriptions.size()>1){
 			throw new IllegalStateException("Implementation does not yet support names with multiple descriptions");
 		}else if (descriptions.size()==1){
 			return descriptions.iterator().next();
 		}else{
-			return TaxonNameDescription.NewInstance(name);
+		    TaxonNameDescription desc = TaxonNameDescription.NewInstance(name);
+		    desc.addSource(OriginalSourceType.Import, null, "NameDescription", state.getConfig().getSourceReference(), null);
+			return desc;
 		}
 	}
 
