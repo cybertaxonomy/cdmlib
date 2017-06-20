@@ -16,25 +16,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  */
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
-    private boolean deleteFromAllTaxonDescription = false;
-    private boolean deleteFromAllSpecimenDescription = false;
-    private boolean deleteFromAllNameDescription = false;
+
+    private boolean deleteFromDescription = false;
     private boolean deleteFromEveryWhere = false;
     private boolean onlyRemoveFromGallery = true;
     private CdmBase deleteFrom;
 
-    public boolean isDeleteIfUsedInSpecimenDescription() {
-        return deleteFromAllSpecimenDescription;
-    }
-    public void setDeleteIfUsedInSpecimenDescription(boolean deleteIfUsedInSpecimenDescription) {
-        this.deleteFromAllSpecimenDescription = deleteIfUsedInSpecimenDescription;
-    }
-    public boolean isDeleteIfUsedInTaxonDescription() {
-        return deleteFromAllTaxonDescription;
-    }
-    public void setDeleteIfUsedInTaxonDescription(boolean deleteIfUsedInTaxonDescription) {
-        this.deleteFromAllTaxonDescription = deleteIfUsedInTaxonDescription;
-    }
+
     /**
      * @return the onlyRemoveFromGallery
      */
@@ -47,12 +35,7 @@ public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
     public void setOnlyRemoveFromGallery(boolean onlyRemoveFromGallery) {
         this.onlyRemoveFromGallery = onlyRemoveFromGallery;
     }
-    public boolean isDeleteIfUsedInNameDescription() {
-        return deleteFromAllNameDescription;
-    }
-    public void setDeleteIfUsedInNameDescription(boolean deleteIfUsedInNameDescription) {
-        this.deleteFromAllNameDescription = deleteIfUsedInNameDescription;
-    }
+
     public CdmBase getDeleteFrom() {
         return deleteFrom;
     }
@@ -64,5 +47,11 @@ public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
     }
     public void setDeleteFromEveryWhere(boolean deleteFromEveryWhere) {
         this.deleteFromEveryWhere = deleteFromEveryWhere;
+    }
+    public boolean isDeleteFromDescription() {
+        return deleteFromDescription;
+    }
+    public void setDeleteFromDescription(boolean deleteFromDescription) {
+        this.deleteFromDescription = deleteFromDescription;
     }
 }
