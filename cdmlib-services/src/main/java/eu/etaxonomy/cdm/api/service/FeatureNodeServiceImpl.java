@@ -123,8 +123,9 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
     @Override
     public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid, int position) {
         UpdateResult result = new UpdateResult();
-        FeatureNode movedNode = HibernateProxyHelper.deproxy(dao.load(movedNodeUuid), FeatureNode.class);
-        FeatureNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), FeatureNode.class);
+        FeatureNode movedNode = HibernateProxyHelper.deproxy(load(movedNodeUuid), FeatureNode.class);
+        FeatureNode targetNode = HibernateProxyHelper.deproxy(load(targetNodeUuid), FeatureNode.class);
+        FeatureNode parent = HibernateProxyHelper.deproxy(movedNode.getParent(), FeatureNode.class);
         if(position<0){
             targetNode.addChild(movedNode);
         }
@@ -132,8 +133,11 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
             targetNode.addChild(movedNode, position);
         }
         result.addUpdatedObject(targetNode);
-        if(movedNode.getParent()!=null){
-            result.addUpdatedObject(movedNode.getParent());
+        saveOrUpdate(targetNode);
+        saveOrUpdate(movedNode);
+        if(parent!=null){
+            result.addUpdatedObject(parent);
+            saveOrUpdate(parent);
         }
         result.setCdmEntity(targetNode.getFeatureTree());
         return result;
