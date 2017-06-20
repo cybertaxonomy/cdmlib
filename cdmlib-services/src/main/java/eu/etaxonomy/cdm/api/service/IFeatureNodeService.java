@@ -36,4 +36,21 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
      */
     DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
+    /**
+     * Moves a given {@link FeatureNode} to the target node at the given position;
+     * @param movedNodeUuid the node to move
+     * @param targetNodeUuid the target node
+     * @param position the position in the list of children of the target node
+     * @return the result of the operation
+     */
+    public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid, int position);
+
+    /**
+     * Moves a given {@link FeatureNode} to the target node;
+     * @param movedNodeUuid the node to move
+     * @param targetNodeUuid the target node
+     * @return the result of the operation
+     */
+    public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid);
+
 }
