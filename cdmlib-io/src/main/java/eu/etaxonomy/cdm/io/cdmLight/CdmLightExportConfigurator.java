@@ -34,6 +34,8 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<File, Cdm
 
     private boolean isHighlightPrimaryCollector = false;
 
+    private boolean createZipFile = false;
+
     /**
      * @param transformer
      */
@@ -120,6 +122,16 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<File, Cdm
     public boolean isHighLightPrimaryCollector() {
 
         return isHighlightPrimaryCollector;
+    }
+
+
+    public boolean isCreateZipFile() {
+        return createZipFile;
+    }
+
+
+    public void setCreateZipFile(boolean createZipFile) {
+        this.createZipFile = createZipFile;
     }
 
 }
