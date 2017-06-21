@@ -86,13 +86,31 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	         }
 
 	         dao.delete(node);
+	         if(parent!=null){
+	             result.addUpdatedObject(parent);
+	         }
 	         if (config.isDeleteElement()){
                  feature = node.getFeature();
                  termService.delete(feature.getUuid());
              }
 	     }
+	     return result;
+	 }
 
+	 @Override
+    public UpdateResult addChildFeaturNode(FeatureNode node, Feature featureChild){
+	     return addChildFeaturNode(node.getUuid(), featureChild.getUuid());
+	 }
 
+	 @Override
+    public UpdateResult addChildFeaturNode(UUID nodeUUID, UUID featureChildUuid){
+	     FeatureNode node = load(nodeUUID);
+	     Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
+	     UpdateResult result = new UpdateResult();
+	     FeatureNode childNode = FeatureNode.NewInstance(child);
+	     save(childNode);
+	     node.addChild(childNode);
+	     result.addUpdatedObject(node);
 	     return result;
 	 }
 

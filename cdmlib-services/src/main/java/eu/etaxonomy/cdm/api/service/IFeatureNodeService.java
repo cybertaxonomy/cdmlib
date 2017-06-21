@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
@@ -35,6 +36,23 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
      * @return
      */
     DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
+
+
+    /**
+     * Adds the specified feature as a child node to the given feature node
+     * @param node the feature node where the new feature should be added
+     * @param featureChild the feature which should be added to the given feature node
+     * @return the result of the operation
+     */
+    public UpdateResult addChildFeaturNode(FeatureNode node, Feature featureChild);
+
+    /**
+     * Adds the specified feature as a child node to the given feature node
+     * @param nodeUUID the UUID of the feature node where the new feature should be added
+     * @param featureChildUuid the UUID of the feature which should be added to the given feature node
+     * @return the result of the operation
+     */
+    public UpdateResult addChildFeaturNode(UUID nodeUUID, UUID featureChildUuid);
 
     /**
      * Moves a given {@link FeatureNode} to the target node at the given position;
