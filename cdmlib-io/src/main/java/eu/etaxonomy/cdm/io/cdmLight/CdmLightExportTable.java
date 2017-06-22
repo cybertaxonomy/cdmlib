@@ -76,9 +76,9 @@ public enum CdmLightExportTable {
 
     //Name
     protected static final String NAME_ID = "Name_ID";
-    protected static final String TROPICOS_ID = "Tropicos_ID";
-    protected static final String IPNI_ID = "IPNI_ID";
-    protected static final String WFO_ID = "WorldFloraOnline_ID";
+//    protected static final String TROPICOS_ID = "Tropicos_ID";
+//    protected static final String IPNI_ID = "IPNI_ID";
+//    protected static final String WFO_ID = "WorldFloraOnline_ID";
     protected static final String LSID = "LSID";
     protected static final String RANK = "Rank";
     protected static final String RANK_SEQUENCE = "Rank_Sequence";
@@ -248,7 +248,7 @@ public enum CdmLightExportTable {
         return new String[]{NAME1_FK, NAME2_FK, NAME_REL_TYPE};
     }
     final static String[] nameColumns(){
-        return new String[]{NAME_ID, LSID, TROPICOS_ID, IPNI_ID, WFO_ID, RANK, RANK_SEQUENCE,
+        return new String[]{NAME_ID, LSID, RANK, RANK_SEQUENCE,
                 FULL_NAME_WITH_AUTHORS, FULL_NAME_NO_AUTHORS, GENUS_UNINOMIAL,
                 INFRAGENERIC_RANK, INFRAGENERIC_EPITHET, SPECIFIC_EPITHET,
                 INFRASPECIFIC_RANK, INFRASPECIFIC_EPITHET,
