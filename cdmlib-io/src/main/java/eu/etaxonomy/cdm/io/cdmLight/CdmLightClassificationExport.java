@@ -90,6 +90,10 @@ public class CdmLightClassificationExport
     private static final String STD_TEAM_CONCATINATION = ", ";
     private static final String FINAL_TEAM_CONCATINATION = " & ";
 
+    private static final String IPNI_NAME_IDENTIFIER = "Ipni Name Identifier";
+    private static final String TROPICOS_NAME_IDENTIFIER = "Tropicos Name Identifier";
+    private static final String WFO_NAME_IDENTIFIER = "WFO Name Identifier";
+
     public CdmLightClassificationExport() {
         super();
         this.ioName = this.getClass().getSimpleName();
@@ -593,7 +597,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.LSID)] = "";
             }
 
-            handleIdentifier(state, name, csvLine, table);
+            handleIdentifier(state, name);
             handleDescriptions(state, name);
 
             csvLine[table.getIndex(CdmLightExportTable.RANK)] = getTitleCache(rank);
@@ -840,19 +844,33 @@ public class CdmLightClassificationExport
      * @param state
      * @param name
      */
-    private void handleIdentifier(CdmLightExportState state, TaxonName name, String[] csvLine, CdmLightExportTable table) {
+    private void handleIdentifier(CdmLightExportState state, TaxonName name) {
+        CdmLightExportTable table = CdmLightExportTable.IDENTIFIER;
+        String[] csvLine;
         try {
             Set<String>  IPNIidentifiers = name.getIdentifiers(DefinedTerm.IPNI_NAME_IDENTIFIER());
             Set<String>  tropicosIdentifiers = name.getIdentifiers(DefinedTerm.TROPICOS_NAME_IDENTIFIER());
             Set<String>  WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
             if (!IPNIidentifiers.isEmpty()){
-                extractIdentifier(IPNIidentifiers, csvLine, table.getIndex(CdmLightExportTable.IPNI_ID));
+                csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId( state, name);
+                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
+                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_IDS)] = extractIdentifier(IPNIidentifiers);
+                state.getProcessor().put(table, name, csvLine, state);
             }
             if (!tropicosIdentifiers.isEmpty()){
-                extractIdentifier(tropicosIdentifiers, csvLine, table.getIndex(CdmLightExportTable.TROPICOS_ID));
+                csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId( state, name);
+                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
+                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_IDS)] = extractIdentifier(tropicosIdentifiers);
+                state.getProcessor().put(table, name, csvLine, state);
             }
             if (!WFOIdentifiers.isEmpty()){
-                extractIdentifier(WFOIdentifiers,  csvLine, table.getIndex(CdmLightExportTable.WFO_ID));
+                csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId( state, name);
+                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
+                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_IDS)] = extractIdentifier(WFOIdentifiers);
+                state.getProcessor().put(table, name, csvLine, state);
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling identifiers for " +
@@ -864,7 +882,8 @@ public class CdmLightClassificationExport
     /**
      * @param tropicosIdentifiers
      */
-    private void extractIdentifier(Set<String> identifierSet, String[] csvLine, int index) {
+    private String extractIdentifier(Set<String> identifierSet) {
+
         String identifierString = "";
         for (String identifier: identifierSet){
             if (!StringUtils.isBlank(identifierString)){
@@ -873,7 +892,7 @@ public class CdmLightClassificationExport
             identifierString += identifier;
         }
 
-        csvLine[index] = identifierString;
+        return identifierString;
     }
 
     /**

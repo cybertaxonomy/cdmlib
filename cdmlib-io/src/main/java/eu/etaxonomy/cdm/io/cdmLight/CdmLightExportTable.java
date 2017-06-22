@@ -30,7 +30,8 @@ public enum CdmLightExportTable {
     SPECIMEN_FACT("SpecimenFact", specimenFactsColumns()),
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
-    FACT_SOURCES("FactSources", factSourcesColumns())
+    FACT_SOURCES("FactSources", factSourcesColumns()),
+    IDENTIFIER("Identifier", identifierColumns())
 
     ;
 
@@ -194,10 +195,21 @@ public enum CdmLightExportTable {
     protected static final String NAME_IN_SOURCE_FK = "NameInSource_Fk";
     protected static final String FACT_TYPE = "FactType";
 
-
+  //Identifiers
+    protected static final String IDENTIFIER_IDS = "Identifier_IDs";
+    protected static final String IDENTIFIER_TYPE = "Identifier_Type";
 
     final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
+    }
+
+
+    /**
+     * @return
+     */
+    private static String[] identifierColumns() {
+
+        return new String[]{ NAME_FK, IDENTIFIER_IDS, IDENTIFIER_TYPE};
     }
 
 
