@@ -495,10 +495,24 @@ public class TimePeriod implements Cloneable, Serializable {
         if ( StringUtils.isNotBlank(this.getFreeText())){
             result = this.getFreeText();
         }else{
-            String strStart = start != null ? start.toString(formatter): null;
-            String strEnd = end != null ? end.toString(formatter): null;
-            result = CdmUtils.concat("-", strStart, strEnd);
+
+            result = getTimePeriod();
         }
+        return result;
+    }
+
+    /**
+     * Returns the concatenation of <code>start</code> and <code>end</code>
+     *
+     */
+
+    public String getTimePeriod(){
+        String result = null;
+        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
+        String strStart = start != null ? start.toString(formatter): null;
+        String strEnd = end != null ? end.toString(formatter): null;
+        result = CdmUtils.concat("-", strStart, strEnd);
+
         return result;
     }
 
