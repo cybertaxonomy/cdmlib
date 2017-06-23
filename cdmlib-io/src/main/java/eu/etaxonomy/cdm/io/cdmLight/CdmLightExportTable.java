@@ -105,7 +105,7 @@ public enum CdmLightExportTable {
     protected static final String VOLUME_ISSUE = "Volume_Issue";
     protected static final String DETAIL = "Detail";
     protected static final String YEAR_PUBLISHED = "YearPublished";
-    protected static final String OUTPUT_DATE = "OutputDate";
+    protected static final String VERBATIM_DATE = "VerbatimDate";
     protected static final String PROTOLOGUE_URI = "ProtologueURI";
     protected static final String NOM_STATUS = "NomenclaturalStatus";
     protected static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
@@ -255,7 +255,7 @@ public enum CdmLightExportTable {
                 BAS_EX_AUTHORTEAM_FK, BAS_AUTHORTEAM_FK, COMB_EX_AUTHORTEAM_FK, COMB_AUTHORTEAM_FK,
                 AUTHOR_TEAM_STRING, REFERENCE_FK, PUBLICATION_TYPE, ABBREV_TITLE, FULL_TITLE,
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
-                DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, OUTPUT_DATE, PROTOLOGUE_URI,
+                DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, VERBATIM_DATE, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
                 HOMOTYPIC_GROUP_SEQ
         };
