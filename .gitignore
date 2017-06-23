@@ -9,7 +9,6 @@ dataset.xsd
 target
 .umlproject
 .externalToolBuilders
-test 
 error.log
 
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
