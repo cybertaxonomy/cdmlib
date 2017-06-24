@@ -871,6 +871,23 @@ public class Reference
 		}
 	}
 
+	/**
+     * Convenience method that returns a string representation for the publication date / creation
+     * of <i>this</i> reference. The string is obtained by
+     * {@link #getDatePublished()#toString() the string representation
+     * of the date published}.
+     */
+    @Transient
+    public String getTimePeriodPublishedString(){
+        TimePeriod datePublished = this.getDatePublished();
+        if (datePublished != null ){
+            return getDatePublished().getTimePeriod();
+        }else{
+            return null;
+        }
+    }
+
+
 
 	@Override
     public int getParsingProblem(){
