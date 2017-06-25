@@ -58,7 +58,8 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
+	/**
+	 * Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
 	 *
@@ -138,7 +139,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 
 		//TODO make this part of the Configuration
 		//TODO question: multiple entries for each language??
-		List<Language> preferredLanguages = new ArrayList<Language>();
+		List<Language> preferredLanguages = new ArrayList<>();
 		preferredLanguages.add(Language.DEFAULT());
 		LanguageString languageText = textData.getPreferredLanguageString(preferredLanguages);
 

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,45 +22,35 @@ import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
  *
  */
 public class ObservableBase implements IIoObservable {
-	
-	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IObservable#getObservers()
-	 */
+
+    private static final long serialVersionUID = -8417951583494704537L;
+    private Set<IIoObserver> observers = new HashSet<IIoObserver>();
+
 	@Override
 	public Set<IIoObserver> getObservers() {
 		return observers;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#countObservers()
-	 */
+
 	@Override
 	public int countObservers(){
 		return observers.size();
 	}
-	
+
 	public void setObservers(Set<IIoObserver> observers) {
 		this.observers = observers;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IObservable#addObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
-	 */
+
 	@Override
 	public boolean addObserver(IIoObserver observer){
 		return this.observers.add(observer);
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObservers()
-	 */
-	public void removeObservers(){
+
+	@Override
+    public void removeObservers(){
 		observers.removeAll(observers);
 	}
-	
+
 	@Override
 	public void addObservers(Set<IIoObserver> newObservers) {
 		for (IIoObserver observer : newObservers){
@@ -68,27 +58,21 @@ public class ObservableBase implements IIoObservable {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IObservable#removeObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
-	 */
 	@Override
 	public boolean removeObserver(IIoObserver observer){
 		return this.observers.remove(observer);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.events.IIoEvent)
-	 */
+
 	protected void fire(IIoEvent event){
 		for (IIoObserver observer: observers){
 			observer.handleEvent(event);
 		}
 	}
-	
+
 	protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
 		fireWarningEvent(message, dataLocation, severity, 1);
 	}
-	
+
 	protected void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
 		stackDepth++;
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
@@ -101,15 +85,15 @@ public class ObservableBase implements IIoObservable {
 		} catch (ClassNotFoundException e) {
 			declaringClass = this.getClass();
 		}
-		
-		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, dataLocation, 
+
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, dataLocation,
 				lineNumber, severity, methodName);
-		
+
 		//for performance improvement one may read:
 		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
 
-		
+
 		fire(event);
 	}
 

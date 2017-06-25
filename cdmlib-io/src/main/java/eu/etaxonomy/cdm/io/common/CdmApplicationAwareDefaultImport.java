@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 
 /**
  * @author a.mueller
@@ -201,7 +200,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         ImportStateBase state = config.getNewState();
         state.initialize(config);
 
-        CdmPermissionEvaluator permissionEval = applicationContext.getBean("cdmPermissionEvaluator", CdmPermissionEvaluator.class);
+//        CdmPermissionEvaluator permissionEval = applicationContext.getBean("cdmPermissionEvaluator", CdmPermissionEvaluator.class);
 
         state.setSuccess(true);
         //do invoke for each class

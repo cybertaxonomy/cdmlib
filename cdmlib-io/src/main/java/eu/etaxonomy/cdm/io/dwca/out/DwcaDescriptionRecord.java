@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -38,16 +38,14 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	private String audience;
 	private Set<Rights> license;
 	private AgentBase<?> rightsHolder;
-	
-	
+
+
 	public DwcaDescriptionRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
+
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField("description", "http://purl.org/dc/terms/description");
 			addKnownField("type", "http://purl.org/dc/terms/type");
@@ -100,7 +98,7 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}

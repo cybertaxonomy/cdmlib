@@ -57,9 +57,6 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 		occurrenceId = new DwcaId(config);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
 	@Override
     protected void registerKnownFields(){
 		try {

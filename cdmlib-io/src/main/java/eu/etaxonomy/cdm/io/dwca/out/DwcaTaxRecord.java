@@ -91,9 +91,6 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		datasetId = new DwcaId(config);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
 	@Override
     protected void registerKnownFields(){
 		try {
@@ -142,59 +139,6 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 			throw new RuntimeException(e);
 		}
 	}
-
-
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-//	 */
-//	protected void registerKnownFields(){
-//		try {
-//			addKnownField("scientificNameID", "http://rs.tdwg.org/dwc/terms/scientificNameID");
-//			addKnownField("acceptedNameUsageID", "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID");
-//			addKnownField("parentNameUsageID", "http://rs.tdwg.org/dwc/terms/parentNameUsageID");
-//			addKnownField("originalNameUsageID", "http://rs.tdwg.org/dwc/terms/originalNameUsageID");
-//			addKnownField("nameAccordingToID", "http://rs.tdwg.org/dwc/terms/nameAccordingToID");
-//			addKnownField("namePublishedInID", "http://rs.tdwg.org/dwc/terms/namePublishedInID");
-//			addKnownField("taxonConceptID", "http://rs.tdwg.org/dwc/terms/taxonConceptID");
-//			addKnownField("scientificName", "http://rs.tdwg.org/dwc/terms/scientificName");
-//			addKnownField("acceptedNameUsage", "http://rs.tdwg.org/dwc/terms/acceptedNameUsage");
-//			addKnownField("parentNameUsage", "http://rs.tdwg.org/dwc/terms/parentNameUsage");
-//			addKnownField("nameAccordingTo", "http://rs.tdwg.org/dwc/terms/nameAccordingTo");
-//			addKnownField("originalNameUsage", "http://rs.tdwg.org/dwc/terms/originalNameUsage");
-//			addKnownField("namePublishedIn", "http://rs.tdwg.org/dwc/terms/namePublishedIn");
-//			addKnownField("higherClassification", "http://rs.tdwg.org/dwc/terms/higherClassification");
-//			addKnownField("kingdom", "http://rs.tdwg.org/dwc/terms/kingdom");
-//			addKnownField("phylum", "http://rs.tdwg.org/dwc/terms/phylum");
-//			addKnownField("class", "http://rs.tdwg.org/dwc/terms/class");
-//			addKnownField("order", "http://rs.tdwg.org/dwc/terms/order");
-//			addKnownField("family", "http://rs.tdwg.org/dwc/terms/family");
-//			addKnownField("genus", "http://rs.tdwg.org/dwc/terms/genus");
-//			addKnownField("subgenus", "http://rs.tdwg.org/dwc/terms/subgenus");
-//			addKnownField("specificEpithet", "http://rs.tdwg.org/dwc/terms/specificEpithet");
-//			addKnownField("infraspecificEpithet", "http://rs.tdwg.org/dwc/terms/infraspecificEpithet");
-//			addKnownField("taxonRank", "http://rs.tdwg.org/dwc/terms/taxonRank");
-//			addKnownField("verbatimTaxonRank", "http://rs.tdwg.org/dwc/terms/verbatimTaxonRank");
-//			addKnownField("scientificNameAuthorship", "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship");
-//			addKnownField("vernacularName", "http://rs.tdwg.org/dwc/terms/vernacularName");
-//			addKnownField("nomenclaturalCode", "http://rs.tdwg.org/dwc/terms/nomenclaturalCode");
-//			addKnownField("taxonomicStatus", "http://rs.tdwg.org/dwc/terms/taxonomicStatus");
-//			addKnownField("nomenclaturalStatus", "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus");
-//			addKnownField("taxonRemarks", "http://rs.tdwg.org/dwc/terms/taxonRemarks");
-//			addKnownField("modified", "http://purl.org/dc/terms/modified");
-//			addKnownField("language", "http://purl.org/dc/terms/language");
-//			addKnownField("rights", "http://purl.org/dc/terms/rights");
-//			addKnownField("rightsHolder", "http://purl.org/dc/terms/rightsHolder");
-//			addKnownField("accessRights", "http://purl.org/dc/terms/accessRights");
-//			addKnownField("bibliographicCitation", "http://purl.org/dc/terms/bibliographicCitation");
-//			addKnownField("informationWithheld", "http://rs.tdwg.org/dwc/terms/informationWithheld");
-//			addKnownField("datasetName", "http://rs.tdwg.org/dwc/terms/datasetName");
-//			addKnownField("datasetID", "http://rs.tdwg.org/dwc/terms/datasetID");
-//			addKnownField("source", "http://purl.org/dc/terms/source");
-//
-//		} catch (URISyntaxException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
 
 
 //	@Override

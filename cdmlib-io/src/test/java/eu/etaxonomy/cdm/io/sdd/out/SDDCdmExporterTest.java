@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,45 +24,38 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @created 02.02.2009
- * @version 1.0
  */
 public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
-	
+
 	@SpringBeanByType
 	SDDCdmExporter sddCdmExporter;
-	
+
 	@SpringBeanByType
 	INameService nameService;
-	
+
 	private IExportConfigurator exportConfigurator;
-	
+
 	@Before
 	public void setUp() {
-		String url ="";
+		String url = "";
 		//FIXME
 		ICdmDataSource source = null;
 		//exportConfigurator = SDDExportConfigurator.NewInstance(source, url, null);
 	}
-	
+
 	@Test
 	public void testInit() {
 		assertNotNull("sddCdmExporter should not be null", sddCdmExporter);
 		assertNotNull("nameService should not be null", nameService);
 	}
-	
+
 	@Test
 	public void testDoInvoke() {
 		//sddCdmExporter.doInvoke(exportConfigurator, null);
 		//assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

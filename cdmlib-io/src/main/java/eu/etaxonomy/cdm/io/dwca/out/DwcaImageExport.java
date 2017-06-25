@@ -173,11 +173,9 @@ public class DwcaImageExport extends DwcaExportBase {
 		return result;
 	}
 
-
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoImages();
 	}
-
 
 }

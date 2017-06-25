@@ -227,6 +227,8 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 
 	}
 
+
+
 	private void handleInteraction(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, TaxonInteraction interaction) {
 		Taxon object = interaction.getTaxon2();
 		Map<Language, LanguageString> description = interaction.getDescription();
@@ -268,6 +270,5 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoResourceRelation();
 	}
-
 
 }

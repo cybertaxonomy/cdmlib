@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaRecord{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaDistributionRecord.class);
-	
+
 	private DwcaId locationId;
 	private String locationIdString;
 	private String locality;
@@ -132,7 +132,8 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	}
 
 
-	public void setLocality(String locality) {
+	@Override
+    public void setLocality(String locality) {
 		this.locality = locality;
 	}
 
@@ -142,7 +143,8 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	}
 
 
-	public void setCountryCode(String countryCode) {
+	@Override
+    public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
 	}
 
@@ -161,7 +163,8 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		return locationId.getId();
 	}
 
-	public void setLocationId(NamedArea area) {
+	@Override
+    public void setLocationId(NamedArea area) {
 		if (area.getVocabulary().getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
 			String locationId = "TDWG:" + area.getIdInVocabulary();
 			this.locationIdString = locationId;
@@ -243,5 +246,5 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		this.occurrenceRemarks = occurrenceRemarks;
 	}
 
-	
+
 }

@@ -15,7 +15,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.babadshanjan
  * @created 17.11.2008
  */
-public class CdmDefaultExport<T extends IExportConfigurator> extends CdmDefaultIOBase<IExportConfigurator> implements ICdmExporter<T> {
+public class CdmDefaultExport<T extends IExportConfigurator>
+            extends CdmDefaultIOBase<IExportConfigurator>
+            implements ICdmExporter<T> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDefaultExport.class);
 
@@ -40,13 +42,10 @@ public class CdmDefaultExport<T extends IExportConfigurator> extends CdmDefaultI
 		    result.addError(message);
 		    return result;
 		}else{
-			CdmApplicationAwareDefaultExport<?> defaultExport =
-				(CdmApplicationAwareDefaultExport<?>)getCdmAppController().getBean("defaultExport");
+			CdmApplicationAwareDefaultExport<IExportConfigurator> defaultExport =
+				(CdmApplicationAwareDefaultExport<IExportConfigurator>)getCdmAppController().getBean("defaultExport");
 			return defaultExport.invoke(config);
 		}
 	}
-
-
-
 
 }

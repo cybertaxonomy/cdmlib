@@ -114,25 +114,9 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     protected abstract RESULT getDefaultResult(STATE state);
 
 
-//    //TODO move up to CdmIoBase once ImportResult is used here
-//    @Override
-//    public ImportResult invoke(STATE state) {
-//        if (isIgnore( state)){
-//            logger.info("No invoke for " + ioName + " (ignored)");
-//            return true;
-//        }else{
-//            updateProgress(state, "Invoking " + ioName);
-//            doInvoke(state);
-//            return state.isSuccess();
-//        }
-//    }
-
-
     public int countSteps(){
         return 1;
     }
-
-
 
     @Autowired
     private SessionFactory sessionFactory;

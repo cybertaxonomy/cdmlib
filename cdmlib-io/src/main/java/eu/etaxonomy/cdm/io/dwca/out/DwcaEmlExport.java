@@ -520,14 +520,9 @@ public class DwcaEmlExport extends DwcaExportBase {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoEml();
 	}
-
-
 
 }

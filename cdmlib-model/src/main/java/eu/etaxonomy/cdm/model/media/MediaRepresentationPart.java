@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  *
  * @author a.mueller
  * @created 09.06.2008
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentationPart", propOrder = {

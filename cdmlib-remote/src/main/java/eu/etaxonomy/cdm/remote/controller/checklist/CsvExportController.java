@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
@@ -65,9 +64,6 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 @RequestMapping(value = { "/csv" })
 public class CsvExportController extends AbstractController{
 
-	/**
-	 *
-	 */
 	@Autowired
 	private ApplicationContext appContext;
 
@@ -76,9 +72,6 @@ public class CsvExportController extends AbstractController{
 
 	@Autowired
 	private IClassificationService classificationService;
-
-	@Autowired
-	private ITaxonNodeService taxonNodeService;
 
 	@Autowired
 	private ITaxonService taxonService;
@@ -137,7 +130,7 @@ public class CsvExportController extends AbstractController{
 			config.setTaxonNameTitle(taxonName);
 
 			List<TaxonBase> taxaByName = taxonService.findTaxaByName(config);
-			for (TaxonBase taxonBase : taxaByName) {
+			for (TaxonBase<?> taxonBase : taxaByName) {
 			    if(taxonBase.isInstanceOf(Taxon.class)){
 			        TaxonNode taxonNode = classification.getNode(HibernateProxyHelper.deproxy(
 			                taxonService.load(taxonBase.getUuid(),TAXON_WITH_NODES_INIT_STRATEGY), Taxon.class));
@@ -149,7 +142,8 @@ public class CsvExportController extends AbstractController{
 			}
 		}
 		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(taxonNodeUuid, featureUuids, areas, byteArrayOutputStream);
-		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
+		CdmApplicationAwareDefaultExport<CsvTaxExportConfiguratorRedlist> defaultExport =
+		        (CdmApplicationAwareDefaultExport<CsvTaxExportConfiguratorRedlist>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
 		logger.info("doExportRedlist()" + requestPathAndQuery(request));
 		defaultExport.invoke(config);

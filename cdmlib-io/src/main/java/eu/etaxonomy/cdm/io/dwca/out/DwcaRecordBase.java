@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -62,7 +62,7 @@ public abstract class DwcaRecordBase {
 	
 	public abstract void write(PrintWriter writer);
 	protected abstract void registerKnownFields();
-	
+
 	protected int count;
 	private DwcaMetaDataRecord metaDataRecord;
 	protected DwcaTaxExportConfigurator config;
@@ -70,14 +70,14 @@ public abstract class DwcaRecordBase {
 	private Integer id;
 	private UUID uuid;
 
-	
+
 	protected DwcaRecordBase(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		this.metaDataRecord = metaDataRecord;
 		this.count = metaDataRecord.inc();
 		this.config = config;
 	}
-	
-	
+
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -102,7 +102,7 @@ public abstract class DwcaRecordBase {
 		String value = null;
 		print(value, writer, addSeparator, fieldKey);
 	}
-	
+
 //	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 //		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
 //	}
@@ -119,7 +119,7 @@ public abstract class DwcaRecordBase {
 		print(agent == null ? null : getAgent(agent), writer, addSeparator, fieldKey);
 	}
 
-	
+
 	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(language, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -132,7 +132,7 @@ public abstract class DwcaRecordBase {
 	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(rights, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -146,11 +146,11 @@ public abstract class DwcaRecordBase {
 	protected void print(URI uri, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(uri == null ? null : String.valueOf(uri), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUri latitudeKey, TermUri longitudeKey) {
 		print(point, writer, addSeparator, latitudeKey.getUriString(), longitudeKey.getUriString());
 	}
-	
+
 	protected void print(Point point, PrintWriter writer, boolean addSeparator, String latitudeKey, String longitudeKey) {
 		if (point == null){
 			String toPrint = null;
@@ -165,7 +165,7 @@ public abstract class DwcaRecordBase {
 	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(boolValue, writer, addSeparator, fieldKey.getUriString());
-	}	
+	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator, fieldKey);
 	}
@@ -176,7 +176,7 @@ public abstract class DwcaRecordBase {
 	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void printId(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
@@ -191,11 +191,11 @@ public abstract class DwcaRecordBase {
 	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUri fieldKey, String defaultValue) {
 		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
 	}
-	
+
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(value, writer, addSeparator, fieldKey, null);
 	}
-	
+
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
 		if (count == 1 && addSeparator == IS_NOT_FIRST){
 			registerFieldKey(URI.create(fieldKey), defaultValue);
@@ -285,7 +285,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getSex(DefinedTerm sex) {
 		String result = DwcaTaxExportTransformer.transformToGbifSex(sex);
 		if (result == null){
@@ -298,7 +298,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getLifeStage(DefinedTerm stage) {
 		String result = DwcaTaxExportTransformer.transformToGbifLifeStage(stage);
 		if (result == null){
@@ -324,7 +324,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getEstablishmentMeans(PresenceAbsenceTerm status) {
 		String result = DwcaTaxExportTransformer.transformToGbifEstablishmentMeans(status);
 		if (result == null){
@@ -338,8 +338,8 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	
-	
+
+
 	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
 			return "";
@@ -348,7 +348,7 @@ public abstract class DwcaRecordBase {
 			return agent.getTitleCache();
 		}
 	}
-	
+
 
 	protected String getFeature(Feature feature) {
 		if (feature == null){
@@ -359,7 +359,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	
+
 	protected String getTimePeriod(TimePeriod period) {
 		if (period == null){
 			return "";
@@ -368,7 +368,7 @@ public abstract class DwcaRecordBase {
 			return period.toString();
 		}
 	}
-	
+
 	protected String getTimePeriodPart(TimePeriod period, boolean useEnd) {
 		if (period == null){
 			return "";
@@ -383,7 +383,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	private String getRights(Set<Rights> rights) {
+	protected String getRights(Set<Rights> rights) {
 		if (rights == null || rights.isEmpty()){
 			return null;
 		}else{
@@ -397,7 +397,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 
 	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){

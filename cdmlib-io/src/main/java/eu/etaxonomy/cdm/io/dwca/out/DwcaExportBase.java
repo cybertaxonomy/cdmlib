@@ -168,7 +168,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 
     protected String getSources(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
         String result = "";
-        for (IOriginalSource source: sourceable.getSources()){
+        for (IOriginalSource<?> source: sourceable.getSources()){
             if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
                 if (source.getCitation() != null){
                     String ref = source.getCitation().getTitleCache();
@@ -181,7 +181,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 
     protected String getSources3(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
         String result = "";
-        for (IOriginalSource source: sourceable.getSources()){
+        for (IOriginalSource<?> source: sourceable.getSources()){
                 if (source.getCitation() != null){
                     String ref = source.getCitation().getTitleCache();
                     result = CdmUtils.concat(config.getSetSeparator(), result, ref);
@@ -232,6 +232,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
      */
     protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, String fileName)
             throws IOException, FileNotFoundException, XMLStreamException {
+
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
         OutputStream os;
         boolean useZip = state.isZip();
@@ -256,8 +257,12 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
     protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportState state)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
-        OutputStream os;
+        //FIXME preliminary
+        if (state.getConfig().getDestination() == null){
+            return null;
+        }
         boolean useZip = state.isZip();
+        OutputStream os;
         if (useZip){
             os = state.getZipStream(fileName);
         }else{

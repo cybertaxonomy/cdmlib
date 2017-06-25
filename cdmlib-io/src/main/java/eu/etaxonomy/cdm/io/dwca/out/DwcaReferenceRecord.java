@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,13 +30,13 @@ import eu.etaxonomy.cdm.model.media.Rights;
 public class DwcaReferenceRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaReferenceRecord.class);
-	
+
 	private String isbnIssn;
 	private URI uri;
 	private String doi;
 	private LSID lsid;
-	
-	
+
+
 	private String bibliographicCitation;
 	private String title;
 	private AgentBase<?> creator;
@@ -48,16 +48,14 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	private Set<Rights> rights;
 	private String taxonRemarks;
 	private String type;
-	
-	
+
+
 	public DwcaReferenceRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
+
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField("identifier", "http://purl.org/dc/terms/identifier");
 			addKnownField("bibliographicCitation", "http://purl.org/dc/terms/bibliographicCitation");
@@ -77,22 +75,22 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 //	@Override
 //	public List<String> getHeaderList() {
-//		String[] result = new String[]{"coreid", 
+//		String[] result = new String[]{"coreid",
 //				"identifier",
 //				"identifier",
-//				"identifier", 
-//				"identifier", 
-//				"bibliographicCitation", 
+//				"identifier",
+//				"identifier",
+//				"bibliographicCitation",
 //				"title",
-//				"creator", 
-//				"date", 
-//				"source", 
-//				"description", 
-//				"subject", 
-//				"language", 
+//				"creator",
+//				"date",
+//				"source",
+//				"description",
+//				"subject",
+//				"language",
 //				"rights",
 //				"taxonRemarks",
 //				"type"};

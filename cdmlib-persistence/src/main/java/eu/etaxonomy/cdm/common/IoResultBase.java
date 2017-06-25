@@ -87,7 +87,7 @@ public abstract class IoResultBase implements Serializable{
     public List<IoInfo> getExceptions() {return exceptions;}
     public void setExceptions(List<IoInfo> exceptions) {this.exceptions = exceptions;}
     public void addException(Exception e) {
-        exceptions.add(new IoInfo(null, e));
+        exceptions.add(new IoInfo(e.getMessage(), e));
         setExceptionState();
     }
     public void addException(Exception e, String message) {

@@ -208,7 +208,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
             config.setPageNumber(pagerParams.getPageIndex());
             config.setRecordList(recordList);
 
-            CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
+            CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator> defaultExport =
+                    (CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator>) appContext.getBean("defaultExport");
             defaultExport.invoke(config);
 
             DefaultPagerImpl<CsvDemoRecord> dpi = new DefaultPagerImpl<CsvDemoRecord>(pagerParams.getPageIndex(), config.getTaxonNodeListSize(), pagerParams.getPageSize(), recordList);
@@ -326,7 +327,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
         progressMonitor.subTask("configure export");
         CsvDemoExportConfigurator config = setTaxExportConfigurator(cacheFile, classificationUUID, featureUuids, areas, progressMonitor, demoExport, conceptExport);
-        CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
+        CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator> defaultExport =
+                (CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator>) appContext.getBean("defaultExport");
         progressMonitor.subTask("invoke export");
         defaultExport.invoke(config);  //triggers export
         progressMonitor.subTask("wrote results to cache");

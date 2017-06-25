@@ -37,7 +37,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 	private static final Logger logger = Logger.getLogger(DwcaImportIntegrationTest.class);
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	private URI uri;
 	private DwcaImportConfigurator configurator;
