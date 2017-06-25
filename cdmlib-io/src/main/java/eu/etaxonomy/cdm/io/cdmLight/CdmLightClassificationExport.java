@@ -607,8 +607,7 @@ public class CdmLightClassificationExport
                     try {
                         csvLine[table.getIndex(CdmLightExportTable.INFRAGENERIC_RANK)] = name.getRank().getInfraGenericMarker();
                     } catch (UnknownCdmTypeException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        state.getResult().addError("Infrageneric marker expected but not available for rank " + name.getRank().getTitleCache());
                     }
                 }
                 if (rank.isInfraSpecific()){
@@ -1194,7 +1193,7 @@ public class CdmLightClassificationExport
 
 
             return completeAuthorString;
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling tropicos title cache for " +
                     cdmBaseStr(name) + ": " + e.getMessage());
             return null;

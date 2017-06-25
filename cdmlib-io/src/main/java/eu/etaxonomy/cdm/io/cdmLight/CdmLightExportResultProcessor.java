@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +122,7 @@ public class CdmLightExportResultProcessor {
                     IOUtils.writeLines(data,
                             null,exportStream,
                             Charset.forName("UTF-8"));
-                } catch(IOException e){
+                } catch(Exception e){
                     finalResult.addException(e, e.getMessage());
                 }
 
