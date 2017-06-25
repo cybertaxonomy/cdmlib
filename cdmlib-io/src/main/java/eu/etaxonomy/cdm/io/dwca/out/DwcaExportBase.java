@@ -104,7 +104,6 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
             }
         }
         state.setAllNodes(result);
-
     }
 
 

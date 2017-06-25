@@ -107,7 +107,7 @@ public class CdmLightExportResultProcessor {
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
 
                 try{
-                    List<String> data = new ArrayList<String>();
+                    List<String> data = new ArrayList<>();
                     String[] csvHeaderLine = tableData.get(HEADER);
                     String lineString = createCsvLine(config, csvHeaderLine);
                     lineString = lineString+ "";

@@ -9,8 +9,6 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import eu.etaxonomy.cdm.common.IoResultBase;
 
@@ -28,10 +26,6 @@ public class ExportResult extends IoResultBase implements Serializable {
 
     private ExportDataWrapper<?> data ;  //resulting files
 
-    private List<byte[]> errors = new ArrayList<>();
-    private List<byte[]> warnings = new ArrayList<>();
-
-    private List<Exception> exceptions = new ArrayList<>();
 
 // **************************** FACTORY ****************************************/
 
@@ -84,12 +78,11 @@ public class ExportResult extends IoResultBase implements Serializable {
 
 
 
-    public ExportDataWrapper getExportData() {return data;}
-    public void setExportData(ExportDataWrapper data) {this.data = data;}
+    public ExportDataWrapper<?> getExportData() {return data;}
+    public void setExportData(ExportDataWrapper<?> data) {this.data = data;}
     public void addExportData(byte[] exportData) {
         data.addExportData(exportData);
     }
-
     public void putExportData(String tableName, byte[] exportData) {
         data.putExportData(tableName, exportData);
     }

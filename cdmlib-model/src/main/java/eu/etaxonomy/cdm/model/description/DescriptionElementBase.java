@@ -116,7 +116,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionElementBase_Modifier")
     @IndexedEmbedded(depth=1)
-    private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
+    private Set<DefinedTerm> modifiers = new HashSet<>();
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -153,7 +153,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
-    private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
+    private Set<DescriptionElementSource> sources = new HashSet<>();
 
 
 

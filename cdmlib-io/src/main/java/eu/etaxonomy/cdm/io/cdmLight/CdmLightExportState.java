@@ -32,12 +32,12 @@ public class CdmLightExportState extends ExportStateBase<CdmLightExportConfigura
 
     private CdmLightExportResultProcessor processor = new CdmLightExportResultProcessor(this);
 
-    private TaxonBase actualTaxonBase;
+    private TaxonBase<?> actualTaxonBase;
 
-    private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<Integer, HomotypicalGroup>();
-    private Map<Integer, TeamOrPersonBase> authorStore = new HashMap<Integer, TeamOrPersonBase>();
-    private Map<Integer, DerivedUnit> specimenStore = new HashMap<Integer, DerivedUnit>();
-    private Map<Integer, Reference> referenceStore = new HashMap<Integer, Reference>();
+    private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<>();
+    private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
+    private Map<Integer, DerivedUnit> specimenStore = new HashMap<>();
+    private Map<Integer, Reference> referenceStore = new HashMap<>();
 
     /**
      * @param config
@@ -51,13 +51,17 @@ public class CdmLightExportState extends ExportStateBase<CdmLightExportConfigura
      * @return the result
      */
     @Override
-    public ExportResult getResult() {return result;}
+    public ExportResult getResult() {
+        return result;
+    }
 
     /**
      * @param result the result to set
      */
     @Override
-    public void setResult(ExportResult result) {this.result = result;}
+    public void setResult(ExportResult result) {
+        this.result = result;
+    }
 
     /**
      *
@@ -73,10 +77,13 @@ public class CdmLightExportState extends ExportStateBase<CdmLightExportConfigura
         return processor;
     }
 
-    public void setActualTaxonBase(TaxonBase actualTaxonBase){ this.actualTaxonBase = actualTaxonBase;}
+    public void setActualTaxonBase(TaxonBase<?> actualTaxonBase){
+        this.actualTaxonBase = actualTaxonBase;
+    }
 
-    @SuppressWarnings("rawtypes")
-    public TaxonBase getActualTaxonBase() {return actualTaxonBase;}
+    public TaxonBase<?> getActualTaxonBase() {
+        return actualTaxonBase;
+    }
 
     /**
      * @return the homotypicalGroupStore
@@ -99,21 +106,18 @@ public class CdmLightExportState extends ExportStateBase<CdmLightExportConfigura
     /**
      * @return the homotypicalGroupStore
      */
-    @SuppressWarnings("rawtypes")
-    public Map<Integer, TeamOrPersonBase> getAuthorStore() {
+    public Map<Integer, TeamOrPersonBase<?>> getAuthorStore() {
         return authorStore;
     }
 
     /**
      * @param homotypicalGroupStore the homotypicalGroupStore to set
      */
-    @SuppressWarnings("rawtypes")
-    public void addAuthorToStore(TeamOrPersonBase author) {
+    public void addAuthorToStore(TeamOrPersonBase<?> author) {
         this.authorStore.put(author.getId(), author);
     }
 
-    @SuppressWarnings("rawtypes")
-    public TeamOrPersonBase getAuthorFromStore(Integer id){
+    public TeamOrPersonBase<?> getAuthorFromStore(Integer id){
         return authorStore.get(id);
     }
 

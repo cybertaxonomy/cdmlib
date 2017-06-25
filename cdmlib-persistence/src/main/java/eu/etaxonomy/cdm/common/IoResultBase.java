@@ -150,7 +150,7 @@ public abstract class IoResultBase implements Serializable{
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
 
                 message = StringUtils.isBlank(message)? "no message" : message;
-               Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
+                Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
                 String available = (stacktrace != null ? " (stacktrace available)" : "");
                 report.append("\n" + location + message + available);
             }
