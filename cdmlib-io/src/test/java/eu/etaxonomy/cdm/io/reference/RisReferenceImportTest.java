@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
- * @author andy
+ * @author a.mueller
  *
  */
 public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
