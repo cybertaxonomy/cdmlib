@@ -79,9 +79,9 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		super(new DwcaMetaDataRecord(false, null, null), null);
 	}
 
-	@Override
-    public void write(PrintWriter writer) {
-
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        //not needed
 	}
 
 	public String getIdentifier() {

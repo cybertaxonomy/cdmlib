@@ -29,15 +29,17 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportState.class);
 
-	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<DwcaMetaDataRecord>();
+	private DwcaResultProcessor processor = new DwcaResultProcessor(this);
+
+	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<>();
 	private boolean isZip = false;
 	private ZipOutputStream zos;
-	private List<TaxonNode>  allNodes = new ArrayList<TaxonNode>();
+	private List<TaxonNode>  allNodes = new ArrayList<>();
 
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
 		File file = config.getDestination();
-		if (! config.getDestination().isDirectory()){
+		if (file != null && ! file.isDirectory()){
 			try{
 				isZip = true;
 				if (! file.exists()){
@@ -95,6 +97,10 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
      */
     public void setAllNodes(List<TaxonNode> allNodes) {
         this.allNodes = allNodes;
+    }
+
+    public DwcaResultProcessor getProcessor() {
+        return processor;
     }
 
 

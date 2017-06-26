@@ -241,8 +241,84 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		writer.println();
 //	}
 
-	@Override
-    public void write(PrintWriter writer) {
+
+
+    @Override
+    public void writeCsv(DwcaTaxExportState state) {
+        try {
+            DwcaTaxOutputTable table = DwcaTaxOutputTable.TAXON;
+            String[] csvLine = new String[table.getSize()];
+
+            //
+            line(state, csvLine, table, TermUri.DC_IDENTIFIER, getUuid());
+
+            line(state, csvLine, table, TermUri.DWC_SCIENTIFIC_NAME_ID, scientificNameId);
+            line(state, csvLine, table, TermUri.DWC_ACCEPTED_NAME_USAGE_ID, acceptedNameUsageId);
+            line(state, csvLine, table, TermUri.DWC_PARENT_NAME_USAGE_ID, parentNameUsageId);
+            line(state, csvLine, table, TermUri.DWC_SCIENTIFIC_NAME, scientificName);
+            line(state, csvLine, table, TermUri.DWC_TAXON_RANK, getRank(taxonRank));
+            line(state, csvLine, table, TermUri.DWC_TAXONOMIC_STATUS, taxonomicStatus);
+            line(state, csvLine, table, TermUri.DWC_ORIGINAL_NAME_USAGE_ID, originalNameUsageId);
+            line(state, csvLine, table, TermUri.DWC_NAME_ACCORDING_TO_ID, nameAccordingToId);
+            line(state, csvLine, table, TermUri.DWC_NAME_PUBLISHED_IN_ID, namePublishedInId);
+
+            line(state, csvLine, table, TermUri.DWC_TAXON_CONCEPT_ID, taxonConceptId);
+            line(state, csvLine, table, TermUri.DWC_ACCEPTED_NAME_USAGE, acceptedNameUsage);
+            line(state, csvLine, table, TermUri.DWC_PARENT_NAME_USAGE, parentNameUsage);
+            line(state, csvLine, table, TermUri.DWC_ORIGINAL_NAME_USAGE, originalNameUsage);
+            line(state, csvLine, table, TermUri.DWC_NAME_ACCORDING_TO, nameAccordingTo);
+            line(state, csvLine, table, TermUri.DWC_NAME_PUBLISHED_IN, namePublishedIn);
+            if (config.isWithHigherClassification()){
+                line(state, csvLine, table, TermUri.DWC_HIGHER_CLASSIFICATION, higherClassification);
+                line(state, csvLine, table, TermUri.DWC_KINGDOM, kingdom);
+                line(state, csvLine, table, TermUri.DWC_PHYLUM, phylum);
+                line(state, csvLine, table, TermUri.DWC_CLASS, clazz);
+                line(state, csvLine, table, TermUri.DWC_ORDER, order);
+                line(state, csvLine, table, TermUri.DWC_FAMILY, family);
+                line(state, csvLine, table, TermUri.DWC_GENUS, genus);
+                line(state, csvLine, table, TermUri.DWC_SUBGENUS, subgenus);
+            }
+            line(state, csvLine, table, TermUri.TDWG_UNINOMIAL, uninomial);
+            line(state, csvLine, table, TermUri.TDWG_GENUSPART, genusPart);
+            line(state, csvLine, table, TermUri.TDWG_INFRAGENERICEPITHET, infraGenericEpithet);
+            line(state, csvLine, table, TermUri.DWC_SPECIFIC_EPI, specificEpithet);
+            line(state, csvLine, table, TermUri.DWC_INFRA_SPECIFIC_EPI, infraspecificEpithet);
+
+            line(state, csvLine, table, TermUri.DWC_VERBATIM_TAXON_RANK, verbatimTaxonRank);
+            line(state, csvLine, table, TermUri.DWC_VERNACULAR_NAME, vernacularName);
+            line(state, csvLine, table, TermUri.DWC_NOMENCLATURAL_CODE, getNomCode(nomenclaturalCode));
+            line(state, csvLine, table, TermUri.DWC_NOMENCLATURAL_STATUS, getNomStatus(nomenclaturalStatus));
+            line(state, csvLine, table, TermUri.DWC_TAXON_REMARKS, taxonRemarks);
+            line(state, csvLine, table, TermUri.DC_MODIFIED, getDate(modified));
+
+            line(state, csvLine, table, TermUri.DC_LANGUAGE, language);
+            line(state, csvLine, table, TermUri.DC_RIGHTS, rights);
+            line(state, csvLine, table, TermUri.DC_RIGHTS_HOLDER, rightsHolder);
+            line(state, csvLine, table, TermUri.DC_ACCESS_RIGHTS, accessRights);
+            line(state, csvLine, table, TermUri.DC_BIBLIOGRAPHIC_CITATION, bibliographicCitation, config.getDefaultBibliographicCitation());
+            line(state, csvLine, table, TermUri.DWC_INFORMATION_WITHHELD, informationWithheld);
+
+            line(state, csvLine, table, TermUri.DWC_DATASET_NAME, datasetName);
+            line(state, csvLine, table, TermUri.DC_SOURCE, source, config.getDefaultTaxonSource());
+
+            state.getProcessor().put(table, getId().toString(), csvLine);
+        } catch (Exception e) {
+            String message = "Unhandled exception when writing taxon record: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }
+
+    }
+
+
+
+
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+	    if(writer == null){
+	        writeCsv(state);
+	        return;
+	    }
+
 		printId(getUuid(), writer, IS_FIRST, "id");
 		print(scientificNameId, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME_ID);
 		print(acceptedNameUsageId, writer, IS_NOT_FIRST, TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
@@ -287,7 +363,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //		print(rights, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS);
 //		print(rightsHolder, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS_HOLDER);
 //		print(accessRights, writer, IS_NOT_FIRST, TermUri.DC_ACCESS_RIGHTS);
-//		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION, config.getDefaultBibliographicCitation());
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION, config.getDefaultBibliographicCitation());
 //		print(informationWithheld, writer, IS_NOT_FIRST, TermUri.DWC_INFORMATION_WITHHELD);
 //		print(datasetName, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_NAME);
 //		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE, config.getDefaultTaxonSource());

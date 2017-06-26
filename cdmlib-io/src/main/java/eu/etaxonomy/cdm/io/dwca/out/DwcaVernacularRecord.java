@@ -93,11 +93,16 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 //		};
 //		return Arrays.asList(result);
 //	}
-	
-	
-	public void write(PrintWriter writer) {
+
+
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		
+
 		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);
 		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
 		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);

@@ -65,9 +65,10 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 
 
 	@Override
-    public ExportResult invoke(IExportConfigurator config){
-	    ExportResult result = ExportResult.NewInstance(config.getResultType());
-		if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
+    public ExportResult invoke(T config){
+	    ExportResult result;
+	    if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
+		    result = ExportResult.NewInstance(config.getResultType());
 		    boolean success =  doCheck(config);
 		    if (! success){
 		        result.setAborted();
@@ -77,11 +78,13 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		    if (success){
 		        result = doExport(config);
 		    }else{
-		        result.setAborted();
+		        result = ExportResult.NewInstance(config.getResultType());
+	            result.setAborted();
 		    }
 		}else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
 			result = doExport(config);
 		}else{
+		    result = ExportResult.NewInstance(config.getResultType());
             String message = "Unknown CHECK type";
             logger.error(message);
             result.addError(message);
@@ -90,7 +93,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	}
 
 
-    public ExportResult execute(IExportConfigurator config) {
+    public ExportResult execute(T config) {
 	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 	    if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
 	        boolean success =  doCheck(config);
@@ -179,7 +182,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	/**
 	 * Executes the whole
 	 */
-	protected <CONFIG extends IExportConfigurator>  ExportResult doExport(CONFIG config){
+	protected <CONFIG extends T>  ExportResult doExport(CONFIG config){
 		//validate
 		if (config == null){
 		    ExportResult result = ExportResult.NewInstance(null);
@@ -210,23 +213,19 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 				String ioBeanName = getComponentBeanName(ioClass);
 				ICdmExport cdmIo = applicationContext.getBean(ioBeanName, ICdmExport.class);
 				if (cdmIo != null){
-					//result &= cdmIo.invoke(config, stores);
 					state.setCurrentIO(cdmIo);
-					result = cdmIo.invoke(state);
-//					if (config.getTarget().equals(TARGET.EXPORT_DATA)){
-//					    result.addExportData(cdmIo.getByteArray());
-//					}
-//					IoState<S> state = null;
-//					result &= cdmIo.invoke(state);
+					state.setResult(result);
+					cdmIo.invoke(state);
 				}else{
 					String message = "cdmIO was null";
 			        logger.error(message);
 			        result.addError(message);
 			    }
 			} catch (Exception e) {
-					logger.error(e);
+					String message = "Unexpected exception in " + ioClass.getSimpleName()+ ": " + e.getMessage();
+					logger.error(message);
 					e.printStackTrace();
-			        result.addException(e);
+			        result.addException(e, message);
 			}
 		}
 

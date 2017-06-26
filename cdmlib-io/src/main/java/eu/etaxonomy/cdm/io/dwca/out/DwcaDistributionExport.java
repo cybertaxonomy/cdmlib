@@ -9,14 +9,9 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -28,7 +23,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -74,23 +68,8 @@ public class DwcaDistributionExport extends DwcaExportBase {
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
-			Set<UUID> classificationUuidSet = config.getClassificationUuids();
-            List<Classification> classificationList;
-            if (classificationUuidSet.isEmpty()){
-                classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
-            }else{
-                classificationList = getClassificationService().find(classificationUuidSet);
-            }
-
-            Set<Classification> classificationSet = new HashSet<>();
-            classificationSet.addAll(classificationList);
-            List<TaxonNode> allNodes;
-
-            if (state.getAllNodes().isEmpty()){
-                getAllNodes(state, classificationSet);
-            }
-            allNodes = state.getAllNodes();
-			for (TaxonNode node : allNodes){
+			List<TaxonNode> allNodes = allNodes(state);
+            for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -101,7 +80,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 								DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
 								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
 								handleDistribution(record, distribution, taxon, config);
-								record.write(writer);
+								record.write(state, writer);
 								this.addExistingRecord(distribution);
 							}
 						}else if (el.getFeature().equals(Feature.DISTRIBUTION())){
@@ -112,16 +91,13 @@ public class DwcaDistributionExport extends DwcaExportBase {
 					}
 				}
 
-				writer.flush();
+                if (writer != null){
+                    writer.flush();
+                }
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+        } catch (Exception e) {
+            String message = "Unexpected exception " + e.getMessage();
+            state.getResult().addException(e, message, "DwcaDistributionExport.doInvoke()");
 		}finally {
 			closeWriter(writer, state);
 		}

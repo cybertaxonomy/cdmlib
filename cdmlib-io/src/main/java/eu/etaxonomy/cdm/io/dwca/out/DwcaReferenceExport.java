@@ -9,14 +9,8 @@ d* Copyright (C) 2007 EDIT
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -27,7 +21,6 @@ import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -73,22 +66,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
-			Set<UUID> classificationUuidSet = config.getClassificationUuids();
-            List<Classification> classificationList;
-            if (classificationUuidSet.isEmpty()){
-                classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
-            }else{
-                classificationList = getClassificationService().find(classificationUuidSet);
-            }
-
-            Set<Classification> classificationSet = new HashSet<>();
-            classificationSet.addAll(classificationList);
-            List<TaxonNode> allNodes;
-
-            if (state.getAllNodes().isEmpty()){
-                getAllNodes(state, classificationSet);
-            }
-            allNodes = state.getAllNodes();
+            List<TaxonNode> allNodes = allNodes(state);
 			for (TaxonNode node : allNodes){
 				//sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
@@ -96,7 +74,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				Reference sec = taxon.getSec();
 				if (sec != null && ! recordExists(sec)){
 					handleReference(record, sec, taxon);
-					record.write(writer);
+					record.write(state, writer);
 					addExistingRecord(sec);
 				}
 
@@ -105,21 +83,18 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
 				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
 					handleReference(record, (Reference)nomRef, taxon);
-					record.write(writer);
+					record.write(state, writer);
 					addExistingRecord((Reference)nomRef);
 				}
 
-				writer.flush();
+                if (writer != null){
+                    writer.flush();
+                }
 
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+	          String message = "Unexpected exception " + e.getMessage();
+	          state.getResult().addException(e, message, "DwcaReferenceExport.doInvoke()");
 		} finally{
 			closeWriter(writer, state);
 		}

@@ -38,65 +38,102 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private DefinedTerm lifeStage;
 	private PresenceAbsenceTerm occurrenceStatus;
 	private String threadStatus;
-	
+
 	private PresenceAbsenceTerm establishmentMeans;
 	private String appendixCITES;
 	private TimePeriod eventDate;
-	
+
 	private TimePeriod seasonalDate; //startDayOfYear and endDayOfYear
 	private String source;
 	private String occurrenceRemarks;
-	
-	
+
+
 	public DwcaDistributionRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		locationId = new DwcaId(config);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
-		try {
-			addKnownField("locationID", "http://rs.tdwg.org/dwc/terms/locationID");
-			addKnownField("locality", "http://rs.tdwg.org/dwc/terms/locality");
-			addKnownField("countryCode", "http://rs.tdwg.org/dwc/terms/countryCode");
-			addKnownField("lifeStage", "http://rs.tdwg.org/dwc/terms/lifeStage");
-			addKnownField("threatStatus", "http://iucn.org/terms/threatStatus");
-			addKnownField("occurrenceStatus", "http://rs.tdwg.org/dwc/terms/occurrenceStatus");
-			addKnownField("establishmentMeans", "http://rs.tdwg.org/dwc/terms/establishmentMeans");
-			addKnownField("appendixCITES", "http://rs.gbif.org/terms/1.0/appendixCITES");
-			addKnownField("eventDate", "http://rs.tdwg.org/dwc/terms/eventDate");
-			addKnownField("startDayOfYear", "http://rs.tdwg.org/dwc/terms/startDayOfYear");
-			addKnownField("endDayOfYear", "http://rs.tdwg.org/dwc/terms/endDayOfYear");
-			addKnownField("source", "http://purl.org/dc/terms/source");
-			addKnownField("occurrenceRemarks", "http://rs.tdwg.org/dwc/terms/occurrenceRemarks");
 
+
+	@Override
+    protected void registerKnownFields(){
+		try {
+			addKnownField(TermUri.DWC_LOCATION_ID);
+			addKnownField(TermUri.DWC_LOCALITY);
+			addKnownField(TermUri.DWC_COUNTRY_CODE);
+			addKnownField(TermUri.DWC_LIFESTAGE);
+			addKnownField(TermUri.IUCN_THREAD_STATUS);
+
+            addKnownField(TermUri.DWC_OCCURRENCE_STATUS);
+            addKnownField(TermUri.DWC_ESTABLISHMENT_MEANS);
+            addKnownField(TermUri.GBIF_APPENDIX_CITES);
+            addKnownField(TermUri.DWC_EVENT_DATE);
+            addKnownField(TermUri.DWC_START_DAY_OF_YEAR);
+            addKnownField(TermUri.DC_SOURCE);
+            addKnownField(TermUri.DWC_OCCURRENCE_REMARKS);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 //	@Override
 //	public List<String> getHeaderList() {
-//		String[] result = new String[]{"coreid", 
+//		String[] result = new String[]{"coreid",
 //				"locationId",
 //				"locality",
-//				"countryCode", 
-//				"lifeStage", 
-//				"occurrenceStatus", 
-//				"threadStatus", 
-//				"establishmentMeans", 
-//				"appendixCITES", 
-//				"eventDate", 
-//				"startDayOfYear", 
-//				"endDayOfYear", 
-//				"source", 
+//				"countryCode",
+//				"lifeStage",
+//				"occurrenceStatus",
+//				"threadStatus",
+//				"establishmentMeans",
+//				"appendixCITES",
+//				"eventDate",
+//				"startDayOfYear",
+//				"endDayOfYear",
+//				"source",
 //				"occurrenceRemarks"};
 //		return Arrays.asList(result);
 //	}
-	
-	public void write(PrintWriter writer) {
+
+    @Override
+    public void writeCsv(DwcaTaxExportState state) {
+        try {
+            DwcaTaxOutputTable table = DwcaTaxOutputTable.DISTRIBUTION;
+            String[] csvLine = new String[table.getSize()];
+
+            //
+            line(state, csvLine, table, TermUri.DC_IDENTIFIER, getUuid());
+            if (StringUtils.isNotBlank(locationIdString)){
+                line(state, csvLine, table, TermUri.DWC_LOCATION_ID, locationIdString);
+            }else{
+                line(state, csvLine, table, TermUri.DWC_LOCATION_ID, locationId);
+            }
+            line(state, csvLine, table, TermUri.DWC_LOCALITY, locality);
+            line(state, csvLine, table, TermUri.DWC_COUNTRY_CODE, countryCode);
+            line(state, csvLine, table, TermUri.DWC_LIFESTAGE, getLifeStage(lifeStage));
+            line(state, csvLine, table, TermUri.IUCN_THREAD_STATUS, getOccurrenceStatus(occurrenceStatus));
+            line(state, csvLine, table, TermUri.DWC_OCCURRENCE_STATUS, threadStatus);
+            line(state, csvLine, table, TermUri.DWC_ESTABLISHMENT_MEANS, getEstablishmentMeans(establishmentMeans));
+            line(state, csvLine, table, TermUri.GBIF_APPENDIX_CITES, appendixCITES);
+            line(state, csvLine, table, TermUri.DWC_EVENT_DATE, getTimePeriod(eventDate));
+            line(state, csvLine, table, TermUri.DWC_START_DAY_OF_YEAR, getTimePeriodPart(seasonalDate, false));
+            line(state, csvLine, table, TermUri.DWC_END_DAY_OF_YEAR, getTimePeriodPart(seasonalDate, true));
+            line(state, csvLine, table, TermUri.DC_SOURCE, source);
+            line(state, csvLine, table, TermUri.DWC_OCCURRENCE_REMARKS, occurrenceRemarks);
+
+            state.getProcessor().put(table, getId().toString(), csvLine);
+        } catch (Exception e) {
+            String message = "Unhandled exception when writing distribution record: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }
+
+    }
+
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		if (StringUtils.isNotBlank(locationIdString)){
 			print(locationIdString, writer, IS_NOT_FIRST, TermUri.DWC_LOCATION_ID);

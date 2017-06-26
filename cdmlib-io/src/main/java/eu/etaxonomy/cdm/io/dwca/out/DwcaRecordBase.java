@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -56,11 +57,16 @@ public abstract class DwcaRecordBase {
 	protected static final boolean IS_FIRST = false;
 	protected static final boolean IS_NOT_FIRST = true;
 //	protected static final String SEP = ",";
-	
-	protected Map<String, URI> knownFields = new HashMap<String, URI>();
-	protected Set<TermUri> knownTermFields = new HashSet<TermUri>();
-	
-	public abstract void write(PrintWriter writer);
+
+	protected Map<String, URI> knownFields = new HashMap<>();
+	protected Set<TermUri> knownTermFields = new HashSet<>();
+
+	public abstract void write(DwcaTaxExportState state, PrintWriter writer);
+	public void writeCsv(DwcaTaxExportState state){
+	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!");
+	}
+
+
 	protected abstract void registerKnownFields();
 
 	protected int count;
@@ -205,25 +211,53 @@ public abstract class DwcaRecordBase {
 			if (StringUtils.isNotBlank(value)){
 				//Replace quotes by double quotes
 				value = value.replace("\"", "\"\"");
-				
+
 				value = value.replace(config.getLinesTerminatedBy(), "\\r");
-				
+
 				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
 				value = value.replace("\r\n", "\\r");
 				value = value.replace("\r", "\\r");
 				value = value.replace("\n", "\\r");
-				
+
 				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
 			}
 			writer.print(strToPrint);
 		}
 	}
-	
-	private void registerFieldKey(URI key, String defaultValue) {
+
+	protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, Set<Rights> rights) {
+        String rightsStr = getRights(rights);
+        if (rights != null){ line(state, csvLine, table, termUri, rightsStr);}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, Language language) {
+        if (language != null){ line(state, csvLine, table, termUri, getLanguage(language));}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, DwcaId id) {
+        if (id != null){ line(state, csvLine, table, termUri, id.getId());}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, UUID uuid) {
+        if (uuid != null){ line(state, csvLine, table, termUri, uuid.toString());}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, String string) {
+        line(state, csvLine, table, termUri, string, null);
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, String string, String defaultValue) {
+        try {
+            csvLine[table.getIndex(termUri)] = string;
+            if (count == 1 && table.getIndex(termUri) != 0){
+                registerFieldKey(termUri.getUri(), defaultValue);
+            }
+        } catch (Exception e) {
+            String message = "Unhandled exception when handling " + (termUri != null ? termUri.getUriString() : "undefined") + ": " + e.getMessage();
+            state.getResult().addException(e, message);
+        }
+    }
+
+	protected void registerFieldKey(URI key, String defaultValue) {
 		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}
 
-	
+
 	protected String getRights(Rights rights) {
 		if (rights == null){
 			return "";
@@ -417,13 +451,31 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
-	
+
+
+
+
 	protected void addKnownField(String string, String uri) throws URISyntaxException {
 		this.knownFields.put(string, new URI(uri));
 	}
-	
+
 	protected void addKnownField(TermUri term) throws URISyntaxException {
 		this.knownTermFields.add(term);
 	}
+
+
+	//*************** CSV Methods ******************/
+
+    /**
+     * @param state
+     * @param taxon
+     * @return
+     */
+    protected String getId(DwcaTaxExportState state, ICdmBase cdmBase) {
+        if (cdmBase == null){
+            return "";
+        }
+        //TODO make configurable
+        return cdmBase.getUuid().toString();
+    }
 }

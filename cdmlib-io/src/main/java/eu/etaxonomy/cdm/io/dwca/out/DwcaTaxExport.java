@@ -9,14 +9,9 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -74,37 +69,21 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
+
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 
-		Set<UUID> classificationUuidSet = config.getClassificationUuids();
-		List<Classification> classificationList;
-		if (classificationUuidSet.isEmpty()){
-		    classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
-		}else{
-		    classificationList = getClassificationService().find(classificationUuidSet);
-		}
-
-		Set<Classification> classificationSet = new HashSet<>();
-		classificationSet.addAll(classificationList);
-
-
 		PrintWriter writer = null;
 		try {
 
 			writer = createPrintWriter(fileName, state);
-			List<TaxonNode> allNodes;
-			if (state.getAllNodes().isEmpty()){
-			    getAllNodes(state, classificationSet);
-			}
-			allNodes = state.getAllNodes();
-			int i = 0;
+			List<TaxonNode> allNodes = allNodes(state);
+
 			for (TaxonNode node : allNodes){
-				i++;
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+				Taxon taxon = CdmBase.deproxy(node.getTaxon());
 				DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
 
 				TaxonName name = taxon.getName();
@@ -112,32 +91,28 @@ public class DwcaTaxExport extends DwcaExportBase {
 				TaxonName basionym = name.getBasionym();
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
-					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false, config);
-					record.write(writer);
+					handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null, false, false);
+					record.write(state, writer);
 					this.addExistingRecord(taxon);
 				}
 
 				node.getClassification().getName();
 				//synonyms
-				handleSynonyms(taxon, writer, classification, metaRecord, config);
+				handleSynonyms(state, taxon, writer, classification, metaRecord);
 
 				//misapplied names
-				handleMisapplication(taxon, writer, classification, metaRecord, config);
+				handleMisapplication(state, taxon, writer, classification, metaRecord);
 
-				writer.flush();
+				if (writer != null){
+				    writer.flush();
+				}
 
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+		    String message = "Unexpected exception " + e.getMessage();
+			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{
-
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
@@ -145,9 +120,12 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 	}
 
-	private void handleSynonyms(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
+
+
+	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, PrintWriter writer,
+	        Classification classification, DwcaMetaDataRecord metaRecord) {
 		for (Synonym synonym :taxon.getSynonyms() ){
-			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
+			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
 			boolean isProParte = synonym.isProParte();
 			boolean isPartial = synonym.isPartial();
@@ -160,17 +138,17 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonName basionym = name.getBasionym();
 
 			if (! this.recordExists(synonym)){
-				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial, config);
-				record.write(writer);
+				handleTaxonBase(state, record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
+				record.write(state, writer);
 				this.addExistingRecord(synonym);
 			}
 		}
 	}
 
-	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
+	private void handleMisapplication(DwcaTaxExportState state, Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
 		for (Taxon misappliedName : misappliedNames ){
-			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
+			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, state.getConfig());
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
 			TaxonName name = misappliedName.getName();
 			//????
@@ -178,14 +156,16 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonName basionym = name.getBasionym();
 
 			if (! this.recordExists(misappliedName)){
-				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false, config);
-				record.write(writer);
+				handleTaxonBase(state, record, misappliedName, name, taxon, parent, basionym, classification,
+				        relType, false, false);
+				record.write(state, writer);
 				this.addExistingRecord(misappliedName);
 			}
 		}
 	}
 
 	/**
+	 * @param state
 	 * @param record
 	 * @param taxonBase
 	 * @param name
@@ -197,9 +177,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param config
 	 * @param type
 	 */
-	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, TaxonName name,
+	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, DwcaTaxExportConfigurator config) {
+			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 
@@ -246,7 +226,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		record.setTaxonConceptId(taxonBase.getUuid());
 
 		//Classification
-		if (config.isWithHigherClassification()){
+		if (state.getConfig().isWithHigherClassification()){
 			//FIXME all classification and rank specific fields are meant to represent the classification
 			//currently the information is only compiled for the exact same range but it should be compiled
 			//for all ranks above the rank of this taxon
@@ -282,7 +262,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		// ??? - use for TextData common names?
 		record.setVernacularName(null);
 
-		record.setNomenclaturalCode(name.getNomenclaturalCode());
+		record.setNomenclaturalCode(name.getNameType());
 		// ??? TODO Misapplied Names, inferred synonyms
 		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
 		handleNomStatus(record, taxonBase, name);

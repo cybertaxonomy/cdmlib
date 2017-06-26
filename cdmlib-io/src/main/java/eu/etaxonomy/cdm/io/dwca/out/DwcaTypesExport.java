@@ -9,14 +9,9 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -38,7 +33,6 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -87,26 +81,10 @@ public class DwcaTypesExport extends DwcaExportBase {
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
-
-			Set<UUID> classificationUuidSet = config.getClassificationUuids();
-            List<Classification> classificationList;
-            if (classificationUuidSet.isEmpty()){
-                classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
-            }else{
-                classificationList = getClassificationService().find(classificationUuidSet);
-            }
-
-            Set<Classification> classificationSet = new HashSet<Classification>();
-            classificationSet.addAll(classificationList);
-            List<TaxonNode> allNodes;
-
-            if (state.getAllNodes().isEmpty()){
-                getAllNodes(state, classificationSet);
-            }
-            allNodes = state.getAllNodes();
+            List<TaxonNode> allNodes = state.getAllNodes();
 
 			for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+				Taxon taxon = CdmBase.deproxy(node.getTaxon());
 
 				//TODO use API methods to retrieve all related specimen
 
@@ -117,8 +95,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 						if (el.isInstanceOf(IndividualsAssociation.class)){
 							DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
-							if (! this.recordExistsUuid(individualAssociation) && handleSpecimen(record, individualAssociation, null, taxon, config)){
-								record.write(writer);
+							if (! this.recordExistsUuid(individualAssociation)
+							        && handleSpecimen(state, record, individualAssociation, null, taxon, config)){
+								record.write(state, writer);
 								this.addExistingRecordUuid(individualAssociation);
 							}
 						}
@@ -127,26 +106,23 @@ public class DwcaTypesExport extends DwcaExportBase {
 
 				//type specimen
 				INonViralName nvn = taxon.getName();
-				handleTypeName(writer, taxon, nvn, metaRecord, config);
+				handleTypeName(state, writer, taxon, nvn, metaRecord);
 				for (Synonym synonym : taxon.getSynonyms()){
-					handleTypeName(writer, synonym, nvn, metaRecord, config);
+					handleTypeName(state, writer, synonym, nvn, metaRecord);
 				}
 
 				//FIXME
 				//Determinations
 
 
-				writer.flush();
+                if (writer != null){
+                    writer.flush();
+                }
 
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+	          String message = "Unexpected exception " + e.getMessage();
+	          state.getResult().addException(e, message, "DwcaTypesExport.doInvoke()");
 		} finally{
 			closeWriter(writer, state);
 		}
@@ -155,19 +131,23 @@ public class DwcaTypesExport extends DwcaExportBase {
 	}
 
 	/**
+	 * @param state
 	 * @param writer
 	 * @param taxon
 	 * @param nvn
 	 * @param config
 	 * @return
 	 */
-	private Set<TypeDesignationBase> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase,
-	        INonViralName nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
+	private Set<TypeDesignationBase> handleTypeName(DwcaTaxExportState state,
+	        PrintWriter writer, TaxonBase<?> taxonBase,
+	        INonViralName nvn, DwcaMetaDataRecord metaRecord) {
+	    DwcaTaxExportConfigurator config = state.getConfig();
 		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
-			if (! this.recordExistsUuid(designation) && handleSpecimen(record, null, designation, taxonBase, config)){
-				record.write(writer);
+			if (! this.recordExistsUuid(designation)
+			        && handleSpecimen(state, record, null, designation, taxonBase, config)){
+				record.write(state, writer);
 				addExistingRecordUuid(designation);
 			}
 		}
@@ -175,13 +155,13 @@ public class DwcaTypesExport extends DwcaExportBase {
 	}
 
 
-	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
+	private boolean handleSpecimen(DwcaTaxExportState state, DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
 		TypeDesignationStatusBase<?> status = null;
 		DerivedUnitFacade facade = null;
 		if (individualsAssociation != null){
-			facade = getFacadeFromAssociation(individualsAssociation);
+			facade = getFacadeFromAssociation(state, individualsAssociation);
 		}else if (designation != null){
-			facade = getFacadeFromDesignation(designation);
+			facade = getFacadeFromDesignation(state, designation);
 			status = designation.getTypeStatus();
 		}
 		if (facade == null){
@@ -254,7 +234,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		return null;
 	}
 
-	private DerivedUnitFacade getFacadeFromDesignation(TypeDesignationBase<?> designation) {
+	private DerivedUnitFacade getFacadeFromDesignation(DwcaTaxExportState state, TypeDesignationBase<?> designation) {
 		if (designation.isInstanceOf(SpecimenTypeDesignation.class)){
 			SpecimenTypeDesignation specDesig = CdmBase.deproxy(designation, SpecimenTypeDesignation.class);
 			try {
@@ -267,7 +247,8 @@ public class DwcaTypesExport extends DwcaExportBase {
 				}
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				String message = "DerivedUnit is too complex to be handled by facade based darwin core archive export";
-				logger.warn(message);
+				state.getResult().addError(message, this, "getFacadeFromAssociation()");
+
 				//TODO handle empty records
 				return null;
 			}
@@ -276,7 +257,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		}
 	}
 
-	private DerivedUnitFacade getFacadeFromAssociation(IndividualsAssociation individualsAssociation) {
+	private DerivedUnitFacade getFacadeFromAssociation(DwcaTaxExportState state, IndividualsAssociation individualsAssociation) {
 		SpecimenOrObservationBase<?> specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
 		DerivedUnitFacade facade;
 		if (! specimen.isInstanceOf(DerivedUnit.class)){
@@ -290,11 +271,10 @@ public class DwcaTypesExport extends DwcaExportBase {
 				facade = DerivedUnitFacade.NewInstance(derivedUnit);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				String message = "DerivedUnit is too complex to be handled by facade based darwin core archive export";
-				logger.warn(message);
+				state.getResult().addError(message, this, "getFacadeFromAssociation()");
 				//TODO handle empty records
 				return null;
 			}
-
 		}
 		return facade;
 	}

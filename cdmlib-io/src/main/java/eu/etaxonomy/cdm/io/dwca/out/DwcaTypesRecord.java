@@ -112,8 +112,12 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 //		return Arrays.asList(result);
 //	}
 
-	@Override
-    public void write(PrintWriter writer) {
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION);
 		print(getDesignationType(typeStatus), writer, IS_NOT_FIRST, TermUri.DWC_TYPE_STATUS);

@@ -72,8 +72,12 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 //		return Arrays.asList(result);
 //	}
 
-	@Override
-    public void write(PrintWriter writer) {
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(getResourceRelationshipId(), writer, IS_NOT_FIRST, TermUri.DWC_RESOURCE_RELATIONSHIP_ID);
 		print(relatedResourceId, writer, IS_NOT_FIRST, TermUri.DWC_RELATED_RESOURCE_ID);

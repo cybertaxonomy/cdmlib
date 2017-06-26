@@ -97,16 +97,13 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
 
 
-    public RESULT invoke(STATE state) {
+    public void invoke(STATE state) {
         if (isIgnore(state)){
             logger.info("No invoke for " + ioName + " (ignored)");
-            return getNoDataResult(state);
+//            return getNoDataResult(state);
         }else{
             updateProgress(state, "Invoking " + ioName);
-            state.setResult(getDefaultResult(state));
             doInvoke(state);
-            RESULT result = (RESULT)state.getResult();
-            return result;
         }
     }
 

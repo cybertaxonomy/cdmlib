@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -44,13 +43,17 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
  * @date 18.04.2011
  *
  */
-public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
+public abstract class DwcaExportBase
+            extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer>
+            implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
+
     private static final long serialVersionUID = -3214410418410044139L;
 
     private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
@@ -69,39 +72,64 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
         return allNodes.size();
     }
 
-
-
     /**
-     * Returns the list of {@link TaxonNode taxon nodes} that are part in one of the given {@link Classification classifications}
-     * and do have a {@link Taxon} attached (empty taxon nodes should not but do exist in CDM databases).
-     * If <code>classificationList</code> is <code>null</code> or empty then all {@link TaxonNode taxon nodes} of all
-     * {@link Classification classifications} are returned.<BR>
+     * Returns the list of {@link TaxonNode taxon nodes} that correspond to the
+     * given filter criteria (e.g. subtreeUUids). If no filter is given
+     * all taxon nodes of all classifications are returned. If the list has been
+     * computed before it is taken from the state cache. Nodes that do not have
+     * a taxon attached are not returned. Instead a warning is given that the node is
+     * ommitted (empty taxon nodes should not but do exist in CDM databases).
+     * <BR>
      * Preliminary implementation. Better implement API method for this.
-     * @return
      */
-    protected void getAllNodes(DwcaTaxExportState state, Set<Classification> classificationList) {
+    //TODO unify with similar methods for other exports
+    protected List<TaxonNode> allNodes(DwcaTaxExportState state) {
+
+        Set<UUID> subtreeUuidSet = state.getConfig().getSubtreeUuids();
+        if (subtreeUuidSet == null){
+            subtreeUuidSet = new HashSet<>();
+        }
         //handle empty list as no filter defined
-        if (classificationList != null && classificationList.isEmpty()){
-            classificationList = null;
+        if (subtreeUuidSet.isEmpty()){
+            List<Classification> classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+            for (Classification classification : classificationList){
+                subtreeUuidSet.add(classification.getRootNode().getUuid());
+            }
         }
 
-        List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
-        List<TaxonNode> result = new ArrayList<TaxonNode>();
-        for (TaxonNode node : allNodes){
-            if (node.getClassification() == null ){
-                continue;
-            }else if (classificationList != null && ! classificationList.contains(node.getClassification())){
-                continue;
-            }else{
-                node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
-                Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-                if (taxon == null){
-                    String message = "There is a taxon node without taxon: " + node.getId();
-                    logger.warn(message);
-                    continue;
-                }
-                result.add(node);
+        //TODO memory critical to store ALL node
+        if (state.getAllNodes().isEmpty()){
+            makeAllNodes(state, subtreeUuidSet);
+        }
+        List<TaxonNode> allNodes = state.getAllNodes();
+        return allNodes;
+    }
+
+    private void makeAllNodes(DwcaTaxExportState state, Set<UUID> subtreeSet) {
+
+        boolean doSynonyms = false;
+        boolean recursive = true;
+        Set<UUID> uuidSet = new HashSet<>();
+
+        for (UUID subtreeUuid : subtreeSet){
+            List<TaxonNodeDto> records = getTaxonNodeService().pageChildNodesDTOs(subtreeUuid,
+                    recursive, doSynonyms, null, null, null).getRecords();
+            for (TaxonNodeDto dto : records){
+                uuidSet.add(dto.getUuid());
             }
+        }
+        List<TaxonNode> allNodes =  getTaxonNodeService().find(uuidSet);
+
+        List<TaxonNode> result = new ArrayList<>();
+        for (TaxonNode node : allNodes){
+            node = CdmBase.deproxy(node);
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
+            if (taxon == null){
+                String message = "There is a taxon node without taxon. id=" + node.getId();
+                state.getResult().addWarning(message);
+                continue;
+            }
+            result.add(node);
         }
         state.setAllNodes(result);
     }

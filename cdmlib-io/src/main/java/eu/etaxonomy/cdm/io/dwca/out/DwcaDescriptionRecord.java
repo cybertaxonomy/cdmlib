@@ -65,20 +65,25 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 //	@Override
 //	public List<String> getHeaderList() {
 //		String[] result = new String[]{
-//				"coreid", 
+//				"coreid",
 //				"description",
 //				"type",
-//				"source", 
-//				"language", 
-//				"creator", 
-//				"contributor", 
-//				"audience", 
-//				"license", 
+//				"source",
+//				"language",
+//				"creator",
+//				"contributor",
+//				"audience",
+//				"license",
 //				"rightsHolder"};
 //		return Arrays.asList(result);
 //	}
-	
-	public void write(PrintWriter writer) {
+
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(description, writer, IS_NOT_FIRST, TermUri.DC_DESCRIPTION);
 		print(getFeature(type), writer, IS_NOT_FIRST, TermUri.DC_TYPE);

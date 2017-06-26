@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
@@ -62,10 +63,10 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private DwcaEmlRecord emlRecord;
 
 
-	private List<UUID> featureExclusions = new ArrayList<UUID>();
+	private List<UUID> featureExclusions = new ArrayList<>();
 
 	//filter on the classifications to be exported
-	private Set<UUID> classificationUuids = new HashSet<UUID>();
+	private Set<UUID> subtreeUuids = new HashSet<>();
 
 	private String defaultTaxonSource;
 
@@ -101,6 +102,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 				,DwcaMetaDataExport.class
 				,DwcaEmlExport.class
 				,DwcaZipExport.class
+				,DwcaResultWriter.class
 		};
 	}
 
@@ -112,8 +114,9 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 * @param destination
 	 */
 	private DwcaTaxExportConfigurator(ICdmDataSource source, File destination, DwcaEmlRecord emlRecord) {
-		super(destination, source, defaultTransformer);
-		this.emlRecord = emlRecord;
+	    super(destination, source, defaultTransformer);
+		this.resultType = ExportResultType.MAP_BYTE_ARRAY;
+	    this.emlRecord = emlRecord;
 	}
 
 	@Override
@@ -358,13 +361,13 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		return fieldsTerminatedBy;
 	}
 
-	public Set<UUID> getClassificationUuids() {
-		return classificationUuids;
+	public Set<UUID> getSubtreeUuids() {
+		return subtreeUuids;
 	}
 
 
-	public void setClassificationUuids(Set<UUID> classificationUuids) {
-		this.classificationUuids = classificationUuids;
+	public void setSubtreeUuids(Set<UUID> subtreeUuids) {
+		this.subtreeUuids = subtreeUuids;
 	}
 
 
