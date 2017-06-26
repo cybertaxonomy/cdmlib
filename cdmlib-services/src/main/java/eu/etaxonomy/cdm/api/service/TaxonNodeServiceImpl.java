@@ -160,11 +160,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         allRecords.addAll(childNodes);
 
         //add synonyms if pager is not yet full synonyms
-        List<Synonym> synList = new ArrayList<>(parentNode.getTaxon().getSynonyms());
-        Collections.sort(synList, new HomotypicGroupTaxonComparator(null));
-        //TODO: test sorting
+        if (doSynonyms){
+            List<Synonym> synList = new ArrayList<>(parentNode.getTaxon().getSynonyms());
+            Collections.sort(synList, new HomotypicGroupTaxonComparator(null));
+            //TODO: test sorting
 
-        allRecords.addAll(synList);
+            allRecords.addAll(synList);
+        }
 
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
         Long totalCount = Long.valueOf(allRecords.size());
