@@ -32,7 +32,7 @@ public class CdmLightExportResultProcessor {
     private static final String HEADER = "HEADER_207dd23a-f877-4c27-b93a-8dbea3234281";
 
     private Map<CdmLightExportTable, Map<String,String[]>> result = new HashMap<>();
-    //private CdmLightExportState state;
+    private CdmLightExportState state;
 
 
     /**
@@ -40,7 +40,7 @@ public class CdmLightExportResultProcessor {
      */
     public CdmLightExportResultProcessor(CdmLightExportState state) {
         super();
-        //this.state = state;
+        this.state = state;
     }
 
 
@@ -64,7 +64,8 @@ public class CdmLightExportResultProcessor {
             String[] oldRecord = resultMap.put(id, record);
 
             if (oldRecord != null){
-                System.out.println("This should not happen");
+                String message = "Output processor already has a record for id " + id + ". This should not happen.";
+                state.getResult().addWarning(message);
             }
         }
     }
@@ -87,7 +88,7 @@ public class CdmLightExportResultProcessor {
      * @param csvLine
      */
     public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine, CdmLightExportState state) {
-       this.put(table, String.valueOf(cdmBase.getId()), csvLine, state);
+       this.put(table, String.valueOf(cdmBase.getId()), csvLine);
     }
 
 
