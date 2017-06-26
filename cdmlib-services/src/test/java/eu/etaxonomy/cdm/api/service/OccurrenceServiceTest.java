@@ -248,7 +248,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "BlankDataSet.xml")
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "../../database/BlankDataSet.xml")
     public void testMoveDerivateNoParent() {
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         FieldUnit fieldUnit = FieldUnit.NewInstance();

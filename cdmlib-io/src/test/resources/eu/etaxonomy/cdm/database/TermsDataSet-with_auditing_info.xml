@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../persistence/dao/hibernate/dataset.xsd">
+<dataset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/dataset.xsd">
   <AUDITEVENT REVISIONNUMBER="1000" TIMESTAMP="1233162423845" UUID="1101799e-0842-410f-bb16-f0d59875fda7"/>
   <AUDITEVENT REVISIONNUMBER="1001" TIMESTAMP="1233162424204" UUID="6456c23d-6424-42dc-a240-36d34e77b249"/>
   <AUDITEVENT REVISIONNUMBER="1002" TIMESTAMP="1233162424423" UUID="0e93d6ad-6c12-4304-bb38-981a195b61b5"/>
