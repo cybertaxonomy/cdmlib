@@ -41,13 +41,16 @@ public class NormalExplicitRow extends ExcelRowBase {
     private String infraGenus;
     private String species;
     private String infraSpecies;
+    private String infraSpecies_rank;
 
     private String collation;
+    private String page;
     private String publicationYear;
     private String remarks;
 
     private String synonym;
     private String basionym;
+    private String accepted_id;
 
     private String version;
 
@@ -58,6 +61,8 @@ public class NormalExplicitRow extends ExcelRowBase {
 	private TreeMap<Integer, String> protologues = new TreeMap<Integer, String>();
 
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
+    private String taxonomicStatus;
+
 
 	public NormalExplicitRow() {
 
@@ -452,6 +457,39 @@ public class NormalExplicitRow extends ExcelRowBase {
     }
 
 
+    public void setPage(String value) {
+        this.page = value;
+
+    }
+    public String getPage() {
+        return this.page;
+
+    }
+
+
+    public void setAccepted_id(String value) {
+        this.accepted_id = value;
+    }
+
+    public String getAccepted_id(){
+        return accepted_id;
+    }
+
+    public void setInfraSpecies_Rank(String value) {
+        this.infraSpecies_rank = value;
+    }
+
+    public String getInfraSpecies_Rank() {
+        return this.infraSpecies_rank;
+    }
+
+    public String getTaxonomicStatus() {
+        return this.taxonomicStatus;
+    }
+
+    public void setTaxonomicStatus(String value) {
+        this.taxonomicStatus = value;
+    }
 
 
 }
