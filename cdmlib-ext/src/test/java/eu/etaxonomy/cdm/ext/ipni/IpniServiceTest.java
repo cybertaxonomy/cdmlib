@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  *
  */
-//@Ignore //preliminary
+@Ignore //preliminary
 public class IpniServiceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);
