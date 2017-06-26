@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -102,7 +103,10 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-	@DataSet
+    @DataSets({
+        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
+//        @DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
 	public void testDoInvoke() {
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
 		boolean result = defaultImport.invoke(configurator).isSuccess();
