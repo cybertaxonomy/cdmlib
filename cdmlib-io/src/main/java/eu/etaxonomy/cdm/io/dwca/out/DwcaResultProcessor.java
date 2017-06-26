@@ -18,7 +18,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
-import eu.etaxonomy.cdm.io.outputmodel.OutputModelTable;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -72,7 +71,7 @@ public class DwcaResultProcessor {
 
 
 
-    public boolean hasRecord(OutputModelTable table, String id){
+    public boolean hasRecord(DwcaTaxOutputTable table, String id){
         Map<String, String[]> resultMap = result.get(table);
         if (resultMap == null){
             return false;
