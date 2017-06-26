@@ -81,7 +81,6 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<File, Cdm
      */
     @Override
     public CdmLightExportState getNewState() {
-
         return new CdmLightExportState(this);
     }
     /**
@@ -100,36 +99,19 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<File, Cdm
         };
     }
 
-    /**
-     * @return the classificationUuids
-     */
     public Set<UUID> getClassificationUuids() {
         return classificationUuids;
     }
-
-
-    /**
-     * @param classificationUuids the classificationUuids to set
-     */
     public void setClassificationUuids(Set<UUID> classificationUuids) {
         this.classificationUuids = classificationUuids;
     }
-
-
-    /**
-     * @return
-     */
     public boolean isHighLightPrimaryCollector() {
-
         return isHighlightPrimaryCollector;
     }
-
 
     public boolean isCreateZipFile() {
         return createZipFile;
     }
-
-
     public void setCreateZipFile(boolean createZipFile) {
         this.createZipFile = createZipFile;
     }
