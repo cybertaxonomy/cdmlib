@@ -856,21 +856,21 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId( state, name);
                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_IDS)] = extractIdentifier(IPNIidentifiers);
-                state.getProcessor().put(table, name, csvLine, state);
+                state.getProcessor().put(table, name, csvLine);
             }
             if (!tropicosIdentifiers.isEmpty()){
                 csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId( state, name);
                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_IDS)] = extractIdentifier(tropicosIdentifiers);
-                state.getProcessor().put(table, name, csvLine, state);
+                state.getProcessor().put(table, name, csvLine);
             }
             if (!WFOIdentifiers.isEmpty()){
                 csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId( state, name);
                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_IDS)] = extractIdentifier(WFOIdentifiers);
-                state.getProcessor().put(table, name, csvLine, state);
+                state.getProcessor().put(table, name, csvLine);
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling identifiers for " +

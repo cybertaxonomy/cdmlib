@@ -48,7 +48,7 @@ public class CdmLightExportResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(CdmLightExportTable table, String id, String[] csvLine, CdmLightExportState state) {
+    public void put(CdmLightExportTable table, String id, String[] csvLine) {
         Map<String,String[]> resultMap = result.get(table);
         if (resultMap == null ){
             resultMap = new HashMap<>();
@@ -87,7 +87,7 @@ public class CdmLightExportResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine, CdmLightExportState state) {
+    public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine) {
        this.put(table, String.valueOf(cdmBase.getId()), csvLine);
     }
 
