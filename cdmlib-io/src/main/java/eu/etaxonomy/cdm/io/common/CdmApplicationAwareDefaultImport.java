@@ -199,6 +199,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         ImportStateBase state = config.getNewState();
         state.initialize(config);
+        state.setResult(result);
 
 //        CdmPermissionEvaluator permissionEval = applicationContext.getBean("cdmPermissionEvaluator", CdmPermissionEvaluator.class);
 
