@@ -17,8 +17,6 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
-import eu.etaxonomy.cdm.io.common.ExportResult;
-import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -96,7 +94,6 @@ public class CdmLightExportResultProcessor {
      * @return
      */
     public void createFinalResult(CdmLightExportState state) {
-        ExportResult finalResult = ExportResult.NewInstance(ExportResultType.MAP_BYTE_ARRAY);
 
         if (!result.isEmpty() ){
             //Replace quotes by double quotes
@@ -124,16 +121,14 @@ public class CdmLightExportResultProcessor {
                             null,exportStream,
                             Charset.forName("UTF-8"));
                 } catch(Exception e){
-                    finalResult.addException(e, e.getMessage());
+                    state.getResult().addException(e, e.getMessage());
                 }
 
-                finalResult.putExportData(table.getTableName(), exportStream.toByteArray());
+                state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
 
             }
         }
         result.clear();
-
-        state.setResult(finalResult);
     }
 
 
