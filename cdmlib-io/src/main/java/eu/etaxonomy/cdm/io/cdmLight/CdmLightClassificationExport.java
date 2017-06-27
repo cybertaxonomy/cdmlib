@@ -668,6 +668,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.PUBLICATION_TYPE)] = nomRef.getType().name();
                 if (nomRef.getVolume() != null){
                     csvLine[table.getIndex(CdmLightExportTable.VOLUME_ISSUE)] = nomRef.getVolume();
+                    csvLine[table.getIndex(CdmLightExportTable.COLLATION)] = createCollatation(name);
                 }
                 if (nomRef.getDatePublished() != null){
                     csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = nomRef.getTimePeriodPublishedString();
@@ -1280,7 +1281,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             //TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.getTitle();
-            csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_TITLE)] = reference.getTitle();
+            csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_TITLE)] = reference.getAbbrevTitle();
             csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
             //TBC
             csvLine[table.getIndex(CdmLightExportTable.EDITION)] = reference.getEdition();
