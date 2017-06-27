@@ -97,7 +97,7 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
     @Override
     public void writeCsv(DwcaTaxExportState state) {
         try {
-            DwcaTaxOutputTable table = DwcaTaxOutputTable.DISTRIBUTION;
+            DwcaTaxOutputFile table = DwcaTaxOutputFile.DISTRIBUTION;
             String[] csvLine = new String[table.getSize()];
 
             //

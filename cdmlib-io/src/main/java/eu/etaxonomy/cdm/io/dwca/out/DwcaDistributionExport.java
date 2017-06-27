@@ -38,7 +38,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
-	private static final String fileName = "distribution.txt";
+	protected static final String fileName = "distribution.txt";
 
 	/**
 	 * Constructor
@@ -62,9 +62,8 @@ public class DwcaDistributionExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.DISTRIBUTION;
 		try {
-			writer = createPrintWriter(fileName, state);
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
@@ -80,7 +79,8 @@ public class DwcaDistributionExport extends DwcaExportBase {
 								DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
 								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
 								handleDistribution(record, distribution, taxon, config);
-								record.write(state, writer);
+								PrintWriter writer = createPrintWriter(state, file);
+					            record.write(state, writer);
 								this.addExistingRecord(distribution);
 							}
 						}else if (el.getFeature().equals(Feature.DISTRIBUTION())){
@@ -91,15 +91,13 @@ public class DwcaDistributionExport extends DwcaExportBase {
 					}
 				}
 
-                if (writer != null){
-                    writer.flush();
-                }
+                flushWriter(state, file);
 			}
         } catch (Exception e) {
             String message = "Unexpected exception " + e.getMessage();
             state.getResult().addException(e, message, "DwcaDistributionExport.doInvoke()");
 		}finally {
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;

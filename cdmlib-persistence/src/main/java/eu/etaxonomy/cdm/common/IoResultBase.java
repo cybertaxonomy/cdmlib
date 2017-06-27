@@ -57,28 +57,30 @@ public abstract class IoResultBase implements Serializable{
 
     public List<IoInfo> getErrors() {return errors;}
     public void setErrors(List<IoInfo> ioInfos) {this.errors = ioInfos;}
-    public void addError(String error) {
-        errors.add(new IoInfo(error, null));
+    public void addError(String message) {
+        addError(message, null, null);
     }
-    public void addError(String error, Exception e) {
-        errors.add(new IoInfo(error, e));
+    public void addError(String message, Exception e) {
+        addError(message, e, null);
     }
     public void addError(String message, int location) {
-        errors.add(new IoInfo(message, null, String.valueOf(location)));
+        addError(message, null, String.valueOf(location));
     }
     public void addError(String message, String location) {
-        errors.add(new IoInfo(message, null, location));
+        addError(message, null, location);
+    }
+    public void addError(String message, Exception e, String location) {
+        errors.add(new IoInfo(message, e, makeLocation(e, location)));
     }
 
     public List<IoInfo> getWarnings() {return warnings;}
     public void setWarnings(List<IoInfo> warnings) {this.warnings = warnings;}
-    public void addWarning(String warning) {
+    public void addWarning(String message) {
 //       warnings.add(warning.getBytes(StandardCharsets.UTF_8));
-        warnings.add(new IoInfo(warning, null));
-
+        addWarning(message, null);
     }
     public void addWarning(String message, int location) {
-        warnings.add(new IoInfo(message, null, String.valueOf(location)));
+        addWarning(message, String.valueOf(location));
     }
     public void addWarning(String message, String location) {
         warnings.add(new IoInfo(message, null, location));
@@ -87,16 +89,36 @@ public abstract class IoResultBase implements Serializable{
     public List<IoInfo> getExceptions() {return exceptions;}
     public void setExceptions(List<IoInfo> exceptions) {this.exceptions = exceptions;}
     public void addException(Exception e) {
-        exceptions.add(new IoInfo(e.getMessage(), e));
+        addException(e, null, null);
         setExceptionState();
     }
     public void addException(Exception e, String message) {
-        exceptions.add(new IoInfo(message, e));
+        addException(e, message, null);
         setExceptionState();
     }
     public void addException(Exception e, String message, String location) {
-        exceptions.add(new IoInfo(message, e, location));
+        exceptions.add(new IoInfo(message, e, makeLocation(e, location)));
         setExceptionState();
+    }
+
+
+    /**
+     * Computes the location string. If location is not null the location
+     * parameter is returned. If location is <code>null</code> the stacktrace
+     * is examined and tried to retrieve the location from there
+     * @param e
+     * @param location
+     * @return
+     */
+    private String makeLocation(Throwable e, String location) {
+        if (location == null && e != null){
+            StackTraceElement[] stackTrace = e.getStackTrace();
+            if (stackTrace != null && stackTrace.length > 0){
+                StackTraceElement el = stackTrace[0];
+                location = el.getMethodName() + "(" +  el.getClassName() + ":" + el.getLineNumber() + ")";
+            }
+        }
+        return location;
     }
 
     protected abstract void setExceptionState();

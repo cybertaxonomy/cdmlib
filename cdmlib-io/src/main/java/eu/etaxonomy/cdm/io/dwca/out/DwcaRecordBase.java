@@ -63,7 +63,7 @@ public abstract class DwcaRecordBase {
 
 	public abstract void write(DwcaTaxExportState state, PrintWriter writer);
 	public void writeCsv(DwcaTaxExportState state){
-	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!");
+	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!", getClass().getName() + ".writeCsv");
 	}
 
 
@@ -225,23 +225,23 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, Set<Rights> rights) {
+	protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputFile table, TermUri termUri, Set<Rights> rights) {
         String rightsStr = getRights(rights);
         if (rights != null){ line(state, csvLine, table, termUri, rightsStr);}
     }
-    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, Language language) {
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputFile table, TermUri termUri, Language language) {
         if (language != null){ line(state, csvLine, table, termUri, getLanguage(language));}
     }
-    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, DwcaId id) {
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputFile table, TermUri termUri, DwcaId id) {
         if (id != null){ line(state, csvLine, table, termUri, id.getId());}
     }
-    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, UUID uuid) {
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputFile table, TermUri termUri, UUID uuid) {
         if (uuid != null){ line(state, csvLine, table, termUri, uuid.toString());}
     }
-    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, String string) {
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputFile table, TermUri termUri, String string) {
         line(state, csvLine, table, termUri, string, null);
     }
-    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputTable table, TermUri termUri, String string, String defaultValue) {
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxOutputFile table, TermUri termUri, String string, String defaultValue) {
         try {
             csvLine[table.getIndex(termUri)] = string;
             if (count == 1 && table.getIndex(termUri) != 0){

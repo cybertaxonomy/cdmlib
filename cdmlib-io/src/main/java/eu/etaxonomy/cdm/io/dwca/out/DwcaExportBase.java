@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -61,14 +62,14 @@ public abstract class DwcaExportBase
     protected static final boolean IS_CORE = true;
 
 
-    protected Set<Integer> existingRecordIds = new HashSet<Integer>();
-    protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
-    private String serverFileName = "-dwca_export-cdm.zip";
+    protected Set<Integer> existingRecordIds = new HashSet<>();
+    protected Set<UUID> existingRecordUuids = new HashSet<>();
 
 
     @Override
-    public int countSteps() {
-        List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+    public int countSteps(DwcaTaxExportState state) {
+        //FIXME count without initialization
+        List<TaxonNode> allNodes =  allNodes(state);
         return allNodes.size();
     }
 
@@ -250,24 +251,19 @@ public abstract class DwcaExportBase
     }
 
 
-    /**
-     * @param config
-     * @param factory
-     * @return
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws XMLStreamException
-     */
-    protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, String fileName)
+    protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, DwcaTaxOutputFile table)
             throws IOException, FileNotFoundException, XMLStreamException {
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
         OutputStream os;
         boolean useZip = state.isZip();
         if (useZip){
-            os = state.getZipStream(fileName);
+            os = state.getZipStream(table.getTableName());
+        }else if(state.getConfig().getDestination() != null){
+            os = createFileOutputStream(state.getConfig(), table.getTableName());
         }else{
-            os = createFileOutputStream(state.getConfig(), fileName);
+            os = new ByteArrayOutputStream();
+            state.getProcessor().put(table, (ByteArrayOutputStream)os);
         }
         XMLStreamWriter  writer = factory.createXMLStreamWriter(os);
         return writer;
@@ -275,6 +271,7 @@ public abstract class DwcaExportBase
 
 
     /**
+     * @param writer2
      * @param coreTaxFileName
      * @param config
      * @return
@@ -282,32 +279,45 @@ public abstract class DwcaExportBase
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportState state)
+    protected PrintWriter createPrintWriter(DwcaTaxExportState state, DwcaTaxOutputFile file)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
-        //FIXME preliminary
-        if (state.getConfig().getDestination() == null){
-            return null;
-        }
-        boolean useZip = state.isZip();
-        OutputStream os;
-        if (useZip){
-            os = state.getZipStream(fileName);
-        }else{
-            os = createFileOutputStream(state.getConfig(), fileName);
-        }
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF8"), true);
+        if (state.getWriter(file) == null){
 
-        return writer;
+            boolean useZip = state.isZip();
+            OutputStream os;
+            if (useZip){
+                os = state.getZipStream(file.getTableName());
+            }else if(state.getConfig().getDestination() != null){
+                os = createFileOutputStream(state.getConfig(), file.getTableName());
+            }else{
+                os = new ByteArrayOutputStream();
+                state.getProcessor().put(file, (ByteArrayOutputStream)os);
+            }
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF8"), true);
+            state.putWriter(file, writer);
+        }
+        return state.getWriter(file);
+    }
+
+
+    /**
+     * flushes the writer for the according file if exists.
+     */
+    protected void flushWriter(DwcaTaxExportState state, DwcaTaxOutputFile file) {
+        if (state.getWriter(file) != null){
+            state.getWriter(file).flush();
+        }
     }
 
 
     /**
      * Closes the writer
-     * @param writer
+     * @param file
      * @param state
      */
-    protected void closeWriter(PrintWriter writer, DwcaTaxExportState state) {
+    protected void closeWriter(DwcaTaxOutputFile file, DwcaTaxExportState state) {
+        PrintWriter writer = state.getWriter(file);
         if (writer != null && state.isZip() == false){
             writer.close();
         }

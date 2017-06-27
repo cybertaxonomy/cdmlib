@@ -206,6 +206,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 
 		ExportStateBase state = config.getNewState();
 		state.initialize(config);
+		state.setResult(result);
 
 		//do invoke for each class
 		for (Class<ICdmExport> ioClass: config.getIoClassList()){
@@ -214,7 +215,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 				ICdmExport cdmIo = applicationContext.getBean(ioBeanName, ICdmExport.class);
 				if (cdmIo != null){
 					state.setCurrentIO(cdmIo);
-					state.setResult(result);
 					cdmIo.invoke(state);
 				}else{
 					String message = "cdmIO was null";

@@ -9,8 +9,10 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +52,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaResourceRelationExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/ResourceRelationship";
-	private static final String fileName = "resourceRelationship.txt";
+	protected static final String fileName = "resourceRelationship.txt";
 
 	/**
 	 * Constructor
@@ -73,10 +75,9 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	protected void doInvoke(DwcaTaxExportState state){
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
-		try {
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.RESOURCE_RELATION;
 
-			writer = createPrintWriter(fileName, state);
+		try {
 
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
@@ -84,23 +85,22 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
             List<TaxonNode> allNodes = allNodes(state);
 
 			for (TaxonNode node : allNodes){
-			    makeSingleTaxonNode(state, node, metaRecord,writer);
-                if (writer != null){
-                    writer.flush();
-                }
+			    makeSingleTaxonNode(state, node, metaRecord, file);
+                flushWriter(state,file);
 			}
 		} catch (IOException e) {
 	         String message = "Unexpected exception " + e.getMessage();
 	         state.getResult().addException(e, message, "DwcaResourceRelationExport.doInvoke()");
 		} finally{
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
 
+
     private void makeSingleTaxonNode(DwcaTaxExportState state, TaxonNode node, DwcaMetaDataRecord metaRecord,
-            PrintWriter writer){
+            DwcaTaxOutputFile file) throws FileNotFoundException, UnsupportedEncodingException, IOException{
         DwcaTaxExportConfigurator config = state.getConfig();
 
         Taxon taxon = CdmBase.deproxy(node.getTaxon());
@@ -114,6 +114,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
                     TaxonInteraction taxonInteraction = CdmBase.deproxy(el,TaxonInteraction.class);
                     if (! this.recordExistsUuid(taxonInteraction)){
                         handleInteraction(record, taxon, taxonInteraction);
+                        PrintWriter writer = createPrintWriter(state, file);
                         record.write(state, writer);
                         this.addExistingRecordUuid(taxonInteraction);
                     }
@@ -133,6 +134,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
             }
             if (! this.recordExistsUuid(rel)){
                 handleRelationship(record, subject, object, rel, false);
+                PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
                 this.addExistingRecordUuid(rel);
             }
@@ -168,11 +170,13 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
             if (! this.recordExistsUuid(rel)){
                 //????
                 handleRelationship(record, subject, object, rel, isInverse);
+                PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
                 this.addExistingRecordUuid(rel);
             }
 
         }
+        return;
     }
 
 	private void handleRelationship(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, IdentifiableEntity<?> object,

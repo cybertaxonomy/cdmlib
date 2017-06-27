@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -35,6 +38,7 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	private boolean isZip = false;
 	private ZipOutputStream zos;
 	private List<TaxonNode>  allNodes = new ArrayList<>();
+	private Map<DwcaTaxOutputFile, PrintWriter> writerMap = new HashMap<>();
 
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
@@ -101,6 +105,14 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 
     public DwcaResultProcessor getProcessor() {
         return processor;
+    }
+
+    public PrintWriter getWriter(DwcaTaxOutputFile file){
+        return this.writerMap.get(file);
+    }
+
+    public PrintWriter putWriter(DwcaTaxOutputFile file, PrintWriter writer){
+        return this.writerMap.put(file, writer);
     }
 
 

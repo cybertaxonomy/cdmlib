@@ -38,7 +38,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
-	private static final String fileName = "vernacular.txt";
+	protected static final String fileName = "vernacular.txt";
 
 
 	/**
@@ -63,9 +63,8 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.VERNACULAR;
 		try {
-			writer = createPrintWriter(fileName, state);
 
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
@@ -81,6 +80,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
 							if (! this.recordExists(commonTaxonName)){
 								handleCommonTaxonName(record, commonTaxonName, taxon, config);
+								PrintWriter writer = createPrintWriter(state, file);
 								record.write(state, writer);
 								this.addExistingRecord(commonTaxonName);
 							}
@@ -93,16 +93,13 @@ public class DwcaVernacularExport extends DwcaExportBase {
 					}
 				}
 
-                if (writer != null){
-                    writer.flush();
-                }
-
+                flushWriter(state, file);
 			}
 		} catch (Exception e) {
 	         String message = "Unexpected exception " + e.getMessage();
 	         state.getResult().addException(e, message, "DwcaVernacularExport.doInvoke()");
 		} finally{
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;

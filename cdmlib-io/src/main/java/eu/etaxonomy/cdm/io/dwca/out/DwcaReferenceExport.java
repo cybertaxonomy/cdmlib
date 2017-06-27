@@ -35,7 +35,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 
     private static final Logger logger = Logger.getLogger(DwcaReferenceExport.class);
 
-	private static final String fileName = "reference.txt";
+	protected static final String fileName = "reference.txt";
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Reference";
 
 	/**
@@ -60,21 +60,23 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.REFERENCE;
+
 		try {
-			writer = createPrintWriter(fileName, state);
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
             List<TaxonNode> allNodes = allNodes(state);
 			for (TaxonNode node : allNodes){
-				//sec
+
+			    //sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
 				Taxon taxon = CdmBase.deproxy(node.getTaxon());
 				Reference sec = taxon.getSec();
 				if (sec != null && ! recordExists(sec)){
-					handleReference(record, sec, taxon);
-					record.write(state, writer);
+					handleReference(state, record, sec, taxon);
+					PrintWriter writer = createPrintWriter(state, file);
+                    record.write(state, writer);
 					addExistingRecord(sec);
 				}
 
@@ -82,33 +84,33 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				record = new DwcaReferenceRecord(metaRecord, config);
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
 				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
-					handleReference(record, (Reference)nomRef, taxon);
-					record.write(state, writer);
+					handleReference(state, record, (Reference)nomRef, taxon);
+					PrintWriter writer = createPrintWriter(state, file);
+		            record.write(state, writer);
 					addExistingRecord((Reference)nomRef);
 				}
 
-                if (writer != null){
-                    writer.flush();
-                }
+                flushWriter(state, file);
 
 			}
 		} catch (Exception e) {
 	          String message = "Unexpected exception " + e.getMessage();
 	          state.getResult().addException(e, message, "DwcaReferenceExport.doInvoke()");
 		} finally{
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
 
-	private void handleReference(DwcaReferenceRecord record, Reference reference, Taxon taxon) {
+	private void handleReference(DwcaTaxExportState state, DwcaReferenceRecord record, Reference reference, Taxon taxon) {
+
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
 
 		record.setISBN_ISSN(StringUtils.isNotBlank(reference.getIsbn())? reference.getIsbn(): reference.getIssn());
 		record.setUri(reference.getUri());
-		record.setDoi(reference.getDoi().toString());
+		record.setDoi(reference.getDoiString());
 		record.setLsid(reference.getLsid());
 		//TODO microreference
 		record.setBibliographicCitation(reference.getTitleCache());
@@ -143,7 +145,5 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoReferences();
 	}
-
-
 
 }

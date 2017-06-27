@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +51,7 @@ public class DwcaTaxExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaTaxExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
-	private static final String fileName = "coreTax.txt";
+	protected static final String fileName = "coreTax.txt";
 
 	/**
 	 *
@@ -76,10 +79,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 
-		PrintWriter writer = null;
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.TAXON;
 		try {
 
-			writer = createPrintWriter(fileName, state);
 			List<TaxonNode> allNodes = allNodes(state);
 
 			for (TaxonNode node : allNodes){
@@ -92,20 +94,19 @@ public class DwcaTaxExport extends DwcaExportBase {
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
 					handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null, false, false);
-					record.write(state, writer);
+					PrintWriter writer = createPrintWriter(state, file);
+		            record.write(state, writer);
 					this.addExistingRecord(taxon);
 				}
 
 				node.getClassification().getName();
 				//synonyms
-				handleSynonyms(state, taxon, writer, classification, metaRecord);
+				handleSynonyms(state, taxon, file, classification, metaRecord);
 
 				//misapplied names
-				handleMisapplication(state, taxon, writer, classification, metaRecord);
+				handleMisapplication(state, taxon, file, classification, metaRecord);
 
-				if (writer != null){
-				    writer.flush();
-				}
+				flushWriter(state, file);
 
 			}
 		} catch (Exception e) {
@@ -113,7 +114,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;
@@ -122,8 +123,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 
 
-	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, PrintWriter writer,
-	        Classification classification, DwcaMetaDataRecord metaRecord) {
+	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, DwcaTaxOutputFile file,
+	        Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		for (Synonym synonym :taxon.getSynonyms() ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
@@ -139,13 +140,15 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 			if (! this.recordExists(synonym)){
 				handleTaxonBase(state, record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
+				PrintWriter writer = createPrintWriter(state, file);
 				record.write(state, writer);
 				this.addExistingRecord(synonym);
 			}
 		}
 	}
 
-	private void handleMisapplication(DwcaTaxExportState state, Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord) {
+	private void handleMisapplication(DwcaTaxExportState state, Taxon taxon,
+	        DwcaTaxOutputFile file, Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
 		for (Taxon misappliedName : misappliedNames ){
 			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, state.getConfig());
@@ -158,7 +161,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(state, record, misappliedName, name, taxon, parent, basionym, classification,
 				        relType, false, false);
-				record.write(state, writer);
+				PrintWriter writer = createPrintWriter(state, file);
+                record.write(state, writer);
 				this.addExistingRecord(misappliedName);
 			}
 		}

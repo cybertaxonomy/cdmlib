@@ -37,7 +37,6 @@ public class DwcaResultWriter extends DwcaExportBase {
     @Override
     protected void doInvoke(DwcaTaxExportState state) {
         state.getProcessor().createFinalResult();
-
     }
 
     /**

@@ -40,7 +40,7 @@ public class DwcaImageExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
-	private static final String fileName = "images.txt";
+	protected static final String fileName = "images.txt";
 
 	/**
 	 * Constructor
@@ -64,9 +64,8 @@ public class DwcaImageExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.IMAGE;
 		try {
-			writer = createPrintWriter(fileName, state);
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
@@ -84,7 +83,8 @@ public class DwcaImageExport extends DwcaExportBase {
 										if (! this.recordExists(part)){
 											DwcaImageRecord record = new DwcaImageRecord(metaRecord, config);
 											handleMedia(record, media, repr, part, taxon);
-											record.write(state, writer);
+											PrintWriter writer = createPrintWriter(state, file);
+								            record.write(state, writer);
 											this.addExistingRecord(part);
 										}
 									}
@@ -94,16 +94,14 @@ public class DwcaImageExport extends DwcaExportBase {
 					}
 				}
 
-                if (writer != null){
-                    writer.flush();
-                }
+                flushWriter(state, file);
 
 			}
         } catch (Exception e) {
             String message = "Unexpected exception " + e.getMessage();
             state.getResult().addException(e, message, "DwcaVernacularExport.doInvoke()");
 		}finally {
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 
 		commitTransaction(txStatus);

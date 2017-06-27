@@ -15,24 +15,22 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
  * @date 25.06.2017
  *
  */
-public enum DwcaTaxOutputTable {
-//    METADATA("Metadata", metaDataColumns()),
-      TAXON("coreTax.txt", taxonColumns()),
-      DISTRIBUTION("distribution.txt", distributionColumns()),
+public enum DwcaTaxOutputFile {
+      METADATA(DwcaMetaDataExport.fileName, null),
+      EML(DwcaEmlExport.fileName, null),
+      TAXON(DwcaTaxExport.fileName, taxonColumns()),
+      DISTRIBUTION(DwcaDistributionExport.fileName, distributionColumns()),
+      DESCRIPTION(DwcaDescriptionExport.fileName, null),
+      IMAGE(DwcaImageExport.fileName, null),
+      REFERENCE(DwcaReferenceExport.fileName, null),
+      RESOURCE_RELATION(DwcaResourceRelationExport.fileName, null),
+      TYPES(DwcaTypesExport.fileName, null),
+      VERNACULAR(DwcaVernacularExport.fileName, null),
+
+
 //    SCIENTIFIC_NAME("ScientificName", nameColumns()),
 //    NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
-//    HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
-//    NOMENCLATURAL_AUTHOR("NomenclaturalAuthor", nomenclaturalAuthorColumns()),
-//    NOMENCLATURAL_AUTHOR_TEAM_RELATION("NomenclaturalAuthorTeamRelation", nomenclaturalAuthorTeamRelColumns()),
-//    TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
-//    SPECIMEN("Specimen", specimenColumns()),
-//    SYNONYM("Synonym", synonymColumns()),
-//    REFERENCE("Reference", referenceColumns()),
-//    SIMPLE_FACT("SimpleFact", simpleFactsColumns()),
-//    SPECIMEN_FACT("SpecimenFact", specimenFactsColumns()),
-//    GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
-//    COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
-//    FACT_SOURCES("FactSources", factSourcesColumns())
+
 
     ;
 
@@ -61,6 +59,7 @@ public enum DwcaTaxOutputTable {
      */
     final static TermUri[] distributionColumns() {
         return new TermUri[]{
+                TermUri.DC_IDENTIFIER,  //Fixme this should be the FK to taxon
                 TermUri.DWC_LOCATION_ID, TermUri.DWC_LOCALITY,
                 TermUri.DWC_COUNTRY_CODE, TermUri.DWC_LIFESTAGE,
                 TermUri.IUCN_THREAD_STATUS, TermUri.DWC_OCCURRENCE_STATUS,
@@ -77,7 +76,7 @@ public enum DwcaTaxOutputTable {
 
 // ************** CONSTRUCTOR *******************/
 
-    private DwcaTaxOutputTable(String tableName, TermUri[] columnNames){
+    private DwcaTaxOutputFile(String tableName, TermUri[] columnNames){
         this.tableName = tableName;
         this.columnNames = columnNames;
     }

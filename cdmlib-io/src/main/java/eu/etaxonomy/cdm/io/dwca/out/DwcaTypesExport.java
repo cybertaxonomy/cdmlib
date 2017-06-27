@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
@@ -50,7 +53,7 @@ public class DwcaTypesExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaTypesExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/TypesAndSpecimen";
-	private static final String fileName = "typesAndSpecimen.txt";
+	protected static final String fileName = "typesAndSpecimen.txt";
 
 	/**
 	 * Constructor
@@ -74,10 +77,10 @@ public class DwcaTypesExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
-		try {
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.TYPES;
 
-			writer = createPrintWriter(fileName, state);
+        try {
+
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
@@ -97,7 +100,8 @@ public class DwcaTypesExport extends DwcaExportBase {
 							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
 							if (! this.recordExistsUuid(individualAssociation)
 							        && handleSpecimen(state, record, individualAssociation, null, taxon, config)){
-								record.write(state, writer);
+							    PrintWriter writer = createPrintWriter(state, file);
+					            record.write(state, writer);
 								this.addExistingRecordUuid(individualAssociation);
 							}
 						}
@@ -106,25 +110,22 @@ public class DwcaTypesExport extends DwcaExportBase {
 
 				//type specimen
 				INonViralName nvn = taxon.getName();
-				handleTypeName(state, writer, taxon, nvn, metaRecord);
+				handleTypeName(state, file, taxon, nvn, metaRecord);
 				for (Synonym synonym : taxon.getSynonyms()){
-					handleTypeName(state, writer, synonym, nvn, metaRecord);
+					handleTypeName(state, file, synonym, nvn, metaRecord);
 				}
 
 				//FIXME
 				//Determinations
 
-
-                if (writer != null){
-                    writer.flush();
-                }
+				flushWriter(state, file);
 
 			}
 		} catch (Exception e) {
 	          String message = "Unexpected exception " + e.getMessage();
 	          state.getResult().addException(e, message, "DwcaTypesExport.doInvoke()");
 		} finally{
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;
@@ -137,17 +138,22 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @param nvn
 	 * @param config
 	 * @return
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
+	 * @throws FileNotFoundException
 	 */
 	private Set<TypeDesignationBase> handleTypeName(DwcaTaxExportState state,
-	        PrintWriter writer, TaxonBase<?> taxonBase,
-	        INonViralName nvn, DwcaMetaDataRecord metaRecord) {
+	        DwcaTaxOutputFile file, TaxonBase<?> taxonBase,
+	        INonViralName nvn, DwcaMetaDataRecord metaRecord)
+	        throws FileNotFoundException, UnsupportedEncodingException, IOException {
 	    DwcaTaxExportConfigurator config = state.getConfig();
 		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 			if (! this.recordExistsUuid(designation)
 			        && handleSpecimen(state, record, null, designation, taxonBase, config)){
-				record.write(state, writer);
+			    PrintWriter writer = createPrintWriter(state, file);
+                record.write(state, writer);
 				addExistingRecordUuid(designation);
 			}
 		}

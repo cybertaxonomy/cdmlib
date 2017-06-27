@@ -42,7 +42,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 
     private static final Logger logger = Logger.getLogger(DwcaEmlExport.class);
 
-	private static final String fileName = "eml.xml";
+	protected static final String fileName = "eml.xml";
 
 	String emlNamespace = "eml://ecoinformatics.org/eml-2.1.1";
 	String mdNamespace="eml://ecoinformatics.org/methods-2.1.0";
@@ -83,7 +83,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 
 		XMLStreamWriter writer = null;
 		try {
-			writer = createXmlStreamWriter(state, fileName);
+			writer = createXmlStreamWriter(state, DwcaTaxOutputFile.EML);
 
 			String rootName = "eml";
 

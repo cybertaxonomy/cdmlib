@@ -246,7 +246,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
     @Override
     public void writeCsv(DwcaTaxExportState state) {
         try {
-            DwcaTaxOutputTable table = DwcaTaxOutputTable.TAXON;
+            DwcaTaxOutputFile table = DwcaTaxOutputFile.TAXON;
             String[] csvLine = new String[table.getSize()];
 
             //

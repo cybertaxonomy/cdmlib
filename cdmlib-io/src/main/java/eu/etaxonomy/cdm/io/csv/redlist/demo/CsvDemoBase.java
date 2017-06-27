@@ -50,9 +50,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 18.10.2012
  *
  */
-public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurator, CsvDemoExportState, IExportTransformer> implements ICdmExport<CsvDemoExportConfigurator, CsvDemoExportState>{
-    private static final long serialVersionUID = -2962456879635841019L;
+public abstract class CsvDemoBase
+            extends CdmExportBase<CsvDemoExportConfigurator, CsvDemoExportState, IExportTransformer>
+            implements ICdmExport<CsvDemoExportConfigurator, CsvDemoExportState>{
 
+    private static final long serialVersionUID = -2962456879635841019L;
     private static final Logger logger = Logger.getLogger(CsvDemoBase.class);
 
 	protected static final boolean IS_CORE = true;
@@ -63,7 +65,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 
 
 	@Override
-	public int countSteps() {
+	public int countSteps(CsvDemoExportState state) {
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 		return allNodes.size();
 	}
@@ -166,7 +168,7 @@ public abstract class CsvDemoBase extends CdmExportBase<CsvDemoExportConfigurato
 
 	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
-		for (IOriginalSource source: sourceable.getSources()){
+		for (IOriginalSource<?> source: sourceable.getSources()){
 			if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
 				if (source.getCitation() != null){
 					String ref = source.getCitation().getTitleCache();

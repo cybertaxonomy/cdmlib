@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -561,17 +562,22 @@ public class Reference
 	public DOI getDoi() {
 		return doi;
 	}
-
     @Override
 	public void setDoi(DOI doi) {
 		this.doi = doi;
 	}
+    /**
+     * Convenience method to retrieve doi as string
+     */
+    @Transient @XmlTransient @java.beans.Transient
+    public String getDoiString() {
+        return doi == null? null : doi.toString();
+    }
 
 	@Override
     public String getSeriesPart() {
 		return seriesPart;
 	}
-
 	@Override
     public void setSeriesPart(String seriesPart) {
 		this.seriesPart = StringUtils.isBlank(seriesPart)? null : seriesPart;

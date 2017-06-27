@@ -35,7 +35,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
     private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
 
-	private static final String fileName = "meta.xml";
+	protected static final String fileName = "meta.xml";
 
 	/**
 	 * Constructor
@@ -61,7 +61,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
 		XMLStreamWriter writer = null;
 		try {
-			writer = createXmlStreamWriter(state, fileName);
+			writer = createXmlStreamWriter(state, DwcaTaxOutputFile.METADATA);
 
 			String rootNamespace = "http://rs.tdwg.org/dwc/text/";
 			String rootName = "archive";
@@ -89,15 +89,19 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+		    String message = "Metadata file could not be found";
+			state.getResult().addException(e, message);
 		} catch (XMLStreamException e) {
 			if (e.getNestedException() != null){
-				throw new RuntimeException(e.getNestedException());
+			    String message = "Nested XMLStreamException while handling metadata";
+			    state.getResult().addException((Exception)e.getNestedException(), message);
 			}else{
-				throw new RuntimeException(e);
+			    String message = "XMLStreamException while handling metadata";
+                state.getResult().addException(e, message);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+		    String message = "IOException while handling metadata";
+            state.getResult().addException(e, message);
 		} finally{
 			closeWriter(writer, state);
 		}

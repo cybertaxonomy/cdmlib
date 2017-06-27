@@ -41,7 +41,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
     private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Description";
-	private static final String fileName = "description.txt";
+	protected static final String fileName = "description.txt";
 
 	/**
 	 * Constructor
@@ -66,9 +66,8 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
+		DwcaTaxOutputFile file = DwcaTaxOutputFile.DESCRIPTION;
 		try {
-			writer = createPrintWriter(fileName, state);
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
@@ -87,23 +86,21 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 								DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
 								TextData textData = CdmBase.deproxy(el,TextData.class);
 								handleDescription(record, textData, taxon, config);
-								record.write(state, writer);
+								PrintWriter writer = createPrintWriter(state, DwcaTaxOutputFile.DESCRIPTION);
+					            record.write(state, writer);
 								addExistingRecord(textData);
 							}
 						}
 					}
 				}
 
-                if (writer != null){
-                    writer.flush();
-                }
-
+                flushWriter(state, file);
 			}
 		} catch (Exception e) {
             String message = "Unexpected exception " + e.getMessage();
             state.getResult().addException(e, message, "DwcaDescriptionExport.doInvoke()");
 		} finally {
-			closeWriter(writer, state);
+			closeWriter(file, state);
 		}
 		commitTransaction(txStatus);
 		return;
