@@ -82,13 +82,13 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 							if (feature != null &&
 									! feature.equals(Feature.IMAGE()) &&
 									! config.getFeatureExclusions().contains(feature.getUuid()) &&
-									! recordExists(el)){
+									! state.recordExists(file,el)){
 								DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
 								TextData textData = CdmBase.deproxy(el,TextData.class);
 								handleDescription(record, textData, taxon, config);
 								PrintWriter writer = createPrintWriter(state, DwcaTaxOutputFile.DESCRIPTION);
 					            record.write(state, writer);
-								addExistingRecord(textData);
+								state.addExistingRecord(file, textData);
 							}
 						}
 					}

@@ -112,11 +112,11 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
                 if (el.isInstanceOf(TaxonInteraction.class)){
                     DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
                     TaxonInteraction taxonInteraction = CdmBase.deproxy(el,TaxonInteraction.class);
-                    if (! this.recordExistsUuid(taxonInteraction)){
+                    if (! state.recordExistsUuid(taxonInteraction)){
                         handleInteraction(record, taxon, taxonInteraction);
                         PrintWriter writer = createPrintWriter(state, file);
                         record.write(state, writer);
-                        this.addExistingRecordUuid(taxonInteraction);
+                        state.addExistingRecordUuid(taxonInteraction);
                     }
                 }
             }
@@ -132,11 +132,11 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
                 //misapplied names are handled in core (tax)
                 continue;
             }
-            if (! this.recordExistsUuid(rel)){
+            if (! state.recordExistsUuid(rel)){
                 handleRelationship(record, subject, object, rel, false);
                 PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
-                this.addExistingRecordUuid(rel);
+                state.addExistingRecordUuid(rel);
             }
 
         }
@@ -167,12 +167,12 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
                 state.getResult().addWarning(message, "DwcaResourceRelationExport.makeSingleTaxonNode");
             }
 
-            if (! this.recordExistsUuid(rel)){
+            if (! state.recordExistsUuid(rel)){
                 //????
                 handleRelationship(record, subject, object, rel, isInverse);
                 PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
-                this.addExistingRecordUuid(rel);
+                state.addExistingRecordUuid(rel);
             }
 
         }

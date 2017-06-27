@@ -62,10 +62,6 @@ public abstract class DwcaExportBase
     protected static final boolean IS_CORE = true;
 
 
-    protected Set<Integer> existingRecordIds = new HashSet<>();
-    protected Set<UUID> existingRecordUuids = new HashSet<>();
-
-
     @Override
     public int countSteps(DwcaTaxExportState state) {
         //FIXME count without initialization
@@ -113,6 +109,7 @@ public abstract class DwcaExportBase
         Set<UUID> uuidSet = new HashSet<>();
 
         for (UUID subtreeUuid : subtreeSet){
+            uuidSet.add(subtreeUuid);
             List<TaxonNodeDto> records = getTaxonNodeService().pageChildNodesDTOs(subtreeUuid,
                     recursive, doSynonyms, null, null, null).getRecords();
             for (TaxonNodeDto dto : records){
@@ -123,6 +120,9 @@ public abstract class DwcaExportBase
 
         List<TaxonNode> result = new ArrayList<>();
         for (TaxonNode node : allNodes){
+            if(node.getParent()== null){  //root (or invalid) node
+                continue;
+            }
             node = CdmBase.deproxy(node);
             Taxon taxon = CdmBase.deproxy(node.getTaxon());
             if (taxon == null){
@@ -160,38 +160,6 @@ public abstract class DwcaExportBase
 
     protected String getTaxonLogString(TaxonBase<?> taxon) {
         return taxon.getTitleCache() + "(" + taxon.getId() + ")";
-    }
-
-
-    /**
-     * @param el
-     * @return
-     */
-    protected boolean recordExists(CdmBase el) {
-        return existingRecordIds.contains(el.getId());
-    }
-
-
-    /**
-     * @param sec
-     */
-    protected void addExistingRecord(CdmBase cdmBase) {
-        existingRecordIds.add(cdmBase.getId());
-    }
-
-    /**
-     * @param el
-     * @return
-     */
-    protected boolean recordExistsUuid(CdmBase el) {
-        return existingRecordUuids.contains(el.getUuid());
-    }
-
-    /**
-     * @param sec
-     */
-    protected void addExistingRecordUuid(CdmBase cdmBase) {
-        existingRecordUuids.add(cdmBase.getUuid());
     }
 
 

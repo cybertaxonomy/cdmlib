@@ -73,21 +73,22 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
 				Taxon taxon = CdmBase.deproxy(node.getTaxon());
 				Reference sec = taxon.getSec();
-				if (sec != null && ! recordExists(sec)){
+				if (sec != null && ! state.recordExists(file, sec)){
 					handleReference(state, record, sec, taxon);
 					PrintWriter writer = createPrintWriter(state, file);
                     record.write(state, writer);
-					addExistingRecord(sec);
+					state.addExistingRecord(file, sec);
 				}
 
 				//nomRef
 				record = new DwcaReferenceRecord(metaRecord, config);
-				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
-				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
-					handleReference(state, record, (Reference)nomRef, taxon);
+				INomenclaturalReference nomRefI = taxon.getName().getNomenclaturalReference();
+				Reference nomRef = CdmBase.deproxy(nomRefI, Reference.class);
+				if (nomRef != null && ! state.recordExists(file, nomRef)){
+					handleReference(state, record, nomRef, taxon);
 					PrintWriter writer = createPrintWriter(state, file);
 		            record.write(state, writer);
-					addExistingRecord((Reference)nomRef);
+					state.addExistingRecord(file, nomRef);
 				}
 
                 flushWriter(state, file);

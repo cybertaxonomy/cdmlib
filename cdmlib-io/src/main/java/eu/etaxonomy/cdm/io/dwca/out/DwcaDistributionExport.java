@@ -75,13 +75,13 @@ public class DwcaDistributionExport extends DwcaExportBase {
 				for (TaxonDescription description : descriptions){
 					for (DescriptionElementBase el : description.getElements()){
 						if (el.isInstanceOf(Distribution.class) ){
-							if (! recordExists(el)){
+							if (! state.recordExists(file, el)){
 								DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
 								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
 								handleDistribution(record, distribution, taxon, config);
 								PrintWriter writer = createPrintWriter(state, file);
 					            record.write(state, writer);
-								this.addExistingRecord(distribution);
+								state.addExistingRecord(file, distribution);
 							}
 						}else if (el.getFeature().equals(Feature.DISTRIBUTION())){
 							//TODO

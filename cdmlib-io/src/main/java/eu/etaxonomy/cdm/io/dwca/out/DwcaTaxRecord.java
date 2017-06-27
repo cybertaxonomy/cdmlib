@@ -242,7 +242,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 //	}
 
 
-
+	//currently not in use
     @Override
     public void writeCsv(DwcaTaxExportState state) {
         try {
@@ -326,47 +326,47 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
 		print(getRank(taxonRank), writer, IS_NOT_FIRST, TermUri.DWC_TAXON_RANK);
 		print(taxonomicStatus, writer, IS_NOT_FIRST, TermUri.DWC_TAXONOMIC_STATUS);
-//		print(originalNameUsageId, writer, IS_NOT_FIRST, TermUri.DWC_ORIGINAL_NAME_USAGE_ID);
-//		print(nameAccordingToId, writer, IS_NOT_FIRST, TermUri.DWC_NAME_ACCORDING_TO_ID);
-//		print(namePublishedInId, writer, IS_NOT_FIRST, TermUri.DWC_NAME_PUBLISHED_IN_ID);
-//		print(taxonConceptId, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_CONCEPT_ID);
-//		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_ACCEPTED_NAME_USAGE);
-//		print(parentNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_PARENT_NAME_USAGE);
-//		print(originalNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_ORIGINAL_NAME_USAGE);
-//		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUri.DWC_NAME_ACCORDING_TO);
-//		print(namePublishedIn, writer, IS_NOT_FIRST, TermUri.DWC_NAME_PUBLISHED_IN);
+		print(originalNameUsageId, writer, IS_NOT_FIRST, TermUri.DWC_ORIGINAL_NAME_USAGE_ID);
+		print(nameAccordingToId, writer, IS_NOT_FIRST, TermUri.DWC_NAME_ACCORDING_TO_ID);
+		print(namePublishedInId, writer, IS_NOT_FIRST, TermUri.DWC_NAME_PUBLISHED_IN_ID);
+		print(taxonConceptId, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_CONCEPT_ID);
+		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_ACCEPTED_NAME_USAGE);
+		print(parentNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_PARENT_NAME_USAGE);
+		print(originalNameUsage, writer, IS_NOT_FIRST, TermUri.DWC_ORIGINAL_NAME_USAGE);
+		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUri.DWC_NAME_ACCORDING_TO);
+		print(namePublishedIn, writer, IS_NOT_FIRST, TermUri.DWC_NAME_PUBLISHED_IN);
 
-//		if (config.isWithHigherClassification()){
-//			print(higherClassification, writer, IS_NOT_FIRST, TermUri.DWC_HIGHER_CLASSIFICATION);
-//			print(kingdom, writer, IS_NOT_FIRST, TermUri.DWC_KINGDOM);
-//			print(phylum, writer, IS_NOT_FIRST, TermUri.DWC_PHYLUM);
-//			print(clazz, writer, IS_NOT_FIRST, TermUri.DWC_CLASS);
-//			print(order, writer, IS_NOT_FIRST, TermUri.DWC_ORDER);
-//			print(family, writer, IS_NOT_FIRST, TermUri.DWC_FAMILY);
-//			print(genus, writer, IS_NOT_FIRST, TermUri.DWC_GENUS);
-//			print(subgenus, writer, IS_NOT_FIRST, TermUri.DWC_SUBGENUS);
-//		}
-//		print(uninomial, writer, IS_NOT_FIRST, TermUri.TDWG_UNINOMIAL);
-//		print(genusPart, writer, IS_NOT_FIRST, TermUri.TDWG_GENUSPART);
-//		print(infraGenericEpithet, writer, IS_NOT_FIRST, TermUri.TDWG_INFRAGENERICEPITHET);
-//
-//		print(specificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_SPECIFIC_EPI);
-//		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_INFRA_SPECIFIC_EPI);
-//
-//		print(verbatimTaxonRank, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_TAXON_RANK);
-//		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);
-//		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST, TermUri.DWC_NOMENCLATURAL_CODE);
-//		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST, TermUri.DWC_NOMENCLATURAL_STATUS);
-//		print(taxonRemarks, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_REMARKS);
-//		print(getDate(modified), writer, IS_NOT_FIRST, TermUri.DC_MODIFIED);
-//		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);
-//		print(rights, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS);
-//		print(rightsHolder, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS_HOLDER);
-//		print(accessRights, writer, IS_NOT_FIRST, TermUri.DC_ACCESS_RIGHTS);
+		if (config.isWithHigherClassification()){
+			print(higherClassification, writer, IS_NOT_FIRST, TermUri.DWC_HIGHER_CLASSIFICATION);
+			print(kingdom, writer, IS_NOT_FIRST, TermUri.DWC_KINGDOM);
+			print(phylum, writer, IS_NOT_FIRST, TermUri.DWC_PHYLUM);
+			print(clazz, writer, IS_NOT_FIRST, TermUri.DWC_CLASS);
+			print(order, writer, IS_NOT_FIRST, TermUri.DWC_ORDER);
+			print(family, writer, IS_NOT_FIRST, TermUri.DWC_FAMILY);
+			print(genus, writer, IS_NOT_FIRST, TermUri.DWC_GENUS);
+			print(subgenus, writer, IS_NOT_FIRST, TermUri.DWC_SUBGENUS);
+		}
+		print(uninomial, writer, IS_NOT_FIRST, TermUri.TDWG_UNINOMIAL);
+		print(genusPart, writer, IS_NOT_FIRST, TermUri.TDWG_GENUSPART);
+		print(infraGenericEpithet, writer, IS_NOT_FIRST, TermUri.TDWG_INFRAGENERICEPITHET);
+
+		print(specificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_SPECIFIC_EPI);
+		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUri.DWC_INFRA_SPECIFIC_EPI);
+
+		print(verbatimTaxonRank, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_TAXON_RANK);
+		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);
+		print(getNomCode(nomenclaturalCode), writer, IS_NOT_FIRST, TermUri.DWC_NOMENCLATURAL_CODE);
+		print(getNomStatus(nomenclaturalStatus), writer, IS_NOT_FIRST, TermUri.DWC_NOMENCLATURAL_STATUS);
+		print(taxonRemarks, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_REMARKS);
+		print(getDate(modified), writer, IS_NOT_FIRST, TermUri.DC_MODIFIED);
+		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);
+		print(rights, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS);
+		print(rightsHolder, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS_HOLDER);
+		print(accessRights, writer, IS_NOT_FIRST, TermUri.DC_ACCESS_RIGHTS);
 		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION, config.getDefaultBibliographicCitation());
-//		print(informationWithheld, writer, IS_NOT_FIRST, TermUri.DWC_INFORMATION_WITHHELD);
-//		print(datasetName, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_NAME);
-//		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE, config.getDefaultTaxonSource());
+		print(informationWithheld, writer, IS_NOT_FIRST, TermUri.DWC_INFORMATION_WITHHELD);
+		print(datasetName, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_NAME);
+		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE, config.getDefaultTaxonSource());
 		writer.println();
 	}
 

@@ -78,11 +78,11 @@ public class DwcaVernacularExport extends DwcaExportBase {
 						if (el.isInstanceOf(CommonTaxonName.class)){
 							DwcaVernacularRecord record = new DwcaVernacularRecord(metaRecord, config);
 							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
-							if (! this.recordExists(commonTaxonName)){
+							if (! state.recordExists(file, commonTaxonName)){
 								handleCommonTaxonName(record, commonTaxonName, taxon, config);
 								PrintWriter writer = createPrintWriter(state, file);
 								record.write(state, writer);
-								this.addExistingRecord(commonTaxonName);
+								state.addExistingRecord(file, commonTaxonName);
 							}
 						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
 							//TODO

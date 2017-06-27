@@ -92,11 +92,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
 				TaxonName basionym = name.getBasionym();
 				Classification classification = node.getClassification();
-				if (! this.recordExists(taxon)){
+				if (! state.recordExists(file, taxon)){
 					handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null, false, false);
 					PrintWriter writer = createPrintWriter(state, file);
 		            record.write(state, writer);
-					this.addExistingRecord(taxon);
+					state.addExistingRecord(file, taxon);
 				}
 
 				node.getClassification().getName();
@@ -138,11 +138,11 @@ public class DwcaTaxExport extends DwcaExportBase {
 			Taxon parent = null;
 			TaxonName basionym = name.getBasionym();
 
-			if (! this.recordExists(synonym)){
+			if (! state.recordExists(file, synonym)){
 				handleTaxonBase(state, record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
 				PrintWriter writer = createPrintWriter(state, file);
 				record.write(state, writer);
-				this.addExistingRecord(synonym);
+				state.addExistingRecord(file, synonym);
 			}
 		}
 	}
@@ -158,12 +158,12 @@ public class DwcaTaxExport extends DwcaExportBase {
 			Taxon parent = null;
 			TaxonName basionym = name.getBasionym();
 
-			if (! this.recordExists(misappliedName)){
+			if (! state.recordExists(file, misappliedName)){
 				handleTaxonBase(state, record, misappliedName, name, taxon, parent, basionym, classification,
 				        relType, false, false);
 				PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
-				this.addExistingRecord(misappliedName);
+				state.addExistingRecord(file, misappliedName);
 			}
 		}
 	}

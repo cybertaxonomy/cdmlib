@@ -14,14 +14,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -39,6 +43,32 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	private ZipOutputStream zos;
 	private List<TaxonNode>  allNodes = new ArrayList<>();
 	private Map<DwcaTaxOutputFile, PrintWriter> writerMap = new HashMap<>();
+
+
+    protected Map<DwcaTaxOutputFile,Set<Integer>> existingRecordIds = new HashMap<>();
+    protected Set<UUID> existingRecordUuids = new HashSet<>();
+
+    protected boolean recordExists(DwcaTaxOutputFile file, CdmBase cdmBase) {
+        if (existingRecordIds.get(file) == null){
+            return false;
+        }else{
+            return existingRecordIds.get(file).contains(cdmBase.getId());
+        }
+    }
+    protected void addExistingRecord(DwcaTaxOutputFile file, CdmBase cdmBase) {
+        Set<Integer> set = existingRecordIds.get(file);
+        if (set == null){
+            set = new HashSet<>();
+            existingRecordIds.put(file, set);
+        }
+        set.add(cdmBase.getId());
+    }
+    protected boolean recordExistsUuid(CdmBase cdmBase) {
+        return existingRecordUuids.contains(cdmBase.getUuid());
+    }
+    protected void addExistingRecordUuid(CdmBase cdmBase) {
+        existingRecordUuids.add(cdmBase.getUuid());
+    }
 
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
