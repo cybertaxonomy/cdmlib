@@ -51,18 +51,20 @@ public class NormalExplicitRow extends ExcelRowBase {
     private String synonym;
     private String basionym;
     private String accepted_id;
+    private String taxonomicStatus;
 
     private String version;
 
 
+    private String ipni_id;
+    private String source;
+    private String source_Id;
 	//Sets
 	private TreeMap<Integer, String> distributions = new TreeMap<Integer, String>();
 
 	private TreeMap<Integer, String> protologues = new TreeMap<Integer, String>();
 
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
-    private String taxonomicStatus;
-
 
 	public NormalExplicitRow() {
 
@@ -490,6 +492,29 @@ public class NormalExplicitRow extends ExcelRowBase {
     public void setTaxonomicStatus(String value) {
         this.taxonomicStatus = value;
     }
+
+    public String getIpni_id() {
+        return ipni_id;
+    }
+
+    public void setIpni_id(String ipni_id) {
+        this.ipni_id = ipni_id;
+    }
+
+   public void setSource(String value) {
+      this.source = value;
+
+    }
+   public String getSource() {
+       return this.source ;
+
+     }
+   public void setSource_Id(String value) {
+       this.source_Id= value;
+   }
+   public String getSource_Id() {
+       return this.source_Id;
+   }
 
 
 }

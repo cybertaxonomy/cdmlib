@@ -74,8 +74,8 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 	protected static final String BASIONYM_COLUMN = "Basionym";
     protected static final String REPLACED_SYNONYM_COLUMN = "ReplacedSynonym";
     protected static final String NOMENCLATURAL_SYNONYM_COLUMN = "NomenclaturalSynonym";
-    protected static final String ACCEPTED_ID_COLUMN = "Accepted ID";
-    protected static final String TAXONOMIC_STATUS = "Taxonomic status in TPL";
+    protected static final String ACCEPTED_ID_COLUMN = "AcceptedID";
+    protected static final String TAXONOMIC_STATUS = "TaxonomicStatusInTPL";
 
     protected static final String INFRA_FAMILY_COLUMN = "InfraFamily";
     protected static final String GENUS_COLUMN = "Genus";
@@ -95,5 +95,8 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
     protected static final String DISTRIBUTION_COLUMN = "Distribution";
     protected static final String CITATION_TYPE_COLUMN = "Citationtype";
 
+    protected static final String IPNI_ID_COLUMN = "IPNIid";
+    protected static final String SOURCE_COLUMN = "Source";
+    protected static final String SOURCE_ID_COLUMN = "SourceId";
 }
 
