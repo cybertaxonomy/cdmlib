@@ -837,7 +837,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			    String pub = CdmUtils.concat(" ", reference, state.getCurrentRow().getCollation());
 			    String[] split = pub.split(":");
 			    pub = split[0];
-			    INomenclaturalReference ref = parser.parseReferenceTitle(pub, date, true);
+
+			    INomenclaturalReference ref = state.getReference(pub);
+			    if (ref == null){
+			        ref = parser.parseReferenceTitle(pub, date, true);
+			        state.putReference(pub, (Reference) ref);
+			    }
 			    if (split.length > 1){
                     String detail = split[split.length-1];
                     taxonName.setNomenclaturalMicroReference(detail.trim());
