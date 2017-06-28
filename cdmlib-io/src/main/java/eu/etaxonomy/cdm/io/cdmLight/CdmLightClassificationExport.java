@@ -429,9 +429,12 @@ public class CdmLightClassificationExport
                 strBuff.append("; ");
             }
         }
-        System.out.println(strBuff.toString());
-        System.out.println(strBuff.substring(0, strBuff.length()-2).toString());
-        return strBuff.substring(0, strBuff.length()-2).toString();
+
+        if (strBuff.length() > 2){
+            return strBuff.substring(0, strBuff.length()-2);
+        }else{
+            return null;
+        }
     }
 
     /**
