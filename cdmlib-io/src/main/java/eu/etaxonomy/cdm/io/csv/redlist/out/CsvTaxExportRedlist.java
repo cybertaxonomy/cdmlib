@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -63,7 +62,6 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	public CsvTaxExportRedlist() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 
