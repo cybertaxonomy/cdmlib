@@ -35,16 +35,11 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
+    public static final Logger logger = Logger.getLogger(AbstractController.class);
+
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
-
-    public static final Logger logger = Logger.getLogger(AbstractController.class);
-
-    protected SERVICE service;
-
-    public abstract void setService(SERVICE service);
-
     protected static final Integer DEFAULT_PAGE_SIZE = PagerParameters.DEFAULT_PAGESIZE;
 
     /**
@@ -54,6 +49,10 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      * {@link Thread#NORM_PRIORITY}
      */
     public static final int DEFAULT_BATCH_THREAD_PRIORITY = 3;
+
+    protected SERVICE service;
+
+    public abstract void setService(SERVICE service);
 
     protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
 

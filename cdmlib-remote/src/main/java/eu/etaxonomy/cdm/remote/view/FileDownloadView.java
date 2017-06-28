@@ -72,10 +72,6 @@ public class FileDownloadView implements View{
         this.encoding = encoding;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.springframework.web.servlet.View#render(java.util.Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     @Override
     public void render(Map<String, ?> model, HttpServletRequest arg1, HttpServletResponse response) throws Exception {
         response.setContentType(getContentType()+"; charset="+getEncoding().toLowerCase(Locale.ENGLISH));
@@ -99,9 +95,6 @@ public class FileDownloadView implements View{
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.web.servlet.View#getContentType()
-     */
     @Override
     public String getContentType() {
         return contentType;

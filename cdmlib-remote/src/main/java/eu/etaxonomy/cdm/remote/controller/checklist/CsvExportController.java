@@ -104,7 +104,8 @@ public class CsvExportController extends AbstractController{
     }
 
     /**
-     * Fetches data from the application context and forwards the stream to the HttpServletResponse, which offers a file download.
+     * Fetches data from the application context and forwards the stream to the HttpServletResponse,
+     * which offers a file download.
      *
      * @param featureUuids List of uuids to download/select {@link Feature feature}features
      * @param taxonName the selected taxon name
@@ -120,7 +121,7 @@ public class CsvExportController extends AbstractController{
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
 			HttpServletRequest request) {
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
 		Classification classification = classificationService.load(UUID.fromString(classificationUuid), CLASSIFICATION_INIT_STRATEGY);
 		UUID taxonNodeUuid = classification.getRootNode().getUuid();
 
@@ -141,6 +142,8 @@ public class CsvExportController extends AbstractController{
 			    }
 			}
 		}
+
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(taxonNodeUuid, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<CsvTaxExportConfiguratorRedlist> defaultExport =
 		        (CdmApplicationAwareDefaultExport<CsvTaxExportConfiguratorRedlist>) appContext.getBean("defaultExport");
@@ -190,16 +193,15 @@ public class CsvExportController extends AbstractController{
 	 */
 	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(UUID taxonNodeUuid, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<UUID> taxonNodeUuids = Collections.singleton(taxonNodeUuid);
 		String destination = System.getProperty("java.io.tmpdir");
-		List<Feature> features = new ArrayList<Feature>();
+		List<Feature> features = new ArrayList<>();
 		if(featureUuids != null){
 			for(UUID uuid : featureUuids) {
 				features.add((Feature) termService.find(uuid));
 			}
 		}
-		List<NamedArea> selectedAreas = new ArrayList<NamedArea>();
+		List<NamedArea> selectedAreas = new ArrayList<>();
 		if(areas != null){
 			for(UUID area:areas){
 				logger.info(area);
@@ -212,20 +214,12 @@ public class CsvExportController extends AbstractController{
 		config.setFieldsTerminatedBy("\t");
 		config.setTaxonNodeUuids(taxonNodeUuids);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
-		if(features != null) {
-            config.setFeatures(features);
-        }
+		config.setFeatures(features);
         config.setNamedAreas(selectedAreas);
 		return config;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
 	@Override
-	public void setService(IService service) {
-		// TODO Auto-generated method stub
-
-	}
+	public void setService(IService service) {}
 
 }

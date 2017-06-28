@@ -95,8 +95,8 @@ public class DwcaReferenceExport extends DwcaExportBase {
 
 			}
 		} catch (Exception e) {
-	          String message = "Unexpected exception " + e.getMessage();
-	          state.getResult().addException(e, message, "DwcaReferenceExport.doInvoke()");
+	          String message = "Unexpected exception: " + e.getMessage();
+	          state.getResult().addException (e, message, "DwcaReferenceExport.doInvoke()");
 		} finally{
 			closeWriter(file, state);
 		}

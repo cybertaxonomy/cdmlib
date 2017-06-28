@@ -77,7 +77,7 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 			try{
 				isZip = true;
 				if (! file.exists()){
-						file.createNewFile();
+					file.createNewFile();
 				}
 
 			  	zos  = new ZipOutputStream( new FileOutputStream(file) ) ;

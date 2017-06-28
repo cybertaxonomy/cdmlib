@@ -110,7 +110,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 			}
 		} catch (Exception e) {
-		    String message = "Unexpected exception " + e.getMessage();
+		    String message = "Unexpected exception: " + e.getMessage();
 			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{

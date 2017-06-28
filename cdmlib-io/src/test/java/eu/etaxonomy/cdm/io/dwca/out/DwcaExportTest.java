@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
-import eu.etaxonomy.cdm.io.dwca.in.DwcaImportIntegrationTest;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -53,7 +52,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DwcaImportIntegrationTest.class);
+    private static final Logger logger = Logger.getLogger(DwcaExportTest.class);
 
     @SpringBeanByName
     private CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator> defaultExport;
