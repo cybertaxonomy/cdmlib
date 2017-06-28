@@ -422,13 +422,16 @@ public class CdmLightClassificationExport
      */
     private String createAnnotationsString(Set<Annotation> annotations) {
         StringBuffer strBuff = new StringBuffer();
+
         for (Annotation ann:annotations){
             if (ann.getAnnotationType() == null ||!ann.getAnnotationType().equals(AnnotationType.TECHNICAL())){
                 strBuff.append(ann.getText());
                 strBuff.append("; ");
             }
         }
-        return strBuff.toString();
+        System.out.println(strBuff.toString());
+        System.out.println(strBuff.substring(0, strBuff.length()-2).toString());
+        return strBuff.substring(0, strBuff.length()-2).toString();
     }
 
     /**
