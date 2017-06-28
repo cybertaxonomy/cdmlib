@@ -14,15 +14,15 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
-
 /**
  * @author a.mueller
  * @created 20.04.2011
  */
 @Component
 public class DwcaZipExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaZipExport.class);
+
+    private static final long serialVersionUID = -7674991232867769827L;
+    private static final Logger logger = Logger.getLogger(DwcaZipExport.class);
 
 	/**
 	 * Constructor
@@ -30,7 +30,6 @@ public class DwcaZipExport extends DwcaExportBase {
 	public DwcaZipExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves the MetaData for a Darwin Core Archive File.

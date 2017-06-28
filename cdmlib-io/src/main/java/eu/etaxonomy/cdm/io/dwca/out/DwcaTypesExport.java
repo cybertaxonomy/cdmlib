@@ -22,7 +22,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -61,7 +60,6 @@ public class DwcaTypesExport extends DwcaExportBase {
 	public DwcaTypesExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.

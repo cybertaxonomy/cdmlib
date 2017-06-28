@@ -23,7 +23,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -59,7 +58,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 	public DwcaEmlExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves the MetaData for a Darwin Core Archive File.

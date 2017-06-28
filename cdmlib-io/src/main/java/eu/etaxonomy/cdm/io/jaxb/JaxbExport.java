@@ -28,7 +28,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
@@ -47,10 +46,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.babadshanjan
  * @created 25.09.2008
- * @version 1.0
  */
 @Component
-public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer> implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
+public class JaxbExport
+            extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer>
+            implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
+
+    private static final long serialVersionUID = -525533131708894145L;
 
     private static final Logger logger = Logger.getLogger(JaxbExport.class);
 
@@ -61,29 +63,15 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
      */
     public JaxbExport() {
         super();
-        this.exportData = ExportDataWrapper.NewByteArrayInstance();
     }
 
-
-    //	/**
-    //	 *
-    //	 */
-    //	public JaxbExport() {
-    //		super();
-    //		this.ioName = this.getClass().getSimpleName();
-    //	}
-
-    /** Retrieves data from a CDM DB and serializes them CDM to XML.
+    /**
+     * {@inheritDoc}
+     *
+     * .<BR>Retrieves data from a CDM DB and serializes them CDM to XML.
      * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
      * Taxa that are not part of the classification are not found.
-     *
-     * @param exImpConfig
-     * @param dbname
-     * @param filename
      */
-    //	@Override
-    //	protected boolean doInvoke(IExportConfigurator config,
-    //			Map<String, MapWrapper<? extends CdmBase>> stores) {
     @Override
     protected void doInvoke(JaxbExportState state) {
 

@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -47,7 +46,6 @@ public class DwcaVernacularExport extends DwcaExportBase {
 	public DwcaVernacularExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.

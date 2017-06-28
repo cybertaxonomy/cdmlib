@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
 
 /**
@@ -43,7 +42,6 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	public DwcaMetaDataExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves the MetaData for a Darwin Core Archive File.

@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -70,8 +69,6 @@ public class CsvNameExport extends CsvNameExportBase {
     public CsvNameExport() {
         super();
         this.ioName = this.getClass().getSimpleName();
-        this.exportData = ExportDataWrapper.NewByteArrayInstance();
-
     }
 
     @Override

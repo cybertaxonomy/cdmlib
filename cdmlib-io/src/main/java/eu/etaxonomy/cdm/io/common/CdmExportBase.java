@@ -30,8 +30,6 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
 
     protected ByteArrayOutputStream exportStream;
 
-    protected ExportDataWrapper<?> exportData;
-
 
 	@Override
 	public  ExportDataWrapper createExportData() {
