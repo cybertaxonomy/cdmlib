@@ -29,7 +29,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
@@ -60,6 +63,12 @@ public abstract class DwcaExportBase
     private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
 
     protected static final boolean IS_CORE = true;
+
+    @Autowired
+    private IClassificationService classificationService;
+
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
 
 
     @Override
@@ -104,37 +113,60 @@ public abstract class DwcaExportBase
 
     private void makeAllNodes(DwcaTaxExportState state, Set<UUID> subtreeSet) {
 
-        boolean doSynonyms = false;
-        boolean recursive = true;
-        Set<UUID> uuidSet = new HashSet<>();
+        try {
+            boolean doSynonyms = false;
+            boolean recursive = true;
+            Set<UUID> uuidSet = new HashSet<>();
 
-        for (UUID subtreeUuid : subtreeSet){
-            uuidSet.add(subtreeUuid);
-            List<TaxonNodeDto> records = getTaxonNodeService().pageChildNodesDTOs(subtreeUuid,
-                    recursive, doSynonyms, null, null, null).getRecords();
-            for (TaxonNodeDto dto : records){
-                uuidSet.add(dto.getUuid());
+            for (UUID subtreeUuid : subtreeSet){
+                UUID tnUuuid = taxonNodeUuid(subtreeUuid);
+                uuidSet.add(tnUuuid);
+                List<TaxonNodeDto> records = getTaxonNodeService().pageChildNodesDTOs(tnUuuid,
+                        recursive, doSynonyms, null, null, null).getRecords();
+                for (TaxonNodeDto dto : records){
+                    uuidSet.add(dto.getUuid());
+                }
             }
-        }
-        List<TaxonNode> allNodes =  getTaxonNodeService().find(uuidSet);
+            List<TaxonNode> allNodes =  getTaxonNodeService().find(uuidSet);
 
-        List<TaxonNode> result = new ArrayList<>();
-        for (TaxonNode node : allNodes){
-            if(node.getParent()== null){  //root (or invalid) node
-                continue;
+            List<TaxonNode> result = new ArrayList<>();
+            for (TaxonNode node : allNodes){
+                if(node.getParent()== null){  //root (or invalid) node
+                    continue;
+                }
+                node = CdmBase.deproxy(node);
+                Taxon taxon = CdmBase.deproxy(node.getTaxon());
+                if (taxon == null){
+                    String message = "There is a taxon node without taxon. id=" + node.getId();
+                    state.getResult().addWarning(message);
+                    continue;
+                }
+                result.add(node);
             }
-            node = CdmBase.deproxy(node);
-            Taxon taxon = CdmBase.deproxy(node.getTaxon());
-            if (taxon == null){
-                String message = "There is a taxon node without taxon. id=" + node.getId();
-                state.getResult().addWarning(message);
-                continue;
-            }
-            result.add(node);
+            state.setAllNodes(result);
+        } catch (Exception e) {
+            String message = "Unexpected exception when trying to compute all taxon nodes";
+            state.getResult().addException(e, message);
         }
-        state.setAllNodes(result);
     }
 
+
+    /**
+     * @param subtreeUuid
+     * @return
+     */
+    private UUID taxonNodeUuid(UUID subtreeUuid) {
+        TaxonNode node = taxonNodeService.find(subtreeUuid);
+        if (node == null){
+            Classification classification = classificationService.find(subtreeUuid);
+            if (classification != null){
+                node = classification.getRootNode();
+            }else{
+                throw new IllegalArgumentException("Subtree identifier does not exist: " + subtreeUuid);
+            }
+        }
+        return node.getUuid();
+    }
 
     /**
      * Creates the locationId, locality, countryCode triple

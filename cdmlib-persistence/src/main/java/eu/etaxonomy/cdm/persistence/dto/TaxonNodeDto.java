@@ -78,13 +78,13 @@ public class TaxonNodeDto {
         uuid = taxonNode.getUuid();
         taxonomicChildrenCount = taxonNode.getCountChildren();
         Taxon taxon = taxonNode.getTaxon();
-        secUuid = taxon.getSec().getUuid();
+        secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
         taxonUuid = taxon.getUuid();
-        titleCache = taxon.getName().getTitleCache();
-        taggedTitle = taxon.getName().getTaggedName();
+        titleCache = taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache();
+        taggedTitle = taxon.getName() != null? taxon.getName().getTaggedName() : taxon.getTaggedTitle();
         unplaced = taxonNode.isUnplaced();
         excluded = taxonNode.isExcluded();
-        rankLabel = taxon.getName().getRank().getLabel();
+        rankLabel = taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getLabel() : null;
         status = TaxonStatus.Accepted;
     }
 
