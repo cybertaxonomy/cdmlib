@@ -221,7 +221,7 @@ public class DwcaExportController extends AbstractController implements Resource
                 modelMap.put("file", cacheFile);
                 mv.addAllObjects(modelMap);
                 //application/zip
-                FileDownloadView fdv = new FileDownloadView("application/octet-stream", fileName, "zip", "UTF-8");
+                FileDownloadView fdv = new FileDownloadView(fileName, "zip");
                 mv.setView(fdv);
                 return mv;
             }else{//trigger progress monitor and performExport()
@@ -374,7 +374,7 @@ public class DwcaExportController extends AbstractController implements Resource
         }
 
 
-        fileName = fileName + "_" + uuidListToString(subtreeUuids, 40) + ".zip";
+        fileName = fileName + "_" + uuidListToString(subtreeUuids, 40);
 
         return fileName;
 
