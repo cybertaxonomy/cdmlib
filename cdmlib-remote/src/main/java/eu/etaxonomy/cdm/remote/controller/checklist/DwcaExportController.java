@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.controller.checklist;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +70,10 @@ public class DwcaExportController extends AbstractController implements Resource
 
 
     private static final String DWCA_TAX_EXPORT_DOC_RESSOURCE = "classpath:eu/etaxonomy/cdm/doc/remote/apt/dwca-tax-export-default.apt";
+
+    private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String []{
+            "taxon.name",
+            });
 
     @Autowired
     private ApplicationContext appContext;
@@ -342,7 +347,7 @@ public class DwcaExportController extends AbstractController implements Resource
         String fileName;
         if (subtreeUuids != null && ! subtreeUuids.isEmpty()){
             UUID firstUuid = subtreeUuids.get(0);
-            TaxonNode node = taxonNodeService.find(firstUuid);
+            TaxonNode node = taxonNodeService.load(firstUuid, TAXON_NODE_INIT_STRATEGY);
             if (node != null && node.getTaxon() != null){
                 if (node.getTaxon().getName() != null){
                     fileName = node.getTaxon().getName().getTitleCache();
