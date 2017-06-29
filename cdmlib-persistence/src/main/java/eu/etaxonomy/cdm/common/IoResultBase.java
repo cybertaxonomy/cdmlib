@@ -31,15 +31,22 @@ public abstract class IoResultBase implements Serializable{
         private static final long serialVersionUID = -8077358746590123757L;
         String message;
         Exception exception;
-        String location;
+        String codeLocation;
+        String dataLocation;
         private IoInfo(String msg, Exception e){
             this.message = msg;
             this.exception = e;
         }
-        private IoInfo(String msg, Exception e, String location){
+//        private IoInfo(String msg, Exception e, String location){
+//            this.message = msg;
+//            this.exception = e;
+//            this.codeLocation = location;
+//        }
+        private IoInfo(String msg, Exception e, String codeLocation, String dataLocation){
             this.message = msg;
             this.exception = e;
-            this.location = location;
+            this.codeLocation = codeLocation;
+            this.dataLocation = dataLocation;
         }
 
         public String getMessage(){
@@ -48,6 +55,12 @@ public abstract class IoResultBase implements Serializable{
 
         public Exception getException(){
             return exception;
+        }
+        public String getCodeLocation(){
+            return codeLocation;
+        }
+        public String getDataLocation(){
+            return dataLocation;
         }
     }
 
@@ -58,46 +71,55 @@ public abstract class IoResultBase implements Serializable{
     public List<IoInfo> getErrors() {return errors;}
     public void setErrors(List<IoInfo> ioInfos) {this.errors = ioInfos;}
     public void addError(String message) {
-        addError(message, null, null);
+        addError(message, null, getLocationByException());
     }
     public void addError(String message, Exception e) {
-        addError(message, e, null);
+        addError(message, e, null, null);
     }
     public void addError(String message, int location) {
-        addError(message, null, String.valueOf(location));
+        addError(message, null, getLocationByException(), String.valueOf(location));
     }
-    public void addError(String message, String location) {
-        addError(message, null, location);
+    public void addError(String message, String codeLocation) {
+        addError(message, null, codeLocation, null);
     }
-    public void addError(String message, Exception e, String location) {
-        errors.add(new IoInfo(message, e, makeLocation(e, location)));
+    public void addError(String message, Exception e, String codeLocation) {
+        addError(message, e, codeLocation, null);
     }
+    public void addError(String message, Exception e, String codeLocation, String dataLocation) {
+        errors.add(new IoInfo(message, e, makeLocation(e, codeLocation), dataLocation));
+    }
+
 
     public List<IoInfo> getWarnings() {return warnings;}
     public void setWarnings(List<IoInfo> warnings) {this.warnings = warnings;}
     public void addWarning(String message) {
-//       warnings.add(warning.getBytes(StandardCharsets.UTF_8));
-        addWarning(message, null);
+        addWarning(message, getLocationByException(), null);
     }
     public void addWarning(String message, int location) {
-        addWarning(message, String.valueOf(location));
+        addWarning(message, null, String.valueOf(location));
     }
-    public void addWarning(String message, String location) {
-        warnings.add(new IoInfo(message, null, location));
+    public void addWarning(String message, String codeLocation) {
+        addWarning(message, codeLocation, null);
     }
+    public void addWarning(String message, String codeLocation, String dataLocation) {
+        warnings.add(new IoInfo(message, null, codeLocation, dataLocation));
+    }
+
+
 
     public List<IoInfo> getExceptions() {return exceptions;}
     public void setExceptions(List<IoInfo> exceptions) {this.exceptions = exceptions;}
     public void addException(Exception e) {
-        addException(e, null, null);
-        setExceptionState();
+        addException(e, null, null, null);
     }
     public void addException(Exception e, String message) {
-        addException(e, message, null);
-        setExceptionState();
+        addException(e, message, null, null);
     }
-    public void addException(Exception e, String message, String location) {
-        exceptions.add(new IoInfo(message, e, makeLocation(e, location)));
+    public void addException(Exception e, String message, String codeLocation) {
+        addException(e, message, codeLocation, null);
+    }
+    public void addException(Exception e, String message, String codeLocation, String dataLocation) {
+        exceptions.add(new IoInfo(message, e, makeLocation(e, codeLocation), dataLocation));
         setExceptionState();
     }
 
@@ -115,10 +137,22 @@ public abstract class IoResultBase implements Serializable{
             StackTraceElement[] stackTrace = e.getStackTrace();
             if (stackTrace != null && stackTrace.length > 0){
                 StackTraceElement el = stackTrace[0];
-                location = el.getMethodName() + "(" +  el.getClassName() + ":" + el.getLineNumber() + ")";
+                location = locByStackTraceElement(el);
             }
         }
         return location;
+    }
+    private String getLocationByException() {
+        try {
+            throw new RuntimeException();
+        } catch (Exception e) {
+            StackTraceElement st = e.getStackTrace()[2];
+            return locByStackTraceElement(st);
+        }
+    }
+
+    private String locByStackTraceElement(StackTraceElement st) {
+        return st.getMethodName() + "(" + st.getClassName()+ ":" + st.getLineNumber() + ")";
     }
 
     protected abstract void setExceptionState();
@@ -168,7 +202,7 @@ public abstract class IoResultBase implements Serializable{
         if (!list.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
             for (IoInfo ioInfo : list){
-                String location = ioInfo.location == null ? "" : (ioInfo.location + ": ");
+                String location = ioInfo.codeLocation == null ? "" : (ioInfo.codeLocation + ": ");
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
 
                 message = StringUtils.isBlank(message)? "no message" : message;
