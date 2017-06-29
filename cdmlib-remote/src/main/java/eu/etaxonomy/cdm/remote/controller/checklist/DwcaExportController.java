@@ -239,9 +239,11 @@ public class DwcaExportController extends AbstractController implements Resource
                         @Override
                         public void run() {
                             try {
-                                cacheFile.createNewFile();
-                            } catch (IOException e) {
-                                logger.info("Could not create file "+ e);
+                                boolean created = cacheFile.createNewFile();
+//                                boolean created = cacheFile.mkdir();
+                                if (!created){logger.info("Could not create file");}
+                            } catch (Exception e) {
+                                logger.info("Could not create file " + e);
                             }
                             performExport(cacheFile, progressMonitorController.getMonitor(indexMonitorUuid),
                                     subtreeUuids, downloadTokenValueId, origin, response);

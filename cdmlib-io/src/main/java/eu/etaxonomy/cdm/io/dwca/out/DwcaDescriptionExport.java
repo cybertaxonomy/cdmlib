@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 20.04.2011
  */
-public class DwcaDescriptionExport extends DwcaExportBase {
+public class DwcaDescriptionExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = 4756084824053120718L;
 
@@ -56,48 +55,18 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	    file = DwcaTaxOutputFile.DESCRIPTION;
 	}
 
-	/**
-	 * Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the classification are not found.
-	 *
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
-	 */
 	@Override
-	protected void doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){}
 
-	    TransactionStatus txStatus = startTransaction(true);
-
-		try {
-			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
-			state.addMetaRecord(metaRecord);
-
-            List<TaxonNode> allNodes = allNodes(state);
-			for (TaxonNode node : allNodes){
-				handleTaxonNode(state, node);
-			}
-		} catch (Exception e) {
-            String message = "Unexpected exception " + e.getMessage();
-            state.getResult().addException(e, message, "DwcaDescriptionExport.doInvoke()");
-		} finally {
-			closeWriter(state);
-		}
-		commitTransaction(txStatus);
-		return;
-	}
 
     /**
      * @param state
-     * @param config
-     * @param file
-     * @param metaRecord
      * @param node
      * @throws IOException
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
+    @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
         DwcaTaxExportConfigurator config = state.getConfig();
@@ -115,7 +84,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
             					! state.recordExists(file,el)){
             				DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
             				TextData textData = CdmBase.deproxy(el,TextData.class);
-            				handleDescription(record, textData, taxon, config);
+            				handleDescription(state, record, textData, taxon, config);
             				PrintWriter writer = createPrintWriter(state, DwcaTaxOutputFile.DESCRIPTION);
             	            record.write(state, writer);
             				state.addExistingRecord(file, textData);
@@ -132,7 +101,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
     }
 
 
-	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon, DwcaTaxExportConfigurator config) {
+	private void handleDescription(DwcaTaxExportState state, DwcaDescriptionRecord record, TextData textData, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
 
@@ -145,13 +114,13 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 
 		if (textData.getFeature() == null){
 			String message = "No feature available for text data ("+textData.getId()+"). Feature is required field. Taxon: " + this.getTaxonLogString(taxon);
-			logger.warn(message);
+	         state.getResult().addWarning(message);
 		}
 		record.setType(textData.getFeature());
 
 		if (languageText == null){
 			String message = "No text in default language available for text data ("+textData.getId()+"). Text is required field. Taxon: " + this.getTaxonLogString(taxon);
-			logger.warn(message);
+	        state.getResult().addWarning(message);
 		}else{
 			record.setDescription(languageText.getText());
 			record.setLanguage(languageText.getLanguage());
@@ -184,7 +153,5 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoDescription();
 	}
-
-
 
 }

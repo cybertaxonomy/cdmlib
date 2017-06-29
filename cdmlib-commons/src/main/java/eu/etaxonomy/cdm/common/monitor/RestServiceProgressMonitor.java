@@ -16,6 +16,8 @@ package eu.etaxonomy.cdm.common.monitor;
  */
 public class RestServiceProgressMonitor extends DefaultProgressMonitor implements IRestServiceProgressMonitor {
 
+    private static final long serialVersionUID = -1375995220004488661L;
+
     public static final int STOPPED_WORK_INDICATOR = -1;
 
     private boolean isFailed;

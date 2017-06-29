@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 public enum DwcaTaxOutputFile {
       METADATA(DwcaMetaDataExport.fileName, null),
       EML(DwcaEmlExport.fileName, null),
-      TAXON(DwcaTaxExport.fileName, taxonColumns()),
+      TAXON(DwcaTaxonExport.fileName, taxonColumns()),
       DISTRIBUTION(DwcaDistributionExport.fileName, distributionColumns()),
       DESCRIPTION(DwcaDescriptionExport.fileName, null),
       IMAGE(DwcaImageExport.fileName, null),

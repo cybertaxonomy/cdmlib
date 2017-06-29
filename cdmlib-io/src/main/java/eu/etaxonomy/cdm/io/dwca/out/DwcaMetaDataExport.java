@@ -44,10 +44,8 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		this.ioName = this.getClass().getSimpleName();
 	}
 
-	/** Retrieves the MetaData for a Darwin Core Archive File.
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
@@ -121,7 +119,8 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		// create core element
 		String elementName = metaRecord.isCore()? "core": "extension";
 		String rowType = metaRecord.getRowType();
-		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy, linesTerminatedBy,ignoreHeaderLines, rowType);
+		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy,
+		        fieldsTerminatedBy, ignoreHeaderLines, rowType);
 			String filename = metaRecord.getFileLocation();
 			writeFiles(writer, filename );
 			writeId(writer, metaRecord.isCore());

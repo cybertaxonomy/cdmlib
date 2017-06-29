@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,12 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
+import eu.etaxonomy.cdm.io.common.ZipWriter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -40,7 +39,7 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 
 	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<>();
 	private boolean isZip = false;
-	private ZipOutputStream zos;
+	private ZipWriter zipWriter;
 	private List<TaxonNode>  allNodes = new ArrayList<>();
 	private Map<DwcaTaxOutputFile, PrintWriter> writerMap = new HashMap<>();
 
@@ -77,10 +76,10 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 			try{
 				isZip = true;
 				if (! file.exists()){
-					file.createNewFile();
+					boolean created = file.createNewFile();
 				}
 
-			  	zos  = new ZipOutputStream( new FileOutputStream(file) ) ;
+				zipWriter = new ZipWriter(file);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -102,20 +101,18 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 		return isZip;
 	}
 
-	public ZipOutputStream getZipStream(String fileName) throws IOException {
+	public OutputStream getZipStream(String fileName){
 		if (isZip){
-			zos.putNextEntry(new ZipEntry(fileName));
-			return zos;
+			OutputStream os = zipWriter.getEntryStream(fileName);
+			return os;
 		}else{
 			return null;
 		}
 	}
 
 	public void closeZip() throws IOException {
-		if (zos != null){
-			zos.closeEntry();
-			zos.finish();
-			zos.close();
+		if (zipWriter != null){
+		    zipWriter.close();
 		}
 	}
 

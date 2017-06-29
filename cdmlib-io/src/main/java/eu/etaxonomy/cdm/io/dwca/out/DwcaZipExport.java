@@ -110,14 +110,8 @@ public class DwcaZipExport extends DwcaExportBase {
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.isZip();
 	}
-
-
 }

@@ -186,15 +186,16 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
             byte[] byt = data.get(key);
             System.out.println(key + ": " + new String(byt) );
         }
+        System.out.println();
         //metadata
         byte[] metadata = data.get(DwcaTaxOutputFile.METADATA.getTableName());
         Assert.assertNotNull("Metadata must not be null", metadata);
         String metaDataStr = new String(metadata);
         String metaHeader = "<?xml version=\"1.0\" ?><archive xmlns=\"http://rs.tdwg.org/dwc/text/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd\">";
         Assert.assertTrue(metaDataStr.contains(metaHeader));
-        //unclear if fields terminated should be really: fieldsTerminatedBy=\"\r\n\"
+
         String metaCore = "<core encoding=\"UTF-8\" linesTerminatedBy=\"\r\n\" fieldsEnclosedBy=\"&quot;\""
-                + " fieldsTerminatedBy=\"\r\n\" ignoreHeaderLines=\"1\" rowType=\"http://rs.tdwg.org/dwc/terms/Taxon\">"
+                + " fieldsTerminatedBy=\",\" ignoreHeaderLines=\"1\" rowType=\"http://rs.tdwg.org/dwc/terms/Taxon\">"
                 + "<files><location>coreTax.txt</location></files><id index=\"0\"></id><field index=\"1\" term=\"http://rs.tdwg.org/dwc/terms/scientificNameID\"></field><field index=\"2\" term=\"http://rs.tdwg.org/dwc/terms/acceptedNameUsageID\"></field><field index=\"3\" term=\"http://rs.tdwg.org/dwc/terms/parentNameUsageID\"></field><field index=\"4\" term=\"http://rs.tdwg.org/dwc/terms/scientificName\"></field><field index=\"5\" term=\"http://rs.tdwg.org/dwc/terms/taxonRank\"></field>"
                 + "<field index=\"6\" term=\"http://rs.tdwg.org/dwc/terms/taxonomicStatus\"></field><field index=\"7\" term=\"http://rs.tdwg.org/dwc/terms/originalNameUsageID\"></field>"
                 + "<field index=\"8\" term=\"http://rs.tdwg.org/dwc/terms/nameAccordingToID\"></field>"
@@ -206,6 +207,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
                 + "<field index=\"27\" term=\"http://purl.org/dc/terms/language\"></field><field index=\"28\" term=\"http://purl.org/dc/terms/rights\"></field><field index=\"29\" term=\"http://purl.org/dc/terms/rightsHolder\"></field><field index=\"30\" term=\"http://purl.org/dc/terms/accessRights\"></field>"
                 + "<field index=\"31\" term=\"http://purl.org/dc/terms/bibliographicCitation\"></field><field index=\"32\" term=\"http://rs.tdwg.org/dwc/terms/informationWithheld\"></field><field index=\"33\" term=\"http://rs.tdwg.org/dwc/terms/datasetName\"></field><field index=\"34\" term=\"http://purl.org/dc/terms/source\"></field></core>";
         //TODO continue
+        System.out.println(metaDataStr);
         Assert.assertTrue(metaDataStr.contains(metaCore));
 
         //core

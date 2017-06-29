@@ -82,23 +82,12 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
 	}
 
-//    public static DwcaTaxExportConfigurator NewInstance(TaxonNode subtree, File destinationFolder, DwcaEmlRecord emlRecord) {
-//        return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
-//    }
-
 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				DwcaTaxExport.class
-//				,DwcaResourceRelationExport.class
-//				,DwcaTypesExport.class
-//				,DwcaVernacularExport.class
-//				,DwcaReferenceExport.class
-//				,DwcaDescriptionExport.class
-//				,DwcaDistributionExport.class
-//				,DwcaImageExport.class
 				,DwcaMetaDataExport.class
 				,DwcaEmlExport.class
 				,DwcaZipExport.class

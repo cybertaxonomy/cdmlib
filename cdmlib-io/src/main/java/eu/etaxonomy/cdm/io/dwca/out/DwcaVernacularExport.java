@@ -13,12 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -32,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 18.04.2011
  */
-public class DwcaVernacularExport extends DwcaExportBase {
+public class DwcaVernacularExport extends DwcaDataExportBase {
     private static final long serialVersionUID = 3169086545830374918L;
 
     private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
@@ -53,47 +51,13 @@ public class DwcaVernacularExport extends DwcaExportBase {
         file = DwcaTaxOutputFile.VERNACULAR;
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the classification are not found.
-	 *
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
-	 */
-	@Override
-	protected void doInvoke(DwcaTaxExportState state){
-		TransactionStatus txStatus = startTransaction(true);
-
-		try {
-
-			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
-			state.addMetaRecord(metaRecord);
-
-            List<TaxonNode> allNodes = allNodes(state);
-			for (TaxonNode node : allNodes){
-				handleTaxonNode(state, node);
-			}
-		} catch (Exception e) {
-	         String message = "Unexpected exception " + e.getMessage();
-	         state.getResult().addException(e, message, "DwcaVernacularExport.doInvoke()");
-		} finally{
-			closeWriter(state);
-		}
-		commitTransaction(txStatus);
-		return;
-	}
+    @Override
+    protected void doInvoke(DwcaTaxExportState state){}
 
     /**
-     * @param state
-     * @param config
-     * @param file
-     * @param metaRecord
-     * @param node
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws UnsupportedEncodingException
+     * {@inheritDoc}
      */
+    @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
@@ -107,7 +71,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
             			DwcaVernacularRecord record = new DwcaVernacularRecord(metaRecord, config);
             			CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
             			if (! state.recordExists(file, commonTaxonName)){
-            				handleCommonTaxonName(record, commonTaxonName, taxon, config);
+            				handleCommonTaxonName(state, record, commonTaxonName, taxon, config);
             				PrintWriter writer = createPrintWriter(state, file);
             				record.write(state, writer);
             				state.addExistingRecord(file, commonTaxonName);
@@ -132,12 +96,12 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 
 
-	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon, DwcaTaxExportConfigurator config) {
+	private void handleCommonTaxonName(DwcaTaxExportState state, DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
 		if (StringUtils.isBlank(commonTaxonName.getName())){
 			String message = "'Name' is required field for vernacular name but does not exist for taxon " + getTaxonLogString(taxon);
-			logger.warn(message);
+			state.getResult().addWarning(message);
 		}else{
 			record.setVernacularName(commonTaxonName.getName());
 		}
@@ -147,7 +111,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		// does not exist in CDM
 		record.setTemporal(null);
 
-		handleArea(record, commonTaxonName.getArea(), taxon, false);
+		handleArea(state, record, commonTaxonName.getArea(), taxon, false);
 	}
 
 	@Override

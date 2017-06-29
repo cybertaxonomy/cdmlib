@@ -13,11 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -31,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 20.04.2011
  */
-public class DwcaDistributionExport extends DwcaExportBase {
+public class DwcaDistributionExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = -3274468345456407430L;
 
@@ -53,35 +51,8 @@ public class DwcaDistributionExport extends DwcaExportBase {
         file = DwcaTaxOutputFile.DISTRIBUTION;
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the classification are not found.
-	 *
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
-	 */
 	@Override
-	protected void doInvoke(DwcaTaxExportState state){
-		TransactionStatus txStatus = startTransaction(true);
-
-		try {
-			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
-			state.addMetaRecord(metaRecord);
-
-			List<TaxonNode> allNodes = allNodes(state);
-            for (TaxonNode node : allNodes){
-				handleTaxonNode(state, node);
-			}
-        } catch (Exception e) {
-            String message = "Unexpected exception " + e.getMessage();
-            state.getResult().addException(e, message, "DwcaDistributionExport.doInvoke()");
-		}finally {
-			closeWriter(state);
-		}
-		commitTransaction(txStatus);
-		return;
-	}
+	protected void doInvoke(DwcaTaxExportState state){}
 
     /**
      * @param state
@@ -90,13 +61,14 @@ public class DwcaDistributionExport extends DwcaExportBase {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
+    @Override
     protected void handleTaxonNode(DwcaTaxExportState state,  TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
         try {
             DwcaTaxExportConfigurator config = state.getConfig();
 
-            Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
 
             Set<TaxonDescription> descriptions = taxon.getDescriptions();
             for (TaxonDescription description : descriptions){
@@ -105,7 +77,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
             			if (! state.recordExists(file, el)){
             				DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
             				Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-            				handleDistribution(record, distribution, taxon, config);
+            				handleDistribution(state, record, distribution, taxon, config);
             				PrintWriter writer = createPrintWriter(state, file);
             	            record.write(state, writer);
             				state.addExistingRecord(file, distribution);
@@ -127,10 +99,10 @@ public class DwcaDistributionExport extends DwcaExportBase {
 
 
 
-	private void handleDistribution(DwcaDistributionRecord record, Distribution distribution, Taxon taxon, DwcaTaxExportConfigurator config) {
+	private void handleDistribution(DwcaTaxExportState state, DwcaDistributionRecord record, Distribution distribution, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
-		handleArea(record, distribution.getArea(), taxon, true);
+		handleArea(state, record, distribution.getArea(), taxon, true);
 		//TODO missing
 		record.setLifeStage(null);
 		record.setOccurrenceStatus(distribution.getStatus());
@@ -161,6 +133,4 @@ public class DwcaDistributionExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoDistributions();
 	}
-
-
 }

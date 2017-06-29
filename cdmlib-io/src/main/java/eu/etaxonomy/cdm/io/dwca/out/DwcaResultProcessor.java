@@ -176,7 +176,6 @@ public class DwcaResultProcessor {
         }
         result.clear();
 
-//        state.setResult(finalResult);
     }
 
 

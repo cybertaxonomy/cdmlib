@@ -13,12 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -43,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @created 20.04.2011
  */
-public class DwcaResourceRelationExport extends DwcaExportBase {
+public class DwcaResourceRelationExport extends DwcaDataExportBase {
     private static final long serialVersionUID = 33810773244068812L;
 
     private static final Logger logger = Logger.getLogger(DwcaResourceRelationExport.class);
@@ -65,41 +63,11 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
         file = DwcaTaxOutputFile.RESOURCE_RELATION;
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the classification are not found.
-	 *
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
-	 */
-	@Override
-	protected void doInvoke(DwcaTaxExportState state){
-		TransactionStatus txStatus = startTransaction(true);
-
-		DwcaTaxOutputFile file = DwcaTaxOutputFile.RESOURCE_RELATION;
-
-		try {
-
-			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
-			state.addMetaRecord(metaRecord);
-
-            List<TaxonNode> allNodes = allNodes(state);
-
-			for (TaxonNode node : allNodes){
-			    handleTaxonNode(state, node);
-			}
-		} catch (IOException e) {
-	         String message = "Unexpected exception " + e.getMessage();
-	         state.getResult().addException(e, message, "DwcaResourceRelationExport.doInvoke()");
-		} finally{
-			closeWriter(state);
-		}
-		commitTransaction(txStatus);
-		return;
-	}
+    @Override
+    protected void doInvoke(DwcaTaxExportState state){}
 
 
+    @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node) throws FileNotFoundException, UnsupportedEncodingException, IOException{
 
         try {

@@ -13,11 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
@@ -43,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 20.04.2011
  */
-public class DwcaTypesExport extends DwcaExportBase {
+public class DwcaTypesExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = 8879154738843628476L;
 
@@ -66,40 +64,8 @@ public class DwcaTypesExport extends DwcaExportBase {
         file = DwcaTaxOutputFile.TYPES;
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
-	 * Taxa that are not part of the classification are not found.
-	 *
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
-	 */
-	@Override
-	protected void doInvoke(DwcaTaxExportState state){
-		TransactionStatus txStatus = startTransaction(true);
-
-		DwcaTaxOutputFile file = DwcaTaxOutputFile.TYPES;
-
-        try {
-
-			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
-			state.addMetaRecord(metaRecord);
-
-            List<TaxonNode> allNodes = state.getAllNodes();
-
-			for (TaxonNode node : allNodes){
-				handleTaxonNode(state, node);
-
-			}
-		} catch (Exception e) {
-	          String message = "Unexpected exception " + e.getMessage();
-	          state.getResult().addException(e, message, "DwcaTypesExport.doInvoke()");
-		} finally{
-			closeWriter(state);
-		}
-		commitTransaction(txStatus);
-		return;
-	}
+    @Override
+    protected void doInvoke(DwcaTaxExportState state){}
 
     /**
      * @param state
@@ -108,6 +74,7 @@ public class DwcaTypesExport extends DwcaExportBase {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
+    @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
