@@ -9,12 +9,14 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -29,7 +31,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 20.04.2011
  */
-@Component
 public class DwcaDistributionExport extends DwcaExportBase {
 
     private static final long serialVersionUID = -3274468345456407430L;
@@ -39,12 +40,17 @@ public class DwcaDistributionExport extends DwcaExportBase {
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
 	protected static final String fileName = "distribution.txt";
 
+    private DwcaMetaDataRecord metaRecord;
+
 	/**
 	 * Constructor
 	 */
-	public DwcaDistributionExport() {
+	public DwcaDistributionExport(DwcaTaxExportState state) {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+        metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+        state.addMetaRecord(metaRecord);
+        file = DwcaTaxOutputFile.DISTRIBUTION;
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -57,49 +63,66 @@ public class DwcaDistributionExport extends DwcaExportBase {
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
-		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		DwcaTaxOutputFile file = DwcaTaxOutputFile.DISTRIBUTION;
 		try {
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
 			List<TaxonNode> allNodes = allNodes(state);
             for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-
-				Set<TaxonDescription> descriptions = taxon.getDescriptions();
-				for (TaxonDescription description : descriptions){
-					for (DescriptionElementBase el : description.getElements()){
-						if (el.isInstanceOf(Distribution.class) ){
-							if (! state.recordExists(file, el)){
-								DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
-								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-								handleDistribution(record, distribution, taxon, config);
-								PrintWriter writer = createPrintWriter(state, file);
-					            record.write(state, writer);
-								state.addExistingRecord(file, distribution);
-							}
-						}else if (el.getFeature().equals(Feature.DISTRIBUTION())){
-							//TODO
-							String message = "Distribution export for TextData not yet implemented";
-							logger.warn(message);
-						}
-					}
-				}
-
-                flushWriter(state, file);
+				handleTaxonNode(state, node);
 			}
         } catch (Exception e) {
             String message = "Unexpected exception " + e.getMessage();
             state.getResult().addException(e, message, "DwcaDistributionExport.doInvoke()");
 		}finally {
-			closeWriter(file, state);
+			closeWriter(state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
+
+    /**
+     * @param state
+     * @param node
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    protected void handleTaxonNode(DwcaTaxExportState state,  TaxonNode node)
+            throws IOException, FileNotFoundException, UnsupportedEncodingException {
+
+        try {
+            DwcaTaxExportConfigurator config = state.getConfig();
+
+            Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+
+            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+            for (TaxonDescription description : descriptions){
+            	for (DescriptionElementBase el : description.getElements()){
+            		if (el.isInstanceOf(Distribution.class) ){
+            			if (! state.recordExists(file, el)){
+            				DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
+            				Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+            				handleDistribution(record, distribution, taxon, config);
+            				PrintWriter writer = createPrintWriter(state, file);
+            	            record.write(state, writer);
+            				state.addExistingRecord(file, distribution);
+            			}
+            		}else if (el.getFeature().equals(Feature.DISTRIBUTION())){
+            		    String message = "Distribution export for TextData not yet implemented";
+            			state.getResult().addWarning(message);
+            		}
+            	}
+            }
+        } catch (Exception e) {
+            String message = "Unexpected exception: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }finally{
+            flushWriter(state, file);
+        }
+    }
 
 
 
@@ -133,7 +156,6 @@ public class DwcaDistributionExport extends DwcaExportBase {
 		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
-
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {

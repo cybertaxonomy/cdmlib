@@ -9,13 +9,15 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -30,7 +32,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 18.04.2011
  */
-@Component
 public class DwcaVernacularExport extends DwcaExportBase {
     private static final long serialVersionUID = 3169086545830374918L;
 
@@ -39,13 +40,17 @@ public class DwcaVernacularExport extends DwcaExportBase {
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
 	protected static final String fileName = "vernacular.txt";
 
+    private DwcaMetaDataRecord metaRecord;
 
 	/**
 	 * Constructor
 	 */
-	public DwcaVernacularExport() {
+	public DwcaVernacularExport(DwcaTaxExportState state) {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+        metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+        state.addMetaRecord(metaRecord);
+        file = DwcaTaxOutputFile.VERNACULAR;
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -58,10 +63,8 @@ public class DwcaVernacularExport extends DwcaExportBase {
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
-		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		DwcaTaxOutputFile file = DwcaTaxOutputFile.VERNACULAR;
 		try {
 
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
@@ -69,39 +72,62 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
             List<TaxonNode> allNodes = allNodes(state);
 			for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon());
-				Set<TaxonDescription> descriptions = taxon.getDescriptions();
-				for (TaxonDescription description : descriptions){
-					for (DescriptionElementBase el : description.getElements()){
-						if (el.isInstanceOf(CommonTaxonName.class)){
-							DwcaVernacularRecord record = new DwcaVernacularRecord(metaRecord, config);
-							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
-							if (! state.recordExists(file, commonTaxonName)){
-								handleCommonTaxonName(record, commonTaxonName, taxon, config);
-								PrintWriter writer = createPrintWriter(state, file);
-								record.write(state, writer);
-								state.addExistingRecord(file, commonTaxonName);
-							}
-						}else if (el.getFeature().equals(Feature.COMMON_NAME())){
-							//TODO
-							String message = "Vernacular name export for TextData not yet implemented";
-							state.getResult().addError(message, this, "doInvoke()");
-							logger.warn(message);
-						}
-					}
-				}
-
-                flushWriter(state, file);
+				handleTaxonNode(state, node);
 			}
 		} catch (Exception e) {
 	         String message = "Unexpected exception " + e.getMessage();
 	         state.getResult().addException(e, message, "DwcaVernacularExport.doInvoke()");
 		} finally{
-			closeWriter(file, state);
+			closeWriter(state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
+
+    /**
+     * @param state
+     * @param config
+     * @param file
+     * @param metaRecord
+     * @param node
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
+            throws IOException, FileNotFoundException, UnsupportedEncodingException {
+
+        try {
+            DwcaTaxExportConfigurator config = state.getConfig();
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
+            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+            for (TaxonDescription description : descriptions){
+            	for (DescriptionElementBase el : description.getElements()){
+            		if (el.isInstanceOf(CommonTaxonName.class)){
+            			DwcaVernacularRecord record = new DwcaVernacularRecord(metaRecord, config);
+            			CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
+            			if (! state.recordExists(file, commonTaxonName)){
+            				handleCommonTaxonName(record, commonTaxonName, taxon, config);
+            				PrintWriter writer = createPrintWriter(state, file);
+            				record.write(state, writer);
+            				state.addExistingRecord(file, commonTaxonName);
+            			}
+            		}else if (el.getFeature().equals(Feature.COMMON_NAME())){
+            			//TODO
+            			String message = "Vernacular name export for TextData not yet implemented";
+            			state.getResult().addError(message, this, "doInvoke()");
+            			logger.warn(message);
+            		}
+            	}
+            }
+
+        } catch (Exception e) {
+            String message = "Unexpected exception: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }finally{
+            flushWriter(state, file);
+        }
+    }
 
 
 

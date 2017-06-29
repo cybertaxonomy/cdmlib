@@ -9,12 +9,14 @@ d* Copyright (C) 2007 EDIT
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -27,7 +29,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 20.04.2011
  */
-@Component
 public class DwcaReferenceExport extends DwcaExportBase {
 
     private static final long serialVersionUID = -8334741499089219441L;
@@ -37,12 +38,17 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	protected static final String fileName = "reference.txt";
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Reference";
 
+	private DwcaMetaDataRecord metaRecord;
+
 	/**
 	 * Constructor
 	 */
-	public DwcaReferenceExport() {
+	public DwcaReferenceExport(DwcaTaxExportState state) {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+		metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+        state.addMetaRecord(metaRecord);
+        file = DwcaTaxOutputFile.REFERENCE;
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -55,52 +61,67 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
-		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
-		DwcaTaxOutputFile file = DwcaTaxOutputFile.REFERENCE;
-
 		try {
-			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
-			state.addMetaRecord(metaRecord);
 
             List<TaxonNode> allNodes = allNodes(state);
 			for (TaxonNode node : allNodes){
 
-			    //sec
-				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
-				Taxon taxon = CdmBase.deproxy(node.getTaxon());
-				Reference sec = taxon.getSec();
-				if (sec != null && ! state.recordExists(file, sec)){
-					handleReference(state, record, sec, taxon);
-					PrintWriter writer = createPrintWriter(state, file);
-                    record.write(state, writer);
-					state.addExistingRecord(file, sec);
-				}
-
-				//nomRef
-				record = new DwcaReferenceRecord(metaRecord, config);
-				INomenclaturalReference nomRefI = taxon.getName().getNomenclaturalReference();
-				Reference nomRef = CdmBase.deproxy(nomRefI, Reference.class);
-				if (nomRef != null && ! state.recordExists(file, nomRef)){
-					handleReference(state, record, nomRef, taxon);
-					PrintWriter writer = createPrintWriter(state, file);
-		            record.write(state, writer);
-					state.addExistingRecord(file, nomRef);
-				}
-
-                flushWriter(state, file);
+			    handleTaxonNode(state, node);
 
 			}
 		} catch (Exception e) {
 	          String message = "Unexpected exception: " + e.getMessage();
 	          state.getResult().addException (e, message, "DwcaReferenceExport.doInvoke()");
 		} finally{
-			closeWriter(file, state);
+			closeWriter(state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
+
+    /**
+     * @param state
+     * @param metaRecord
+     * @param node
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    protected void handleTaxonNode(DwcaTaxExportState state,
+            TaxonNode node)
+            throws IOException, FileNotFoundException, UnsupportedEncodingException {
+        try {
+            //sec
+            DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, state.getConfig());
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
+            Reference sec = taxon.getSec();
+            if (sec != null && ! state.recordExists(file, sec)){
+            	handleReference(state, record, sec, taxon);
+            	PrintWriter writer = createPrintWriter(state, file);
+                record.write(state, writer);
+            	state.addExistingRecord(file, sec);
+            }
+
+            //nomRef
+            record = new DwcaReferenceRecord(metaRecord, state.getConfig());
+            INomenclaturalReference nomRefI = taxon.getName().getNomenclaturalReference();
+            Reference nomRef = CdmBase.deproxy(nomRefI, Reference.class);
+            if (nomRef != null && ! state.recordExists(file, nomRef)){
+            	handleReference(state, record, nomRef, taxon);
+            	PrintWriter writer = createPrintWriter(state, file);
+                record.write(state, writer);
+            	state.addExistingRecord(file, nomRef);
+            }
+
+        } catch (Exception e) {
+            String message = "Unexpected exception: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }finally{
+            flushWriter(state, file);
+        }
+    }
 
 	private void handleReference(DwcaTaxExportState state, DwcaReferenceRecord record, Reference reference, Taxon taxon) {
 

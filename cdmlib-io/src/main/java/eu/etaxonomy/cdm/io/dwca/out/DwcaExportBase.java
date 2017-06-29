@@ -64,6 +64,9 @@ public abstract class DwcaExportBase
 
     protected static final boolean IS_CORE = true;
 
+    protected DwcaTaxOutputFile file;
+
+
     @Autowired
     private IClassificationService classificationService;
 
@@ -316,7 +319,7 @@ public abstract class DwcaExportBase
      * @param file
      * @param state
      */
-    protected void closeWriter(DwcaTaxOutputFile file, DwcaTaxExportState state) {
+    protected void closeWriter(DwcaTaxExportState state) {
         PrintWriter writer = state.getWriter(file);
         if (writer != null && state.isZip() == false){
             writer.close();

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -44,7 +43,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 20.04.2011
  */
-@Component
 public class DwcaTypesExport extends DwcaExportBase {
 
     private static final long serialVersionUID = 8879154738843628476L;
@@ -54,12 +52,18 @@ public class DwcaTypesExport extends DwcaExportBase {
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/TypesAndSpecimen";
 	protected static final String fileName = "typesAndSpecimen.txt";
 
+	private DwcaMetaDataRecord metaRecord;
+
+
 	/**
 	 * Constructor
 	 */
-	public DwcaTypesExport() {
+	public DwcaTypesExport(DwcaTaxExportState state) {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+        metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+        state.addMetaRecord(metaRecord);
+        file = DwcaTaxOutputFile.TYPES;
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -72,7 +76,6 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
-		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
 		DwcaTaxOutputFile file = DwcaTaxOutputFile.TYPES;
@@ -85,49 +88,70 @@ public class DwcaTypesExport extends DwcaExportBase {
             List<TaxonNode> allNodes = state.getAllNodes();
 
 			for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon());
-
-				//TODO use API methods to retrieve all related specimen
-
-				//individual associations
-				Set<TaxonDescription> descriptions = taxon.getDescriptions();
-				for (TaxonDescription description : descriptions){
-					for (DescriptionElementBase el : description.getElements()){
-						if (el.isInstanceOf(IndividualsAssociation.class)){
-							DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
-							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
-							if (! state.recordExistsUuid(individualAssociation)
-							        && handleSpecimen(state, record, individualAssociation, null, taxon, config)){
-							    PrintWriter writer = createPrintWriter(state, file);
-					            record.write(state, writer);
-								state.addExistingRecordUuid(individualAssociation);
-							}
-						}
-					}
-				}
-
-				//type specimen
-				INonViralName nvn = taxon.getName();
-				handleTypeName(state, file, taxon, nvn, metaRecord);
-				for (Synonym synonym : taxon.getSynonyms()){
-					handleTypeName(state, file, synonym, nvn, metaRecord);
-				}
-
-				//FIXME
-				//Determinations
-
-				flushWriter(state, file);
+				handleTaxonNode(state, node);
 
 			}
 		} catch (Exception e) {
 	          String message = "Unexpected exception " + e.getMessage();
 	          state.getResult().addException(e, message, "DwcaTypesExport.doInvoke()");
 		} finally{
-			closeWriter(file, state);
+			closeWriter(state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
+
+    /**
+     * @param state
+     * @param node
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
+            throws IOException, FileNotFoundException, UnsupportedEncodingException {
+
+        try {
+            DwcaTaxExportConfigurator config = state.getConfig();
+
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
+
+            //TODO use API methods to retrieve all related specimen
+
+            //individual associations
+            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+            for (TaxonDescription description : descriptions){
+            	for (DescriptionElementBase el : description.getElements()){
+            		if (el.isInstanceOf(IndividualsAssociation.class)){
+            			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
+            			IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
+            			if (! state.recordExistsUuid(individualAssociation)
+            			        && handleSpecimen(state, record, individualAssociation, null, taxon, config)){
+            			    PrintWriter writer = createPrintWriter(state, file);
+            	            record.write(state, writer);
+            				state.addExistingRecordUuid(individualAssociation);
+            			}
+            		}
+            	}
+            }
+
+            //type specimen
+            INonViralName nvn = taxon.getName();
+            handleTypeName(state, file, taxon, nvn, metaRecord);
+            for (Synonym synonym : taxon.getSynonyms()){
+            	handleTypeName(state, file, synonym, nvn, metaRecord);
+            }
+
+            //FIXME
+            //Determinations
+
+        } catch (Exception e) {
+            String message = "Unexpected exception: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }finally{
+            flushWriter(state, file);
+        }
+    }
 
 	/**
 	 * @param state

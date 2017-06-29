@@ -134,7 +134,6 @@ public class DwcaResultProcessor {
         ExportResult finalResult = state.getResult();
 
         if (!result.isEmpty() ){
-            //Replace quotes by double quotes
             for (DwcaTaxOutputFile table: result.keySet()){
                 //write each table in a stream ...
                 Object tableResult = result.get(table);

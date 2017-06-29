@@ -58,6 +58,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	public DwcaTaxExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+        file = DwcaTaxOutputFile.TAXON;
 	}
 
 	/** Retrieves data from a CDM DB and serializes the CDM to XML.
@@ -71,53 +72,94 @@ public class DwcaTaxExport extends DwcaExportBase {
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
 
-		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 
-		DwcaTaxOutputFile file = DwcaTaxOutputFile.TAXON;
+		DwcaReferenceExport refExport = new DwcaReferenceExport(state);
+		DwcaResourceRelationExport relationExport = new DwcaResourceRelationExport(state);
+		DwcaTypesExport typesExport = new DwcaTypesExport(state);
+		DwcaVernacularExport vernacularExport = new DwcaVernacularExport(state);
+		DwcaDescriptionExport descriptionExport = new DwcaDescriptionExport(state);
+		DwcaDistributionExport distributionExport = new DwcaDistributionExport(state);
+		DwcaImageExport imageExport = new DwcaImageExport(state);
+
 		try {
 
 			List<TaxonNode> allNodes = allNodes(state);
 
 			for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon());
-				DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
-
-				TaxonName name = taxon.getName();
-				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
-				TaxonName basionym = name.getBasionym();
-				Classification classification = node.getClassification();
-				if (! state.recordExists(file, taxon)){
-					handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null, false, false);
-					PrintWriter writer = createPrintWriter(state, file);
-		            record.write(state, writer);
-					state.addExistingRecord(file, taxon);
-				}
-
-				node.getClassification().getName();
-				//synonyms
-				handleSynonyms(state, taxon, file, classification, metaRecord);
-
-				//misapplied names
-				handleMisapplication(state, taxon, file, classification, metaRecord);
-
-				flushWriter(state, file);
-
+				handleTaxonNode(state, metaRecord, node);
+				refExport.handleTaxonNode(state, node);
+				relationExport.handleTaxonNode(state, node);
+				typesExport.handleTaxonNode(state, node);
+				vernacularExport.handleTaxonNode(state, node);
+				descriptionExport.handleTaxonNode(state, node);
+				distributionExport.handleTaxonNode(state, node);
+				imageExport.handleTaxonNode(state, node);
 			}
 		} catch (Exception e) {
 		    String message = "Unexpected exception: " + e.getMessage();
 			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{
-			closeWriter(file, state);
+			closeWriter(state);
+			refExport.closeWriter(state);
+			relationExport.closeWriter(state);
+			typesExport.closeWriter(state);
+			vernacularExport.closeWriter(state);
+			descriptionExport.closeWriter(state);
+			distributionExport.closeWriter(state);
+			imageExport.closeWriter(state);
 		}
 		commitTransaction(txStatus);
 		return;
 
 	}
+
+    /**
+     * @param state
+     * @param metaRecord
+     * @param node
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    private void handleTaxonNode(DwcaTaxExportState state,
+            DwcaMetaDataRecord metaRecord, TaxonNode node)
+            throws IOException, FileNotFoundException, UnsupportedEncodingException {
+
+        try {
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
+            DwcaTaxExportConfigurator config = state.getConfig();
+            DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
+
+            TaxonName name = taxon.getName();
+            Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
+            TaxonName basionym = name.getBasionym();
+            Classification classification = node.getClassification();
+            if (! state.recordExists(file, taxon)){
+            	handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null, false, false);
+            	PrintWriter writer = createPrintWriter(state, file);
+                record.write(state, writer);
+            	state.addExistingRecord(file, taxon);
+            }
+
+            node.getClassification().getName();
+            //synonyms
+            handleSynonyms(state, taxon, file, classification, metaRecord);
+
+            //misapplied names
+            handleMisapplication(state, taxon, file, classification, metaRecord);
+        } catch (Exception e) {
+            String message = "Unexpected exception: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }finally{
+            flushWriter(state, file);
+        }
+
+    }
 
 
 

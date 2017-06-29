@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -44,7 +43,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @created 20.04.2011
  */
-@Component
 public class DwcaResourceRelationExport extends DwcaExportBase {
     private static final long serialVersionUID = 33810773244068812L;
 
@@ -53,12 +51,18 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/ResourceRelationship";
 	protected static final String fileName = "resourceRelationship.txt";
 
+	private DwcaMetaDataRecord metaRecord;
+
+
 	/**
 	 * Constructor
 	 */
-	public DwcaResourceRelationExport() {
+	public DwcaResourceRelationExport(DwcaTaxExportState state) {
 		super();
 		this.ioName = this.getClass().getSimpleName();
+	    metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+	    state.addMetaRecord(metaRecord);
+        file = DwcaTaxOutputFile.RESOURCE_RELATION;
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -83,97 +87,103 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
             List<TaxonNode> allNodes = allNodes(state);
 
 			for (TaxonNode node : allNodes){
-			    makeSingleTaxonNode(state, node, metaRecord, file);
-                flushWriter(state,file);
+			    handleTaxonNode(state, node);
 			}
 		} catch (IOException e) {
 	         String message = "Unexpected exception " + e.getMessage();
 	         state.getResult().addException(e, message, "DwcaResourceRelationExport.doInvoke()");
 		} finally{
-			closeWriter(file, state);
+			closeWriter(state);
 		}
 		commitTransaction(txStatus);
 		return;
 	}
 
 
-    private void makeSingleTaxonNode(DwcaTaxExportState state, TaxonNode node, DwcaMetaDataRecord metaRecord,
-            DwcaTaxOutputFile file) throws FileNotFoundException, UnsupportedEncodingException, IOException{
-        DwcaTaxExportConfigurator config = state.getConfig();
+    protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node) throws FileNotFoundException, UnsupportedEncodingException, IOException{
 
-        Taxon taxon = CdmBase.deproxy(node.getTaxon());
+        try {
+            DwcaTaxExportConfigurator config = state.getConfig();
 
-        //taxon interactions
-        Set<TaxonDescription> descriptions = taxon.getDescriptions();
-        for (TaxonDescription description : descriptions){
-            for (DescriptionElementBase el : description.getElements()){
-                if (el.isInstanceOf(TaxonInteraction.class)){
-                    DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
-                    TaxonInteraction taxonInteraction = CdmBase.deproxy(el,TaxonInteraction.class);
-                    if (! state.recordExistsUuid(taxonInteraction)){
-                        handleInteraction(record, taxon, taxonInteraction);
-                        PrintWriter writer = createPrintWriter(state, file);
-                        record.write(state, writer);
-                        state.addExistingRecordUuid(taxonInteraction);
+            Taxon taxon = CdmBase.deproxy(node.getTaxon());
+
+            //taxon interactions
+            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+            for (TaxonDescription description : descriptions){
+                for (DescriptionElementBase el : description.getElements()){
+                    if (el.isInstanceOf(TaxonInteraction.class)){
+                        DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
+                        TaxonInteraction taxonInteraction = CdmBase.deproxy(el,TaxonInteraction.class);
+                        if (! state.recordExistsUuid(taxonInteraction)){
+                            handleInteraction(state, record, taxon, taxonInteraction);
+                            PrintWriter writer = createPrintWriter(state, file);
+                            record.write(state, writer);
+                            state.addExistingRecordUuid(taxonInteraction);
+                        }
                     }
                 }
             }
-        }
 
-        //concept relationships
-        for (TaxonRelationship rel : taxon.getTaxonRelations()){
-            DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
-            IdentifiableEntity<?> subject = rel.getFromTaxon();
-            IdentifiableEntity<?> object = rel.getToTaxon();
+            //concept relationships
+            for (TaxonRelationship rel : taxon.getTaxonRelations()){
+                DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
+                IdentifiableEntity<?> subject = rel.getFromTaxon();
+                IdentifiableEntity<?> object = rel.getToTaxon();
 
-            if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) ){
-                //misapplied names are handled in core (tax)
-                continue;
-            }
-            if (! state.recordExistsUuid(rel)){
-                handleRelationship(record, subject, object, rel, false);
-                PrintWriter writer = createPrintWriter(state, file);
-                record.write(state, writer);
-                state.addExistingRecordUuid(rel);
-            }
+                if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) ){
+                    //misapplied names are handled in core (tax)
+                    continue;
+                }
+                if (! state.recordExistsUuid(rel)){
+                    handleRelationship(record, subject, object, rel, false);
+                    PrintWriter writer = createPrintWriter(state, file);
+                    record.write(state, writer);
+                    state.addExistingRecordUuid(rel);
+                }
 
-        }
-
-        //Name relationship
-        //TODO
-        INonViralName name = taxon.getName();
-        if (name == null){
-            String message = "There is a taxon node without name: " + node.getId();
-            state.getResult().addError(message, "DwcaResourceRelationExport.makeSingleTaxonNode");
-            return;
-        }
-        Set<NameRelationship> rels = name.getNameRelations();
-        for (NameRelationship rel : rels){
-            DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
-            IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName());
-            IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName());
-            boolean isInverse = false;
-            if(subject == name){
-                subject = taxon;
-            }else if(object == name){
-                object= subject;
-                subject = taxon;
-                isInverse = true;
-            }else{
-                String message = "Both, subject and object, are not part of the relationship for " + name.getTitleCache();
-                logger.warn(message);
-                state.getResult().addWarning(message, "DwcaResourceRelationExport.makeSingleTaxonNode");
             }
 
-            if (! state.recordExistsUuid(rel)){
-                //????
-                handleRelationship(record, subject, object, rel, isInverse);
-                PrintWriter writer = createPrintWriter(state, file);
-                record.write(state, writer);
-                state.addExistingRecordUuid(rel);
+            //Name relationship
+            //TODO
+            INonViralName name = taxon.getName();
+            if (name == null){
+                String message = "There is a taxon node without name: " + node.getId();
+                state.getResult().addError(message, "DwcaResourceRelationExport.makeSingleTaxonNode");
+                return;
+            }
+            Set<NameRelationship> rels = name.getNameRelations();
+            for (NameRelationship rel : rels){
+                DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
+                IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName());
+                IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName());
+                boolean isInverse = false;
+                if(subject == name){
+                    subject = taxon;
+                }else if(object == name){
+                    object= subject;
+                    subject = taxon;
+                    isInverse = true;
+                }else{
+                    String message = "Both, subject and object, are not part of the relationship for " + name.getTitleCache();
+                    state.getResult().addWarning(message, "DwcaResourceRelationExport.makeSingleTaxonNode");
+                }
+
+                if (! state.recordExistsUuid(rel)){
+                    //????
+                    handleRelationship(record, subject, object, rel, isInverse);
+                    PrintWriter writer = createPrintWriter(state, file);
+                    record.write(state, writer);
+                    state.addExistingRecordUuid(rel);
+                }
             }
 
+        } catch (Exception e) {
+            String message = "Unexpected exception: " + e.getMessage();
+            state.getResult().addException(e, message);
+        }finally{
+            flushWriter(state, file);
         }
+
         return;
     }
 
@@ -212,14 +222,17 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 
 
 
-	private void handleInteraction(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, TaxonInteraction interaction) {
+	private void handleInteraction(DwcaTaxExportState state, DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, TaxonInteraction interaction) {
 		Taxon object = interaction.getTaxon2();
+		if (object == null){
+		    state.getResult().addWarning("Taxon interaction has no target object.");
+		}
 		Map<Language, LanguageString> description = interaction.getDescription();
 
 		record.setId(subject.getId());
 		record.setUuid(subject.getUuid());
 
-		record.setRelatedResourceId(object.getUuid());
+		record.setRelatedResourceId(object == null ? null : object.getUuid());
 		//TODO transform to controlled voc
 		if (description != null && description.get(Language.DEFAULT()) != null){
 			record.setRelationshipOfResource(description.get(Language.DEFAULT()).getText());
