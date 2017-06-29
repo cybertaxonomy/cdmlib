@@ -107,6 +107,7 @@ public class CdmLightClassificationExport
     protected void doInvoke(CdmLightExportState state) {
         try {
             CdmLightExportConfigurator config = state.getConfig();
+            config.setFieldsTerminatedBy(",");
 
             if (config.getClassificationUuids().isEmpty()){
                 //TODO
