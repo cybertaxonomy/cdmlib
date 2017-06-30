@@ -189,7 +189,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		//nameAccordingTo
 		Reference sec = taxonBase.getSec();
 		if (sec == null){
-			String message = "There is a taxon without sec " + taxonBase.getTitleCache() + "( " + taxonBase.getId() + ")";
+			String message = "There is a taxon without sec " + taxonBase.getTitleCache() + "(" + taxonBase.getId() + ")";
 			state.getResult().addWarning(message);
 		}else{
 			record.setNameAccordingToId(taxonBase.getSec().getUuid());

@@ -189,8 +189,8 @@ public abstract class IoResultBase implements Serializable{
         if (!list.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
             for (IoInfo ioInfo : list){
-                String codeLocation = ioInfo.codeLocation == null ? "" : (ioInfo.codeLocation + ": ");
-                String dataLocation = ioInfo.dataLocation == null ? "" : ( "[" + ioInfo.dataLocation + "]");
+                String codeLocation = ioInfo.codeLocation == null ? "" : ( "[" + ioInfo.codeLocation + "]");
+                String dataLocation = ioInfo.dataLocation == null ? "" : (ioInfo.dataLocation + ": ");
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
 
                 message = StringUtils.isBlank(message)? "no message" : message;

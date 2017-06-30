@@ -124,6 +124,7 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
                 DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
                 IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName());
                 IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName());
+                name = CdmBase.deproxy(name);
                 boolean isInverse = false;
                 if(subject == name){
                     subject = taxon;
@@ -184,8 +185,6 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 		if (object.isInstanceOf(TaxonName.class)){
 			record.setScientificName(object.getTitleCache());
 		}
-
-
 	}
 
 
@@ -218,7 +217,6 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 		record.setRelationshipRemarks(interaction.getAnnotations());
 		//TODO does this need to be filled?
 		record.setScientificName(null);
-
 	}
 
 
@@ -234,5 +232,4 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoResourceRelation();
 	}
-
 }
