@@ -291,6 +291,7 @@ public class DwcaExportController extends AbstractController implements Resource
         @SuppressWarnings("unchecked")
         CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator> defaultExport =
                 (CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator>)appContext.getBean("defaultExport");
+        progressMonitor.beginTask("DwC-A export", 10);
         progressMonitor.subTask("invoke export");
         defaultExport.invoke(config);  //triggers export
         progressMonitor.subTask("wrote results to cache");

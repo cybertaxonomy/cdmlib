@@ -81,7 +81,6 @@ public class ZipWriter {
             zos.putNextEntry(zipEntry);
             DeferredFileOutputStream os = entryMap.get(key);
             os.close();
-            cleanupFile(os);
 //            zos.setComment(comment);
             os.writeTo(zos);
             zos.closeEntry();
@@ -91,6 +90,10 @@ public class ZipWriter {
             zos.close();
         } catch (IOException e) {
             throw e;
+        }
+        for (String key:  entryMap.keySet()){
+            DeferredFileOutputStream os = entryMap.get(key);
+            cleanupFile(os);
         }
     }
 
