@@ -179,8 +179,14 @@ public class ConversationHolder {
             // unbind the current session.
             // there is no need to bind a new session, since HibernateTransactionManager will create a new one
             // if the resource map does not contain one (ditto for the datasource-to-connection entry).
+            if(logger.isTraceEnabled()){
+                logger.trace("Unbinding SessionFactory [" + getSessionFactory().hashCode() + "]");
+            }
             TransactionSynchronizationManager.unbindResource(getSessionFactory());
             if(TransactionSynchronizationManager.hasResource(getDataSource())){
+                if(logger.isTraceEnabled()){
+                    logger.trace("Unbinding DataSource [" + getDataSource().hashCode() + "]");
+                }
                 TransactionSynchronizationManager.unbindResource(getDataSource());
             }
         }
@@ -207,7 +213,7 @@ public class ConversationHolder {
     public boolean isBound(){
         //return sessionHolder != null && longSession != null && longSession.isConnected();
         SessionHolder currentSessionHolder = (SessionHolder)TransactionSynchronizationManager.getResource(getSessionFactory());
-        return longSession != null && currentSessionHolder != null && getSessionFactory().getCurrentSession() == longSession;
+        return longSession != null && currentSessionHolder != null && getSessionFactory().getCurrentSession().equals(longSession);
     }
 
     /**
@@ -330,6 +336,9 @@ public class ConversationHolder {
     public Session getSession() {
         if(longSession == null){
             longSession = getNewSession();
+            logger.info("Creating Session: [" + longSession.hashCode() + "] " + longSession);
+        } else {
+            logger.info("Reusing Session: [" + longSession.hashCode() + "] " + longSession);
         }
         return longSession;
     }
@@ -346,7 +355,7 @@ public class ConversationHolder {
         // binding / unbinding / closing session as well as starting / committing transactions.
         Session session = sessionFactory.openSession();
         session.setFlushMode(FlushMode.COMMIT);
-        logger.info("Creating Session: [" + longSession + "]");
+
         return session;
     }
 
