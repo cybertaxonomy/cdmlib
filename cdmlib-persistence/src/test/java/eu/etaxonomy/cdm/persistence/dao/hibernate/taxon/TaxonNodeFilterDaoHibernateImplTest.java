@@ -217,7 +217,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         filter.orTaxonNode(node3.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("1 node should remain", 4, listUuid.size());
+        Assert.assertEquals("1 node should remain", 1, listUuid.size());
 
     }
 
