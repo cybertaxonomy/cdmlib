@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -112,9 +113,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         createFullTestDataSet();
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
-        Set<UUID> subtreeUuids = new HashSet<>();
-        subtreeUuids.add(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac"));
-        config.setSubtreeUuids(subtreeUuids);
+        config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
         config.setTarget(TARGET.EXPORT_DATA);
         ExportResult result = defaultExport.invoke(config);
         System.out.println(result.createReport());

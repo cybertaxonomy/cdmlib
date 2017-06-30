@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxExportConfigurator;
@@ -193,10 +192,11 @@ public class DwcaExportController extends AbstractController implements Resource
     public synchronized ModelAndView doDwcaTaxExport(
             @RequestParam(value = "subtrees", required = false) final UuidList subtreeUuids,
             @RequestParam(value = "clearCache", required = false) final boolean clearCache,
-//            @RequestParam(value = "demoExport", required = false) final boolean demoExport,
-//            @RequestParam(value = "conceptExport", required = false) final boolean conceptExport,
-//            @RequestParam(value = "classification", required = false) final String classificationUUID,
-//            @RequestParam(value = "area", required = false) final UuidList areas,
+            @RequestParam(value = "classifications", required = false) final UuidList classificationUuids,
+            @RequestParam(value = "taxa", required = false) final UuidList taxonUuids,
+            @RequestParam(value = "taxonnodes", required = false) final UuidList taxonNodeUuids,
+//          @RequestParam(value = "area", required = false) final UuidList areas,
+
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
             final HttpServletResponse response,
@@ -247,7 +247,8 @@ public class DwcaExportController extends AbstractController implements Resource
                                 logger.info("Could not create file " + e);
                             }
                             performExport(cacheFile, progressMonitorController.getMonitor(indexMonitorUuid),
-                                    subtreeUuids, downloadTokenValueId, origin, response);
+                                    subtreeUuids, classificationUuids, taxonUuids, taxonNodeUuids,
+                                    downloadTokenValueId, origin, response);
                         }
                     };
                     if (priority == null) {
@@ -282,12 +283,16 @@ public class DwcaExportController extends AbstractController implements Resource
      * @param defaultExport
      */
     private void performExport(File cacheFile, IRestServiceProgressMonitor progressMonitor,
-            UuidList featureUuids, String downloadTokenValueId, String origin,
+            UuidList subtreeUuids, UuidList classificationList, UuidList taxaUuids,
+            UuidList taxonNodeUuids,
+            String downloadTokenValueId, String origin,
             HttpServletResponse response
             ) {
 
         progressMonitor.subTask("configure export");
-        DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(cacheFile, progressMonitor, featureUuids);
+        DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
+                cacheFile, progressMonitor, subtreeUuids, classificationList,
+                taxaUuids, taxonNodeUuids);
         @SuppressWarnings("unchecked")
         CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator> defaultExport =
                 (CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator>)appContext.getBean("defaultExport");
@@ -313,7 +318,8 @@ public class DwcaExportController extends AbstractController implements Resource
      * @return the CsvTaxExportConfiguratorRedlist config
      */
     private DwcaTaxExportConfigurator setDwcaTaxExportConfigurator(File cacheFile, IRestServiceProgressMonitor progressMonitor,
-            UuidList subtreeUuids) {
+            UuidList subtreeUuids, UuidList classificationUuids,
+            UuidList taxonUuids, UuidList taxonNodeUuids) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -324,10 +330,14 @@ public class DwcaExportController extends AbstractController implements Resource
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(
                 null, cacheFile, emlRecord);
 
-        if (subtreeUuids != null){
-            Set<UUID> subtreeSet = new HashSet<>(subtreeUuids);
-            config.setSubtreeUuids(subtreeSet);
-        }
+
+        TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance(
+                classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids);
+        config.setTaxonNodeFilter(taxonNodeFilter);
+//        if (subtreeUuids != null){
+//            Set<UUID> subtreeSet = new HashSet<>(subtreeUuids);
+//            config.setSubtreeUuids(subtreeSet);
+//        }
         config.setProgressMonitor(progressMonitor);
 
 //        config.setHasHeaderLines(true);

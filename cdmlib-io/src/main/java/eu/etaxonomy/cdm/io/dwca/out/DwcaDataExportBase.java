@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -80,27 +82,31 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
     //TODO unify with similar methods for other exports
     protected List<TaxonNode> allNodes(DwcaTaxExportState state) {
 
-        Set<UUID> subtreeUuidSet = state.getConfig().getSubtreeUuids();
-        if (subtreeUuidSet == null){
-            subtreeUuidSet = new HashSet<>();
-        }
-        //handle empty list as no filter defined
-        if (subtreeUuidSet.isEmpty()){
-            List<Classification> classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
-            for (Classification classification : classificationList){
-                subtreeUuidSet.add(classification.getRootNode().getUuid());
-            }
-        }
+        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
+
+        List<UUID> listUuid = taxonNodeService.uuidList(filter);
+
+//        Set<UUID> subtreeUuidSet = state.getConfig().getTaxonNodeFilter();
+//        if (subtreeUuidSet == null){
+//            subtreeUuidSet = new HashSet<>();
+//        }
+//        //handle empty list as no filter defined
+//        if (subtreeUuidSet.isEmpty()){
+//            List<Classification> classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
+//            for (Classification classification : classificationList){
+//                subtreeUuidSet.add(classification.getRootNode().getUuid());
+//            }
+//        }
 
         //TODO memory critical to store ALL node
         if (state.getAllNodes().isEmpty()){
-            makeAllNodes(state, subtreeUuidSet);
+            makeAllNodes(state, listUuid);
         }
         List<TaxonNode> allNodes = state.getAllNodes();
         return allNodes;
     }
 
-    private void makeAllNodes(DwcaTaxExportState state, Set<UUID> subtreeSet) {
+    private void makeAllNodes(DwcaTaxExportState state, Collection<UUID> subtreeSet) {
 
         try {
             boolean doSynonyms = false;

@@ -39,24 +39,37 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     }
 
 
-    //maybe we will later want to have ordering included
+    public long count(TaxonNodeFilter filter){
+        String queryStr = query(filter, "count(uuid) as n ");
+        Query query = getSession().createQuery(queryStr);
+        long count = (Long)query.uniqueResult();
+        return count;
+    }
+
     public List<UUID> listUuids(TaxonNodeFilter filter){
-        String select = " SELECT DISTINCT tn.uuid ";
-        String from = "FROM TaxonNode tn ";
+        String queryStr = query(filter, "tn.uuid");
+        Query query = getSession().createQuery(queryStr);
+        List<UUID> list = castToUuidList(query.list());
+
+        list = deduplicate(list);
+        return list;
+    }
+
+    //maybe we will later want to have ordering included
+    private String query(TaxonNodeFilter filter, String selectPart){
+        String select = " SELECT " + selectPart;
+        String from = " FROM TaxonNode tn ";
         String subtreeFilter = getSubtreeFilter(filter);
         String taxonNodeFilter = getTaxonNodeFilter(filter);
         String classificationFilter = getClassificationFilter(filter);
         String taxonFilter = getTaxonFilter(filter);
         String fullFilter = getFullFilter(subtreeFilter, taxonNodeFilter,
                 classificationFilter, taxonFilter);
+        String groupBy = " GROUP BY tn.uuid ";
 
-        String fullQuery = select + from + " WHERE " + fullFilter;
-        System.out.println(fullQuery);
-        Query query = getSession().createQuery(fullQuery);
-        List<UUID> list = castToUuidList(query.list());
+        String fullQuery = select + from + " WHERE " + fullFilter + groupBy;
+        return fullQuery;
 
-        list = deduplicate(list);
-        return list;
     }
 
 

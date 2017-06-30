@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -66,7 +65,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private List<UUID> featureExclusions = new ArrayList<>();
 
 	//filter on the classifications to be exported
-	private Set<UUID> subtreeUuids = new HashSet<>();
+//	private Set<UUID> subtreeUuids = new HashSet<>();
+	private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
 
 	private String defaultTaxonSource;
 
@@ -348,14 +348,24 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public String getFieldsTerminatedBy() {
 		return fieldsTerminatedBy;
 	}
+//
+//	public Set<UUID> getSubtreeUuids() {
+//		return subtreeUuids;
+//	}
+//
+//
+//	public void setSubtreeUuids(Set<UUID> subtreeUuids) {
+//		this.subtreeUuids = subtreeUuids;
+//	}
 
-	public Set<UUID> getSubtreeUuids() {
-		return subtreeUuids;
+
+	public TaxonNodeFilter getTaxonNodeFilter() {
+	    return taxonNodeFilter;
 	}
 
 
-	public void setSubtreeUuids(Set<UUID> subtreeUuids) {
-		this.subtreeUuids = subtreeUuids;
+	public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
+	    this.taxonNodeFilter = taxonNodeFilter;
 	}
 
 

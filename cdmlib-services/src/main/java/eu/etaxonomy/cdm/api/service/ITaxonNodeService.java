@@ -17,6 +17,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -230,7 +231,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param relationshipType
      * @return
      */
-    UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
+    public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 
     /**
      * @param parentNodeUuid
@@ -239,7 +240,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param microref
      * @return
      */
-    UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref);
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref);
 
     /**
      * Sets the secundum reference for all taxa of the given subtree.
@@ -250,6 +251,20 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param configurator
      * @return UpdateResult
      */
-    UpdateResult setSecundumForSubtree(UUID subtreeUuid,  Reference newSec, boolean includeAcceptedTaxa, boolean includeSynonyms, boolean overwriteExistingAccepted, boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+    public UpdateResult setSecundumForSubtree(UUID subtreeUuid,  Reference newSec, boolean includeAcceptedTaxa, boolean includeSynonyms, boolean overwriteExistingAccepted, boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    /**
+     * Returns a list of taxon node {@link UUID uuids} according to the given filter.
+     * @param filter
+     * @return
+     */
+    public long count(TaxonNodeFilter filter);
+
+    /**
+     * Returns a list of taxon node {@link UUID uuids} according to the given filter.
+     * @param filter
+     * @return
+     */
+    public List<UUID> uuidList(TaxonNodeFilter filter);
 
 }
