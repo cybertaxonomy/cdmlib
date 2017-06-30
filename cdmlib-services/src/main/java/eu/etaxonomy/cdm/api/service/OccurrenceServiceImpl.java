@@ -1112,14 +1112,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             // check for type designation
             if (cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()) {
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is a type specimen."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             // check for IndividualsAssociations
             else if (cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()) {
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is still associated via IndividualsAssociations"));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
@@ -1128,7 +1128,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     && HibernateProxyHelper.deproxy(cdmBase, TaxonDescription.class).getDescribedSpecimenOrObservation().equals(specimen)
                     && !specimenDeleteConfigurator.isDeleteFromDescription()){
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used as \"Described Specimen\" in a taxon description."));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is still used as \"Described Specimen\" in a taxon description."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
@@ -1145,7 +1145,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if(!specimenDeleteConfigurator.isDeleteChildren()){
                         //if children should not be deleted then it is undeletable
                         deleteResult.setAbort();
-                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivative still has child derivatives."));
+                        deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation still has child derivatives."));
                         deleteResult.addRelatedObject(cdmBase);
                         break;
                     }
