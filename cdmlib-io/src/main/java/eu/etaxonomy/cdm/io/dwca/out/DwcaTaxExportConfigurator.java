@@ -90,7 +90,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 				DwcaTaxExport.class
 				,DwcaMetaDataExport.class
 				,DwcaEmlExport.class
-				,DwcaZipExport.class
 				,DwcaResultWriter.class
 		};
 	}

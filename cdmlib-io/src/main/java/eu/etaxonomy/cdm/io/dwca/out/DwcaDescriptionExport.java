@@ -52,7 +52,7 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
 		this.ioName = this.getClass().getSimpleName();
 	    metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 	    state.addMetaRecord(metaRecord);
-	    file = DwcaTaxOutputFile.DESCRIPTION;
+	    file = DwcaTaxExportFile.DESCRIPTION;
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
             				DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
             				TextData textData = CdmBase.deproxy(el,TextData.class);
             				handleDescription(state, record, textData, taxon, config);
-            				PrintWriter writer = createPrintWriter(state, DwcaTaxOutputFile.DESCRIPTION);
+            				PrintWriter writer = createPrintWriter(state, DwcaTaxExportFile.DESCRIPTION);
             	            record.write(state, writer);
             				state.addExistingRecord(file, textData);
             			}

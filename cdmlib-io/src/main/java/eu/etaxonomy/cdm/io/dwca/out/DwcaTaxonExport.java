@@ -58,7 +58,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         this.ioName = this.getClass().getSimpleName();
         metaRecord = new DwcaMetaDataRecord(IS_CORE, fileName, ROW_TYPE);
         state.addMetaRecord(metaRecord);
-        file = DwcaTaxOutputFile.TAXON;
+        file = DwcaTaxExportFile.TAXON;
 	}
 
     @Override
@@ -71,7 +71,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         try {
             Taxon taxon = CdmBase.deproxy(node.getTaxon());
             DwcaTaxExportConfigurator config = state.getConfig();
-            DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
+            DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, config);
 
             TaxonName name = taxon.getName();
             Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
@@ -100,10 +100,10 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 
 
-	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, DwcaTaxOutputFile file,
+	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, DwcaTaxExportFile file,
 	        Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		for (Synonym synonym :taxon.getSynonyms() ){
-			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, state.getConfig());
+			DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
 			boolean isProParte = synonym.isProParte();
 			boolean isPartial = synonym.isPartial();
@@ -125,10 +125,10 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	}
 
 	private void handleMisapplication(DwcaTaxExportState state, Taxon taxon,
-	        DwcaTaxOutputFile file, Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+	        DwcaTaxExportFile file, Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
 		for (Taxon misappliedName : misappliedNames ){
-			DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, state.getConfig());
+			DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
 			TaxonName name = misappliedName.getName();
 			//????
@@ -158,7 +158,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param config
 	 * @param type
 	 */
-	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxRecord record, TaxonBase<?> taxonBase, TaxonName name,
+	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial) {
 		record.setId(taxonBase.getId());
@@ -296,7 +296,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param isPartial
 	 * @param isProParte
 	 */
-	private void handleTaxonomicStatus(DwcaTaxRecord record,
+	private void handleTaxonomicStatus(DwcaTaxonRecord record,
 			INonViralName name, RelationshipTermBase<?> type,
 			boolean isProParte, boolean isPartial) {
 		if (type == null){
@@ -326,7 +326,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param record
 	 * @param name
 	 */
-	private void handleUninomialOrGenus(DwcaTaxRecord record, INonViralName name) {
+	private void handleUninomialOrGenus(DwcaTaxonRecord record, INonViralName name) {
 		//epethita
 		String firstEpi = name.getGenusOrUninomial();
 		if (!StringUtils.isBlank(firstEpi)){
@@ -363,7 +363,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param taxon
 	 * @param name
 	 */
-	private void handleNomStatus(DwcaTaxRecord record, TaxonBase<?> taxon,
+	private void handleNomStatus(DwcaTaxonRecord record, TaxonBase<?> taxon,
 			INonViralName name) {
 		int nStatus = name.getStatus().size();
 		if (nStatus > 0){

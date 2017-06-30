@@ -61,7 +61,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		this.ioName = this.getClass().getSimpleName();
         metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
         state.addMetaRecord(metaRecord);
-        file = DwcaTaxOutputFile.TYPES;
+        file = DwcaTaxExportFile.TYPES;
 	}
 
     @Override
@@ -132,7 +132,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	 * @throws FileNotFoundException
 	 */
 	private Set<TypeDesignationBase> handleTypeName(DwcaTaxExportState state,
-	        DwcaTaxOutputFile file, TaxonBase<?> taxonBase,
+	        DwcaTaxExportFile file, TaxonBase<?> taxonBase,
 	        INonViralName nvn, DwcaMetaDataRecord metaRecord)
 	        throws FileNotFoundException, UnsupportedEncodingException, IOException {
 	    DwcaTaxExportConfigurator config = state.getConfig();
@@ -255,9 +255,13 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	private DerivedUnitFacade getFacadeFromAssociation(DwcaTaxExportState state, IndividualsAssociation individualsAssociation) {
 		SpecimenOrObservationBase<?> specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
 		DerivedUnitFacade facade;
-		if (! specimen.isInstanceOf(DerivedUnit.class)){
+		if (specimen == null){
+		    String message = "Individuals association " +  individualsAssociation.getId() + " has no associated specimen";
+            state.getResult().addWarning(message);
+		    return null;
+		}else if (! specimen.isInstanceOf(DerivedUnit.class)){
 			String message = "Non DerivedUnit specimen can not yet be handled by this export";
-			logger.warn(message);
+			state.getResult().addWarning(message);
 			//TODO handle empty records
 			return null;
 		}else{
@@ -266,7 +270,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 				facade = DerivedUnitFacade.NewInstance(derivedUnit);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				String message = "DerivedUnit is too complex to be handled by facade based darwin core archive export";
-				state.getResult().addError(message, this, "getFacadeFromAssociation()");
+				state.getResult().addError(message, e);
 				//TODO handle empty records
 				return null;
 			}

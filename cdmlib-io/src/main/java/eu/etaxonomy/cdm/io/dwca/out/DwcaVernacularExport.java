@@ -48,7 +48,7 @@ public class DwcaVernacularExport extends DwcaDataExportBase {
 		this.ioName = this.getClass().getSimpleName();
         metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
         state.addMetaRecord(metaRecord);
-        file = DwcaTaxOutputFile.VERNACULAR;
+        file = DwcaTaxExportFile.VERNACULAR;
 	}
 
     @Override

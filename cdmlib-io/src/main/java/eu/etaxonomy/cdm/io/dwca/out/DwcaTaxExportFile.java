@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
  * @date 25.06.2017
  *
  */
-public enum DwcaTaxOutputFile {
+public enum DwcaTaxExportFile {
       METADATA(DwcaMetaDataExport.fileName, null),
       EML(DwcaEmlExport.fileName, null),
       TAXON(DwcaTaxonExport.fileName, taxonColumns()),
@@ -26,6 +26,7 @@ public enum DwcaTaxOutputFile {
       RESOURCE_RELATION(DwcaResourceRelationExport.fileName, null),
       TYPES(DwcaTypesExport.fileName, null),
       VERNACULAR(DwcaVernacularExport.fileName, null),
+      REPORT("_exportReport.txt", null),
 
 
 //    SCIENTIFIC_NAME("ScientificName", nameColumns()),
@@ -76,7 +77,7 @@ public enum DwcaTaxOutputFile {
 
 // ************** CONSTRUCTOR *******************/
 
-    private DwcaTaxOutputFile(String tableName, TermUri[] columnNames){
+    private DwcaTaxExportFile(String tableName, TermUri[] columnNames){
         this.tableName = tableName;
         this.columnNames = columnNames;
     }

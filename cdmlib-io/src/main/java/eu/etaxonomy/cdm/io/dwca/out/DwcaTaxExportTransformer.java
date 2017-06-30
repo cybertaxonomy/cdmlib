@@ -32,7 +32,6 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 
     private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformer.class);
 
-//	private static Map<UUID, String> nomStatusMap = new HashMap<UUID, String>();
 	private static TermMapping nomStatusMapping;
 	private static TermMapping rankMapping;
 	private static TermMapping specimenTypeMapping;
@@ -42,11 +41,6 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 	private static TermMapping occStatusMapping;
 	private static TermMapping establishmentMeansMapping;
 
-
-//	public static String transformToGbifTaxonomicStatus(){
-//		//TODO
-//		return null;
-//	}
 
 	public static String transformToGbifNomStatus(NomenclaturalStatusType nomStatus){
 		if ( nomStatus == null){

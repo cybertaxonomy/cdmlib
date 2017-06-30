@@ -81,7 +81,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         }
 
         //metadata
-        byte[] metadata = data.get(DwcaTaxOutputFile.METADATA.getTableName());
+        byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
         Assert.assertNotNull("Metadata must not be null", metadata);
         String metaDataStr = new String(metadata);
         String metaHeader = "<?xml version=\"1.0\" ?><archive xmlns=\"http://rs.tdwg.org/dwc/text/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd\"></archive>";
@@ -94,15 +94,15 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertFalse(metaDataStr.contains(metaCore));
 
         //core
-        byte[] core = data.get(DwcaTaxOutputFile.TAXON.getTableName());
+        byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
         Assert.assertNull("Core must not exist", core);
 
         //reference
-        byte[] ref = data.get(DwcaTaxOutputFile.REFERENCE.getTableName());
+        byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNull("Reference must not exist", ref);
 
         //distribution
-        byte[] distribution = data.get(DwcaTaxOutputFile.DISTRIBUTION.getTableName());
+        byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
         Assert.assertNull("Distribution must not exist", distribution);
     }
 
@@ -126,12 +126,12 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
             System.out.println(key + ": " + new String(byt) );
         }
         //metadata
-        byte[] metadata = data.get(DwcaTaxOutputFile.METADATA.getTableName());
+        byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
         Assert.assertNotNull("Metadata must not be null", metadata);
         //further tests in fullData
 
         //core
-        byte[] core = data.get(DwcaTaxOutputFile.TAXON.getTableName());
+        byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
         Assert.assertNotNull("Core must not be null", core);
         String coreStr = new String(core);
 //        String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\"";
@@ -157,11 +157,11 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(coreStr.contains(expected));
 
         //distribution
-        byte[] distribution = data.get(DwcaTaxOutputFile.DISTRIBUTION.getTableName());
+        byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
         Assert.assertNull("Distribution must not exist", distribution);
 
         //reference
-        byte[] ref = data.get(DwcaTaxOutputFile.REFERENCE.getTableName());
+        byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
@@ -188,7 +188,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         }
         System.out.println();
         //metadata
-        byte[] metadata = data.get(DwcaTaxOutputFile.METADATA.getTableName());
+        byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
         Assert.assertNotNull("Metadata must not be null", metadata);
         String metaDataStr = new String(metadata);
         String metaHeader = "<?xml version=\"1.0\" ?><archive xmlns=\"http://rs.tdwg.org/dwc/text/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd\">";
@@ -211,7 +211,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(metaDataStr.contains(metaCore));
 
         //core
-        byte[] core = data.get(DwcaTaxOutputFile.TAXON.getTableName());
+        byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
         Assert.assertNotNull("Core must not be null", core);
         String coreStr = new String(core);
         String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",,\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\"";
@@ -219,7 +219,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
 
         //reference
-        byte[] ref = data.get(DwcaTaxOutputFile.REFERENCE.getTableName());
+        byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
@@ -228,7 +228,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(refStr.contains(expected));
 
         //distribution
-        byte[] distribution = data.get(DwcaTaxOutputFile.DISTRIBUTION.getTableName());
+        byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
         Assert.assertNotNull("Distribution must not be null", distribution);
         String distributionStr = new String(distribution);
         expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"c204c529-d8d2-458f-b939-96f0ebd2cbe8\",\"Africa\",,,\"present\",,\"uncertain\",,,,,,";

@@ -41,20 +41,20 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 	private boolean isZip = false;
 	private ZipWriter zipWriter;
 	private List<TaxonNode>  allNodes = new ArrayList<>();
-	private Map<DwcaTaxOutputFile, PrintWriter> writerMap = new HashMap<>();
+	private Map<DwcaTaxExportFile, PrintWriter> writerMap = new HashMap<>();
 
 
-    protected Map<DwcaTaxOutputFile,Set<Integer>> existingRecordIds = new HashMap<>();
+    protected Map<DwcaTaxExportFile,Set<Integer>> existingRecordIds = new HashMap<>();
     protected Set<UUID> existingRecordUuids = new HashSet<>();
 
-    protected boolean recordExists(DwcaTaxOutputFile file, CdmBase cdmBase) {
+    protected boolean recordExists(DwcaTaxExportFile file, CdmBase cdmBase) {
         if (existingRecordIds.get(file) == null){
             return false;
         }else{
             return existingRecordIds.get(file).contains(cdmBase.getId());
         }
     }
-    protected void addExistingRecord(DwcaTaxOutputFile file, CdmBase cdmBase) {
+    protected void addExistingRecord(DwcaTaxExportFile file, CdmBase cdmBase) {
         Set<Integer> set = existingRecordIds.get(file);
         if (set == null){
             set = new HashSet<>();
@@ -134,11 +134,11 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
         return processor;
     }
 
-    public PrintWriter getWriter(DwcaTaxOutputFile file){
+    public PrintWriter getWriter(DwcaTaxExportFile file){
         return this.writerMap.get(file);
     }
 
-    public PrintWriter putWriter(DwcaTaxOutputFile file, PrintWriter writer){
+    public PrintWriter putWriter(DwcaTaxExportFile file, PrintWriter writer){
         return this.writerMap.put(file, writer);
     }
 

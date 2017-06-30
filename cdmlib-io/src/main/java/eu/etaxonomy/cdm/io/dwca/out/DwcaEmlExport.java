@@ -80,7 +80,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 
 		XMLStreamWriter writer = null;
 		try {
-			writer = createXmlStreamWriter(state, DwcaTaxOutputFile.EML);
+			writer = createXmlStreamWriter(state, DwcaTaxExportFile.EML);
 
 			String rootName = "eml";
 

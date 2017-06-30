@@ -55,19 +55,19 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	private InstitutionalMembership resourceCreator;
 	private InstitutionalMembership metaDataAuthor;
 	private InstitutionalMembership contact;
-	private List<InstitutionalMembership> authors = new ArrayList<InstitutionalMembership>();
+	private List<InstitutionalMembership> authors = new ArrayList<>();
 
 //	Keywords / Coverage
 	private String regionalScope;
-	private List<String> keywords = new ArrayList<String>();
+	private List<String> keywords = new ArrayList<>();
 	private String keywordThesaurus; //maybe a URI
 	private TimePeriod date;
-	private List<String> taxonomicKeywords = new ArrayList<String>();
+	private List<String> taxonomicKeywords = new ArrayList<>();
 
 	private Point upperLeftCorner;
 	private Point lowerRightCorner;
 
-	private List<Reference> references = new ArrayList<Reference>();
+	private List<Reference> references = new ArrayList<>();
 
 
 	@Override
@@ -227,7 +227,7 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 
 
 	public List<InstitutionalMembership> getAuthors() {
-		return authors != null ? authors : new ArrayList<InstitutionalMembership>();
+		return authors != null ? authors : new ArrayList<>();
 	}
 
 	public void setAuthors(List<InstitutionalMembership> authors) {
@@ -243,7 +243,7 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	}
 
 	public List<String> getKeywords() {
-		return keywords != null ? keywords : new ArrayList<String>();
+		return keywords != null ? keywords : new ArrayList<>();
 	}
 
 	public void setKeywords(List<String> keywords) {
@@ -267,7 +267,7 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	}
 
 	public List<String> getTaxonomicKeywords() {
-		return taxonomicKeywords != null ? taxonomicKeywords : new ArrayList<String>();
+		return taxonomicKeywords != null ? taxonomicKeywords : new ArrayList<>();
 	}
 
 	public void setTaxonomicKeywords(List<String> taxonomicKeywords) {
@@ -291,12 +291,10 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	}
 
 	public List<Reference> getReferences() {
-		return references != null ? references : new ArrayList<Reference>();
+		return references != null ? references : new ArrayList<>();
 	}
 
 	public void setReferences(List<Reference> references) {
 		this.references = references;
 	}
-
-
 }

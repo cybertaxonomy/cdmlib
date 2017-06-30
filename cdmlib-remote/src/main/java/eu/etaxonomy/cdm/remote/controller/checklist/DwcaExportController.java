@@ -73,6 +73,7 @@ public class DwcaExportController extends AbstractController implements Resource
 
     private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String []{
             "taxon.name",
+            "classification"
             });
 
     @Autowired
@@ -322,9 +323,11 @@ public class DwcaExportController extends AbstractController implements Resource
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(
                 null, cacheFile, emlRecord);
 
-        Set<UUID> subtreeSet = new HashSet<>(subtreeUuids);
+        if (subtreeUuids != null){
+            Set<UUID> subtreeSet = new HashSet<>(subtreeUuids);
+            config.setSubtreeUuids(subtreeSet);
+        }
         config.setProgressMonitor(progressMonitor);
-        config.setSubtreeUuids(subtreeSet);
 
 //        config.setHasHeaderLines(true);
 //        config.setFieldsTerminatedBy("\t");
@@ -389,8 +392,10 @@ public class DwcaExportController extends AbstractController implements Resource
 
     private String uuidListToString(UuidList uuidList, Integer truncate) {
         String result = null;
-        for (UUID uuid : uuidList){
-            result = CdmUtils.concat("_", uuid.toString());
+        if (uuidList != null){
+            for (UUID uuid : uuidList){
+                result = CdmUtils.concat("_", uuid.toString());
+            }
         }
         if (result != null && result.length() > truncate){
             result = result.substring(0, truncate);

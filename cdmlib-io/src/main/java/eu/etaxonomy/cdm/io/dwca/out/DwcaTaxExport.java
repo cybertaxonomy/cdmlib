@@ -37,7 +37,7 @@ public class DwcaTaxExport extends DwcaDataExportBase {
 	public DwcaTaxExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-        file = DwcaTaxOutputFile.TAXON;
+        file = DwcaTaxExportFile.TAXON;
 	}
 
 	/**
@@ -89,6 +89,7 @@ public class DwcaTaxExport extends DwcaDataExportBase {
 			distributionExport.closeWriter(state);
 			imageExport.closeWriter(state);
 		}
+
 		commitTransaction(txStatus);
 		return;
 
@@ -97,7 +98,6 @@ public class DwcaTaxExport extends DwcaDataExportBase {
     @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
-
     }
 
 	@Override

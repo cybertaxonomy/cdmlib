@@ -60,7 +60,7 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 		this.ioName = this.getClass().getSimpleName();
 	    metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 	    state.addMetaRecord(metaRecord);
-        file = DwcaTaxOutputFile.RESOURCE_RELATION;
+        file = DwcaTaxExportFile.RESOURCE_RELATION;
 	}
 
     @Override

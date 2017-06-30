@@ -46,7 +46,7 @@ public class DwcaReferenceExport extends DwcaDataExportBase {
 		this.ioName = this.getClass().getSimpleName();
 		metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
         state.addMetaRecord(metaRecord);
-        file = DwcaTaxOutputFile.REFERENCE;
+        file = DwcaTaxExportFile.REFERENCE;
 	}
 
 	@Override

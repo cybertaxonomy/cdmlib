@@ -57,7 +57,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
 		XMLStreamWriter writer = null;
 		try {
-			writer = createXmlStreamWriter(state, DwcaTaxOutputFile.METADATA);
+			writer = createXmlStreamWriter(state, DwcaTaxExportFile.METADATA);
 
 			String rootNamespace = "http://rs.tdwg.org/dwc/text/";
 			String rootName = "archive";

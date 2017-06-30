@@ -43,7 +43,7 @@ public abstract class DwcaExportBase
 
     protected static final boolean IS_CORE = true;
 
-    protected DwcaTaxOutputFile file;
+    protected DwcaTaxExportFile file;
 
 
     /**
@@ -72,7 +72,7 @@ public abstract class DwcaExportBase
      * @throws FileNotFoundException
      * @throws XMLStreamException
      */
-    protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, DwcaTaxOutputFile table)
+    protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, DwcaTaxExportFile table)
             throws IOException, FileNotFoundException, XMLStreamException {
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -99,7 +99,7 @@ public abstract class DwcaExportBase
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    protected PrintWriter createPrintWriter(DwcaTaxExportState state, DwcaTaxOutputFile file)
+    protected PrintWriter createPrintWriter(DwcaTaxExportState state, DwcaTaxExportFile file)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
         PrintWriter writer = state.getWriter(file);
@@ -125,7 +125,7 @@ public abstract class DwcaExportBase
     /**
      * flushes the writer for the according file if exists.
      */
-    protected void flushWriter(DwcaTaxExportState state, DwcaTaxOutputFile file) {
+    protected void flushWriter(DwcaTaxExportState state, DwcaTaxExportFile file) {
         PrintWriter writer = state.getWriter(file);
         if (writer != null){
             writer.flush();

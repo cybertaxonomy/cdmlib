@@ -30,9 +30,8 @@ public class DwcaResultProcessor {
 
     private static final String HEADER = "HEADER_207dd23a-f877-4c27-b93a-8dbea3234281";
 
-//    private Map<DwcaTaxOutputTable, Map<String,String[]>> resultAlt = new HashMap<>();
     private DwcaTaxExportState state;
-    private Map<DwcaTaxOutputFile, Object> result = new HashMap<>();
+    private Map<DwcaTaxExportFile, Object> inMemoryResult = new HashMap<>();
 
 
     /**
@@ -43,10 +42,10 @@ public class DwcaResultProcessor {
         this.state = state;
     }
 
-    public void put(DwcaTaxOutputFile table, ByteArrayOutputStream stream) {
-        Object tableResult = result.get(table);
+    public void put(DwcaTaxExportFile table, ByteArrayOutputStream stream) {
+        Object tableResult = inMemoryResult.get(table);
         if (tableResult == null){
-            result.put(table, stream);
+            inMemoryResult.put(table, stream);
         }else if (tableResult instanceof ByteArrayOutputStream){
             throw new RuntimeException("table stream already exists for table "+  table.getTableName());
         }else {
@@ -60,8 +59,8 @@ public class DwcaResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(DwcaTaxOutputFile table, String id, String[] csvLine) {
-        Object tableResult = result.get(table);
+    public void put(DwcaTaxExportFile table, String id, String[] csvLine) {
+        Object tableResult = inMemoryResult.get(table);
         if (tableResult instanceof ByteArrayOutputStream){
             addRecordToStream((ByteArrayOutputStream)tableResult, id, csvLine);
         }else if (tableResult == null || tableResult instanceof Map){
@@ -72,7 +71,7 @@ public class DwcaResultProcessor {
                 if (state.getConfig().isHasHeaderLines()){
                     resultMap.put(HEADER, table.getColumnNamesString());
                 }
-                result.put(table, resultMap);
+                inMemoryResult.put(table, resultMap);
             }
             String[] record = resultMap.get(id);
             if (record == null){
@@ -101,8 +100,8 @@ public class DwcaResultProcessor {
         throw new RuntimeException("add record to stream not yet supported");
     }
 
-    public boolean hasRecord(DwcaTaxOutputFile table, String id){
-        Object tableResult = result.get(table);
+    public boolean hasRecord(DwcaTaxExportFile table, String id){
+        Object tableResult = inMemoryResult.get(table);
         if (tableResult == null){
             return false;
         }else if (tableResult instanceof ByteArrayOutputStream){
@@ -122,7 +121,7 @@ public class DwcaResultProcessor {
      * @param taxon
      * @param csvLine
      */
-    public void put(DwcaTaxOutputFile table, ICdmBase cdmBase, String[] csvLine) {
+    public void put(DwcaTaxExportFile table, ICdmBase cdmBase, String[] csvLine) {
        this.put(table, String.valueOf(cdmBase.getId()), csvLine);
     }
 
@@ -133,49 +132,57 @@ public class DwcaResultProcessor {
     public void createFinalResult() {
         ExportResult finalResult = state.getResult();
 
-        if (!result.isEmpty() ){
-            for (DwcaTaxOutputFile table: result.keySet()){
-                //write each table in a stream ...
-                Object tableResult = result.get(table);
-                ByteArrayOutputStream exportStream;
-
-                if (tableResult instanceof ByteArrayOutputStream){
-                    exportStream = (ByteArrayOutputStream)tableResult;
-                }else if (tableResult instanceof Map){
-                    @SuppressWarnings("unchecked")
-                    Map<String, String[]> tableData = (Map<String, String[]>)tableResult;
-                    DwcaTaxExportConfigurator config = state.getConfig();
-                    exportStream = new ByteArrayOutputStream();
-
-                    try{
-                        List<String> data = new ArrayList<>();
-                        String[] csvHeaderLine = tableData.get(HEADER);
-                        String lineString = createCsvLine(config, csvHeaderLine);
-                        lineString = lineString + "";
-                        data.add(lineString);
-                        for (String key: tableData.keySet()){
-                            if (!key.equals(HEADER)){
-                                String[] csvLine = tableData.get(key);
-
-                                lineString = createCsvLine(config, csvLine);
-                                data.add(lineString);
-                            }
-                        }
-                        IOUtils.writeLines(data,
-                                null,exportStream,
-                                Charset.forName("UTF-8"));
-                    } catch(Exception e){
-                        finalResult.addException(e, e.getMessage());
-                    }
-                }else{
-                    throw new IllegalStateException("Illegal result for result table. Map or stream expected but was " + tableResult.getClass().getName());
-                }
-
-                finalResult.putExportData(table.getTableName(), exportStream.toByteArray());
-            }
+        if (!inMemoryResult.isEmpty() ){
+            createData(finalResult);
         }
-        result.clear();
+        inMemoryResult.clear();
 
+    }
+
+    /**
+     * @param finalResult
+     */
+    protected void createData(ExportResult finalResult) {
+        for (DwcaTaxExportFile table: inMemoryResult.keySet()){
+            //write each table in a stream ...
+            Object tableResult = inMemoryResult.get(table);
+            ByteArrayOutputStream exportStream;
+
+            if (tableResult instanceof ByteArrayOutputStream){
+                exportStream = (ByteArrayOutputStream)tableResult;
+            }else if (tableResult instanceof Map){
+                //TODO is this used at all
+                @SuppressWarnings("unchecked")
+                Map<String, String[]> tableData = (Map<String, String[]>)tableResult;
+                DwcaTaxExportConfigurator config = state.getConfig();
+                exportStream = new ByteArrayOutputStream();
+
+                try{
+                    List<String> data = new ArrayList<>();
+                    String[] csvHeaderLine = tableData.get(HEADER);
+                    String lineString = createCsvLine(config, csvHeaderLine);
+                    lineString = lineString + "";
+                    data.add(lineString);
+                    for (String key: tableData.keySet()){
+                        if (!key.equals(HEADER)){
+                            String[] csvLine = tableData.get(key);
+
+                            lineString = createCsvLine(config, csvLine);
+                            data.add(lineString);
+                        }
+                    }
+                    IOUtils.writeLines(data,
+                            null,exportStream,
+                            Charset.forName("UTF-8"));
+                } catch(Exception e){
+                    finalResult.addException(e, e.getMessage());
+                }
+            }else{
+                throw new IllegalStateException("Illegal result for result table. Map or stream expected but was " + tableResult.getClass().getName());
+            }
+
+            finalResult.putExportData(table.getTableName(), exportStream.toByteArray());
+        }
     }
 
 
