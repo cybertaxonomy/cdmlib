@@ -188,7 +188,7 @@ public class CdmUpdater {
                         "this table by the update script one may encounter 'unique identifier' " +
                         "exceptions when trying to add further data.";
                 monitor.warning(String.format(message,table), e);
-                result.addWarning(message, "updateSingleValue(table = " + table + ")");
+                result.addWarning(message, (String)null, "table = " + table);
                 return;
             }
 

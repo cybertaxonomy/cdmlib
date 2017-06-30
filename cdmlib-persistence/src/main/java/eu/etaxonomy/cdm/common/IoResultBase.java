@@ -178,20 +178,7 @@ public abstract class IoResultBase implements Serializable{
         addErrorReport(report, "Warnings", warnings);
         return report;
     }
-//    /**
-//     * @param report
-//     * @param string
-//     * @param warnings2
-//     */
-//    private void addWarnings(StringBuffer report, String label, List<String> list) {
-//        if (!list.isEmpty()){
-//            report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
-//            for (String warning : list){
-//                String str = String.valueOf(warning);
-//                report.append("\n" + str);
-//            }
-//        }
-//    }
+
 
     /**
      * @param report
@@ -202,13 +189,14 @@ public abstract class IoResultBase implements Serializable{
         if (!list.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
             for (IoInfo ioInfo : list){
-                String location = ioInfo.codeLocation == null ? "" : (ioInfo.codeLocation + ": ");
+                String codeLocation = ioInfo.codeLocation == null ? "" : (ioInfo.codeLocation + ": ");
+                String dataLocation = ioInfo.dataLocation == null ? "" : ( "[" + ioInfo.dataLocation + "]");
                 String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
 
                 message = StringUtils.isBlank(message)? "no message" : message;
                 Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
                 String available = (stacktrace != null ? " (stacktrace available)" : "");
-                report.append("\n" + location + message + available);
+                report.append("\n" + dataLocation + message + available + codeLocation);
             }
         }
     }

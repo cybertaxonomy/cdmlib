@@ -79,7 +79,7 @@ public class TableDroper
 			String message = "Exception occurred when trying to read or update hibernate_sequences table for value " + this.tableName + ": " + e.getMessage();
 			monitor.warning(message, e);
 			logger.error(message);
-			result.addWarning(message, getStepName());
+			result.addWarning(message, (String)null, getStepName());
 			return;
 		}
 	}

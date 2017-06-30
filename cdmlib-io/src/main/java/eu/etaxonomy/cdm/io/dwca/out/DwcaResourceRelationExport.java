@@ -128,12 +128,12 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
                 if(subject == name){
                     subject = taxon;
                 }else if(object == name){
-                    object= subject;
+                    object = subject;
                     subject = taxon;
                     isInverse = true;
                 }else{
                     String message = "Both, subject and object, are not part of the relationship for " + name.getTitleCache();
-                    state.getResult().addWarning(message, "DwcaResourceRelationExport.makeSingleTaxonNode");
+                    state.getResult().addWarning(message);
                 }
 
                 if (! state.recordExistsUuid(rel)){

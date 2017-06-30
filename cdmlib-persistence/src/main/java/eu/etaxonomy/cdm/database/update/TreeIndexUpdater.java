@@ -129,7 +129,7 @@ public class TreeIndexUpdater
 			if (n > 0){
 				String message = "There are tree nodes with no tree index in %s. This indicates that there is a problem in the tree structure of 1 or more classifications.";
 				logger.error(String.format(message, tableName));
-				result.addWarning(message, getStepName() + ", TreeIndexUpdater.invokeOnTable");
+				result.addWarning(message, (String)null, getStepName());
 			}
 
 			return;

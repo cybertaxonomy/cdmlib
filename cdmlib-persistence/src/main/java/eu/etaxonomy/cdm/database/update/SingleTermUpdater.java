@@ -89,7 +89,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		if (n != 0){
 		    String message ="Term already exists: " + label + "(" + uuidTerm + ")";
 			monitor.warning(message);
-			result.addWarning(message, getStepName() + ", SingleTermUpdater.invoke");
+			result.addWarning(message, (String)null, getStepName());
 			return;
 		}
 
@@ -151,7 +151,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		Integer langId = getLanguageId(uuidLanguage, datasource, monitor, caseType);
 		if (langId == null){
 			String message = "LangId is null";
-			result.addWarning(message, "SingleTermUpdater.invoke");
+			result.addWarning(message);
 		    return;
 		}
 

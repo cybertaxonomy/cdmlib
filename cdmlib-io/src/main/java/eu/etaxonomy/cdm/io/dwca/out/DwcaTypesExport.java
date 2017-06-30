@@ -223,7 +223,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		Set<DeterminationEvent> detEvents = facade.getDeterminations();
 		for (DeterminationEvent detEvent : detEvents){
 			if (detEvent.getPreferredFlag()== true || detEvents.size()==1){
-				return detEvent.getTaxon().getName();
+				return detEvent.getTaxon() == null ? null : detEvent.getTaxon().getName();
 			}
 		}
 		return null;

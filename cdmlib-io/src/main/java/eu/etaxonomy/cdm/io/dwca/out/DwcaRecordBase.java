@@ -63,7 +63,7 @@ public abstract class DwcaRecordBase {
 
 	public abstract void write(DwcaTaxExportState state, PrintWriter writer);
 	public void writeCsv(DwcaTaxExportState state){
-	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!", getClass().getName() + ".writeCsv");
+	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!");
 	}
 
 

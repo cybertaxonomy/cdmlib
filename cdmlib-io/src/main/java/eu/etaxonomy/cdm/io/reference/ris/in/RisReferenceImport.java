@@ -191,7 +191,7 @@ public class RisReferenceImport
                 ref.setDoi(doi);
             } catch (IllegalArgumentException e) {
                 String message = "DOI could not be recognized: " + doiVal.value;
-                state.getResult().addWarning(message, doiVal.location);
+                state.getResult().addWarning(message, null, doiVal.location);
             }
         }
 
@@ -205,7 +205,7 @@ public class RisReferenceImport
                 ref.setUri(uri);
             } catch (Exception e) {
                 String message = "URL could not be recognized: " + ur.value;
-                state.getResult().addWarning(message, ur.location);
+                state.getResult().addWarning(message, null, ur.location);
             }
         }
 
@@ -305,7 +305,7 @@ public class RisReferenceImport
     private void assertDateYear(RisReferenceImportState state, Integer year, TimePeriod date, RisValue py) {
         if (year != null && date != null && !year.equals(date.getStartYear())){
             String message = "Year 'PY' and date 'DA' are not consistent. PY is neglected.";
-            state.getResult().addWarning(message, py.location);
+            state.getResult().addWarning(message, null, py.location);
         }
     }
 
@@ -314,7 +314,7 @@ public class RisReferenceImport
             String message = "The tags '%s' and '%s' are not equal but have a similar meaning ('%s'). "
                     + "%s was used and %s neglected";
             message = String.format(message, val1.tag.name(), val2.tag.name(), meaning , val1.tag.name(), val2.tag.name());
-            state.getResult().addWarning(message, val1.location);
+            state.getResult().addWarning(message, null, val1.location);
         }
         return val1 != null ? val1 : val2;
     }
@@ -331,7 +331,7 @@ public class RisReferenceImport
         if (! da.value.matches("([0-9]{4})?(\\/([0-9]{2})?(\\/([0-9]{2})?(\\/.*)?)?)?")){
             String message = "Tag '%s' has incorrect format. Only exactly 'dddd/dd/dd/any text' is allowed (where d is a digit), but was '%s'";
             message = String.format(message, da.tag.name(), da.value);
-            state.getResult().addWarning(message, da.location);
+            state.getResult().addWarning(message, null, da.location);
             return null;
         }
         String[] split = da.value.split("/");
@@ -367,7 +367,7 @@ public class RisReferenceImport
         }else{
             String message = "Tag '%s' has incorrect format. Only exactly 4 digits are allowed, but was '%s'";
             message = String.format(message, py.tag.name(), py.value);
-            state.getResult().addWarning(message, py.location);
+            state.getResult().addWarning(message, null, py.location);
             return null;
         }
     }
@@ -462,7 +462,7 @@ public class RisReferenceImport
             String message = "There is more than 1 tag '%s' but only 1 tag is supported by RIS format or"
                     + " by the current import implementation.";
             message = String.format(message, tag.name());
-            state.getResult().addWarning(message, list.get(0).location + "ff");
+            state.getResult().addWarning(message, null, list.get(0).location + "ff");
         }else if (list.isEmpty()){
             state.getResult().addError("A tag list was empty. This should not happen and is a programming code error");
         }
