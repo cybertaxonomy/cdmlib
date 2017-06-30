@@ -1,7 +1,7 @@
 /**
- * 
+ *
  */
-package eu.etaxonomy.cdm.persistence.dao.taxon.tmp;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,9 +9,11 @@ import java.util.UUID;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.filter.LogicFilter;
+import eu.etaxonomy.cdm.filter.LogicFilter.Op;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.taxon.tmp.LogicFilter.Op;
 
 /**
  * Preliminary implementation for testing filtered taxa
@@ -20,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.tmp.LogicFilter.Op;
  */
 @Repository
 public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode> {
-	
+
 	public TaxonNodeFilterDaoHibernateImpl() {
 		super(TaxonNode.class);
 	}
@@ -31,18 +33,18 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 		String select = " SELECT m.uuid ";
 		String from = "FROM TaxonNode m ";
 		String nodeCondition = getNodeFilter(filter);
-		
-		
-		String fullQuery = select + from + " WHERE " + nodeCondition; 
+
+
+		String fullQuery = select + from + " WHERE " + nodeCondition;
 		System.out.println(fullQuery);
 		Query query = getSession().createQuery(fullQuery);
 		List<UUID> list = castToUuidList(query.list());
 		return list;
 	}
-	
-	
-	
-	
+
+
+
+
 	private String getNodeFilter(TaxonNodeFilter filter) {
 		String result = "";
 		List<LogicFilter<TaxonNode>> nodesFilter = filter.getTaxonNodesFilter();
@@ -56,8 +58,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 		}
 		return result;
 	}
-	
-	
+
+
 	private String op2Hql(Op op){
 		return op == Op.NOT ? " AND NOT " : op.toString();
 	}
@@ -68,7 +70,7 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 //		String r = String.format(" main.treeIndex like '%s%%'", "aa");
 //		System.out.println(r);
 //	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	private List<UUID> castToUuidList(List<?> queryList){
