@@ -39,6 +39,8 @@ public class TaxonNodeFilter {
 
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
 
+    private boolean includeRootNodes = false;
+
     //********************** FACTORY ***************************/
 
     public static TaxonNodeFilter NewTaxonNodeInstance(UUID taxonNodeUuid){
@@ -242,6 +244,14 @@ public class TaxonNodeFilter {
     public TaxonNodeFilter set(NamedArea area){
         resetArea();
         areaFilter.add( new LogicFilter<>(area, Op.AND));
+        return this;
+    }
+
+    public boolean isIncludeRootNodes() {
+        return includeRootNodes;
+    }
+    public TaxonNodeFilter setIncludeRootNodes(boolean includeRootNodes) {
+        this.includeRootNodes = includeRootNodes;
         return this;
     }
 

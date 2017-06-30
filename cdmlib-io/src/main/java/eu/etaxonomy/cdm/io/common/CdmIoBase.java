@@ -111,7 +111,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     protected abstract RESULT getDefaultResult(STATE state);
 
 
-    public int countSteps(@SuppressWarnings("unused") STATE state){
+    public long countSteps(@SuppressWarnings("unused") STATE state){
         return 1;
     }
 

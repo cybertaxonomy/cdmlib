@@ -63,10 +63,9 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
      * {@inheritDoc}
      */
     @Override
-    public int countSteps(DwcaTaxExportState state) {
-        //FIXME count without initialization
-        List<TaxonNode> allNodes =  allNodes(state);
-        return allNodes.size();
+    public long countSteps(DwcaTaxExportState state) {
+        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
+        return taxonNodeService.count(filter);
     }
 
     /**
@@ -85,18 +84,6 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
         TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
 
         List<UUID> listUuid = taxonNodeService.uuidList(filter);
-
-//        Set<UUID> subtreeUuidSet = state.getConfig().getTaxonNodeFilter();
-//        if (subtreeUuidSet == null){
-//            subtreeUuidSet = new HashSet<>();
-//        }
-//        //handle empty list as no filter defined
-//        if (subtreeUuidSet.isEmpty()){
-//            List<Classification> classificationList = getClassificationService().list(Classification.class, null, 0, null, null);
-//            for (Classification classification : classificationList){
-//                subtreeUuidSet.add(classification.getRootNode().getUuid());
-//            }
-//        }
 
         //TODO memory critical to store ALL node
         if (state.getAllNodes().isEmpty()){

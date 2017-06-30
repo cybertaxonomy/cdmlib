@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -35,7 +36,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private IClassificationDao classificationDao;
 
     @SpringBeanByType
-    private TaxonNodeFilterDaoHibernateImpl filterDao;
+    private ITaxonNodeFilterDao filterDao;
 
 
     private Classification classification1;
@@ -97,11 +98,13 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertFalse(listUuid.contains(node2.getUuid()));
         Assert.assertFalse(listUuid.contains(classification.getRootNode().getUuid()));
 
-
         filter = new TaxonNodeFilter(classification.getRootNode());
         listUuid = filterDao.listUuids(filter);
-        //FIXME still unclear if (empty) root node should be part of the result
-        Assert.assertEquals("All 6 children should be returned", 6, listUuid.size());
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+
+        filter.setIncludeRootNodes(true);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 6 children including root node should be returned", 6, listUuid.size());
 
         filter = new TaxonNodeFilter(node3);
         listUuid = filterDao.listUuids(filter);
@@ -138,12 +141,15 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         filter = new TaxonNodeFilter(classification);
         listUuid = filterDao.listUuids(filter);
-        //FIXME still unclear if (empty) root node should be part of the result
-        Assert.assertEquals("All 6 children should be returned", 6, listUuid.size());
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        filter = TaxonNodeFilter.NewClassificationInstance(classification.getUuid());
+        filter.setIncludeRootNodes(true);
         listUuid = filterDao.listUuids(filter);
-        //FIXME still unclear if (empty) root node should be part of the result
+        Assert.assertEquals("All 6 children including root node should be returned", 6, listUuid.size());
+
+        filter = TaxonNodeFilter.NewClassificationInstance(classification.getUuid())
+                .setIncludeRootNodes(true);
+        listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 6 children should be returned", 6, listUuid.size());
 
         filter = TaxonNodeFilter.NewClassificationInstance(taxon1.getUuid());
@@ -218,6 +224,23 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         filter.orTaxonNode(node3.getUuid());
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("1 node should remain", 1, listUuid.size());
+
+    }
+
+    @Test
+    public void testCountBySubtree() {
+        Classification classification = classificationDao.findByUuid(classification1.getUuid());
+        TaxonNodeFilter filter = new TaxonNodeFilter(node1);
+        long n = filterDao.count(filter);
+        Assert.assertEquals("All 4 children should be returned", 4, n);
+
+        filter = new TaxonNodeFilter(classification.getRootNode());
+        n = filterDao.count(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, n);
+
+        filter.setIncludeRootNodes(true);
+        n = filterDao.count(filter);
+        Assert.assertEquals("All 6 children including root node should be returned", 6, n);
 
     }
 

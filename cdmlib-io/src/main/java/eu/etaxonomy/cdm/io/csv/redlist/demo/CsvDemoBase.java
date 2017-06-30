@@ -65,7 +65,7 @@ public abstract class CsvDemoBase
 
 
 	@Override
-	public int countSteps(CsvDemoExportState state) {
+	public long countSteps(CsvDemoExportState state) {
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 		return allNodes.size();
 	}
@@ -87,7 +87,7 @@ public abstract class CsvDemoBase
 		}
 
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
-		List<TaxonNode> result = new ArrayList<TaxonNode>();
+		List<TaxonNode> result = new ArrayList<>();
 		for (TaxonNode node : allNodes){
 			if (node.getClassification() == null ){
 				continue;
