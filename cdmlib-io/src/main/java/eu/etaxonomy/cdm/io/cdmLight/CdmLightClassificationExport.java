@@ -591,6 +591,9 @@ public class CdmLightClassificationExport
      * @param name
      */
     private void handleName(CdmLightExportState state, TaxonName name) {
+        if (name == null){
+            return;
+        }
         try {
             Rank rank = name.getRank();
             CdmLightExportTable table = CdmLightExportTable.SCIENTIFIC_NAME;
