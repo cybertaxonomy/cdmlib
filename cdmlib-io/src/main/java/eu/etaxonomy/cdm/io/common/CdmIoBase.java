@@ -111,7 +111,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     protected abstract RESULT getDefaultResult(STATE state);
 
 
-    public long countSteps(@SuppressWarnings("unused") STATE state){
+    @Override
+    public long countSteps(STATE state){
         return 1;
     }
 
@@ -242,10 +243,12 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
     @Override
     public void updateProgress(STATE state, String message, int worked) {
-        IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
-        if(progressMonitor != null){
-            progressMonitor.worked(worked);
-            progressMonitor.subTask(message);
+        if (state.getCurrentMonitor() == null){
+            IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
+            if(progressMonitor != null){
+                progressMonitor.worked(worked);
+                progressMonitor.subTask(message);
+            }
         }
     }
 

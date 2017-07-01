@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 
 /**
@@ -46,14 +45,16 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean doTypesAndSpecimen = true;
 	private boolean doVernacularNames = true;
 	private boolean doReferences = true;
-	private boolean doDescription = true;
+	private boolean doDescriptions = true;
 	private boolean doDistributions = true;
 	private boolean doImages = true;
 	private boolean doMetaData = true;
 	private boolean doEml = true;
 
-	private boolean isUseIdWherePossible = false;
+	private boolean doSynonyms = true;
+	private boolean doMisappliedNames = true;
 
+	private boolean isUseIdWherePossible = false;
 
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
@@ -101,6 +102,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	    super(destination, source, defaultTransformer);
 		this.resultType = ExportResultType.MAP_BYTE_ARRAY;
 	    this.emlRecord = emlRecord;
+	    this.setDestination(destination);
+	    this.setSource(source);
 	}
 
 	@Override
@@ -292,55 +295,45 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isWithHigherClassification() {
 		return withHigherClassification;
 	}
-
-
 	public void setWithHigherClassification(boolean withHigherClassification) {
 		this.withHigherClassification = withHigherClassification;
 	}
 
-	/**
-	 * @return the setSeparator
-	 */
 	public String getSetSeparator() {
 		return setSeparator;
 	}
-
-
-	/**
-	 * @param setSeparator the setSeparator to set
-	 */
 	public void setSetSeparator(String setSeparator) {
 		this.setSeparator = setSeparator;
 	}
 
-
 	public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
 		this.fieldsTerminatedBy = fieldsTerminatedBy;
 	}
-
-
 	public String getFieldsTerminatedBy() {
 		return fieldsTerminatedBy;
 	}
-//
-//	public Set<UUID> getSubtreeUuids() {
-//		return subtreeUuids;
-//	}
-//
-//
-//	public void setSubtreeUuids(Set<UUID> subtreeUuids) {
-//		this.subtreeUuids = subtreeUuids;
-//	}
-
 
 	public TaxonNodeFilter getTaxonNodeFilter() {
 	    return taxonNodeFilter;
 	}
-
-
 	public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
 	    this.taxonNodeFilter = taxonNodeFilter;
 	}
+
+
+    public boolean isDoSynonyms() {
+        return doSynonyms;
+    }
+    public void setDoSynonyms(boolean doSynonyms) {
+        this.doSynonyms = doSynonyms;
+    }
+
+    public boolean isDoMisappliedNames() {
+        return doMisappliedNames;
+    }
+    public void setDoMisappliedNames(boolean doMisappliedNames) {
+        this.doMisappliedNames = doMisappliedNames;
+    }
 
 
 }

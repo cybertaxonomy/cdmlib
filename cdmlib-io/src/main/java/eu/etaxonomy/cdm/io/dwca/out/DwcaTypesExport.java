@@ -286,7 +286,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	}
 
 	@Override
-	protected boolean isIgnore(DwcaTaxExportState state) {
+	public boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTypesAndSpecimen();
 	}
 }

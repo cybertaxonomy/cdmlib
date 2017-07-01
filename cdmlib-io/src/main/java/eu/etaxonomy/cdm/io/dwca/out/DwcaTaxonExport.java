@@ -86,10 +86,15 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 
             //synonyms
-            handleSynonyms(state, taxon, file, classification, metaRecord);
+            if (state.getConfig().isDoSynonyms()){
+                handleSynonyms(state, taxon, file, classification, metaRecord);
+            }
 
             //misapplied names
-            handleMisapplication(state, taxon, file, classification, metaRecord);
+            if (state.getConfig().isDoMisappliedNames()){
+                handleMisapplication(state, taxon, file, classification, metaRecord);
+            }
+
         } catch (Exception e) {
             String message = "Unexpected exception: " + e.getMessage();
             state.getResult().addException(e, message);
@@ -388,7 +393,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 
 	@Override
-	protected boolean isIgnore(DwcaTaxExportState state) {
+	public boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTaxa();
 	}
 

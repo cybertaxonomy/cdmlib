@@ -12,12 +12,17 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -25,20 +30,30 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 @Component
-public class DwcaTaxExport extends DwcaDataExportBase {
+public class DwcaTaxExport extends DwcaExportBase {
     private static final long serialVersionUID = -3770976064909193441L;
 
     private static final Logger logger = Logger.getLogger(DwcaTaxExport.class);
 
 
-	/**
-	 *
-	 */
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
+
 	public DwcaTaxExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
         file = DwcaTaxExportFile.TAXON;
 	}
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long countSteps(DwcaTaxExportState state) {
+        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
+        return taxonNodeService.count(filter);
+    }
 
 	/**
 	 * Retrieves data from a CDM DB and serializes the CDM to XML.
@@ -50,55 +65,63 @@ public class DwcaTaxExport extends DwcaDataExportBase {
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
 
+	    IProgressMonitor monitor = state.getCurrentMonitor();
+
 		TransactionStatus txStatus = startTransaction(true);
 
-		DwcaTaxonExport taxonExport = new DwcaTaxonExport(state);
-		DwcaReferenceExport refExport = new DwcaReferenceExport(state);
-		DwcaResourceRelationExport relationExport = new DwcaResourceRelationExport(state);
-		DwcaTypesExport typesExport = new DwcaTypesExport(state);
-		DwcaVernacularExport vernacularExport = new DwcaVernacularExport(state);
-		DwcaDescriptionExport descriptionExport = new DwcaDescriptionExport(state);
-		DwcaDistributionExport distributionExport = new DwcaDistributionExport(state);
-		DwcaImageExport imageExport = new DwcaImageExport(state);
+		List<DwcaDataExportBase> exports =  Arrays.asList(new DwcaDataExportBase[]{
+		        new DwcaTaxonExport(state),
+		        new DwcaReferenceExport(state),
+		        new DwcaResourceRelationExport(state),
+		        new DwcaTypesExport(state),
+		        new DwcaVernacularExport(state),
+		        new DwcaDescriptionExport(state),
+		        new DwcaDistributionExport(state),
+		        new DwcaImageExport(state)
+		});
 
 		try {
 
 			List<TaxonNode> allNodes = allNodes(state);
 
 			for (TaxonNode node : allNodes){
-			    taxonExport.handleTaxonNode(state, node);
-				refExport.handleTaxonNode(state, node);
-				relationExport.handleTaxonNode(state, node);
-				typesExport.handleTaxonNode(state, node);
-				vernacularExport.handleTaxonNode(state, node);
-				descriptionExport.handleTaxonNode(state, node);
-				distributionExport.handleTaxonNode(state, node);
-				imageExport.handleTaxonNode(state, node);
+			    for (DwcaDataExportBase export : exports){
+			        handleTaxonNode(export, state, node);
+			    }
+			    monitor.worked(1);
 			}
 		} catch (Exception e) {
 		    String message = "Unexpected exception: " + e.getMessage();
 			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{
-		    taxonExport.closeWriter(state);
-			refExport.closeWriter(state);
-			relationExport.closeWriter(state);
-			typesExport.closeWriter(state);
-			vernacularExport.closeWriter(state);
-			descriptionExport.closeWriter(state);
-			distributionExport.closeWriter(state);
-			imageExport.closeWriter(state);
+		    for (DwcaDataExportBase export : exports){
+		        closeWriter(export, state);
+            }
 		}
 
 		commitTransaction(txStatus);
+
 		return;
 
 	}
 
-    @Override
-    protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
-            throws IOException, FileNotFoundException, UnsupportedEncodingException {
+    /**
+     * @param taxonExport
+     * @param state
+     */
+    private void closeWriter(DwcaDataExportBase export, DwcaTaxExportState state) {
+        if (!export.isIgnore(state)){
+            export.closeWriter(state);
+        }
     }
+
+    private void handleTaxonNode(DwcaDataExportBase export, DwcaTaxExportState state, TaxonNode node) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        if (!export.isIgnore(state)){
+            export.handleTaxonNode(state, node);
+        }
+    }
+
 
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
@@ -109,7 +132,7 @@ public class DwcaTaxExport extends DwcaDataExportBase {
 
 
 	@Override
-	protected boolean isIgnore(DwcaTaxExportState state) {
+	public boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTaxa();
 	}
 

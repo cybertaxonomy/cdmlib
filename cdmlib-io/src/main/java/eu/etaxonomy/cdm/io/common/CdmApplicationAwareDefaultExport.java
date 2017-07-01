@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -19,6 +21,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -208,24 +212,31 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		state.initialize(config);
 		state.setResult(result);
 
+		List<ICdmExport> ioList = makeIoList(state, config);
+
+		List<Integer> stepCounts = countSteps(state, ioList);
+		Integer totalCount = stepCounts.get(stepCounts.size()-1);
+		config.getProgressMonitor().worked(1);
+		IProgressMonitor parentMonitor = SubProgressMonitor
+		        .NewStarted(config.getProgressMonitor(), 99, "Process data", totalCount);
+
 		//do invoke for each class
-		for (Class<ICdmExport> ioClass: config.getIoClassList()){
+		for (int i = 0; i< ioList.size(); i++){
+		    ICdmExport export = ioList.get(i);
+		    Integer counts = stepCounts.get(i);
 			try {
-				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmExport cdmIo = applicationContext.getBean(ioBeanName, ICdmExport.class);
-				if (cdmIo != null){
-					state.setCurrentIO(cdmIo);
-					cdmIo.invoke(state);
-				}else{
-					String message = "cdmIO was null";
-			        logger.error(message);
-			        result.addError(message);
-			    }
+			    String ioName = export.getClass().getSimpleName();
+			    SubProgressMonitor ioMonitor = SubProgressMonitor
+			            .NewStarted(parentMonitor, counts, ioName, counts );
+			    state.setCurrentMonitor(ioMonitor);
+			    state.setCurrentIO(export);
+				export.invoke(state);
+				ioMonitor.done();
 			} catch (Exception e) {
-					String message = "Unexpected exception in " + ioClass.getSimpleName()+ ": " + e.getMessage();
-					logger.error(message);
-					e.printStackTrace();
-			        result.addException(e, message);
+				String message = "Unexpected exception in " + export.getClass().getSimpleName()+ ": " + e.getMessage();
+				logger.error(message);
+				e.printStackTrace();
+		        result.addException(e, message);
 			}
 		}
 
@@ -236,7 +247,66 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		return result;
 	}
 
-	private String getComponentBeanName(Class<ICdmExport> ioClass){
+	/**
+     * @param state
+     * @param ioList
+     * @return
+     */
+    private List<Integer> countSteps(ExportStateBase state, List<ICdmExport> ioList) {
+        //do invoke for each class
+        List<Integer> result = new ArrayList<>();
+        int sum = 0;
+        for (ICdmExport export: ioList){
+            int count = 1;
+            try {
+//                state.setCurrentIO(export);
+                count = ((Long)export.countSteps(state)).intValue();
+            } catch (Exception e) {
+                String message = "Unexpected exception when count steps for progress monitoring " + export.getClass().getSimpleName()+ ": " + e.getMessage();
+                logger.error(message);
+                e.printStackTrace();
+                state.getResult().addException(e, message);
+            }
+            result.add(count);
+            sum += count;
+        }
+        result.add(sum);
+        return result;
+    }
+
+
+    /**
+     * @param state
+     * @param config
+     * @return
+     */
+    private <CONFIG extends T>  List<ICdmExport> makeIoList(ExportStateBase state, CONFIG config) {
+
+        List<ICdmExport> result = new ArrayList<>();
+
+        for (Class<ICdmExport> ioClass: config.getIoClassList()){
+            try {
+                String ioBeanName = getComponentBeanName(ioClass);
+                ICdmExport cdmIo = applicationContext.getBean(ioBeanName, ICdmExport.class);
+                if (cdmIo != null){
+                    result.add(cdmIo);
+                }else{
+                    String message = "cdmIO was null: " + ioBeanName;
+                    logger.error(message);
+                    state.getResult().addError(message);
+                }
+            } catch (Exception e) {
+                    String message = "Unexpected exception in " + ioClass.getSimpleName()+ ": " + e.getMessage();
+                    logger.error(message);
+                    e.printStackTrace();
+                    state.getResult().addException(e, message);
+            }
+        }
+        return result;
+    }
+
+
+    private String getComponentBeanName(Class<ICdmExport> ioClass){
 		Component component = ioClass.getAnnotation(Component.class);
 		String ioBean = component.value();
 		if ("".equals(ioBean)){

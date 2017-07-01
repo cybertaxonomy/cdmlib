@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.remote.controller.checklist;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +71,11 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
 public class DwcaExportController extends AbstractController implements ResourceLoaderAware{
 
 
+    /**
+     *
+     */
+    private static final String DWCATAX = "dwcatax_";
+
     private static final String DWCA_TAX_EXPORT_DOC_RESSOURCE = "classpath:eu/etaxonomy/cdm/doc/remote/apt/dwca-tax-export-default.apt";
 
     private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String []{
@@ -97,7 +105,10 @@ public class DwcaExportController extends AbstractController implements Resource
      */
     private static UUID indexMonitorUuid = null;
 
-    private final static long DAY_IN_MILLIS = 86400000;
+    private final static long MINUTE_IN_MILLIS = 60000;
+    private final static long HOUR_IN_MILLIS = MINUTE_IN_MILLIS * 60;
+
+    private final static long DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
 
 
 
@@ -195,8 +206,16 @@ public class DwcaExportController extends AbstractController implements Resource
             @RequestParam(value = "classifications", required = false) final UuidList classificationUuids,
             @RequestParam(value = "taxa", required = false) final UuidList taxonUuids,
             @RequestParam(value = "taxonnodes", required = false) final UuidList taxonNodeUuids,
+            @RequestParam(value = "doMisapplieds", defaultValue="true") Boolean doMisapplieds,
+            @RequestParam(value = "doSynonyms", defaultValue="true") Boolean doSynonyms,
+            @RequestParam(value = "doImages", defaultValue="true") Boolean doImages,
+            @RequestParam(value = "doDescriptions", defaultValue="true") Boolean doDescriptions,
+            @RequestParam(value = "doDistributions", defaultValue="true") Boolean doDistributions,
+            @RequestParam(value = "doVernaculars", defaultValue="true") Boolean doVernaculars,
+            @RequestParam(value = "doTypesAndSpecimen", defaultValue="true") Boolean doTypesAndSpecimen,
+            @RequestParam(value = "doResourceRelations", defaultValue="true") Boolean doResourceRelations,
+            @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
 //          @RequestParam(value = "area", required = false) final UuidList areas,
-
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
             final HttpServletResponse response,
@@ -209,11 +228,13 @@ public class DwcaExportController extends AbstractController implements Resource
         try{
             ModelAndView mv = new ModelAndView();
 
-            String fileName = makeFileName(response, subtreeUuids);
 
-            final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), fileName);
             final String origin = request.getRequestURL().append('?')
-                    .append(request.getQueryString()).toString();
+                    .append(CdmUtils.Nz(request.getQueryString())).toString()
+                    .replace("&clearCache=true", "");
+
+            String fileName = makeFileName(response, origin, DWCATAX);
+            final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), fileName);
 
             Long result = null;
             if(cacheFile.exists()){
@@ -226,7 +247,6 @@ public class DwcaExportController extends AbstractController implements Resource
                 Map<String, File> modelMap = new HashMap<>();
                 modelMap.put("file", cacheFile);
                 mv.addAllObjects(modelMap);
-                //application/zip
                 FileDownloadView fdv = new FileDownloadView(fileName, "zip");
                 mv.setView(fdv);
                 return mv;
@@ -246,8 +266,16 @@ public class DwcaExportController extends AbstractController implements Resource
                             } catch (Exception e) {
                                 logger.info("Could not create file " + e);
                             }
-                            performExport(cacheFile, progressMonitorController.getMonitor(indexMonitorUuid),
-                                    subtreeUuids, classificationUuids, taxonUuids, taxonNodeUuids,
+                            IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(
+                                    indexMonitorUuid);
+
+                            TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance(
+                                    classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids);
+                            DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
+                                    cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
+                                    doVernaculars, doDistributions, doDescriptions, doImages,
+                                    doTypesAndSpecimen, doResourceRelations, doReferences);
+                            performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
                     };
@@ -272,6 +300,32 @@ public class DwcaExportController extends AbstractController implements Resource
     //=========== Helper Methods ===============//
 
     /**
+     * @param response
+     * @param origin
+     * @return
+     * @throws IOException
+     */
+    private String makeFileName(HttpServletResponse response, String origin, String prefix) throws IOException {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(origin.getBytes(),0,origin.length());
+            String result = new BigInteger(1,md.digest()).toString(16);
+
+//            InputStream is = IOUtils.toInputStream(origin, "UTF-8");
+//            DigestInputStream dis = new DigestInputStream(is, md);
+//            byte[] digest = md.digest();
+//            return new String(digest);
+            return prefix + result;
+        } catch (NoSuchAlgorithmException e) {
+            String message = "Can't create temporary filename hash for " +  origin;
+            response.sendError(404, message);
+            throw new RuntimeException(message, e);
+        }
+    }
+
+
+
+    /**
      *
      * This private methods finally triggers the export back in the io-package and will create a cache file
      * in system temp directory.
@@ -283,20 +337,16 @@ public class DwcaExportController extends AbstractController implements Resource
      * @param defaultExport
      */
     private void performExport(File cacheFile, IRestServiceProgressMonitor progressMonitor,
-            UuidList subtreeUuids, UuidList classificationList, UuidList taxaUuids,
-            UuidList taxonNodeUuids,
+            DwcaTaxExportConfigurator config,
             String downloadTokenValueId, String origin,
             HttpServletResponse response
             ) {
 
         progressMonitor.subTask("configure export");
-        DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
-                cacheFile, progressMonitor, subtreeUuids, classificationList,
-                taxaUuids, taxonNodeUuids);
         @SuppressWarnings("unchecked")
         CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator> defaultExport =
                 (CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator>)appContext.getBean("defaultExport");
-        progressMonitor.beginTask("DwC-A export", 10);
+        progressMonitor.beginTask("DwC-A export", 100);
         progressMonitor.subTask("invoke export");
         defaultExport.invoke(config);  //triggers export
         progressMonitor.subTask("wrote results to cache");
@@ -313,13 +363,25 @@ public class DwcaExportController extends AbstractController implements Resource
      * @param areas
      * @param byteArrayOutputStream pass-through the stream to write out the data later.
      * @param progressMonitor
+     * @param doImages
+     * @param doDescriptions
+     * @param doDistributions
+     * @param doVernaculars
+     * @param doReferences
+     * @param doResourceRelations
+     * @param doTypesAndSpecimen
      * @param conceptExport
      * @param demoExport
      * @return the CsvTaxExportConfiguratorRedlist config
      */
-    private DwcaTaxExportConfigurator setDwcaTaxExportConfigurator(File cacheFile, IRestServiceProgressMonitor progressMonitor,
-            UuidList subtreeUuids, UuidList classificationUuids,
-            UuidList taxonUuids, UuidList taxonNodeUuids) {
+    private DwcaTaxExportConfigurator setDwcaTaxExportConfigurator(File cacheFile,
+            IRestServiceProgressMonitor progressMonitor,
+            TaxonNodeFilter taxonNodeFilter,
+            boolean doSynonyms, boolean doMisappliedNames,
+            Boolean doVernaculars, Boolean doDistributions,
+            Boolean doDescriptions, Boolean doImages,
+            Boolean doTypesAndSpecimen, Boolean doResourceRelations,
+            Boolean doReferences) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -330,14 +392,18 @@ public class DwcaExportController extends AbstractController implements Resource
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(
                 null, cacheFile, emlRecord);
 
-
-        TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance(
-                classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids);
         config.setTaxonNodeFilter(taxonNodeFilter);
-//        if (subtreeUuids != null){
-//            Set<UUID> subtreeSet = new HashSet<>(subtreeUuids);
-//            config.setSubtreeUuids(subtreeSet);
-//        }
+        config.setDoSynonyms(doSynonyms);
+        config.setDoMisappliedNames(doMisappliedNames);
+
+        config.setDoDescriptions(doDescriptions);
+        config.setDoVernacularNames(doVernaculars);
+        config.setDoImages(doImages);
+        config.setDoDistributions(doDistributions);
+        config.setDoTypesAndSpecimen(doTypesAndSpecimen);
+        config.setDoReferences(doReferences);
+        config.setDoResourceRelations(doResourceRelations);
+
         config.setProgressMonitor(progressMonitor);
 
 //        config.setHasHeaderLines(true);
@@ -359,7 +425,7 @@ public class DwcaExportController extends AbstractController implements Resource
      * @param subtreeUuids
      * @throws IOException
      */
-    private String makeFileName(HttpServletResponse response, UuidList subtreeUuids) throws IOException {
+    private String makeFileNameOld(HttpServletResponse response, UuidList subtreeUuids) throws IOException {
         String fileName;
         if (subtreeUuids != null && ! subtreeUuids.isEmpty()){
             UUID firstUuid = subtreeUuids.get(0);

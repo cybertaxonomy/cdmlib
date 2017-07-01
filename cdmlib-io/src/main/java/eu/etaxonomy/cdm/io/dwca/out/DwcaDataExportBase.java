@@ -11,32 +11,20 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
@@ -50,105 +38,10 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(DwcaDataExportBase.class);
 
-    @Autowired
-    private IClassificationService classificationService;
-
-    @Autowired
-    private ITaxonNodeService taxonNodeService;
-
     abstract protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)throws IOException, FileNotFoundException, UnsupportedEncodingException;
 
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long countSteps(DwcaTaxExportState state) {
-        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
-        return taxonNodeService.count(filter);
-    }
 
-    /**
-     * Returns the list of {@link TaxonNode taxon nodes} that correspond to the
-     * given filter criteria (e.g. subtreeUUids). If no filter is given
-     * all taxon nodes of all classifications are returned. If the list has been
-     * computed before it is taken from the state cache. Nodes that do not have
-     * a taxon attached are not returned. Instead a warning is given that the node is
-     * ommitted (empty taxon nodes should not but do exist in CDM databases).
-     * <BR>
-     * Preliminary implementation. Better implement API method for this.
-     */
-    //TODO unify with similar methods for other exports
-    protected List<TaxonNode> allNodes(DwcaTaxExportState state) {
-
-        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
-
-        List<UUID> listUuid = taxonNodeService.uuidList(filter);
-
-        //TODO memory critical to store ALL node
-        if (state.getAllNodes().isEmpty()){
-            makeAllNodes(state, listUuid);
-        }
-        List<TaxonNode> allNodes = state.getAllNodes();
-        return allNodes;
-    }
-
-    private void makeAllNodes(DwcaTaxExportState state, Collection<UUID> subtreeSet) {
-
-        try {
-            boolean doSynonyms = false;
-            boolean recursive = true;
-            Set<UUID> uuidSet = new HashSet<>();
-
-            for (UUID subtreeUuid : subtreeSet){
-                UUID tnUuuid = taxonNodeUuid(subtreeUuid);
-                uuidSet.add(tnUuuid);
-                List<TaxonNodeDto> records = getTaxonNodeService().pageChildNodesDTOs(tnUuuid,
-                        recursive, doSynonyms, null, null, null).getRecords();
-                for (TaxonNodeDto dto : records){
-                    uuidSet.add(dto.getUuid());
-                }
-            }
-            List<TaxonNode> allNodes =  getTaxonNodeService().find(uuidSet);
-
-            List<TaxonNode> result = new ArrayList<>();
-            for (TaxonNode node : allNodes){
-                if(node.getParent()== null){  //root (or invalid) node
-                    continue;
-                }
-                node = CdmBase.deproxy(node);
-                Taxon taxon = CdmBase.deproxy(node.getTaxon());
-                if (taxon == null){
-                    String message = "There is a taxon node without taxon. id=" + node.getId();
-                    state.getResult().addWarning(message);
-                    continue;
-                }
-                result.add(node);
-            }
-            state.setAllNodes(result);
-        } catch (Exception e) {
-            String message = "Unexpected exception when trying to compute all taxon nodes";
-            state.getResult().addException(e, message);
-        }
-    }
-
-
-    /**
-     * @param subtreeUuid
-     * @return
-     */
-    private UUID taxonNodeUuid(UUID subtreeUuid) {
-        TaxonNode node = taxonNodeService.find(subtreeUuid);
-        if (node == null){
-            Classification classification = classificationService.find(subtreeUuid);
-            if (classification != null){
-                node = classification.getRootNode();
-            }else{
-                throw new IllegalArgumentException("Subtree identifier does not exist: " + subtreeUuid);
-            }
-        }
-        return node.getUuid();
-    }
 
     /**
      * Creates the locationId, locality, countryCode triple
@@ -214,5 +107,8 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
         }
         return result;
     }
+
+    @Override
+    public abstract boolean isIgnore(DwcaTaxExportState state);
 
 }

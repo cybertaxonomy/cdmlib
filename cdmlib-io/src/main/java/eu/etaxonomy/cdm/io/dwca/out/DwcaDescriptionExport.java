@@ -150,8 +150,8 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
 
 
 	@Override
-	protected boolean isIgnore(DwcaTaxExportState state) {
-		return ! state.getConfig().isDoDescription();
+	public boolean isIgnore(DwcaTaxExportState state) {
+		return ! state.getConfig().isDoDescriptions();
 	}
 
 }
