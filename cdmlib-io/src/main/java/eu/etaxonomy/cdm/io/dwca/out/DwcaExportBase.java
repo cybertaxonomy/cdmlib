@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  *
  */
 public abstract class DwcaExportBase
-            extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer>
+            extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer, File>
             implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 
     private static final long serialVersionUID = -3214410418410044139L;

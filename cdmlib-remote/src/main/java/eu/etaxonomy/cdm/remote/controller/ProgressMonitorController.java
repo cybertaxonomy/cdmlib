@@ -38,7 +38,7 @@ import io.swagger.annotations.Api;
  */
 @Controller
 @CrossOrigin(origins="*")
-@Api(value="progress", description="provides access to information on long running processes. "
+@Api(value="progress", description="Provides access to information on long running processes. "
         + "URIs to the resources exposed by this controller are provided in the responses to the"
         + "HTTP requests that trigger long term processes.")
 @RequestMapping(value="/progress/")
@@ -99,8 +99,8 @@ public class ProgressMonitorController {
             mv.addObject(monitors.get(uuid));
         } else {
             response.sendError(404, "No such progress monitor found. The process being monitored may "
-                    + "have been completed and the according monitor may have been removed due to "
-                    + "the clean up timepout.");
+                    + "have been completed and the according monitor may have been removed by "
+                    + "the clean up timeout.");
         }
 
         return mv;

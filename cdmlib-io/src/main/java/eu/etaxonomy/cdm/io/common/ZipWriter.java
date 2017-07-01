@@ -21,7 +21,7 @@ import org.apache.tools.zip.ZipOutputStream;
 
 /**
  * Writing to zip files is not possible in parallel.
- * This class bufferes streams into the zip file in
+ * This class buffers streams into the zip file in
  * {@link DeferredFileOutputStream}s which store data in
  * memory or, if a certain threshold size is exceeded in
  * temporary files.
@@ -37,7 +37,7 @@ import org.apache.tools.zip.ZipOutputStream;
 public class ZipWriter {
 
 
-    public static final int DEFAULT_THRESHOLD = 1000000;
+    public static final int DEFAULT_THRESHOLD = 2000000;
 
     private int threshold = DEFAULT_THRESHOLD;
 
@@ -47,13 +47,21 @@ public class ZipWriter {
 
     private File targetFile;
 
+    /**
+     * {@link ZipWriter} with default values.
+     *
+     * @param targetFile final zip file to be filled
+     */
+
     public ZipWriter(File targetFile) {
         this(targetFile, null, null);
     }
 
     /**
-     * @param threshold
-     * @param tmpFolder
+     * @param targetFile final zip file to be filled
+     * @param threshold the threshold when to start writing to file,
+     *         uses default (2MB) if  <code>null</code>
+     * @param tmpFolder the folder to write the temporary file to
      */
     public ZipWriter(File targetFile, Integer threshold, File tmpFolder) {
         super();
@@ -64,11 +72,11 @@ public class ZipWriter {
 
 
 
-    public OutputStream getEntryStream(String entry){
-        DeferredFileOutputStream result = entryMap.get(entry);
+    public OutputStream getEntryStream(String entryName){
+        DeferredFileOutputStream result = entryMap.get(entryName);
         if (result == null){
-            result = new DeferredFileOutputStream(threshold, "tmp", "xxx", tmpFolder);
-            entryMap.put(entry, result);
+            result = new DeferredFileOutputStream(threshold, "tmp", "_zip_buffer", tmpFolder);
+            entryMap.put(entryName, result);
         }
         return result;
     }
@@ -114,6 +122,5 @@ public class ZipWriter {
             return false;
         }
     }
-
 
 }

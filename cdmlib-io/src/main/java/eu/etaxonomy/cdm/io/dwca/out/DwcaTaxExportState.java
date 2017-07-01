@@ -32,7 +32,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator>{
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportState.class);
 
 	private DwcaResultProcessor processor = new DwcaResultProcessor(this);

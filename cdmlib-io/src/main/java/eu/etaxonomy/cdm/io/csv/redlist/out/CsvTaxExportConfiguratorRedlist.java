@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -31,7 +31,10 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @created 17.10.2012
  */
 public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<CsvTaxExportStateRedlist> {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 423795815976481982L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CsvTaxExportConfiguratorRedlist.class);
 
 	private String encoding = "UTF-8";
@@ -48,7 +51,7 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	private String defaultBibliographicCitation = null;
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	//filter on the classifications to be exported
-	private Set<UUID> taxonNodeUuids = new HashSet<UUID>();   
+	private Set<UUID> taxonNodeUuids = new HashSet<UUID>();
 	private boolean withHigherClassification = false;
 	private String setSeparator = ";";
 
@@ -61,7 +64,7 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
-	public static CsvTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) { 
+	public static CsvTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) {
 		return new CsvTaxExportConfiguratorRedlist(source, destinationFolder);
 	}
 
@@ -81,9 +84,6 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		super(destination, source, defaultTransformer);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
 	@Override
 	public File getDestination() {
 		return super.getDestination();
@@ -97,9 +97,6 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		super.setDestination(fileName);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
-	 */
 	@Override
 	public String getDestinationNameString() {
 		if (this.getDestination() == null) {
@@ -109,10 +106,8 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
-	 */
-	public CsvTaxExportStateRedlist getNewState() {
+	@Override
+    public CsvTaxExportStateRedlist getNewState() {
 		return new CsvTaxExportStateRedlist(this);
 	}
 
@@ -211,11 +206,11 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	}
 
 	/**
-	 * The default value for the taxon.source column. This may be a column linking to a url that provides 
-	 * data about the given taxon. The id is replaced by a placeholder, 
+	 * The default value for the taxon.source column. This may be a column linking to a url that provides
+	 * data about the given taxon. The id is replaced by a placeholder,
 	 * e.g. http://wp6-cichorieae.e-taxonomy.eu/portal/?q=cdm_dataportal/taxon/{id}.
 	 * NOTE: This may be replaced in future versions by concrete CDM server implementations.
-	 * 
+	 *
 	 * @return the taxonSourceDefault
 	 */
 
@@ -267,18 +262,18 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
-		
+
 	}
-	
+
 	public List<Feature>  getFeatures() {
 		return features;
-		
+
 	}
 
 	public void setClassificationTitleCache(String classificationTitleCache) {
 		this.classificationTitleCache = classificationTitleCache;
 	}
-	
+
 	public String getClassificationTitleCache() {
 		return classificationTitleCache;
 	}
@@ -289,10 +284,10 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	public void setNamedAreas(List<NamedArea> areas) {
 		// TODO Auto-generated method stub
 		this.areas = areas;
-		
+
 	}
 	public List<NamedArea> getNamedAreas(){
 		return areas;
 	}
-	
+
 }

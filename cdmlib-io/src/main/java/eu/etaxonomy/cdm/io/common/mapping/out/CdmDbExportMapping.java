@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,31 +26,32 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
-public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM>, TRANSFORM extends IExportTransformer> extends CdmIoMapping {
-	private static final Logger logger = Logger.getLogger(CdmDbExportMapping.class);
-	
+public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM, Source>, TRANSFORM extends IExportTransformer>
+        extends CdmIoMapping {
+
+    private static final Logger logger = Logger.getLogger(CdmDbExportMapping.class);
+
 	private PreparedStatement preparedStatement;
 	private String dbTableName;
-	private List<CollectionExportMapping<STATE,CONFIG, TRANSFORM>> collectionMappingList = new ArrayList<CollectionExportMapping<STATE,CONFIG, TRANSFORM>>();
-	
+	private List<CollectionExportMapping<STATE,CONFIG, TRANSFORM>> collectionMappingList = new ArrayList<>();
+
 
 	public CdmDbExportMapping(String tableName){
 		this.dbTableName = tableName;
 	}
-	
+
 	public boolean initialize(STATE state) throws SQLException{
 		CONFIG config = state.getConfig();
 		Source db = config.getDestination();
-		
+
 		try {
 			IndexCounter index;
 			String strPreparedStatement = prepareStatement();
 			logger.debug(strPreparedStatement);
 			this.preparedStatement = db.getConnection().prepareStatement(strPreparedStatement);
 			index = new IndexCounter(1);
-			
+
 			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportStateBase<?,TRANSFORM>,TRANSFORM> dbMapper = (IDbExportMapper)mapper;
@@ -69,7 +70,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 		}
 	}
 
-	
+
 	public boolean invoke(CdmBase cdmBase) throws SQLException{
 		try {
 			boolean result = true;
@@ -92,7 +93,9 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 				}
 			}
 			int count = preparedStatement.executeUpdate();
-			if (logger.isDebugEnabled())logger.debug("Number of rows affected: " + count);
+			if (logger.isDebugEnabled()) {
+                logger.debug("Number of rows affected: " + count);
+            }
 			for (CollectionExportMapping<STATE,CONFIG, TRANSFORM> collectionMapping : this.collectionMappingList ){
 				result &= collectionMapping.invoke(cdmBase);
 			}
@@ -103,12 +106,12 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 			return false;
 		}
 	}
-	
-	
+
+
 	public void addCollectionMapping(CollectionExportMapping<STATE,CONFIG, TRANSFORM> collectionMapping){
 		this.collectionMappingList.add(collectionMapping);
 	}
-	
+
 	protected String prepareStatement(){
 		String sqlInsert = "INSERT INTO " + getDbTableName() + " (";
 		String sqlValues = ") VALUES(";
@@ -152,11 +155,11 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 	protected void setPreparedStatement(PreparedStatement preparedStatement) {
 		this.preparedStatement = preparedStatement;
 	}
-	
+
 //	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
 //		List<CdmAttributeMapperBase> list = this.mapperList;
 //		return list;
 //	}
-	
-	
+
+
 }

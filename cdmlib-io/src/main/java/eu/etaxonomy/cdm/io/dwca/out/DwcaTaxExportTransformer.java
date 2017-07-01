@@ -13,7 +13,7 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.ExportTransformerBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -26,9 +26,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  * @date 02.05.2011
  *
  */
-public class DwcaTaxExportTransformer extends InputTransformerBase {
-
-    private static final long serialVersionUID = -1968151976079715633L;
+public class DwcaTaxExportTransformer extends ExportTransformerBase {
 
     private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformer.class);
 

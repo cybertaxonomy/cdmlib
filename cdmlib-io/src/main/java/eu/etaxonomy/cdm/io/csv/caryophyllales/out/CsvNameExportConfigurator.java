@@ -28,7 +28,6 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
 		super(destination, cdmSource, transformer);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static CsvNameExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder){

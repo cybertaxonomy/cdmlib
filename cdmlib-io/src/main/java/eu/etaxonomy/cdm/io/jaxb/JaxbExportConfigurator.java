@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.jaxb;
 
-import java.net.URI;
+import java.io.File;
 
 import org.apache.log4j.Logger;
 
@@ -23,8 +23,13 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @author a.babadshanjan
  * @created 03.09.2008
  */
-public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExportState, IExportTransformer> implements IExportConfigurator<JaxbExportState, IExportTransformer> {
-	@SuppressWarnings("unused")
+public class JaxbExportConfigurator
+        extends ExportConfiguratorBase<JaxbExportState, IExportTransformer, File>
+        implements IExportConfigurator<JaxbExportState, IExportTransformer> {
+
+    private static final long serialVersionUID = -3081392679701925440L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbExportConfigurator.class);
 
 	private int maxRows = 0;
@@ -196,7 +201,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	};
 
 
-	public static JaxbExportConfigurator NewInstance(ICdmDataSource source, URI uri) {
+	public static JaxbExportConfigurator NewInstance(ICdmDataSource source, File uri) {
 		return new JaxbExportConfigurator(source, uri);
 	}
 
@@ -205,34 +210,23 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExpor
 	 * @param url
 	 * @param destination
 	 */
-	private JaxbExportConfigurator(ICdmDataSource source, URI uri) {
+	private JaxbExportConfigurator(ICdmDataSource source, File uri) {
 		super(defaultTransformer);
 		setDestination(uri);
 		setSource(source);
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
 	@Override
-    public URI getDestination() {
+    public File getDestination() {
 		return super.getDestination();
 	}
 
-
-	/**
-	 * @param file
-	 */
 	@Override
-    public void setDestination(URI uri) {
+    public void setDestination(File uri) {
 		super.setDestination(uri);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
-	 */
 	@Override
     public String getDestinationNameString() {
 		if (this.getDestination() == null) {

@@ -20,11 +20,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * Adds a single value to the mapping which represents the id of the mapped object
+ *
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
-public class IdMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
+public class IdMapper
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
+        implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(IdMapper.class);
 
 	public static IdMapper NewInstance(String dbIdAttributeString){
@@ -40,9 +42,6 @@ public class IdMapper extends DbSingleAttributeExportMapperBase<DbExportStateBas
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return Integer.class;
@@ -56,9 +55,6 @@ public class IdMapper extends DbSingleAttributeExportMapperBase<DbExportStateBas
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue()
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		IdType type = getState().getConfig().getIdType();

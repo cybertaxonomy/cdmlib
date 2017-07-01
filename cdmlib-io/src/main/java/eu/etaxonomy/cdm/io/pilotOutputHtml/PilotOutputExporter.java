@@ -38,7 +38,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 10.12.2008
  */
 @Component("pilotOutputExporter")
-public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer> implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
+public class PilotOutputExporter
+        extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer, File>
+        implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
@@ -49,9 +51,6 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 	private boolean doOccurrence = true;
 
 
-	/**
-	 *
-	 */
 	public PilotOutputExporter() {
 		super();
 		this.ioName = this.getClass().getSimpleName();

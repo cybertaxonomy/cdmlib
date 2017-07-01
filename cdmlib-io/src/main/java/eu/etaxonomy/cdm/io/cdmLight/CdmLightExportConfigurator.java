@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @date 15.03.2017
  *
  */
-public class CdmLightExportConfigurator extends ExportConfiguratorBase<File, CdmLightExportState, IExportTransformer>{
+public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightExportState, IExportTransformer, File>{
 
     private static final long serialVersionUID = -1562074221435082060L;
 

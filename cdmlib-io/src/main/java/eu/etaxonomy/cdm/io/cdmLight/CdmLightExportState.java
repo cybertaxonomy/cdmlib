@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 15.03.2017
  *
  */
-public class CdmLightExportState extends ExportStateBase<CdmLightExportConfigurator, IExportTransformer>{
+public class CdmLightExportState
+        extends ExportStateBase<CdmLightExportConfigurator, IExportTransformer, File>{
 
     private ExportResult result;
 

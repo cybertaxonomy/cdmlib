@@ -19,7 +19,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends IoConfiguratorBase implements IExportConfigurator<STATE, TRANSFORM>{
+public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRANSFORM extends IExportTransformer, DEST extends Object>
+            extends IoConfiguratorBase
+            implements IExportConfigurator<STATE, TRANSFORM>{
 
     private static final long serialVersionUID = -6361253919270760156L;
 
@@ -30,7 +32,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	private TARGET target = TARGET.FILE;
 
 	private ICdmDataSource source;
-	private DESTINATION destination;
+	private DEST destination;
 	protected IDatabase sourceReference;
 	protected Class<ICdmIO>[] ioClassList;
 
@@ -81,14 +83,14 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	/**
 	 * @param source the source to get
 	 */
-	public DESTINATION getDestination() {
+	public DEST getDestination() {
 		return destination;
 	}
 
 	/**
 	 * @param source the source to set
 	 */
-	public void setDestination(DESTINATION destination) {
+	public void setDestination(DEST destination) {
 		this.destination = destination;
 	}
 

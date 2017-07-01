@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+
 import org.apache.maven.doxia.module.apt.AptParser;
 import org.apache.maven.doxia.module.xhtml.XhtmlSinkFactory;
 import org.apache.maven.doxia.parser.ParseException;
@@ -21,21 +22,20 @@ import org.codehaus.plexus.util.ReaderFactory;
 
 /**
  * The utility class which provides methods relating to documentation.
- * 
+ *
  * @author c.mathew
- * @version 1.0.0
  * @created 01-Aug-2012
  */
 
 public class DocUtils {
-    
+
     /**
      * Converts an apt file into html.
-     * 
+     *
      * @param aptFile apt file
      *
      * @return html as string or error message if exception
-     * 
+     *
      */
     public static String convertAptToHtml(File aptFile) {
         PlexusContainer container;
@@ -43,12 +43,12 @@ public class DocUtils {
             container = new DefaultPlexusContainer();
         } catch (PlexusContainerException e) {
             return "Error in generating documentation : " + e.getMessage();
-        }    
+        }
         //FIXME : Plexus does not seem to work for looking up Sink Factory, so XhtmlSinkFactory is called directory
         //SinkFactory sinkFactory = (SinkFactory) container.lookup( SinkFactory.ROLE, "html" ); // Plexus lookup
-        
-        SinkFactory sinkFactory = new XhtmlSinkFactory();        
-        
+
+        SinkFactory sinkFactory = new XhtmlSinkFactory();
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Sink sink;
         try {
@@ -77,17 +77,17 @@ public class DocUtils {
         } catch (ParseException e) {
             return "Error in generating documentation : " + e.getMessage();
         }
-        
+
         return baos.toString();
     }
-    
+
     /**
      * Converts an apt input stream into html.
-     * 
+     *
      * @param aptInputStream apt input stream
      *
      * @return html as string or error message if exception
-     * 
+     *
      */
     public static String convertAptToHtml(InputStream aptInputStream) {
         PlexusContainer container;
@@ -95,12 +95,12 @@ public class DocUtils {
             container = new DefaultPlexusContainer();
         } catch (PlexusContainerException e) {
             return "Error in generating documentation : " + e.getMessage();
-        }    
+        }
         //FIXME : Plexus does not seem to work for looking up Sink Factory, so XhtmlSinkFactory is called directory
         //SinkFactory sinkFactory = (SinkFactory) container.lookup( SinkFactory.ROLE, "html" ); // Plexus lookup
-        
-        SinkFactory sinkFactory = new XhtmlSinkFactory();        
-        
+
+        SinkFactory sinkFactory = new XhtmlSinkFactory();
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Sink sink;
         try {
@@ -127,7 +127,7 @@ public class DocUtils {
         } catch (ParseException e) {
             return "Error in generating documentation : " + e.getMessage();
         }
-        
+
         return baos.toString();
     }
 

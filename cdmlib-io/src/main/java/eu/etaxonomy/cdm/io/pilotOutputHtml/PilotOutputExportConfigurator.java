@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,10 +20,13 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
  * @created 09.12.2008
- * @version 1.0
  */
-public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<PilotOutputExportState> {
-	@SuppressWarnings("unused")
+public class PilotOutputExportConfigurator
+        extends XmlExportConfiguratorBase<PilotOutputExportState> {
+
+    private static final long serialVersionUID = 8545847974141343807L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PilotOutputExportConfigurator.class);
 
 	private int maxRows = 0;
@@ -48,25 +51,25 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
-	
+
 	public static PilotOutputExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
 		return new PilotOutputExportConfigurator(source, destinationFolder + File.separator + url);
 	}
-	
-	
+
+
 	public int getMaxRows() {
 		return maxRows;
 	}
-	
+
 	public void setMaxRows(int maxRows) {
 		this.maxRows = maxRows;
 	}
-	
+
 
 	public boolean isDoAgentData() {
 		return doAgentData;
 	}
-	
+
 	public void setDoAgentData(boolean doAgentData) {
 		this.doAgentData = doAgentData;
 	}
@@ -74,7 +77,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoLanguageData() {
 		return doLanguageData;
 	}
-	
+
 	public void setDoLanguageData(boolean doLanguageData) {
 		this.doLanguageData = doLanguageData;
 	}
@@ -82,7 +85,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoFeatureData() {
 		return doFeatureData;
 	}
-	
+
 	public void setDoFeatureData(boolean doFeatureData) {
 		this.doFeatureData = doFeatureData;
 	}
@@ -90,7 +93,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoDescriptions() {
 		return doDescriptions;
 	}
-	
+
 	public void setDoDescriptions(boolean doDescriptions) {
 		this.doDescriptions = doDescriptions;
 	}
@@ -98,7 +101,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoMedia() {
 		return doMedia;
 	}
-	
+
 	public void setDoMedia(boolean doMedia) {
 		this.doMedia = doMedia;
 	}
@@ -106,7 +109,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoReferencedEntities() {
 		return doReferencedEntities;
 	}
-	
+
 	public void setDoReferencedEntities(boolean doReferencedEntities) {
 		this.doReferencedEntities = doReferencedEntities;
 	}
@@ -115,7 +118,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoSynonyms() {
 		return doSynonyms;
 	}
-	
+
 	public void setDoSynonyms(boolean doSynonyms) {
 		this.doSynonyms = doSynonyms;
 	}
@@ -124,7 +127,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoTerms() {
 		return doTerms;
 	}
-	
+
 	public void setDoTerms(boolean doTerms) {
 		this.doTerms = doTerms;
 	}
@@ -132,7 +135,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoTermVocabularies() {
 		return doTermVocabularies;
 	}
-	
+
 	public void setDoTermVocabularies(boolean doTermVocabularies) {
 		this.doTermVocabularies = doTermVocabularies;
 	}
@@ -140,7 +143,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public boolean isDoHomotypicalGroups() {
 		return doHomotypicalGroups;
 	}
-	
+
 	public void setDoHomotypicalGroups(boolean doHomotypicalGroups) {
 		this.doHomotypicalGroups = doHomotypicalGroups;
 	}
@@ -165,7 +168,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
-	
+
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
@@ -187,18 +190,19 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 		this.doRelTaxa = doRelTaxa;
 	}
 
-	
-	
+
+
 //	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
+	@Override
+    protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				PilotOutputDescriptionExporter.class,
 		};
 	}
 
 
-	
-	
+
+
 	/**
 	 * @param url
 	 * @param destination
@@ -208,30 +212,26 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 //		setDestination(url);
 //		setSource(source);
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public File getDestination() {
+
+	@Override
+    public File getDestination() {
 		File file = super.getDestination();
 		return file;
 //		return super.getDestination();
 	}
 
-	
+
 	/**
 	 * @param file
 	 */
-	public void setDestination(File fileName) {
+	@Override
+    public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
-	 */
-	public String getDestinationNameString() {
+	@Override
+    public String getDestinationNameString() {
 		if (this.getDestination() == null) {
 			return null;
 		} else {
@@ -240,12 +240,9 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
-	 */
-	public PilotOutputExportState getNewState() {
+	@Override
+    public PilotOutputExportState getNewState() {
 		return new PilotOutputExportState(this);
 	}
-	
-		
+
 }

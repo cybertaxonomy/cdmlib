@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component("sddCdmExporter")
 public class SDDCdmExporter
-        extends CdmExportBase<SDDExportConfigurator, SDDExportState, IExportTransformer>
+        extends CdmExportBase<SDDExportConfigurator, SDDExportState, IExportTransformer, File>
         implements ICdmExport<SDDExportConfigurator, SDDExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {

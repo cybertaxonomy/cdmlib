@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -78,11 +79,10 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author k.luther
  * @date 15.03.2017
- *
  */
 @Component
 public class CdmLightClassificationExport
-            extends CdmExportBase<CdmLightExportConfigurator, CdmLightExportState, IExportTransformer>
+            extends CdmExportBase<CdmLightExportConfigurator, CdmLightExportState, IExportTransformer, File>
             implements ICdmExport<CdmLightExportConfigurator, CdmLightExportState>{
 
 

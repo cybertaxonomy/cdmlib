@@ -43,8 +43,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 18.10.2012
  *
  */
-public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist, IExportTransformer> implements ICdmExport<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist>{
-	private static final Logger logger = Logger.getLogger(CsvExportBaseRedlist.class);
+public abstract class CsvExportBaseRedlist
+        extends CdmExportBase<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist, IExportTransformer, File>
+        implements ICdmExport<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist>{
+
+    private static final long serialVersionUID = 2719567114724597599L;
+
+    private static final Logger logger = Logger.getLogger(CsvExportBaseRedlist.class);
 
 	protected static final boolean IS_CORE = true;
 

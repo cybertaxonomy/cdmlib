@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -49,7 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Component
 public class JaxbExport
-            extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer>
+            extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer, File>
             implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
 
     private static final long serialVersionUID = -525533131708894145L;
@@ -75,9 +73,9 @@ public class JaxbExport
     @Override
     protected void doInvoke(JaxbExportState state) {
 
-        JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)state.getConfig();
+        JaxbExportConfigurator jaxbExpConfig = state.getConfig();
         //		String dbname = jaxbExpConfig.getSource().getName();
-        URI uri = jaxbExpConfig.getDestination();
+        File file = jaxbExpConfig.getDestination();
         //		logger.info("Serializing DB " + dbname + " to file " + fileName);
         //		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
@@ -104,13 +102,13 @@ public class JaxbExport
         try {
             switch(jaxbExpConfig.getTarget()) {
             case FILE:
-                writeToFile(new File(uri), dataSet);
+                writeToFile(file, dataSet);
                 break;
             case EXPORT_DATA:
                 CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
                 exportStream = new ByteArrayOutputStream();
                 cdmDocumentBuilder.marshal(dataSet, new StreamResult(exportStream));
-                ((ExportResult)state.getResult()).addExportData((byte[])this.createExportData().getExportData());
+                state.getResult().addExportData((byte[])this.createExportData().getExportData());
 
                 break;
             default:

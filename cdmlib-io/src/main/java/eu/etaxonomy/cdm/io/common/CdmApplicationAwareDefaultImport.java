@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
  */
 
 @Component("defaultImport")
@@ -91,26 +90,6 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         }
         return result;
     }
-
-
-//    public ImportResult execute(IImportConfigurator config){
-//        ImportResult result = new ImportResult();
-//        if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-//            result.setSuccess(doCheck(config));
-//        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
-//            boolean success =  doCheck(config);
-//            if(success) {
-//               result = doImport(config);
-//            }
-//            result.setSuccess(success);
-//        } else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
-//            result = doImport(config);
-//        } else{
-//            logger.error("Unknown CHECK type");
-//            return null;
-//        }
-//        return result;
-//    }
 
 
     @SuppressWarnings("unchecked")

@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  */
 public abstract class CsvDemoBase
-            extends CdmExportBase<CsvDemoExportConfigurator, CsvDemoExportState, IExportTransformer>
+            extends CdmExportBase<CsvDemoExportConfigurator, CsvDemoExportState, IExportTransformer,File>
             implements ICdmExport<CsvDemoExportConfigurator, CsvDemoExportState>{
 
     private static final long serialVersionUID = -2962456879635841019L;

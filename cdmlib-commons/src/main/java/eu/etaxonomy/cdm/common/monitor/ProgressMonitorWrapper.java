@@ -28,6 +28,7 @@ import java.io.Serializable;
 public abstract class ProgressMonitorWrapper implements
         IProgressMonitor /*, IProgressMonitorWithBlocking*/ {
 
+    private static final long serialVersionUID = -7665209071812481867L;
     /** The wrapped progress monitor. */
     private IProgressMonitor progressMonitor;
 
@@ -46,6 +47,7 @@ public abstract class ProgressMonitorWrapper implements
      * method forwards to the wrapped progress monitor.
      * Clients may override this method to do additional
      * processing.
+     * @return
      *
      * @see IProgressMonitor#beginTask(String, int)
      */

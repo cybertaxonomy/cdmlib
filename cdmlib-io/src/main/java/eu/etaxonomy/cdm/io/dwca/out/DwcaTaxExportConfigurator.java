@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @created 18.04.2011
  */
 public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTaxExportState> {
+
     private static final long serialVersionUID = -464609596078614735L;
 
     @SuppressWarnings("unused")
@@ -61,11 +62,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	private DwcaEmlRecord emlRecord;
 
-
 	private List<UUID> featureExclusions = new ArrayList<>();
 
-	//filter on the classifications to be exported
-//	private Set<UUID> subtreeUuids = new HashSet<>();
 	private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
 
 	private String defaultTaxonSource;
@@ -75,7 +73,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private String setSeparator = ";";
 
 	//TODO
-	private static IExportTransformer defaultTransformer = null;
+	private static DwcaTaxExportTransformer defaultTransformer = null;
 
 
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
@@ -93,8 +91,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 				,DwcaResultWriter.class
 		};
 	}
-
-
 
 
 	/**
@@ -134,7 +130,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isDoTaxa() {
 		return doTaxa;
 	}
-
 	public void setDoTaxa(boolean doTaxa) {
 		this.doTaxa = doTaxa;
 	}
@@ -142,15 +137,13 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isDoResourceRelation() {
 		return doResourceRelation;
 	}
-
-	public void setDoResourceRelation(boolean doResourceRelation) {
+	public void setDoResourceRelations(boolean doResourceRelation) {
 		this.doResourceRelation = doResourceRelation;
 	}
 
 	public boolean isDoTypesAndSpecimen() {
 		return doTypesAndSpecimen;
 	}
-
 	public void setDoTypesAndSpecimen(boolean doTypesAndSpecimen) {
 		this.doTypesAndSpecimen = doTypesAndSpecimen;
 	}
@@ -158,7 +151,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isDoVernacularNames() {
 		return doVernacularNames;
 	}
-
 	public void setDoVernacularNames(boolean doVernacularNames) {
 		this.doVernacularNames = doVernacularNames;
 	}
@@ -166,23 +158,20 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isDoReferences() {
 		return doReferences;
 	}
-
 	public void setDoReferences(boolean doReferences) {
 		this.doReferences = doReferences;
 	}
 
-	public boolean isDoDescription() {
-		return doDescription;
+	public boolean isDoDescriptions() {
+		return doDescriptions;
 	}
-
-	public void setDoDescription(boolean doDescription) {
-		this.doDescription = doDescription;
+	public void setDoDescriptions(boolean doDescriptions) {
+		this.doDescriptions = doDescriptions;
 	}
 
 	public boolean isDoDistributions() {
 		return doDistributions;
 	}
-
 	public void setDoDistributions(boolean doDistributions) {
 		this.doDistributions = doDistributions;
 	}
@@ -190,7 +179,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isDoImages() {
 		return doImages;
 	}
-
 	public void setDoImages(boolean doImages) {
 		this.doImages = doImages;
 	}
@@ -198,7 +186,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setFeatureExclusions(List<UUID> featureExclusions) {
 		this.featureExclusions = featureExclusions;
 	}
-
 	public List<UUID> getFeatureExclusions() {
 		return featureExclusions;
 	}
@@ -206,7 +193,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public String getEncoding() {
 		return encoding;
 	}
-
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
@@ -214,7 +200,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public String getLinesTerminatedBy() {
 		return linesTerminatedBy;
 	}
-
 	public void setLinesTerminatedBy(String linesTerminatedBy) {
 		this.linesTerminatedBy = linesTerminatedBy;
 	}
@@ -222,7 +207,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public String getFieldsEnclosedBy() {
 		return fieldsEnclosedBy;
 	}
-
 	public void setFieldsEnclosedBy(String fieldsEnclosedBy) {
 		this.fieldsEnclosedBy = fieldsEnclosedBy;
 	}
@@ -234,7 +218,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isHasHeaderLines() {
 		return hasHeaderLines;
 	}
-
 	public void setHasHeaderLines(boolean hasHeaderLines) {
 		this.hasHeaderLines = hasHeaderLines;
 	}
@@ -242,7 +225,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isIncludeBasionymsInResourceRelations() {
 		return includeBasionymsInResourceRelations;
 	}
-
 	public void setIncludeBasionymsInResourceRelations(boolean includeBasionymsInResourceRelations) {
 		this.includeBasionymsInResourceRelations = includeBasionymsInResourceRelations;
 	}
@@ -250,7 +232,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isIncludeMisappliedNamesInResourceRelations() {
 		return includeMisappliedNamesInResourceRelations;
 	}
-
 	public void setIncludeMisappliedNamesInResourceRelations(boolean includeMisappliedNamesInResourceRelations) {
 		this.includeMisappliedNamesInResourceRelations = includeMisappliedNamesInResourceRelations;
 	}
@@ -258,7 +239,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setDoMetaData(boolean doMetaData) {
 		this.doMetaData = doMetaData;
 	}
-
 	public boolean isDoMetaData() {
 		return doMetaData;
 	}
@@ -266,7 +246,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isUseIdWherePossible() {
 		return this.isUseIdWherePossible;
 	}
-
 	public void setUseIdWherePossible(boolean isUseIdWherePossible) {
 		this.isUseIdWherePossible = isUseIdWherePossible;
 	}
@@ -274,7 +253,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setEmlRecord(DwcaEmlRecord emlRecord) {
 		this.emlRecord = emlRecord;
 	}
-
 	public DwcaEmlRecord getEmlRecord() {
 		return emlRecord;
 	}
@@ -282,7 +260,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setDoEml(boolean doEml) {
 		this.doEml = doEml;
 	}
-
 	public boolean isDoEml() {
 		return doEml;
 	}
@@ -291,8 +268,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setDefaultBibliographicCitation(String defaultBibliographicCitation) {
 		this.defaultBibliographicCitation = defaultBibliographicCitation;
 	}
-
-
 	public String getDefaultBibliographicCitation() {
 		return defaultBibliographicCitation;
 	}
@@ -309,7 +284,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public String getDefaultTaxonSource() {
 		return defaultTaxonSource;
 	}
-
 	public void setDefaultTaxonSource(String taxonSourceDefault) {
 		this.defaultTaxonSource = taxonSourceDefault;
 	}

@@ -114,7 +114,7 @@ public class ExportResult extends IoResultBase implements Serializable {
      * @param dwcaTypesExport
      * @param string
      */
-    public void addError(String message, CdmExportBase<?,?,?> exportBase, String location) {
+    public void addError(String message, CdmExportBase<?,?,?,?> exportBase, String location) {
         this.addError(message,  exportBase.getClass().getSimpleName() + "." + location);
 
     }
