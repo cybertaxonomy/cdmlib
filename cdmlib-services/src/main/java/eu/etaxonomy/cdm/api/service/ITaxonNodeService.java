@@ -267,4 +267,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public List<UUID> uuidList(TaxonNodeFilter filter);
 
+    /**
+     * Returns a list of taxon node IDs according to the given filter.
+     * @param filter
+     * @return
+     */
+    public List<Integer> idList(TaxonNodeFilter filter);
+
 }

@@ -64,6 +64,19 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Integer> idList(TaxonNodeFilter filter){
+        String queryStr = query(filter, "tn.id");
+        Query query = getSession().createQuery(queryStr);
+        List<Integer> list = castToIntegerList(query.list());
+
+        list = deduplicate(list);
+        return list;
+    }
+
     //maybe we will later want to have ordering included
     private String query(TaxonNodeFilter filter, String selectPart){
         String select = " SELECT " + selectPart;
@@ -118,9 +131,9 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
      * @param list
      * @return
      */
-    private List<UUID> deduplicate(List<UUID> list) {
-        List<UUID> result = new ArrayList<>();
-        for (UUID uuid : list){
+    private <T> List<T> deduplicate(List<T> list) {
+        List<T> result = new ArrayList<>();
+        for (T uuid : list){
             if (!result.contains(uuid)){
                 result.add(uuid);
             }
@@ -220,5 +233,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     private List<UUID> castToUuidList(List<?> queryList){
         return (List<UUID>) queryList;
     }
-
+    @SuppressWarnings("unchecked")
+    private List<Integer> castToIntegerList(List<?> queryList){
+        return (List<Integer>) queryList;
+    }
 }

@@ -36,4 +36,13 @@ public interface ITaxonNodeFilterDao {
      */
     public List<UUID> listUuids(TaxonNodeFilter filter);
 
+
+    /**
+     * Retrieve taxon node IDs defined by a
+     * {@link TaxonNodeFilter taxon node filter}.
+     * @param filter the taxon node filter
+     * @return List of taxon node IDs
+     */
+    public List<Integer> idList(TaxonNodeFilter filter);
+
 }

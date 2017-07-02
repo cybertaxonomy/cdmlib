@@ -795,4 +795,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return nodeFilterDao.listUuids(filter);
     }
 
+    @Override
+    public List<Integer> idList(TaxonNodeFilter filter){
+        return nodeFilterDao.idList(filter);
+    }
+
 }
