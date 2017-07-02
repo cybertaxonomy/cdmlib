@@ -28,7 +28,7 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 	private static Logger logger = Logger.getLogger(TcsXmlExportConfigurator.class);
 
 
-	private TcsXmlExportState<TcsXmlExportConfigurator> state;
+	private TcsXmlExportState state;
 
 
 	private boolean doAuthors;
@@ -89,14 +89,14 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 	/**
 	 * @return the state
 	 */
-	public TcsXmlExportState<TcsXmlExportConfigurator> getState() {
+	public TcsXmlExportState getState() {
 		return state;
 	}
 
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(TcsXmlExportState<TcsXmlExportConfigurator> state) {
+	public void setState(TcsXmlExportState state) {
 		this.state = state;
 	}
 
