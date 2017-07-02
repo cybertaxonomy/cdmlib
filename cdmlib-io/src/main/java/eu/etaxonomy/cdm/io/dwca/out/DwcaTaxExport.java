@@ -18,11 +18,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
+import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -67,40 +68,47 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 	    IProgressMonitor monitor = state.getCurrentMonitor();
 
-		TransactionStatus txStatus = startTransaction(true);
-
 		List<DwcaDataExportBase> exports =  Arrays.asList(new DwcaDataExportBase[]{
-		        new DwcaTaxonExport(state),
-		        new DwcaReferenceExport(state),
-		        new DwcaResourceRelationExport(state),
-		        new DwcaTypesExport(state),
-		        new DwcaVernacularExport(state),
-		        new DwcaDescriptionExport(state),
-		        new DwcaDistributionExport(state),
-		        new DwcaImageExport(state)
+	        new DwcaTaxonExport(state),
+	        new DwcaReferenceExport(state),
+	        new DwcaResourceRelationExport(state),
+	        new DwcaTypesExport(state),
+	        new DwcaVernacularExport(state),
+	        new DwcaDescriptionExport(state),
+	        new DwcaDistributionExport(state),
+	        new DwcaImageExport(state)
 		});
 
+		@SuppressWarnings("unchecked")
+	    TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
+	      = TaxonNodeOutStreamPartitioner.NewInstance(
+                this, state, state.getConfig().getTaxonNodeFilter(),
+                (Integer)100, monitor, null);
 		try {
 
-			List<TaxonNode> allNodes = allNodes(state);
 
-			for (TaxonNode node : allNodes){
+		    List<TaxonNode> allNodes = allNodes(state);
+
+		    TaxonNode node = partitioner.next();
+			while (node != null){
 			    for (DwcaDataExportBase export : exports){
 			        handleTaxonNode(export, state, node);
 			    }
-			    monitor.worked(1);
+			    node = partitioner.next();
+//			    monitor.worked(1);
 			}
 		} catch (Exception e) {
 		    String message = "Unexpected exception: " + e.getMessage();
 			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{
+		    if(partitioner != null){
+		        partitioner.close();
+		    }
 		    for (DwcaDataExportBase export : exports){
 		        closeWriter(export, state);
             }
 		}
-
-		commitTransaction(txStatus);
 
 		return;
 

@@ -100,6 +100,7 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
      * Preliminary implementation. Better implement API method for this.
      */
     //TODO unify with similar methods for other exports
+    //TODO can be removed once the partitioner is used
     protected List<TaxonNode> allNodes(DwcaTaxExportState state) {
 
         TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
