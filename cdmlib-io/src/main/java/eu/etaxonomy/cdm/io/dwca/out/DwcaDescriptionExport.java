@@ -44,7 +44,7 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
 
     private DwcaMetaDataRecord metaRecord;
 
-	/**
+    /**
 	 * Constructor
 	 */
 	public DwcaDescriptionExport(DwcaTaxExportState state) {

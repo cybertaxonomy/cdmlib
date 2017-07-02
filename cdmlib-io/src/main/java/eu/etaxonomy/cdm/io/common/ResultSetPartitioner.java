@@ -33,8 +33,9 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 
 //************************* STATIC ***************************************************/
 
-	public static ResultSetPartitioner NewInstance(Source source, String strIdQuery, String strRecordQuery, int partitionSize) throws SQLException{
-		ResultSetPartitioner<IPartitionedState> resultSetPartitioner = new ResultSetPartitioner<IPartitionedState>(source, strIdQuery, strRecordQuery, partitionSize);
+	public static <T extends IPartitionedState> ResultSetPartitioner<T> NewInstance(Source source, String strIdQuery, String strRecordQuery, int partitionSize) throws SQLException{
+		ResultSetPartitioner<T> resultSetPartitioner
+		        = new ResultSetPartitioner<>(source, strIdQuery, strRecordQuery, partitionSize);
 		return resultSetPartitioner;
 	}
 
