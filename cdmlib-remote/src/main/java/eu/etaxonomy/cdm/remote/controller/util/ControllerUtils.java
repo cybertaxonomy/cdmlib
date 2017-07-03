@@ -34,7 +34,7 @@ public class ControllerUtils {
     public static Set<TaxonRelationshipEdge> loadIncludeRelationships(UuidList relationshipUuids, UuidList relationshipInversUuids, ITermService termService) {
         Set<TaxonRelationshipEdge> includeRelationships = null;
         if(relationshipUuids != null || relationshipInversUuids != null){
-            includeRelationships = new HashSet<TaxonRelationshipEdge>();
+            includeRelationships = new HashSet<>();
             if(relationshipUuids != null) {
                 for (UUID uuid : relationshipUuids) {
                     if(relationshipInversUuids != null && relationshipInversUuids.contains(uuid)){

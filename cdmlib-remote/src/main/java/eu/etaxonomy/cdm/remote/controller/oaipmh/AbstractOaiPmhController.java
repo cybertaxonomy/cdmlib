@@ -308,7 +308,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             clazz = set.getSetClass();
         }
 
-        List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
+        List<AuditCriterion> criteria = new ArrayList<>();
         if(onlyItemsWithLsid){
             //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
             //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
