@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.filter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +29,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  *
  */
-public class TaxonNodeFilter {
+public class TaxonNodeFilter implements Serializable{
+
+    private static final long serialVersionUID = 2292886683987183999L;
 
     private List<LogicFilter<TaxonNode>> subtrees = new ArrayList<>();
     private List<LogicFilter<TaxonNode>> taxonNodes = new ArrayList<>();
