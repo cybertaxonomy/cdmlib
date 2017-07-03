@@ -79,7 +79,6 @@ import io.swagger.annotations.Api;
  * to scientific names as well as taxa present in the underlying datasource.
  *
  * @author c.mathew
- * @version 1.1.0
  * @created 15-Apr-2012
  */
 

@@ -7,8 +7,6 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.remote.controller.dto;
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -49,6 +47,7 @@ import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
 import eu.etaxonomy.cdm.remote.dto.occurrencecatalogue.OccurrenceSearch;
 import eu.etaxonomy.cdm.remote.dto.occurrencecatalogue.OccurrenceSearch.OccurrenceSearchResponse;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+import io.swagger.annotations.Api;
 
 /**
  * The controller class for the namespace 'occurrence_catalogue'. This web service namespace
@@ -56,7 +55,6 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
  * to scientific names as well as taxa present in the underlying datasource.
  *
  * @author p.kelbert
- * @version 1.1.0
  * @created March-2014
  */
 

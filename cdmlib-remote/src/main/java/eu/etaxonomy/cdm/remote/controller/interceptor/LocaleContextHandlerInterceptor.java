@@ -26,7 +26,6 @@ public class LocaleContextHandlerInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private final LocaleContext localeContext = null;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 	    localeContext.setLocales(request.getLocales());
