@@ -86,16 +86,12 @@ public class DwcaTaxExport extends DwcaExportBase {
                 (Integer)100, monitor, null);
 		try {
 
-
-		    List<TaxonNode> allNodes = allNodes(state);
-
 		    TaxonNode node = partitioner.next();
 			while (node != null){
 			    for (DwcaDataExportBase export : exports){
 			        handleTaxonNode(export, state, node);
 			    }
 			    node = partitioner.next();
-//			    monitor.worked(1);
 			}
 		} catch (Exception e) {
 		    String message = "Unexpected exception: " + e.getMessage();
