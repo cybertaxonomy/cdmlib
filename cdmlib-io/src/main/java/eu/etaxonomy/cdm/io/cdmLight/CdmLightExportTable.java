@@ -134,7 +134,7 @@ public enum CdmLightExportTable {
     protected static final String AUTHOR_FIRST_NAME = "AuthorFirstName";
     protected static final String AUTHOR_LASTNAME = "AuthorLastName";
     protected static final String AUTHOR_PREFIX = "AuthorPrefix";
-    protected static final String AUTHOR_SUFFIX = "AuthorSurfix";
+    protected static final String AUTHOR_SUFFIX = "AuthorSuffix";
 
   //Nomenclatural Author AuthorTeam Relations
 
