@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 
@@ -84,10 +85,11 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
     private void addChildNode(FeatureNode node, Resource resourceNode, final Property propHasSubStructure, final Property propUuid, Property propLabel, Model model){
         List<FeatureNode> childNodes = node.getChildNodes();
         for (FeatureNode child : childNodes) {
-            Resource childResourceNode = model.createResource(NODE_BASE_URI+child.getUuid().toString());
+            Feature feature = child.getFeature();
+            Resource childResourceNode = model.createResource(NODE_BASE_URI+feature.getUuid().toString());
             resourceNode.addProperty(propHasSubStructure, childResourceNode
-                    .addProperty(propUuid, child.getUuid().toString())
-                    .addProperty(propLabel, child.getFeature().getLabel())
+                    .addProperty(propUuid, feature.getUuid().toString())
+                    .addProperty(propLabel, feature.getLabel())
                     );
             addChildNode(child, childResourceNode, propHasSubStructure, propUuid, propLabel, model);
         }
