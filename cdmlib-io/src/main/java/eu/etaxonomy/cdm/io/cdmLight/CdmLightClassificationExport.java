@@ -164,6 +164,7 @@ public class CdmLightClassificationExport
         if (taxonNode == null){
             state.getResult().addError ("The taxonNode was null.", "handleTaxon");
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
+            return;
         }
         if (taxonNode.getTaxon() == null){
             state.getResult().addError ("There was a taxon node without a taxon: " + taxonNode.getUuid(), "handleTaxon");
