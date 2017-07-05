@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
@@ -19,6 +20,9 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
+import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -71,15 +75,16 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
                         .addProperty(propUuid, rootNode.getUuid().toString()));
 
         addChildNode(rootNode, resourceRootNode, propHasSubStructure, propUuid, propLabel, model);
-//                        .addProperty(propHasSubStructure, model.createResource(resourceURI + "child1")
-//                                .addProperty(propHasSubStructure, model.createResource(resourceURI + "child1.1")))
-//                        .addProperty(propHasSubStructure, model.createResource(resourceURI + "child2")
-//                                .addProperty(propHasSubStructure, model.createResource(resourceURI + "child2.1"))
-//                                .addProperty(propHasSubStructure, model.createResource(resourceURI + "child2.2"))));
 
-        // FileOutputStream fout = new
-        // FileOutputStream("C:\\Java\\jdk1.6.0_03\\bin\\amitKumar.xml");
-        model.write(System.out);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ExportDataWrapper<byte[]> exportDataWrapper = ExportDataWrapper.NewByteArrayInstance();
+        model.write(stream);
+        exportDataWrapper.setValue(stream.toByteArray());
+
+        ExportResult result = ExportResult.NewInstance(ExportResultType.BYTE_ARRAY);
+        result.setExportData(exportDataWrapper);
+
+        state.setResult(result);
     }
 
     private void addChildNode(FeatureNode node, Resource resourceNode, final Property propHasSubStructure, final Property propUuid, Property propLabel, Model model){
