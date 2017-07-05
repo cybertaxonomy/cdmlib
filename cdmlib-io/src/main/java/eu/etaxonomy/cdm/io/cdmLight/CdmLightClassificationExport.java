@@ -386,8 +386,8 @@ public class CdmLightClassificationExport
                     if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
                         SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
 
-                        if (specimenBase instanceof DerivedUnit){
-                            DerivedUnit derivedUnit = (DerivedUnit)specimenBase;
+                        if (specimenBase instanceof SpecimenOrObservationBase){
+                            SpecimenOrObservationBase derivedUnit = specimenBase;
                             handleSpecimen(state, derivedUnit);
                             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
                         }else{
@@ -1420,7 +1420,7 @@ public class CdmLightClassificationExport
      * @param state
      * @param specimen
      */
-    private void handleSpecimen(CdmLightExportState state, DerivedUnit specimen) {
+    private void handleSpecimen(CdmLightExportState state, SpecimenOrObservationBase specimen) {
         try {
             state.addSpecimenToStore(specimen);
             CdmLightExportTable table = CdmLightExportTable.SPECIMEN;
@@ -1430,50 +1430,54 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_ID)] = specimenId;
             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_CITATION)] = specimen.getTitleCache();
             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_IMAGE_URIS)] = extractURIs(state, specimen.getDescriptions(), Feature.IMAGE());
-            if (specimen.getCollection() != null){ csvLine[table.getIndex(CdmLightExportTable.HERBARIUM_ABBREV)] = specimen.getCollection().getCode();}
-            if (specimen instanceof MediaSpecimen){
-                MediaSpecimen mediaSpecimen = (MediaSpecimen) specimen;
-                Iterator<MediaRepresentation> it = mediaSpecimen.getMediaSpecimen().getRepresentations().iterator();
-                String mediaUris = extractMediaUris(it);
-                csvLine[table.getIndex(CdmLightExportTable.MEDIA_SPECIMEN_URL)] = mediaUris;
+            if (specimen instanceof DerivedUnit){
+                    DerivedUnit derivedUnit = (DerivedUnit)specimen;
+                    if (derivedUnit.getCollection() != null){ csvLine[table.getIndex(CdmLightExportTable.HERBARIUM_ABBREV)] = derivedUnit.getCollection().getCode();}
 
-            }
+                if (specimen instanceof MediaSpecimen){
+                    MediaSpecimen mediaSpecimen = (MediaSpecimen) specimen;
+                    Iterator<MediaRepresentation> it = mediaSpecimen.getMediaSpecimen().getRepresentations().iterator();
+                    String mediaUris = extractMediaUris(it);
+                    csvLine[table.getIndex(CdmLightExportTable.MEDIA_SPECIMEN_URL)] = mediaUris;
 
-            if (specimen.getDerivedFrom() != null){
-                for (SpecimenOrObservationBase<?> original: specimen.getDerivedFrom().getOriginals()){
-                    //TODO: What to do if there are more then one FieldUnit??
-                    if (original instanceof FieldUnit){
-                        FieldUnit fieldUnit = (FieldUnit)original;
-                        csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_NUMBER)] = fieldUnit.getFieldNumber();
+                }
 
-                        GatheringEvent gathering = fieldUnit.getGatheringEvent();
-                        if (gathering != null){
-                            if (gathering.getLocality() != null){ csvLine[table.getIndex(CdmLightExportTable.LOCALITY)] = gathering.getLocality().getText();}
-                            if (gathering.getCountry() != null){csvLine[table.getIndex(CdmLightExportTable.COUNTRY)] = gathering.getCountry().getLabel();}
-                            csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_STRING)] = createCollectorString(state, gathering, fieldUnit);
-                            addCollectingAreas(state, gathering);
-                            if (gathering.getGatheringDate() != null){csvLine[table.getIndex(CdmLightExportTable.COLLECTION_DATE)] = gathering.getGatheringDate().toString();}
-                            if (!gathering.getCollectingAreas().isEmpty()){
-                                int index = 0;
-                                csvLine[table.getIndex(CdmLightExportTable.FURTHER_AREAS)] = "0";
-                                for (NamedArea area: gathering.getCollectingAreas()){
-                                    if (index == 0){
-                                        csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY1)] = area.getTermType().getKey();
-                                        csvLine[table.getIndex(CdmLightExportTable.AREA_NAME1)] = area.getLabel();
+                if (derivedUnit.getDerivedFrom() != null){
+                    for (SpecimenOrObservationBase<?> original: derivedUnit.getDerivedFrom().getOriginals()){
+                        //TODO: What to do if there are more then one FieldUnit??
+                        if (original instanceof FieldUnit){
+                            FieldUnit fieldUnit = (FieldUnit)original;
+                            csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_NUMBER)] = fieldUnit.getFieldNumber();
+
+                            GatheringEvent gathering = fieldUnit.getGatheringEvent();
+                            if (gathering != null){
+                                if (gathering.getLocality() != null){ csvLine[table.getIndex(CdmLightExportTable.LOCALITY)] = gathering.getLocality().getText();}
+                                if (gathering.getCountry() != null){csvLine[table.getIndex(CdmLightExportTable.COUNTRY)] = gathering.getCountry().getLabel();}
+                                csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_STRING)] = createCollectorString(state, gathering, fieldUnit);
+                                addCollectingAreas(state, gathering);
+                                if (gathering.getGatheringDate() != null){csvLine[table.getIndex(CdmLightExportTable.COLLECTION_DATE)] = gathering.getGatheringDate().toString();}
+                                if (!gathering.getCollectingAreas().isEmpty()){
+                                    int index = 0;
+                                    csvLine[table.getIndex(CdmLightExportTable.FURTHER_AREAS)] = "0";
+                                    for (NamedArea area: gathering.getCollectingAreas()){
+                                        if (index == 0){
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY1)] = area.getTermType().getKey();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_NAME1)] = area.getLabel();
+                                        }
+                                        if (index == 1){
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY2)] = area.getTermType().getKey();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_NAME2)] = area.getLabel();
+                                        }
+                                        if (index == 2){
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY3)] = area.getTermType().getKey();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_NAME3)] = area.getLabel();
+                                        }
+                                        if (index == 3){
+                                            csvLine[table.getIndex(CdmLightExportTable.FURTHER_AREAS)] = "1";
+                                            break;
+                                        }
+                                        index++;
                                     }
-                                    if (index == 1){
-                                        csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY2)] = area.getTermType().getKey();
-                                        csvLine[table.getIndex(CdmLightExportTable.AREA_NAME2)] = area.getLabel();
-                                    }
-                                    if (index == 2){
-                                        csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY3)] = area.getTermType().getKey();
-                                        csvLine[table.getIndex(CdmLightExportTable.AREA_NAME3)] = area.getLabel();
-                                    }
-                                    if (index == 3){
-                                        csvLine[table.getIndex(CdmLightExportTable.FURTHER_AREAS)] = "1";
-                                        break;
-                                    }
-                                    index++;
                                 }
                             }
                         }
