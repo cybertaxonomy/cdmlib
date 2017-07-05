@@ -83,9 +83,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 	    TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
 	      = TaxonNodeOutStreamPartitioner.NewInstance(
                 this, state, state.getConfig().getTaxonNodeFilter(),
-                (Integer)100, monitor, null);
+                100, monitor, null);
 		try {
-
+		    monitor.subTask("Start partitioning");
 		    TaxonNode node = partitioner.next();
 			while (node != null){
 			    for (DwcaDataExportBase export : exports){
