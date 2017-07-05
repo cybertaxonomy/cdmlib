@@ -231,7 +231,7 @@ public class DwcaExportController extends AbstractController implements Resource
 
             final String origin = request.getRequestURL().append('?')
                     .append(CdmUtils.Nz(request.getQueryString())).toString()
-                    .replace("&clearCache=true", "");
+                    .replace("&clearCache=true", "").replace("?clearCache=true", "?");
 
             String fileName = makeFileName(response, origin, DWCATAX);
             final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), fileName);
@@ -300,8 +300,10 @@ public class DwcaExportController extends AbstractController implements Resource
     //=========== Helper Methods ===============//
 
     /**
+     * Creates an (MD5) Hash of the URI and uses it for the local file name, to be unique
      * @param response
      * @param origin
+     * @param prefix
      * @return
      * @throws IOException
      */
@@ -310,11 +312,6 @@ public class DwcaExportController extends AbstractController implements Resource
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(origin.getBytes(),0,origin.length());
             String result = new BigInteger(1,md.digest()).toString(16);
-
-//            InputStream is = IOUtils.toInputStream(origin, "UTF-8");
-//            DigestInputStream dis = new DigestInputStream(is, md);
-//            byte[] digest = md.digest();
-//            return new String(digest);
             return prefix + result;
         } catch (NoSuchAlgorithmException e) {
             String message = "Can't create temporary filename hash for " +  origin;
@@ -357,11 +354,6 @@ public class DwcaExportController extends AbstractController implements Resource
     /**
      * Cofiguration method to set the configuration details for the defaultExport in the application context.
      * @param cacheFile
-     *
-     * @param classificationUUID pass-through the selected {@link Classification classification}
-     * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
-     * @param areas
-     * @param byteArrayOutputStream pass-through the stream to write out the data later.
      * @param progressMonitor
      * @param doImages
      * @param doDescriptions
@@ -370,10 +362,7 @@ public class DwcaExportController extends AbstractController implements Resource
      * @param doReferences
      * @param doResourceRelations
      * @param doTypesAndSpecimen
-     * @param conceptExport
-     * @param demoExport
-     * @return the CsvTaxExportConfiguratorRedlist config
-     */
+      */
     private DwcaTaxExportConfigurator setDwcaTaxExportConfigurator(File cacheFile,
             IRestServiceProgressMonitor progressMonitor,
             TaxonNodeFilter taxonNodeFilter,

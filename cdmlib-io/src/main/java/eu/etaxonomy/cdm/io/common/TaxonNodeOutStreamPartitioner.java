@@ -105,12 +105,14 @@ public class TaxonNodeOutStreamPartitioner<STATE extends XmlExportState> {
 
 	public void initialize(){
 	    if (totalCount < 0){
+	        parentMonitor.subTask("Compute total number of records");
 	        totalCount = ((Long)repository.getTaxonNodeService().count(filter)).intValue();
 	        idList = repository.getTaxonNodeService().idList(filter);
 	        int parTicks = this.parentTicks == null? totalCount : this.parentTicks;
 	        monitor = SubProgressMonitor.NewStarted(parentMonitor, parTicks,
 	                "Taxon node streamer", totalCount * (retrieveFactor +  iterateFactor));
 	        idIterator = idList.iterator();
+	        monitor.subTask("id iterator created");
 	    }
 	}
 
