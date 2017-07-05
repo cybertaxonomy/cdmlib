@@ -150,7 +150,7 @@ public class CdmLightClassificationExport
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling classification " +
-                    classificationUuid + ": " + e.getMessage());
+                    classificationUuid + ": " + e.getMessage() + e.getStackTrace());
         }
     }
 
@@ -160,11 +160,16 @@ public class CdmLightClassificationExport
      */
     private void handleTaxon(CdmLightExportState state, TaxonNode taxonNode) {
 
-        Taxon taxon = taxonNode.getTaxon();
-        if (taxon == null){
+      //  Taxon taxon = taxonNode.getTaxon();
+        if (taxonNode == null){
+            state.getResult().addError ("The taxonNode was null.", "handleTaxon");
+            state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
+        }
+        if (taxonNode.getTaxon() == null){
             state.getResult().addError ("There was a taxon node without a taxon: " + taxonNode.getUuid(), "handleTaxon");
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
         }else{
+            Taxon taxon = taxonNode.getTaxon();
              try{
                 TaxonName name = taxon.getName();
                 handleName(state, name);
@@ -193,6 +198,8 @@ public class CdmLightClassificationExport
                  state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
              }
        }
+
+       taxonNode.removeNullValueFromChildren();
        for (TaxonNode child: taxonNode.getChildNodes()){
            handleTaxon(state, child);
        }
