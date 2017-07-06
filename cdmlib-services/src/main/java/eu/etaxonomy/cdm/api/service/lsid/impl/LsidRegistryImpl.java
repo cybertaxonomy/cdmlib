@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -35,31 +35,31 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILsidAuthorityDao;
 public class LsidRegistryImpl implements LSIDRegistry {
 	private static Log log = LogFactory.getLog(LsidRegistryImpl.class);
     //	 the main registry, stores all pattern mappings.
-	private Map<String,IIdentifiableDao<? extends IdentifiableEntity>> registry = new HashMap<String,IIdentifiableDao<? extends IdentifiableEntity>>();
-	
+	private Map<String,IIdentifiableDao<? extends IdentifiableEntity>> registry = new HashMap<>();
+
 	private Set<IIdentifiableDao> identifiableDaos;
-	
+
 	private ILsidAuthorityDao lsidAuthorityDao;
-	
+
 	protected PlatformTransactionManager transactionManager;
-	
+
 	protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-	
+
 	@Autowired
 	public void setIdentifiableDaos(Set<IIdentifiableDao> identifiableDaos) {
 		this.identifiableDaos = identifiableDaos;
 	}
-	
+
 	@Autowired
 	public void setLsidAuthorityDao(ILsidAuthorityDao lsidAuthorityDao) {
 		this.lsidAuthorityDao = lsidAuthorityDao;
 	}
-	
+
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
-	
+
 	@PostConstruct
 	public void init() {
 		registry = new HashMap<String,IIdentifiableDao<? extends IdentifiableEntity>>();
@@ -75,29 +75,30 @@ public class LsidRegistryImpl implements LSIDRegistry {
 						break;
 					}
 				}
-				
+
 				if(!foundDao) {
 					log.warn("Did not find DAO serving classes of type " + clazz + " for authority " + lsidAuthority.getAuthority() + " with namespace " + namespace);
 				}
 			}
 		}
-		
+
 		transactionManager.commit(txStatus);
 	}
 
-	public IIdentifiableDao<? extends IdentifiableEntity> lookupDAO(LSID lsid) {
+	@Override
+    public IIdentifiableDao<? extends IdentifiableEntity> lookupDAO(LSID lsid) {
         //		 if the LSID is null, then we return whatever is registered with the no lsid pattern
-		
+
 		if (lsid == null) {
 			IIdentifiableDao<? extends IdentifiableEntity> identifiableDAO = registry.get(Pattern.NO_LSID_PATTERN.toString());
 			return identifiableDAO;
 		}
-		
+
 		Pattern lookup = new Pattern();
 		lookup.setAuthority(lsid.getAuthority().toString());
 		lookup.setNamespace(lsid.getNamespace());
-		
-		IIdentifiableDao<? extends IdentifiableEntity> identifiableDAO = registry.get(lookup.toString()); 
+
+		IIdentifiableDao<? extends IdentifiableEntity> identifiableDAO = registry.get(lookup.toString());
 		if (identifiableDAO != null) {
 			log.info("Found DAO " + identifiableDAO.getClass().getSimpleName());
 			return identifiableDAO;

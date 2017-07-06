@@ -372,7 +372,7 @@ public class EditGeoServiceUtilities {
             String geoLayerName = getWMSLayerName(area, mapping);
 
             if(geoLayerName == null){
-               /* IGNORE areas for which no layer is mapped */
+               logger.warn("no wms layer mapping defined for " + area.getLabel() + " [" + area.getIdInVocabulary() + "]");
             } else {
                 Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerName);
                 if (styleMap == null) {
@@ -710,7 +710,7 @@ public class EditGeoServiceUtilities {
             uuids.add(presenceTermVocabUuid);
 
 
-            for(TermVocabulary vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm)) {
+            for(TermVocabulary vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm, null)) {
                 if(!uuids.contains(vocab.getUuid())) {
                     uuids.add(vocab.getUuid());
                 }

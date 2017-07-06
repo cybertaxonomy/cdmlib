@@ -14,10 +14,10 @@ import static org.junit.Assert.assertEquals;
 import java.net.URI;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -694,14 +694,15 @@ public class DefaultReferenceCacheStrategyTest {
 // ********************************** WEB PAGE ********************************************/
 
     @Test
-    @Ignore //under development
     public void testWebPageGetTitleCache(){
+        //still preliminary, may be modified in future
         webPage1.setTitle("Flora of Israel Online");
         webPage1.setUri(URI.create("http://flora.huji.ac.il"));
         webPage1.setAuthorship(webPageTeam1);
-        webPage1.setDatePublished(TimePeriodParser.parseString("[accessed in 2011]"));
-        //taken from Berlin Model, may be modified in future
-        Assert.assertEquals("Unexpected title cache.", "Authorteam, D. - Flora of Israel Online - http://flora.huji.ac.il [accessed in 2011]", webPage1.getTitleCache());
+        webPage1.setAccessed(DateTime.parse("2001-01-05"));
+        Assert.assertEquals("Unexpected title cache.",
+                "Authorteam, D., Flora of Israel Online - http://flora.huji.ac.il [accessed 2001-01-05]",
+                webPage1.getTitleCache());
     }
 
 //  @Test

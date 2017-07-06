@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.application;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,7 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -175,10 +178,14 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private IPreferenceService preferenceService;
 	@Autowired
     private IRightsService rightsService;
+    @Autowired
+    private IRegistrationService registrationService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
 	private ICdmPermissionEvaluator permissionEvaluator;
+	@Autowired
+    private SessionFactory factory;
 
 	//	@Autowired
 	//@Qualifier("mainService")
@@ -432,6 +439,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return permissionEvaluator;
 	}
 
+
 	@Override
 	public TransactionStatus startTransaction(){
 		return startTransaction(false);
@@ -478,10 +486,35 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		context.setAuthentication(authentication);
 	}
 
-
     @Override
     public IRightsService getRightsService() {
-
         return rightsService;
     }
+
+    @Override
+    public IRegistrationService getRegistrationService() {
+        return registrationService;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return factory;
+    }
+
+    /**
+     * Returns the current session.
+     * A new Session will be opened in case of a HiernateExecption occurs when getting the current Session.
+     *
+     * @return
+     */
+    public Session getSession(){
+        Session session ;
+        try {
+            session = factory.getCurrentSession();
+        } catch (HibernateException e) {
+            logger.info("Opening new session in turn of a HibernateException: " + e.getMessage());
+            session = factory.openSession();
+        }
+        return session;
+    }
+
 }

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.mueller
  * @date 2015-05-21
  */
-public class MnTableRemover extends AuditedSchemaUpdaterStepBase<TableCreator> implements ISchemaUpdaterStep {
+public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
 
 	private final String fkColumnName;  //new column in child table which points to the parent table
 	private final String mnParentFkColumnName;  //column in MN table which points to the parent table
@@ -120,9 +120,10 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase<TableCreator> i
     }
 
     @Override
-    protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
         //we only do have inner steps here
-        return true;
+        return;
     }
 
 

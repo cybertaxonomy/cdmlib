@@ -80,22 +80,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private static final Logger logger = Logger.getLogger(Abcd206Import.class);
 
 
-
-
-
     public Abcd206Import() {
         super();
     }
 
-    @Override
-    protected boolean doCheck(Abcd206ImportState state) {
-        logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
-        return true;
-    }
-
 
     @Override
-    @SuppressWarnings("rawtypes")
+//    @SuppressWarnings("rawtypes")
     public void doInvoke(Abcd206ImportState state) {
         Abcd206ImportConfigurator config = state.getConfig();
         Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
@@ -187,7 +178,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
                 //get classification via user interaction
                 if (state.getConfig().isUseClassification() && state.getConfig().isInteractWithUser()){
-                    Map<String,Classification> classMap = new HashMap<String, Classification>();
+                    Map<String,Classification> classMap = new HashMap<>();
                     for (Classification tree : classificationList) {
                         if (! StringUtils.isBlank(tree.getTitleCache())) {
                             classMap.put(tree.getTitleCache(),tree);
@@ -216,7 +207,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         state.setClassification(Classification.NewInstance(name, state.getRef(), Language.DEFAULT()));
                         //we do not need a default classification when creating an empty new one
                         state.setDefaultClassification(state.getClassification());
-                        save(state.getDefaultClassification(), state);
+                        save(state.getDefaultClassification(false), state);
                     }
                     save(state.getClassification(), state);
                 }
@@ -248,10 +239,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
-               // state.setDefaultClassification(getClassificationService().load(state.getDefaultClassification().getUuid()));
-                state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
-                state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
-                state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());
+                if (state.getDefaultClassification(false) != null){
+                    state.setDefaultClassification(getClassificationService().load(state.getDefaultClassification(false).getUuid()));
+                }
+                if (state.getClassification() != null){
+                    state.setClassification(getClassificationService().load(state.getClassification().getUuid()));
+                }
+                state.setAssociationRefs(new ArrayList<>());
+                state.setDescriptionRefs(new ArrayList<>());
+                state.setDerivedUnitSources(new ArrayList<>());
                 for (int i = 0; i < unitsList.getLength(); i++) {
                     if(state.getConfig().getProgressMonitor().isCanceled()){
                         break;
@@ -308,7 +304,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
        DerivedUnit currentUnit = state.getDerivedUnitBase();
      //  DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
        FieldUnit currentFieldUnit = facade.getFieldUnit(false);
-        if(unitAssociationWrapper!=null){
+       if(unitAssociationWrapper!=null){
             NodeList associatedUnits = unitAssociationWrapper.getAssociatedUnits();
             if(associatedUnits!=null){
                 for(int m=0;m<associatedUnits.getLength();m++){
@@ -360,8 +356,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     public void handleSingleUnit(Abcd206ImportState state, Object itemObject){
         handleSingleUnit(state, itemObject, true);
     }
-
-
 
 
     @SuppressWarnings("rawtypes")
@@ -629,9 +623,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             //Reference stuff
             SpecimenUserInteraction sui = config.getSpecimenUserInteraction();
-            Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
+            Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<>();
 
-            state.getDataHolder().setDocSources(new ArrayList<String>());
+            state.getDataHolder().setDocSources(new ArrayList<>());
             for (String[] fullReference : state.getDataHolder().getReferenceList()) {
                 String strReference=fullReference[0];
                 String citationDetail = fullReference[1];
@@ -1080,7 +1074,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     private void prepareCollectors(Abcd206ImportState state, NodeList unitsList, Abcd206XMLFieldGetter abcdFieldGetter) {
 
-        TeamOrPersonBase teamOrPerson = null;
+        TeamOrPersonBase<?> teamOrPerson = null;
 
         //ImportHelper.setOriginalSource(teamOrPerson, state.getConfig().getSourceReference(), collector, "Collector");
         for (int i = 0; i < unitsList.getLength(); i++) {
@@ -1201,11 +1195,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 //        ((Abcd206ImportConfigurator) state.getConfig()).setPersons(titleCachePerson);
     }
 
+
+    @Override
+    protected boolean doCheck(Abcd206ImportState state) {
+        logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
+        return true;
+    }
+
     @Override
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
     }
-
-
 
 }

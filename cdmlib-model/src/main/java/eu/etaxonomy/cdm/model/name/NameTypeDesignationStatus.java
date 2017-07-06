@@ -209,7 +209,7 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
 	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
 	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * publication of the "type-bringing" {@link TaxonName taxon name}, when the
 	 * holotype is found to be assigned to taxon names belonging to more than
 	 * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
 	 *

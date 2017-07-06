@@ -75,7 +75,6 @@ public class ExportDataWrapper<T> implements Serializable{
         } else if (type.equals(ExportResultType.LIST_BYTE_ARRAY)){
             ((List<byte[]>)exportData).add(data);
         }
-
     }
 
     public void putExportData(String key, byte[] data){

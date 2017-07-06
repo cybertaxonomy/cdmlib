@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -389,7 +389,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 
 
 
-	protected void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
+	protected void makeTypification(TaxonName name, Element elTypifiacation, ResultWrapper<Boolean> success){
 		if (elTypifiacation != null){
 			//logger.warn("makeTypification not yet implemented");
 			//success.setValue(false);
@@ -397,7 +397,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 
-	protected void makePublicationStatus(TaxonNameBase name, Element elPublicationStatus, ResultWrapper<Boolean> success){
+	protected void makePublicationStatus(TaxonName name, Element elPublicationStatus, ResultWrapper<Boolean> success){
 		//Status
 
 		if (elPublicationStatus != null){
@@ -406,7 +406,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 	}
 
-	protected void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
+	protected void makeProviderLink(TaxonName name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
 			//logger.warn("makeProviderLink not yet implemented");
 			//success.setValue(false);
@@ -414,7 +414,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 
-	protected void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success, TcsXmlImportState state){
+	protected void makeProviderSpecificData(TaxonName name, Element elProviderSpecificData, ResultWrapper<Boolean> success, TcsXmlImportState state){
 		if (elProviderSpecificData != null){
 
 			Namespace ns = elProviderSpecificData.getNamespace();

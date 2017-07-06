@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dao/hibernate/dataset.xsd">
-  <TAXONNAMEBASE DTYPE="BotanicalName" ID="1" UUID="a49a3963-c4ea-4047-8588-2f8f15352730" PROTECTEDTITLECACHE="false" TITLECACHE="Abies Mill."/>
-  <TAXONNAMEBASE DTYPE="BotanicalName" ID="2" UUID="05a438d6-065f-49ef-84db-c7dc2c259975" PROTECTEDTITLECACHE="false" TITLECACHE="Abies alba Mill." FULLTITLECACHE="Abies alba Mill., My Book: 44" AUTHORSHIPCACHE="Mill." GENUSORUNINOMIAL="Abies" NAMECACHE="Abies alba" />
+  <TAXONNAME NAMETYPE="ICNAFP" ID="1" UUID="a49a3963-c4ea-4047-8588-2f8f15352730" PROTECTEDTITLECACHE="false" TITLECACHE="Abies Mill."/>
+  <TAXONNAME NAMETYPE="ICNAFP" ID="2" UUID="05a438d6-065f-49ef-84db-c7dc2c259975" PROTECTEDTITLECACHE="false" TITLECACHE="Abies alba Mill." FULLTITLECACHE="Abies alba Mill., My Book: 44" AUTHORSHIPCACHE="Mill." GENUSORUNINOMIAL="Abies" NAMECACHE="Abies alba" />
  </dataset>

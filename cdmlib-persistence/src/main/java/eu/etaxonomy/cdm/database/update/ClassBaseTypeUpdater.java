@@ -22,16 +22,15 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 2015-03-20
  * @author a.mueller
  */
-public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase<ClassBaseTypeUpdater> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TableCreator.class);
+public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 
-	private static final boolean SORT_INDEX = true;
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TableCreator.class);
 
 	private final boolean includeIdentifiableEntity;
 	private final boolean includeAnnotatableEntity;
-	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<ISchemaUpdaterStep>();
-	protected List<ISchemaUpdaterStep> columnAdderStepList = new ArrayList<ISchemaUpdaterStep>();
+	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<>();
+	protected List<ISchemaUpdaterStep> columnAdderStepList = new ArrayList<>();
 
 
 	public static final ClassBaseTypeUpdater NewVersionableToAnnotatableInstance(String stepName, String tableName, boolean includeAudTable){
@@ -114,16 +113,16 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase<ClassBase
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
+	protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result)  {
 		//we only do have inner steps here
-		return true;
+		return;
 	}
 
 
 	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps() {
-		List<ISchemaUpdaterStep> result = new ArrayList<ISchemaUpdaterStep>
-					( mnTablesStepList);
+		List<ISchemaUpdaterStep> result = new ArrayList<>( mnTablesStepList);
 		result.addAll(columnAdderStepList);
 		return result;
 	}

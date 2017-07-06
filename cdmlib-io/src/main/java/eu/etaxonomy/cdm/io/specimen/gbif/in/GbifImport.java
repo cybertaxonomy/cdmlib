@@ -32,8 +32,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -313,7 +312,7 @@ protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfigurat
         DerivedUnitFacade derivedUnitFacade;
         derivedUnitFacade = item.getDerivedUnitFacade();
         state.setDerivedUnitBase(derivedUnitFacade.innerDerivedUnit());
-        TaxonNameBase bestMatchingName =  findBestMatchingNames(item, state);
+        TaxonName bestMatchingName =  findBestMatchingNames(item, state);
         if (bestMatchingName == null){
             bestMatchingName = item.getScientificName();
         }
@@ -632,7 +631,7 @@ private void handleDeterminations(
     Iterator<DeterminationEvent> determinationIterator = determinations.iterator();
     DeterminationEvent event;
     Taxon taxon;
-    TaxonNameBase name ;
+    TaxonName name ;
     while (determinationIterator.hasNext()) {
         event = determinationIterator.next();
         taxon = (Taxon)event.getTaxon();
@@ -654,13 +653,13 @@ private void handleDeterminations(
  * @param names
  * @param item
  */
-private TaxonNameBase<?,?> findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
+private TaxonName findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
    //TODO
     if (item.getScientificName() != null){
 
-       List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
+       List<TaxonName> names = findExistingNames(item.getScientificName().getNameCache(), state);
        if (!names.isEmpty()){
-           TaxonNameBase<?,?> result = names.get(0);
+           TaxonName result = names.get(0);
            Set<DeterminationEvent> detEvents = item.getDerivedUnitFacade().baseUnit().getDeterminations();
            for (DeterminationEvent event:detEvents){
                if(event.getTaxonName().getNameCache().equals(result.getNameCache()) ){
@@ -686,7 +685,7 @@ private TaxonNameBase<?,?> findBestMatchingNames(GbifResponse item, SpecimenImpo
  * @param state
  * @return
  */
-private List<NonViralName> findExistingNames(String nameCache, SpecimenImportStateBase state) {
+private List<TaxonName> findExistingNames(String nameCache, SpecimenImportStateBase state) {
     return getNameService().findNamesByNameCache(nameCache, MatchMode.LIKE, null);
 }
 

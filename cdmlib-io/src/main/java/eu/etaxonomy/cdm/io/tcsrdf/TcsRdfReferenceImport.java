@@ -25,24 +25,26 @@ import org.springframework.stereotype.Component;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Statement;
 
-import eu.etaxonomy.cdm.io.common.mapping.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.IRdfMapper;
+import eu.etaxonomy.cdm.io.common.mapping.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfReferenceImport.class);
+
+    private static final long serialVersionUID = -2441804641147165510L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfReferenceImport.class);
 
 	private static int modCount = 1000;
 
@@ -191,7 +193,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 
 		String idNamespace = "PublicationCitation";
 		tcsElementName = "PublicationCitation";
-		
+
 		/*List<Element> elPublicationCitations = root.l
 
 		int nomRefCount = 0;

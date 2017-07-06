@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
 /**
- * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+ * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} in a {@link eu.etaxonomy.cdm.model.reference.Reference reference}
  * or within a taxonomic view/treatment either as a {@link Taxon taxon}
  * ("accepted" respectively "correct" name) or as a (junior) {@link Synonym synonym}.
  * Within a taxonomic view/treatment or a reference a taxon name can be used
@@ -107,7 +107,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
     static {
         try {
-            methodTaxonNameAddTaxonBase = TaxonNameBase.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
+            methodTaxonNameAddTaxonBase = TaxonName.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
             methodTaxonNameAddTaxonBase.setAccessible(true);
         } catch (Exception e) {
             logger.error(e);
@@ -128,7 +128,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
-    private TaxonNameBase<?,?> name;
+    private TaxonName name;
 
     // The concept reference
     @XmlElement(name = "Sec")
@@ -160,7 +160,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     /**
      * Class constructor: creates a new empty (abstract) taxon.
      *
-     * @see 	#TaxonBase(TaxonNameBase, Reference)
+     * @see 	#TaxonBase(TaxonName, Reference)
      */
     protected TaxonBase(){
         super();
@@ -168,17 +168,17 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
     /**
      * Class constructor: creates a new (abstract) taxon with the
-     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * using it.
      *
-     * @param  taxonNameBase	the taxon name used
+     * @param  taxonName	the taxon name used
      * @param  sec				the reference using the taxon name
      * @see    #TaxonBase()
      */
-    protected TaxonBase(TaxonNameBase taxonNameBase, Reference sec, String secDetail){
+    protected TaxonBase(TaxonName taxonName, Reference sec, String secDetail){
         super();
-        if (taxonNameBase != null){
-            this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);
+        if (taxonName != null){
+            this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonName);
         }
         this.setSec(sec);
         this.setSecMicroReference(secDetail);
@@ -188,7 +188,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
     /**
      * Generates and returns the string with the full scientific name (including
-     * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i>
+     * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used in <i>this</i>
      * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} using
      * this taxon name. This string may be stored in the inherited
      * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
@@ -224,13 +224,13 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
 
     /**
-     * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
+     * Returns the {@link TaxonName taxon name} used in <i>this</i> (abstract) taxon.
      */
-    public TaxonNameBase getName(){
+    public TaxonName getName(){
         return this.name;
     }
 
-    public void setName(TaxonNameBase name) {
+    public void setName(TaxonName name) {
         if (this.name != null){
             this.name.getTaxonBases().remove(this);
         }
@@ -242,7 +242,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} of the
-     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used in <i>this</i> (abstract) taxon.
      */
     @Transient
     public HomotypicalGroup getHomotypicGroup(){
@@ -290,7 +290,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
-     * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
+     * This is the reference or the treatment using the {@link TaxonName taxon name}
      * in <i>this</i> (abstract) taxon.
      */
     public Reference getSec() {
@@ -323,7 +323,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
 
     /**
-     * An appended phrase is a phrase that is added to the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
+     * An appended phrase is a phrase that is added to the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}
      * 's title cache to be used just in this taxon. E.g. the phrase "sensu latu" may be added
      * to the name to describe this taxon more precisely.
      * If {@link #isUseNameCache()}
@@ -384,7 +384,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
      * {@link  https://dev.e-taxonomy.eu/redmine/issues/922}<BR>
      * {@link https://dev.e-taxonomy.eu/redmine/issues/6311}
      *
-     * @see ITaxonNameBase#compareToName(TaxonNameBase)
+     * @see ITaxonNameBase#compareToName(TaxonName)
      * @see TaxonComparator
      * @see TaxonNaturalComparator
      * @see TaxonNodeByNameComparator
@@ -404,7 +404,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
         otherTaxon = deproxy(otherTaxon);
 
-        TaxonNameBase<?,?> otherName = deproxy(otherTaxon.getName());
+        TaxonName otherName = deproxy(otherTaxon.getName());
         ITaxonNameBase thisName = this.getName();
         if ((otherName == null || thisName == null)){
             if (otherName != thisName){

@@ -31,9 +31,9 @@ public class HomotypicalGroupComparator implements
 		    return 0;
 		}
 		TaxonComparator taxComparator = new HomotypicGroupTaxonComparator(null);
-		Set<TaxonNameBase> typifiedNames1 = group1.getTypifiedNames();
-		List<TaxonBase> taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
-		for (TaxonNameBase<?,?> typifiedName:typifiedNames1){
+		Set<TaxonName> typifiedNames1 = group1.getTypifiedNames();
+		List<TaxonBase> taxonBasesOfTypifiedNames = new ArrayList<>();
+		for (TaxonName typifiedName:typifiedNames1){
 			if (!typifiedName.getTaxonBases().isEmpty()){
 				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
 			}
@@ -41,9 +41,9 @@ public class HomotypicalGroupComparator implements
 		Collections.sort(taxonBasesOfTypifiedNames, taxComparator);
 		firstTypified1 = taxonBasesOfTypifiedNames.get(0);
 
-		Set<TaxonNameBase> typifiedNames2 = group2.getTypifiedNames();
+		Set<TaxonName> typifiedNames2 = group2.getTypifiedNames();
 		taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
-		for (TaxonNameBase<?,?> typifiedName:typifiedNames2){
+		for (TaxonName typifiedName:typifiedNames2){
 			if (!typifiedName.getTaxonBases().isEmpty()){
 				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
 			}

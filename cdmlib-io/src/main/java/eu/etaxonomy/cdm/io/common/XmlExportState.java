@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,8 +23,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @created 11.05.2009
  */
-public class XmlExportState<CONFIG extends XmlExportConfiguratorBase<?>> extends ExportStateBase<CONFIG, IExportTransformer> {
-	private static final Logger logger = Logger.getLogger(XmlExportState.class);
+public class XmlExportState<CONFIG extends XmlExportConfiguratorBase<?>>
+            extends ExportStateBase<CONFIG, IExportTransformer, File> {
+
+    private static final Logger logger = Logger.getLogger(XmlExportState.class);
 
 	private Map<UUID, String> xmlIdMap = new HashMap<>();
 
@@ -48,7 +51,5 @@ public class XmlExportState<CONFIG extends XmlExportConfiguratorBase<?>> extends
 			return null;
 		}
 	}
-
-
 
 }

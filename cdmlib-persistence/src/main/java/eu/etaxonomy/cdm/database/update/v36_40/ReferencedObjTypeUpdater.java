@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -87,9 +87,6 @@ import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -99,13 +96,11 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -134,7 +129,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.mueller
  * @date 25.04.2016
  */
-public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedObjTypeUpdater> implements ITermUpdaterStep{
+public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
 	private static final Logger logger = Logger.getLogger(ReferencedObjTypeUpdater.class);
 
 	private static final String stepName = "Update referenced obj_type";
@@ -149,8 +144,9 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
 		super(stepName);
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 	    //TODO should better be read from eu.etaxonomy.cdm.model.common.package-info @AnyMetaDef
 		try {
@@ -197,9 +193,9 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
 			    Primer.class,
 			    Sequence.class,
 			    SingleRead.class,
-			    BacterialName.class,
-			    BotanicalName.class,
-			    CultivarPlantName.class,
+//			    BacterialName.class,
+//			    BotanicalName.class,
+//			    CultivarPlantName.class,
 			    HomotypicalGroup.class,
 			    HybridRelationship.class,
 			    HybridRelationshipType.class,
@@ -209,12 +205,13 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
                 NameTypeDesignation.class,
 			    NomenclaturalStatus.class,
 			    NomenclaturalStatusType.class,
-			    NonViralName.class,
+//			    NonViralName.class,
 			    Rank.class,
 			    SpecimenTypeDesignationStatus.class,
                 SpecimenTypeDesignation.class,
-                ViralName.class,
-			    ZoologicalName.class,
+//                ViralName.class,
+//			    ZoologicalName.class,
+                TaxonName.class,
 			    Collection.class,
 			    DerivationEvent.class,
 			    DerivationEventType.class,
@@ -256,12 +253,14 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
 			    updateSingleClass(datasource, monitor, caseType, annotatableClass);
 			}
 
-			return 0;
+			return;
 
 		} catch (Exception e) {
-			monitor.warning(e.getMessage(), e);
-			logger.warn(e.getMessage());
-			return null;
+		    String message = e.getMessage();
+            monitor.warning(message, e);
+            logger.warn(message);
+            result.addException(e, message, this, "invoke");
+            return;
 		}
 	}
 
@@ -319,6 +318,10 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
         if (tableName.equals("Rights")){
             tableName = "RightsInfo";
         }
+        if (tableName.equals("TaxonName")){
+            tableName = "TaxonNameBase";
+        }
+
         String casedTable = caseType.transformTo(table);
         String mnTable = caseType.transformTo(tableName + "_" + table);
         return sql.replace("@table", casedTable)
@@ -401,7 +404,7 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
         }
     }
 
-    private static Map<Class, Class> specificClasses = new HashMap<Class, Class>();
+    private static Map<Class, Class> specificClasses = new HashMap<>();
     static{
         specificClasses.put(TeamOrPersonBase.class, AgentBase.class);
         specificClasses.put(TermVocabulary.class, TermVocabulary.class);
@@ -410,9 +413,6 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase<ReferencedOb
         specificClasses.put(OrderedTermVocabulary.class, TermVocabulary.class);
         specificClasses.put(Rights.class, Rights.class);
         specificClasses.put(RelationshipTermBase.class, DefinedTermBase.class);
-
-
-
 
     }
 

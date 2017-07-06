@@ -49,6 +49,8 @@ import fr.lis.ikeyplus.utils.Utils;
 @Component
 public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, IkeyPlusImportState>{
 
+    private static final long serialVersionUID = -6817762818458834785L;
+
     public static final Logger logger = Logger.getLogger(IkeyPlusImport.class);
 
     private TermVocabulary<Feature> featureVoc;
@@ -63,7 +65,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         this.cdmKey = cdmKey;
     }
 
-    private Map<String, Feature>featureMap = new HashMap<String, Feature>();
+    private Map<String, Feature>featureMap = new HashMap<>();
 
     public IkeyPlusImport() {
 
@@ -122,7 +124,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 //        cdmKey.setRoot(rootNode.iterator().next());
 
         persistNewEntities();
-
 
 
         return null;

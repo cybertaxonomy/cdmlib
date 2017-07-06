@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.mueller
  *
  */
-public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
+public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
 	/**
 	 * Return a count of names related to or from this name, optionally filtered
@@ -51,7 +51,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            the relationship type (or null to return all relationships)
 	 * @return a count of NameRelationship instances
 	 */
-	public int countNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, NameRelationshipType type);
+	public int countNameRelationships(TaxonName name, NameRelationship.Direction direction, NameRelationshipType type);
 
 	/**
 	 * Return a List of relationships related to or from this name, optionally filtered
@@ -75,7 +75,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of NameRelationship instances
 	 */
-	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction,
+	public List<NameRelationship> getNameRelationships(TaxonName name, NameRelationship.Direction direction,
 			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths);
 
@@ -119,7 +119,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            the type designation status (or null to return all types)
 	 * @return a count of TypeDesignationBase instances
 	 */
-	public int countTypeDesignations(TaxonNameBase name,
+	public int countTypeDesignations(TaxonName name,
 			SpecimenTypeDesignationStatus status);
 
 	/**
@@ -141,7 +141,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths
 	 * @return a List of TypeDesignationBase instances
 	 */
-	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonNameBase name,
+	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonName name,
 			Class<T> type,
 			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
 			List<String> propertyPaths);
@@ -162,15 +162,15 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            set (0 - based)
 	 * @param propertyPaths
 	 * @return a List of TypeDesignationBase instances
-	 * @deprecated use {@link #getTypeDesignations(TaxonNameBase, Class, TypeDesignationStatusBase, Integer, Integer, List)} instead
+	 * @deprecated use {@link #getTypeDesignations(TaxonName, Class, TypeDesignationStatusBase, Integer, Integer, List)} instead
 	 */
 	@Deprecated
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
+	public List<TypeDesignationBase> getTypeDesignations(TaxonName name,
 			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
 			List<String> propertyPaths);
 
 	/**
-	 * Returns a List of TaxonNameBase instances that match the properties
+	 * Returns a List of TaxonName instances that match the properties
 	 * passed
 	 *
 	 * @param uninomial
@@ -186,15 +186,15 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            set (0 - based)
 	 * @param propertyPaths
 	 * @param orderHints
-	 * @return a List of TaxonNameBase instances
+	 * @return a List of TaxonName instances
 	 */
-	public List<TaxonNameBase> searchNames(String uninomial,
+	public List<TaxonName> searchNames(String uninomial,
 			String infraGenericEpithet, String specificEpithet,
 			String infraspecificEpithet, Rank rank, Integer pageSize,
 			Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a count of TaxonNameBase instances that match the properties
+	 * Returns a count of TaxonName instances that match the properties
 	 * passed
 	 *
 	 * @param uninomial
@@ -202,13 +202,13 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param specificEpithet
 	 * @param infraspecificEpithet
 	 * @param rank
-	 * @return a count of TaxonNameBase instances
+	 * @return a count of TaxonName instances
 	 */
 	public int countNames(String uninomial, String infraGenericEpithet,
 			String specificEpithet, String infraspecificEpithet, Rank rank);
 
 	/**
-	 * Returns a count of TaxonNameBase instances that match the properties passed
+	 * Returns a count of TaxonName instances that match the properties passed
 	 *
 	 * @param queryString
 	 * @param matchMode
@@ -217,7 +217,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
 
 	/**
-	 * Returns a List of TaxonNameBase instances which nameCache matches the
+	 * Returns a List of TaxonName instances which nameCache matches the
 	 * query string
 	 *
 	 * @param queryString
@@ -227,19 +227,19 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param pageNumber
 	 *            The offset (in pageSize chunks) from the start of the result
 	 *            set (0 - based)
-	 * @return a List of TaxonNameBase instances
+	 * @return a List of TaxonName instances
 	 */
-	public List<TaxonNameBase<?, ?>> searchNames(String queryString,
+	public List<TaxonName> searchNames(String queryString,
 			Integer pageSize, Integer pageNumber);
 
 
 
 	/**
-	 * Returns a count of TaxonNameBase instances which nameCache matches the
+	 * Returns a count of TaxonName instances which nameCache matches the
 	 * String queryString
 	 *
 	 * @param queryString
-	 * @return a count of TaxonNameBase instances
+	 * @return a count of TaxonName instances
 	 */
 	public int countNames(String queryString);
 
@@ -252,7 +252,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonNameBase<?, ?>> findByName(boolean doIncludeAuthors,
+	public List<? extends TaxonName> findByName(boolean doIncludeAuthors,
 	        String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
@@ -266,7 +266,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonNameBase<?, ?>> findByTitle(String queryString,
+	public List<? extends TaxonName> findByTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
@@ -281,7 +281,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *
 	 * @return
 	 */
-	public TaxonNameBase<?, ?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+	public TaxonName findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
 
 	/**
 	 * @param queryString
@@ -307,7 +307,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
+	public List<TaxonName> findByName(Class<? extends TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
 
 	/**
 	 * @param clazz
@@ -316,7 +316,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param criteria
 	 * @return
 	 */
-	public long countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(Class<? extends TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	public IZoologicalName findZoologicalNameByUUID(UUID uuid);
 

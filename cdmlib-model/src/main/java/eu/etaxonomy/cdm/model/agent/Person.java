@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -37,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import javassist.compiler.ast.Keyword;
 
 /**
@@ -62,6 +62,7 @@ import javassist.compiler.ast.Keyword;
 @XmlType(name = "Person", propOrder = {
 	    "prefix",
 	    "firstname",
+	    "initials",
 	    "lastname",
 	    "suffix",
 	    "lifespan",
@@ -90,6 +91,12 @@ public class Person extends TeamOrPersonBase<Person>{
 //    @NullOrNotEmpty
     @Column(length=255)
 	private String firstname;
+
+    @XmlElement(name = "FirstName")
+    @Field
+    @NullOrNotEmpty
+    @Column(length=80)
+    private String initials;
 
     @XmlElement(name = "LastName")
     @Field
@@ -243,7 +250,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getPrefix()
 	 */
 	public void setPrefix(String prefix){
-		this.prefix = StringUtils.isBlank(prefix) ? null : prefix;
+		this.prefix = isBlank(prefix) ? null : prefix;
 	}
 
 
@@ -261,8 +268,25 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getFirstname()
 	 */
 	public void setFirstname(String firstname){
-		this.firstname = StringUtils.isBlank(firstname) ? null : firstname;
+		this.firstname = isBlank(firstname) ? null : firstname;
 	}
+
+    /**
+     * Returns the initials of this person as used in bibliographic
+     * references. Usually these are the first letters of each firstname
+     * followed by "." per firstname. For East Asian names it may
+     * be the first 2 letters. Also dashes are kept.
+     * @return the initials
+     */
+    public String getInitials(){
+        return this.initials;
+    }
+    /**
+     * @see  #getInitals()
+     */
+    public void setInitials(String initials){
+        this.initials = isBlank(initials) ? null : initials;
+    }
 
 
 	/**
@@ -278,7 +302,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLastname()
 	 */
 	public void setLastname(String lastname){
-		this.lastname = StringUtils.isBlank(lastname) ? null : lastname;
+		this.lastname = isBlank(lastname) ? null : lastname;
 	}
 
 
@@ -293,7 +317,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getSuffix()
 	 */
 	public void setSuffix(String suffix){
-		this.suffix = StringUtils.isBlank(suffix) ? null: suffix;
+		this.suffix = isBlank(suffix) ? null: suffix;
 	}
 
 
@@ -323,26 +347,6 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.lifespan = lifespan;
 	}
 
-//	/**
-//	 * Generates the "full" name string of <i>this</i> person according to the strategy
-//	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
-//	 * The used attributes are:
-//	 * {@link #getPrefix() prefix}, {@link #getFirstname() firstname}, {@link #getLastname() lastname} and {@link #getSuffix() suffix}.
-//	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
-//	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-//	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-//	 *
-//	 * @return  the string with the full name of <i>this</i> person
-//	 */
-//	@Override
-//	public String generateTitle() {
-//		String title = null;
-//		if (cacheStrategy != null) {
-//		title = cacheStrategy.getTitleCache(this);
-//		}
-//        return title;
-//	}
-
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -363,8 +367,6 @@ public class Person extends TeamOrPersonBase<Person>{
 			e.printStackTrace();
 			return null;
 		}
-
-
 	}
 
 }

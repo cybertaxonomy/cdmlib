@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRecord{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaVernacularRecord.class);
-	
+
 	private String vernacularName;
 	private String source;
 	private Language language;
@@ -40,16 +40,14 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	private Boolean isPreferredName;
 	private String organismPart;
 	private String taxonRemarks;
-	
+
 	public DwcaVernacularRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		locationId = new DwcaId(config);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField("vernacularName", "http://rs.tdwg.org/dwc/terms/vernacularName");
 			addKnownField("source", "http://purl.org/dc/terms/source");
@@ -72,22 +70,22 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 //	@Override
 //	public List<String> getHeaderList() {
-//		String[] result = new String[]{"coreid", 
+//		String[] result = new String[]{"coreid",
 //				"vernacularName",
 //				"source",
-//				"language", 
-//				"temporal", 
-//				"locationId", 
+//				"language",
+//				"temporal",
+//				"locationId",
 //				"locality",
 //				"countryCode",
 //				"sex",
-//				"lifeStage", 
-//				"locality", 
-//				"sex", 
+//				"lifeStage",
+//				"locality",
+//				"sex",
 //				"isPlural",
 //				"isPreferredName",
 //				"organismPart",
@@ -95,11 +93,16 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 //		};
 //		return Arrays.asList(result);
 //	}
-	
-	
-	public void write(PrintWriter writer) {
+
+
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		
+
 		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);
 		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
 		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);
@@ -116,26 +119,27 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 		writer.println();
 	}
 
-
-
 	public String getVernacularName() {
 		return vernacularName;
 	}
 	public void setVernacularName(String vernacularName) {
 		this.vernacularName = vernacularName;
 	}
+
 	public String getTaxonRemarks() {
 		return taxonRemarks;
 	}
 	public void setTaxonRemarks(String taxonRemarks) {
 		this.taxonRemarks = taxonRemarks;
 	}
+
 	public Language getLanguage() {
 		return language;
 	}
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
+
 	public String getSource() {
 		return source;
 	}
@@ -146,92 +150,67 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	public String getTemporal() {
 		return temporal;
 	}
-
-
 	public void setTemporal(String temporal) {
 		this.temporal = temporal;
 	}
 
-
 	public String getLocality() {
 		return locality;
 	}
-
-
-	public void setLocality(String locality) {
+	@Override
+    public void setLocality(String locality) {
 		this.locality = locality;
 	}
-
 
 	public String getCountryCode() {
 		return countryCode;
 	}
-
-
-	public void setCountryCode(String countryCode) {
+	@Override
+    public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
 	}
-
 
 	public DefinedTerm getLifeStage() {
 		return lifeStage;
 	}
-
-
 	public void setLifeStage(DefinedTerm lifeStage) {
 		this.lifeStage = lifeStage;
 	}
 
-
 	public String getLocationId() {
 		return this.locationId.getId();
 	}
-
-
-	public void setLocationId(NamedArea locationId) {
+	@Override
+    public void setLocationId(NamedArea locationId) {
 		this.locationId.setId(locationId);
 	}
-	
+
 	public DefinedTerm getSex() {
 		return sex;
 	}
-
-
 	public void setSex(DefinedTerm sex) {
 		this.sex = sex;
 	}
 
-
 	public Boolean getIsPlural() {
 		return isPlural;
 	}
-
-
 	public void setIsPlural(Boolean isPlural) {
 		this.isPlural = isPlural;
 	}
 
-
 	public Boolean getIsPreferredName() {
 		return isPreferredName;
 	}
-
-
 	public void setIsPreferredName(Boolean isPreferredName) {
 		this.isPreferredName = isPreferredName;
 	}
 
-
 	public String getOrganismPart() {
 		return organismPart;
 	}
-
-
 	public void setOrganismPart(String organismPart) {
 		this.organismPart = organismPart;
 	}
 
-	
-
-	
 }

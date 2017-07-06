@@ -40,7 +40,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.DocUtils;
@@ -81,9 +80,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
     private ITermService termService;
 
     @Autowired
-    private ITaxonService taxonService;
-
-    @Autowired
     private IClassificationService classificationService;
 
     @Autowired
@@ -113,13 +109,21 @@ public class ChecklistDemoController extends AbstractController implements Resou
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
-        binder.registerCustomEditor(NamedArea.class, new TermBaseListPropertyEditor<NamedArea>(termService));
+        binder.registerCustomEditor(NamedArea.class, new TermBaseListPropertyEditor<>(termService));
         binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
 
 
 
 
+    /**
+     * Documentation webservice for this controller.
+     *
+     * @param response unused
+     * @param request unused
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = {""}, method = { RequestMethod.GET})
     public ModelAndView exportGetExplanation(HttpServletResponse response,
             HttpServletRequest request) throws IOException{
@@ -130,7 +134,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
         // Build Html View
-        Map<String, String> modelMap = new HashMap<String, String>();
+        Map<String, String> modelMap = new HashMap<>();
         // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
@@ -159,7 +163,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
         // Build Html View
-        Map<String, String> modelMap = new HashMap<String, String>();
+        Map<String, String> modelMap = new HashMap<>();
         // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
@@ -174,7 +178,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * This service endpoint generates a json and xml view of the exported list.
      * It takes advantage of pagination.
      *
-     * @param classificationUUID
+     * @param classification uuid of the classification to export
      * @param pageNumber
      * @param pageSize
      * @param response
@@ -201,17 +205,20 @@ public class ChecklistDemoController extends AbstractController implements Resou
             PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
             pagerParams.normalizeAndValidate(response);
 
-            List<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
+            List<CsvDemoRecord> recordList = new ArrayList<>();
 
-            CsvDemoExportConfigurator config = setTaxExportConfigurator(null ,classificationUUID, null, null, null, false, false);
+            CsvDemoExportConfigurator config = setTaxExportConfigurator(null ,classificationUUID,
+                    null, null, null, false, false);
             config.setPageSize(pagerParams.getPageSize());
             config.setPageNumber(pagerParams.getPageIndex());
             config.setRecordList(recordList);
 
-            CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
+            @SuppressWarnings("unchecked")
+            CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator> defaultExport =
+                    (CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator>) appContext.getBean("defaultExport");
             defaultExport.invoke(config);
 
-            DefaultPagerImpl<CsvDemoRecord> dpi = new DefaultPagerImpl<CsvDemoRecord>(pagerParams.getPageIndex(), config.getTaxonNodeListSize(), pagerParams.getPageSize(), recordList);
+            DefaultPagerImpl<CsvDemoRecord> dpi = new DefaultPagerImpl<>(pagerParams.getPageIndex(), config.getTaxonNodeListSize(), pagerParams.getPageSize(), recordList);
             ModelAndView mv = new ModelAndView();
 //            mv.addObject(recordList);f
             mv.addObject(dpi);
@@ -326,7 +333,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
         progressMonitor.subTask("configure export");
         CsvDemoExportConfigurator config = setTaxExportConfigurator(cacheFile, classificationUUID, featureUuids, areas, progressMonitor, demoExport, conceptExport);
-        CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
+        CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator> defaultExport =
+                (CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator>) appContext.getBean("defaultExport");
         progressMonitor.subTask("invoke export");
         defaultExport.invoke(config);  //triggers export
         progressMonitor.subTask("wrote results to cache");
@@ -356,13 +364,13 @@ public class ChecklistDemoController extends AbstractController implements Resou
             String destination = System.getProperty("java.io.tmpdir");
             cacheFile = new File(destination);
         }
-        List<Feature> features = new ArrayList<Feature>();
+        List<Feature> features = new ArrayList<>();
         if(featureUuids != null){
             for(UUID uuid : featureUuids) {
                 features.add((Feature) termService.find(uuid));
             }
         }
-        List<NamedArea> selectedAreas = new ArrayList<NamedArea>();
+        List<NamedArea> selectedAreas = new ArrayList<>();
         if(areas != null){
             for(UUID area:areas){
                 logger.info(area);
@@ -381,25 +389,16 @@ public class ChecklistDemoController extends AbstractController implements Resou
         }else{
         	config.createPreSelectedExport(demoExport, conceptExport);
         }
-        if(features != null) {
-            config.setFeatures(features);
-        }
+        config.setFeatures(features);
         config.setNamedAreas(selectedAreas);
         return config;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     public void setService(IService service) {
         // TODO Auto-generated method stub
-
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.context.ResourceLoaderAware#setResourceLoader(org.springframework.core.io.ResourceLoader)
-     */
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

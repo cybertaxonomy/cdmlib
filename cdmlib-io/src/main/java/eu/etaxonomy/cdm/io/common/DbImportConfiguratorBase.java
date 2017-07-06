@@ -23,8 +23,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.mueller
  * @created 20.03.2008
  */
-public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase> extends ImportConfiguratorBase<STATE, Source> implements IImportConfigurator{
-	@SuppressWarnings("unused")
+public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
+            extends ImportConfiguratorBase<STATE, Source> {
+
+    private static final long serialVersionUID = 3474072167155099394L;
 	private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
 
 	private Method userTransformationMethod;

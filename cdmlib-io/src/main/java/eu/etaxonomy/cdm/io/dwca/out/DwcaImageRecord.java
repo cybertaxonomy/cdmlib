@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,11 +29,11 @@ import eu.etaxonomy.cdm.model.media.Rights;
 public class DwcaImageRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImageRecord.class);
-	
+
 	private URI identifier;
 	private String title;
 	private String description;
-	
+
 	//TODO ??
 	private String spatial;
 	private Point coordinates;
@@ -45,15 +45,14 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	private AgentBase<?> publisher;
 	private String audience;
 
-	
+
 	public DwcaImageRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
+
+
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField("identifier", "http://purl.org/dc/terms/identifier");
 			addKnownField("title", "http://purl.org/dc/terms/title");
@@ -73,27 +72,32 @@ public class DwcaImageRecord extends DwcaRecordBase{
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 //	@Override
 //	public List<String> getHeaderList() {
-//		String[] result = new String[]{"coreid", 
+//		String[] result = new String[]{"coreid",
 //				"identifier",
 //				"title",
-//				"description", 
-//				"spatial", 
-//				"latitude", 
+//				"description",
+//				"spatial",
+//				"latitude",
 //				"longitude",
-//				"format", 
-//				"license", 
-//				"created", 
-//				"creator", 
-//				"contributor", 
-//				"publisher", 
+//				"format",
+//				"license",
+//				"created",
+//				"creator",
+//				"contributor",
+//				"publisher",
 //				"audience"};
 //		return Arrays.asList(result);
 //	}
-	
-	public void write(PrintWriter writer) {
+
+    @Override
+    public void write(DwcaTaxExportState state, PrintWriter writer) {
+        if(writer == null){
+            writeCsv(state);
+            return;
+        }
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(identifier, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
 		print(title, writer, IS_NOT_FIRST, TermUri.DC_TITLE);
@@ -113,7 +117,7 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public URI getIdentifier() {
 		return identifier;
 	}
-	
+
 	public void setIdentifier(URI identifier) {
 		this.identifier = identifier;
 	}
@@ -207,5 +211,5 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	}
 
 
-	
+
 }

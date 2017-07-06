@@ -27,7 +27,7 @@ public enum CdmPermissionClass {
     TAXONNODE,
     CLASSIFICATION,
     REFERENCE,
-    TAXONNAMEBASE,
+    TAXONNAME,
     TEAMORPERSONBASE;
 
     /**

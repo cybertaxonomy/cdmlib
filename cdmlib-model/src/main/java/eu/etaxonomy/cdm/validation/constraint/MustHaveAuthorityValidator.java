@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.validation.constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 
@@ -28,7 +27,7 @@ public class MustHaveAuthorityValidator implements
 
 		if(name.getBasionymAuthorship() == null && name.getAuthorshipCache() == null) {
 		    valid = false;
-		    if(name.isInstanceOf(BotanicalName.class) && name.isInfraSpecific()) {
+		    if(name.isBotanical() && name.isInfraSpecific()) {
 			    if(name.isAutonym() ) {
 				    valid = true; // is AUTONYM
 			    }
@@ -39,7 +38,7 @@ public class MustHaveAuthorityValidator implements
 
 		} else {
 			valid = true;
-			if(name.isInstanceOf(BotanicalName.class) && name.isInfraSpecific()) {
+			if(name.isBotanical() && name.isInfraSpecific()) {
 			    if(name.isAutonym()) {
 				    valid = false; // is AUTONYM
 			    }

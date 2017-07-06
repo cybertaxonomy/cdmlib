@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
- * @author andy
+ * @author a.mueller
  *
  */
 public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
@@ -110,7 +110,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 		        Assert.assertTrue(author.isInstanceOf(Person.class));
 		        Person person = CdmBase.deproxy(author, Person.class);
 		        //this may change in future depending on the correct formatting strategy
-		        Assert.assertEquals("Carel C. H. Jongkind" ,person.getTitleCache());
+		        Assert.assertEquals("Jongkind, C.C.H." ,person.getTitleCache());
 		        Assert.assertEquals("Jongkind" ,person.getLastname());
 		        Assert.assertEquals("Carel C. H." ,person.getFirstname());
 		        //date

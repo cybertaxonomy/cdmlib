@@ -37,7 +37,7 @@ public class WebServiceTestBase extends Assert {
                         "==================================================================\n" +
                         " Eclipse ide detected, expecting cdm remote instance at port 8080 \n" +
                         "==================================================================");
-        };
+        }
         baseUri = String.format("http://localhost:%1$d", port);
         logger.info("cdm remote instance url: " + baseUri);
     }

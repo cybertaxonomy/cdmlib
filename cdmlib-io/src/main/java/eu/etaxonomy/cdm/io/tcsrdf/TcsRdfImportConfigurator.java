@@ -22,7 +22,6 @@ import org.jdom.Namespace;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -34,10 +33,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
+
+    private static final long serialVersionUID = -8987364078779275820L;
+
+
+    private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
 
 
 	//TODO
@@ -89,7 +91,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
-	
+
 	String[] prefixArray = {"rdf", "tm", "p","tc","tcom", "tgeo","owl","dc","dcterms","tn"};
 */
 	@Override
@@ -148,7 +150,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		return null;
 	}
 public Element getSourceRoot(InputStream is){
-		
+
 		try {
 			Element root = XmlHelp.getRoot(is);
 			makeNamespaces(root);
@@ -161,10 +163,10 @@ public Element getSourceRoot(InputStream is){
 		}
 		return null;
 	}
-	
-	
+
+
 	private void makeNamespaces(Element root){
-		
+
 		String prefix = "rdf";
 		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 		prefix = "tc";
@@ -185,7 +187,7 @@ public Element getSourceRoot(InputStream is){
 	}
 	public void makeNamespaces(Model model){
 		nsPrefixMap = model.getNsPrefixMap();
-		
+
 	}
 
 
@@ -219,7 +221,7 @@ public Element getSourceRoot(InputStream is){
 	public String getRdfNamespaceURIString() {
 		return nsPrefixMap.get("rdf");
 	}
-	
+
 	public String getTeamNamespaceURIString() {
 		return nsPrefixMap.get("tm");
 	}
@@ -232,31 +234,31 @@ public Element getSourceRoot(InputStream is){
 		return nsPrefixMap.get("tc");
 	}
 
-	
+
 
 	public String getTnNamespaceURIString() {
 		return nsPrefixMap.get("tn");
 	}
 
-	
+
 
 	public String getCommonNamespaceURIString() {
 		return nsPrefixMap.get("tcom");
 	}
 
-	
+
 
 	public String getGeoNamespaceURIString() {
 		return nsPrefixMap.get("tgeo");
 	}
 
-	
+
 
 	public String getPublicationNamespaceURI() {
 		return nsPrefixMap.get("tpub");
 	}
 
-	
+
 	/**
 	 * @return the palmNamespace
 	 */
@@ -264,7 +266,7 @@ public Element getSourceRoot(InputStream is){
 		return nsPrefixMap.get("tpalm");
 	}
 
-	
+
 
 	/**
 	 * if false references in this rdf file are not published in the bibliography list

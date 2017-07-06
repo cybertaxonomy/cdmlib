@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -74,24 +72,18 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
         if (type.equals(TaxonBase.class)) {
             return Taxon.class;
         }
-        if (type.equals(TaxonNameBase.class)) {
-            return NonViralName.class;
-        }
+//        if (type.equals(TaxonName.class)) {
+//            return NonViralName.class;
+//        }
         return type;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider#getIndexReaderFor(java.lang.Class)
-     */
     @Override
     public IndexReader getIndexReaderFor(Class<? extends CdmBase> clazz) {
         IndexReader reader = getCurrentSearchFactory().getIndexReaderAccessor().open(pushAbstractBaseTypeDown(clazz));
         return reader;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider#getQueryParserFor(java.lang.Class, boolean complexPhraseQuery)
-     */
     @Override
     public QueryParser getQueryParserFor(Class<? extends CdmBase> clazz, boolean complexPhraseQuery) {
         if(!complexPhraseQuery){
@@ -130,17 +122,11 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
         return analyzer;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider#getQueryFactoryFor(java.lang.Class)
-     */
     @Override
     public QueryFactory newQueryFactoryFor(Class<? extends CdmBase> clazz){
         return new QueryFactory(this, pushAbstractBaseTypeDown(clazz));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider#getIndexReaderAccessor()
-     */
     @Override
     public IndexReaderAccessor getIndexReaderAccessor(){
         return getCurrentSearchFactory().getIndexReaderAccessor();

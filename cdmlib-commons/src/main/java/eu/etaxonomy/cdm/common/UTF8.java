@@ -17,6 +17,9 @@ public enum UTF8 {
 	EN_DASH_SPATIUM("\u202F\u2013\u202F"),
 	HYBRID ("\u00D7"),   // hybrid sign
 	SHARP_S("\u00DF"),
+    a_UMLAUT("\u00E4"),   //small a umlaut, latin small letter a with diaeresis
+	O_UMLAUT("\u00F6"),   //small o umlaut, latin small letter o with diaeresis
+    U_UMLAUT("\u00FC"),   //small u umlaut, latin small letter u with diaeresis
 	NO_BREAK_SPACE("\u00A0"),
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),

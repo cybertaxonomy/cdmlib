@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
  * @date 16.09.2010
  *
  */
-public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISchemaUpdaterStep {
+public class IndexAdder extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(IndexAdder.class);
 
 	private String tableName;
@@ -35,37 +35,46 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 
 	private Integer length;
 
-	public static final IndexAdder NewInstance(String stepName, String tableName, String columnName, Integer length){
-		return new IndexAdder(stepName, tableName, columnName, length);
+// ********************** FACTORY ****************************************/
+
+	public static final IndexAdder NewStringInstance(String stepName, String tableName, String columnName, Integer length){
+		return new IndexAdder(stepName, tableName, columnName, length == null ? 255 : length);
 	}
 
+    public static final IndexAdder NewIntegerInstance(String stepName, String tableName, String columnName){
+        return new IndexAdder(stepName, tableName, columnName, null);
+    }
+
+// **************************** CONSTRUCTOR *********************************/
 
 	protected IndexAdder(String stepName, String tableName, String columnName, Integer length) {
 		super(stepName);
 		this.tableName = tableName;
 		this.columnName = columnName;
-		this.length = length == null ? 255 :length;
+		this.length = length;
 	}
 
-
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		//remove 2-fold constraint
-		boolean result= true;
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        //remove 2-fold constraint
 //		result &= removeExistingConstraint(datasource, caseType);
-		result &= createColumnConstraint(datasource, caseType);
-		return result ? 1 : null;
+		createColumnConstraint(datasource, caseType, result);
+		return;
 	}
 
-	private boolean createColumnConstraint(ICdmDataSource datasource, CaseType caseType) {
+	private void createColumnConstraint(ICdmDataSource datasource,
+	        CaseType caseType, SchemaUpdateResult result) {
 		try {
 		    String constraintName = StringUtils.uncapitalize(tableName) + columnName + "Index";
 			String updateQuery = getCreateQuery(datasource, caseType, tableName, constraintName, columnName);
 			datasource.executeUpdate(updateQuery);
-			return true;
+			return;
 		} catch (Exception e) {
-			logger.warn("Unique index for username could not be created");
-			return false;
+		    String message = "Unique index for " + columnName + " could not be created";
+			logger.warn(message);
+			result.addException(e, message, "IndexAdder.createColumnConstraint");
+			return;
 		}
 	}
 
@@ -75,7 +84,7 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 			String updateQuery;
 			if (type.equals(DatabaseTypeEnum.MySQL)){
 				//Maybe MySQL also works with the below syntax. Did not check yet.
-				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+"("+length+"));";
+				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+ makeLength()+");";
 			}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
 				updateQuery = "CREATE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";
 			}else{
@@ -86,7 +95,19 @@ public class IndexAdder extends SchemaUpdaterStepBase<IndexAdder> implements ISc
 			return updateQuery;
 	}
 
-	private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
+	/**
+     * @param length2
+     * @return
+     */
+    private String makeLength() {
+        if (length != null){
+            return "(" + length + ")";
+        }else{
+            return "";
+        }
+    }
+
+    private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String indexName = "_UniqueKey";

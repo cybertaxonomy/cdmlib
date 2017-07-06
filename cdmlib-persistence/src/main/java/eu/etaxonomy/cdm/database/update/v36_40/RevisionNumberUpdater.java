@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @date 25.04.2016
  */
-public class RevisionNumberUpdater extends SchemaUpdaterStepBase<RevisionNumberUpdater> implements ITermUpdaterStep{
+public class RevisionNumberUpdater extends SchemaUpdaterStepBase{
 
 
 // **************************** STATIC METHODS ********************************/
@@ -42,8 +42,9 @@ public class RevisionNumberUpdater extends SchemaUpdaterStepBase<RevisionNumberU
 		super(stepName);
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 	    String sql;
 	    String casedAuditTable = caseType.transformTo("AuditEvent");
@@ -64,7 +65,7 @@ public class RevisionNumberUpdater extends SchemaUpdaterStepBase<RevisionNumberU
 	    }else{
 	        throw new RuntimeException("Database type " + databaseType.toString() + " not supported by RevisionNumberUpdater");
 	    }
-	    return 0;
+	    return;
 	}
 
 

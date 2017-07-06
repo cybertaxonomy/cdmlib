@@ -1,23 +1,21 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.model.metadata;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
  * @author e.-m.lee
@@ -45,8 +43,8 @@ public class CdmMetaDataTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#propertyList()}.
 	 */
 	@Test
-	public void testPropertyList() {
-		List<CdmMetaData> propList = CdmMetaData.propertyList();
+	public void testDefaultMetaData() {
+		List<CdmMetaData> propList = CdmMetaData.defaultMetaData();
 		assertNotNull(propList);
 	}
 
@@ -110,47 +108,47 @@ public class CdmMetaDataTest {
 	public void testGetDatabaseSchemaVersion() {
 		//TODO
 	}
-	
+
 	@Test
 	public void testCompareVersion(){
 		String version1 = "2.1.2.5.12343244234";
 		String version2 = "2.1.3.5.11654354355";
 		String version3 = "2.1.2";
-		
+
 		int compare = CdmMetaData.compareVersion(version1, version2, 4, null);
 		Assert.assertEquals("Result should be -1", -1, compare);
-		
+
 		compare = CdmMetaData.compareVersion(version2, version1, 4, null);
 		Assert.assertEquals("Result should be 1", 1, compare);
-		
+
 		compare = CdmMetaData.compareVersion(version2, version1, 2, null);
 		Assert.assertEquals("Result should be 0", 0, compare);
-		
+
 		compare = CdmMetaData.compareVersion(version2, version1, null, null);
 		Assert.assertEquals("Result should be 1", 1, compare);
-		
+
 		compare = CdmMetaData.compareVersion(version1, version3, 3, null);
 		Assert.assertEquals("Result should be 0", 0, compare);
-		
+
 		boolean exception = false;
 		try{
 			compare = CdmMetaData.compareVersion("test", version1, null, null);
 		}catch(RuntimeException e){
 			exception = true;
 		}
-		
+
 		Assert.assertTrue("Should have thrown an exception on incorrect input values", exception);
 		exception = false;
-		
+
 		try{
 			compare = CdmMetaData.compareVersion(version1, version2, 7, null);
 		}catch(RuntimeException e){
 			exception = true;
 		}
-		
+
 		Assert.assertTrue("Should have thrown an exception on incompatible depth", exception);
 		exception = false;
-		
+
 	}
 
 }

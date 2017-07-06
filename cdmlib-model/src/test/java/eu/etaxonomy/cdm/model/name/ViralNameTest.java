@@ -23,7 +23,7 @@ public class ViralNameTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ViralNameTest.class);
 
-	private ViralName viralName1;
+	private IViralName viralName1;
 
 	/**
 	 * @throws java.lang.Exception
@@ -48,7 +48,7 @@ public class ViralNameTest {
 	@Test
 	public void testClone() {
 		viralName1.setAcronym("MJU455");
-		ViralName clone = (ViralName)viralName1.clone();
+		IViralName clone = (IViralName)viralName1.clone();
 		Assert.assertEquals("Acronym should be equal", "MJU455", clone.getAcronym());
 	}
 

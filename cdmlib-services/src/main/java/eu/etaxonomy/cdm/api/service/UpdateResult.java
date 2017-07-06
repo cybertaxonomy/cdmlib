@@ -41,7 +41,7 @@ public class UpdateResult implements Serializable{
     @SuppressWarnings("unchecked")
     private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
 
-    private final Set<CdmBase> updatedObjects = new HashSet<CdmBase>();
+    private Set<CdmBase> updatedObjects = new HashSet<CdmBase>();
 
     private final Set<CdmEntityIdentifier> updatedCdmIds = new HashSet<CdmEntityIdentifier>();
 
@@ -180,6 +180,7 @@ public class UpdateResult implements Serializable{
     }
 
     public void includeResult(UpdateResult includedResult){
+
         this.setMaxStatus(includedResult.getStatus());
         this.addExceptions(includedResult.getExceptions());
         this.addUpdatedObjects(includedResult.getUpdatedObjects());

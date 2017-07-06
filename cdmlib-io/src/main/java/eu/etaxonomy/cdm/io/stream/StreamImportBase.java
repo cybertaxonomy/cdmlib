@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -258,7 +258,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 			return this.getClassificationService();
 		}else if (Reference.class.isAssignableFrom(clazz)){
 			return this.getReferenceService();
-		}else if (TaxonNameBase.class.isAssignableFrom(clazz)){
+		}else if (TaxonName.class.isAssignableFrom(clazz)){
 			return this.getNameService();
 		}else if (DefinedTermBase.class.isAssignableFrom(clazz)){
 			return this.getTermService();

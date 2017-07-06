@@ -64,7 +64,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
 	@IndexedEmbedded(depth = 3)
-	protected Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
+	protected Set<SpecimenOrObservationBase> originals = new HashSet<>();
 
 	@XmlElementWrapper(name = "Derivatives")
 	@XmlElement(name = "Derivative")
@@ -72,7 +72,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	protected Set<DerivedUnit> derivatives = new HashSet<DerivedUnit>();
+	protected Set<DerivedUnit> derivatives = new HashSet<>();
 
 	@XmlElement(name = "Institution")
 	@XmlIDREF
@@ -89,16 +89,20 @@ public class DerivationEvent extends EventBase implements Cloneable{
     @ManyToOne(fetch = FetchType.LAZY)
 	private DerivationEventType type;
 
+// ********************* FACTORY  ****************************/
+
 	/**
 	 * Factory method
-	 * @return
-	 * @deprecated Use {@link #NewInstance(DerivationEventType)} or any other factory method instead to make sure,
+	 * @deprecated Use {@link #NewInstance(DerivationEventType)} or any other
+	 * factory method instead to make sure,
 	 * the derivation event type is always set.
 	 */
 	@Deprecated
 	public static DerivationEvent NewInstance(){
 		return new DerivationEvent();
 	}
+
+	// ********************* FACTORY  ****************************/
 
 	/**
 	 * Factory method
@@ -114,12 +118,15 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * Factory method
 	 * @return
 	 */
-	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original, DerivedUnit derivative, DerivationEventType type){
+	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original,
+	        DerivedUnit derivative, DerivationEventType type){
 		DerivationEvent result = NewInstance(type);
 		result.addOriginal(original);
 		result.addDerivative(derivative);
 		return result;
 	}
+
+// ************************* CONSTRUCTOR ****************************/
 
 	/**
 	 * Constructor
@@ -128,6 +135,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		super();
 	}
 
+// ********************* GETTER / SETTER / ADDER **********************/
 
 	/**
 	 * The specimen or observations that are the input for this derviation event.
@@ -243,8 +251,8 @@ public class DerivationEvent extends EventBase implements Cloneable{
 				result.addDerivative(derivative);
 			}
 			//originals
-			result.originals = new HashSet<SpecimenOrObservationBase>();
-			for(SpecimenOrObservationBase original : this.originals) {
+			result.originals = new HashSet<>();
+			for(SpecimenOrObservationBase<?> original : this.originals) {
 				result.addOriginal(original);
 			}
 			//no changes to: -

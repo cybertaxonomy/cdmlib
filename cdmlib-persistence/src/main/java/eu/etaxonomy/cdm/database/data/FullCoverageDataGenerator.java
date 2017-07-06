@@ -94,8 +94,6 @@ import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -107,9 +105,8 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -198,7 +195,7 @@ public class FullCoverageDataGenerator {
 		//Others
 		try {
 			LSIDAuthority lsidAuthority = new LSIDAuthority("My authority");
-			lsidAuthority.addNamespace("lsidNamespace", TaxonNameBase.class);
+			lsidAuthority.addNamespace("lsidNamespace", TaxonName.class);
 			cdmBases.add(lsidAuthority);
 		} catch (MalformedLSIDException e) {
 			e.printStackTrace();
@@ -400,7 +397,7 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(specDesc);
 
 		//Name description
-		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		TaxonNameDescription nameDesc = TaxonNameDescription.NewInstance(name);
 		cdmBases.add(name);
 		handleAnnotatableEntity(nameDesc);
@@ -625,11 +622,11 @@ public class FullCoverageDataGenerator {
 
 	private void createTaxon(List<CdmBase> cdmBases) {
 		Reference sec = getReference();
-		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		handleIdentifiableEntity(taxon);
 
-		TaxonNameBase<?,?> synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
 		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 		taxon.setDoubtful(true);
@@ -763,7 +760,7 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setAccessionNumber("accessionNumber");
 //		mediaSpecimen.setCollectorsNumber("collectorsNumber");
 		mediaSpecimen.setBarcode("barcode");
-		TaxonNameBase<?,?> storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);
 		mediaSpecimen.setStoredUnder(storedUnder);
 		mediaSpecimen.setExsiccatum("exsiccatum");
@@ -810,12 +807,12 @@ public class FullCoverageDataGenerator {
 
 
 	private void createTaxonName(List<CdmBase> cdmBases) {
-		BacterialName bacName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+		TaxonName bacName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
 		bacName.setSubGenusAuthorship("sub Genus author");
 		bacName.setNameApprobation("nameApprobation");
 		handleIdentifiableEntity(bacName);
 
-		CultivarPlantName botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
+		TaxonName botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
 		botName.setCultivarName("cultivarName");
 		botName.setGenusOrUninomial("Genus");
@@ -832,13 +829,13 @@ public class FullCoverageDataGenerator {
 		botName.setExBasionymAuthorship(exBasionymAuthorship);
 		handleIdentifiableEntity(botName);
 		handleAnnotatableEntity(botName.getHomotypicalGroup());
-		TaxonNameBase<?,?> botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
 		hybridRel.setCitation(ReferenceFactory.newBook());
 		hybridRel.setCitationMicroReference("p. 123");
 		handleAnnotatableEntity(hybridRel);
 
-		TaxonNameBase<?,?> zooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
+		TaxonName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
 		zooName.setBreed("breed");
 		zooName.setPublicationYear(1922);
 		zooName.setOriginalPublicationYear(1987);
@@ -854,7 +851,7 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(zooName);
 
 		//TypeDesignation
-		TaxonNameBase<?,?> speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+		TaxonName speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		NameTypeDesignation nameDesig = zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
 		handleAnnotatableEntity(nameDesig);
@@ -862,7 +859,7 @@ public class FullCoverageDataGenerator {
 				getReference(), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
 
-		ViralName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
+		TaxonName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
 		handleIdentifiableEntity(viralName);
 
@@ -949,7 +946,7 @@ public class FullCoverageDataGenerator {
 
 	private Taxon getTaxon() {
 		Reference sec = getReference();
-		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		return taxon;
 

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.RankClass;
  * @date 10.09.2010
  *
  */
-public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> implements ITermUpdaterStep{
+public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 
@@ -79,15 +79,18 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		this.uuidLanguage = uuidLanguage;
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
- 		String sqlCheckTermExists = " SELECT count(*) as n " +
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+		String sqlCheckTermExists = " SELECT count(*) as n " +
  				" FROM " + caseType.transformTo("DefinedTermBase") +
  				" WHERE uuid = '" + uuidTerm + "'";
 		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
 		if (n != 0){
-			monitor.warning("Term already exists: " + label + "(" + uuidTerm + ")");
-			return -1;
+		    String message ="Term already exists: " + label + "(" + uuidTerm + ")";
+			monitor.warning(message);
+			result.addWarning(message, (String)null, getStepName());
+			return;
 		}
 
 		//vocabulary id
@@ -99,9 +102,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		if (rs.next()){
 			vocId = rs.getInt("id");
 		}else{
-			String warning = "Vocabulary ( "+ uuidVocabulary +" ) for term does not exist!";
-			monitor.warning(warning);
-			return null;
+			String message = "Vocabulary ( "+ uuidVocabulary +" ) for term does not exist!";
+			monitor.warning(message);
+			result.addError(message, getStepName() + ", SingleTermUpdater.invoke");
+            return;
 		}
 
 		Integer termId;
@@ -110,9 +114,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		if (rs.next()){
 			termId = rs.getInt("maxId");
 		}else{
-			String warning = "No defined terms do exist yet. Can't update terms!";
-			monitor.warning(warning);
-			return null;
+			String message = "No defined terms do exist yet. Can't update terms!";
+			monitor.warning(message);
+			result.addError(message, getStepName() + ", SingleTermUpdater.invoke");
+            return;
 		}
 
 		String id = Integer.toString(termId);
@@ -145,7 +150,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		//language id
 		Integer langId = getLanguageId(uuidLanguage, datasource, monitor, caseType);
 		if (langId == null){
-			return null;
+			String message = "LangId is null";
+			result.addWarning(message);
+		    return;
 		}
 
 		//representation
@@ -155,9 +162,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		if (rs.next()){
 			repId = rs.getInt("maxId");
 		}else{
-			String warning = "No representations do exist yet. Can't update terms!";
-			monitor.warning(warning);
-			return null;
+			String message = "No representations do exist yet. Can't update terms!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+			return;
 		}
 
 		//standard representation
@@ -187,7 +195,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 			datasource.executeUpdate(caseType.replaceTableNames(sqlReverseInsertMN));
 		}
 
-		return termId;
+		return;
 	}
 
 	private String nullSafeStr(String str) {

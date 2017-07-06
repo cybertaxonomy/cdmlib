@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
 
 /**
@@ -30,9 +29,12 @@ import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
  */
 @Component
 public class DwcaMetaDataExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
 
-	private static final String fileName = "meta.xml";
+    private static final long serialVersionUID = -4033439569151252697L;
+
+    private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
+
+	protected static final String fileName = "meta.xml";
 
 	/**
 	 * Constructor
@@ -40,13 +42,10 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	public DwcaMetaDataExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
-	/** Retrieves the MetaData for a Darwin Core Archive File.
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
@@ -58,7 +57,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
 		XMLStreamWriter writer = null;
 		try {
-			writer = createXmlStreamWriter(state, fileName);
+			writer = createXmlStreamWriter(state, DwcaTaxExportFile.METADATA);
 
 			String rootNamespace = "http://rs.tdwg.org/dwc/text/";
 			String rootName = "archive";
@@ -86,15 +85,19 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+		    String message = "Metadata file could not be found";
+			state.getResult().addException(e, message);
 		} catch (XMLStreamException e) {
 			if (e.getNestedException() != null){
-				throw new RuntimeException(e.getNestedException());
+			    String message = "Nested XMLStreamException while handling metadata";
+			    state.getResult().addException((Exception)e.getNestedException(), message);
 			}else{
-				throw new RuntimeException(e);
+			    String message = "XMLStreamException while handling metadata";
+                state.getResult().addException(e, message);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+		    String message = "IOException while handling metadata";
+            state.getResult().addException(e, message);
 		} finally{
 			closeWriter(writer, state);
 		}
@@ -116,7 +119,8 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		// create core element
 		String elementName = metaRecord.isCore()? "core": "extension";
 		String rowType = metaRecord.getRowType();
-		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy, linesTerminatedBy,ignoreHeaderLines, rowType);
+		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy,
+		        fieldsTerminatedBy, ignoreHeaderLines, rowType);
 			String filename = metaRecord.getFileLocation();
 			writeFiles(writer, filename );
 			writeId(writer, metaRecord.isCore());
@@ -192,22 +196,10 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoMetaData();
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public byte[] getByteArray() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @see ISchemaUpdaterStep
  * @see ISchemaUpdater
  * @see ITermUpdaterStep
- * 
+ *
  * @author a.mueller
  * @date 09.2010
  */
@@ -31,14 +31,17 @@ public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 	 * not equal the current CDM schema version.
 	 * @param datasource the datasource
 	 * @param monitor the progress monitor and event listener
-	 * @param caseType the 
+	 * @param caseType the
+	 * @param result
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;
-	
+	@Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+	        CaseType caseType, SchemaUpdateResult result) throws Exception;
 
-	
+
+
 	/**
 	 * Invokes this CDM schema updater and updates the schema up to the given
 	 * target version. Throws an exception if this updaters target version does
@@ -46,10 +49,13 @@ public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 	 * @param targetVersion
 	 * @param datasource the datasource
 	 * @param monitor the progress monitor and event listener
+	 * @result the accumlated result of the schema update
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;
+	@Override
+    public void invoke(String targetVersion, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) throws Exception;
 
 	public String getTargetVersion();
 

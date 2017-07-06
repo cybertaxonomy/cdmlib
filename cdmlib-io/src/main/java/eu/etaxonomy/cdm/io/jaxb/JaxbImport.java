@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -113,7 +113,7 @@ public class JaxbImport
 		List<DefinedTermBase> terms;
 		List<User> users;
 		List<Reference> references;
-		List<TaxonNameBase> taxonomicNames;
+		List<TaxonName> taxonomicNames;
 		List<DescriptionBase> descriptions;
 		List<TypeDesignationBase> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;

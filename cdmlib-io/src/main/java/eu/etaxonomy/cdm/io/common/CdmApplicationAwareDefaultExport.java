@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -19,13 +21,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class is an default exporter class that is a spring bean and therefore it knows all other IO classes that are beans
@@ -60,19 +59,20 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
 	public CdmApplicationAwareDefaultExport(){
-		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
-		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
+		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<>(service));
 	}
 
 
 	@Override
-    public ExportResult invoke(IExportConfigurator config){
-	    ExportResult result = ExportResult.NewInstance(config.getResultType());
-		if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
+    public ExportResult invoke(T config){
+	    ExportResult result;
+	    if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
+		    result = ExportResult.NewInstance(config.getResultType());
 		    boolean success =  doCheck(config);
 		    if (! success){
 		        result.setAborted();
@@ -82,11 +82,13 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		    if (success){
 		        result = doExport(config);
 		    }else{
-		        result.setAborted();
+		        result = ExportResult.NewInstance(config.getResultType());
+	            result.setAborted();
 		    }
 		}else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
 			result = doExport(config);
 		}else{
+		    result = ExportResult.NewInstance(config.getResultType());
             String message = "Unknown CHECK type";
             logger.error(message);
             result.addError(message);
@@ -95,7 +97,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	}
 
 
-    public ExportResult execute(IExportConfigurator config) {
+    public ExportResult execute(T config) {
 	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 	    if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
 	        boolean success =  doCheck(config);
@@ -184,7 +186,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	/**
 	 * Executes the whole
 	 */
-	protected <CONFIG extends IExportConfigurator>  ExportResult doExport(CONFIG config){
+	protected <CONFIG extends T>  ExportResult doExport(CONFIG config){
 		//validate
 		if (config == null){
 		    ExportResult result = ExportResult.NewInstance(null);
@@ -208,30 +210,33 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 
 		ExportStateBase state = config.getNewState();
 		state.initialize(config);
+		state.setResult(result);
+
+		List<ICdmExport> ioList = makeIoList(state, config);
+
+		List<Integer> stepCounts = countSteps(state, ioList);
+		Integer totalCount = stepCounts.get(stepCounts.size()-1);
+		config.getProgressMonitor().worked(1);
+		IProgressMonitor parentMonitor = SubProgressMonitor
+		        .NewStarted(config.getProgressMonitor(), 99, "Process data", totalCount);
 
 		//do invoke for each class
-		for (Class<ICdmExport> ioClass: config.getIoClassList()){
+		for (int i = 0; i< ioList.size(); i++){
+		    ICdmExport export = ioList.get(i);
+		    Integer counts = stepCounts.get(i);
 			try {
-				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmExport cdmIo = applicationContext.getBean(ioBeanName, ICdmExport.class);
-				if (cdmIo != null){
-					//result &= cdmIo.invoke(config, stores);
-					state.setCurrentIO(cdmIo);
-					result = cdmIo.invoke(state);
-//					if (config.getTarget().equals(TARGET.EXPORT_DATA)){
-//					    result.addExportData(cdmIo.getByteArray());
-//					}
-//					IoState<S> state = null;
-//					result &= cdmIo.invoke(state);
-				}else{
-					String message = "cdmIO was null";
-			        logger.error(message);
-			        result.addError(message);
-			    }
+			    String ioName = export.getClass().getSimpleName();
+			    SubProgressMonitor ioMonitor = SubProgressMonitor
+			            .NewStarted(parentMonitor, counts, ioName, counts );
+			    state.setCurrentMonitor(ioMonitor);
+			    state.setCurrentIO(export);
+				export.invoke(state);
+				ioMonitor.done();
 			} catch (Exception e) {
-					logger.error(e);
-					e.printStackTrace();
-			        result.addException(e);
+				String message = "Unexpected exception in " + export.getClass().getSimpleName()+ ": " + e.getMessage();
+				logger.error(message);
+				e.printStackTrace();
+		        result.addException(e, message);
 			}
 		}
 
@@ -242,7 +247,66 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		return result;
 	}
 
-	private String getComponentBeanName(Class<ICdmExport> ioClass){
+	/**
+     * @param state
+     * @param ioList
+     * @return
+     */
+    private List<Integer> countSteps(ExportStateBase state, List<ICdmExport> ioList) {
+        //do invoke for each class
+        List<Integer> result = new ArrayList<>();
+        int sum = 0;
+        for (ICdmExport export: ioList){
+            int count = 1;
+            try {
+//                state.setCurrentIO(export);
+                count = ((Long)export.countSteps(state)).intValue();
+            } catch (Exception e) {
+                String message = "Unexpected exception when count steps for progress monitoring " + export.getClass().getSimpleName()+ ": " + e.getMessage();
+                logger.error(message);
+                e.printStackTrace();
+                state.getResult().addException(e, message);
+            }
+            result.add(count);
+            sum += count;
+        }
+        result.add(sum);
+        return result;
+    }
+
+
+    /**
+     * @param state
+     * @param config
+     * @return
+     */
+    private <CONFIG extends T>  List<ICdmExport> makeIoList(ExportStateBase state, CONFIG config) {
+
+        List<ICdmExport> result = new ArrayList<>();
+
+        for (Class<ICdmExport> ioClass: config.getIoClassList()){
+            try {
+                String ioBeanName = getComponentBeanName(ioClass);
+                ICdmExport cdmIo = applicationContext.getBean(ioBeanName, ICdmExport.class);
+                if (cdmIo != null){
+                    result.add(cdmIo);
+                }else{
+                    String message = "cdmIO was null: " + ioBeanName;
+                    logger.error(message);
+                    state.getResult().addError(message);
+                }
+            } catch (Exception e) {
+                    String message = "Unexpected exception in " + ioClass.getSimpleName()+ ": " + e.getMessage();
+                    logger.error(message);
+                    e.printStackTrace();
+                    state.getResult().addException(e, message);
+            }
+        }
+        return result;
+    }
+
+
+    private String getComponentBeanName(Class<ICdmExport> ioClass){
 		Component component = ioClass.getAnnotation(Component.class);
 		String ioBean = component.value();
 		if ("".equals(ioBean)){

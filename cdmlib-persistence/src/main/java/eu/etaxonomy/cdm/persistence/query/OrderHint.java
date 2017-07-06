@@ -21,8 +21,10 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 
 import eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde;
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
 public class OrderHint {
@@ -63,6 +65,14 @@ public class OrderHint {
 
     public static final OrderHint ORDER_BY_ID_DESC = new OrderHint("id", SortOrder.DESCENDING);
 
+    public static final OrderHint ORDER_BY_USERNAME = new OrderHint("username", SortOrder.ASCENDING);
+
+    public static final OrderHint ORDER_BY_USERNAME_DESC = new OrderHint("username", SortOrder.DESCENDING);
+
+    public static final OrderHint ORDER_BY_NAME = new OrderHint("name", SortOrder.ASCENDING);
+
+    public static final OrderHint ORDER_BY_NAME_DESC = new OrderHint("name", SortOrder.DESCENDING);
+
     public static final OrderHint ORDER_BY_TITLE_CACHE = new OrderHint("titleCache", SortOrder.ASCENDING);
 
     public static final OrderHint ORDER_BY_TITLE_CACHE_DESC = new OrderHint("titleCache", SortOrder.DESCENDING);
@@ -87,6 +97,10 @@ public class OrderHint {
     public static List<OrderHint> defaultOrderHintsFor(Class<? extends CdmBase> clazz) {
         if (clazz.isAssignableFrom(IdentifiableEntity.class)) {
             return ORDER_BY_TITLE_CACHE.asList();
+        } else if(clazz.isAssignableFrom(User.class)){
+            return ORDER_BY_USERNAME.asList();
+        } else if(clazz.isAssignableFrom(Institution.class)){
+            return ORDER_BY_NAME.asList();
         } else {
             return ORDER_BY_ID.asList();
         }

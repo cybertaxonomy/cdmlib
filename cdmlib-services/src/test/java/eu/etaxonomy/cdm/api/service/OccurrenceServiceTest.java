@@ -49,10 +49,10 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -139,7 +139,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // Derived Unit
         MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
         mediaSpecimen.setCollection(collection);
-        BotanicalName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         mediaSpecimen.setStoredUnder(storedUnder);
         PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
         preservation.setMedium(DefinedTerm.NewDnaMarkerInstance("medium", "medium", "medium"));// dummy
@@ -188,7 +188,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     private Taxon getTaxon() {
         Reference sec = getReference();
-        TaxonNameBase<?, ?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         Taxon taxon = Taxon.NewInstance(name, sec);
         return taxon;
 
@@ -248,7 +248,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "BlankDataSet.xml")
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "../../database/BlankDataSet.xml")
     public void testMoveDerivateNoParent() {
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         FieldUnit fieldUnit = FieldUnit.NewInstance();
@@ -361,8 +361,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"
         // }, "testDeleteIndividualAssociatedAndTypeSpecimen");
         // } catch (FileNotFoundException e) {
@@ -371,7 +371,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
         DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
-        BotanicalName name = (BotanicalName) nameService.load(botanicalNameUuid);
+        IBotanicalName name = nameService.load(botanicalNameUuid);
         TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(taxonDEscriptionUuid);
         // check initial state (IndividualsAssociation)
         DescriptionElementBase descriptionElement = taxonDescription.getElements().iterator().next();
@@ -475,8 +475,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"}, "testListAssociatedAndTypedTaxa");
         // } catch (FileNotFoundException e) {
         // // TODO Auto-generated catch block
@@ -510,7 +510,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                 typeSpecimen, null, null, null, null);
         assertEquals("Number of type designations is incorrect", 1, typeDesignations.size());
         SpecimenTypeDesignation specimenTypeDesignation = typeDesignations.iterator().next();
-        Set<TaxonNameBase> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+        Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
         assertEquals("number of typified names is incorrect", 1, typifiedNames.size());
         Set<?> taxonBases = typifiedNames.iterator().next().getTaxonBases();
         assertEquals("number of taxa incorrect", 1, taxonBases.size());
@@ -552,8 +552,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"
         // }, "testIsDeletableWithSpecimenDescription");
         // } catch (FileNotFoundException e) {
@@ -628,8 +628,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"
         // }, "testIsDeletableWithDescribedSpecimenInTaxonDescription");
         // } catch (FileNotFoundException e) {
@@ -699,8 +699,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"
         // }, "testIsDeletableWithIndividualsAssociationTaxonDescription");
         // } catch (FileNotFoundException e) {
@@ -769,8 +769,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"
         // }, "testIsDeletableWithTypeDesignation");
         // } catch (FileNotFoundException e) {
@@ -780,7 +780,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
 
         // create name with type specimen
-        BotanicalName name = (BotanicalName) nameService.load(botanicalNameUuid);
+        IBotanicalName name = nameService.load(botanicalNameUuid);
         SpecimenTypeDesignation typeDesignation = (SpecimenTypeDesignation) name.getTypeDesignations().iterator()
                 .next();
 
@@ -851,8 +851,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup"
         // }, "testIsDeletableWithChildren");
         // } catch (FileNotFoundException e) {
@@ -948,8 +948,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                  "DescriptionBase",
 //                  "TaxonBase",
 //                  "TypeDesignationBase",
-//                  "TaxonNameBase",
-//                  "TaxonNameBase_TypeDesignationBase",
+//                  "TaxonName",
+//                  "TaxonName_TypeDesignationBase",
 //                  "TeamOrPersonBase",
 //                  "HomotypicalGroup"}, "testListAssociatedTaxaAndListByAssociatedTaxon");
 //      } catch (FileNotFoundException e) {
@@ -1063,8 +1063,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // "DescriptionBase",
         // "TaxonBase",
         // "TypeDesignationBase",
-        // "TaxonNameBase",
-        // "TaxonNameBase_TypeDesignationBase",
+        // "TaxonName",
+        // "TaxonName_TypeDesignationBase",
         // "HomotypicalGroup",
         // "TeamOrPersonBase"
         // }, "testFindOcurrences");
@@ -1309,9 +1309,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DerivedUnit fossilTypeDesignation = (DerivedUnit) occurrenceService.load(fossilTypeDesignationUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
         Synonym synonym = (Synonym) taxonService.load(synoymUuid);
-        TaxonNameBase taxonName = nameService.load(taxonNameUuid);
-        TaxonNameBase synonymName = nameService.load(synonymNameUuid);
-        TaxonNameBase orphanName = nameService.load(orphanNameUuid);
+        TaxonName taxonName = nameService.load(taxonNameUuid);
+        TaxonName synonymName = nameService.load(synonymNameUuid);
+        TaxonName orphanName = nameService.load(orphanNameUuid);
 
         //check initial state
         assertNotNull(derivedUnitDeterminationTaxon);
@@ -1501,8 +1501,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //                    "DescriptionBase",
         //                    "TaxonBase",
         //                    "TypeDesignationBase",
-        //                    "TaxonNameBase",
-        //                    "TaxonNameBase_TypeDesignationBase",
+        //                    "TaxonName",
+        //                    "TaxonName_TypeDesignationBase",
         //                    "HomotypicalGroup",
         //                    "TeamOrPersonBase",
         //                    "DeterminationEvent"
@@ -1629,9 +1629,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       occurrenceService.save(fossilTypeDesignation);
 
       //NAMES
-      BotanicalName taxonName = TaxonNameFactory.PARSED_BOTANICAL("Campanula patual");
-      BotanicalName synonymName = TaxonNameFactory.PARSED_BOTANICAL("Syno nyma");
-      BotanicalName orphanName = TaxonNameFactory.PARSED_BOTANICAL("Orphanus lonelia");
+      TaxonName taxonName = TaxonNameFactory.PARSED_BOTANICAL("Campanula patual");
+      TaxonName synonymName = TaxonNameFactory.PARSED_BOTANICAL("Syno nyma");
+      TaxonName orphanName = TaxonNameFactory.PARSED_BOTANICAL("Orphanus lonelia");
       taxonName.setUuid(taxonNameUuid);
       synonymName.setUuid(synonymNameUuid);
       orphanName.setUuid(orphanNameUuid);
@@ -1681,8 +1681,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                   "DescriptionBase",
                   "TaxonBase",
                   "TypeDesignationBase",
-                  "TaxonNameBase",
-                  "TaxonNameBase_TypeDesignationBase",
+                  "TaxonName",
+                  "TaxonName_TypeDesignationBase",
                   "HomotypicalGroup",
                   "TeamOrPersonBase",
                   "DeterminationEvent"

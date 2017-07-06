@@ -21,14 +21,17 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
@@ -50,15 +53,19 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     boolean referenceMapIsInitialized = false;
     boolean nameMapIsInitialized = false;
     boolean agentMapIsInitialized = false;
+    boolean copyrightMapIsInitialized = false;
 
     private Map<String, Set<Reference>> refMap = new HashMap<>();
     private Map<String, Team> teamMap = new HashMap<>();
     private Map<String, Person> personMap = new HashMap<>();
+    private Map<String, Institution> institutionMap = new HashMap<>();
     //using titleCache
     private Map<String, Set<INonViralName>> nameMap = new HashMap<>();
+    private static Map<String, Set<Rights>> copyrightMap = new HashMap<>();
+
 
     private IMatchStrategy referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
-    private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonNameBase.class);
+    private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
 
 
 // ************************** FACTORY *******************************/
@@ -120,11 +127,13 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     }
 
     // AGENTS
-    private void putAgentBase(String title, TeamOrPersonBase<?> agent){
+    private void putAgentBase(String title, AgentBase<?> agent){
         if (agent.isInstanceOf(Person.class) ){
             personMap.put(title, CdmBase.deproxy(agent, Person.class));
-        }else{
+        }else if (agent.isInstanceOf(Team.class)){
             teamMap.put(title, CdmBase.deproxy(agent, Team.class));
+        }else{
+            institutionMap.put(title, CdmBase.deproxy(agent, Institution.class));
         }
     }
 
@@ -228,6 +237,23 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         }
     }
 
+    public AgentBase<?> getExistingAgent(STATE state,
+            AgentBase<?> agent) {
+        if (agent == null){
+            return null;
+        } else if (agent.isInstanceOf(TeamOrPersonBase.class)){
+            return getExistingAuthor(state, CdmBase.deproxy(agent, TeamOrPersonBase.class));
+        }else{
+            initAgentMap(state);
+            Institution result = institutionMap.get(agent.getTitleCache());
+            if (result == null){
+                putAgentBase(agent.getTitleCache(), agent);
+                result = CdmBase.deproxy(agent, Institution.class);
+            }
+            return result;
+        }
+    }
+
 
     /**
      * @param state
@@ -237,8 +263,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private void initAgentMap(STATE state) {
         if (!agentMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
-            List<TeamOrPersonBase> existingAgents = repository.getAgentService().list(null, null, null, null, propertyPaths);
-            for (TeamOrPersonBase agent : existingAgents){
+            List<AgentBase> existingAgents = repository.getAgentService().list(null, null, null, null, propertyPaths);
+            for (AgentBase agent : existingAgents){
                 putAgentBase(agent.getTitleCache(), agent);
             }
             agentMapIsInitialized = true;
@@ -319,7 +345,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                for (HybridRelationship rel : parentRelations){
                    INonViralName parent = rel.getParentName();
                    if (parent != null){
-                       rel.setParentName((NonViralName<?>)getExistingName(state, parent));
+                       rel.setParentName(getExistingName(state, parent));
                    }
                }
                putName(result.getTitleCache(), result);
@@ -338,12 +364,77 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
    private void initNameMap(STATE state) {
        if (!nameMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
-           List<TaxonNameBase<?,?>> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
-           for (TaxonNameBase<?,?> name : existingNames){
+           List<TaxonName> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
+           for (TaxonName name : existingNames){
                putName(name.getTitleCache(), name);
            }
           nameMapIsInitialized = true;
        }
    }
+
+   public Rights getExistingCopyright(STATE state,
+           Rights right) {
+       if (right == null || !RightsType.COPYRIGHT().equals(right.getType())){
+           return null;
+       }else{
+           initCopyrightMap(state);
+           String key = makeCopyrightKey(right);
+           Set<Rights> set = copyrightMap.get(key);
+           if (set == null || set.isEmpty()){
+               putCopyright(key, right);
+               return right;
+           }else if (set.size()>1){
+               //TODO
+               logger.warn("More than 1 matching copyright not yet handled for key: " + key);
+           }
+           return set.iterator().next();
+       }
+   }
+
+    /**
+     * @param state
+     */
+    private void initCopyrightMap(STATE state) {
+        if (!copyrightMapIsInitialized && repository != null){
+            List<String> propertyPaths = Arrays.asList("");
+            List<Rights> existingRights = repository.getRightsService().list(null, null, null, null, propertyPaths);
+            for (Rights right : existingRights){
+                if (RightsType.COPYRIGHT().equals(right.getType())){
+                    putCopyright(makeCopyrightKey(right), right);
+                }
+            }
+            copyrightMapIsInitialized = true;
+        }
+
+    }
+
+    /**
+     * @param makeCopyrightKey
+     * @param right
+     */
+    private void putCopyright(String key, Rights right) {
+        Set<Rights> rights = copyrightMap.get(key);
+        if (rights == null){
+            rights = new HashSet<>();
+            copyrightMap.put(key, rights);
+        }
+        rights.add(right);
+
+    }
+
+    /**
+     * @param right
+     * @return
+     */
+    private String makeCopyrightKey(Rights right) {
+        if (right.getAgent() != null){
+            return right.getAgent().getTitleCache();
+        }else if (right.getText() != null){
+            return right.getText();
+        }else {
+            logger.warn("Key for copyright could not be created: " + right);
+            return right.getUuid().toString();
+        }
+    }
 
 }

@@ -59,6 +59,7 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final UUID uuidTypicalLowerBoundary = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
 	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
 	private static final UUID uuidStandardDeviation = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
+    private static final UUID uuidExactValue = UUID.fromString("29736701-58c4-48b3-a9d7-41c74140cac7");
 	//needed for Xper (later maybe integrated into model)
 	public  static final UUID uuidStatisticalMeasureUnknownData = UUID.fromString("4bbd6e78-6d4e-4ec8-ac14-12f53aae049e");
 
@@ -158,6 +159,9 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 		return getTermByUuid(uuidStandardDeviation);
 	}
 
+    public static final StatisticalMeasure EXACT_VALUE(){
+        return getTermByUuid(uuidExactValue);
+    }
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<StatisticalMeasure> termVocabulary) {

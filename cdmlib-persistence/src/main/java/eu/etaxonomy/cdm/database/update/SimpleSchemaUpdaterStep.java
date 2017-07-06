@@ -25,8 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 13.09.2010
  *
  */
-public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaUpdaterStep>
-                implements ISchemaUpdaterStep, ITermUpdaterStep{
+public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
 
 	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<DatabaseTypeEnum, String>();
@@ -36,17 +35,6 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 //	private String tableName;
 
 // *************************** FACTORY ********************************/
-
-	/**
-	 * Deprecated method
-	 * @deprecated use  {@link #NewNonAuditedInstance(String, String)},
-	 * {@link #NewAuditedInstance(String, String, boolean, String)},
-	 * or {@link #NewExplicitAuditedInstance(String, String, String)} instead
-	 */
-	@Deprecated
-	public static SimpleSchemaUpdaterStep NewInstance(String stepName, String defaultQuery, int adapt){
-		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
-	}
 
 	/**
      * Simple schema updater with update query only for non_AUD tables.
@@ -65,8 +53,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
      *
      * @param stepName Step name
 	 * @param defaultQuery query
-	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonNameBase
-	 *     (while TaxonNameBase_AUD is the audited table
+	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonName
+	 *     (while TaxonName_AUD is the audited table
 	 * @param adapt preliminary
 	 * @return
 	 */
@@ -90,6 +78,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 
 
 //************************ CONSTRUCTOR ***********************************/
+
 	private SimpleSchemaUpdaterStep(String stepName, String defaultQuery, boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
 		super(stepName);
 		this.includeAudit = includeAudit;
@@ -108,36 +97,34 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 
 
 
-	@Override
-	public Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType){
-		boolean result = true;
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 		//non audit
-		result &= invokeQueryMap(datasource, queryMap, caseType); ;
+		invokeQueryMap(datasource, queryMap, caseType, result);
 		//audit
 		if (this.includeAudit){
-			result &= invokeQueryMap(datasource, auditQueryMap, caseType);
+			invokeQueryMap(datasource, auditQueryMap, caseType, result);
 		}else{
 			logger.info("SimpleSchemaUpdaterStep non Audited");
 		}
 
-		return (result == true )? 0 : null;
+		return;
 	}
 
-	private boolean invokeQueryMap(ICdmDataSource datasource, Map<DatabaseTypeEnum, String> queryMap, CaseType caseType) {
-		boolean result = true;
+	private void invokeQueryMap(ICdmDataSource datasource, Map<DatabaseTypeEnum, String> queryMap, CaseType caseType, SchemaUpdateResult result) {
 		String query = queryMap.get(datasource.getDatabaseType());
 		if (query == null){
 			query = queryMap.get(null);
 		}
 		if (query != null){
 			query = doReplacements(query, caseType, datasource);
-			result = executeQuery(datasource, query);
+			executeQuery(datasource, query, result);
 		}else{
-			//TODO exception ?
-			logger.warn("No query found to execute");
+		    result.addError("No query found to execute " + getStepName());
 		}
-		return result;
+		return;
 	}
 
 	private String doReplacements(String query, CaseType caseType, ICdmDataSource datasource) {
@@ -147,11 +134,12 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return query;
 	}
 
-	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery) {
+	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery, SchemaUpdateResult result) {
 		try {
 			datasource.executeUpdate(replacedQuery);
 		} catch (SQLException e) {
 			logger.error(e);
+			result.addException(e, "Unexpected SQL Exception", getStepName());
 			return false;
 		}
 		return true;

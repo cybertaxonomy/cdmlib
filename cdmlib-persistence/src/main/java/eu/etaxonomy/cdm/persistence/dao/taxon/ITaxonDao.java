@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -154,7 +154,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * <p>
      * Compare with
      * {@link #findByName(String, MatchMode, int, int, boolean)}
-     * which searches for {@link TaxonNameBase}<strong><code>.titleCache</code>
+     * which searches for {@link TaxonName}<strong><code>.titleCache</code>
      * </strong>
      *
      * @param doTaxa
@@ -172,12 +172,12 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     /**
      * Find taxa by searching for Taxa and Synonyms where the
-     * {@link TaxonNameBase}<strong><code>.titleCache</code></strong> matches
+     * {@link TaxonName}<strong><code>.titleCache</code></strong> matches
      * the name specified as queryString <code>taxonName</code>
      * <P>
      * Compare with
      * {@link #findTaxaByName(Class, String, String, String, String, Rank, Integer, Integer)}
-     * which searches for {@link TaxonNameBase}<strong><code>.nameCache</code>
+     * which searches for {@link TaxonName}<strong><code>.nameCache</code>
      * </strong>
      * @param queryString
      *            the taqxon Name to search for
@@ -358,7 +358,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public int countSynonyms(Synonym synonym, SynonymType type);
 
-    public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
@@ -366,7 +366,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
 
-    public List<TaxonNameBase> findIdenticalNamesNew(List <String> propertyPaths);
+    public List<TaxonName> findIdenticalNamesNew(List <String> propertyPaths);
 
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames,

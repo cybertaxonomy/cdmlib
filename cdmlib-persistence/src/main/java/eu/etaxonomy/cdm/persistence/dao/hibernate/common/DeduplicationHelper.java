@@ -45,8 +45,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl.ReferenceHolder;
@@ -216,7 +215,7 @@ public class DeduplicationHelper {
 	 * Checks if 2 can be merged and reallocation of referencing objects is allowed.
 	 * This is <code>true</code> if
 	 * classes are same or for some explicit cases like both
-	 * inherit form {@link TeamOrPersonBase} or from {@link TaxonNameBase}.
+	 * inherit form {@link TeamOrPersonBase} or from {@link TaxonName}.
 	 * Necessary condition is that both classes are mapped to the same table.
 	 *
 	 * @param class1
@@ -230,7 +229,7 @@ public class DeduplicationHelper {
 		}else{
 			if (classesAssignableFrom(TeamOrPersonBase.class, class1, class2)){
 				return true;
-			}else if (classesAssignableFrom(TaxonNameBase.class, class1, class2)){
+			}else if (classesAssignableFrom(TaxonName.class, class1, class2)){
 				return true;
 			}else{
 				return false;
@@ -266,15 +265,15 @@ public class DeduplicationHelper {
 		//TODO cast
 		getCollectionRoles(clazz, sessionFactory);
 
-		TaxonNameBase<?,?> name1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.getTaxonBases();
 
-		Type propType = sessionFactory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "taxonBases");
+		Type propType = sessionFactory.getReferencedPropertyType(TaxonName.class.getCanonicalName(), "taxonBases");
 //		Map<?,?> collMetadata = sessionFactory.getAllCollectionMetadata();
 		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
 		CollectionPersister collPersister;
 		try {
-			collPersister = sessionFactory.getCollectionPersister(TaxonNameBase.class.getCanonicalName()+".annotations");
+			collPersister = sessionFactory.getCollectionPersister(TaxonName.class.getCanonicalName()+".annotations");
 		} catch (MappingException e) {
 		    // TODO Auto-generated catch block
             e.printStackTrace();

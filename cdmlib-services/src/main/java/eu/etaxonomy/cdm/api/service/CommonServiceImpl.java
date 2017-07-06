@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -117,7 +117,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     //
     //			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
     //			Class referencedClass = referencedCdmBase.getClass();
-    //			Set<CdmBase> result = new HashSet<CdmBase>();
+    //			Set<CdmBase> result = new HashSet<>();
     //			logger.debug("Referenced Class: " + referencedClass.getName());
     //
     //			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
@@ -208,7 +208,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     //	}
     //
     //	private Set<Field> getFields(Class clazz){
-    //		Set<Field> result = new HashSet<Field>();
+    //		Set<Field> result = new HashSet<>();
     //		for (Field field: clazz.getDeclaredFields()){
     //			if (!Modifier.isStatic(field.getModifiers())){
     //				result.add(field);
@@ -222,7 +222,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     //	}
     //
     //	private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class itemClass, Class otherClazz, CdmBase item, boolean isCollection){
-    //		Set<CdmBase> result = new HashSet<CdmBase>();
+    //		Set<CdmBase> result = new HashSet<>();
     //		if (isCollection){
     //			result.addAll(genericDao.getCdmBasesWithItemInCollection(itemClass, otherClazz, field.getName(), item));
     //		}else{
@@ -272,6 +272,12 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         IMergeStrategy mergeStrategy;
         T mergeFirst = (T) genericDao.find(clazz, mergeFirstUuid);
         T mergeSecond = (T) genericDao.find(clazz, mergeSecondUuid);
+        if (mergeFirst == null){
+            throw new MergeException("The merge target is not available anymore.");
+        }
+        if (mergeSecond == null){
+            throw new MergeException("The merge candidate is not available anymore.");
+        }
         mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
         merge(mergeFirst, mergeSecond, mergeStrategy);
     }
@@ -324,11 +330,11 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
-    public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData() {
-        Map<MetaDataPropertyName, CdmMetaData> result = new HashMap<MetaDataPropertyName, CdmMetaData>();
+    public Map<CdmMetaDataPropertyName, CdmMetaData> getCdmMetaData() {
+        Map<CdmMetaDataPropertyName, CdmMetaData> result = new HashMap<>();
         List<CdmMetaData> metaDataList = genericDao.getMetaData();
         for (CdmMetaData metaData : metaDataList){
-            MetaDataPropertyName propertyName = metaData.getPropertyName();
+            CdmMetaDataPropertyName propertyName = metaData.getPropertyName();
             result.put(propertyName, metaData);
         }
         return result;
@@ -400,6 +406,12 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     @Transactional(readOnly = false)
     public CdmBase save(CdmBase newInstance) {
         return genericDao.save(newInstance);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UUID delete(CdmBase instance) {
+        return genericDao.delete(instance);
     }
 
     @Override

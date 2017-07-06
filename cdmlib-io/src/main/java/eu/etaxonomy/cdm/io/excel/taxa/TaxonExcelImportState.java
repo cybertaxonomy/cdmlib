@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -37,6 +38,7 @@ public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfigura
 
 	private Map<String, TaxonBase> taxonMap= new HashMap<String, TaxonBase>();
 	private Map<String, TeamOrPersonBase> authorMap= new HashMap<String, TeamOrPersonBase>();
+	private Map<String, Reference> referenceMap= new HashMap<String, Reference>();
 	private Taxon parent;
 	private Classification classification;
 
@@ -99,6 +101,14 @@ public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfigura
      */
     public void setClassification(Classification classification) {
         this.classification = classification;
+    }
+
+    public Reference getReference(String key) {
+        return referenceMap.get(key);
+    }
+
+    public void putReference(String key, Reference reference) {
+        this.referenceMap.put(key, reference);
     }
 
 

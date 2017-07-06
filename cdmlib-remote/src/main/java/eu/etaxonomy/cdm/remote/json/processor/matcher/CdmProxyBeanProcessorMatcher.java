@@ -10,8 +10,6 @@ package eu.etaxonomy.cdm.remote.json.processor.matcher;
 
 import java.util.Set;
 
-import net.sf.json.processors.JsonBeanProcessorMatcher;
-
 import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -19,10 +17,11 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import net.sf.json.processors.JsonBeanProcessorMatcher;
 
 /**
  * can handle HibernateProxys
@@ -54,8 +53,8 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
         if (TaxonBase.class.isAssignableFrom(target)) {
             return DEFAULT.getMatch(TaxonBase.class, set);
         }
-        if (TaxonNameBase.class.isAssignableFrom(target)) {
-            return DEFAULT.getMatch(TaxonNameBase.class, set);
+        if (TaxonName.class.isAssignableFrom(target)) {
+            return DEFAULT.getMatch(TaxonName.class, set);
         }
         if (TermBase.class.isAssignableFrom(target)) {
             return DEFAULT.getMatch(TermBase.class, set);

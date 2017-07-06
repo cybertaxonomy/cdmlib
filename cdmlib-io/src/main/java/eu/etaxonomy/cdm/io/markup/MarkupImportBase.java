@@ -78,7 +78,6 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
@@ -1167,7 +1166,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Creates a {@link NonViralName} object depending on the defined {@link NomenclaturalCode}
+	 * Creates a {@link INonViralName} object depending on the defined {@link NomenclaturalCode}
 	 * and the given parameters.
 	 * @param state
 	 * @param rank

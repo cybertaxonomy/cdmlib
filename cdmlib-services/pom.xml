@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>4.7.0</version>
+    <version>4.8.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -14,6 +14,10 @@
   <artifactId>cdmlib-services</artifactId>    
   <name>CDM Services</name>
   <description>EDIT CDM library services. The local API and basis for webservices too.</description>
+  <!-- 
+        cdmlib/services as osgi bundle?
+       see https://dev.e-taxonomy.eu/redmine/issues/5302 and https://dev.e-taxonomy.eu/redmine/issues/6695 
+  -->
   <packaging>bundle</packaging>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</connection>
@@ -25,7 +29,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.3.6</version>
+        <version>3.3.0</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>

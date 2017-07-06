@@ -86,13 +86,31 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	         }
 
 	         dao.delete(node);
+	         if(parent!=null){
+	             result.addUpdatedObject(parent);
+	         }
 	         if (config.isDeleteElement()){
                  feature = node.getFeature();
                  termService.delete(feature.getUuid());
              }
 	     }
+	     return result;
+	 }
 
+	 @Override
+    public UpdateResult addChildFeaturNode(FeatureNode node, Feature featureChild){
+	     return addChildFeaturNode(node.getUuid(), featureChild.getUuid());
+	 }
 
+	 @Override
+    public UpdateResult addChildFeaturNode(UUID nodeUUID, UUID featureChildUuid){
+	     FeatureNode node = load(nodeUUID);
+	     Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
+	     UpdateResult result = new UpdateResult();
+	     FeatureNode childNode = FeatureNode.NewInstance(child);
+	     save(childNode);
+	     node.addChild(childNode);
+	     result.addUpdatedObject(node);
 	     return result;
 	 }
 
@@ -116,5 +134,39 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	     }
 	     return result;
 	 }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid, int position) {
+        UpdateResult result = new UpdateResult();
+        FeatureNode movedNode = HibernateProxyHelper.deproxy(load(movedNodeUuid), FeatureNode.class);
+        FeatureNode targetNode = HibernateProxyHelper.deproxy(load(targetNodeUuid), FeatureNode.class);
+        FeatureNode parent = HibernateProxyHelper.deproxy(movedNode.getParent(), FeatureNode.class);
+        if(position<0){
+            targetNode.addChild(movedNode);
+        }
+        else{
+            targetNode.addChild(movedNode, position);
+        }
+        result.addUpdatedObject(targetNode);
+        saveOrUpdate(targetNode);
+        saveOrUpdate(movedNode);
+        if(parent!=null){
+            result.addUpdatedObject(parent);
+            saveOrUpdate(parent);
+        }
+        result.setCdmEntity(targetNode.getFeatureTree());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid) {
+        return moveFeatureNode(movedNodeUuid, targetNodeUuid, -1);
+    }
 
 }

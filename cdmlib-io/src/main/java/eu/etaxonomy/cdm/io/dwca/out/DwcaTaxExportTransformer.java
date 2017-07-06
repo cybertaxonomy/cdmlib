@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,7 +13,7 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.ExportTransformerBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -26,10 +26,10 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  * @date 02.05.2011
  *
  */
-public class DwcaTaxExportTransformer extends InputTransformerBase {
-	private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformer.class);
-	
-//	private static Map<UUID, String> nomStatusMap = new HashMap<UUID, String>();
+public class DwcaTaxExportTransformer extends ExportTransformerBase {
+
+    private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformer.class);
+
 	private static TermMapping nomStatusMapping;
 	private static TermMapping rankMapping;
 	private static TermMapping specimenTypeMapping;
@@ -38,13 +38,8 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 	private static TermMapping lifeStageMapping;
 	private static TermMapping occStatusMapping;
 	private static TermMapping establishmentMeansMapping;
-	
 
-//	public static String transformToGbifTaxonomicStatus(){
-//		//TODO
-//		return null;
-//	}
-	
+
 	public static String transformToGbifNomStatus(NomenclaturalStatusType nomStatus){
 		if ( nomStatus == null){
 			return null;
@@ -79,7 +74,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 //		nomStatusMap.put(NomenclaturalStatusType.uuidLegitimate, "legitimate");  //why english not latin ??
 //		nomStatusMap.put(NomenclaturalStatusType.uuidNovum, "novum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidNudum, "nudum");
-//		//TODO 
+//		//TODO
 //		nomStatusMap.put(NomenclaturalStatusType.uuidOpusUtiqueOppr, "opressa");
 //		//TODO
 //		nomStatusMap.put(NomenclaturalStatusType.uuidOrthographyConserved, "orthographia");
@@ -89,15 +84,15 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 //		nomStatusMap.put(NomenclaturalStatusType.uuidRejected, "rejiciendum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidRejectedProp, "rejiciendumProp");
 ////		nomStatusMap.put(NomenclaturalStatusType.uuidSanctioned, "");
-//		
+//
 //		nomStatusMap.put(NomenclaturalStatusType.uuidSubnudum, "rejiciendum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidSuperfluous, "superfluum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidValid, "valid");
-//		
+//
 //		//CDM is missing abortivum, available, combinatio, negatum, oblitum,
 //		//               protectum, rejiciendumUtique, rejiciendumUtiqueProp
 //	}
-	
+
 	public static String transformToGbifRank(Rank term){
 		if ( term == null){
 			return null;
@@ -116,7 +111,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			return result;
 		}
 	}
-	
+
 	public static String transformSpecimenTypeStatusToGbif(SpecimenTypeDesignationStatus status){
 		if ( status == null){
 			return null;
@@ -135,8 +130,8 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			return result;
 		}
 	}
-	
-	
+
+
 	public static String transformNameTypeStatusToGbif(NameTypeDesignationStatus status){
 		if ( status == null){
 			return null;
@@ -231,5 +226,5 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			return result;
 		}
 	}
-	
+
 }

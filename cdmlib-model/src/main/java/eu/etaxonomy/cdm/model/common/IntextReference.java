@@ -19,8 +19,9 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
     "agent",
     "reference",
     "media",
+    "key",
     "languageString",
     "annotation",
     "startPos",
@@ -61,7 +63,7 @@ public class IntextReference extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private TaxonNameBase<?,?> taxonName;
+	private TaxonName taxonName;
 
     @XmlElement(name = "Taxon")
     @XmlIDREF
@@ -94,6 +96,13 @@ public class IntextReference extends VersionableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
 	private Media media;
 
+    @XmlElement(name = "SingleAccessKey")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PolytomousKey key;
+
+
     //TODO or do we want to link to LanguageString Base??
     @XmlElement(name = "LanguageString")
     @XmlIDREF
@@ -119,7 +128,8 @@ public class IntextReference extends VersionableEntity {
         AGENT("agent"),
         MEDIA("media"),
         OCCURRENCE("occurrence"),
-        TAXON("taxon")
+        TAXON("taxon"),
+        KEY("key")
         ;
         String tag;
 
@@ -142,29 +152,6 @@ public class IntextReference extends VersionableEntity {
         return result;
     }
 
-//	public static IntextReference NewTaxonNameInstance(TaxonNameBase<?,?> taxonName, LanguageStringBase languageString, int start, int end){
-//		return new IntextReference(taxonName, null, null, null, null, null, languageString, start, end);
-//	}
-//
-//	public static IntextReference NewTaxonInstance(TaxonBase<?> taxon, LanguageStringBase languageString, int start, int end){
-//		return new IntextReference(null, taxon, null, null, null, null, languageString, start, end);
-//	}
-//
-//	public static IntextReference NewOccurrenceInstance(SpecimenOrObservationBase<?> occurrence, LanguageStringBase languageString, int start, int end){
-//		return new IntextReference(null, null, occurrence, null, null, null, languageString, start, end);
-//	}
-//
-//	public static IntextReference NewAgentInstance(AgentBase<?> agent, LanguageStringBase languageString, int start, int end){
-//		return new IntextReference(null, null, null, agent, null, null, languageString, start, end);
-//	}
-//
-//	public static IntextReference NewReferenceInstance(Reference reference, LanguageStringBase languageString, int start, int end){
-//		return new IntextReference(null, null, null, null, reference, null, languageString, start, end);
-//	}
-//
-//	public static IntextReference NewMediaInstance(Media media, LanguageStringBase languageString, int start, int end){
-//		return new IntextReference(null, null, null, null, null, media, languageString, start, end);
-//	}
 
 	public static LanguageString NewReferencedLanguageString(IIntextReferenceTarget target, String pre, String middle, String post, Language language){
         LanguageString result = LanguageString.NewInstance(null, language);
@@ -195,27 +182,6 @@ public class IntextReference extends VersionableEntity {
 	@Deprecated //for hibernate use only
 	private IntextReference(){}
 
-//	private IntextReference(TaxonNameBase<?, ?> taxonName, TaxonBase<?> taxon,
-//				SpecimenOrObservationBase<?> occurrence, AgentBase<?> agent,
-//				Reference reference, Media media, LanguageStringBase languageString, int start, int end) {
-//			super();
-//			this.taxonName = taxonName;
-//			this.taxon = taxon;
-//			this.occurrence = occurrence;
-//			this.agent = agent;
-//			this.reference = reference;
-//			this.media = media;
-//			if (languageString != null && languageString.isInstanceOf(LanguageString.class)){
-//				this.languageString = CdmBase.deproxy(languageString, LanguageString.class);
-//				this.languageString.addIntextReference(this);
-//			}else if (languageString != null && languageString.isInstanceOf(Annotation.class)){
-//				this.annotation = CdmBase.deproxy(languageString, Annotation.class);
-//				this.annotation.addIntextReference(this);
-//			}
-//			this.startPos = start;
-//			this.endPos = end;
-//	}
-
 	   private IntextReference(IIntextReferenceTarget target, IIntextReferencable referencedEntity, int start, int end) {
            super();
            setTarget(target);
@@ -239,6 +205,8 @@ public class IntextReference extends VersionableEntity {
             return CDM_INTEXT_CLASS.REFERENCE;
         }else if (occurrence != null){
             return CDM_INTEXT_CLASS.OCCURRENCE;
+        }else if (key != null){
+            return CDM_INTEXT_CLASS.KEY;
         }else{
             throw new IllegalStateException("Intext reference has no target object defined");
         }
@@ -265,6 +233,8 @@ public class IntextReference extends VersionableEntity {
            return reference;
        }else if (occurrence != null){
            return occurrence;
+       }else if (key != null){
+           return key;
        }else{
            throw new IllegalStateException("Intext reference has no target object defined");
        }
@@ -275,8 +245,8 @@ public class IntextReference extends VersionableEntity {
      */
     private void setTarget(IIntextReferenceTarget target) {
         target = CdmBase.deproxy(target);
-        if (target instanceof TaxonNameBase){
-            this.taxonName = (TaxonNameBase<?,?>)target;
+        if (target instanceof TaxonName){
+            this.taxonName = (TaxonName)target;
         }else if (target instanceof TaxonBase){
             this.taxon = (TaxonBase<?>)target;
         }else if (target instanceof SpecimenOrObservationBase){
@@ -287,6 +257,8 @@ public class IntextReference extends VersionableEntity {
             this.reference = (Reference)target;
         }else if (target instanceof Media){
             this.media = (Media)target;
+        }else if (target instanceof PolytomousKey){
+            this.key = (PolytomousKey)target;
         }else{
             throw new IllegalArgumentException("Target entity not yet handled: " + target.getClass().getName());
         }
@@ -327,64 +299,6 @@ public class IntextReference extends VersionableEntity {
            }
        }
    }
-
-//	public TaxonNameBase<?, ?> getTaxonName() {
-//		return taxonName;
-//	}
-//	public void setTaxonName(TaxonNameBase<?, ?> taxonName) {
-//		this.taxonName = taxonName;
-//	}
-//
-//
-//	public TaxonBase<?> getTaxon() {
-//		return taxon;
-//	}
-//	public void setTaxon(TaxonBase<?> taxon) {
-//		this.taxon = taxon;
-//	}
-//
-//	public SpecimenOrObservationBase<?> getOccurrence() {
-//		return occurrence;
-//	}
-//	public void setOccurrence(SpecimenOrObservationBase<?> occurrence) {
-//		this.occurrence = occurrence;
-//	}
-//
-//	public AgentBase<?> getAgent() {
-//		return agent;
-//	}
-//	public void setAgent(AgentBase<?> agent) {
-//		this.agent = agent;
-//	}
-//
-//	public Reference getReference() {
-//		return reference;
-//	}
-//	public void setReference(Reference reference) {
-//		this.reference = reference;
-//	}
-//
-//	public Media getMedia() {
-//		return media;
-//	}
-//	public void setMedia(Media media) {
-//		this.media = media;
-//	}
-
-//	public LanguageString getLanguageString() {
-//		return languageString;
-//	}
-//	protected void setLanguageString(LanguageString languageString) {
-//		this.languageString = languageString;
-//	}
-//
-//	public Annotation getAnnotation() {
-//		return annotation;
-//	}
-//
-//	public void setAnnotation(Annotation annotation) {
-//		this.annotation = annotation;
-//	}
 
 	public int getStartPos() {
 		return startPos;

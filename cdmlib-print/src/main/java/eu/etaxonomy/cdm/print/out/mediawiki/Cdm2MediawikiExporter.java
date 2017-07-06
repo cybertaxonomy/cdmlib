@@ -260,7 +260,7 @@ public class Cdm2MediawikiExporter {
 	 * 
 	 */
 	private void createTemporaryExportFolder() {
-		temporaryExportFolder = CdmUtils.getCdmSubDir(MEDIAWIKI_CDM_SUB_DIR);
+		temporaryExportFolder = CdmUtils.getCdmHomeSubDir(MEDIAWIKI_CDM_SUB_DIR);
 		if (temporaryExportFolder != null) {
 			logger.info("using " + temporaryExportFolder.getAbsolutePath()
 					+ " as temporary directory.");

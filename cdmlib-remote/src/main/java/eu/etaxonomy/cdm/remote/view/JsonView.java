@@ -86,18 +86,11 @@ public class JsonView extends BaseView implements View{
         this.jsonConfig = jsonConfig;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.web.servlet.View#getContentType()
-     */
     @Override
     public String getContentType() {
         return type.getContentType();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.view.BaseView#render(java.lang.Object, java.io.PrintWriter, java.lang.String, java.lang.String)
-     */
     @Override
     public void render(Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -177,10 +170,6 @@ public class JsonView extends BaseView implements View{
         writer.flush();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.web.servlet.View#render(java.util.Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     @Override
     public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 

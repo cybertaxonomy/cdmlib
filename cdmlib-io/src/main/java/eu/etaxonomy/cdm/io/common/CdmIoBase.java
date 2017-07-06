@@ -24,6 +24,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.CdmRepository;
+import eu.etaxonomy.cdm.common.IoResultBase;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
@@ -46,10 +47,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     protected String ioName = null;
 
 
-    /**
-     *
-     */
-    public CdmIoBase() {
+    protected CdmIoBase() {
         super();
         this.ioName = this.getClass().getSimpleName();
     }
@@ -99,16 +97,13 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
 
 
-    public RESULT invoke(STATE state) {
+    public void invoke(STATE state) {
         if (isIgnore(state)){
             logger.info("No invoke for " + ioName + " (ignored)");
-            return getNoDataResult(state);
+//            return getNoDataResult(state);
         }else{
             updateProgress(state, "Invoking " + ioName);
-            state.setResult(getDefaultResult(state));
             doInvoke(state);
-            RESULT result = (RESULT)state.getResult();
-            return result;
         }
     }
 
@@ -116,25 +111,10 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     protected abstract RESULT getDefaultResult(STATE state);
 
 
-//    //TODO move up to CdmIoBase once ImportResult is used here
-//    @Override
-//    public ImportResult invoke(STATE state) {
-//        if (isIgnore( state)){
-//            logger.info("No invoke for " + ioName + " (ignored)");
-//            return true;
-//        }else{
-//            updateProgress(state, "Invoking " + ioName);
-//            doInvoke(state);
-//            return state.isSuccess();
-//        }
-//    }
-
-
-    public int countSteps(){
+    @Override
+    public long countSteps(STATE state){
         return 1;
     }
-
-
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -263,10 +243,12 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
     @Override
     public void updateProgress(STATE state, String message, int worked) {
-        IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
-        if(progressMonitor != null){
-            progressMonitor.worked(worked);
-            progressMonitor.subTask(message);
+        if (state.getCurrentMonitor() == null){
+            IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
+            if(progressMonitor != null){
+                progressMonitor.worked(worked);
+                progressMonitor.subTask(message);
+            }
         }
     }
 

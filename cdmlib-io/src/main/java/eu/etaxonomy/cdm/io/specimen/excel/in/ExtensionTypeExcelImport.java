@@ -28,7 +28,9 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
  */
 @Component
 public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExcelImportState>  implements ICdmIO<SpecimenCdmExcelImportState> {
-	private static final Logger logger = Logger.getLogger(ExtensionTypeExcelImport.class);
+    private static final long serialVersionUID = -6812740621254308971L;
+
+    private static final Logger logger = Logger.getLogger(ExtensionTypeExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "ExtensionTypes";
 

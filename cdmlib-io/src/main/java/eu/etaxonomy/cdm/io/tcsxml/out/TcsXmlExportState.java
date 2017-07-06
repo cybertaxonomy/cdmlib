@@ -16,10 +16,10 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
-public class TcsXmlExportState<CONFIG extends TcsXmlExportConfigurator> extends XmlExportState<TcsXmlExportConfigurator>{
-	@SuppressWarnings("unused")
+public class TcsXmlExportState extends XmlExportState<TcsXmlExportConfigurator>{
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsXmlExportState.class);
 
 	public TcsXmlExportState(TcsXmlExportConfigurator config) {

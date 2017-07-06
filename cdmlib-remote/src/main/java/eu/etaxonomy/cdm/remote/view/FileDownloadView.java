@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 
@@ -56,6 +55,20 @@ public class FileDownloadView implements View{
       //empty constructor
     }
 
+    /**
+     * This view will render a simple HTTP file download with default
+     * settings for content type (application/octet-stream) and encoding (no encoding).
+     *
+     * @param fileName specifiy the name of the file you want to save
+     * @param suffix file ending like "txt" or "pdf"
+     */
+    public FileDownloadView(String fileName, String suffix){
+        this.contentType = "application/octet-stream";
+        this.fileName = fileName;
+        this.suffix = suffix;
+        this.encoding = null;
+    }
+
 
     /**
      * This view will render a simple HTTP file download.
@@ -72,16 +85,14 @@ public class FileDownloadView implements View{
         this.encoding = encoding;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.springframework.web.servlet.View#render(java.util.Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     @Override
     public void render(Map<String, ?> model, HttpServletRequest arg1, HttpServletResponse response) throws Exception {
-        response.setContentType(getContentType()+"; charset="+getEncoding().toLowerCase(Locale.ENGLISH));
-        response.setCharacterEncoding(getEncoding().toUpperCase(Locale.ENGLISH));
+        response.setContentType(getContentType() + (isBinaryData() ? "" : "; charset="+getEncoding().toLowerCase(Locale.ENGLISH)));
+        if(!isBinaryData()){
+            response.setCharacterEncoding(getEncoding().toUpperCase(Locale.ENGLISH));
+        }
         response.setHeader("Content-Disposition", "attachment; filename=\""+getFileName()+"."+getSuffix()+"\"");
-        Writer out = response.getWriter();
+
         //set File
         if(model.containsKey("file")){
             Object object = model.get("file");
@@ -89,8 +100,12 @@ public class FileDownloadView implements View{
                 try{
                     File file = (File) object;
                     FileInputStream fis = new FileInputStream(file);
-                    InputStreamReader isr = new InputStreamReader(fis, getEncoding().toUpperCase(Locale.ENGLISH));
-                    IOUtils.copy(isr, out);
+                    if(!isBinaryData()){
+                        InputStreamReader isr = new InputStreamReader(fis, getEncoding().toUpperCase(Locale.ENGLISH));
+                        IOUtils.copy(isr, response.getWriter());
+                    } else {
+                        IOUtils.copy(fis, response.getOutputStream());
+                    }
                     response.flushBuffer();
                 }catch(IOException e){
                     throw new IOException("IOERROR writing file to outputstream \n" + e);
@@ -99,9 +114,6 @@ public class FileDownloadView implements View{
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.web.servlet.View#getContentType()
-     */
     @Override
     public String getContentType() {
         return contentType;
@@ -132,5 +144,9 @@ public class FileDownloadView implements View{
     }
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    protected boolean isBinaryData(){
+        return encoding == null;
     }
 }

@@ -95,6 +95,7 @@
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Distribution"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.Character"/>
       <mapping class="eu.etaxonomy.cdm.model.description.FeatureNode"/>
       <mapping class="eu.etaxonomy.cdm.model.description.FeatureTree"/>
       <mapping class="eu.etaxonomy.cdm.model.description.KeyStatement"/>
@@ -149,9 +150,6 @@
       <mapping class="eu.etaxonomy.cdm.model.molecular.SingleReadAlignment"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Cloning"/>
       <!-- Name Package -->
-      <mapping class="eu.etaxonomy.cdm.model.name.BacterialName"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.BotanicalName"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.CultivarPlantName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.HomotypicalGroup"/>
       <mapping class="eu.etaxonomy.cdm.model.name.HybridRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.name.HybridRelationshipType"/>
@@ -162,14 +160,12 @@
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalCode"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatusType"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.NonViralName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.Rank"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.Registration"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.TaxonNameBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.TaxonName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.ViralName"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.ZoologicalName"/>
       <!-- Occurrence Package -->
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Collection"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEvent"/>

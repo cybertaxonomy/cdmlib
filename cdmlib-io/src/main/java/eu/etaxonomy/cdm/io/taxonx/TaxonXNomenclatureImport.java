@@ -31,10 +31,9 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -117,9 +116,9 @@ public class TaxonXNomenclatureImport
 		unlazySynonym(config, taxon);
 		Set<Synonym> synList = taxon.getSynonyms();
 		for (Synonym syn : synList){
-			TaxonNameBase<?,?> nameBase = syn.getName();
+			TaxonName nameBase = syn.getName();
 			if (nameBase != null){
-				if (nameBase.isInstanceOf(NonViralName.class)){
+				if (nameBase.isNonViral()){
 					if (nameBase.getNameCache().equals(synName)){
 						return syn;  //only first synonym is returned
 					}
@@ -161,7 +160,7 @@ public class TaxonXNomenclatureImport
 	 * @param taxonBase
 	 * @return
 	 */
-	private boolean doNomenclaturalType(TaxonXImportConfigurator config, Element elNomenclature, Namespace nsTaxonx, TaxonNameBase taxonName){
+	private boolean doNomenclaturalType(TaxonXImportConfigurator config, Element elNomenclature, Namespace nsTaxonx, TaxonName taxonName){
 		boolean success = true;
 		if (taxonName == null){
 			logger.warn("taxonName is null");
@@ -192,7 +191,7 @@ public class TaxonXNomenclatureImport
 	}
 
 
-	private boolean doSpecimenType(TaxonXImportConfigurator config, Element elType, Element elTypeLoc, TaxonNameBase taxonName){
+	private boolean doSpecimenType(TaxonXImportConfigurator config, Element elType, Element elTypeLoc, TaxonName taxonName){
 		Reference citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
@@ -259,7 +258,7 @@ public class TaxonXNomenclatureImport
 		return true;
 	}
 
-	private boolean doNameType(Element elType, TaxonNameBase taxonName, TaxonXImportConfigurator config){
+	private boolean doNameType(Element elType, TaxonName taxonName, TaxonXImportConfigurator config){
 		boolean success = true;
 		//type
 		String text = elType.getTextNormalize();
@@ -286,7 +285,7 @@ public class TaxonXNomenclatureImport
 //				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
 //				success = false;
 //			}else{
-//				TaxonNameBase childType = getChildrenNameType(taxonName, taxonNameStr, authorStr);
+//				TaxonName childType = getChildrenNameType(taxonName, taxonNameStr, authorStr);
 //				if (childType != null){
 //					return doNameTypeDesignation(taxonName, childType, status);
 //				}else{
@@ -294,10 +293,10 @@ public class TaxonXNomenclatureImport
 					String uninomial = epis[0].trim();
 					String specEpi = epis[1].trim();
 
-					Pager<TaxonNameBase> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null, null, null);
+					Pager<TaxonName> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null, null, null);
 
 					List<INonViralName> result = new ArrayList<>();
-					for (TaxonNameBase nt : nameTypes.getRecords()){
+					for (TaxonName nt : nameTypes.getRecords()){
 						if (compareAuthorship(nt, authorStr)){
 							result.add(nt);
 							success &= doNameTypeDesignation(taxonName, nt, status/*, isLectoType*/);
@@ -319,8 +318,8 @@ public class TaxonXNomenclatureImport
 	}
 
 
-//	private TaxonNameBase getChildrenNameType(TaxonNameBase name, String typeStr, String authorStr){
-//		TaxonNameBase result = null;
+//	private TaxonName getChildrenNameType(TaxonName name, String typeStr, String authorStr){
+//		TaxonName result = null;
 //		Set<TaxonBase> list = name.getTaxonBases();
 //		for (TaxonBase taxonBase : list){
 //			Taxon taxon;
@@ -390,7 +389,7 @@ public class TaxonXNomenclatureImport
 	}
 
 
-	private boolean doNameTypeDesignation(TaxonNameBase name, TaxonNameBase type, NameTypeDesignationStatus status/*, boolean isLectoType*/){
+	private boolean doNameTypeDesignation(TaxonName name, TaxonName type, NameTypeDesignationStatus status/*, boolean isLectoType*/){
 		Reference citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
@@ -411,7 +410,7 @@ public class TaxonXNomenclatureImport
 	 */
 	private HashMap<DerivedUnit, SpecimenTypeDesignationStatus> doElTypeLoc(Element elTypeLoc,
 			SimpleSpecimen simpleSpecimen,
-			TaxonNameBase<?,?> taxonName,
+			TaxonName taxonName,
 			TaxonXImportConfigurator config){
 
 		HashMap<DerivedUnit, SpecimenTypeDesignationStatus> result = new HashMap<DerivedUnit, SpecimenTypeDesignationStatus>();
@@ -513,7 +512,7 @@ public class TaxonXNomenclatureImport
 				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				for(String collectionString : collectionStrings){
 					if (taxonBase != null){
-						TaxonNameBase<?, ?> taxonName = taxonBase.getName();
+						TaxonName taxonName = taxonBase.getName();
 						if (taxonName != null){
 							Reference citation = null;
 							String citationMicroReference = null;
@@ -591,17 +590,17 @@ public class TaxonXNomenclatureImport
 	/**
 	 * TODO Preliminary to avoid laizy loading errors
 	 */
-	private void unlazyTypeDesignation(TaxonXImportConfigurator config, TaxonNameBase taxonNameBase){
+	private void unlazyTypeDesignation(TaxonXImportConfigurator config, TaxonName taxonName){
 		TransactionStatus txStatus = startTransaction();
 		//INameService taxonNameService = config.getCdmAppController().getNameService();
 		INameService taxonNameService = getNameService();
 
-		taxonNameService.save(taxonNameBase);
-		Set<TaxonNameBase> typifiedNames = taxonNameBase.getHomotypicalGroup().getTypifiedNames();
-		for(TaxonNameBase typifiedName: typifiedNames){
+		taxonNameService.save(taxonName);
+		Set<TaxonName> typifiedNames = taxonName.getHomotypicalGroup().getTypifiedNames();
+		for(TaxonName typifiedName: typifiedNames){
 			typifiedName.getTypeDesignations().size();
 		}
-		//taxonNameService.saveTaxonName(taxonNameBase);
+		//taxonNameService.saveTaxonName(taxonName);
 		commitTransaction(txStatus);
 	}
 

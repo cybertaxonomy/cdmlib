@@ -27,7 +27,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -63,7 +63,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	private INonViralName s1n;
 	private INonViralName t2n;
 	private INonViralName t1n;
-	private TaxonNameBase<?,?> s2n;
+	private TaxonName s2n;
 
 	/**
 	 * @throws java.lang.Exception
@@ -115,17 +115,22 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		boolean deleteSynonym = false;
 		boolean copyCitationInfo = true;
 		Taxon taxon = null;
-		try {
-			taxon = service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym);
-			Assert.fail("Change must fail for synonym and taxon in same homotypical group");
-		} catch (HomotypicalGroupChangeException e) {
-			//OK
-		}
+
+		UpdateResult result;
+        try {
+            result = service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym);
+            Assert.assertTrue("Change must fail for synonym and taxon in same homotypical group",result.isAbort());
+        } catch (HomotypicalGroupChangeException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+
 		t1.addSynonym(s2, heteroTypicSynonymType);
 		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
 		try {
-			taxon = service.changeSynonymToAcceptedTaxon(s2, t1, deleteSynonym);
+			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s2, t1, deleteSynonym).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e) {
 			Assert.fail("Change must not throw exception for heterotypic synonym change");
 		}
@@ -143,9 +148,9 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	@Test
 	public final void testChangeSynonymWithMultipleSynonymsInHomotypicalGroupToAcceptedTaxon() {
 		t1.addSynonym(s1, heteroTypicSynonymType);
-		TaxonNameBase<?,?> otherHeteroSynonymName = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName otherHeteroSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		t1.addHeterotypicSynonymName(otherHeteroSynonymName);
-		TaxonNameBase<?,?> homotypicSynonymName = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName homotypicSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		Synonym homotypicSynonym = Synonym.NewInstance(homotypicSynonymName, t1.getSec());
 		t1.addHomotypicSynonym(homotypicSynonym);
 
@@ -159,7 +164,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		//run
 		Taxon newTaxon = null;
 		try {
-			newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false);
+			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, false).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e1) {
 			Assert.fail("Invocation of change method should not throw an exception");
 		}
@@ -189,8 +194,9 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertTrue("Relationship to s2 must have been concidered in 'for'-loop", iWasHere);
 
 		try {
-			service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false);
-			Assert.fail("The method should throw an exception when invoked on taxa in the same homotypical group");
+			UpdateResult result = service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false);
+
+			Assert.assertTrue("The method should throw an exception when invoked on taxa in the same homotypical group", !result.getExceptions().isEmpty());
 		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		}
@@ -212,10 +218,10 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		newInstances.add(t1);
 		newInstances.add(t2);
 		service.save(newInstances);
-		TaxonNameBase<?,?> synonymName = s1.getName();
+		TaxonName synonymName = s1.getName();
 		UUID synNameUUID = synonymName.getUuid();
 
-		Taxon newTaxon = service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
+		Taxon newTaxon = (Taxon) service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail).getCdmEntity();
 		//check removeTaxonBase()
 		//UUID s1UUID = service.update(s1);
 		UUID newTaxonUUID = service.save(newTaxon).getUuid();
@@ -229,7 +235,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
 
 		synonymName = s2.getName();
-        newTaxon = service.changeSynonymToRelatedTaxon(s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail);
+        newTaxon = (Taxon)service.changeSynonymToRelatedTaxon(s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail).getCdmEntity();
         //check removeTaxonBase()
         //UUID s1UUID = service.update(s1);
         newTaxonUUID = service.save(newTaxon).getUuid();
@@ -251,16 +257,16 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		t1.addSynonym(s1, heteroTypicSynonymType);
 
 		//s2 - heterotypic
-		TaxonNameBase otherHeteroSynonymName = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName otherHeteroSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		Synonym s2 = Synonym.NewInstance(otherHeteroSynonymName, t1.getSec());
 		t1.addSynonym(s2, heteroTypicSynonymType);
-		TaxonNameBase<?,?> otherHeteroSynonymNameB = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName otherHeteroSynonymNameB = TaxonNameFactory.NewNonViralInstance(null);
 		otherHeteroSynonymName.addBasionym(otherHeteroSynonymNameB);
 		Synonym s2b = Synonym.NewInstance(otherHeteroSynonymNameB, t1.getSec());
 		t1.addSynonym(s2b, heteroTypicSynonymType);
 
 		//homotypic
-		TaxonNameBase<?,?> homotypicSynonymName = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName homotypicSynonymName = TaxonNameFactory.NewNonViralInstance(null);
 		Synonym homotypicSynonym = Synonym.NewInstance(homotypicSynonymName, t1.getSec());
 		t1.addHomotypicSynonym(homotypicSynonym);
 		t1.getName().addBasionym(homotypicSynonymName);

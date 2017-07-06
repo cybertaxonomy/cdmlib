@@ -24,7 +24,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -111,7 +111,7 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
     	Map<String, Taxon> map = new HashMap<String, Taxon>();
     	for(String strName : stringTaxonNames){
     		NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-    		TaxonNameBase<?,?> nameBase = (TaxonNameBase<?,?>)parser.parseFullName(strName);
+    		TaxonName nameBase = (TaxonName)parser.parseFullName(strName);
     		Taxon taxon = Taxon.NewInstance(nameBase, null);
     		map.put(strName, taxon);
     	}
@@ -161,7 +161,7 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
                     "LanguageString",
                     "TaxonNode",
                     "TaxonBase",
-                    "TaxonNameBase",
+                    "TaxonName",
                     "HomotypicalGroup"
             });
         } catch (FileNotFoundException e) {

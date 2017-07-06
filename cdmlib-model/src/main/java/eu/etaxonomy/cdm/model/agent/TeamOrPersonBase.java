@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -28,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
 /**
  * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
- * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
+ * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonName taxon names}.
  *
  * @author a.mueller
  * @created 17-APR-2008
@@ -40,7 +39,10 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 })
 @Entity
 @Audited
-public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
+public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
+            extends AgentBase<INomenclaturalAuthorCacheStrategy<T>>
+            implements INomenclaturalAuthor {
+
     private static final long serialVersionUID = 5216821307314001961L;
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
@@ -72,7 +74,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>> extends Ag
     @Transient
     public String getNomenclaturalTitle() {
         String result = nomenclaturalTitle;
-        if (StringUtils.isBlank(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
+        if (isBlank(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
             result = getTitleCache();
         }
         return result;
@@ -83,21 +85,22 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>> extends Ag
      */
     @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
-        this.nomenclaturalTitle = StringUtils.isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
+        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
 
 
     @Override
-    @Transient /*
-                TODO  is the transient annotation still needed, can't we remove this ??
-                @Transient is an absolutely special case and thus leads to several
-                special implementations in order to harmonize this exception again
-                in other parts of the library:
-                 - eu.etaxonomy.cdm.remote.controller.AgentController.doGetTitleCache()
-                 - eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor
+    @Transient
+    /*
+        TODO  is the transient annotation still needed, can't we remove this ??
+        @Transient is an absolutely special case and thus leads to several
+        special implementations in order to harmonize this exception again
+        in other parts of the library:
+         - eu.etaxonomy.cdm.remote.controller.AgentController.doGetTitleCache()
+         - eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor
 
-                [a.kohlbecker May 2011]
-         */
+        [a.kohlbecker May 2011]
+    */
     public String getTitleCache() {
         isGeneratingTitleCache = true;
         String result = super.getTitleCache();
@@ -106,19 +109,25 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>> extends Ag
         return result;
     }
 
+   @Transient
+    public String getFullTitle() {
+        @SuppressWarnings("unchecked")
+        T agent = (T)this;
+        return this.getCacheStrategy().getFullTitle(agent);
+    }
+
     /**
      * @param result
      * @return
      */
     protected String replaceEmptyTitleByNomTitle(String result) {
-        if (StringUtils.isBlank(result)){
+        if (isBlank(result)){
             result = nomenclaturalTitle;
         }
-        if (StringUtils.isBlank(result)){
+        if (isBlank(result)){
             result = super.getTitleCache();
         }
         return result;
     }
-
 
 }

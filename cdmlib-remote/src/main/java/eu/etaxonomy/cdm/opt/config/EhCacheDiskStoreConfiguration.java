@@ -35,7 +35,7 @@ public class EhCacheDiskStoreConfiguration {
     public DiskStoreConfiguration diskStoreConfiguration(){
 
         DiskStoreConfiguration diskStoreConfiguration = new DiskStoreConfiguration();
-        File ehcacheFolder = CdmUtils.getCdmSubDir("ehcache");
+        File ehcacheFolder = CdmUtils.getCdmHomeSubDir("ehcache");
         String instanceName = dataSourceProperties.getCurrentDataSourceId();
         File instanceCacheFolder = new File(ehcacheFolder, instanceName);
         logger.debug("Setting ehcache diskstore location to " + instanceCacheFolder.getAbsolutePath());

@@ -25,7 +25,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -51,8 +51,8 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		nonViralName1 = new BotanicalName();
-		nonViralName2 = new BotanicalName();
+		nonViralName1 = TaxonNameFactory.NewBotanicalInstance(null);
+		nonViralName2 = TaxonNameFactory.NewBotanicalInstance(null);
 	}
 
 	/**
@@ -108,9 +108,9 @@ public class NonViralNameTest extends EntityTestBase {
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
-		INomenclaturalReference article = ReferenceFactory.newArticle();
+		Reference article = ReferenceFactory.newArticle();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		INonViralName nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
+		INonViralName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
 		assertEquals("infraGen", nonViralName.getInfraGenericEpithet());
 		assertEquals("species", nonViralName.getSpecificEpithet() );
@@ -315,7 +315,7 @@ public class NonViralNameTest extends EntityTestBase {
 		INonViralName nonViralName1 = TaxonNameFactory.NewNonViralInstance(null);
 		assertEquals(0, nonViralName1.getHybridParentRelations().size());
 		assertEquals(0, nonViralName1.getHybridChildRelations().size());
-		TaxonNameBase<?,?> botanicalName2 = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName botanicalName2 = TaxonNameFactory.NewNonViralInstance(null);
 		botanicalName2.addHybridRelationship(null);
 	}
 
@@ -325,7 +325,7 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(0, botanicalName1.getHybridParentRelations().size());
 		assertEquals(0, botanicalName1.getHybridChildRelations().size());
 		IBotanicalName femaleParent = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonNameBase<?,?> maleParent = TaxonNameFactory.NewNonViralInstance(null);
+		TaxonName maleParent = TaxonNameFactory.NewNonViralInstance(null);
 		IZoologicalName child = TaxonNameFactory.NewZoologicalInstance(null);
 
 		botanicalName1.addHybridParent(femaleParent, HybridRelationshipType.FEMALE_PARENT(), null);
@@ -374,7 +374,7 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
 
 
-		INonViralName clone = (INonViralName)((NonViralName)nonViralName1).clone();
+		INonViralName clone = (INonViralName)(nonViralName1).clone();
 		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
 		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
 		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());
@@ -389,13 +389,13 @@ public class NonViralNameTest extends EntityTestBase {
 
 		//hybrid parents of clone
 		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getHybridChildRelations().size());
-		Set<TaxonNameBase> parentSet = new HashSet<>();
-		Set<TaxonNameBase> childSet = new HashSet<>();
+		Set<TaxonName> parentSet = new HashSet<>();
+		Set<TaxonName> childSet = new HashSet<>();
 		for (Object object : clone.getHybridChildRelations()){
 			HybridRelationship childRelation = (HybridRelationship)object;
-			TaxonNameBase<?,?> relatedFrom = childRelation.getRelatedFrom();
+			TaxonName relatedFrom = childRelation.getRelatedFrom();
 			parentSet.add(relatedFrom);
-			TaxonNameBase<?,?> relatedTo = childRelation.getRelatedTo();
+			TaxonName relatedTo = childRelation.getRelatedTo();
 			childSet.add(relatedTo);
 		}
 		Assert.assertTrue("Parent set should contain parent1", parentSet.contains(parent));

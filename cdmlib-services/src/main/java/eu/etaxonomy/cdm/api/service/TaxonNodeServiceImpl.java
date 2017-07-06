@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
@@ -74,6 +76,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private IAgentService agentService;
+
+    @Autowired
+    private ITaxonNodeFilterDao nodeFilterDao;
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -160,16 +165,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         allRecords.addAll(childNodes);
 
         //add synonyms if pager is not yet full synonyms
-        List<Synonym> synList = new ArrayList<>(parentNode.getTaxon().getSynonyms());
-        Collections.sort(synList, new HomotypicGroupTaxonComparator(null));
-        //TODO: test sorting
+        if (doSynonyms){
+            List<Synonym> synList = new ArrayList<>(parentNode.getTaxon().getSynonyms());
+            Collections.sort(synList, new HomotypicGroupTaxonComparator(null));
+            //TODO: test sorting
 
-        allRecords.addAll(synList);
+            allRecords.addAll(synList);
+        }
 
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
         Long totalCount = Long.valueOf(allRecords.size());
 
-        TaxonNameBase<?,?> parentName = null;
+        TaxonName parentName = null;
 
         for(CdmBase record : PagerUtils.pageList(allRecords, pageIndex, pageSize)) {
             if (record.isInstanceOf(TaxonNode.class)){
@@ -219,8 +226,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.find(newAcceptedTaxonNode.getTaxon().getUuid());
         newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon, Taxon.class);
         // Move oldTaxon to newTaxon
-        //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-        TaxonNameBase<?,?> newSynonymName = CdmBase.deproxy(oldTaxon.getName());
+        //TaxonName synonymName = oldTaxon.getName();
+        TaxonName newSynonymName = CdmBase.deproxy(oldTaxon.getName());
         HomotypicalGroup group = CdmBase.deproxy(newSynonymName.getHomotypicalGroup());
         if (synonymType == null){
             if (newSynonymName.isHomotypic(newAcceptedTaxon.getName())){
@@ -231,7 +238,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
         //set homotypic group
-        TaxonNameBase<?,?> newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonNameBase.class);
+        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         // Move Synonym Relations to new Taxon
         Synonym newSynonym = newAcceptedTaxon.addSynonymName(newSynonymName, citation, citationMicroReference,
@@ -777,5 +784,20 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
     }
 
+
+    @Override
+    public long count(TaxonNodeFilter filter){
+        return nodeFilterDao.count(filter);
+    }
+
+    @Override
+    public List<UUID> uuidList(TaxonNodeFilter filter){
+        return nodeFilterDao.listUuids(filter);
+    }
+
+    @Override
+    public List<Integer> idList(TaxonNodeFilter filter){
+        return nodeFilterDao.idList(filter);
+    }
 
 }

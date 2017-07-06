@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -36,14 +36,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author h.fradin (from a.babadshanjan)
  * @created 10.12.2008
- * @versoin 1.0
  */
 @Component("pilotOutputDescriptionExporter")
-public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer> implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
+public class PilotOutputDescriptionExporter
+        extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer, File>
+        implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
-	private static final Logger logger = Logger.getLogger(PilotOutputDescriptionExporter.class);
+    private static final long serialVersionUID = -7530748162895106222L;
+    private static final Logger logger = Logger.getLogger(PilotOutputDescriptionExporter.class);
 	private PilotOutputDocumentBuilder pilotOutputDocumentBuilder = null;
 
 	private String ioName = null;
@@ -130,7 +132,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
 		int referenceBaseRows = numberOfRows;
-		int taxonNameBaseRows = numberOfRows;
+		int taxonNameRows = numberOfRows;
 		int taxonBaseRows = numberOfRows;
 		int relationshipRows = numberOfRows;
 		int occurrencesRows = numberOfRows;
@@ -173,10 +175,10 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		}
 
 		if (sddExpConfig.isDoTaxonNames() == true) {
-			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
-			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+			if (taxonNameRows == 0) { taxonNameRows = getNameService().count(TaxonName.class); }
+			logger.info("# TaxonName: " + taxonNameRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
+			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoHomotypicalGroups() == true) {

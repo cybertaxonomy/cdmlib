@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(ColumnRemover.class);
+public class ColumnRemover
+        extends AuditedSchemaUpdaterStepBase{
+
+    private static final Logger logger = Logger.getLogger(ColumnRemover.class);
 
 	private final String oldColumnName;
 
@@ -34,17 +36,19 @@ public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> i
 		this.oldColumnName = oldColumnName;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
-		try {
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
-			return result;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
+		    String message = e.getMessage();
+			monitor.warning(message, e);
 			logger.error(e);
-			return false;
+            result.addException(e, message, getStepName() + ", ColumnRemove.invokeOnTable");
+            return;
 		}
 	}
 

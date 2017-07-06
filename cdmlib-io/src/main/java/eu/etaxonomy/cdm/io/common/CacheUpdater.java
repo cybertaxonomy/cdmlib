@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -65,7 +65,7 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 			List list = Arrays.asList(new Class[]{
 					DescriptionBase.class, IdentifiableMediaEntity.class,
 					Media.class, Sequence.class,
-					TaxonBase.class, TaxonNameBase.class,
+					TaxonBase.class, TaxonName.class,
 					Classification.class, TermBase.class
 					});
 			handleClassList(list);
@@ -118,8 +118,8 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 				//TODO misuse TaxonServic for sequence update, use sequence service when it exists
 				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
 			}
-			//TaxonNameBase
-			else if (TaxonNameBase.class.isAssignableFrom(clazz)){
+			//TaxonName
+			else if (TaxonName.class.isAssignableFrom(clazz)){
 				getNameService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//Classification

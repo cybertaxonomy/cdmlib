@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -199,8 +199,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testDeleteTerms(){
     	final String[] tableNames = new String[]{
@@ -240,7 +240,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         termBase =terms.iterator().next();
         termUUID = termBase.getUuid();
         termBase = termService.load(termUUID);
-        BotanicalName testName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName testName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         Taxon testTaxon = Taxon.NewInstance(testName,null);
         testTaxon.addIdentifier("Test", (DefinedTerm) termBase);
         taxonService.save(testTaxon);

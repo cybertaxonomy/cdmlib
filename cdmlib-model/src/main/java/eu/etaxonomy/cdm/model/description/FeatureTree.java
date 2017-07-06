@@ -86,7 +86,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
     @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
-    private Set<Representation> representations = new HashSet<Representation>();
+    private Set<Representation> representations = new HashSet<>();
     //make them private for now as we may delete representations in future
 	//otherwise if we decide to use representations we can make the getters public
 	private Set<Representation> getRepresentations() {return representations;}
@@ -193,7 +193,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	 */
 	@Transient
 	public Set<Feature> getDistinctFeatures(){
-		Set<Feature> features = new HashSet<Feature>();
+		Set<Feature> features = new HashSet<>();
 
 		return root.getDistinctFeaturesRecursive(features);
 	}

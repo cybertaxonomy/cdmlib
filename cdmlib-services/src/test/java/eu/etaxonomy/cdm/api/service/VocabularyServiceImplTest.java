@@ -50,7 +50,7 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
     @Test
 //    @Ignore //FIXME assertSame does not work yet
     public void testGetRankVocabulary() {
-        List<TermVocabulary<Rank>> rankVocabularyList = vocabularyService.findByTermType(TermType.Rank);
+        List<TermVocabulary<Rank>> rankVocabularyList = vocabularyService.findByTermType(TermType.Rank, null);
         assertTrue(rankVocabularyList.size() == 1);
         OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary<Rank>)rankVocabularyList.get(0);
         assertNotNull(rankVocabulary);
@@ -69,7 +69,7 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 //    @Ignore  //not yet correctly implemented
     public void testGetTypeDesignationVocabulary() {
         List<TermVocabulary<SpecimenTypeDesignationStatus>> typeDesignationVocabularyList =
-        		vocabularyService.findByTermType(TermType.SpecimenTypeDesignationStatus);
+        		vocabularyService.findByTermType(TermType.SpecimenTypeDesignationStatus, null);
         assertTrue(typeDesignationVocabularyList.size() == 1);
         OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary = (OrderedTermVocabulary<SpecimenTypeDesignationStatus>)typeDesignationVocabularyList.get(0);
 

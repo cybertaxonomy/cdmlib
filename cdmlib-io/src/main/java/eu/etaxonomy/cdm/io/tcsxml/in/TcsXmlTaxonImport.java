@@ -35,9 +35,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -123,7 +122,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 
 		logger.info("start make TaxonConcepts ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
 
@@ -153,7 +152,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
-			List<String> elementList = new ArrayList<String>();
+			List<String> elementList = new ArrayList<>();
 
 			//create TaxonName element
 			String strId = elTaxonConcept.getAttributeValue("id");
@@ -168,7 +167,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 			if (isVernacular(success, elName)){
 				handleVernacularName(success, strId, elName, commonNameMap);
 			}else{
-				TaxonNameBase<?,?> taxonName = makeScientificName(elName, null, taxonNameMap, success);
+				TaxonName taxonName = makeScientificName(elName, null, taxonNameMap, success);
 				elementList.add(childName.toString());
 
 				//TODO how to handle
@@ -312,22 +311,26 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	 * @param elTaxonRelationships
 	 * @param success
 	 */
-	private TaxonNameBase<?, ?> makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonNameBase<?,?>> objectMap, ResultWrapper<Boolean> success){
-		TaxonNameBase<?, ?> result = null;
+	private TaxonName makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonName> objectMap, ResultWrapper<Boolean> success){
+		TaxonName result = null;
 		if (elName != null){
 			String language = elName.getAttributeValue("language");
 			//Language
 			if (language != null){
 				logger.warn("language for name not yet implemented. Language for scientific name should always be Latin");
 			}
-			Class<? extends IdentifiableEntity> clazz = NonViralName.class;
-			if (code != null){
-				clazz = code.getCdmClass();
-			}
-			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
+			Class<? extends IdentifiableEntity> clazz = TaxonName.class;
+			result = (TaxonName)makeReferenceType (elName, clazz , objectMap, success);
 			if(result == null){
 				logger.warn("Name not found");
 				success.setValue(false);
+			}else{
+			    if (result.getNameType() == null){
+			        if (code == null){
+			            code = NomenclaturalCode.NonViral;
+			        }
+			        result.setNameType(code);
+			    }
 			}
 		}else{
 			logger.warn("Name element is null");

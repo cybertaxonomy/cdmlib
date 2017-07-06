@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -197,17 +197,17 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List of TaxonNameBase instances
+     * @return a List of TaxonName instances
      */
-    List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    List<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of TaxonNameDescription instances, optionally filtered by the name which they refer to
      *
      * @param name Restrict the results to those descriptions that refer to a specific name (can be null for all TaxonNameDescription instances)
-     * @return a count of TaxonNameBase instances
+     * @return a count of TaxonName instances
      */
-    int countTaxonNameDescriptions(TaxonNameBase name);
+    int countTaxonNameDescriptions(TaxonName name);
 
     /**
      * Returns a List of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * The class representing the taxonomical ranks (like "Family", "Genus" or
- * "Species") used for {@link TaxonNameBase taxon names} across all {@link NomenclaturalCode nomenclatural codes}
+ * "Species") used for {@link TaxonName taxon names} across all {@link NomenclaturalCode nomenclatural codes}
  * for bacteria (ICNB), viruses (ICVCN), plants and fungi (ICBN),
  * cultivars (ICNCP) and animals (ICZN).
  * <P>
@@ -968,11 +968,12 @@ public class Rank extends OrderedTermBase<Rank> {
             return result;
         }
     }
+
     @Transient
     public String getInfraGenericMarker() throws UnknownCdmTypeException{
         String result = null;
         if (! this.isInfraGeneric()){
-            throw new IllegalStateException("An infrageneric marker is only available for a infrageneric rank but was asked for rank: " + this.toString());
+            throw new IllegalStateException("An infrageneric marker is only available for an infrageneric rank but was asked for rank: " + this.toString());
         }else{
             result = this.getAbbreviation();
         }

@@ -41,17 +41,24 @@ public class NormalExplicitRow extends ExcelRowBase {
     private String infraGenus;
     private String species;
     private String infraSpecies;
+    private String infraSpecies_rank;
 
     private String collation;
+    private String page;
     private String publicationYear;
     private String remarks;
 
     private String synonym;
     private String basionym;
+    private String accepted_id;
+    private String taxonomicStatus;
 
     private String version;
 
 
+    private String ipni_id;
+    private String source;
+    private String source_Id;
 	//Sets
 	private TreeMap<Integer, String> distributions = new TreeMap<Integer, String>();
 
@@ -452,6 +459,62 @@ public class NormalExplicitRow extends ExcelRowBase {
     }
 
 
+    public void setPage(String value) {
+        this.page = value;
+
+    }
+    public String getPage() {
+        return this.page;
+
+    }
+
+
+    public void setAccepted_id(String value) {
+        this.accepted_id = value;
+    }
+
+    public String getAccepted_id(){
+        return accepted_id;
+    }
+
+    public void setInfraSpecies_Rank(String value) {
+        this.infraSpecies_rank = value;
+    }
+
+    public String getInfraSpecies_Rank() {
+        return this.infraSpecies_rank;
+    }
+
+    public String getTaxonomicStatus() {
+        return this.taxonomicStatus;
+    }
+
+    public void setTaxonomicStatus(String value) {
+        this.taxonomicStatus = value;
+    }
+
+    public String getIpni_id() {
+        return ipni_id;
+    }
+
+    public void setIpni_id(String ipni_id) {
+        this.ipni_id = ipni_id;
+    }
+
+   public void setSource(String value) {
+      this.source = value;
+
+    }
+   public String getSource() {
+       return this.source ;
+
+     }
+   public void setSource_Id(String value) {
+       this.source_Id= value;
+   }
+   public String getSource_Id() {
+       return this.source_Id;
+   }
 
 
 }

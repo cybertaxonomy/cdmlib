@@ -96,7 +96,7 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -275,7 +275,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
@@ -589,9 +589,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (typeStatus != null) {
                 List<String> typedTaxaNames = new ArrayList<>();
                 String label = typeStatus.getLabel();
-                Set<TaxonNameBase> typifiedNames = specimenTypeDesignation.getTypifiedNames();
-                for (TaxonNameBase taxonNameBase : typifiedNames) {
-                    typedTaxaNames.add(taxonNameBase.getFullTitleCache());
+                Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+                for (TaxonName taxonName : typifiedNames) {
+                    typedTaxaNames.add(taxonName.getFullTitleCache());
                 }
                 preservedSpecimenDTO.addTypes(label, typedTaxaNames);
             }
@@ -1008,7 +1008,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         ---types TERM
         -preservationMethod
         --medium TERM
-        -storedUnder CDM TaxonNameBase
+        -storedUnder CDM TaxonName
          */
 
         Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<>();
@@ -1112,14 +1112,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             // check for type designation
             if (cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()) {
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is a type specimen."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             // check for IndividualsAssociations
             else if (cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()) {
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is still associated via IndividualsAssociations"));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
@@ -1128,7 +1128,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     && HibernateProxyHelper.deproxy(cdmBase, TaxonDescription.class).getDescribedSpecimenOrObservation().equals(specimen)
                     && !specimenDeleteConfigurator.isDeleteFromDescription()){
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used as \"Described Specimen\" in a taxon description."));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is still used as \"Described Specimen\" in a taxon description."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
@@ -1145,7 +1145,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if(!specimenDeleteConfigurator.isDeleteChildren()){
                         //if children should not be deleted then it is undeletable
                         deleteResult.setAbort();
-                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivative still has child derivatives."));
+                        deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation still has child derivatives."));
                         deleteResult.addRelatedObject(cdmBase);
                         break;
                     }
@@ -1240,10 +1240,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (relatedObject.isInstanceOf(SpecimenTypeDesignation.class)) {
                 SpecimenTypeDesignation designation = HibernateProxyHelper.deproxy(relatedObject, SpecimenTypeDesignation.class);
                 designation.setTypeSpecimen(null);
-                List<TaxonNameBase> typifiedNames = new ArrayList<>();
+                List<TaxonName> typifiedNames = new ArrayList<>();
                 typifiedNames.addAll(designation.getTypifiedNames());
-                for (TaxonNameBase taxonNameBase : typifiedNames) {
-                    taxonNameBase.removeTypeDesignation(designation);
+                for (TaxonName taxonName : typifiedNames) {
+                    taxonName.removeTypeDesignation(designation);
                 }
             }
             // delete IndividualsAssociation
@@ -1344,7 +1344,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     associatedTaxa.add(determinationEvent.getTaxon());
                 }
                 if(determinationEvent.getTaxonName()!=null){
-                    associatedTaxa.addAll(determinationEvent.getTaxonName().getTaxonBases());
+                    associatedTaxa.addAll((Collection)determinationEvent.getTaxonName().getTaxonBases());
                 }
             }
         }
@@ -1357,9 +1357,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
             if(typeDesignation.getTypeSpecimen().equals(specimen)){
-                Set<TaxonNameBase> typifiedNames = typeDesignation.getTypifiedNames();
-                for (TaxonNameBase taxonNameBase : typifiedNames) {
-                    associatedTaxa.addAll(taxonNameBase.getTaxa());
+                Set<TaxonName> typifiedNames = typeDesignation.getTypifiedNames();
+                for (TaxonName taxonName : typifiedNames) {
+                    associatedTaxa.addAll(taxonName.getTaxa());
                 }
             }
         }
@@ -1445,7 +1445,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
-            TaxonNameBase taxonName = null;
+            TaxonName taxonName = null;
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
@@ -1473,7 +1473,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
-            TaxonNameBase taxonName = null;
+            TaxonName taxonName = null;
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }

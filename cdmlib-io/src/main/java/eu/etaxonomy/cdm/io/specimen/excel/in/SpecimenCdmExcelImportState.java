@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -40,7 +40,7 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	private Map<String, Person> persons = new HashMap<String, Person>();
 	private Map<String, Team> teams = new HashMap<String, Team>();
-	private Map<String, TaxonNameBase<?, ?>> names = new HashMap<String, TaxonNameBase<?,?>>();
+	private Map<String, TaxonName> names = new HashMap<String, TaxonName>();
 	private Map<String, UUID> areas = new HashMap<String, UUID>();
 
 
@@ -85,11 +85,11 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 		return this.teams.put(key, value);
 	}
 
-	public TaxonNameBase getName(String key) {
+	public TaxonName getName(String key) {
 		return names.get(key);
 	}
 
-	public TaxonNameBase putName(String key, TaxonNameBase value){
+	public TaxonName putName(String key, TaxonName value){
 		return this.names.put(key, value);
 	}
 

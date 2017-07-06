@@ -76,7 +76,7 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 	 *             implementation you would have to create one. for example:
 	 *             <pre>
 	 	@Override
-		public JSONObject processBeanSecondStep(TaxonNameBase bean, JSONObject json, JsonConfig jsonConfig) {
+		public JSONObject processBeanSecondStep(TaxonName bean, JSONObject json, JsonConfig jsonConfig) {
 		  json.element("taggedName", getTaggedName(bean), jsonConfig);
 		  return json;
 		}

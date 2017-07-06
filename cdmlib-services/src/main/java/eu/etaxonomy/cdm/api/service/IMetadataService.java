@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Map;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * @author cmathew
@@ -43,6 +43,6 @@ public interface IMetadataService {
      * @return
      * @throws CdmSourceException
      */
-    public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
+    public Map<CdmMetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
 
 }

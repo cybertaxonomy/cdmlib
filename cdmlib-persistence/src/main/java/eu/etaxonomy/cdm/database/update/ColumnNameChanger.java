@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameChanger> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(ColumnNameChanger.class);
+public class ColumnNameChanger
+        extends AuditedSchemaUpdaterStepBase{
+
+    private static final Logger logger = Logger.getLogger(ColumnNameChanger.class);
 
 	private final String newColumnName;
 	private final String oldColumnName;
@@ -35,21 +37,23 @@ public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameCh
 		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer);
 	}
 
-	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
+	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName,
+	        String newColumnName, boolean includeAudTable){
 		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob);
 	}
 
-	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype) {
+	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName,
+	        String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype) {
 		super(stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
 		this.datatype = datatype;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		try {
-			boolean result = true;
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try {
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String updateQuery;
 
@@ -66,8 +70,10 @@ public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameCh
 				updateQuery = "ALTER TABLE @tableName RENAME COLUMN @oldColumnName TO @newColumnName;";
 			}else{
 				updateQuery = null;
-				monitor.warning("Update step '" + this.getStepName() + "' is not supported by " + type.getName());
-				return false;
+				String message = "Update step '" + this.getStepName() + "' is not supported by " + type.getName();
+				monitor.warning(message);
+				result.addError(message, getStepName() + ", ColumnNameChanger.invokeOnTable");
+				return;
 			}
 			updateQuery = updateQuery.replace("@tableName", tableName);
 			updateQuery = updateQuery.replace("@oldColumnName", oldColumnName);
@@ -75,11 +81,13 @@ public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameCh
 			updateQuery = updateQuery.replace("@definition", getDefinition());
 			datasource.executeUpdate(updateQuery);
 
-			return result;
+			return;
 		} catch (Exception e) {
-			monitor.warning(e.getMessage(), e);
+		    String message = e.getMessage();
+			monitor.warning(message, e);
 			logger.error(e);
-			return false;
+			result.addException(e, message, getStepName() + ", ColumnNameChanger.invokeOnTable");
+			return;
 		}
 	}
 

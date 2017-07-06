@@ -40,8 +40,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.ITaxonName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -274,7 +273,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				if (entity.getTitleCache() != null){
 					//System.err.println(entity.getTitleCache());
 				}else{
-				    //System.err.println("no titleCache" + ((TaxonNameBase<?,?>)entity).getNameCache());
+				    //System.err.println("no titleCache" + ((TaxonName)entity).getNameCache());
 				}
 			}
 			saveOrUpdate(entitiesToUpdate);
@@ -329,10 +328,11 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			T entity) {
 
 		//assert (entity.isProtectedTitleCache() == false );
+	    entity = CdmBase.deproxy(entity);
 
 		//exclude recursive inreferences
 		if (entity.isInstanceOf(Reference.class)){
-			Reference ref = CdmBase.deproxy(entity, Reference.class);
+			Reference ref = (Reference)entity;
 			if (ref.getInReference() != null && ref.getInReference().equals(ref)){
 				return;
 			}
@@ -360,23 +360,24 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		String oldNameCache = null;
 		String oldFullTitleCache = null;
 		String oldAbbrevTitleCache = null;
-		if (entity instanceof NonViralName ){
-
-			try{
-				INonViralName nvn = (INonViralName) entity;
-				if (!nvn.isProtectedNameCache()){
-				    nvn.setProtectedNameCache(true);
-					oldNameCache = nvn.getNameCache();
-					nvn.setProtectedNameCache(false);
-				}
-				if (!nvn.isProtectedFullTitleCache()){
-				    nvn.setProtectedFullTitleCache(true);
-					oldFullTitleCache = nvn.getFullTitleCache();
-					nvn.setProtectedFullTitleCache(false);
-				}
-			}catch(ClassCastException e){
-				System.out.println("entity: " + entity.getTitleCache());
-			}
+		if (entity instanceof TaxonName ){
+		    if (((TaxonName) entity).isNonViral()) {
+                try{
+                	INonViralName nvn = (INonViralName) entity;
+                	if (!nvn.isProtectedNameCache()){
+                	    nvn.setProtectedNameCache(true);
+                		oldNameCache = nvn.getNameCache();
+                		nvn.setProtectedNameCache(false);
+                	}
+                	if (!nvn.isProtectedFullTitleCache()){
+                	    nvn.setProtectedFullTitleCache(true);
+                		oldFullTitleCache = nvn.getFullTitleCache();
+                		nvn.setProtectedFullTitleCache(false);
+                	}
+                }catch(ClassCastException e){
+                	System.out.println("entity: " + entity.getTitleCache());
+                }
+            }
 
 		}else if (entity instanceof Reference){
 			Reference ref = (Reference) entity;
@@ -390,14 +391,14 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		String newTitleCache= null;
 		INonViralName nvn = null; //TODO find better solution
 		try{
-			if (entity instanceof TaxonNameBase){
+			if (entity instanceof TaxonName){
 				nvn = (ITaxonName) entity;
 				newTitleCache = entityCacheStrategy.getTitleCache(nvn);
 			} else{
 				 newTitleCache = entityCacheStrategy.getTitleCache(entity);
 			}
 		}catch (ClassCastException e){
-			nvn = HibernateProxyHelper.deproxy(entity, TaxonNameBase.class);
+			nvn = HibernateProxyHelper.deproxy(entity, TaxonName.class);
 			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
 		}
 
@@ -436,9 +437,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			}
 		}
 
-
 	}
-
 
 
 	/**
@@ -448,8 +447,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	protected void setOtherCachesNull(T entity) {
 		return;
 	}
-
-
 
 	private class DeduplicateState{
 		String lastTitleCache;

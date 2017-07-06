@@ -17,8 +17,7 @@ import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -28,6 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         extends StrategyBase
@@ -41,7 +41,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 		return uuid;
 	}
 
-   @Override
+    @Override
     public String getTitleCache(T taxonBase) {
         return getTitleCache(taxonBase, null);
     }
@@ -52,7 +52,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             return null;
         }
 
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (taxonBase.isDoubtful()){
             tags.add(new TaggedText(TagEnum.separator, "?"));
@@ -90,14 +90,15 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private List<TaggedText> getNameTags(T taxonBase) {
+    private <X extends TaxonName> List<TaggedText> getNameTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<>();
-        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName());
+        TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){
-            INameCacheStrategy<TaxonNameBase> nameCacheStrategy = name.getCacheStrategy();
-            if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
-                List<TaggedText> nameCacheTags = nameCacheStrategy.getTaggedName(name);
+            INameCacheStrategy nameCacheStrategy = name.getCacheStrategy();
+            if (taxonBase.isUseNameCache() && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy){
+                INonViralNameCacheStrategy nvnCacheStrategy = (INonViralNameCacheStrategy)nameCacheStrategy;
+                List<TaggedText> nameCacheTags = nvnCacheStrategy.getTaggedName(name);
                 tags.addAll(nameCacheTags);
             }else{
                 List<TaggedText> nameTags = nameCacheStrategy.getTaggedTitle(name);
@@ -114,7 +115,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     }
 
     private List<TaggedText> getSecundumTags(T taxonBase) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         Reference ref = taxonBase.getSec();
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);

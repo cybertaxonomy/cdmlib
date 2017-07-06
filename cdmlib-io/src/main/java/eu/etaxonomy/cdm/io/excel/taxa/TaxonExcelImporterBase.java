@@ -47,10 +47,12 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 	protected static final String RANK_COLUMN = "Rank";
 	protected static final String AUTHOR_COLUMN = "Author";
 	protected static final String AUTHORS_COLUMN = "Authors";
+	protected static final String AUTHORSHIP_COLUMN = "Authorship";
 
     protected static final String BASIONYM_AUTHOR_COLUMN = "Basionymauthor";
     protected static final String PUBLISHING_AUTHOR_COLUMN = "Publishingauthor";
     protected static final String NAMESTATUS_COLUMN = "NameStatus";
+    protected static final String NOMENCLATURAL_STATUS_COLUMN = "Nomenclaturalstatus";
 
 	protected static final String VERNACULAR_NAME_COLUMN = "VernacularName";
 	protected static final String LANGUAGE_COLUMN = "Language";
@@ -72,22 +74,29 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 	protected static final String BASIONYM_COLUMN = "Basionym";
     protected static final String REPLACED_SYNONYM_COLUMN = "ReplacedSynonym";
     protected static final String NOMENCLATURAL_SYNONYM_COLUMN = "NomenclaturalSynonym";
+    protected static final String ACCEPTED_ID_COLUMN = "AcceptedID";
+    protected static final String TAXONOMIC_STATUS = "TaxonomicStatusInTPL";
 
     protected static final String INFRA_FAMILY_COLUMN = "InfraFamily";
     protected static final String GENUS_COLUMN = "Genus";
     protected static final String INFRA_GENUS_COLUMN = "Infragenus";
     protected static final String SPECIES_COLUMN = "Species";
     protected static final String INFRA_SPECIES_COLUMN = "InfraSpecies";
+    protected static final String INFRA_SPECIES_RANK_COLUMN = "Infraspecific rank";
     protected static final String FULLNAME_COLUMN = "Fullnamewithoutfamilyandauthors";
     protected static final String HYBRID_GENUS_COLUMN = "HybridGenus";
     protected static final String HYBRID_COLUMN = "Hybrid";
 
     protected static final String PUBLICATION_COLUMN = "Publication";
     protected static final String COLLATION_COLUMN = "Collation";
+    protected static final String PAGE_COLUMN = "Page";
     protected static final String PUBLICATION_YEAR_COLUMN = "PublicationYearFull";
     protected static final String REMARKS_COLUMN = "Remarks";
     protected static final String DISTRIBUTION_COLUMN = "Distribution";
     protected static final String CITATION_TYPE_COLUMN = "Citationtype";
 
+    protected static final String IPNI_ID_COLUMN = "IPNIid";
+    protected static final String SOURCE_COLUMN = "Source";
+    protected static final String SOURCE_ID_COLUMN = "SourceId";
 }
 

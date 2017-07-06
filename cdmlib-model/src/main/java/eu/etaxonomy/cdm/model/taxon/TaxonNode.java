@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
@@ -840,7 +840,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         if (taxon == null){
             return null;
         }
-        TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
+        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
         if (name.getRank().isHigher(rank)){
         	return null;
         }

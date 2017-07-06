@@ -21,14 +21,13 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> implements ISchemaUpdaterStep {
+public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
 
 	private final String newColumnName;
 	private final String columnType;
 	private final Object defaultValue;
 	private boolean isNotNull;
-
 	private final String referencedTable;
 
 	/**
@@ -86,10 +85,11 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		return this;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
-		try {
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+
+        try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
 
@@ -107,14 +107,16 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 				logger.warn("Default Value not implemented for type " + defaultValue.getClass().getName());
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType);
+				TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType, result);
 			}
-
-			return result;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
+		    String message = "Unhandled exception when trying to add column " +
+		            newColumnName + " for table " +  tableName;
+			monitor.warning(message, e);
 			logger.error(e);
-			return false;
+			result.addException(e, message, getStepName());
+			return;
 		}
 	}
 
@@ -202,9 +204,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		return referencedTable;
 	}
 
-
 	public String getNewColumnName() {
 		return newColumnName;
 	}
-
 }

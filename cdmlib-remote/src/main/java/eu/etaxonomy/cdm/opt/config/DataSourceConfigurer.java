@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 
 /**
@@ -167,7 +167,16 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             }
             ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
             if(tables.first()){
-                ResultSet resultSet = connection.createStatement().executeQuery(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                ResultSet resultSet;
+                try {
+                    resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                } catch (Exception e) {
+                    try {
+                        resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
+                    } catch (Exception e1) {
+                        throw e1;
+                    }
+                }
                 String version = null;
                 if(resultSet.next()){
                     version = resultSet.getString(1);
@@ -304,7 +313,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     public Properties hibernateProperties(){
         Properties props = getHibernateProperties();
         props.setProperty(HIBERNATE_DIALECT, inferHibernateDialectName());
-        props.setProperty(HIBERNATE_SEARCH_DEFAULT_INDEX_BASE, CdmUtils.getCdmHomeDir().getPath() + "/remote-webapp/index/".replace("/", File.separator) + findProperty(ATTRIBUTE_DATASOURCE_NAME, true));
+        String searchPath = CdmUtils.getCdmHomeSubDir(CdmUtils.SUBFOLDER_WEBAPP).getPath();
+        props.setProperty(HIBERNATE_SEARCH_DEFAULT_INDEX_BASE,
+                searchPath +
+                "/index/".replace("/", File.separator) +
+                findProperty(ATTRIBUTE_DATASOURCE_NAME, true));
         logger.debug("hibernateProperties: " + props.toString());
         return props;
     }

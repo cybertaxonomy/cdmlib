@@ -32,6 +32,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
+ * Util class for consistent access to and creation of per instance application configuration files.
+ *
  * @author a.mueller
  * @author a.kohlbecker
  */
@@ -39,40 +41,92 @@ public class CdmUtils {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
 
+    // ============= TODO externalize into CdmFileUtils class ? ========== //
+
+    private static final String USER_HOME = System.getProperty("user.home");
+
     /**
      * The per user cdm folder name: ".cdmLibrary"
      */
-    private static final String cdmFolderName = ".cdmLibrary";
-
-    static final String userHome = System.getProperty("user.home");
+    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
 
     /**
      * The per user cdm folder "~/.cdmLibrary"
      */
-    public final static File perUserCdmFolder = new File(userHome + File.separator + cdmFolderName );
+    public final static File PER_USER_CDM_FOLDER = new File(USER_HOME + File.separator + CDM_FOLDER_NAME );
+
+    /**
+     * suggested sub folder for web app related data and configurations.
+     * Each webapp instance should use a dedicated subfolder or file
+     * which is named by the data source bean id.
+     */
+    public static final String SUBFOLDER_WEBAPP = "remote-webapp";
 
     static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
 
-    //folder seperator
-    static String folderSeperator;
+    //folder separator
+    static String folderSeparator;
 
     public static File getCdmHomeDir() {
-        return new File(perUserCdmFolder + File.separator);
+        return new File(PER_USER_CDM_FOLDER + File.separator);
     }
 
-	public static File getCdmSubDir(String dirName) {
+	/**
+	 * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
+	 * If the sub folder does not exist it will be created.
+	 *
+	 * @param subFolderName
+	 * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
+	 *
+	 * @see {@link #SUBFOLDER_WEBAPP}
+	 */
+	public static File getCdmHomeSubDir(String subFolderName) {
 
-		File folder = new File(getCdmHomeDir(), dirName);
-		// if the directory does not exist, create it
-		if (!folder.exists()) {
-			if (!folder.mkdir()) {
-				// TODO throw some Exception
-				return null;
-			}
-		}
-		return folder;
+		File parentFolder = getCdmHomeDir();
+        return ensureSubfolderExists(parentFolder, subFolderName);
 	}
 
+	/**
+     * Returns an instance specific folder folder in  {@link #CDM_FOLDER_NAME}/<code>subFolderName</code>
+     * Non existing folders will be created.
+     *
+     * @param subFolderName
+     *      The name of a subfolded. In most cases this will be {@link #SUBFOLDER_WEBAPP}
+     * @param instanceName
+     *      The name of the application instance. The name should be related to the data source id.
+     * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
+     *
+     * @see {@link #SUBFOLDER_WEBAPP}
+     */
+    public static File getCdmInstanceSubDir(String subFolderName, String instanceName) {
+
+        File subfolder = ensureSubfolderExists(getCdmHomeDir(), subFolderName);
+        return ensureSubfolderExists(subfolder, instanceName);
+    }
+
+    /**
+     * @param subFolderName
+     * @param parentFolder
+     * @return
+     */
+    private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
+        if (!parentFolder.exists()){
+            if (!parentFolder.mkdir()) {
+                throw new RuntimeException("Parent folder could not be created: " + parentFolder.getAbsolutePath());
+            }
+        }
+
+        File subfolder = new File(parentFolder, subFolderName);
+		// if the directory does not exist, create it
+		if (!subfolder.exists()) {
+			if (!subfolder.mkdir()) {
+				throw new RuntimeException("Subfolder could not be created: " + subfolder.getAbsolutePath());
+			}
+		}
+		return subfolder;
+    }
+
+	// ============= END of CdmFileUtils ========== //
 
     /**
      * Returns the an InputStream for a read-only source
@@ -104,15 +158,15 @@ public class CdmUtils {
      * @return
      */
     static public String getFolderSeperator(){
-        if (folderSeperator == null){
+        if (folderSeparator == null){
             URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
             if ( url != null && ! urlIsJarOrBundle(url) ){
-                folderSeperator =  File.separator;
+                folderSeparator =  File.separator;
             }else{
-                folderSeperator = "/";
+                folderSeparator = "/";
             }
         }
-        return folderSeperator;
+        return folderSeparator;
     }
 
 
@@ -574,6 +628,24 @@ public class CdmUtils {
      */
     public static boolean nonEmptyEquals(String str1, String str2) {
         return (isNotBlank(str1) && str1.equals(str2));
+    }
+
+    /**
+     * Compares if str1 and str2 is equal when ignoring whitespaces.
+     * Returns <code>true</code> if both or <code>null</code> or
+     * whitespace ignore equal.
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static boolean equalsIgnoreWS(String str1, String str2) {
+        if (str1 == null){
+            return str2 == null;
+        }else if (str2 == null){
+            return false;
+        }else{
+            return str1.replaceAll("\\s", "").equals(str2.replaceAll("\\s", ""));
+        }
     }
 
 }

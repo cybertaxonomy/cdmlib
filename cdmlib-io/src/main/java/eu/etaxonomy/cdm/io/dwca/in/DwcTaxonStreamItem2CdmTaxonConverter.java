@@ -38,12 +38,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -136,7 +133,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		Rank rank = getRank(csvTaxonRecord, nomCode);
 
 		//name && name published in
-		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank, resultList, sourceReference);
+		TaxonName name = getScientificName(csvTaxonRecord, nomCode, rank, resultList, sourceReference);
 		taxonBase.setName(name);
 
 		//nameAccordingTo
@@ -503,12 +500,12 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private TaxonNameBase<?,?> getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
-		TaxonNameBase<?,?> name = null;
+	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
+		TaxonName name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
 		if (strScientificName != null){
-			name = (TaxonNameBase<?,?>)parser.parseFullName(strScientificName, nomCode, rank);
+			name = (TaxonName)parser.parseFullName(strScientificName, nomCode, rank);
 			if ( rank != null && name != null && name.getRank() != null &&  ! rank.equals(name.getRank())){
 				if (config.isValidateRankConsistency()){
 					String message = "Parsed rank %s (%s) differs from rank %s given by fields 'taxonRank' or 'verbatimTaxonRank'";
@@ -610,15 +607,15 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
-	private void checkAuthorship(TaxonNameBase<?,?> nameBase, StreamItem item) {
-		if (!nameBase.isInstanceOf(NonViralName.class)){
+	private void checkAuthorship(TaxonName nameBase, StreamItem item) {
+		if (!nameBase.isNonViral()){
 			return;
 		}
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
 
 		if (! nameBase.isProtectedTitleCache()){
 			if (StringUtils.isBlank(nameBase.getAuthorshipCache())){
-				if (nameBase.isInstanceOf(BotanicalName.class) || nameBase.isInstanceOf(ZoologicalName.class)){
+				if (nameBase.isBotanical() || nameBase.isZoological()){
 					//TODO can't we also parse NonViralNames correctly ?
 					try {
 						parser.parseAuthors(nameBase, strAuthors);
@@ -680,7 +677,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @return
 	 */
 	private TaxonBase<?> getTaxonBase(StreamItem item) {
-		TaxonNameBase<?,?> name = null;
+		TaxonName name = null;
 		Reference sec = null;
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);

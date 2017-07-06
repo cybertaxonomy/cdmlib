@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -19,7 +19,7 @@ public class MethodCacheImplTest {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MethodCacheImplTest.class);
     private Taxon taxon;
-    private BotanicalName botanicalName;
+    private IBotanicalName botanicalName;
 
     IMethodCache methodCache;
     private Reference nomenclaturalReference;

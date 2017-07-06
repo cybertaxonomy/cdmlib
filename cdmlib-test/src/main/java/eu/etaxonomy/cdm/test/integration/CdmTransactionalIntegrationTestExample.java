@@ -70,7 +70,7 @@ public class CdmTransactionalIntegrationTestExample extends CdmTransactionalInte
 
         // 3.
         writeDbUnitDataSetFile(new String[] {
-            "TAXONBASE", "TAXONNAMEBASE",
+            "TAXONBASE", "TAXONNAME",
             "TAXONRELATIONSHIP",
             "REFERENCE",
             "AGENTBASE", "HOMOTYPICALGROUP",

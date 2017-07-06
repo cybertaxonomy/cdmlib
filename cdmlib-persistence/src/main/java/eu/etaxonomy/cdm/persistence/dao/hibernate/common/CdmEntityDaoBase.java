@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
@@ -71,6 +72,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
+
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
     protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
@@ -448,6 +450,96 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public  List<T> list(Class<? extends T> type, List<Restriction<?>> restrictions,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Criteria criteria = criterionForType(type);
+
+        addRestrictions(restrictions, criteria);
+
+        addLimitAndStart(limit, start, criteria);
+        addOrder(criteria, orderHints);
+
+        @SuppressWarnings("unchecked")
+        List<T> result = criteria.list();
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        return result;
+    }
+
+    /**
+     * @param restrictions
+     * @param criteria
+     */
+    private void addRestrictions(List<Restriction<?>> restrictions, Criteria criteria) {
+        List<Criterion> perProperty = new ArrayList<>(restrictions.size());
+        for(Restriction<?> propMatchMode : restrictions){
+            Collection<? extends Object> values = propMatchMode.getValues();
+            if(values != null && !values.isEmpty()){
+                Criterion[] predicates = new Criterion[values.size()];
+                int i = 0;
+                for(Object v : values){
+                    predicates[i++] = createRestriction(propMatchMode.getPropertyName(), v, propMatchMode.getMatchMode());
+                }
+                perProperty.add(Restrictions.or(predicates));
+            }
+        }
+        if(!perProperty.isEmpty()){
+            criteria.add(Restrictions.and(perProperty.toArray(new Criterion[perProperty.size()])));
+        }
+    }
+
+    /**
+     * @param propertyName
+     * @param value
+     * @param matchMode
+     * @param criteria
+     * @return
+     */
+    private Criterion createRestriction(String propertyName, Object value, MatchMode matchMode) {
+        Criterion restriction;
+        if(matchMode == null) {
+            restriction = Restrictions.eq(propertyName, value);
+        } else if(value == null) {
+            restriction = Restrictions.isNull(propertyName);
+        } else if(!(value instanceof String)) {
+            restriction = Restrictions.eq(propertyName, value);
+        } else {
+            String queryString = (String)value;
+            if(matchMode == MatchMode.BEGINNING) {
+                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.START);
+            } else if(matchMode == MatchMode.END) {
+                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.END);
+            } else if(matchMode == MatchMode.EXACT) {
+                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.EXACT);
+            } else {
+                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
+            }
+        }
+        return restriction;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int count(Class<? extends T> type, List<Restriction<?>> restrictions) {
+
+        Criteria criteria = criterionForType(type);
+
+        addRestrictions(restrictions, criteria);
+
+        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+
+        //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
+        //to be casted. Think about returning long rather then int!
+        return ((Number) criteria.uniqueResult()).intValue();
+
+    }
+
+    /**
      * @param uuids
      * @param pageSize
      * @param pageNumber
@@ -475,15 +567,25 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return criteria;
     }
 
-
+    /**
+     *
+     * NOTE: We can't reuse {@link #list(Class, String, Object, MatchMode, Integer, Integer, List, List)
+     * here due to different default behavior of the <code>matchmode</code> parameter.
+     *
+     * @param clazz
+     * @param param
+     * @param queryString
+     * @param matchmode
+     * @param criterion
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
     protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = null;
 
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+        Criteria criteria = criterionForType(clazz);
 
         if (queryString != null) {
             if(matchmode == null) {
@@ -516,6 +618,20 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
+    }
+
+    /**
+     * @param clazz
+     * @return
+     */
+    private Criteria criterionForType(Class<? extends T> clazz) {
+        Criteria criteria;
+        if(clazz == null) {
+            criteria = getSession().createCriteria(type);
+        } else {
+            criteria = getSession().createCriteria(clazz);
+        }
+        return criteria;
     }
 
     @Override
@@ -589,11 +705,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
 
         Criteria criteria = null;
-        if(clazz == null){
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+        criteria = criterionForType(clazz);
 
         addGroups(criteria,groups);
 
@@ -726,6 +838,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return results;
     }
 
+
     @Override
     public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
@@ -735,14 +848,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria = getSession().createCriteria(clazz);
         }
 
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
+        addLimitAndStart(limit, start, criteria);
 
         addOrder(criteria, orderHints);
 
@@ -751,6 +857,22 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
+    }
+
+    /**
+     * @param limit
+     * @param start
+     * @param criteria
+     */
+    protected void addLimitAndStart(Integer limit, Integer start, Criteria criteria) {
+        if(limit != null) {
+            if(start != null) {
+                criteria.setFirstResult(start);
+            } else {
+                criteria.setFirstResult(0);
+            }
+            criteria.setMaxResults(limit);
+        }
     }
 
 
@@ -846,11 +968,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     protected long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
         Criteria criteria = null;
 
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+        criteria = criterionForType(clazz);
 
         if (queryString != null) {
             if(matchmode == null) {
@@ -879,14 +997,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
 
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
+        addLimitAndStart(limit, start, criteria);
 
         addOrder(criteria,orderHints);
 

@@ -68,6 +68,13 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
     private int style;
     private String mainTaskLabel;
 
+    public static SubProgressMonitor NewStarted(IProgressMonitor monitor, int parentTicks,
+            String name, int childTicks){
+        SubProgressMonitor result = new SubProgressMonitor(monitor, parentTicks);
+        result.beginTask(name, childTicks);
+        return result;
+    }
+
     /**
      * Creates a new sub-progress monitor for the given monitor. The sub
      * progress monitor uses the given number of work ticks from its
@@ -144,8 +151,7 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
             super.internalWorked(remaining);
         }
         //clear the sub task if there was one
-        if (hasSubTask)
-         {
+        if (hasSubTask){
             subTask(""); //$NON-NLS-1$
         }
         sentToParent = 0;

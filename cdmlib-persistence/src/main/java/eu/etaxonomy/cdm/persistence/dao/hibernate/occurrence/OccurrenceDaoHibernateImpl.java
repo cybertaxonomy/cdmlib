@@ -28,13 +28,14 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -222,9 +223,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        for(SpecimenOrObservationBase occurrence : list(null,null)) { // re-index all taxon base
+        for(SpecimenOrObservationBase<?> occurrence : list(null,null)) { // re-index all taxon base
 
-            for(DeterminationEvent determination : (Set<DeterminationEvent>)occurrence.getDeterminations()) {
+            for(DeterminationEvent determination : occurrence.getDeterminations()) {
                 Hibernate.initialize(determination.getActor());
                 Hibernate.initialize(determination.getTaxon());
             }
@@ -237,9 +238,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                     Hibernate.initialize(derivedUnit.getCollection().getInstitute());
                 }
                 Hibernate.initialize(derivedUnit.getStoredUnder());
-                SpecimenOrObservationBase original = derivedUnit.getOriginalUnit();
+                SpecimenOrObservationBase<?> original = derivedUnit.getOriginalUnit();
                 if(original != null && original.isInstanceOf(FieldUnit.class)) {
-                    FieldUnit fieldUnit = original.deproxy(original, FieldUnit.class);
+                    FieldUnit fieldUnit = CdmBase.deproxy(original, FieldUnit.class);
                     Hibernate.initialize(fieldUnit.getGatheringEvent());
                     if(fieldUnit.getGatheringEvent() != null) {
                         Hibernate.initialize(fieldUnit.getGatheringEvent().getActor());
@@ -252,7 +253,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonNameBase determinedAs) {
+    public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonName determinedAs) {
 
         Criteria criteria = null;
         if(clazz == null) {
@@ -267,7 +268,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonNameBase determinedAs, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
         if(clazz == null) {
             criteria = getSession().createCriteria(type);
@@ -288,6 +289,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
         addOrder(criteria,orderHints);
 
+        @SuppressWarnings("unchecked")
         List<SpecimenOrObservationBase> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -330,6 +332,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
         addOrder(criteria,orderHints);
 
+        @SuppressWarnings("unchecked")
         List<SpecimenOrObservationBase> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -337,7 +340,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
     @Override
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
-            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonNameBase associatedTaxonName,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
             MatchMode matchmode, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -359,15 +362,16 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 addOrder(criteria,orderHints);
             }
 
+            @SuppressWarnings("unchecked")
             List<T> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
-            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonNameBase associatedTaxonName, MatchMode matchmode, Integer limit,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
 
@@ -448,7 +452,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
     @Override
     public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
-            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonNameBase associatedTaxonName,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
             MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
                 associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, propertyPaths);
@@ -496,7 +500,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxonName(Class<T> type,
-            TaxonNameBase associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            TaxonName associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<SpecimenOrObservationBase> setOfAll = new HashSet<SpecimenOrObservationBase>();
 
         // A Taxon name may be referenced by the DeterminationEvent of the SpecimenOrObservationBase
@@ -566,7 +570,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         }
         //check also for name determinations
         setOfAll.addAll(list(type, associatedTaxon.getName(), null, 0, null, null));
-        for (TaxonNameBase synonymName : associatedTaxon.getSynonymNames()) {
+        for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
             setOfAll.addAll(list(type, synonymName, null, 0, null, null));
         }
 

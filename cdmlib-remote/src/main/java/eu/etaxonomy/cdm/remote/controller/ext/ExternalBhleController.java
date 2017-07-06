@@ -8,9 +8,6 @@
  */
 package eu.etaxonomy.cdm.remote.controller.ext;
 
-import io.swagger.annotations.Api;
-
-import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +24,7 @@ import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.ext.sru.SruServiceWrapper;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import io.swagger.annotations.Api;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
@@ -66,8 +64,7 @@ public class ExternalBhleController {
     public ModelAndView doSearchRetrieve(
             @RequestParam(value = "query", required = true) String cqlQuery,
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+            HttpServletResponse response){
 
         logger.info("doSearchRetrieve( " + "query=\"" + ObjectUtils.toString(cqlQuery) + "\")");
         ModelAndView mv = new ModelAndView();

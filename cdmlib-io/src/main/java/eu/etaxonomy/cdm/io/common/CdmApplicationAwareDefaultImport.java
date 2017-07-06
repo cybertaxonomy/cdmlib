@@ -26,12 +26,10 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 
 /**
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
  */
 
 @Component("defaultImport")
@@ -92,26 +90,6 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         }
         return result;
     }
-
-
-//    public ImportResult execute(IImportConfigurator config){
-//        ImportResult result = new ImportResult();
-//        if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-//            result.setSuccess(doCheck(config));
-//        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
-//            boolean success =  doCheck(config);
-//            if(success) {
-//               result = doImport(config);
-//            }
-//            result.setSuccess(success);
-//        } else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
-//            result = doImport(config);
-//        } else{
-//            logger.error("Unknown CHECK type");
-//            return null;
-//        }
-//        return result;
-//    }
 
 
     @SuppressWarnings("unchecked")
@@ -200,8 +178,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         ImportStateBase state = config.getNewState();
         state.initialize(config);
+        state.setResult(result);
 
-        CdmPermissionEvaluator permissionEval = applicationContext.getBean("cdmPermissionEvaluator", CdmPermissionEvaluator.class);
+//        CdmPermissionEvaluator permissionEval = applicationContext.getBean("cdmPermissionEvaluator", CdmPermissionEvaluator.class);
 
         state.setSuccess(true);
         //do invoke for each class
@@ -212,8 +191,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
-                    result = cdmIo.invoke(state);
-                    result.addReport(state.getReportAsByteArray());
+                    cdmIo.invoke(state);
+//                    result.addReport(state.getReportAsByteArray());
                     unRegisterObservers(config, cdmIo);
                 }else{
                     String message = "cdmIO was null";

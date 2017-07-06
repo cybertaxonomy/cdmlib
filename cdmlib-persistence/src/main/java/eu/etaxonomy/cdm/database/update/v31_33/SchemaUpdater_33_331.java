@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -34,8 +34,7 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 	private static final String startSchemaVersion = "3.3.0.0.201309240000";
 	private static final String endSchemaVersion = "3.3.1.0.201401140000";
 
-	// ********************** FACTORY METHOD
-	// *******************************************
+	// ********************** FACTORY METHOD ***********************************
 
 	public static SchemaUpdater_33_331 NewInstance() {
 		return new SchemaUpdater_33_331();
@@ -66,11 +65,11 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		String referencedTable = "TaxonNode";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
 		stepList.add(step);
-		
+
 		//update rootnode data for classification
 		step = ClassificationRootNodeUpdater.NewInstance();
 		stepList.add(step);
-		
+
 		// update treeindex for taxon nodes
 		stepName = "Update TaxonNode treeindex";
 		tableName = "TaxonNode";
@@ -79,13 +78,13 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		step = TreeIndexUpdater.NewInstance(stepName, tableName,
 				treeIdColumnName, columnName, ! INCLUDE_AUDIT);   //update does no yet wok for ANSI SQL (e.g. PosGres / H2 with multiple entries for same id in AUD table)
 		stepList.add(step);
-		
+
 		// Drop Classification_TaxonNode table
 		stepName = "Drop Classification_TaxonNode table";
 		tableName = "Classification_TaxonNode";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
-		
+
 		//add rootnode column for classification
 		stepName = "Add unknownData column to DescriptionElementBase";
 		tableName = "DescriptionElementBase";
@@ -93,16 +92,16 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		Boolean defaultValue = null;
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, defaultValue);
 		stepList.add(step);
-			
+
 		//set default value to false where adaquate
 		stepName = "Set unknownData to default value (false)";
 		String query = " UPDATE @@DescriptionElementBase@@ " +
-					" SET unknownData = @FALSE@ " + 
+					" SET unknownData = @FALSE@ " +
 					" WHERE DTYPE IN ('CategoricalData', 'QuantitativeData') ";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionElementBase", 99);
 		stepList.add(step);
-		
-		
+
+
 		return stepList;
 
 	}

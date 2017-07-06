@@ -86,6 +86,7 @@ public class MatchingTaxonConfigurator {
 	}
 
 	/**
+	 * Default is <code>true</code>.
 	 * @param includeSynonyms the includeSynonyms to set
 	 */
 	public void setIncludeSynonyms(boolean includeSynonyms) {

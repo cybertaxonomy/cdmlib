@@ -46,13 +46,12 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -450,9 +449,9 @@ public class IpniService  implements IIpniService{
 	}
 
 
-	private List<TaxonNameBase<?,?>> buildNameList( InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
+	private List<TaxonName> buildNameList( InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceNamesConfigurator config = (IpniServiceNamesConfigurator)iConfig;
-		List<TaxonNameBase<?,?>> result = new ArrayList<>();
+		List<TaxonName> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
@@ -462,7 +461,7 @@ public class IpniService  implements IIpniService{
 		String line = reader.readLine();
 		while (isNotBlank(line)){
 //		    System.out.println(line);
-		    TaxonNameBase<?,?> name = (TaxonNameBase<?,?>)getNameFromLine(line,parameterMap, repository, config);
+		    TaxonName name = (TaxonName)getNameFromLine(line,parameterMap, repository, config);
 			result.add(name);
 			line = reader.readLine();
 		}
@@ -579,14 +578,14 @@ public class IpniService  implements IIpniService{
 
 		//basionym
 		if (config.isDoBasionyms() && valueMap.get(BASIONYM)!= null){
-		    TaxonNameBase<?,?> basionym = TaxonNameFactory.NewBotanicalInstance(null);
+		    TaxonName basionym = TaxonNameFactory.NewBotanicalInstance(null);
 		    basionym.setTitleCache(valueMap.get(BASIONYM), true);
 		    name.addBasionym(basionym);
 		}
 
 		//replaced synonym
 		if (config.isDoBasionyms() && valueMap.get(REPLACED_SYNONYM)!= null){
-		    TaxonNameBase<?,?> replacedSynoynm = TaxonNameFactory.NewBotanicalInstance(null);
+		    TaxonName replacedSynoynm = TaxonNameFactory.NewBotanicalInstance(null);
 		    replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
 		    name.addReplacedSynonym(replacedSynoynm, null, null, null);
 		}
@@ -884,7 +883,7 @@ public class IpniService  implements IIpniService{
 
 
 	@Override
-    public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
+    public List<IBotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
 			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
 			Rank rankInRangeToReturn,
@@ -895,7 +894,7 @@ public class IpniService  implements IIpniService{
 	}
 
 	@Override
-    public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
+    public List<IBotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
 			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
 			IpniRank rankToReturn,

@@ -15,8 +15,6 @@
 	* '<<checklist/export>>' : this webservice returns a checklist in json and xml.
 
 	* '<<checklist/exportCSV>>' : this webservice returns a checklist in csv-file-format.
-	
-	* '<<checklist/flockSearch>>' : this webservice returns a flock of related taxa in json and xml.
 						
 	
 									

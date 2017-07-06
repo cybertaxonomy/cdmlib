@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(TableDroper.class);
+public class TableDroper
+        extends AuditedSchemaUpdaterStepBase{
+
+    private static final Logger logger = Logger.getLogger(TableDroper.class);
 
 	private boolean ifExists = true;
 
@@ -46,37 +48,40 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 		this.ifExists = ifExists;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		boolean result = true;
-		try {
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
 			if (! this.isAuditing){
-				removeFromHibernateSequences(datasource, monitor, tableName);
+				removeFromHibernateSequences(datasource, monitor, tableName, result);
 			}
-			return result;
+			return;
 		} catch ( Exception e) {
-			monitor.warning(e.getMessage(), e);
+		    String message = e.getMessage();
+			monitor.warning(message, e);
 			logger.error(e);
-			return false;
+			result.addException(e, message, getStepName() + ", TableDropper.invokeOnTable");
+			return;
 		}
 	}
 
-	private boolean removeFromHibernateSequences(ICdmDataSource datasource, IProgressMonitor monitor, String tableName) {
+	private void removeFromHibernateSequences(ICdmDataSource datasource, IProgressMonitor monitor,
+	        String tableName, SchemaUpdateResult result) {
 		try {
 			//TODO do we need to "case" this table name?
 			String sql = " DELETE FROM hibernate_sequences WHERE sequence_name = '%s'";
 			sql = String.format(sql, tableName);
 			datasource.executeUpdate(sql);
-			return true;
+			return;
 		} catch (Exception e) {
 			String message = "Exception occurred when trying to read or update hibernate_sequences table for value " + this.tableName + ": " + e.getMessage();
 			monitor.warning(message, e);
 			logger.error(message);
-			return false;
+			result.addWarning(message, (String)null, getStepName());
+			return;
 		}
-
 	}
 
 	/**

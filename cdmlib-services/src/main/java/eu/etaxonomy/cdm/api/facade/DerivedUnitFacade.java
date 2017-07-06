@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -86,7 +86,7 @@ public class DerivedUnitFacade {
 
 	private final DerivedUnitFacadeConfigurator config;
 
-	private final Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
+	private final Map<PropertyChangeListener, CdmBase> listeners = new HashMap<>();
 
 	// Either fieldUnit or derivedUnit must not be null.
 	private FieldUnit fieldUnit;
@@ -98,6 +98,7 @@ public class DerivedUnitFacade {
 
 	private TextData ecology;
 	private TextData plantDescription;
+	private TextData lifeform;
 
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
@@ -408,7 +409,7 @@ public class DerivedUnitFacade {
 				facadePath = "" + facadePath; // no change
 				result.add(facadePath);
 			}
-			// storedUnder (TaxonNameBase)
+			// storedUnder (TaxonName)
 			else if (facadePath.startsWith("storedUnder")) {
 				facadePath = "" + facadePath; // no change
 				result.add(facadePath);
@@ -539,7 +540,7 @@ public class DerivedUnitFacade {
 			}
 		}
 		// description already exists
-		Set<DescriptionElementBase> existingTextData = new HashSet<DescriptionElementBase>();
+		Set<DescriptionElementBase> existingTextData = new HashSet<>();
 		for (SpecimenDescription description : descriptions) {
 			// collect all existing text data
 			for (DescriptionElementBase element : description.getElements()) {
@@ -637,9 +638,9 @@ public class DerivedUnitFacade {
 			Set<SpecimenOrObservationBase> recursionAvoidSet)
 			throws DerivedUnitFacadeNotSupportedException {
 		if (recursionAvoidSet == null) {
-			recursionAvoidSet = new HashSet<SpecimenOrObservationBase>();
+			recursionAvoidSet = new HashSet<>();
 		}
-		Set<FieldUnit> result = new HashSet<FieldUnit>();
+		Set<FieldUnit> result = new HashSet<>();
 		Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
 		for (SpecimenOrObservationBase original : originals) {
 			if (original.isInstanceOf(FieldUnit.class)) {
@@ -1429,7 +1430,7 @@ public class DerivedUnitFacade {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
 			if (ecology == null) {
-				return new HashMap<Language, LanguageString>();
+				return new HashMap<>();
 			}
 		}
 		return ecology.getMultilanguageText();
@@ -1472,10 +1473,6 @@ public class DerivedUnitFacade {
 		setEcology(null, null);
 	}
 
-	public void removeEcologyAll() {
-
-	}
-
 	// plant description
 	@Transient
 	public String getPlantDescription() {
@@ -1511,7 +1508,7 @@ public class DerivedUnitFacade {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
 			if (plantDescription == null) {
-				return new HashMap<Language, LanguageString>();
+				return new HashMap<>();
 			}
 		}
 		return plantDescription.getMultilanguageText();
@@ -1547,6 +1544,81 @@ public class DerivedUnitFacade {
 		setPlantDescription(null, language);
 	}
 
+	// life-form
+    @Transient
+    public String getLifeform() {
+        return getLifeform(Language.DEFAULT());
+    }
+
+    public String getLifeform(Language language) {
+        LanguageString languageString = getLifeformAll().get(language);
+        return (languageString == null ? null : languageString.getText());
+    }
+
+    // public String getLifeformPreferred(List<Language> languages){
+    // LanguageString languageString =
+    // getLifeformAll().getPreferredLanguageString(languages);
+    // return languageString.getText();
+    // }
+    /**
+     * Returns a copy of the multi language text holding the life-form data.
+     *
+     * @see {@link TextData#getMultilanguageText()}
+     * @return
+     */
+    @Transient
+    public Map<Language, LanguageString> getLifeformAll() {
+        if (lifeform == null) {
+            try {
+                lifeform = initializeFieldObjectTextDataWithSupportTest(
+                        Feature.LIFEFORM(), false, false);
+            } catch (DerivedUnitFacadeNotSupportedException e) {
+                throw new IllegalStateException(notSupportMessage, e);
+            }
+            if (lifeform == null) {
+                return new HashMap<>();
+            }
+        }
+        return lifeform.getMultilanguageText();
+    }
+
+    public void setLifeform(String lifeform) {
+        setLifeform(lifeform, null);
+    }
+
+    public void setLifeform(String lifeformText, Language language) {
+        if (language == null) {
+            language = Language.DEFAULT();
+        }
+        boolean isEmpty = StringUtils.isBlank(lifeformText);
+        if (lifeform == null) {
+            try {
+                lifeform = initializeFieldObjectTextDataWithSupportTest(
+                        Feature.LIFEFORM(), !isEmpty, false);
+            } catch (DerivedUnitFacadeNotSupportedException e) {
+                throw new IllegalStateException(notSupportMessage, e);
+            }
+        }
+        if (lifeform != null){
+            if (lifeformText == null) {
+                lifeform.removeText(language);
+            } else {
+                lifeform.putText(language, lifeformText);
+            }
+        }
+    }
+
+    public void removeLifeform(Language language) {
+        setLifeform(null, language);
+    }
+
+    /**
+     * Removes life-form for the default language
+     */
+    public void removeLifeform() {
+        setLifeform(null, null);
+    }
+
 	// field object definition
 	public void addFieldObjectDefinition(String text, Language language) {
 		getFieldUnit(true).putDefinition(language, text);
@@ -1555,7 +1627,7 @@ public class DerivedUnitFacade {
 	@Transient
 	public Map<Language, LanguageString> getFieldObjectDefinition() {
 		if (!hasFieldUnit()) {
-			return new HashMap<Language, LanguageString>();
+			return new HashMap<>();
 		} else {
 			return getFieldUnit(true).getDefinition();
 		}
@@ -1728,7 +1800,10 @@ public class DerivedUnitFacade {
 	}
 
 	public void setLifeStage(DefinedTerm lifeStage) {
-		getFieldUnit(true).setLifeStage(lifeStage);
+	    FieldUnit fieldUnit = getFieldUnit(lifeStage != null);
+        if (fieldUnit != null){
+            fieldUnit.setLifeStage(lifeStage);
+        }
 	}
 
 	// sex
@@ -1738,7 +1813,10 @@ public class DerivedUnitFacade {
 	}
 
 	public void setSex(DefinedTerm sex) {
-		getFieldUnit(true).setSex(sex);
+	    FieldUnit fieldUnit = getFieldUnit(sex != null);
+        if (fieldUnit != null){
+            fieldUnit.setSex(sex);
+        }
 	}
 
 	// kind of Unit
@@ -1746,10 +1824,30 @@ public class DerivedUnitFacade {
 	public DefinedTerm getKindOfUnit() {
 		return (hasFieldUnit() ? getFieldUnit(true).getKindOfUnit() : null);
 	}
+//
+//   @Transient
+//    public DefinedTerm getDerivedUnitKindOfUnit() {
+//       checkDerivedUnit();
+//       return checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null;
+//    }
 
+
+	/**
+	 * Sets the kind-of-unit
+	 * @param kindOfUnit
+	 */
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
-	    baseUnit().setKindOfUnit(kindOfUnit);
+	    FieldUnit fieldUnit = getFieldUnit(kindOfUnit != null);
+	    if (fieldUnit != null){
+	        fieldUnit.setKindOfUnit(kindOfUnit);
+	    }
 	}
+
+//    public void setDerivedUnitKindOfUnit(DefinedTerm kindOfUnit) {
+//        testDerivedUnit();
+//
+//        baseUnit().setKindOfUnit(kindOfUnit);
+//    }
 
 
 	// field unit
@@ -1870,7 +1968,7 @@ public class DerivedUnitFacade {
 	@Transient
 	public Set<DeterminationEvent> getOtherDeterminations() {
 		Set<DeterminationEvent> events = baseUnit().getDeterminations();
-		Set<DeterminationEvent> result = new HashSet<DeterminationEvent>();
+		Set<DeterminationEvent> result = new HashSet<>();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() != true){
 				result.add(event);
@@ -2082,11 +2180,11 @@ public class DerivedUnitFacade {
 
 	// Stored under name
 	@Transient
-	public TaxonNameBase getStoredUnder() {
+	public TaxonName getStoredUnder() {
 		return ! checkDerivedUnit()? null : derivedUnit.getStoredUnder();
 	}
 
-	public void setStoredUnder(TaxonNameBase storedUnder) {
+	public void setStoredUnder(TaxonName storedUnder) {
 		testDerivedUnit();
 		derivedUnit.setStoredUnder(storedUnder);
 	}
@@ -2316,7 +2414,7 @@ public class DerivedUnitFacade {
 
 	//set of events that were currently fired by this facades field unit
 	//to avoid recursive fireing of the same event
-	private final Set<PropertyChangeEvent> fireingEvents = new HashSet<PropertyChangeEvent>();
+	private final Set<PropertyChangeEvent> fireingEvents = new HashSet<>();
 
 	/**
 	 * @return
@@ -2364,7 +2462,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public DerivedUnit addDuplicate(Collection collection, String catalogNumber,
-			String accessionNumber, TaxonNameBase storedUnder, PreservationMethod preservation){
+			String accessionNumber, TaxonName storedUnder, PreservationMethod preservation){
 		testDerivedUnit();
 		DerivedUnit duplicate = DerivedUnit.NewPreservedSpecimenInstance();
 		duplicate.setDerivedFrom(getDerivationEvent(CREATE));
@@ -2384,9 +2482,9 @@ public class DerivedUnitFacade {
 	@Transient
 	public Set<DerivedUnit> getDuplicates() {
 		if (! checkDerivedUnit()){
-			return new HashSet<DerivedUnit>();
+			return new HashSet<>();
 		}
-		Set<DerivedUnit> result = new HashSet<DerivedUnit>();
+		Set<DerivedUnit> result = new HashSet<>();
 		if (hasDerivationEvent()) {
 			for (DerivedUnit derivedUnit : getDerivationEvent(CREATE)
 					.getDerivatives()) {
@@ -2418,7 +2516,9 @@ public class DerivedUnitFacade {
 	    }
 	}
 
-
+	/**
+	 * @return true if <code>this.derivedUnit</code> exists
+	 */
 	private boolean checkDerivedUnit()  {
 		if (derivedUnit == null){
 			return false;

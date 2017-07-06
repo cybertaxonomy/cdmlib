@@ -73,7 +73,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Audited
 @Table(appliesTo="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnNames = { "treeIndex" }) })
-public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureNode>, Cloneable {
+public class FeatureNode extends VersionableEntity
+            implements ITreeNode<FeatureNode>, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 
     //This is the main key a node belongs to. Although other keys may also reference
@@ -125,7 +126,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
 	@JoinTable(name="FeatureNode_DefinedTermBase_OnlyApplicable")
-	private final Set<State> onlyApplicableIf = new HashSet<State>();
+	private final Set<State> onlyApplicableIf = new HashSet<>();
 
 	@XmlElementWrapper(name = "InapplicableIf")
 	@XmlElement(name = "InapplicableIf")
@@ -134,7 +135,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
 	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
-	private final Set<State> inapplicableIf = new HashSet<State>();
+	private final Set<State> inapplicableIf = new HashSet<>();
 
 // ***************************** FACTORY *********************************/
 

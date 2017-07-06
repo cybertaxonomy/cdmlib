@@ -44,17 +44,16 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 /**
  * The class for individual properties (also designed as character, type or
  * category) of observed phenomena able to be described or measured. It also
- * covers categories of informations on {@link TaxonNameBase taxon names} not
+ * covers categories of informations on {@link TaxonName taxon names} not
  * taken in account in {@link NomenclaturalCode nomenclature}.<BR>
  * Descriptions require features in order to be structured and disaggregated
  * in {@link DescriptionElementBase description elements}.<BR>
@@ -147,8 +146,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElementWrapper(name = "InverseRepresentations")
     @XmlElement(name = "Representation")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @JoinTable(name="RelationshipTermBase_inverseRepresentation",
-            joinColumns=@JoinColumn(name="relationshiptermbase_id")
+    @JoinTable(name="TermBase_inverseRepresentation",
+        joinColumns=@JoinColumn(name="term_id")
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(depth = 2)
@@ -195,20 +194,6 @@ public class Feature extends DefinedTermBase<Feature> {
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
-	/**
-	 * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
-	 * a label and a label abbreviation.
-	 *
-	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new feature to be created
-	 * @param	label  		 the string identifying the new feature to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new feature to be created
-	 * @see 				 #Feature()
-	 */
-	protected Feature(String term, String label, String labelAbbrev) {
-		super(TermType.Feature, term, label, labelAbbrev);
-	}
 
 	/**
 	 * Creates a new empty feature instance.
@@ -223,16 +208,16 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
 	 *
-	 * @param	term  		 the string (in the default language) describing the
+	 * @param	description      the string (in the default language) describing the
 	 * 						 new feature to be created
 	 * @param	label  		 the string identifying the new feature to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * @param	labelAbbrev      the string identifying (in abbreviated form) the
 	 * 						 new feature to be created
 	 * @see 				 #readCsvLine(List, Language)
 	 * @see 				 #NewInstance()
 	 */
-	public static Feature NewInstance(String term, String label, String labelAbbrev){
-		return new Feature(term, label, labelAbbrev);
+	public static Feature NewInstance(String description, String label, String labelAbbrev){
+		return new Feature(description, label, labelAbbrev);
 	}
 
 
@@ -240,6 +225,21 @@ public class Feature extends DefinedTermBase<Feature> {
     @Deprecated
     protected Feature() {
         super(TermType.Feature);
+    }
+
+    /**
+     * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
+     * a label and a label abbreviation.
+     *
+     * @param   term         the string (in the default language) describing the
+     *                       new feature to be created
+     * @param   label        the string identifying the new feature to be created
+     * @param   labelAbbrev  the string identifying (in abbreviated form) the
+     *                       new feature to be created
+     * @see                  #Feature()
+     */
+    protected Feature(String term, String label, String labelAbbrev) {
+        super(TermType.Feature, term, label, labelAbbrev);
     }
 
 /* *************************************************************************************/
@@ -906,8 +906,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	/**
 	 * Returns the "additional_publication" feature. This feature can only be
 	 * described with {@link TextData text data} with information about a
-	 * publication where a {@link TaxonNameBase taxon name} has also been published
-	 * but which is not the {@link TaxonNameBase#getNomenclaturalReference() nomenclatural reference}.
+	 * publication where a {@link TaxonName taxon name} has also been published
+	 * but which is not the {@link TaxonName#getNomenclaturalReference() nomenclatural reference}.
 	 * This feature applies only to {@link TaxonNameDescription taxon name descriptions}.
 	 *
 	 * @see	#isSupportsTextData()

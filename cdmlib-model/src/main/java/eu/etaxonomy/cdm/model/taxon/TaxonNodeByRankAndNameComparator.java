@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author k.luther
@@ -32,8 +32,8 @@ public class TaxonNodeByRankAndNameComparator implements Serializable, Comparato
 		TaxonBase<?> taxon1 = node1.getTaxon();
 		TaxonBase<?> taxon2 = node2.getTaxon();
 
-		TaxonNameBase<?,?> name1 = taxon1.getName();
-		TaxonNameBase<?,?> name2 = taxon2.getName();
+		TaxonName name1 = taxon1.getName();
+		TaxonName name2 = taxon2.getName();
 
 		Rank rankTax1 = (name1 == null) ? null : name1.getRank();
 		Rank rankTax2 = (name2 == null) ? null : name2.getRank();

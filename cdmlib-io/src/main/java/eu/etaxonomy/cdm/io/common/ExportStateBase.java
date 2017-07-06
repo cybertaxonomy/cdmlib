@@ -18,18 +18,17 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @created 11.05.2009
  */
 //TODO make it CONFIG extends DBExportConfigurator
-public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?,?,TRANSFORM>, TRANSFORM extends IExportTransformer>
+public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?, TRANSFORM, DEST>, TRANSFORM extends IExportTransformer, DEST extends Object>
         extends IoStateBase<CONFIG, CdmExportBase, ExportResult> {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportStateBase.class);
 
-	protected ExportStateBase(CONFIG config){
+    protected ExportStateBase(CONFIG config){
 		this.config = config;
 	}
 
 	public TRANSFORM getTransformer(){
 		return this.config.getTransformer();
 	}
-
 }

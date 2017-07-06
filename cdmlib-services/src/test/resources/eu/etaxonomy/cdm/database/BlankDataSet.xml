@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/dataset.xsd">
+<NAMERELATIONSHIP/>
+<!-- This is a quick workaround for some problems in TaxonServiceImplTest -->
+<REPRESENTATION_AUD/>
+<TAXONBASE/>
+<TAXONNAME/>
+<TAXONNODE/>
+<TAXONRELATIONSHIP/> 
+<USERACCOUNT/>
+<USERACCOUNT_GRANTEDAUTHORITYIMPL/>
+</dataset>
+

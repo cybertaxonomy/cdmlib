@@ -157,7 +157,7 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
 
         // 3.
         writeDbUnitDataSetFile(new String[] {
-            "CLASSIFICATION","TAXONBASE", "TAXONNAMEBASE",
+            "CLASSIFICATION","TAXONBASE", "TAXONNAME",
             "TAXONNODE",
             "HOMOTYPICALGROUP",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!

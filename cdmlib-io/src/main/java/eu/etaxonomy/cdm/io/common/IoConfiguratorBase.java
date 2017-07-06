@@ -1,13 +1,10 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
 package eu.etaxonomy.cdm.io.common;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +14,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
 /**
  * Base class for all import/export configurators.
@@ -25,60 +21,67 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
  * @created 16.11.2008
  */
 public abstract class IoConfiguratorBase extends ObservableBase implements IIoConfigurator, IIoObservable{
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = -2254648962451309933L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
 
 	//im-/export uses Classification for is_taxonomically_included_in relationships
 	private boolean useClassification = true;
-	
+
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-	
-	protected ICdmRepository cdmApp = null;
-	
-	//authentification token
-	UsernamePasswordAuthenticationToken authenticationToken;
 
-	
-	
-	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
-	
+	protected ICdmRepository cdmApp = null;
+
+	//authentification token
+	protected UsernamePasswordAuthenticationToken authenticationToken;
+
+
+
+//	private Set<IIoObserver> observers = new HashSet<>();
+
 	//etc
 	private IProgressMonitor progressMonitor;
 
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDbSchemaValidation()
 	 */
-	public DbSchemaValidation getDbSchemaValidation() {
+	@Override
+    public DbSchemaValidation getDbSchemaValidation() {
 		return dbSchemaValidation;
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#setDbSchemaValidation(eu.etaxonomy.cdm.database.DbSchemaValidation)
 	 */
-	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
+	@Override
+    public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
 		this.dbSchemaValidation = dbSchemaValidation;
 	}
-	
-	public ICdmRepository getCdmAppController(){
+
+	@Override
+    public ICdmRepository getCdmAppController(){
 		return this.cdmApp;
 	}
 
 	/**
 	 * @param cdmApp the cdmApp to set
 	 */
-	public void setCdmAppController(ICdmRepository cdmApp) {
+	@Override
+    public void setCdmAppController(ICdmRepository cdmApp) {
 		this.cdmApp = cdmApp;
 	}
-		
+
 	/**
 	 * @return the useClassification
 	 */
 	public boolean isUseClassification() {
 		return useClassification;
 	}
-	
+
 
 	/**
 	 * @param useClassification the useClassification to set
@@ -86,13 +89,14 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	public void setUseClassification(boolean useClassification) {
 		this.useClassification = useClassification;
 	}
-	
+
 	@Override
 	public void setProgressMonitor(IProgressMonitor monitor) {
 		this.progressMonitor = monitor;
 	}
-	
-	public IProgressMonitor getProgressMonitor(){
+
+	@Override
+    public IProgressMonitor getProgressMonitor(){
 		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 
@@ -104,7 +108,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	@Override
 	public void setAuthenticationToken(UsernamePasswordAuthenticationToken authenticationToken) {
 		this.authenticationToken = authenticationToken;
-		
+
 	}
 
 	@Override
@@ -112,7 +116,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
 		this.authenticationToken = token;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#authenticateAsDefaultAdmin()
 	 */
@@ -121,5 +125,5 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		setAuthentication(Configuration.adminLogin, Configuration.adminPassword);
 	}
 
-	
+
 }

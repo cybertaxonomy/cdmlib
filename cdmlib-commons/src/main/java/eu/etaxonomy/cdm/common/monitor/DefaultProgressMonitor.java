@@ -59,7 +59,8 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 
     @Override
     public void done() {
-        logger.info(taskName + "...Done");
+        logger.info(taskName + "... Done");
+        workDone = totalWork;
     }
 
     @Override
@@ -146,7 +147,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     @Override
     public void waitForFeedback() {
         if(feedbackLock == null) {
-            feedbackLock =  new Object();
+            feedbackLock = new Object();
         }
         synchronized (feedbackLock) {
             feedback = null;

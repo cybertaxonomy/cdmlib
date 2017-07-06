@@ -27,13 +27,13 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -70,7 +70,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testGetHybridRelationships() {
-        BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         assert cryptocoryneGriffithii!= null : "name must exist";
 
         List<HybridRelationship> result = taxonNameDao.getHybridNames(cryptocoryneGriffithii, null, null, null,null,null);
@@ -82,7 +82,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountHybridRelationships() {
-        BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         assert cryptocoryneGriffithii != null : "name must exist";
 
         int count = taxonNameDao.countHybridNames(cryptocoryneGriffithii, null);
@@ -92,7 +92,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testGetNameRelationships() {
-        TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
+        TaxonName acherontia = taxonNameDao.findByUuid(acherontiaUuid);
         assert acherontia != null : "name must exist";
 
         List<NameRelationship> result = taxonNameDao.getNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null, null,null,null, null);
@@ -102,7 +102,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         assertEquals("getRelatedNames should return 1 NameRelationship instance",1,result.size());
 
         // testing inverted direction
-        TaxonNameBase atropos = taxonNameDao.findByUuid(atroposUuid);
+        TaxonName atropos = taxonNameDao.findByUuid(atroposUuid);
         assert atropos != null : "name must exist";
 
         result = taxonNameDao.getNameRelationships(atropos, NameRelationship.Direction.relatedTo, null, null,null,null, null);
@@ -120,7 +120,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNameRelationships() {
-        TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
+        TaxonName acherontia = taxonNameDao.findByUuid(acherontiaUuid);
         assert acherontia != null : "name must exist";
 
         int count = taxonNameDao.countNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null);
@@ -128,7 +128,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         assertEquals("countRelatedNames should return 1",1,count);
 
         // testing inverted direction
-        TaxonNameBase atropos = taxonNameDao.findByUuid(atroposUuid);
+        TaxonName atropos = taxonNameDao.findByUuid(atroposUuid);
         assert atropos != null : "name must exist";
 
         count = taxonNameDao.countNameRelationships(atropos, NameRelationship.Direction.relatedTo, null);
@@ -138,7 +138,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testGetTypeDesignations() {
-        TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
+        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         assert acherontiaLachesis != null : "name must exist";
 
         List<TypeDesignationBase> result1 = taxonNameDao.getTypeDesignations(acherontiaLachesis, null, null, null, null, null);
@@ -156,7 +156,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountTypeDesignations() {
-        TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
+        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         assert acherontiaLachesis != null : "name must exist";
 
         int count = taxonNameDao.countTypeDesignations(acherontiaLachesis, null);
@@ -166,11 +166,11 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testSearchNames() {
-        List<TaxonNameBase> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null, null, null);
+        List<TaxonName> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null, null, null);
 
         assertNotNull("searcNames should return a list",result);
         assertFalse("the list should not be empty", result.isEmpty());
-        assertEquals("searchNames should return 3 TaxonNameBase instances",3,result.size());
+        assertEquals("searchNames should return 3 TaxonName instances",3,result.size());
     }
 
     @Test
@@ -182,7 +182,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNamesByExample() {
-        TaxonNameBase<?,?> zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
+        TaxonName zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
         Set<String> includedProperties = new HashSet<String>();
         includedProperties.add("genusOrUninomial");
@@ -200,7 +200,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
      * has no order index (=0)
      */
     public void testMissingRankOrderIndex() {
-        TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
+        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         Rank rank = null;
         try {
 			rank = Rank.getRankByName(acherontiaLachesis.getRank().getLabel());
@@ -214,8 +214,8 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testDeleteTaxon(){
-        TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
-        HibernateProxyHelper.deproxy(acherontiaLachesis, TaxonNameBase.class);
+        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
+        HibernateProxyHelper.deproxy(acherontiaLachesis, TaxonName.class);
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
         HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
         UUID groupUuid = group.getUuid();

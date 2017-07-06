@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.config;
 
 import java.util.Map;
 
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * Interface which represents any CDM Source
@@ -99,6 +99,6 @@ public interface ICdmSource {
 	 */
 	public void closeOpenConnections();
 
-	public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException ;
+	public Map<CdmMetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException ;
 
 }

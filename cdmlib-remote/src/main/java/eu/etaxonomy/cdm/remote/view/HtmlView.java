@@ -10,20 +10,12 @@ import org.springframework.web.servlet.View;
 
 public class HtmlView implements View{
 
-
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.View#getContentType()
-	 */
 	@Override
     public String getContentType() {
 		return "text/html";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.View#render(java.util.Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
-    @SuppressWarnings("unchecked")
 	public void render(Map arg0, HttpServletRequest arg1, HttpServletResponse response) throws Exception {
 		response.setContentType(getContentType());
 		response.setCharacterEncoding("UTF-8");

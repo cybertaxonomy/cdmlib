@@ -3,11 +3,11 @@ package eu.etaxonomy.cdm.model.name;
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class TaxonNameComparator implements Comparator<TaxonNameBase>, Serializable {
+public class TaxonNameComparator implements Comparator<TaxonName>, Serializable {
 	private static final long serialVersionUID = -1007495803322700031L;
 
 	@Override
-    public int compare(TaxonNameBase arg0, TaxonNameBase arg1) {
+    public int compare(TaxonName arg0, TaxonName arg1) {
 		if (arg0.equals(arg1)){
 			return 0;
 		}

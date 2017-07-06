@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -290,7 +290,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorship().getTitleCache());
 		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
-		TaxonNameBase<?,?> nameUsedInSource = source.getNameUsedInSource();
+		TaxonName nameUsedInSource = source.getNameUsedInSource();
 		assertNotNull("Name used in source should not be null", nameUsedInSource);
 		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
 
@@ -339,14 +339,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		return null;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
     @Test
     @DataSets({

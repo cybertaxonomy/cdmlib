@@ -20,12 +20,13 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @author a.mueller
  * @created 20.03.2008
  */
-public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> extends ExportConfiguratorBase<File, STATE, IExportTransformer> implements IExportConfigurator<STATE, IExportTransformer>{
+public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>>
+        extends ExportConfiguratorBase<STATE, IExportTransformer, File>
+        implements IExportConfigurator<STATE, IExportTransformer>{
+
     private static final long serialVersionUID = 6078292713506530756L;
     @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(XmlExportConfiguratorBase.class);
-
-	//	private XmlExportState<XmlExportConfigurator> state;
 
 	public enum IdType{
 		CDM_ID,
@@ -33,7 +34,6 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 	}
 
 	private IdType idType = IdType.CDM_ID;
-
 
 
 	/**
@@ -63,10 +63,6 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 		this.idType = idType;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
-	 */
 	@Override
     public String getDestinationNameString() {
 		if (getDestination() != null){

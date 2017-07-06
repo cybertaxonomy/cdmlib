@@ -14,6 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -32,7 +33,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -45,15 +48,18 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -107,7 +113,12 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "institution",
     "school",
     "organization",
-    "inReference"
+    "inReference",
+    "accessed",
+    "lastRetrieved",
+    "externalId",
+    "externalLink",
+    "authorityType"
 })
 @XmlRootElement(name = "Reference")
 @Entity
@@ -286,7 +297,16 @@ public class Reference
 	@IndexedEmbedded
 	private TimePeriod datePublished = TimePeriod.NewInstance();
 
-	@XmlElement(name ="Abstract" )
+    //#5258
+    @XmlElement (name = "Accessed", type= String.class)
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
+    @Type(type="dateTimeUserType")
+    @Basic(fetch = FetchType.LAZY)
+    @Match(MatchMode.EQUAL)
+    @FieldBridge(impl = DateTimeBridge.class)
+    private DateTime accessed;
+
+    @XmlElement(name ="Abstract" )
 	@Column(length=65536, name="referenceAbstract")
 	@Lob
     @Field
@@ -333,6 +353,38 @@ public class Reference
     @Match(MatchMode.IGNORE)
 	private boolean cacheStrategyRectified = false;
 
+    //attributes for externally managed
+
+//    @XmlElement (name = "LastRetrieved", type= String.class)
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
+    @Type(type="dateTimeUserType")
+    //TODO needed??
+    @Basic(fetch = FetchType.LAZY)
+    private DateTime lastRetrieved;
+
+    @XmlElement(name ="ExternalId" )
+//    @Field
+//    @Match(MatchMode.EQUAL)  //TODO check if this is correct
+    @NullOrNotEmpty
+    @Column(length=255)
+    private String externalId;
+
+    //Actionable link on e.g. on a webservice
+    @XmlElement(name = "ExternalLink")
+    @Field(analyze = Analyze.NO)
+    @Type(type="uriUserType")
+    private URI externalLink;
+
+    @XmlAttribute(name ="authority")
+    @Column(name="authorityType", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.AuthorityType")}
+    )
+//    @NotNull
+    private AuthorityType authorityType;
+
+// *********************** CONSTRUCTOR ************************/
+
     protected Reference(){
 		this(ReferenceType.Generic);  //just in case someone uses constructor
 	}
@@ -346,6 +398,9 @@ public class Reference
 		}
 		this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
 	}
+
+// *********************** LISTENER ************************/
+
 
 	@Override
     public void initListener(){
@@ -507,17 +562,22 @@ public class Reference
 	public DOI getDoi() {
 		return doi;
 	}
-
     @Override
 	public void setDoi(DOI doi) {
 		this.doi = doi;
 	}
+    /**
+     * Convenience method to retrieve doi as string
+     */
+    @Transient @XmlTransient @java.beans.Transient
+    public String getDoiString() {
+        return doi == null? null : doi.toString();
+    }
 
 	@Override
     public String getSeriesPart() {
 		return seriesPart;
 	}
-
 	@Override
     public void setSeriesPart(String seriesPart) {
 		this.seriesPart = StringUtils.isBlank(seriesPart)? null : seriesPart;
@@ -654,6 +714,17 @@ public class Reference
 		return result;
 	}
 
+
+	@Override
+    public DateTime getAccessed() {
+        return accessed;
+    }
+
+	@Override
+    public void setAccessed(DateTime accessed) {
+        this.accessed = accessed;
+    }
+
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the
 	 * content of <i>this</i> reference.
@@ -712,7 +783,7 @@ public class Reference
 
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This
-	 * indicates that a {@link TaxonNameBase taxon name} has been originally
+	 * indicates that a {@link TaxonName taxon name} has been originally
 	 * published in <i>this</i> reference following the rules of a
 	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalCode nomenclature code} and is therefore used for
 	 * nomenclatural citations. This flag will be set as soon as <i>this</i>
@@ -805,6 +876,23 @@ public class Reference
 			return null;
 		}
 	}
+
+	/**
+     * Convenience method that returns a string representation for the publication date / creation
+     * of <i>this</i> reference. The string is obtained by
+     * {@link #getDatePublished()#toString() the string representation
+     * of the date published}.
+     */
+    @Transient
+    public String getTimePeriodPublishedString(){
+        TimePeriod datePublished = this.getDatePublished();
+        if (datePublished != null ){
+            return getDatePublished().getTimePeriod();
+        }else{
+            return null;
+        }
+    }
+
 
 
 	@Override

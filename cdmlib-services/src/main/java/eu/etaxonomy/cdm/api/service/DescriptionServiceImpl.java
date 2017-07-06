@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -76,7 +76,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @Service
 @Transactional(readOnly = true)
-public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao> implements IDescriptionService {
+public class DescriptionServiceImpl
+        extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao>
+        implements IDescriptionService {
 
     private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
@@ -340,10 +342,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 
     @Override
-    public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonNameDescriptions(name);
 
-        List<TaxonNameDescription> results = new ArrayList<TaxonNameDescription>();
+        List<TaxonNameDescription> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getTaxonNameDescriptions(name, pageSize, pageNumber,propertyPaths);
         }

@@ -9,16 +9,22 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
+import eu.etaxonomy.cdm.io.common.ZipWriter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -26,25 +32,55 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created 18.04.2011
  */
 public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator>{
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportState.class);
 
-	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<DwcaMetaDataRecord>();
+	private DwcaResultProcessor processor = new DwcaResultProcessor(this);
+
+	private List<DwcaMetaDataRecord> metaRecords = new ArrayList<>();
 	private boolean isZip = false;
-	private ZipOutputStream zos;
-	private List<TaxonNode>  allNodes = new ArrayList<TaxonNode>();
+	private ZipWriter zipWriter;
+	private List<TaxonNode>  allNodes = new ArrayList<>();
+	private Map<DwcaTaxExportFile, PrintWriter> writerMap = new HashMap<>();
+
+
+    protected Map<DwcaTaxExportFile,Set<Integer>> existingRecordIds = new HashMap<>();
+    protected Set<UUID> existingRecordUuids = new HashSet<>();
+
+    protected boolean recordExists(DwcaTaxExportFile file, CdmBase cdmBase) {
+        if (existingRecordIds.get(file) == null){
+            return false;
+        }else{
+            return existingRecordIds.get(file).contains(cdmBase.getId());
+        }
+    }
+    protected void addExistingRecord(DwcaTaxExportFile file, CdmBase cdmBase) {
+        Set<Integer> set = existingRecordIds.get(file);
+        if (set == null){
+            set = new HashSet<>();
+            existingRecordIds.put(file, set);
+        }
+        set.add(cdmBase.getId());
+    }
+    protected boolean recordExistsUuid(CdmBase cdmBase) {
+        return existingRecordUuids.contains(cdmBase.getUuid());
+    }
+    protected void addExistingRecordUuid(CdmBase cdmBase) {
+        existingRecordUuids.add(cdmBase.getUuid());
+    }
 
 	public DwcaTaxExportState(DwcaTaxExportConfigurator config) {
 		super(config);
 		File file = config.getDestination();
-		if (! config.getDestination().isDirectory()){
+		if (file != null && ! file.isDirectory()){
 			try{
 				isZip = true;
 				if (! file.exists()){
-						file.createNewFile();
+					boolean created = file.createNewFile();
 				}
 
-			  	zos  = new ZipOutputStream( new FileOutputStream(file) ) ;
+				zipWriter = new ZipWriter(file);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -66,20 +102,18 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
 		return isZip;
 	}
 
-	public ZipOutputStream getZipStream(String fileName) throws IOException {
+	public OutputStream getZipStream(String fileName){
 		if (isZip){
-			zos.putNextEntry(new ZipEntry(fileName));
-			return zos;
+			OutputStream os = zipWriter.getEntryStream(fileName);
+			return os;
 		}else{
 			return null;
 		}
 	}
 
 	public void closeZip() throws IOException {
-		if (zos != null){
-			zos.closeEntry();
-			zos.finish();
-			zos.close();
+		if (zipWriter != null){
+		    zipWriter.close();
 		}
 	}
 
@@ -95,6 +129,18 @@ public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator
      */
     public void setAllNodes(List<TaxonNode> allNodes) {
         this.allNodes = allNodes;
+    }
+
+    public DwcaResultProcessor getProcessor() {
+        return processor;
+    }
+
+    public PrintWriter getWriter(DwcaTaxExportFile file){
+        return this.writerMap.get(file);
+    }
+
+    public PrintWriter putWriter(DwcaTaxExportFile file, PrintWriter writer){
+        return this.writerMap.put(file, writer);
     }
 
 

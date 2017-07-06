@@ -35,10 +35,9 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -47,7 +46,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
+public interface INameService extends IIdentifiableEntityService<TaxonName> {
 
 	/**
 	 * Deletes a name. Depening on the configurator state links to the name will either be
@@ -69,7 +68,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param name
 	 * @return
 	 */
-	public DeleteResult deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation);
+	public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from
@@ -121,7 +120,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param name
 	 * @return
 	 */
-	public List<NonViralName> getNamesByNameCache(String nameCache);
+	public List<TaxonName> getNamesByNameCache(String nameCache);
 
 	/**
 	 * Returns all NonViralNames with a title cache that matches the given string
@@ -132,7 +131,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
+	public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
 
 	/**
 	 * Returns all NonViralNames with a name cache that matches the given string
@@ -143,7 +142,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
+	public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
 
 	/**
 	 * @param name
@@ -168,7 +167,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public List<SearchResult<TaxonNameBase>> findByNameFuzzySearch(
+	public List<SearchResult<TaxonName>> findByNameFuzzySearch(
             String name,
             float accuracy,
             List<Language> languages,
@@ -279,7 +278,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 *            {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
-	public List<NameRelationship> listNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> listNameRelationships(TaxonName name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a List of name relationships in which this name is related to another name, optionally filtered
@@ -294,7 +293,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
-	public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<NameRelationship> pageNameRelationships(TaxonName name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a List of relationships in which this name is related to another name, optionally filtered
@@ -307,10 +306,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #listNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
+	 * @deprecated use {@link #listNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
 	@Deprecated
-	public List<NameRelationship> listFromNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> listFromNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a List of relationships in which this name is related to another name, optionally filtered
@@ -323,10 +322,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #pageNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
+	 * @deprecated use {@link #pageNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
 	@Deprecated
-	public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<NameRelationship> pageFromNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a List of relationships in which another name is related to this name, optionally filtered
@@ -339,10 +338,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #listNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
+	 * @deprecated use {@link #listNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
 	@Deprecated
-	public List<NameRelationship> listToNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> listToNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a List of relationships in which another name is related to this name, optionally filtered
@@ -355,10 +354,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #pageNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
+	 * @deprecated use {@link #pageNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
 	@Deprecated
-	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<NameRelationship> pageToNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
 	/**
@@ -385,15 +384,15 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a Pager of TypeDesignationBase instances
 	 */
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name,
 			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber);
 
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name,
 			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
 	/**
-	 * Returns a List of TaxonNameBase instances that match the properties passed
+	 * Returns a List of TaxonName instances that match the properties passed
 	 *
 	 * @param uninomial
 	 * @param infraGenericEpithet
@@ -404,14 +403,14 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a Pager of TaxonNameBase instances
+	 * @return a Pager of TaxonName instances
 	 */
-	public Pager<TaxonNameBase> searchNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<TaxonName> searchNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a Paged List of TaxonNameBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * Returns a Paged List of TaxonName instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
 	 *
-	 * @param clazz filter the results by class (or pass null to return all TaxonNameBase instances)
+	 * @param clazz filter the results by class (or pass null to return all TaxonName instances)
 	 * @param queryString
 	 * @param pageSize The maximum number of names returned (can be null for all matching names)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
@@ -420,11 +419,11 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 *            include *-to-one properties like createdBy.username or
 	 *            authorTeam.persistentTitleCache
 	 * @param propertyPaths properties to be initialized
-	 * @return a Pager TaxonNameBase instances
+	 * @return a Pager TaxonName instances
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	@Override
-    public Pager<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonName> search(Class<? extends TaxonName> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Returns a map that holds uuid, titleCache pairs of all names in the current database
@@ -450,7 +449,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 *            authorTeam.persistentTitleCache
 	 * @return a paged list of instances of type T matching the queryString
 	 */
-    public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonName> findByName(Class<? extends TaxonName> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a homotypical group with the given UUID or null if not homotypical group exists with that UUID
@@ -479,7 +478,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
      * @param config
      * @return
      */
-    DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config);
+    DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
 
 
 }

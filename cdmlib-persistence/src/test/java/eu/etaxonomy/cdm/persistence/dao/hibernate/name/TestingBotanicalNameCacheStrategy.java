@@ -11,71 +11,71 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.name.IBotanicalName;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
-public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStrategy<IBotanicalName> {
+public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStrategy {
 
     @Override
-    public String getAuthorshipCache(IBotanicalName nonViralName) {
+    public String getAuthorshipCache(TaxonName nonViralName) {
         return "test.botanical.authorshipCache"+ nonViralName.getId();
     }
 
     @Override
-    public String getLastEpithet(IBotanicalName taxonNameBase) {
-        return "test.botanical.lastEpithet"+ taxonNameBase.getId();
+    public String getLastEpithet(TaxonName taxonName) {
+        return "test.botanical.lastEpithet"+ taxonName.getId();
     }
 
     @Override
-    public String getNameCache(IBotanicalName taxonNameBase) {
-        return "test.botanical.nameCache"+ taxonNameBase.getId();
+    public String getNameCache(TaxonName taxonName) {
+        return "test.botanical.nameCache"+ taxonName.getId();
     }
 
     @Override
-    public String getFullTitleCache(IBotanicalName taxonNameBase) {
-        return "test.botanical.fullTitleCache"+ taxonNameBase.getId();
+    public String getFullTitleCache(TaxonName taxonName) {
+        return "test.botanical.fullTitleCache"+ taxonName.getId();
     }
 
     @Override
-    public String getTitleCache(IBotanicalName object) {
+    public String getTitleCache(TaxonName object) {
         return "test.botanical.titleCache"+ object.getId();
     }
 
     @Override
-    public List<TaggedText> getTaggedTitle(IBotanicalName taxonName) {
+    public List<TaggedText> getTaggedTitle(TaxonName taxonName) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<TaggedText> getTaggedFullTitle(IBotanicalName taxonName) {
+    public List<TaggedText> getTaggedFullTitle(TaxonName taxonName) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<TaggedText> getTaggedName(IBotanicalName taxonName) {
+    public List<TaggedText> getTaggedName(TaxonName taxonName) {
         // TODO Auto-generated method stub
         return null;
     }
 
 	@Override
-	public String getTitleCache(IBotanicalName nonViralName, HTMLTagRules htmlTagRules) {
+	public String getTitleCache(TaxonName nonViralName, HTMLTagRules htmlTagRules) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getFullTitleCache(IBotanicalName nonViralName,
+	public String getFullTitleCache(TaxonName nonViralName,
 			HTMLTagRules htmlTagRules) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
     @Override
-    public List<TaggedText> getNomStatusTags(IBotanicalName taxonName, boolean includeSeparatorBefore,
+    public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
         // TODO Auto-generated method stub
         return null;

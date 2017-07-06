@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 /**
  * @author f.revilla
@@ -12,15 +14,23 @@ import java.util.UUID;
  */
 public class UuidList extends ArrayList<UUID> {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7844234502924643928L;
 
     public Set<UUID> asSet() {
-        HashSet<UUID> tmpSet = new HashSet<UUID>(this.size());
+        HashSet<UUID> tmpSet = new HashSet<>(this.size());
         tmpSet.addAll(this);
         return tmpSet;
     }
+
+    @Override
+    public String toString() {
+        String result = null;
+        for (UUID uuid : this){
+            result = CdmUtils.concat(",", uuid.toString());
+        }
+        return (result == null)? super.toString():result;
+    }
+
+
 
 }

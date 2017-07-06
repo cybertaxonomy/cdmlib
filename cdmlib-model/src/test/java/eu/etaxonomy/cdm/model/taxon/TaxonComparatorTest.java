@@ -20,11 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -68,9 +67,9 @@ public class TaxonComparatorTest {
 //		ref2.setDatePublished(TimePeriod.NewInstance(cal2));
         ref3.setDatePublished(TimePeriod.NewInstance(cal3));
 
-        BotanicalName botName1 =  TaxonNameFactory.NewBotanicalInstance(null);
-        BotanicalName botName2 =  TaxonNameFactory.NewBotanicalInstance(null);
-        BotanicalName botName3 =  TaxonNameFactory.NewBotanicalInstance(null);
+        IBotanicalName botName1 =  TaxonNameFactory.NewBotanicalInstance(null);
+        IBotanicalName botName2 =  TaxonNameFactory.NewBotanicalInstance(null);
+        IBotanicalName botName3 =  TaxonNameFactory.NewBotanicalInstance(null);
         IZoologicalName zooName1 = TaxonNameFactory.NewZoologicalInstance(null);
 
         botName1.setNomenclaturalReference(ref1);
@@ -120,9 +119,9 @@ public class TaxonComparatorTest {
      */
     private String getYear(TaxonBase<?> taxon) {
         String year = "";
-        TaxonNameBase<?,?> tnb = taxon.getName();
-        if (tnb instanceof ZoologicalName){
-            year = String.valueOf(((ZoologicalName)tnb).getPublicationYear());
+        TaxonName tnb = taxon.getName();
+        if (tnb.isZoological()){
+            year = String.valueOf(tnb.getPublicationYear());
         }else{
             year = tnb.getNomenclaturalReference().getYear();
         }

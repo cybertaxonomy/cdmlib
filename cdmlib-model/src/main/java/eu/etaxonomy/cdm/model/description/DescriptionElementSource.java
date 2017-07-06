@@ -25,13 +25,13 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
  * that can be used with {@link eu.etaxonomy.cdm.model.description.DescriptionElementBase description elements}.
- * Additionally to the core functionally of IOriginalSource a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
+ * Additionally to the core functionally of IOriginalSource a {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}
  * can be stored that points to the name used in the source. This is needed because description always belong
  * to accepted taxa while the referenced citations may use synonym names.
  * </BR>
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * In general this string is to be used for different representations of the sourced object. In this classes
  * context it could also stand for the string representation of the taxon name used in the source. This
  * may make sense if the taxon name is not available in the CDM and the user for some reason does not want
- * to create a new ful {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}.
+ * to create a new ful {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}.
  *
  * @author a.mueller
  * @created 18.09.2009
@@ -94,7 +94,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
 		DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);
@@ -108,7 +108,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 
-	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
 		DescriptionElementSource result = NewPrimarySourceInstance(citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);
@@ -122,7 +122,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonNameBase<?,?> nameUsedInSource;
+	private TaxonName nameUsedInSource;
 
 //*********************** CONSTRUCTOR ******************************/
 
@@ -141,14 +141,14 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	/**
 	 * @return the taxonNameUsedInSource
 	 */
-	public TaxonNameBase getNameUsedInSource() {
+	public TaxonName getNameUsedInSource() {
 		return nameUsedInSource;
 	}
 
 	/**
 	 * @param nameUsedInReference the nameUsedInReference to set
 	 */
-	public void setNameUsedInSource(TaxonNameBase nameUsedInSource) {
+	public void setNameUsedInSource(TaxonName nameUsedInSource) {
 		this.nameUsedInSource = nameUsedInSource;
 	}
 

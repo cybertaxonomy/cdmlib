@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -33,12 +33,12 @@ public class HomotypicalGroupTest {
 
 	private static HomotypicalGroup group1;
 	private static HomotypicalGroup group2;
-	private static TaxonNameBase name1;
-	private static TaxonNameBase name2;
-	private static TaxonNameBase name3;
-	private static TaxonNameBase name4;
-	
-	
+	private static TaxonName name1;
+	private static TaxonName name2;
+	private static TaxonName name3;
+	private static TaxonName name4;
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -71,13 +71,13 @@ public class HomotypicalGroupTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
 //*********************** TESTS ***********************************************/
-	
+
 	@Test
 	public void testGetBasionyms() {
 		name1.addBasionym(name2);
-		Set<TaxonNameBase> basionyms =  name1.getHomotypicalGroup().getBasionyms();
+		Set<TaxonName> basionyms =  name1.getHomotypicalGroup().getBasionyms();
 		Assert.assertNotNull("Basionym set should not be null", basionyms);
 		Assert.assertEquals("Number of basionyms should be 1", 1, basionyms.size());
 		name3.addBasionym(name2);
@@ -88,17 +88,17 @@ public class HomotypicalGroupTest {
 		basionyms =  name2.getHomotypicalGroup().getBasionyms();
 		Assert.assertEquals("Number of basionyms should be 2", 2, basionyms.size());
 //		Assert.assertEquals("", name2, basionyms.iterator().next());
-		
+
 	}
-	
+
 	@Test
 	public void testGetReplacedSynonym() {
 		name3.addReplacedSynonym(name4, null, null, null);
-		Set<TaxonNameBase> replacedSyn =  name3.getHomotypicalGroup().getReplacedSynonym();
+		Set<TaxonName> replacedSyn =  name3.getHomotypicalGroup().getReplacedSynonym();
 		Assert.assertNotNull("Replaced synonym set should not be null", replacedSyn);
 		Assert.assertEquals("Number of replaced synonym should be 1", 1, replacedSyn.size());
 	}
-	
+
 	@Test
 	public void testGetBasionymAndReplacedSynonymRelations(){
 		name1.addBasionym(name2);
@@ -106,29 +106,29 @@ public class HomotypicalGroupTest {
 		name4.addReplacedSynonym(name2, null, null, null);
 		Set<NameRelationship> rels = name2.getHomotypicalGroup().getBasionymAndReplacedSynonymRelations();
 		Assert.assertEquals("Number of relations should be 3", 3, rels.size());
-		
+
 	}
 
 	@Test
 	public void testGetUnrelatedNames(){
 		name1.addBasionym(name2);
 		name4.addReplacedSynonym(name2, null, null, null);
-		Set<TaxonNameBase> unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
+		Set<TaxonName> unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
 		Assert.assertEquals("Number of unrelatedNames should be 0", 0, unrelatedNames.size());
 		name1.getHomotypicalGroup().merge(name3.getHomotypicalGroup());
 		unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
 		Assert.assertEquals("Number of unrelatedNames should be 1", 1, unrelatedNames.size());
 	}
-	
+
 	@Test
 	public void testSetGroupBasionym(){
-	
+
 		name1.mergeHomotypicGroups(name2);
 		name1.mergeHomotypicGroups(name3);
 		name2.mergeHomotypicGroups(name4);
-		
+
 		name3.getHomotypicalGroup().setGroupBasionym(name1);
-		
+
 		Assert.assertEquals(1, name2.getBasionyms().size());
 		Assert.assertEquals(1, name3.getBasionyms().size());
 		Assert.assertEquals(1, name4.getBasionyms().size());
@@ -137,14 +137,14 @@ public class HomotypicalGroupTest {
 
 	@Test
 	public void testRemoveGroupBasionym(){
-		
+
 		name1.mergeHomotypicGroups(name2);
 		name1.mergeHomotypicGroups(name3);
 		name2.mergeHomotypicGroups(name4);
-		
+
 		HomotypicalGroup hg = name3.getHomotypicalGroup();
 		hg.setGroupBasionym(name1);
-		
+
 		Assert.assertEquals(1, name2.getBasionyms().size());
 		Assert.assertEquals(1, name3.getBasionyms().size());
 		Assert.assertEquals(1, name4.getBasionyms().size());
@@ -164,19 +164,19 @@ public class HomotypicalGroupTest {
 	@Test
 	public void testClone(){
 		group1 = HomotypicalGroup.NewInstance();
-		
+
 		group1.addTypifiedName(name1);
 		group1.addTypifiedName(name2);
 		group1.setGroupBasionym(name1);
 		HomotypicalGroup clone =(HomotypicalGroup)group1.clone();
-		
+
 		Assert.assertEquals(clone.getTypifiedNames().size(), group1.getTypifiedNames().size());
-		TaxonNameBase cloneBasionym = clone.getBasionyms().iterator().next();
-		TaxonNameBase group1Basionym = group1.getBasionyms().iterator().next();
+		TaxonName cloneBasionym = clone.getBasionyms().iterator().next();
+		TaxonName group1Basionym = group1.getBasionyms().iterator().next();
 		Assert.assertNotSame(cloneBasionym, group1Basionym);
 	}
 	*/
-	
-	
-	
+
+
+
 }

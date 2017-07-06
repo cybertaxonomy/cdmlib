@@ -89,4 +89,26 @@ public class CdmUtilsTest {
 		}
 	}
 
+    @Test
+    public void testEqualsIgnoreWS(){
+        String str1 = null;
+        String str2 = null;
+        Assert.assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
+
+        str2 = "Any ";
+        Assert.assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
+
+        str1 = "Any ";
+        Assert.assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
+
+        str1 = "An y eer";
+        str2 = "A nye er";
+        Assert.assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
+
+        str1 = "An y eer";
+        str2 = "A nyfffe er";
+        Assert.assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
+
+    }
+
 }

@@ -8,28 +8,21 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
  * @author k.luther
  * @date 10.03.2016
  *
  */
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
-    private boolean deleteIfUsedInTaxonDescription = false;
-    private boolean deleteIfUsedInSpecimenDescription = false;
-    private boolean onlyRemoveFromGallery = false;
 
-    public boolean isDeleteIfUsedInSpecimenDescription() {
-        return deleteIfUsedInSpecimenDescription;
-    }
-    public void setDeleteIfUsedInSpecimenDescription(boolean deleteIfUsedInSpecimenDescription) {
-        this.deleteIfUsedInSpecimenDescription = deleteIfUsedInSpecimenDescription;
-    }
-    public boolean isDeleteIfUsedInTaxonDescription() {
-        return deleteIfUsedInTaxonDescription;
-    }
-    public void setDeleteIfUsedInTaxonDescription(boolean deleteIfUsedInTaxonDescription) {
-        this.deleteIfUsedInTaxonDescription = deleteIfUsedInTaxonDescription;
-    }
+    private boolean deleteFromDescription = false;
+    private boolean deleteFromEveryWhere = false;
+    private boolean onlyRemoveFromGallery = true;
+    private CdmBase deleteFrom;
+
+
     /**
      * @return the onlyRemoveFromGallery
      */
@@ -41,5 +34,24 @@ public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
      */
     public void setOnlyRemoveFromGallery(boolean onlyRemoveFromGallery) {
         this.onlyRemoveFromGallery = onlyRemoveFromGallery;
+    }
+
+    public CdmBase getDeleteFrom() {
+        return deleteFrom;
+    }
+    public void setDeleteFrom(CdmBase deleteFrom) {
+        this.deleteFrom = deleteFrom;
+    }
+    public boolean isDeleteFromEveryWhere() {
+        return deleteFromEveryWhere;
+    }
+    public void setDeleteFromEveryWhere(boolean deleteFromEveryWhere) {
+        this.deleteFromEveryWhere = deleteFromEveryWhere;
+    }
+    public boolean isDeleteFromDescription() {
+        return deleteFromDescription;
+    }
+    public void setDeleteFromDescription(boolean deleteFromDescription) {
+        this.deleteFromDescription = deleteFromDescription;
     }
 }

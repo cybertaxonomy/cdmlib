@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -43,31 +43,31 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class CdmIDResolver extends IDResolver {
 	private static final Logger logger = Logger.getLogger(CdmIDResolver.class);
-	
+
 	IUserService userService;
-	
-	IAgentService agentService;	
-	
+
+	IAgentService agentService;
+
 	ITermService termService;
-	
+
 	IVocabularyService vocabularyService;
-	
+
 	IDescriptionService descriptionService;
-	
+
 	IFeatureTreeService featureTreeService;
-	
+
 	IMediaService mediaService;
-	
+
 	INameService nameService;
-	
+
 	IOccurrenceService occurrenceService;
-	
+
 	ICollectionService collectionService;
-	
+
 	IReferenceService referenceService;
-	
+
 	ITaxonService taxonService;
-	
+
 	@Autowired
 	public void setUserService(IUserService userService) {
 		this.userService = userService;
@@ -127,9 +127,9 @@ public class CdmIDResolver extends IDResolver {
 	public void setTaxonService(ITaxonService taxonService) {
 		this.taxonService = taxonService;
 	}
-	
+
 	private HashMap<String,Object> idmap = null;
-	
+
 	@Override
 	public void startDocument(ValidationEventHandler eventHandler) throws SAXException {
 		if(idmap!=null) {
@@ -144,16 +144,17 @@ public class CdmIDResolver extends IDResolver {
 		}
 		idmap.put(id,obj);
 	}
-		
+
 
 	@Override
 	public Callable<?> resolve(final String id, final Class targetType) throws SAXException {
 		return new Callable() {
-	        public Object call() throws Exception {
+	        @Override
+            public Object call() throws Exception {
 	          logger.info("Resolving " + id + " for class " + targetType);
-	        	
+
 			  if(idmap==null || !idmap.containsKey(id)) {
-				  
+
 				  String uuidPart = id.substring(UUIDAdapter.UUID_URN_PREFIX.length());
 				  UUID uuid = UUID.fromString(uuidPart);
 				  logger.info(uuid + " not in idmap, looking in database");
@@ -171,7 +172,7 @@ public class CdmIDResolver extends IDResolver {
 					  return resolveObject(uuid, targetType, featureTreeService);
 				  } else if(Media.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, mediaService);
-				  } else if(TaxonNameBase.class.isAssignableFrom(targetType)) {
+				  } else if(TaxonName.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, nameService);
 				  } else if(SpecimenOrObservationBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, occurrenceService);
@@ -191,33 +192,33 @@ public class CdmIDResolver extends IDResolver {
 					  /**
 					   * Collections of IDREFS do not have a type at runtime
 					   *  https://jaxb.dev.java.net/issues/show_bug.cgi?id=546
-					   *  
+					   *
 					   *   Maybe in the future we'll be able to add targetType to IDREF
 					   *   but the spec has to be changed first so no fix is likely at the moment
-					   *   
+					   *
 					   */
-					  
+
 					  AgentBase agent = agentService.find(uuid);
-					  if(agent != null) { 
+					  if(agent != null) {
 						  return agent;
 					  }
 					  DefinedTermBase term = termService.find(uuid);
-					  if(term != null) { 
+					  if(term != null) {
 						  return term;
 					  }
 					  Media media = mediaService.find(uuid);
-					  if(media != null) { 
+					  if(media != null) {
 						  return media;
 					  }
 					  throw new SAXException(targetType.getSimpleName() + " with " + uuid + " not found");
 				  }
 			  } else {
 				  return idmap.get(id);
-			  }		
+			  }
 			}
 	    };
 	}
-	
+
 	private Object resolveObject(UUID uuid, Class targetType, IService service) throws SAXException {
 		Object object = service.find(uuid);
 		  if(object == null) {

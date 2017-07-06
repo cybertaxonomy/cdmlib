@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlExportState> {
     private static final long serialVersionUID = 2943494702785912481L;
@@ -29,7 +28,7 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 	private static Logger logger = Logger.getLogger(TcsXmlExportConfigurator.class);
 
 
-	private TcsXmlExportState<TcsXmlExportConfigurator> state;
+	private TcsXmlExportState state;
 
 
 	private boolean doAuthors;
@@ -90,14 +89,14 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 	/**
 	 * @return the state
 	 */
-	public TcsXmlExportState<TcsXmlExportConfigurator> getState() {
+	public TcsXmlExportState getState() {
 		return state;
 	}
 
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(TcsXmlExportState<TcsXmlExportConfigurator> state) {
+	public void setState(TcsXmlExportState state) {
 		this.state = state;
 	}
 

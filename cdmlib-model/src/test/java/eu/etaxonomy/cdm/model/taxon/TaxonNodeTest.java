@@ -28,7 +28,7 @@ import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 //import eu.etaxonomy.cdm.model.reference.Journal;
@@ -49,9 +49,9 @@ public class TaxonNodeTest {
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static Taxon taxon3;
-	private static TaxonNameBase<?,?> taxonName1;
-	private static TaxonNameBase<?,?> taxonName2;
-	private static TaxonNameBase<?,?> taxonName3;
+	private static TaxonName taxonName1;
+	private static TaxonName taxonName2;
+	private static TaxonName taxonName3;
 	private static Reference ref1;
 	private static Reference ref2;
 	private static Reference ref3;

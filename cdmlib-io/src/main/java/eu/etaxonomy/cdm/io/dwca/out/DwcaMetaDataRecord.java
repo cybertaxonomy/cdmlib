@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,20 +22,20 @@ import org.apache.log4j.Logger;
 public class DwcaMetaDataRecord  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaMetaDataRecord.class);
-	
+
 	private String fileLocation;
 	private String rowType;
-	
+
 	private boolean isCore;
 	private int currentIndex = 0;
 	private boolean isMetaData = false;  //is this record about meta data (should be true for MetaData and EML)
-	
+
 	private int count = 0;
-	
-	private List<FieldEntry> fieldEntryList = new ArrayList<DwcaMetaDataRecord.FieldEntry>();
-	protected List<String> fieldList = new ArrayList<String>();
-	
-	
+
+	private List<FieldEntry> fieldEntryList = new ArrayList<>();
+	protected List<String> fieldList = new ArrayList<>();
+
+
 	public DwcaMetaDataRecord(boolean isCore, String fileLocation, String rowType){
 		FieldEntry idEntry = new FieldEntry();
 		idEntry.index = currentIndex++;
@@ -53,7 +53,7 @@ public class DwcaMetaDataRecord  {
 		String defaultValue = null;
 		String elementName = "field";
 	}
-	
+
 	public void addFieldEntry(URI term, String defaultValue){
 		FieldEntry fieldEntry = new FieldEntry();
 		fieldEntry.index = currentIndex++;
@@ -61,10 +61,10 @@ public class DwcaMetaDataRecord  {
 		fieldEntry.defaultValue = defaultValue;
 		this.fieldEntryList.add(fieldEntry);
 	}
-	
+
 	//TODO needed?
 //	public abstract List<String> getHeaderList();
-	
+
 //	public List<URI> getTermList(){
 //		List<URI> result = new ArrayList<URI>();
 //		for (String key : fieldList){
@@ -78,16 +78,16 @@ public class DwcaMetaDataRecord  {
 //		}
 //		return result;
 //	}
-	
+
 	public boolean hasEntries(){
 		return fieldEntryList.size() > 1;
 	}
-	
+
 	public List<FieldEntry> getEntries(){
 		return fieldEntryList;
 	}
-	
-	
+
+
 	public String getFileLocation() {
 		return fileLocation;
 	}
@@ -123,16 +123,13 @@ public class DwcaMetaDataRecord  {
 	public boolean isMetaData() {
 		return isMetaData;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
+
 	@Override
 	public String toString() {
 		return this.fileLocation;
 	}
 
-	
+
 
 }

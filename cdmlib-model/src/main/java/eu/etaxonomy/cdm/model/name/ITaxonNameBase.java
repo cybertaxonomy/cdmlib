@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  * </ul>
  *
  * ITaxonNameBase and it's extensions should only be used for type safety
- * of {@link TaxonNameBase} instances. It should not be used to interface
+ * of {@link TaxonName} instances. It should not be used to interface
  * instances of any other class
  *
  * @author a.mueller
@@ -48,6 +48,10 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  */
 public interface ITaxonNameBase
         extends IIdentifiableEntity, IParsable, IRelated, IMatchable, Cloneable{
+
+
+    public NomenclaturalCode getNameType();
+    public void setNameType(NomenclaturalCode nameType);
 
     public Object clone();
 
@@ -77,28 +81,13 @@ public interface ITaxonNameBase
      * @see    #getRelationsToThisName()
      * @see    #getRelationsFromThisName()
      * @see    #addNameRelationship(NameRelationship)
-     * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
-     * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    #addRelationshipToName(TaxonName, NameRelationshipType, String)
+     * @see    #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      */
     public Set<NameRelationship> getNameRelations();
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
-     * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
-     * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
-     *
-     * @param toName          the taxon name of the target for this new name relationship
-     * @param type            the type of this new name relationship
-     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @see                   #getRelationsToThisName()
-     * @see                   #getNameRelations()
-     * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
-     * @see                   #addNameRelationship(NameRelationship)
-     */
-    public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered);
-
-    /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
      * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
      * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
      *
@@ -108,14 +97,30 @@ public interface ITaxonNameBase
      * @return
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
-     * @see                   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public NameRelationship addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, Reference citation,
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered);
+
+    /**
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+     * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
+     * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
+     *
+     * @param toName          the taxon name of the target for this new name relationship
+     * @param type            the type of this new name relationship
+     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @return
+     * @see                   #getRelationsToThisName()
+     * @see                   #getNameRelations()
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
+     * @see                   #addNameRelationship(NameRelationship)
+     */
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, Reference citation,
             String microCitation, String ruleConsidered);
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
      * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
      * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
      *
@@ -126,13 +131,13 @@ public interface ITaxonNameBase
      * @param microCitation   the reference detail for this relation (e.g. page)
      * @see                   #getRelationsFromThisName()
      * @see                   #getNameRelations()
-     * @see                   #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+     * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered);
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered);
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
      * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
      * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
      *
@@ -143,10 +148,10 @@ public interface ITaxonNameBase
      * @param microCitation   the reference detail for this relation (e.g. page)
      * @see                   #getRelationsFromThisName()
      * @see                   #getNameRelations()
-     * @see                   #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+     * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation,
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, Reference citation,
             String microCitation, String ruleConsidered);
 
     /**
@@ -161,7 +166,7 @@ public interface ITaxonNameBase
      */
     public void removeNameRelationship(NameRelationship nameRelation);
 
-    public void removeRelationToTaxonName(TaxonNameBase toTaxonName);
+    public void removeRelationToTaxonName(TaxonName toTaxonName);
 
     /**
      * Returns the set of all {@link NameRelationship name relationships}
@@ -169,7 +174,7 @@ public interface ITaxonNameBase
      *
      * @see    #getNameRelations()
      * @see    #getRelationsToThisName()
-     * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+     * @see    #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      */
     public Set<NameRelationship> getRelationsFromThisName();
 
@@ -179,7 +184,7 @@ public interface ITaxonNameBase
      *
      * @see    #getNameRelations()
      * @see    #getRelationsFromThisName()
-     * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+     * @see    #addRelationshipToName(TaxonName, NameRelationshipType, String)
      */
     public Set<NameRelationship> getRelationsToThisName();
 
@@ -245,7 +250,7 @@ public interface ITaxonNameBase
      *
      * If no basionym exists null is returned.
      */
-    public TaxonNameBase getBasionym();
+    public TaxonName getBasionym();
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#BASIONYM() basionyms} of <i>this</i> taxon name.
@@ -254,7 +259,7 @@ public interface ITaxonNameBase
      * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
      * <i>Pinus abies</i> L. is the basionym of the new combination <i>Picea abies</i> (L.) H. Karst.
      */
-    public Set<TaxonNameBase> getBasionyms();
+    public Set<TaxonName> getBasionyms();
 
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
@@ -265,9 +270,9 @@ public interface ITaxonNameBase
      *
      * @param  basionym     the taxon name to be set as the basionym of <i>this</i> taxon name
      * @see                 #getBasionym()
-     * @see                 #addBasionym(TaxonNameBase, String)
+     * @see                 #addBasionym(TaxonName, String)
      */
-    public void addBasionym(TaxonNameBase basionym);
+    public void addBasionym(TaxonName basionym);
 
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -281,15 +286,15 @@ public interface ITaxonNameBase
      * @param  ruleConsidered   the string identifying the nomenclatural rule
      * @return
      * @see                     #getBasionym()
-     * @see                     #addBasionym(TaxonNameBase)
+     * @see                     #addBasionym(TaxonName)
      */
-    public NameRelationship addBasionym(TaxonNameBase basionym, Reference citation, String microcitation, String ruleConsidered);
+    public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered);
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
      *
      */
-    public Set<TaxonNameBase> getReplacedSynonyms();
+    public Set<TaxonName> getReplacedSynonyms();
 
     /**
      * Assigns a taxon name as {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym} of <i>this</i> taxon name
@@ -301,10 +306,10 @@ public interface ITaxonNameBase
      * @param  basionym         the taxon name to be set as the basionym of <i>this</i> taxon name
      * @param  ruleConsidered   the string identifying the nomenclatural rule
      * @see                     #getBasionym()
-     * @see                     #addBasionym(TaxonNameBase)
+     * @see                     #addBasionym(TaxonName)
      */
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
-    public void addReplacedSynonym(TaxonNameBase replacedSynonym, Reference citation, String microcitation, String ruleConsidered);
+    public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered);
 
     /**
      * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
@@ -313,7 +318,7 @@ public interface ITaxonNameBase
      * previously used as basionym.
      *
      * @see   #getBasionym()
-     * @see   #addBasionym(TaxonNameBase)
+     * @see   #addBasionym(TaxonName)
      */
     public void removeBasionyms();
 
@@ -445,7 +450,7 @@ public interface ITaxonNameBase
      * @see                             NameTypeDesignation
      * @see                             TypeDesignationBase#isNotDesignated()
      */
-    public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies, Reference citation,
+    public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies, Reference citation,
             String citationMicroReference, String originalNameString, NameTypeDesignationStatus status,
             boolean isRejectedType, boolean isConservedType,
             /*boolean isLectoType, */
@@ -467,7 +472,7 @@ public interface ITaxonNameBase
      * @see                             NameTypeDesignation
      * @see                             TypeDesignationBase#isNotDesignated()
      */
-    public NameTypeDesignation addNameTypeDesignation(TaxonNameBase typeSpecies, Reference citation,
+    public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies, Reference citation,
             String citationMicroReference, String originalNameString, NameTypeDesignationStatus status,
             boolean addToAllHomotypicNames);
 
@@ -643,7 +648,7 @@ public interface ITaxonNameBase
      */
     public void removeDescription(TaxonNameDescription description);
 
-    public void mergeHomotypicGroups(TaxonNameBase name);
+    public void mergeHomotypicGroups(TaxonName name);
 
     /**
      * Returns the boolean value indicating whether a given taxon name belongs
@@ -655,7 +660,7 @@ public interface ITaxonNameBase
      * @return                 the boolean value of the check
      * @see                    HomotypicalGroup
      */
-    public boolean isHomotypic(TaxonNameBase homoTypicName);
+    public boolean isHomotypic(TaxonName homoTypicName);
 
     /**
      * Checks whether name is a basionym for ALL names
@@ -673,13 +678,13 @@ public interface ITaxonNameBase
      * @param toName
      * @return
      */
-    public boolean isBasionymFor(TaxonNameBase newCombinationName);
+    public boolean isBasionymFor(TaxonName newCombinationName);
 
     /**
      * Creates a basionym relationship to all other names in this names homotypical
      * group.
      *
-     * @see HomotypicalGroup.setGroupBasionym(TaxonNameBase basionymName)
+     * @see HomotypicalGroup.setGroupBasionym(TaxonName basionymName)
      */
     public void makeGroupsBasionym();
 
@@ -816,15 +821,56 @@ public interface ITaxonNameBase
      * {@link  https://dev.e-taxonomy.eu/redmine/issues/922}<BR>
      * {@link https://dev.e-taxonomy.eu/redmine/issues/6311}
      *
-     * @see TaxonNameBase#compareToName(TaxonNameBase)
+     * @see TaxonName#compareToName(TaxonName)
      * @see TaxonNameComparator
      * @see TaxonComparator
      * @param otherTaxon
      * @return the compareTo result similar to {@link Comparable#compareTo(Object)}
      * @throws NullPointerException if otherTaxon is <code>null</code>
      */
-    public int compareToName(TaxonNameBase<?,?> otherName);
+    public int compareToName(TaxonName otherName);
+
+    /**
+     * This method returns als {@link Registration registrations} for the given name.
+     * @return
+     */
+    public Set<Registration> getRegistrations();
 
 
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICZN} or
+     * any sub type and is supposed to be handled via {@link IZoologicalName}
+     */
+    public boolean isZoological();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#NonViral} or
+     * any sub type and is supposed to be handled via {@link INonViralName}
+     */
+    public boolean isNonViral();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNAFP} or
+     * any sub type and is supposed to be handled via {@link IBotanicalName}
+     */
+    public boolean isBotanical();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNCP} or
+     * any sub type and is supposed to be handled via {@link ICultivarPlantName}
+     */
+    boolean isCultivar();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNB} or
+     * any sub type and is supposed to be handled via {@link IBacterialName}
+     */
+    boolean isBacterial();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICVCN} or
+     * any sub type and is supposed to be handled via {@link IViralName}
+     */
+    boolean isViral();
 
 }

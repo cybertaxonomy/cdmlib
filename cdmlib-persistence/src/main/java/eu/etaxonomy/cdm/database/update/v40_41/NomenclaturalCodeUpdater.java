@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @author a.mueller
  * @date 13.10.2016
  */
-public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase<NomenclaturalCodeUpdater> implements ITermUpdaterStep{
+public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase {
     private static final Logger logger = Logger.getLogger(NomenclaturalCodeUpdater.class);
 
 	private static final String stepName = "Update nomenclatural code";
@@ -46,14 +46,15 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase<Nomenclatura
 		super(stepName);
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
 	    String existsSql = " SELECT count(*) FROM @@CdmPreference@@ "
 	            + " WHERE key_predicate = 'model.name.NC' AND key_subject = '/'";
 	    existsSql = caseType.replaceTableNames(existsSql);
 	    if (((Number)datasource.getSingleValue(existsSql)).intValue() > 0 ){
-	        return 0;
+	        return;
 	    }
 
 	    String sql = "SELECT count(DTYPE) as n, DTYPE FROM @@TaxonNameBase@@ "
@@ -75,7 +76,7 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase<Nomenclatura
 	        }
 	    }
 
-	    return 0;
+	    return;
 	}
 
 

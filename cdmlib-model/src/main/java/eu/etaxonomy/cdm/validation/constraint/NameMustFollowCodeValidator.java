@@ -16,16 +16,11 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
 
 /**
- * Validator for name parts. Required since {@link TaxonNameBase} has
+ * Validator for name parts. Required since {@link TaxonName} has
  * no subclasses anymore. This validator checks if the names follow
  * the old sublassing rules.
  * <BR><BR>
@@ -36,43 +31,43 @@ import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
  *
  */
 public class NameMustFollowCodeValidator implements
-        ConstraintValidator<NameMustFollowCode, TaxonNameBase<?,?>> {
+        ConstraintValidator<NameMustFollowCode, TaxonName> {
 
     @Override
     public void initialize(NameMustFollowCode nameMustFollowTheirCode) { }
 
     @Override
-    public boolean isValid(TaxonNameBase<?,?> name, ConstraintValidatorContext constraintContext) {
+    public boolean isValid(TaxonName name, ConstraintValidatorContext constraintContext) {
         name = CdmBase.deproxy(name);
         boolean valid = true;
 
         //CultivarPlantName
-        if (! (name instanceof CultivarPlantName)){
+        if (! (name.isCultivar())){
             if (name.getCultivarName() != null){
                 valid = false;
             }
         }
         //BacterialName
-        if (! (name instanceof BacterialName)){
+        if (! (name.isBacterial())){
             if (isNotNull(name.getSubGenusAuthorship(), name.getNameApprobation())){
                 valid = false;
             }
         }
         //BacterialName
-        if (! (name instanceof ViralName)){
+        if (! (name.isViral())){
             if (name.getAcronym() != null){
                 valid = false;
             }
         }
         //ZoologicalName
-        if (! (name instanceof ZoologicalName)){
+        if (! (name.isZoological())){
             if (isNotNull(name.getBreed(), name.getOriginalPublicationYear()
                     , name.getPublicationYear())){
                 valid = false;
             }
         }
         //NonViralName
-        if (! (name instanceof NonViralName)){
+        if (! (name.isNonViral())){
             if (    isNotNull(name.getGenusOrUninomial(), name.getSpecificEpithet()
                         , name.getInfraGenericEpithet(), name.getInfraSpecificEpithet() )
                     || isNotEmpty(name.getNameRelations() , name.getHybridParentRelations()

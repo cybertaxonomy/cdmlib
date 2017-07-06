@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +27,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
-import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -37,7 +34,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -47,10 +44,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.babadshanjan
  * @created 25.09.2008
- * @version 1.0
  */
 @Component
-public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer> implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
+public class JaxbExport
+            extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer, File>
+            implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
+
+    private static final long serialVersionUID = -525533131708894145L;
 
     private static final Logger logger = Logger.getLogger(JaxbExport.class);
 
@@ -61,35 +61,21 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
      */
     public JaxbExport() {
         super();
-        this.exportData = ExportDataWrapper.NewByteArrayInstance();
     }
 
-
-    //	/**
-    //	 *
-    //	 */
-    //	public JaxbExport() {
-    //		super();
-    //		this.ioName = this.getClass().getSimpleName();
-    //	}
-
-    /** Retrieves data from a CDM DB and serializes them CDM to XML.
+    /**
+     * {@inheritDoc}
+     *
+     * .<BR>Retrieves data from a CDM DB and serializes them CDM to XML.
      * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
      * Taxa that are not part of the classification are not found.
-     *
-     * @param exImpConfig
-     * @param dbname
-     * @param filename
      */
-    //	@Override
-    //	protected boolean doInvoke(IExportConfigurator config,
-    //			Map<String, MapWrapper<? extends CdmBase>> stores) {
     @Override
     protected void doInvoke(JaxbExportState state) {
 
-        JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)state.getConfig();
+        JaxbExportConfigurator jaxbExpConfig = state.getConfig();
         //		String dbname = jaxbExpConfig.getSource().getName();
-        URI uri = jaxbExpConfig.getDestination();
+        File file = jaxbExpConfig.getDestination();
         //		logger.info("Serializing DB " + dbname + " to file " + fileName);
         //		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
@@ -116,13 +102,13 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
         try {
             switch(jaxbExpConfig.getTarget()) {
             case FILE:
-                writeToFile(new File(uri), dataSet);
+                writeToFile(file, dataSet);
                 break;
             case EXPORT_DATA:
                 CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
                 exportStream = new ByteArrayOutputStream();
                 cdmDocumentBuilder.marshal(dataSet, new StreamResult(exportStream));
-                ((ExportResult)state.getResult()).addExportData((byte[])this.createExportData().getExportData());
+                state.getResult().addExportData((byte[])this.createExportData().getExportData());
 
                 break;
             default:
@@ -159,7 +145,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
         int agentRows = numberOfRows;
         int definedTermBaseRows = numberOfRows;
         int referenceBaseRows = numberOfRows;
-        int taxonNameBaseRows = numberOfRows;
+        int taxonNameRows = numberOfRows;
         int taxonBaseRows = numberOfRows;
         int taxonNodeRows = numberOfRows;
         int relationshipRows = numberOfRows;
@@ -228,10 +214,10 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
         }
 
         if (jaxbExpConfig.isDoTaxonNames() == true) {
-            if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
-            logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+            if (taxonNameRows == 0) { taxonNameRows = getNameService().count(TaxonName.class); }
+            logger.info("# TaxonName: " + taxonNameRows);
             //logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-            dataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
+            dataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
         }
 
 

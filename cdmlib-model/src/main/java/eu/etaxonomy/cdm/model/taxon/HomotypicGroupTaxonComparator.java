@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * This class orders synonyms of a homotypic group,
@@ -45,7 +45,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 	private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparator.class);
 
     private final TaxonBase<?> firstTaxonInGroup;
-    private final TaxonNameBase<?,?> firstNameInGroup;
+    private final TaxonName firstNameInGroup;
 //    private final HomotypicalGroupComparator homotypicGroupComparator;
 
     /**
@@ -77,8 +77,8 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             @SuppressWarnings("rawtypes") TaxonBase taxonBase1,
             @SuppressWarnings("rawtypes") TaxonBase taxonBase2) {
 
-        TaxonNameBase<?,?> name1 = taxonBase1.getName();
-        TaxonNameBase<?,?> name2 = taxonBase2.getName();
+        TaxonName name1 = taxonBase1.getName();
+        TaxonName name2 = taxonBase2.getName();
         if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
 
 
@@ -119,8 +119,8 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return super.compare(taxonBase1, taxonBase2);  //if name is the same compare on taxon level
         }
 
-        TaxonNameBase<?,?> basionym1 = getPreferredInBasionymGroup(name1);
-        TaxonNameBase<?,?> basionym2 = getPreferredInBasionymGroup(name2);
+        TaxonName basionym1 = getPreferredInBasionymGroup(name1);
+        TaxonName basionym2 = getPreferredInBasionymGroup(name2);
 
         int compareResult;
         if (basionym1.equals(basionym2)){
@@ -151,9 +151,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @param name2 second name to compare
      * @return compare value according to the {@link Comparator#compare(Object, Object)} contract.
      */
-    private int handleSameBasionym(TaxonNameBase<?, ?> basionym,
-            TaxonNameBase<?, ?> name1,
-            TaxonNameBase<?, ?> name2) {
+    private int handleSameBasionym(TaxonName basionym,
+            TaxonName name1,
+            TaxonName name2) {
 
         if (basionym.equals(name1)){
             return -1;
@@ -170,10 +170,10 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @param basionym2
      * @return
      */
-    private int compareBasionyms(TaxonNameBase<?,?> basionym1Orig, TaxonNameBase<?,?> basionym2Orig) {
+    private int compareBasionyms(TaxonName basionym1Orig, TaxonName basionym2Orig) {
         //one taxon is first in group
-        TaxonNameBase<?,?> basionym1 = getFirstNameInGroup(basionym1Orig);
-        TaxonNameBase<?,?> basionym2 = getFirstNameInGroup(basionym2Orig);
+        TaxonName basionym1 = getFirstNameInGroup(basionym1Orig);
+        TaxonName basionym2 = getFirstNameInGroup(basionym2Orig);
 
         //handle accepted taxon case
         if (basionym1.equals(firstNameInGroup)){
@@ -201,7 +201,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @param basionym
      * @return
      */
-    private TaxonNameBase<?, ?> getFirstNameInGroup(TaxonNameBase<?, ?> basionym) {
+    private TaxonName getFirstNameInGroup(TaxonName basionym) {
         for (NameRelationship nameRel : basionym.getRelationsFromThisName()){
             if (nameRel.getType() != null && nameRel.getType().equals(NameRelationshipType.BASIONYM())){
                 if (nameRel.getToName().equals(firstNameInGroup)){
@@ -217,13 +217,13 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    private Set<TaxonNameBase> getReplacedSynonymClosure(TaxonNameBase<?, ?> name) {
-        Set<TaxonNameBase> set = name.getReplacedSynonyms();
+    private Set<TaxonName> getReplacedSynonymClosure(TaxonName name) {
+        Set<TaxonName> set = name.getReplacedSynonyms();
         if (set.isEmpty()){
             return set;
         }
-        Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
-        for (TaxonNameBase<?,?> replSyn : set){
+        Set<TaxonName> result = new HashSet<>();
+        for (TaxonName replSyn : set){
             boolean notYetContained = result.add(replSyn);
             if (notYetContained){
                 result.addAll(replSyn.getReplacedSynonyms());
@@ -236,10 +236,10 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @param name
      * @return
      */
-    private TaxonNameBase<?,?> getPreferredInBasionymGroup(TaxonNameBase<?,?> name) {
-        Set<TaxonNameBase<?,?>> candidates = new HashSet<TaxonNameBase<?,?>>();
+    private TaxonName getPreferredInBasionymGroup(TaxonName name) {
+        Set<TaxonName> candidates = new HashSet<>();
         //get all final basionyms, except for those being part of a basionym circle
-        for (TaxonNameBase<?,?> candidate : name.getBasionyms()){
+        for (TaxonName candidate : name.getBasionyms()){
             if (candidate != null
                     && candidate.getHomotypicalGroup().equals(name.getHomotypicalGroup())
                     && !hasBasionymCircle(candidate, null)){
@@ -253,9 +253,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }else if (candidates.size() == 1){
             return candidates.iterator().next();
         }else{
-            TaxonNameBase<?,?> result = candidates.iterator().next();
+            TaxonName result = candidates.iterator().next();
             candidates.remove(result);
-            for (TaxonNameBase<?,?> candidate : candidates){
+            for (TaxonName candidate : candidates){
                 if (super.compare(result, candidate, false) > 0){
                     result = candidate;
                 }
@@ -268,19 +268,19 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @param candidate
      * @return
      */
-    private boolean hasBasionymCircle(TaxonNameBase<?, ?> name, Set<TaxonNameBase<?,?>> existing) {
+    private boolean hasBasionymCircle(TaxonName name, Set<TaxonName> existing) {
         if (existing == null){
-            existing = new HashSet<TaxonNameBase<?,?>>();
+            existing = new HashSet<>();
         }
         if (existing.contains(name)){
             return true;
         }else{
-            Set<TaxonNameBase> basionyms = name.getBasionyms();
+            Set<TaxonName> basionyms = name.getBasionyms();
             if (basionyms.isEmpty()){
                 return false;
             }
             existing.add(name);
-            for (TaxonNameBase basionym : basionyms){
+            for (TaxonName basionym : basionyms){
                 if (hasBasionymCircle(basionym, existing)){
                     return true;
                 }

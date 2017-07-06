@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,92 +30,93 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonImport.class);
+    private static final long serialVersionUID = 4615869699069336295L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfTaxonImport.class);
 
 	private static int modCount = 30000;
-	
+
 	public TcsRdfTaxonImport(){
 		super();
 	}
-	
-	
+
+
 	@Override
 	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
 		logger.warn("Checking for Taxa not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
-		
+
 		return result;
 	}
-	
+
 	protected static CdmSingleAttributeRDFMapperBase[] standardMappers = new CdmSingleAttributeRDFMapperBase[]{
 //		new CdmTextElementMapper("genusPart", "genusOrUninomial")
-	
+
 	};
 
-	
+
 	protected static CdmSingleAttributeRDFMapperBase[] operationalMappers = new CdmSingleAttributeRDFMapperBase[]{
 		 new CdmUnclearMapper("hasName")
 		,new CdmUnclearMapper("hasName")
 		, new CdmUnclearMapper("accordingTo")
 		, new CdmUnclearMapper("hasRelationship")
-		, new CdmUnclearMapper("code", nsTgeo)	
+		, new CdmUnclearMapper("code", nsTgeo)
 	};
-	
+
 	protected static CdmSingleAttributeRDFMapperBase[] unclearMappers = new CdmSingleAttributeRDFMapperBase[]{
 		new CdmUnclearMapper("primary")
-		, new CdmUnclearMapper("note", nsTcom)	
+		, new CdmUnclearMapper("note", nsTcom)
 		, new CdmUnclearMapper("taxonStatus", nsTpalm)
-		
-		, new CdmUnclearMapper("TaxonName", nsTn)	
-		, new CdmUnclearMapper("dateOfEntry", nsTpalm)	
+
+		, new CdmUnclearMapper("TaxonName", nsTn)
+		, new CdmUnclearMapper("dateOfEntry", nsTpalm)
 	};
-	
-	
-	
+
+
+
 	@Override
 	protected void doInvoke(TcsRdfImportState state){
-		
+
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<Reference> nomRefMap = (MapWrapper<Reference>)state.getStore(ICdmIO.NOMREF_STORE);
-		
+
 		String xmlElementName;
 		String xmlAttributeName;
 		String elementNamespace;
 		String attributeNamespace;
-		
+
 		logger.info("start makeTaxa ...");
-		
+
 		TcsRdfImportConfigurator config = state.getConfig();
 		Model root = config.getSourceRoot();
-		
+
 		String rdfNamespace = config.getRdfNamespaceURIString();
-		
+
 		String idNamespace = "TaxonConcept";
 		xmlElementName = "TaxonConcept";
 		elementNamespace = config.getTcNamespaceURIString();
-		
+
 		return;
 	}
-	
-	
+
+
 	/**
-	 * @param rdfNamespace 
-	 * @param elTaxonConcept 
+	 * @param rdfNamespace
+	 * @param elTaxonConcept
 	 * @return
 	 */
 	private boolean isSynonym(Element elTaxonConcept, Namespace tpalmNamespace) {
@@ -152,7 +153,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		if (elTaxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(elTaxonConcept.getName()) ){
 			return false;
 		}
-		
+
 		String elName = "relationshipCategory";
 		Filter filter = new ElementFilter(elName, elTaxonConcept.getNamespace());
 		Iterator<Element> relationshipCategories = elTaxonConcept.getDescendants(filter);
@@ -166,7 +167,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		}
 		return result;
 	}
-	
+
 	private List<DescriptionElementBase> makeGeo(Element elConcept, Namespace geoNamespace, Namespace rdfNamespace){
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 		String xmlElementName = "code";
@@ -176,7 +177,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		//for each geoTag
 		for (Element elGeo : elGeos){
 			//if ((i++ % modCount) == 0){ logger.info("Geocodes handled: " + (i-1));}
-			
+
 			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
 			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
 			NamedArea namedArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(strGeoRegion);
@@ -184,16 +185,17 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
 			distribution.setFeature(Feature.DISTRIBUTION());
 			//System.out.println(namedArea);
-			
+
 			result.add(distribution);
 		}
 		return result;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TcsRdfImportState state){
+	@Override
+    protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
 

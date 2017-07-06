@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.out;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -24,8 +25,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 20.03.2008
  */
 public abstract class TcsXmlExportBase<T extends CdmBase>
-        extends CdmExportBase<TcsXmlExportConfigurator, TcsXmlExportState, IExportTransformer>  {
+        extends CdmExportBase<TcsXmlExportConfigurator, TcsXmlExportState, IExportTransformer, File>  {
 
+    private static final long serialVersionUID = -7100332849797374995L;
     private static final Logger logger = Logger.getLogger(TcsXmlExportBase.class);
 
 	public TcsXmlExportBase() {

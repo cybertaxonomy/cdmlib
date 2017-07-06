@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.validation.constraint.CorrectEpithetsForRankValidator;
@@ -43,7 +43,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CorrectEpithetsForRankTest.class);
 
-	private BotanicalName name;
+	private IBotanicalName name;
 
 	@Before
 	public void setUp() {
@@ -63,16 +63,16 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	public void testValidSpecificName() {
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for its rank",constraintViolations.isEmpty());
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
+        assertTrue("There should be no constraint violations as this name has the correct epithets for its rank", constraintViolations.isEmpty());
 	}
 
 	@Test
 	public void testInValidSpecificName() {
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet(null); // at the default level, this property can be null
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertFalse("There should be a constraint violation as this name does not have a specific epithet", constraintViolations.isEmpty());
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectEpithetsForRankValidator.class);
 	}
 
@@ -80,8 +80,8 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	public void testValidFamilyGroupName() {
 		name.setGenusOrUninomial("Aus");
 		name.setRank(Rank.FAMILY());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank", constraintViolations.isEmpty());
 	}
 
 	@Test
@@ -89,8 +89,8 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setGenusOrUninomial("Aus");
 		name.setRank(Rank.FAMILY()); // at the default level, this property can be null
 		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertFalse("There should be a constraint violation as this name does not have a specific epithet", constraintViolations.isEmpty());
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setGenusOrUninomial("Aus");
 		name.setInfraGenericEpithet("bus");
 		name.setRank(Rank.SUBGENUS());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
 	}
 
@@ -107,7 +107,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setGenusOrUninomial("Aus");
 		name.setRank(Rank.SUBGENUS()); // at the default level, this property can be null
 		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
 	}
 
@@ -117,7 +117,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setSpecificEpithet("aus");
 		name.setInfraSpecificEpithet("ceus");
 		name.setRank(Rank.SUBSPECIES());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
 	}
 
@@ -126,7 +126,7 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 		name.setGenusOrUninomial("Aus");
 		name.setRank(Rank.SUBGENUS()); // at the default level, this property can be null
 		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
 	}
 }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,17 +21,19 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(TableNameChanger.class);
-	
+public class TableNameChanger
+            extends SchemaUpdaterStepBase{
+
+    private static final Logger logger = Logger.getLogger(TableNameChanger.class);
+
 	private String oldName;
 	private String newName;
 	private boolean includeAudTable;
-	
+
 	public static final TableNameChanger NewInstance(String stepName, String oldName, String newName, boolean includeAudTable){
 		return new TableNameChanger(stepName, oldName, newName, includeAudTable);
 	}
-	
+
 	protected TableNameChanger(String stepName, String oldName, String newName, boolean includeAudTable) {
 		super(stepName);
 		this.oldName = oldName;
@@ -39,20 +41,23 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 		this.includeAudTable = includeAudTable;
 	}
 
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		boolean result = true;
-		result &= invokeOnTable(caseType.transformTo(oldName), caseType.transformTo(newName), datasource, monitor);
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+		invokeOnTable(caseType.transformTo(oldName), caseType.transformTo(newName),
+		        datasource, monitor, result);
 		updateHibernateSequence(datasource, monitor, newName, oldName); //no result&= as hibernateSequence problems may not lead to a complete fail
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= invokeOnTable(caseType.transformTo(oldName + aud), caseType.transformTo(newName + aud), datasource, monitor);
+			invokeOnTable(caseType.transformTo(oldName + aud), caseType.transformTo(newName + aud),
+			        datasource, monitor, result);
 		}
-		return (result == true )? 0 : null;
+		return;
 	}
 
 	//does not support AuditedSchemaUpdaterStepBase signature
-	private boolean invokeOnTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private void invokeOnTable(String oldName, String newName, ICdmDataSource datasource,
+	        IProgressMonitor monitor, SchemaUpdateResult result) {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.MySQL)){
@@ -64,8 +69,10 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 			updateQuery = "EXEC sp_rename '@oldName', '@newName'";
 		}else{
 			updateQuery = null;
-			monitor.warning("Update step '" + this.getStepName() + "' is not supported by " + type.getName());
-			return false;
+			String message ="Update step '" + this.getStepName() + "' is not supported by " + type.getName();
+			monitor.warning(message);
+			result.addError(message, getStepName() + ", TableNameChanger.invokeOnTable");
+            return;
 		}
 		updateQuery = updateQuery.replace("@oldName", oldName);
 		updateQuery = updateQuery.replace("@newName", newName);
@@ -75,13 +82,14 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 			String message = "Could not perform rename table operation";
 			monitor.warning("Could not perform rename table operation", e);
 			logger.warn(message+ ": "  + e.getMessage());
-			return false;
+			result.addException(e, message, getStepName() + ", TableNameChanger.invokeOnTable");
+			return;
 		}
-		return true;
+		return;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param datasource
 	 * @param monitor
 	 * @param table
@@ -91,7 +99,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 	private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor, String newName, String oldName){
 		try{
 			//TODO do we need to "case" this table name?
-			String sql = " UPDATE hibernate_sequences SET sequence_name = '%s' WHERE sequence_name = '%s'";	
+			String sql = " UPDATE hibernate_sequences SET sequence_name = '%s' WHERE sequence_name = '%s'";
 			datasource.executeUpdate(String.format(sql, newName ,oldName));
 			return true;
 		} catch (Exception e) {
@@ -100,7 +108,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 			logger.error(message);
 			return false;
 		}
-		
+
 	}
 
 }

@@ -28,7 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -73,13 +73,13 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("nomenclaturalReference");
 
-		TaxonNameBase sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
+		TaxonName sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();
 		endTransaction();
 
 		assertNotNull("Sphingidae should not be null",sphingidae);
-		assertFalse("TaxonNameBase.homotypicalGroup should not be initialized",Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
-		assertTrue("TaxonNameBase.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
+		assertFalse("TaxonName.homotypicalGroup should not be initialized",Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
+		assertTrue("TaxonName.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
 	}
 
 	/**
@@ -94,16 +94,16 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 	 */
 	@Test
 	public void testInitializeManyToOneSubclassProperty() {
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("combinationAuthorship");
 		propertyPaths.add("hybridRelationships");
 
-		TaxonNameBase<?,?> sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
+		TaxonName sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();
 		endTransaction();
 
 		assertNotNull("Sphingidae should not be null",sphingidae);
-		assertTrue("TaxonNameBase.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorship()));
+		assertTrue("TaxonName.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorship()));
 	}
 
 	/**

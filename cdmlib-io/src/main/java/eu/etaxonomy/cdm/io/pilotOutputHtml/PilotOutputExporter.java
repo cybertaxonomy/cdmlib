@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -38,7 +38,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 10.12.2008
  */
 @Component("pilotOutputExporter")
-public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer> implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
+public class PilotOutputExporter
+        extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer, File>
+        implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
@@ -49,9 +51,6 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 	private boolean doOccurrence = true;
 
 
-	/**
-	 *
-	 */
 	public PilotOutputExporter() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
@@ -129,7 +128,7 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
 		int referenceBaseRows = numberOfRows;
-		int taxonNameBaseRows = numberOfRows;
+		int taxonNameRows = numberOfRows;
 		int taxonBaseRows = numberOfRows;
 		int relationshipRows = numberOfRows;
 		int occurrencesRows = numberOfRows;
@@ -172,10 +171,10 @@ public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigur
 		}
 
 		if (pilotOutputExpConfig.isDoTaxonNames() == true) {
-			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
-			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+			if (taxonNameRows == 0) { taxonNameRows = getNameService().count(TaxonName.class); }
+			logger.info("# TaxonName: " + taxonNameRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
+			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
 		}
 
 		if (pilotOutputExpConfig.isDoHomotypicalGroups() == true) {

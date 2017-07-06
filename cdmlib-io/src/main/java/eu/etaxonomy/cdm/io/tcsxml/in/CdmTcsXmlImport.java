@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
  *
  * @author a.mueller
  * @created 28.01.2009
- * @version 1.0
  */
 @Component
 public class CdmTcsXmlImport extends CdmApplicationAwareDefaultImport<TcsXmlImportConfigurator> {

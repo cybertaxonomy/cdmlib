@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
- * for a {@link TaxonNameBase taxon name} or a set of them. Within this set {@link NameRelationshipType#BASIONYM() basionyms}
+ * for a {@link TaxonName taxon name} or a set of them. Within this set {@link NameRelationshipType#BASIONYM() basionyms}
  * or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms}, in case of reclassifications,
  * will be here referred as "type-bringing" taxon names.
  * <P>
@@ -137,7 +137,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
 	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
 	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * publication of the "type-bringing" {@link TaxonName taxon name}, when the
 	 * holotype is found to be assigned to taxon names belonging to more than
 	 * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
 	 *
@@ -170,7 +170,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "holotype" designation status. A holotype of a
 	 * set of names is the one {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}
 	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorship() author} of the
-	 * "type-bringing" {@link TaxonNameBase taxon name} (or by the author of a later validated
+	 * "type-bringing" {@link TaxonName taxon name} (or by the author of a later validated
 	 * "invalid" taxon name).
 	 *
 	 * @see		NameRelationshipType#VALIDATED_BY_NAME()
@@ -183,7 +183,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "lectotype" designation status. A lectotype is a
 	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the nomenclatural type,
 	 * when no holotype was indicated at the time of publication of the
-	 * "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * "type-bringing" {@link TaxonName taxon name}, when the
 	 * holotype is found to to be assigned to taxon names belonging to more than one
 	 * {@link HomotypicalGroup homotypical group}, or as long as it is missing.
 	 *
@@ -196,7 +196,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	/**
 	 * Returns the "neotype" designation status. A neotype is a
 	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} selected to serve as nomenclatural type
-	 * as long as all of the material on which the "type-bringing" {@link TaxonNameBase taxon name} was based
+	 * as long as all of the material on which the "type-bringing" {@link TaxonName taxon name} was based
 	 * is missing.
 	 *
 	 * @see	#HOLOTYPE()
@@ -210,7 +210,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} selected to serve as an interpretative type
 	 * when the holotype, lectotype or previously designated neotype, or all
 	 * original material associated with the {@link NomenclaturalStatusType#VALID() validly} published "type-bringing"
-	 * {@link TaxonNameBase taxon name}, is demonstrably ambiguous and cannot be critically
+	 * {@link TaxonName taxon name}, is demonstrably ambiguous and cannot be critically
 	 * identified for purposes of the precise application of the taxon name.
 	 * When an epitype is designated, the holotype, lectotype or neotype that
 	 * the epitype supports must be explicitly cited.
@@ -235,8 +235,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "syntype" designation status. </BR>A syntype is any one of two or
-	 * more {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the
-	 * "type-bringing" {@link TaxonNameBase taxon name} when no holotype was designated,
+	 * more {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} cited in the {@link TaxonName#getNomenclaturalReference() protologue} of the
+	 * "type-bringing" {@link TaxonName taxon name} when no holotype was designated,
 	 * or any one of two or more specimens simultaneously designated as types.
 	 *
 	 * @see	#HOLOTYPE()
@@ -248,7 +248,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	/**
 	 * Returns the "isosyntype" designation status. </BR>An isosyntype is any
 	 * {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen} cited in the
-	 * protologue of the type-bringing {@link TaxonNameBase taxon name} which is
+	 * protologue of the type-bringing {@link TaxonName taxon name} which is
 	 * a duplicate of a {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus#SYNTYPE() syntype}.
 	 * See also article 9.10 of the ICBN
 	 *
@@ -260,8 +260,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "paratype" designation status. </BR>A paratype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}
-	 * cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the "type-bringing"
-	 * {@link TaxonNameBase taxon name} that is neither the holotype nor an isotype,
+	 * cited in the {@link TaxonName#getNomenclaturalReference() protologue} of the "type-bringing"
+	 * {@link TaxonName taxon name} that is neither the holotype nor an isotype,
 	 * nor one of the syntypes if two or more specimens were simultaneously
 	 * designated as types.
 	 *

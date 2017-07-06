@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -81,12 +81,12 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	@DataSet
 	@ExpectedDataSet
 	public final void testUpdateTitleCache() {
-		Assert.assertEquals("There should be 5 TaxonNames in the data set", 5, nameService.count(TaxonNameBase.class));
-		Class clazz = TaxonNameBase.class;
+		Assert.assertEquals("There should be 5 TaxonNames in the data set", 5, nameService.count(TaxonName.class));
+		Class clazz = TaxonName.class;
 		int stepSize = 2;
 		nameService.updateTitleCache(clazz, stepSize, null, null);
 		commit();
-//		commitAndStartNewTransaction(new String[]{"TaxonNameBase","TaxonNameBase_AUD"});
+//		commitAndStartNewTransaction(new String[]{"TaxonName","TaxonName_AUD"});
 	}
 
 
@@ -112,8 +112,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		DefinedTerm type = CdmBase.deproxy(identifier.getType(), DefinedTerm.class);
 		Assert.assertEquals(uuidIdentifierType1, type.getUuid());
 
-		Pager<IdentifiedEntityDTO<TaxonNameBase>> names = nameService.findByIdentifier(
-				TaxonNameBase.class, "ext-1234", null, null, includeEntity, null, null, null);
+		Pager<IdentifiedEntityDTO<TaxonName>> names = nameService.findByIdentifier(
+				TaxonName.class, "ext-1234", null, null, includeEntity, null, null, null);
 		Assert.assertTrue("Identifier does not exist for TaxonName", names.getCount() == 0);
 
 		taxonPager = taxonService.findByIdentifier(null, "ext-1234", null, null, includeEntity, null, null, null);
@@ -254,7 +254,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Result size for taxa and synonyms without subtree filter with any flag value should be 4", Long.valueOf(4), taxonBasePager.getCount());
 
         markerValue = true;
-        Pager<MarkedEntityDTO<TaxonNameBase>> namePager = nameService.findByMarker(TaxonNameBase.class, markerType, markerValue, false, null, null, null);
+        Pager<MarkedEntityDTO<TaxonName>> namePager = nameService.findByMarker(TaxonName.class, markerType, markerValue, false, null, null, null);
         Assert.assertEquals("Result size for names with flag = true should be 1", Long.valueOf(1), namePager.getCount());
 
     }
@@ -296,8 +296,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         // this will write flat xml file to the same package in the test resources
         // the test file is named after the test class like: TestClassName.xml
 		writeDbUnitDataSetFile(new String[] {
-		        "TAXONBASE", "TAXONNAMEBASE","IDENTIFIER","TAXONBASE_IDENTIFIER",
-		        "TAXONNAMEBASE_IDENTIFIER",
+		        "TAXONBASE", "TAXONNAME","IDENTIFIER","TAXONBASE_IDENTIFIER",
+		        "TAXONNAME_IDENTIFIER",
 		        "REFERENCE",
 		        "CLASSIFICATION", "TAXONNODE",
 		        "HOMOTYPICALGROUP",

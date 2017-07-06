@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,74 +21,75 @@ import com.hp.hpl.jena.rdf.model.Model;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsImport.class);
+    private static final long serialVersionUID = 3886480984730604589L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsImport.class);
 
 	private static int modCount = 5000;
-	
+
 	public TcsRdfTaxonNameRelationsImport(){
 		super();
 	}
-	
+
 	@Override
 	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonNameRelations not yet implemented");
 		//result &= checkArticlesWithoutJournal(tcsConfig);
 		//result &= checkPartOfJournal(tcsConfig);
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public void doInvoke(TcsRdfImportState state){
-		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+
+		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
-		
+
 		String tcsElementName;
 		Namespace tcsNamespace;
 		String cdmAttrName;
 		String value;
 
-		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
+		Set<TaxonName> nameStore = new HashSet<TaxonName>();
 		TcsRdfImportConfigurator config = state.getConfig();
 		//Model source = config.getSourceRoot();
-		
+
 		logger.info("start makeNameRelationships ...");
 		INameService nameService = getNameService();
 
 //		<tn:hasBasionym rdf:resource="palm_tn_14530"/>
-		
+
 		Model root = config.getSourceRoot();
-		
+
 		String rdfNamespace = config.getRdfNamespaceURIString();
 		String taxonNameNamespace = config.getTnNamespaceURIString();
 		/*
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
-		
+
 		int i = 0;
 		int nameRelCount = 0;
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNames){
-			
-			TaxonNameBase fromName = null;
+
+			TaxonName fromName = null;
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			
+
 			//Basionyms
 			tcsElementName = "hasBasionym";
 			tcsNamespace = taxonNameNamespace;
 			List<Element> elBasionymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
-			
+
 			for (Element elBasionym: elBasionymList){
 				nameRelCount++;
 				logger.debug("BASIONYM "+  nameRelCount);
@@ -100,7 +101,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 					continue;
 				}
 				String basionymId = attrResource.getValue();
-				TaxonNameBase basionym = taxonNameMap.get(basionymId);
+				TaxonName basionym = taxonNameMap.get(basionymId);
 				if (basionym == null){
 					logger.warn("Basionym name ("+basionymId+") not found in Map! Basionym not set!");
 					continue;
@@ -123,21 +124,22 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 
 			}
 		}// end Basionyms
-		
+
 		//Other Relations
 		//TODO
-		
+
 		logger.info(nameRelCount + " nameRelations handled");
 		nameService.save(nameStore);
 		logger.info("end makeNameRelationships ...");
 		*/
 		return;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TcsRdfImportState state){
+	@Override
+    protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoRelNames();
 	}
 

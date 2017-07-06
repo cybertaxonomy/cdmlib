@@ -32,7 +32,10 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @created 17.10.2012
  */
 public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemoExportState> {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = -2622502140734437961L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CsvDemoExportConfigurator.class);
 
 	private String encoding = "UTF-8";
@@ -47,9 +50,9 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
 	private String defaultBibliographicCitation = null;
-	private List<UUID> featureExclusions = new ArrayList<UUID>();
+	private List<UUID> featureExclusions = new ArrayList<>();
 	//filter on the classifications to be exported
-	private Set<UUID> classificationUuids = new HashSet<UUID>();
+	private Set<UUID> classificationUuids = new HashSet<>();
 	private boolean withHigherClassification = false;
 	private String setSeparator = ";";
 
@@ -151,9 +154,6 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 		this.resultType = ExportResultType.BYTE_ARRAY;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
 	@Override
 	public File getDestination() {
 		return super.getDestination();
@@ -167,9 +167,6 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 		super.setDestination(fileName);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
-	 */
 	@Override
 	public String getDestinationNameString() {
 		if (this.getDestination() == null) {
@@ -179,9 +176,6 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
-	 */
 	@Override
     public CsvDemoExportState getNewState() {
 		return new CsvDemoExportState(this);

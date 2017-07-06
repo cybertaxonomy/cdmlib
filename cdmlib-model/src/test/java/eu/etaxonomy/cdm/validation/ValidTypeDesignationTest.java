@@ -14,10 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -39,13 +40,13 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ValidTypeDesignationTest.class);
 
-    static Class validatorClass = TypeDesignationValidator.class;
-    static Class group = Level2.class;
+    static Class<?> validatorClass = TypeDesignationValidator.class;
+    static Class<?> group = Level2.class;
 
     private NameTypeDesignation nameDesignation;
     private SpecimenTypeDesignation specimenDesignation;
-    private BotanicalName name1;
-    private BotanicalName name2;
+    private IBotanicalName name1;
+    private TaxonName name2;
     private DerivedUnit specimen;
 
 

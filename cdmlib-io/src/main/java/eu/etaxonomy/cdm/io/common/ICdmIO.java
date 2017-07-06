@@ -41,6 +41,8 @@ public interface ICdmIO<STATE extends IoStateBase> extends  IIoObservable {
 
 	public void warnProgress(STATE state, String message, Throwable e);
 
+    public long countSteps(STATE state);
+
 //******************** Observers *********************************************************
 
 

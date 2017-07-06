@@ -56,8 +56,8 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     }
 
     @Override
-	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
-		return dao.findByTermType(termType);
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
+		return dao.findByTermType(termType, propertyPaths);
 	}
 	/**
 	 * (non-Javadoc)

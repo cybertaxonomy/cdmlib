@@ -159,7 +159,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
     // public Map<Language, LanguageString> getPlantDescriptionAll(){ ==> representation !!
     // public PreservationMethod getPreservationMethod()
     // public Set<IdentifiableSource> getSources(){
-    // public TaxonNameBase getStoredUnder() {
+    // public TaxonName getStoredUnder() {
 
 
     /**

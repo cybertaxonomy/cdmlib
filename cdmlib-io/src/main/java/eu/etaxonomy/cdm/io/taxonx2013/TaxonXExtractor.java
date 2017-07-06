@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -198,7 +198,7 @@ public class TaxonXExtractor {
      */
     @SuppressWarnings({ "unused", "rawtypes" })
     protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnit derivedUnitBase,
-            SpecimenOrObservationType defaultAssociation, TaxonNameBase<?,?> typifiableName) {
+            SpecimenOrObservationType defaultAssociation, TaxonName typifiableName) {
         String country=null;
         String locality=null;
         String stateprov=null;
@@ -332,7 +332,7 @@ public class TaxonXExtractor {
             derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
             // System.out.println("derivedUnitBase: "+derivedUnitBase);
             //                designation.setTypeSpecimen(derivedUnitBase);
-            //                TaxonNameBase<?,?> name = taxon.getName();
+            //                TaxonName name = taxon.getName();
             //                name.addTypeDesignation(designation, true);
         } else {
             if (!containsDistinctLetters(descr.replaceAll(";",""))) {
@@ -764,13 +764,13 @@ public class TaxonXExtractor {
     }
 
     /**
-     * @param taxonnamebase2
+     * @param taxonname2
      * @param bestMatchingTaxon
      * @param refMods
      * @param similarityAuthor
      * @return
      */
-    protected boolean askIfReuseBestMatchingTaxon(INonViralName taxonnamebase2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
+    protected boolean askIfReuseBestMatchingTaxon(INonViralName taxonname2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
 
@@ -797,7 +797,7 @@ public class TaxonXExtractor {
 
         Object defaultOption=options[1];
         if(sec.equalsIgnoreCase(secBest)
-                //                ||                taxonnamebase2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())
+                //                ||                taxonname2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())
                 ) {
             //System.out.println(sec+" and "+secBest);
             sameSource=true;
@@ -854,11 +854,11 @@ public class TaxonXExtractor {
 
         JTextArea textArea =null;
         if (!sourcesStr.isEmpty()) {
-            textArea = new JTextArea("Does "+taxonnamebase2.toString()+" correspond to "
+            textArea = new JTextArea("Does "+taxonname2.toString()+" correspond to "
                     + bestMatchingTaxon.toString()+" ?\n Click \"Yes\". if it does, click \"No\" if it does not."
                     + "\n The current sources are:"+ sourcesStr);
         } else {
-            textArea = new JTextArea("Does "+taxonnamebase2.toString()+" correspond to "
+            textArea = new JTextArea("Does "+taxonname2.toString()+" correspond to "
                     + bestMatchingTaxon.toString()+" ?\n Click \"Yes\". if it does, click \"No\" if it does not.");
         }
         JScrollPane scrollPane = new JScrollPane(textArea);

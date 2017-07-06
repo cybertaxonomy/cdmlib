@@ -26,13 +26,12 @@ import org.springframework.util.ResourceUtils;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -42,17 +41,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author h.fradin (from a.babadshanjan)
  * @created 10.12.2008
- * @versoin 1.0
  */
 @Component("sddCdmExporter")
-public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExportState, IExportTransformer> implements ICdmExport<SDDExportConfigurator, SDDExportState> {
+public class SDDCdmExporter
+        extends CdmExportBase<SDDExportConfigurator, SDDExportState, IExportTransformer, File>
+        implements ICdmExport<SDDExportConfigurator, SDDExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
-	private static final Logger logger = Logger.getLogger(SDDCdmExporter.class);
+    private static final long serialVersionUID = 6294052197732385842L;
+    private static final Logger logger = Logger.getLogger(SDDCdmExporter.class);
 	private SDDDocumentBuilder sddDocumentBuilder = null;
-
-	private String ioName = null;
 
 	/**
 	 *
@@ -60,7 +59,6 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	public SDDCdmExporter() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
@@ -73,8 +71,6 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	 */
 	@Override
 	public void doInvoke(SDDExportState state){
-//		protected boolean doInvoke(IExportConfigurator config,
-//		Map<String, MapWrapper<? extends CdmBase>> stores) {
 
 		SDDExportConfigurator sddExpConfig = state.getConfig();
 
@@ -184,7 +180,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
 		int referenceBaseRows = numberOfRows;
-		int taxonNameBaseRows = numberOfRows;
+		int taxonNameRows = numberOfRows;
 		int taxonBaseRows = numberOfRows;
 		int relationshipRows = numberOfRows;
 		int occurrencesRows = numberOfRows;
@@ -237,10 +233,10 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		}
 
 		if (sddExpConfig.isDoTaxonNames() == true) {
-			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
-			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+			if (taxonNameRows == 0) { taxonNameRows = getNameService().count(TaxonName.class); }
+			logger.info("# TaxonName: " + taxonNameRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
+			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoHomotypicalGroups() == true) {

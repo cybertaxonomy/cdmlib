@@ -20,7 +20,7 @@ import org.hibernate.Session;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
@@ -52,7 +52,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * Returns all meta data.
 	 * @return
 	 */
-	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData();
+	public Map<CdmMetaDataPropertyName, CdmMetaData> getCdmMetaData();
 
 
 	/**
@@ -342,6 +342,12 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      *         of those entities
      */
     public <T extends CdmBase> Map<UUID,T> saveOrUpdate(Collection<T> entities);
+
+    /**
+     * @param instance
+     * @return
+     */
+    public UUID delete(CdmBase instance);
 
     /**
      * @param mergeFirstId

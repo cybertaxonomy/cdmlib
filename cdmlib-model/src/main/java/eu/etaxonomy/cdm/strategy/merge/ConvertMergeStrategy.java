@@ -20,9 +20,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  *
  */
 public class ConvertMergeStrategy extends DefaultMergeStrategy {
-    /**
-    *
-    */
+
    private static final long serialVersionUID = -1046274562281576696L;
 
    private boolean deleteSecondObject = false;

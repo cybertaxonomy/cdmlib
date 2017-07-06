@@ -41,7 +41,7 @@ public interface INomenclaturalReferenceCacheStrategy extends IReferenceCacheStr
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
-	 * @see 					name.TaxonNameBase#getNomenclaturalReference()
+	 * @see 					name.TaxonName#getNomenclaturalReference()
 	 */
 	public String getNomenclaturalCitation(Reference nomenclaturalReference, String microReference);
 

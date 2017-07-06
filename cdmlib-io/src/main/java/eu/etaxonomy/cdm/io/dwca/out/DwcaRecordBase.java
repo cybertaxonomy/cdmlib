@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -56,13 +57,18 @@ public abstract class DwcaRecordBase {
 	protected static final boolean IS_FIRST = false;
 	protected static final boolean IS_NOT_FIRST = true;
 //	protected static final String SEP = ",";
-	
-	protected Map<String, URI> knownFields = new HashMap<String, URI>();
-	protected Set<TermUri> knownTermFields = new HashSet<TermUri>();
-	
-	public abstract void write(PrintWriter writer);
+
+	protected Map<String, URI> knownFields = new HashMap<>();
+	protected Set<TermUri> knownTermFields = new HashSet<>();
+
+	public abstract void write(DwcaTaxExportState state, PrintWriter writer);
+	public void writeCsv(DwcaTaxExportState state){
+	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!");
+	}
+
+
 	protected abstract void registerKnownFields();
-	
+
 	protected int count;
 	private DwcaMetaDataRecord metaDataRecord;
 	protected DwcaTaxExportConfigurator config;
@@ -70,14 +76,14 @@ public abstract class DwcaRecordBase {
 	private Integer id;
 	private UUID uuid;
 
-	
+
 	protected DwcaRecordBase(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		this.metaDataRecord = metaDataRecord;
 		this.count = metaDataRecord.inc();
 		this.config = config;
 	}
-	
-	
+
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -102,7 +108,7 @@ public abstract class DwcaRecordBase {
 		String value = null;
 		print(value, writer, addSeparator, fieldKey);
 	}
-	
+
 //	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 //		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
 //	}
@@ -119,7 +125,7 @@ public abstract class DwcaRecordBase {
 		print(agent == null ? null : getAgent(agent), writer, addSeparator, fieldKey);
 	}
 
-	
+
 	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(language, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -132,7 +138,7 @@ public abstract class DwcaRecordBase {
 	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(rights, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -146,11 +152,11 @@ public abstract class DwcaRecordBase {
 	protected void print(URI uri, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(uri == null ? null : String.valueOf(uri), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUri latitudeKey, TermUri longitudeKey) {
 		print(point, writer, addSeparator, latitudeKey.getUriString(), longitudeKey.getUriString());
 	}
-	
+
 	protected void print(Point point, PrintWriter writer, boolean addSeparator, String latitudeKey, String longitudeKey) {
 		if (point == null){
 			String toPrint = null;
@@ -165,7 +171,7 @@ public abstract class DwcaRecordBase {
 	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(boolValue, writer, addSeparator, fieldKey.getUriString());
-	}	
+	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator, fieldKey);
 	}
@@ -176,7 +182,7 @@ public abstract class DwcaRecordBase {
 	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void printId(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
@@ -191,11 +197,11 @@ public abstract class DwcaRecordBase {
 	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUri fieldKey, String defaultValue) {
 		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
 	}
-	
+
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(value, writer, addSeparator, fieldKey, null);
 	}
-	
+
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
 		if (count == 1 && addSeparator == IS_NOT_FIRST){
 			registerFieldKey(URI.create(fieldKey), defaultValue);
@@ -205,25 +211,53 @@ public abstract class DwcaRecordBase {
 			if (StringUtils.isNotBlank(value)){
 				//Replace quotes by double quotes
 				value = value.replace("\"", "\"\"");
-				
+
 				value = value.replace(config.getLinesTerminatedBy(), "\\r");
-				
+
 				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
 				value = value.replace("\r\n", "\\r");
 				value = value.replace("\r", "\\r");
 				value = value.replace("\n", "\\r");
-				
+
 				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
 			}
 			writer.print(strToPrint);
 		}
 	}
-	
-	private void registerFieldKey(URI key, String defaultValue) {
+
+	protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, Set<Rights> rights) {
+        String rightsStr = getRights(rights);
+        if (rights != null){ line(state, csvLine, table, termUri, rightsStr);}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, Language language) {
+        if (language != null){ line(state, csvLine, table, termUri, getLanguage(language));}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, DwcaId id) {
+        if (id != null){ line(state, csvLine, table, termUri, id.getId());}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, UUID uuid) {
+        if (uuid != null){ line(state, csvLine, table, termUri, uuid.toString());}
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, String string) {
+        line(state, csvLine, table, termUri, string, null);
+    }
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, String string, String defaultValue) {
+        try {
+            csvLine[table.getIndex(termUri)] = string;
+            if (count == 1 && table.getIndex(termUri) != 0){
+                registerFieldKey(termUri.getUri(), defaultValue);
+            }
+        } catch (Exception e) {
+            String message = "Unhandled exception when handling " + (termUri != null ? termUri.getUriString() : "undefined") + ": " + e.getMessage();
+            state.getResult().addException(e, message);
+        }
+    }
+
+	protected void registerFieldKey(URI key, String defaultValue) {
 		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}
 
-	
+
 	protected String getRights(Rights rights) {
 		if (rights == null){
 			return "";
@@ -285,7 +319,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getSex(DefinedTerm sex) {
 		String result = DwcaTaxExportTransformer.transformToGbifSex(sex);
 		if (result == null){
@@ -298,7 +332,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getLifeStage(DefinedTerm stage) {
 		String result = DwcaTaxExportTransformer.transformToGbifLifeStage(stage);
 		if (result == null){
@@ -324,7 +358,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getEstablishmentMeans(PresenceAbsenceTerm status) {
 		String result = DwcaTaxExportTransformer.transformToGbifEstablishmentMeans(status);
 		if (result == null){
@@ -338,8 +372,8 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	
-	
+
+
 	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
 			return "";
@@ -348,7 +382,7 @@ public abstract class DwcaRecordBase {
 			return agent.getTitleCache();
 		}
 	}
-	
+
 
 	protected String getFeature(Feature feature) {
 		if (feature == null){
@@ -359,7 +393,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	
+
 	protected String getTimePeriod(TimePeriod period) {
 		if (period == null){
 			return "";
@@ -368,7 +402,7 @@ public abstract class DwcaRecordBase {
 			return period.toString();
 		}
 	}
-	
+
 	protected String getTimePeriodPart(TimePeriod period, boolean useEnd) {
 		if (period == null){
 			return "";
@@ -383,7 +417,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	private String getRights(Set<Rights> rights) {
+	protected String getRights(Set<Rights> rights) {
 		if (rights == null || rights.isEmpty()){
 			return null;
 		}else{
@@ -397,7 +431,7 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
+
 
 	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){
@@ -417,13 +451,31 @@ public abstract class DwcaRecordBase {
 			return result;
 		}
 	}
-	
-	
+
+
+
+
 	protected void addKnownField(String string, String uri) throws URISyntaxException {
 		this.knownFields.put(string, new URI(uri));
 	}
-	
+
 	protected void addKnownField(TermUri term) throws URISyntaxException {
 		this.knownTermFields.add(term);
 	}
+
+
+	//*************** CSV Methods ******************/
+
+    /**
+     * @param state
+     * @param taxon
+     * @return
+     */
+    protected String getId(DwcaTaxExportState state, ICdmBase cdmBase) {
+        if (cdmBase == null){
+            return "";
+        }
+        //TODO make configurable
+        return cdmBase.getUuid().toString();
+    }
 }

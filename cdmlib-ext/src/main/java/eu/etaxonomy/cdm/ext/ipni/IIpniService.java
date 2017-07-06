@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -183,7 +182,7 @@ public interface IIpniService {
 	 * @param appConfig
 	 * @return List of botanical names returned by the IPNI web service.
 	 */
-	public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
+	public List<IBotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
 			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
 			IpniRank ipniRankToReturn,
@@ -215,7 +214,7 @@ public interface IIpniService {
 	 * @param appConfig
 	 * @return List of botanical names returned by the IPNI web service.
 	 */
-	public List<BotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
+	public List<IBotanicalName> getNamesAdvanced(String family, String genus, String species, String infraFamily,
 			String infraGenus, String infraSpecies, String authorAbbrev,
 			String publicationTitle,
 			Rank rankRangeToReturn,

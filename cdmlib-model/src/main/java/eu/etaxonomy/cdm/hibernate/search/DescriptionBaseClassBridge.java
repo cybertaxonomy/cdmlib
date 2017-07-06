@@ -17,7 +17,7 @@ import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -82,7 +82,7 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
 
             }
             if (entity instanceof TaxonNameDescription) {
-                TaxonNameBase taxonName = ((TaxonNameDescription) entity).getTaxonName();
+                TaxonName taxonName = ((TaxonNameDescription) entity).getTaxonName();
                 if (taxonName != null) {
                     idFieldBridge.set(name + "taxonName.id", taxonName.getId(), document, idFieldOptions);
                 }

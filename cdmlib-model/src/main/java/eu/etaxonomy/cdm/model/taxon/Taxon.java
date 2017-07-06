@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
@@ -159,52 +159,52 @@ public class Taxon
 // ************************* FACTORY METHODS ********************************/
 
     /**
-     * @see #NewInstance(TaxonNameBase, Reference)
-     * @param taxonNameBase
+     * @see #NewInstance(TaxonName, Reference)
+     * @param taxonName
      * @param sec
      * @return
      */
-    public static Taxon NewInstance(ITaxonNameBase taxonNameBase, Reference sec){
-        return NewInstance(TaxonNameBase.castAndDeproxy(taxonNameBase), sec);
+    public static Taxon NewInstance(ITaxonNameBase taxonName, Reference sec){
+        return NewInstance(TaxonName.castAndDeproxy(taxonName), sec);
     }
 
     /**
      * Creates a new (accepted/valid) taxon instance with
-     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * using it.
      *
-     * @param  taxonNameBase	the taxon name used
+     * @param  taxonName	the taxon name used
      * @param  sec				the reference using the taxon name
-     * @see    					#Taxon(TaxonNameBase, Reference)
+     * @see    					#Taxon(TaxonName, Reference)
      */
-    public static Taxon NewInstance(TaxonNameBase taxonNameBase, Reference sec){
-        Taxon result = new Taxon(taxonNameBase, sec);
+    public static Taxon NewInstance(TaxonName taxonName, Reference sec){
+        Taxon result = new Taxon(taxonName, sec);
         return result;
     }
 
     /**
      * Creates a new Taxon for the given name, secundum reference and secundum detail
-     * @param taxonNameBase
+     * @param taxonName
      * @param sec
      * @param secMicroReference
      * @see #
      */
-    public static Taxon NewInstance(TaxonNameBase taxonNameBase, Reference sec, String secMicroReference){
-        Taxon result = new Taxon(taxonNameBase, sec, secMicroReference);
+    public static Taxon NewInstance(TaxonName taxonName, Reference sec, String secMicroReference){
+        Taxon result = new Taxon(taxonName, sec, secMicroReference);
         return result;
     }
 
     /**
      * Creates a new taxon instance with an unknown status (accepted/synonym) and with
-     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * using it.
      *
-     * @param  taxonNameBase	the taxon name used
+     * @param  taxonName	the taxon name used
      * @param  sec				the reference using the taxon name
-     * @see    					#Taxon(TaxonNameBase, Reference)
+     * @see    					#Taxon(TaxonName, Reference)
      */
-    public static Taxon NewUnknownStatusInstance(TaxonNameBase taxonNameBase, Reference sec){
-        Taxon result = new Taxon(taxonNameBase, sec);
+    public static Taxon NewUnknownStatusInstance(TaxonName taxonName, Reference sec){
+        Taxon result = new Taxon(taxonName, sec);
         result.setTaxonStatusUnknown(true);
         return result;
     }
@@ -216,13 +216,13 @@ public class Taxon
         this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
     }
 
-    private Taxon(TaxonNameBase taxonNameBase, Reference sec){
-        super(taxonNameBase, sec, null);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
+    private Taxon(TaxonName taxonName, Reference sec){
+        super(taxonName, sec, null);
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
     }
 
-    private Taxon(TaxonNameBase taxonNameBase, Reference sec, String secMicroReference){
-        super(taxonNameBase, sec, secMicroReference);
+    private Taxon(TaxonName taxonName, Reference sec, String secMicroReference){
+        super(taxonName, sec, secMicroReference);
         this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
     }
 
@@ -779,7 +779,7 @@ public class Taxon
      * Returns the set of taxa playing the source role in {@link TaxonRelationship taxon relationships}
      * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
      * <i>this</i> taxon plays the target role. A misapplied name is a taxon the
-     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} of which has been erroneously used
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of which has been erroneously used
      * by its {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
      * as the one meant by <i>this</i> ("accepted/correct") taxon.
      *
@@ -804,7 +804,7 @@ public class Taxon
      * Returns the set of taxa playing the target role in {@link TaxonRelationship taxon relationships}
      * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
      * <i>this</i> taxon plays the source role. A misapplied name is a taxon the
-     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} of which has been erroneously used
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of which has been erroneously used
      * by its {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
      * as the one meant by <i>this</i> ("accepted/correct") taxon.
      *
@@ -849,18 +849,18 @@ public class Taxon
         return getSynonyms();
     }
     /**
-     * Returns the set of all {@link TaxonNameBase taxon names} used as {@link Synonym synonyms}
+     * Returns the set of all {@link TaxonName taxon names} used as {@link Synonym synonyms}
      * of <i>this</i> ("accepted/valid") taxon.
      *
      * @see    #getSynonyms()
      * @see    #getSynonymsSortedByType()
-     * @see    #addSynonymName(TaxonNameBase, SynonymType)
+     * @see    #addSynonymName(TaxonName, SynonymType)
      * @see    #addSynonym(Synonym, SynonymType, Reference, String)
      * @see    #removeSynonym(Synonym)
      */
     @Transient
-    public Set<TaxonNameBase> getSynonymNames(){
-        Set<TaxonNameBase> names = new HashSet<>();
+    public Set<TaxonName> getSynonymNames(){
+        Set<TaxonName> names = new HashSet<>();
         for (Synonym syn: this.getSynonyms()){
             names.add(syn.getName());
         }
@@ -895,11 +895,11 @@ public class Taxon
      *                      To explicitly set the type to <code>null</code> use {@link Synonym#setType(SynonymType)}
      * @see                 #addSynonym(Synonym)
      * @see                 #addSynonym(Synonym, SynonymType, Reference, String)
-     * @see                 #addSynonymName(TaxonNameBase, SynonymType)
-     * @see                 #addSynonymName(TaxonNameBase, SynonymType, Reference, String)
-     * @see                 #addHomotypicSynonymName(TaxonNameBase, Reference, String)
-     * @see                 #addHeterotypicSynonymName(TaxonNameBase)
-     * @see                 #addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
+     * @see                 #addSynonymName(TaxonName, SynonymType)
+     * @see                 #addSynonymName(TaxonName, SynonymType, Reference, String)
+     * @see                 #addHomotypicSynonymName(TaxonName, Reference, String)
+     * @see                 #addHeterotypicSynonymName(TaxonName)
+     * @see                 #addHeterotypicSynonymName(TaxonName, Reference, String, HomotypicalGroup)
      * @see                 #getSynonyms()
      * @see                 #removeSynonym(Synonym)
      * @see                 Synonym#getAcceptedTaxon()
@@ -920,11 +920,11 @@ public class Taxon
 //     * @param microcitation	the string with the details describing the exact localization within the reference
      * @see    	   			#addSynonym(Synonym)
      * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
-     * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType, Reference, String)
+     * @see    	   			#addHomotypicSynonymName(TaxonName, Reference, String)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName, HomotypicalGroup, Reference, String)
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      * @see    	   			Synonym#getAcceptedTaxon()
@@ -942,7 +942,7 @@ public class Taxon
 
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the
-     * given {@link TaxonNameBase synonym name} and with the given
+     * given {@link TaxonName synonym name} and with the given
      * {@link SynonymType synonym type}. If the later is
      * {@link SynonymType#HOMOTYPIC_SYNONYM_OF() homotypic synonym}
      * the name will be added to the same {@link HomotypicalGroup homotypical group}
@@ -955,22 +955,22 @@ public class Taxon
      * @param synonymType	the synonym  type of the synonym
      * 						relationship to be added
      * @return 				the created synonym
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType, Reference, String)
      * @see    	   			#addSynonym(Synonym, SynonymType)
      * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
-     * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
+     * @see    	   			#addHomotypicSynonymName(TaxonName, Reference, String)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName, HomotypicalGroup, Reference, String)
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
-    public Synonym addSynonymName(TaxonNameBase synonymName, SynonymType synonymType){
+    public Synonym addSynonymName(TaxonName synonymName, SynonymType synonymType){
         return addSynonymName(synonymName, null, null, synonymType);
     }
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the
-     * given {@link TaxonNameBase synonym name} and with the given
+     * given {@link TaxonName synonym name} and with the given
      * {@link SynonymType synonym type}. If the later is
      * {@link SynonymType#HOMOTYPIC_SYNONYM_OF() homotypic synonym}
      * the name will be added to the same {@link HomotypicalGroup homotypical group}
@@ -988,17 +988,17 @@ public class Taxon
      * @param secMicroReference the secundum micro reference of the new synonym
      * @param synonymType	the synonym type of the synonym to be added
      *
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType, Reference, String)
      * @see    	   			#addSynonym(Synonym, SynonymType)
      * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
-     * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, HomotypicalGroup, Reference, String)
+     * @see    	   			#addHomotypicSynonymName(TaxonName, Reference, String)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName, HomotypicalGroup, Reference, String)
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
-    public Synonym addSynonymName(TaxonNameBase synonymName, Reference secReference, String secMicroReference, SynonymType synonymType){
+    public Synonym addSynonymName(TaxonName synonymName, Reference secReference, String secMicroReference, SynonymType synonymType){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec()); //default sec
         addSynonym(synonym, synonymType, secReference, secMicroReference);
         return synonym;
@@ -1006,7 +1006,7 @@ public class Taxon
 
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the given
-     * {@link TaxonNameBase synonym name}. The synonym will have the synonym type
+     * {@link TaxonName synonym name}. The synonym will have the synonym type
      * {@link SynonymType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of"}.<BR>
      * The secundum reference is taken from <code>this</code> taxon.
      * No secMicroReference will be set for the new synonym.<BR>
@@ -1015,23 +1015,23 @@ public class Taxon
      * @param synonymName	the taxon name to be used as an heterotypic synonym
      * 						to be added to <i>this</i> taxon's set of synonyms
      * @return 				the created synonym
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName, Reference, String, HomotypicalGroup)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType, Reference, String)
      * @see    	   			#addSynonym(Synonym, SynonymType)
      * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
-     * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
+     * @see    	   			#addHomotypicSynonymName(TaxonName, Reference, String)
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
-    public Synonym addHeterotypicSynonymName(TaxonNameBase synonymName){
+    public Synonym addHeterotypicSynonymName(TaxonName synonymName){
         return addHeterotypicSynonymName(synonymName, null, null, null);
     }
 
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the given
-     * {@link TaxonNameBase synonym name}. The synonym will have the synonym type
+     * {@link TaxonName synonym name}. The synonym will have the synonym type
      * {@link SynonymType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of"}.<BR>
      *
      * If secReference is not <code>null</code>, the new synonym will have this as
@@ -1049,17 +1049,17 @@ public class Taxon
      * 							of the synonym will be added. If <code>null</code>
      *                          the homotypical group of synonymName is not changed
      * @return 					the created synonym
-     * @see    	   				#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   				#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
-     * @see    	   				#addSynonymName(TaxonNameBase, SynonymType)
+     * @see    	   				#addHeterotypicSynonymName(TaxonName)
+     * @see    	   				#addSynonymName(TaxonName, SynonymType, Reference, String)
+     * @see    	   				#addSynonymName(TaxonName, SynonymType)
      * @see    	   				#addSynonym(Synonym, SynonymType)
      * @see    	   				#addSynonym(Synonym, SynonymType, Reference, String)
      * @see    	   				#addHomotypicSynonym(Synonym, Reference, String)
-     * @see    	   				#addHomotypicSynonymName(TaxonNameBase, Reference, String)
+     * @see    	   				#addHomotypicSynonymName(TaxonName, Reference, String)
      * @see    	   				#getSynonyms()
      * @see    					#removeSynonym(Synonym)
      */
-    public Synonym addHeterotypicSynonymName(TaxonNameBase synonymName, Reference secReference, String secDetail, HomotypicalGroup homotypicalGroup){
+    public Synonym addHeterotypicSynonymName(TaxonName synonymName, Reference secReference, String secDetail, HomotypicalGroup homotypicalGroup){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
         if (homotypicalGroup != null){
             homotypicalGroup.addTypifiedName(synonymName);
@@ -1070,7 +1070,7 @@ public class Taxon
 
     /**
     * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the given
-     * {@link TaxonNameBase synonym name}. The synonym will have the synonym type
+     * {@link TaxonName synonym name}. The synonym will have the synonym type
      * {@link SynonymType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of"}.<BR>
      * The secundum reference is taken from <code>this</code> taxon.
      * No secMicroReference will be set for the new synonym.<BR>
@@ -1080,16 +1080,16 @@ public class Taxon
      * 						to be added to <i>this</i> taxon's set of synonyms
      * @return 				the created synonym
      * @see    	   			#addHomotypicSynonym(Synonym, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType)
      * @see    	   			#addSynonym(Synonym, SynonymType)
      * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName, Reference, String, HomotypicalGroup)
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
-    public Synonym addHomotypicSynonymName(TaxonNameBase synonymName){
+    public Synonym addHomotypicSynonymName(TaxonName synonymName){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
         addHomotypicSynonym(synonym);
         return synonym;
@@ -1099,18 +1099,18 @@ public class Taxon
      * Adds the given {@link Synonym synonym} to <code>this</code> taxon,
      * with the {@link SynonymType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of"
      * relationship type} and returns it.
-     * Furthermore the {@link TaxonNameBase taxon name}
+     * Furthermore the {@link TaxonName taxon name}
      * used as synonym will be added to the same {@link HomotypicalGroup homotypic group}
      * to which the taxon name of <i>this</i> taxon belongs.<BR>
      *
      * @param synonym		the synonym added to <i>this</i> taxon's synonym set
-     * @see    	   			#addHomotypicSynonymName(TaxonNameBase, Reference, String)
+     * @see    	   			#addHomotypicSynonymName(TaxonName, Reference, String)
      * @see    	   			#addSynonym(Synonym, SynonymType)
      * @see    	   			#addSynonym(Synonym, SynonymType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType, Reference, String)
-     * @see    	   			#addSynonymName(TaxonNameBase, SynonymType)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase)
-     * @see    	   			#addHeterotypicSynonymName(TaxonNameBase, Reference, String, HomotypicalGroup)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType, Reference, String)
+     * @see    	   			#addSynonymName(TaxonName, SynonymType)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName)
+     * @see    	   			#addHeterotypicSynonymName(TaxonName, Reference, String, HomotypicalGroup)
      * @see    	   			#getSynonyms()
      * @see    				#removeSynonym(Synonym)
      */
@@ -1167,7 +1167,7 @@ public class Taxon
     /**
      * Retrieves the ordered list (depending on the date of publication) of
      * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.Reference reference}
-     * as for <i>this</i> taxon) under the condition that the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}
+     * as for <i>this</i> taxon) under the condition that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon names}
      * of these synonyms and the taxon name of <i>this</i> taxon belong to the
      * same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group}.
      *
@@ -1221,7 +1221,7 @@ public class Taxon
 
     /**
      * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} {@link Synonym synonyms} of
-     * <i>this</i> taxon belong to. {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of homotypic synonyms
+     * <i>this</i> taxon belong to. {@link eu.etaxonomy.cdm.model.name.TaxonName Taxon names} of homotypic synonyms
      * belong to the same homotypical group as the taxon name of <i>this</i>
      * taxon. Taxon names of heterotypic synonyms belong to at least one other
      * homotypical group. <BR>
@@ -1239,10 +1239,10 @@ public class Taxon
         if (myGroup != null){  //if taxon has no name HG might be null
             result.add(myGroup);
         }
-        for (TaxonNameBase taxonNameBase :this.getSynonymNames()){
-            if (taxonNameBase != null) {
-                if (!result.contains(taxonNameBase.getHomotypicalGroup())){
-                    result.add(taxonNameBase.getHomotypicalGroup());
+        for (TaxonName taxonName :this.getSynonymNames()){
+            if (taxonName != null) {
+                if (!result.contains(taxonName.getHomotypicalGroup())){
+                    result.add(taxonName.getHomotypicalGroup());
                 }
             }
         }
@@ -1279,7 +1279,7 @@ public class Taxon
      * {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups}
      * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.<BR>
      *
-     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName Taxon names} of heterotypic synonyms
      * belong to a homotypical group which cannot be the homotypical group to which the
      * taxon name of <i>this</i> taxon belongs.
      * This method returns the same
@@ -1328,15 +1328,15 @@ public class Taxon
      * Retrieves the ordered list (depending on the rules defined for
      * the {@link HomotypicGroupTaxonComparator}) of
      * {@link taxon.Synonym synonyms} (according to a given reference)
-     * the {@link TaxonNameBase taxon names} of which belong to the homotypical group.
+     * the {@link TaxonName taxon names} of which belong to the homotypical group.
      * If other names are part of the group that are not considered synonyms of
      * <i>this</i> taxon, then they will not be included in
      * the result set.
      *
      * @param homotypicGroup
      * @see          #getHeterotypicSynonymyGroups()
-     * @see			TaxonNameBase#getSynonyms()
-     * @see			TaxonNameBase#getTaxa()
+     * @see			TaxonName#getSynonyms()
+     * @see			TaxonName#getTaxa()
      * @see			taxon.Synonym
      */
     @Transient

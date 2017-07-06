@@ -23,12 +23,12 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -49,11 +49,11 @@ public class HomotypicGroupTaxonComparatorTest {
     private Calendar cal1;
     private Calendar cal2;
     private Calendar cal3;
-    private BotanicalName botName1;
-    private BotanicalName botName2;
-    private BotanicalName botName3;
-    private BotanicalName botName4;
-    private BotanicalName botName5;
+    private TaxonName botName1;
+    private TaxonName botName2;
+    private TaxonName botName3;
+    private TaxonName botName4;
+    private TaxonName botName5;
 
     private List<TaxonBase<?>> list;
 
@@ -102,7 +102,7 @@ public class HomotypicGroupTaxonComparatorTest {
 
 //        zooName1.setPublicationYear(1823);
 
-        list = new ArrayList<TaxonBase<?>>();
+        list = new ArrayList<>();
 
         taxon1 = Taxon.NewInstance(botName1, sec);
 

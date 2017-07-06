@@ -79,8 +79,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
 	private static final String endSchemaVersion = "3.3.0.0.201309240000";
 
-	// ********************** FACTORY METHOD
-	// *******************************************
+	// ********************** FACTORY METHOD*************************************
 
 	public static SchemaUpdater_31_33 NewInstance() {
 		return new SchemaUpdater_31_33();
@@ -487,7 +486,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				!INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
 		stepList.add(stepPref);
-		
+
 		// update RightsTerm to RightsType #1306
 		stepName = "Update RightsTerm -> RightsType";
 		String updateSql = "UPDATE @@DefinedTermBase@@ SET DTYPE = 'RightsType'  WHERE DTYPE = 'RightsTerm'";
@@ -686,8 +685,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String firstTable = "Amplification";
 		String secondTable = "SingleRead";
 		step = MnTableCreator
-				.NewMnInstance(stepName, firstTable, null, secondTable, null,
-						SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+				.NewMnInstance(stepName, firstTable, null, secondTable, null, null,
+						SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 		stepList.add(step);
 
 		// sequence - single reads #3360
@@ -695,8 +694,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		firstTable = "Sequence";
 		secondTable = "SingleRead";
 		step = MnTableCreator
-				.NewMnInstance(stepName, firstTable, null, secondTable, null,
-						SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+				.NewMnInstance(stepName, firstTable, null, secondTable, null, null,
+						SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 		stepList.add(step);
 
 		// sequence - barcode #3360
@@ -1275,14 +1274,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String columnName;
 		int size = 800;
 
-		stepName = "Change length of TaxonNameBase fullTitleCache";
+		stepName = "Change length of TaxonName fullTitleCache";
 		tableName = "TaxonNameBase";
 		columnName = "fullTitleCache";
 		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
 				columnName, size, INCLUDE_AUDIT);
 		stepList.add(step);
 
-		stepName = "Change length of TaxonNameBase title cache";
+		stepName = "Change length of TaxonName title cache";
 		tableName = "TaxonNameBase";
 		columnName = "titleCache";
 		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,

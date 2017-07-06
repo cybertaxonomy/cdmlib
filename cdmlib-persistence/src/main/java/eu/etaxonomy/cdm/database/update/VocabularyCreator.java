@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * @date 10.09.2010
  *
  */
-public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> implements ITermUpdaterStep{
+public class VocabularyCreator extends SchemaUpdaterStepBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VocabularyCreator.class);
 
@@ -33,7 +33,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 
 	public static final VocabularyCreator NewVocabularyInstance(UUID uuidVocabulary, String description,  String label, String abbrev, boolean isOrdered, Class<?> termclass, TermType termType){
 		String stepName = makeStepName(label);
-		return new VocabularyCreator(stepName, uuidVocabulary, description, label, abbrev, isOrdered, termclass, termType);	
+		return new VocabularyCreator(stepName, uuidVocabulary, description, label, abbrev, isOrdered, termclass, termType);
 	}
 
 // *************************** VARIABLES *****************************************/
@@ -46,7 +46,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 	private TermType termType;
 
 // ***************************** CONSTRUCTOR ***************************************/
-	
+
 	private VocabularyCreator(String stepName, UUID uuidVocabulary, String description, String label, String abbrev, boolean isOrdered, Class<?> termClass, TermType termType) {
 		super(stepName);
 		this.uuidVocabulary = uuidVocabulary;
@@ -60,17 +60,21 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 
 // ******************************* METHODS *************************************************/
 
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
-		ResultSet rs;
-		
+    @Override
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+        ResultSet rs;
+
 		String sqlCheckTermExists = " SELECT count(*) as n FROM @@TermVocabulary@@ WHERE uuid = '" + uuidVocabulary + "'";
 		Long n = (Long)datasource.getSingleValue(caseType.replaceTableNames(sqlCheckTermExists));
 		if (n != 0){
-			monitor.warning("Vocabulary already exists: " + label + "(" + uuidVocabulary + ")");
-			return null;
+		    String message = "Vocabulary already exists: " + label + "(" + uuidVocabulary + ")";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+			return;
 		}
-		
-		
+
+
 		//vocId
 		Integer vocId;
 		String sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("TermVocabulary");
@@ -78,12 +82,13 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		if (rs.next()){
 			vocId = rs.getInt("maxId");
 		}else{
-			String warning = "No vocabularies do exist yet. Can't create vocabulary!";
-			monitor.warning(warning);
-			return null;
+			String message = "No vocabularies do exist yet. Can't create vocabulary!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+            return;
 		}
-		
-		
+
+
 		String id = Integer.toString(vocId);
 		String created  = getNowString();
 		String dtype;
@@ -92,13 +97,13 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		}else{
 			dtype = "TermVocabulary";
 		}
-		String titleCache = (StringUtils.isNotBlank(label))? label : ( (StringUtils.isNotBlank(abbrev))? abbrev : description );  
+		String titleCache = (StringUtils.isNotBlank(label))? label : ( (StringUtils.isNotBlank(abbrev))? abbrev : description );
 		String protectedTitleCache = getBoolean(false, datasource);
 		String termSourceUri = termClass.getCanonicalName();
 		String sqlInsertTerm = " INSERT INTO @@TermVocabulary@@ (DTYPE, id, uuid, created, protectedtitlecache, titleCache, termsourceuri, termType)" +
-				"VALUES ('" + dtype + "', " + id + ", '" + uuidVocabulary + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', '" + termSourceUri + "', '" + termType.getKey() + "')"; 
+				"VALUES ('" + dtype + "', " + id + ", '" + uuidVocabulary + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', '" + termSourceUri + "', '" + termType.getKey() + "')";
 		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertTerm));
-		
+
 		//language id
 		int langId;
 		String uuidLanguage = Language.uuidEnglish.toString();
@@ -107,11 +112,12 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		if (rs.next()){
 			langId = rs.getInt("id");
 		}else{
-			String warning = "Term for default language (English) not  does not exist!";
-			monitor.warning(warning);
-			return null;
+			String message = "Term for default language (English) not  does not exist!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+            return;
 		}
-		
+
 		//representation
 		int repId;
 		sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("Representation");
@@ -119,24 +125,25 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		if (rs.next()){
 			repId = rs.getInt("maxId");
 		}else{
-			String warning = "No representations do exist yet. Can't update terms!";
-			monitor.warning(warning);
-			return null;
+			String message = "No representations do exist yet. Can't update terms!";
+			monitor.warning(message);
+			result.addError(message, this, "invoke");
+            return;
 		}
-		
+
 		UUID uuidRepresentation = UUID.randomUUID();
 		String sqlInsertRepresentation = " INSERT INTO @@Representation@@ (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
-				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "'," + nullSafeString(abbrev) +  ", " + langId + ")"; 
-		
+				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "'," + nullSafeString(abbrev) +  ", " + langId + ")";
+
 		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertRepresentation));
-		
+
 		//Vocabulary_representation
-		String sqlInsertMN = "INSERT INTO @@TermVocabulary_Representation@@ (TermVocabulary_id, representations_id) " + 
-				" VALUES ("+ vocId +"," +repId+ " )";		
-		
+		String sqlInsertMN = "INSERT INTO @@TermVocabulary_Representation@@ (TermVocabulary_id, representations_id) " +
+				" VALUES ("+ vocId +"," +repId+ " )";
+
 		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertMN));
-		
-		return vocId;
+
+		return;
 	}
 
 
@@ -153,5 +160,5 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		String stepName = "Create new vocabulary '"+ label + "'";
 		return stepName;
 	}
-	
+
 }

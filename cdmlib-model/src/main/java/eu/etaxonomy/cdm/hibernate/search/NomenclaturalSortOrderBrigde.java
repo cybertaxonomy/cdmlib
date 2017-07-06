@@ -16,15 +16,14 @@ import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Creates a special sort column to allows nomenclatorical ordering of taxa and names.
- * This class bridge can handle all {@link TaxonBase} and {@link NonViralName}s
+ * This class bridge can handle all {@link TaxonBase} and {@link INonViralName}s
  * instances. {@link ViralNames} are not supported!
  * <p>
  * Ignores the <code>name</code> parameter!
@@ -60,7 +59,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
 
         if(value instanceof TaxonBase) {
             try {
-                nvn = HibernateProxyHelper.deproxy((TaxonBase) value).getName();
+                nvn = CdmBase.deproxy((TaxonBase) value).getName();
                 if (nvn == null){
                 	return;
                 }
@@ -69,7 +68,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
                 /* IGNORE */
             }
 
-        }else if(value instanceof TaxonNameBase){
+        }else if(value instanceof TaxonName){
             nvn = (INonViralName)value;
         }
         if(nvn == null) {

@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
-import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
@@ -27,7 +27,9 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 14.11.2016
  *
  */
-public class SynonymDeduplicator extends SchemaUpdaterStepBase<SynonymDeduplicator> implements ITermUpdaterStep{
+public class SynonymDeduplicator
+            extends SchemaUpdaterStepBase{
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(SynonymDeduplicator.class);
 
@@ -71,7 +73,8 @@ public class SynonymDeduplicator extends SchemaUpdaterStepBase<SynonymDeduplicat
         " )";
 
     @Override
-    public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+    public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
+            CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
         //id list of all synonym relationships that need the synonym to be duplicated
         String listSql = caseType.replaceTableNames(idListSelect + fromSQL + whereSQL);
@@ -107,7 +110,7 @@ public class SynonymDeduplicator extends SchemaUpdaterStepBase<SynonymDeduplicat
             datasource.executeUpdate(caseType.replaceTableNames(delete));
         }
 
-        return 0;
+        return;
     }
 
     private void cloneExtensions(Integer oldSynonymId, Integer newSynonymId, ICdmDataSource datasource, CaseType caseType, String mnCol, String tableName, String specificParams, boolean withSortIndex) throws SQLException {

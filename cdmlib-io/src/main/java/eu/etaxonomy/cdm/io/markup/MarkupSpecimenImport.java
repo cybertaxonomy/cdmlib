@@ -47,11 +47,10 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -138,12 +137,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		}
 
 		INonViralName firstName = null;
-		Set<TaxonNameBase> names = homotypicalGroup.getTypifiedNames();
+		Set<TaxonName> names = homotypicalGroup.getTypifiedNames();
 		if (names.isEmpty()) {
 			String message = "There is no name in a homotypical group. Can't create the specimen type";
 			fireWarningEvent(message, parentEvent, 8);
 		} else {
-			firstName = CdmBase.deproxy(names.iterator().next(),NonViralName.class);
+			firstName = CdmBase.deproxy(names.iterator().next());
 		}
 
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
@@ -630,7 +629,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				Rank defaultRank = Rank.SPECIES(); // can be any
 				INonViralName nvn = createNameByCode(state, defaultRank);
 				handleFullName(state, reader, nvn, next);
-				TaxonNameBase<?,?> name = TaxonNameBase.castAndDeproxy(nvn);
+				TaxonName name = TaxonName.castAndDeproxy(nvn);
 				DeterminationEvent.NewInstance(name, facade.innerDerivedUnit() != null ? facade.innerDerivedUnit() : facade.innerFieldUnit());
 			} else if (isStartingElement(next, DATES)) {
 				TimePeriod timePeriod = handleDates(state, reader, next);

@@ -26,15 +26,15 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -171,22 +171,22 @@ public class DistributionImport
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
-    	IdentifiableServiceConfiguratorImpl<TaxonNameBase> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonNameBase.class);
+    	IdentifiableServiceConfiguratorImpl<TaxonName> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonName.class);
     	config.setTitleSearchString(taxonName);
     	config.setMatchMode(MatchMode.BEGINNING);
 
 		try {
     		// get the matching names from the DB
-    		//List<TaxonNameBase> taxonNameBases = getNameService().findByTitle(config);
-    		List<TaxonNameBase> taxonNameBases = getNameService().findByName(null, taxonName, null, null, null, null,null,null).getRecords();
-    		if (taxonNameBases.isEmpty()) {
+    		//List<TaxonName> taxonNames = getNameService().findByTitle(config);
+    		List<TaxonName> taxonNames = getNameService().findByName(null, taxonName, null, null, null, null,null,null).getRecords();
+    		if (taxonNames.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
     			if (logger.isDebugEnabled()) { logger.debug("Taxon found"); }
     		}
 
     		// get the taxa for the matching names
-    		for(TaxonNameBase<?,?> dbTaxonName: taxonNameBases) {
+    		for(TaxonName dbTaxonName: taxonNames) {
 
     			Set<Taxon> taxa = dbTaxonName.getTaxa();
     			if (taxa.isEmpty()) {

@@ -29,7 +29,8 @@ public abstract class ExcelImportConfiguratorBase
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	private byte[] stream;
-
+	private boolean deduplicateReferences = true;
+	private boolean deduplicateAuthors = false;
 	/**
 	 * @param url
 	 * @param destination
@@ -70,4 +71,26 @@ public abstract class ExcelImportConfiguratorBase
 	    public void setStream(byte[] stream) {
 	        this.stream = stream;
 	    }
+
+        /**
+         * @return the deduplicateReferences
+         */
+        public boolean isDeduplicateReferences() {
+            return deduplicateReferences;
+        }
+
+        /**
+         * @param deduplicateReferences the deduplicateReferences to set
+         */
+        public void setDeduplicateReferences(boolean deduplicateReferences) {
+            this.deduplicateReferences = deduplicateReferences;
+        }
+
+        public boolean isDeduplicateAuthors() {
+            return deduplicateAuthors;
+        }
+
+        public void setDeduplicateAuthors(boolean deduplicateAuthors) {
+            this.deduplicateAuthors = deduplicateAuthors;
+        }
 }

@@ -2,8 +2,9 @@
 "2c8b42e5-154c-42bd-a301-03b483275dd6",,"Min","Minimum",
 "8955815b-7d21-4149-b1b7-d37af3c2046c",,"Max","Maximum",
 "264c3979-d551-4795-9e25-24c6b533fbb1",,"Average","Average",
-"571f86ca-a44c-4484-9981-11fd82138a7a",,"SampleSize","Sample Size",
+"571f86ca-a44c-4484-9981-11fd82138a7a",,"Sample Size","Sample Size",
 "4d22cf5e-89ff-4de3-a9ae-12dbeda3faba",,"Variance","Variance",
-"8372a89a-35ad-4755-a881-7edae6c37c8f",,"TypicalLowerBoundary","Typical Lower Boundary",
-"9eff88ba-b8e7-4631-9e55-a50bd16ba79d",,"TypicalUpperBoundary","Typical Upper Boundary",
-"9ee4397e-3496-4fe1-9114-afc7d7bdc652",,"StandardDeviation","Standard Deviation",
+"8372a89a-35ad-4755-a881-7edae6c37c8f",,"Typical Lower Boundary","Typical Lower Boundary",
+"9eff88ba-b8e7-4631-9e55-a50bd16ba79d",,"Typical Upper Boundary","Typical Upper Boundary",
+"9ee4397e-3496-4fe1-9114-afc7d7bdc652",,"Standard Deviation","Standard Deviation",
+"29736701-58c4-48b3-a9d7-41c74140cac7",,"Exact Value","Exact Value"

@@ -1,13 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../io/dataset.xsd">
-  <SpecimenOrObservationBase/>
-  <TaxonNameBase/>
-  <OriginalSourceBase/>
-  <Primer/>
-  <Sequence/>
-  <SingleRead/>
-  <MATERIALORMETHODEVENT/>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema/dataset.xsd">
   <AMPLIFICATION/>
   <AMPLIFICATIONRESULT/>
+  <CLASSIFICATION/>
+  <DESCRIPTIONELEMENTBASE/>
+  <MATERIALORMETHODEVENT/>
+  <ORIGINALSOURCEBASE/>
+  <PRIMER/>
+  <SEQUENCE/>
+  <SINGLEREAD/>
   <SINGLEREADALIGNMENT/>
+  <SPECIMENOROBSERVATIONBASE/>
+  <TAXONNAME/>
+  <TAXONNAME_AUD/>
 </dataset>

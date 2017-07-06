@@ -59,9 +59,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -69,14 +66,11 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -122,7 +116,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 @XmlRootElement(name = "DataSet")
 public class DataSet implements IExportData {
 
-	@XmlElementWrapper(name = "Terms")
+    private static final long serialVersionUID = -657623965517589622L;
+
+    @XmlElementWrapper(name = "Terms")
     @XmlElements({
     	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
     	@XmlElement(name = "Continent", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = NamedArea.class),
@@ -161,7 +157,7 @@ public class DataSet implements IExportData {
     	@XmlElement(name = "Country", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = Country.class)
 
     })
-    protected List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
+    protected List<DefinedTermBase> terms = new ArrayList<>();
 
 	@XmlElementWrapper(name = "TermVocabularies")
     @XmlElements({
@@ -169,7 +165,7 @@ public class DataSet implements IExportData {
         @XmlElement(name = "OrderedTermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = OrderedTermVocabulary.class)
     })
 
-    protected List<TermVocabulary<DefinedTermBase>> termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
+    protected List<TermVocabulary<DefinedTermBase>> termVocabularies = new ArrayList<>();
 
 
     @XmlElementWrapper(name = "Agents")
@@ -178,35 +174,35 @@ public class DataSet implements IExportData {
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
         @XmlElement(name = "Person", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Person.class)
     })
-    protected List<AgentBase> agents = new ArrayList<AgentBase>();
+    protected List<AgentBase> agents = new ArrayList<>();
 
 
     @XmlElementWrapper(name = "Collections")
     @XmlElement(name = "Collection", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0")
-    protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<eu.etaxonomy.cdm.model.occurrence.Collection>();
+    protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<>();
 
     @XmlElementWrapper(name = "FeatureTrees")
     @XmlElements({
       @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
-    protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
+    protected List<FeatureTree> featureTrees = new ArrayList<>();
 
     @XmlElementWrapper(name = "PolytomousKeys")
     @XmlElements({
       @XmlElement(name = "PolytomousKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PolytomousKey.class)
     })
-    protected List<PolytomousKey> polytomousKeys = new ArrayList<PolytomousKey>();
+    protected List<PolytomousKey> polytomousKeys = new ArrayList<>();
 
 
     @XmlElementWrapper(name = "Classifications")
     @XmlElement(name = "Classification", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<Classification> classifications = new ArrayList<Classification>();
+    protected List<Classification> classifications = new ArrayList<>();
 
     @XmlElementWrapper(name = "TaxonNodes")
     @XmlElement(name = "TaxonNodes", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<TaxonNode> taxonNodes = new ArrayList<TaxonNode>();
+    protected List<TaxonNode> taxonNodes = new ArrayList<>();
 
-    protected List<LanguageString> languageStrings =new ArrayList<LanguageString>();
+    protected List<LanguageString> languageStrings =new ArrayList<>();
 
 
     @XmlElementWrapper(name = "Occurrences")
@@ -215,45 +211,40 @@ public class DataSet implements IExportData {
     	@XmlElement(name = "DnaSample", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DnaSample.class),
     	@XmlElement(name = "FieldUnit", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldUnit.class)
     })
-    protected List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
+    protected List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
 
     @XmlElementWrapper(name = "EventBases")
     @XmlElements({
     	@XmlElement(name = "DerivationEvent", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivationEvent.class),
     	@XmlElement(name = "GatheringEvent", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = GatheringEvent.class)
     })
-    protected List<EventBase> eventBases = new ArrayList<EventBase>();
+    protected List<EventBase> eventBases = new ArrayList<>();
 
     @XmlElementWrapper(name = "References")
     @XmlElements({
     	@XmlElement(name = "Reference", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Reference.class)
     })
-    protected List<Reference> references = new ArrayList<Reference>();
+    protected List<Reference> references = new ArrayList<>();
 
     @XmlElementWrapper(name = "TypeDesignations")
     @XmlElements({
     	@XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
     	@XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class)
     })
-    protected List<TypeDesignationBase> typeDesignations = new ArrayList<TypeDesignationBase>();
+    protected List<TypeDesignationBase> typeDesignations = new ArrayList<>();
 
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
-    	@XmlElement(name = "BacterialName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BacterialName.class),
-    	@XmlElement(name = "BotanicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BotanicalName.class),
-    	@XmlElement(name = "CultivarPlantName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = CultivarPlantName.class),
-    	@XmlElement(name = "NonViralName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NonViralName.class),
-    	@XmlElement(name = "ViralName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ViralName.class),
-    	@XmlElement(name = "ZoologicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ZoologicalName.class)
-    })
-    protected List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
+    	@XmlElement(name = "TaxonName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TaxonName.class),
+     })
+    protected List<TaxonName> taxonomicNames = new ArrayList<>();
 
     @XmlElementWrapper(name = "TaxonBases")
     @XmlElements({
       @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Taxon.class),
       @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Synonym.class)
     })
-    protected List<TaxonBase<?>> taxonBases = new ArrayList<TaxonBase<?>>();
+    protected List<TaxonBase<?>> taxonBases = new ArrayList<>();
 
     @XmlElementWrapper(name = "Media")
     @XmlElements({
@@ -261,19 +252,19 @@ public class DataSet implements IExportData {
       @XmlElement(name = "MediaKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = MediaKey.class),
       @XmlElement(name = "PhylogeneticTree", namespace = "http://etaxonomy.eu/cdm/model/molecular/1.0", type = PhylogeneticTree.class)
     })
-    protected List<Media> media = new ArrayList<Media>();
+    protected List<Media> media = new ArrayList<>();
 
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
-    protected List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
+    protected List<HomotypicalGroup> homotypicalGroups = new ArrayList<>();
 
     @XmlElementWrapper(name = "Users")
     @XmlElement(name = "User", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    protected List<User> users = new ArrayList<User>();
+    protected List<User> users = new ArrayList<>();
 
     @XmlElementWrapper(name = "Groups")
     @XmlElement(name = "Group", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    protected List<Group> groups = new ArrayList<Group>();
+    protected List<Group> groups = new ArrayList<>();
 
     @XmlElementWrapper(name = "GrantedAuthorities")
     @XmlElement(name = "GrantedAuthority", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = GrantedAuthorityImpl.class)
@@ -386,7 +377,7 @@ public class DataSet implements IExportData {
      *     {@link List<axonNameBase> }
      *
      */
-    public List<TaxonNameBase> getTaxonomicNames() {
+    public List<TaxonName> getTaxonomicNames() {
         return taxonomicNames;
     }
 
@@ -395,10 +386,10 @@ public class DataSet implements IExportData {
      *
      * @param value
      *     allowed object is
-     *     {@link List<TaxonNameBase> }
+     *     {@link List<TaxonName> }
      *
      */
-    public void setTaxonomicNames(List<TaxonNameBase> value) {
+    public void setTaxonomicNames(List<TaxonName> value) {
         this.taxonomicNames = value;
     }
 

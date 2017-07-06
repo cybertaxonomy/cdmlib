@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -190,7 +191,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * The bean properties specified by the parameter <code>propertyPaths</code>
      * and recursively initialized for each of the entities in the resultset
      *
-     * For detailed description and examples redarding
+     * For detailed description and examples regarding
      * <code>propertyPaths</code> <b>please refer to:</b>
      * {@link IBeanInitializer#initialize(Object, List)}
      *
@@ -207,6 +208,66 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @throws DataAccessException
      */
     public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Returns a list of Cdm entities stored in the database filtered by the restrictions defined by
+     * the <code>parameters</code> <code>propertyName</code>, value and <code>matchMode</code>
+     * A maximum
+     * of 'limit' objects are returned, starting at object with index 'start'.
+     * The bean properties specified by the parameter <code>propertyPaths</code>
+     * and recursively initialized for each of the entities in the resultset
+     *
+     * For detailed description and examples regarding
+     * <code>propertyPaths</code> <b>please refer to:</b>
+     * {@link IBeanInitializer#initialize(Object, List)}
+     *
+     * @param type
+     *          Restrict the query to objects of a certain class, or null for
+     *          all objects of type T or subclasses
+     * @param restrictions
+     *      This defines a filter for multiple properties represented by the map keys. Sine the keys are of the type
+     *      {@link Restriction} for each property a single MatchMode is defined. Multiple alternative values
+     *      can be supplied per property, that is the values per property are combined with OR. The per property
+     *      restrictions are combined with AND. </br>
+     *      <b>NOTE:</b> For non string type properties you must use
+     *      {@link MatchMode#EXACT}. If set <code>null</code> {@link MatchMode#EXACT} will be used
+     *      as default.
+     * @param limit
+     *         the maximum number of entities returned (can be null to return
+     *         all entities)
+     * @param start
+     *       The list of criterion objects representing the restriction to be applied.
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     * @return
+     * @throws DataAccessException
+     */
+    public List<T> list(Class<? extends T> type, List<Restriction<?>> restrictions, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Counts the Cdm entities matching the restrictions defined by
+     * the <code>parameters</code> <code>propertyName</code>, value and <code>matchMode</code>.
+     *
+     * @param type
+     *          Restrict the query to objects of a certain class, or null for
+     *          all objects of type T or subclasses
+     * @param restrictions
+     *      This defines a filter for multiple properties represented by the map keys. Sine the keys are of the type
+     *      {@link Restriction} for each property a single MatchMode is defined. Multiple alternative values
+     *      can be supplied per property, that is the values per property are combined with OR. The per property
+     *      restrictions are combined with AND. </br>
+     *      <b>NOTE:</b> For non string type properties you must use
+     *      {@link MatchMode#EXACT}. If set <code>null</code> {@link MatchMode#EXACT} will be used
+     *      as default.
+     * @param criteria
+     *       The list of criterion objects representing the restriction to be applied.
+     *
+     * @return
+     */
+    public int count(Class<? extends T> type, List<Restriction<?>> restrictions);
 
     /**
      * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.

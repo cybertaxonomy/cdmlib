@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -36,11 +36,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author a.mueller
  * @created 29.05.2008
- * @version 1.0
  */
 @Component
 public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
+    private static final long serialVersionUID = 7473543276142564219L;
+
+    private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 
@@ -207,8 +208,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			success = false;
 		}else{
 			Synonym synonym = (Synonym)fromTaxon;
-			TaxonNameBase synName = synonym.getName();
-			TaxonNameBase accName = taxonTo.getName();
+			TaxonName synName = synonym.getName();
+			TaxonName accName = taxonTo.getName();
 			if (synName != null && accName != null && synName.isHomotypic(accName)
 						&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
 				synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
@@ -263,10 +264,10 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		if (true) {
             return false;
         }
-		TaxonNameBase aboutName = aboutTaxon.getName();
+		TaxonName aboutName = aboutTaxon.getName();
 		if (aboutName != null){
-			Set<TaxonNameBase> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
-			for (TaxonNameBase typifiedName : typifiedNames){
+			Set<TaxonName> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
+			for (TaxonName typifiedName : typifiedNames){
 				//TODO check if name is part of this tcs file
 				if (typifiedName.equals(aboutName)){
 					continue;

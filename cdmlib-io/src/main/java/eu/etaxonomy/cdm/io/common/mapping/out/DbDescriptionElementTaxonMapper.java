@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -76,7 +76,7 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 					}
 				}else if (inDescription.isInstanceOf(TaxonNameDescription.class)){
 					TaxonNameDescription nameDescription = CdmBase.deproxy(inDescription, TaxonNameDescription.class);
-					TaxonNameBase<?,?> taxonName = nameDescription.getTaxonName();
+					TaxonName taxonName = nameDescription.getTaxonName();
 					if (isCache){
 						return taxonName.getTitleCache();
 					}else{

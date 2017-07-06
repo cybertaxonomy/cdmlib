@@ -33,14 +33,25 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	private static final String ET_AL_TEAM_CONCATINATION_FULL = " & ";
 	private static final String ET_AL_TEAM_CONCATINATION_ABBREV = " & ";
 
+	public static final String EMPTY_TEAM = "-empty team-";
 
 	final static UUID uuid = UUID.fromString("1cbda0d1-d5cc-480f-bf38-40a510a3f223");
 
-	public static final String EMPTY_TEAM = "-empty team-";
+	private int etAlPosition = 4;
+
+// ************************* FACTORY ************************/
 
 	static public TeamDefaultCacheStrategy NewInstance(){
 		return new TeamDefaultCacheStrategy();
 	}
+
+    static public TeamDefaultCacheStrategy NewInstance(int etAlPosition){
+        TeamDefaultCacheStrategy result = new TeamDefaultCacheStrategy();
+        result.setEtAlPosition(etAlPosition);
+        return result;
+    }
+
+// ********************* CONSTRUCTOR ***************************/
 
 	private TeamDefaultCacheStrategy() {
 		super();
@@ -50,6 +61,18 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	protected UUID getUuid() {
 		return uuid;
 	}
+
+// ************** GETTER / SETTER *******************/
+
+    public int getEtAlPosition() {
+        return etAlPosition;
+    }
+
+    public void setEtAlPosition(int etAlPosition) {
+        this.etAlPosition = etAlPosition;
+    }
+
+// *********************** MTEHODS ****************/
 
 	@Override
     public String getNomenclaturalTitle(Team team) {
@@ -70,26 +93,36 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		return result;
 	}
 
-    /**
-     * Add the et al. to the team string
-     * @param str team string without et al.
-     * @return
-     */
-    public static String addHasMoreMembers(String str) {
-        return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
+
+    @Override
+    public String getTitleCache(Team team) {
+        String result = "";
+        List<Person> teamMembers = team.getTeamMembers();
+
+        for (int i = 1; i <= teamMembers.size() && i < etAlPosition; i++){
+            Person teamMember = teamMembers.get(i-1);
+            String concat = concatString(team, teamMembers, i);
+            result += concat + teamMember.getTitleCache();
+        }
+        if (teamMembers.size() == 0){
+            result = EMPTY_TEAM;
+        } else if (team.isHasMoreMembers() || teamMembers.size() >= etAlPosition){
+            result += ET_AL_TEAM_CONCATINATION_FULL + "al.";
+        }
+        return result;
     }
 
+
 	@Override
-    public String getTitleCache(Team team) {
-		// TODO is still dummy
+    public String getFullTitle(Team team) {
 		String result = "";
-		List<Person> teamMembers = team.getTeamMembers();//Hibernate.initialize(teamMembers);
+		List<Person> teamMembers = team.getTeamMembers();
 
 		int i = 0;
 		for (Person teamMember : teamMembers){
 			i++;
 			String concat = concatString(team, teamMembers, i);
-			result += concat + teamMember.getTitleCache();
+			result += concat + teamMember.getFullTitle();
 		}
 		if (teamMembers.size() == 0){
 			result = EMPTY_TEAM;
@@ -110,5 +143,15 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		}
 		return concat;
 	}
+
+
+    /**
+     * Add the et al. to the team string
+     * @param str team string without et al.
+     * @return
+     */
+    public static String addHasMoreMembers(String str) {
+        return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
+    }
 
 }

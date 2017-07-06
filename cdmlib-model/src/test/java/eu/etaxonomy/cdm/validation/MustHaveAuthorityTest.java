@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
@@ -41,7 +41,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(MustHaveAuthorityTest.class);
 
-	private BotanicalName name;
+	private IBotanicalName name;
 
 	@Before
 	public void setUp() {
@@ -61,7 +61,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 
 	@Test
 	public void testValidSpecificName() {
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
 	}
 
@@ -69,14 +69,14 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 	public void testValidSpecificNameWithBasionymAuthorship() {
 		name.setAuthorshipCache(null);
 		name.setBasionymAuthorship(Person.NewInstance());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
 	}
 
 	@Test
 	public void testInValidSpecificName() {
 		name.setAuthorshipCache(null);
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
 	}
 
@@ -86,7 +86,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 		name.setAuthorshipCache(null);
 		name.setBasionymAuthorship(null);
 		name.setRank(Rank.SUBSPECIES());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
+        Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank", constraintViolations.isEmpty());
 	}
 }

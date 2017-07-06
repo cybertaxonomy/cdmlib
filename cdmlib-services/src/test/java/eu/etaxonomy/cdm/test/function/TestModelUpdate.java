@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
+import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
@@ -39,21 +40,25 @@ public class TestModelUpdate {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm40" : "cdm41");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm41" : "cdm47");
 //		database = "cdm36";
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
 
  		try {
+// 		    int n = dataSource.executeUpdate("UPDATE CdmMetaData SET value = '3.1.0.0.201607300000' WHERE propertyname = 0 ");
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
-				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+				SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource,
+				        DefaultProgressMonitor.NewInstance());
+				String report = result.createReport().toString();
+				System.out.println(report);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
  		try{
-    		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+    		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
     //		Classification classification = Classification.NewInstance("Me");
     //		Taxon taxon = Taxon.NewInstance(null, null);
@@ -66,7 +71,9 @@ public class TestModelUpdate {
     		if (schema == DbSchemaValidation.CREATE){
     		    System.out.println("fillData");
     		    appCtr.getCommonService().createFullSampleData();
+    		    appCtr.getNameService().list(null, null, null, null, null);
     		}
+
 
     		appCtr.close();
  		}catch (Exception e) {
@@ -93,6 +100,7 @@ public class TestModelUpdate {
         }else if (dbType == DatabaseTypeEnum.H2){
             //H2
             String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
+//            String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_xyz";
             username = "sa";
             CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
             return dataSource;
@@ -119,9 +127,9 @@ public class TestModelUpdate {
 	 */
 	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
+	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
 //	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
-	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
 
 	    String pathInProject = "src\\test\\resources\\h2";
 
@@ -131,7 +139,8 @@ public class TestModelUpdate {
 
  		try {
 			CdmUpdater updater = new CdmUpdater();
-			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			System.out.println(result.createReport());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -149,7 +158,7 @@ public class TestModelUpdate {
 		System.out.println("Start Datasource");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();
+//		updateRemoteWebappTestH2();  //also updates vaadin and taxedtior model
 
 		System.out.println("\nEnd Datasource");
 	}

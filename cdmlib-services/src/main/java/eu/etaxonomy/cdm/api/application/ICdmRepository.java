@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -61,17 +62,19 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
 public interface ICdmRepository{
 
 
+    /**
+     * Starts a read only Transaction
+     */
     public TransactionStatus startTransaction();
 
     public TransactionStatus startTransaction(Boolean readOnly);
 
     public void commitTransaction(TransactionStatus tx);
 
-
 	public Object getBean(String string);
 
 
-	   /**
+	/**
      * @return
      */
     public IAnnotationService getAnnotationService();
@@ -312,5 +315,10 @@ public interface ICdmRepository{
 
 
 	void authenticate(String username, String password);
+
+    /**
+     * @return
+     */
+    IRegistrationService getRegistrationService();
 
 }

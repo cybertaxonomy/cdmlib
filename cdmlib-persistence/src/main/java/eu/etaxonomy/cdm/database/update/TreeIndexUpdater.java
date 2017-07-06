@@ -20,8 +20,11 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  * @date 09.08.2013
  *
  */
-public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpdater> implements ISchemaUpdaterStep {
-	private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
+public class TreeIndexUpdater
+        extends AuditedSchemaUpdaterStepBase
+        implements ISchemaUpdaterStep {
+
+    private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
 
 	private String indexColumnName = "treeIndex";
 	private final String treeIdColumnName;
@@ -42,10 +45,10 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 		this.indexColumnName = indexColumnName == null ? this.indexColumnName : indexColumnName;
 	}
 
-	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
-		try{
-			boolean result = true;
+    @Override
+    protected void invokeOnTable(String tableName, ICdmDataSource datasource,
+            IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
+        try{
 
 	//		String charType = "CHAR";  //TODO may depend on database type
 
@@ -126,13 +129,16 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			if (n > 0){
 				String message = "There are tree nodes with no tree index in %s. This indicates that there is a problem in the tree structure of 1 or more classifications.";
 				logger.error(String.format(message, tableName));
+				result.addWarning(message, (String)null, getStepName());
 			}
 
-			return result;
+			return;
 		}catch(Exception e){
-			monitor.warning(e.getMessage(), e);
-			logger.error(e.getMessage());
-			return false;
+		    String message = e.getMessage();
+			monitor.warning(message, e);
+			logger.error(message);
+			result.addException(e, message, getStepName() + ", TreeIndexUpdater.invokeOnTable");
+			return;
 		}
 	}
 

@@ -23,7 +23,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -37,18 +36,21 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @Component
 public class DwcaEmlExport extends DwcaExportBase {
-	private static final Logger logger = Logger.getLogger(DwcaEmlExport.class);
 
-	private static final String fileName = "eml.xml";
+    private static final long serialVersionUID = -1762545757384406718L;
 
-	String emlNamespace = "eml://ecoinformatics.org/eml-2.1.1";
-	String mdNamespace="eml://ecoinformatics.org/methods-2.1.0";
-	String projNamespace="eml://ecoinformatics.org/project-2.1.0";
-	String datasetNamespace="eml://ecoinformatics.org/dataset-2.1.0";
-	String resNamespace="eml://ecoinformatics.org/resource-2.1.0";
-	String dcNamespace="http://purl.org/dc/terms/";
-	String xsiNamespace="http://www.w3.org/2001/XMLSchema-instance";
-	String schemaLocation = "eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/dev/eml.xsd";
+    private static final Logger logger = Logger.getLogger(DwcaEmlExport.class);
+
+	protected static final String fileName = "eml.xml";
+
+	private String emlNamespace = "eml://ecoinformatics.org/eml-2.1.1";
+	private String mdNamespace="eml://ecoinformatics.org/methods-2.1.0";
+	private String projNamespace="eml://ecoinformatics.org/project-2.1.0";
+	private String datasetNamespace="eml://ecoinformatics.org/dataset-2.1.0";
+	private String resNamespace="eml://ecoinformatics.org/resource-2.1.0";
+	private String dcNamespace="http://purl.org/dc/terms/";
+	private String xsiNamespace="http://www.w3.org/2001/XMLSchema-instance";
+	private String schemaLocation = "eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/dev/eml.xsd";
 
 	/**
 	 * Constructor
@@ -56,13 +58,12 @@ public class DwcaEmlExport extends DwcaExportBase {
 	public DwcaEmlExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
-		this.exportData = ExportDataWrapper.NewByteArrayInstance();
 	}
 
-	/** Retrieves the MetaData for a Darwin Core Archive File.
-	 * @param exImpConfig
-	 * @param dbname
-	 * @param filename
+	/**
+	 * Retrieves the MetaData for a Darwin Core Archive File.
+	 * <BR>
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
@@ -72,7 +73,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		metaRecord.setMetaData(true);
 		state.addMetaRecord(metaRecord);
 
-
 		DwcaEmlRecord emlRecord = config.getEmlRecord();
 		if (emlRecord == null){
 			return;
@@ -80,7 +80,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 
 		XMLStreamWriter writer = null;
 		try {
-			writer = createXmlStreamWriter(state, fileName);
+			writer = createXmlStreamWriter(state, DwcaTaxExportFile.EML);
 
 			String rootName = "eml";
 
@@ -517,14 +517,9 @@ public class DwcaEmlExport extends DwcaExportBase {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoEml();
 	}
-
-
 
 }

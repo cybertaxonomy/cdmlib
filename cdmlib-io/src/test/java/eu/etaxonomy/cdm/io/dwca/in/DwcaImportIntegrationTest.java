@@ -32,12 +32,12 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @date 23.11.2011
  */
 @Transactional(TransactionMode.ROLLBACK)
-public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
+public class DwcaImportIntegrationTest  extends CdmTransactionalIntegrationTest{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportIntegrationTest.class);
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	private URI uri;
 	private DwcaImportConfigurator configurator;
@@ -72,7 +72,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		Assert.assertTrue("Invoke should return true", result);
 		//to be continued
-//		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
+//		final String[]tableNames = {"TaxonBase","TaxonName","Classification",
 //                "TaxonNode","HomotypicalGroup"};
 //		commitAndStartNewTransaction(tableNames);
 	}

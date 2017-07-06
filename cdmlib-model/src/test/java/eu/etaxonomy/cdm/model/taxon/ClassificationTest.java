@@ -36,10 +36,8 @@ import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 //import eu.etaxonomy.cdm.model.reference.Journal;
@@ -66,11 +64,11 @@ public class ClassificationTest {
 	private static Taxon taxon3;
 	private static Taxon taxon12;
 	private static Taxon taxon121;
-	private static TaxonNameBase<?,?> taxonName1;
-	private static TaxonNameBase<?,?> taxonName2;
-	private static TaxonNameBase<?,?> taxonName3;
-	private static TaxonNameBase<?,?> taxonName12;
-	private static TaxonNameBase<?,?> taxonName121;
+	private static TaxonName taxonName1;
+	private static TaxonName taxonName2;
+	private static TaxonName taxonName3;
+	private static TaxonName taxonName12;
+	private static TaxonName taxonName121;
 	private static Reference ref1;
 	private static Reference ref2;
 	private static Reference ref3;
@@ -131,7 +129,7 @@ public class ClassificationTest {
 	 */
 	@Test
 	public void testAddRoot() {
-		TaxonNameBase<?,?> synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonNode1.setSynonymToBeUsed(synonym);
@@ -232,7 +230,7 @@ public class ClassificationTest {
 	@Test
 	public void testAddParentChild() {
 
-		TaxonNameBase<?,?> synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		TaxonName synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
 		rootNode.setSynonymToBeUsed(synonym);
@@ -348,7 +346,7 @@ public class ClassificationTest {
 		//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
 
 
-		TaxonNameBase<?,?> name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name.setTitleCache("A dummy name", true);
 		result.add(name);
 		Reference ref = ReferenceFactory.newBook();
@@ -362,14 +360,14 @@ public class ClassificationTest {
 
 
 		//init
-		Set<Class<? extends CdmBase>> allCdmClasses = new HashSet<Class<? extends CdmBase>>();
+		Set<Class<? extends CdmBase>> allCdmClasses = new HashSet<>();
 		allCdmClasses.add(TaxonBase.class);
-		allCdmClasses.add(BotanicalName.class);
+		allCdmClasses.add(TaxonName.class);
 
 		int count;
 		do{
 			count = allCdmClasses.size();
-			Set<Class<? extends CdmBase>> iteratorSet = new HashSet<Class<? extends CdmBase>>();
+			Set<Class<? extends CdmBase>> iteratorSet = new HashSet<>();
 			iteratorSet.addAll(allCdmClasses);
 			for (Class<? extends CdmBase> cdmClass : iteratorSet){
 				Method[] methods = cdmClass.getMethods();

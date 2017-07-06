@@ -23,7 +23,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -35,21 +35,21 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class IdentifiableEntityTest {
 
-	private TaxonNameBase<?,?> abies;
-	private TaxonNameBase<?,?> abiesMill;
-	private TaxonNameBase<?,?> abiesAlba;
-	private TaxonNameBase<?,?> abiesAlbaMichx;
-	private TaxonNameBase<?,?> abiesAlbaMill;
-	private TaxonNameBase<?,?> abiesAlbaxPinusBeta;
-	private TaxonNameBase<?,?> pinusBeta;
+	private TaxonName abies;
+	private TaxonName abiesMill;
+	private TaxonName abiesAlba;
+	private TaxonName abiesAlbaMichx;
+	private TaxonName abiesAlbaMill;
+	private TaxonName abiesAlbaxPinusBeta;
+	private TaxonName pinusBeta;
 
 	private Taxon abiesTaxon;
 	private Taxon abiesMillTaxon;
 
-	private TaxonNameBase<?,?> abiesAutonym;
+	private TaxonName abiesAutonym;
 	private Taxon abiesAutonymTaxon;
 
-	private TaxonNameBase<?,?> abiesBalsamea;
+	private TaxonName abiesBalsamea;
 	private Taxon abiesBalsameaTaxon;
 //	private Taxon abiesAlbaxPinusBetaTaxon;
 	/**

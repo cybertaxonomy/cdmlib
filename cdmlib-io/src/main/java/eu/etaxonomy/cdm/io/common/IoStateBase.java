@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.IoResultBase;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+
 
 /**
  * @author a.mueller
@@ -27,57 +30,41 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 
 	private RESULT result;
 
+	private IProgressMonitor currentMonitor;
 
+	//TODO config not necessary ones it it implemented in constructor for IOs too.
+	public void initialize(CONFIG config){
+	    this.config = config;
+	}
 
-	/**
-	 * @return the config
-	 */
 	public CONFIG getConfig() {
 		return config;
 	}
-
-	/**
-	 * @param config the config to set
-	 */
 	public void setConfig(CONFIG config) {
 		this.config = config;
 	}
 
-	/**
-	 * @param config
-	 */
-	//TODO config not necessary ones it it implemented in constructor for Imports too.
-	public void initialize(CONFIG config){
-		this.config = config;
-	}
-
-	/**
-	 * @param currentImport the currentImport to set
-	 */
 	public void setCurrentIO(IO currentIO) {
 		this.currentIO = currentIO;
 	}
-
-	/**
-	 * @return the currentImport
-	 */
 	public IO getCurrentIO() {
 		return currentIO;
 	}
 
 
-    /**
-     * @return the result
-     */
     public RESULT getResult() {
         return result;
     }
-
-    /**
-     * @param result the result to set
-     */
     public void setResult(RESULT result) {
         this.result = result;
+    }
+
+
+    public IProgressMonitor getCurrentMonitor() {
+        return currentMonitor;
+    }
+    public void setCurrentMonitor(IProgressMonitor currentMonitor) {
+        this.currentMonitor = currentMonitor;
     }
 
 

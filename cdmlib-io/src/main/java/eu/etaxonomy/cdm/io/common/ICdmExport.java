@@ -6,9 +6,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-
 /**
- *
  * @author a.babadshanjan
  * @created 17.11.2008
  */
@@ -20,6 +18,6 @@ public interface ICdmExport<CONFIG extends IExportConfigurator, STATE extends Ex
 
 	public byte[] getByteArray();
 
-	public abstract ExportResult invoke(STATE state);
+	public abstract void invoke(STATE state);
 
 }

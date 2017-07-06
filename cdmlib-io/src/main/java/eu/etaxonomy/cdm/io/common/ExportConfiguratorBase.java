@@ -19,18 +19,20 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends IoConfiguratorBase implements IExportConfigurator<STATE, TRANSFORM>{
+public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRANSFORM extends IExportTransformer, DEST extends Object>
+            extends IoConfiguratorBase
+            implements IExportConfigurator<STATE, TRANSFORM>{
 
-	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
+    private static final long serialVersionUID = -6361253919270760156L;
+
+    private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
 	private CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
 
 	private TARGET target = TARGET.FILE;
 
-	private final boolean startTransaction = true;
-
 	private ICdmDataSource source;
-	private DESTINATION destination;
+	private DEST destination;
 	protected IDatabase sourceReference;
 	protected Class<ICdmIO>[] ioClassList;
 
@@ -81,14 +83,14 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	/**
 	 * @param source the source to get
 	 */
-	public DESTINATION getDestination() {
+	public DEST getDestination() {
 		return destination;
 	}
 
 	/**
 	 * @param source the source to set
 	 */
-	public void setDestination(DESTINATION destination) {
+	public void setDestination(DEST destination) {
 		this.destination = destination;
 	}
 
@@ -114,17 +116,11 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 		return ioClassList;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCheck()
-	 */
 	@Override
     public CHECK getCheck() {
 		return this.check;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator.CHECK)
-	 */
 	public void setCheck(CHECK check) {
 		this.check = check;
 	}
@@ -138,22 +134,6 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	public void setTarget(TARGET target) {
 	    this.target = target;
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IExportConfigurator#getDbSchemaValidation()
-	 */
-//	public DbSchemaValidation getDbSchemaValidation() {
-//		return dbSchemaValidation;
-//	}
-
-//	/**
-//	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-//	 * If a controller was already created before the last created controller is returned.
-//	 * @return
-//	 */
-//	public CdmApplicationController getCdmAppController(){
-//		return getCdmAppController(false);
-//	}
 
 	/**
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.

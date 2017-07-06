@@ -20,11 +20,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -52,7 +52,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 
-    private NonViralNameDefaultCacheStrategy<INonViralName> strategy;
+    private NonViralNameDefaultCacheStrategy strategy;
 
     private static final String familyNameString = "Familia";
     private static final String genusNameString = "Genus";
@@ -66,11 +66,11 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     private static final String referenceTitle = "My Reference";
 
-    private BotanicalName familyName;
-    private BotanicalName genusName;
-    private BotanicalName subGenusName;
-    private BotanicalName speciesName;
-    private BotanicalName subSpeciesName;
+    private IBotanicalName familyName;
+    private IBotanicalName genusName;
+    private IBotanicalName subGenusName;
+    private TaxonName speciesName;
+    private TaxonName subSpeciesName;
     private TeamOrPersonBase<?> author;
     private TeamOrPersonBase<?> exAuthor;
     private TeamOrPersonBase<?> basAuthor;
@@ -158,21 +158,21 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         assertEquals("Species Name should be Any species", "Any species", speciesName.getNameCache());
         assertEquals("Species Name should be Any species", "Any species", speciesName.getTitleCache());
         assertEquals("subSpeciesNameString should be correct", subSpeciesNameString, subSpeciesName.getNameCache());
-        BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
+        IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
         botName.setGenusOrUninomial("Lepidocaryum");
         botName.setSpecificEpithet("tenue");
         botName.setInfraSpecificEpithet("tenue");
         assertEquals("", "Lepidocaryum tenue var. tenue", botName.getNameCache());
-        BotanicalName specName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        IBotanicalName specName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         specName.setGenusOrUninomial("Genus");
         specName.setSpecificEpithet("");
         assertEquals("Empty species string must not result in trailing whitespace", "Genus", specName.getNameCache());
 
         //unranked taxa
         String unrankedCache;
-        BotanicalName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
+        TaxonName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
         unrankedName.setGenusOrUninomial("Genus");
-        NonViralNameDefaultCacheStrategy<BotanicalName> strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+        NonViralNameDefaultCacheStrategy strategy = NonViralNameDefaultCacheStrategy.NewInstance();
             //infraspecific
         unrankedName.setInfraSpecificEpithet("infraspecific");
         unrankedName.setSpecificEpithet("species");
@@ -214,7 +214,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         speciesName.setInfraGenericEpithet("Infraabies");
         assertEquals("Species Name should be Abies (Infraabies) alba", "Abies (Infraabies) alba", speciesName.getNameCache());
 
-        BotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
+        IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
         botName.setGenusOrUninomial("Lepidocaryum");
         botName.setInfraGenericEpithet("Infralepi");
         botName.setSpecificEpithet("tenue");
@@ -312,41 +312,41 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testOriginalSpelling() {
     	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
-    	TaxonNameBase<?,?> originalName = (TaxonNameBase<?,?>)speciesName.clone();
+    	TaxonName originalName = (TaxonName)speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
 
     	speciesName.addRelationshipFromName(originalName, origSpellingType, null);
-    	Assert.assertEquals("Abies alba (as \u201calpa\u201d)", speciesName.getFullTitleCache());
+    	Assert.assertEquals("Abies alba [as \"alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
     	originalName.setGenusOrUninomial("Apies");
     	speciesName.setNameCache(null, false);
     	//TODO update cache of current name (species name)
-    	Assert.assertEquals("Abies alba (as \u201cApies alpa\u201d)", speciesName.getFullTitleCache());
+    	Assert.assertEquals("Abies alba [as \"Apies alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
     	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
-    	TaxonNameBase<?,?> originalSpelling = (TaxonNameBase<?,?>)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
+    	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
     	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
-    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
+    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \"glabratus\"]", correctName.getFullTitleCache());
 
     	correctName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference [as \"glabratus\"]", correctName.getFullTitleCache());
         citationRef.setProtectedTitleCache(false);
         citationRef.setTitle("Sp. Pl.");
         citationRef.setDatePublished(TimePeriodParser.parseString("1988"));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 (as \u201cglabratus\u201d)", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"]", correctName.getFullTitleCache());
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 (as \u201cglabratus\u201d), nom. illeg.", correctName.getFullTitleCache());
+        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
 
     	//TODO add more tests when specification of exact behaviour is clearer
 
@@ -555,7 +555,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testGetInfraGenericNames(){
         String author = "Anyauthor";
-        INonViralName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SUBGENUS());
+        TaxonName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SUBGENUS());
         nonViralName.setGenusOrUninomial("Genus");
         nonViralName.setInfraGenericEpithet("subgenus");
         nonViralName.setAuthorshipCache(author);
@@ -620,7 +620,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
      */
     @Test
     public void testGetTaggedNameSpeciesAggregate() {
-        BotanicalName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
+        TaxonName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
         speciesAggregate.setGenusOrUninomial("Mygenus");
         speciesAggregate.setSpecificEpithet("myspecies");
         List<TaggedText> taggedName = strategy.getTaggedName(speciesAggregate);
@@ -668,6 +668,21 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	name.setExCombinationAuthorship(exCombTeam);
 
     	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
+    }
+
+    @Test //#6656
+    public void testAutonymHybrids(){
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+        name.setGenusOrUninomial("Ophrys");
+        name.setSpecificEpithet("kastelli");
+        name.setInfraSpecificEpithet("kastelli");
+        Team combTeam = Team.NewTitledInstance("E. Klein", "E. Klein");
+        name.setCombinationAuthorship(combTeam);
+        name.setBinomHybrid(true);
+        name.setTrinomHybrid(true);
+
+        String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
+        Assert.assertEquals("", expected, name.getTitleCache());
     }
 
 

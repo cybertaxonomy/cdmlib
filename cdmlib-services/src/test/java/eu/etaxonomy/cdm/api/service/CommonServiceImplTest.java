@@ -133,7 +133,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 //		SpecimenOrObservationBase spec1 = Specimen.NewInstance();
 //
 //		desc1.addDescribedSpecimenOrObservation(spec1);
-//		//Taxon taxon = Taxon.NewInstance(taxonNameBase, sec)
+//		//Taxon taxon = Taxon.NewInstance(taxonName, sec)
 //		spec1.addDescription(desc2);
 //
 //		occurrenceService.save(spec1);

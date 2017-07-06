@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -21,7 +22,6 @@ import eu.etaxonomy.cdm.ext.ipni.IpniService.IpniRank;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  *
  */
-//@Ignore
+@Ignore //preliminary
 public class IpniServiceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);
@@ -71,10 +71,10 @@ public class IpniServiceTest {
 	}
 
 	@Test
-	 @DataSets({
-	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-	        })
+	@DataSets({
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	    @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+	})
 	public void testGetAuthors(){
 		ICdmRepository services = null;
 		IpniServiceAuthorConfigurator config = new IpniServiceAuthorConfigurator();
@@ -89,8 +89,10 @@ public class IpniServiceTest {
 
 			Assert.assertEquals("There should be exactly 1 result for 'Greuter'", 1, authorList.size());
 			Person author = authorList.get(0);
-			//title cache
-			Assert.assertEquals("Title Cache for Greuter should be 'Werner Rodolfo Greuter'", "Werner Rodolfo Greuter", author.getTitleCache());
+			//full title
+			Assert.assertEquals("Full title for Greuter should be 'Werner Rodolfo Greuter'", "Werner Rodolfo Greuter", author.getFullTitle());
+            //title cache
+            Assert.assertEquals("Title cache for Greuter should be 'Greuter, W.R.'", "Greuter, W.R.", author.getTitleCache());
 			//alternative names
 			Assert.assertEquals("One extension for the alternative name should exist", 1, author.getExtensions().size());
 			Extension alternativeName = author.getExtensions().iterator().next();
@@ -152,9 +154,9 @@ public class IpniServiceTest {
 
 	@Test
 	@DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-        })
+    })
 	public void testGetNamesAdvanced(){
 		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = IpniServiceNamesConfigurator.NewInstance();
@@ -170,7 +172,7 @@ public class IpniServiceTest {
 		String publicationTitle = "";
 		IpniRank rankToReturn = IpniRank.valueOf(Rank.SUBSPECIES());
 
-		List<BotanicalName> nameList = service1.getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, publicationTitle, rankToReturn, config, services);
+		List<IBotanicalName> nameList = service1.getNamesAdvanced(family, genus, species, infraFamily, infraGenus, infraSpecies, authorAbbrev, publicationTitle, rankToReturn, config, services);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 
 
