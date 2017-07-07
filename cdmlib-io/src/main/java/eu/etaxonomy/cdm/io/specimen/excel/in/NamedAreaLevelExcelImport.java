@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportBase;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
  * @created 15.05.2010
  */
 @Component
-public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExcelImportState>  implements ICdmIO<SpecimenCdmExcelImportState> {
+public class NamedAreaLevelExcelImport  extends ExcelImportBase<SpecimenCdmExcelImportState>  implements ICdmIO<SpecimenCdmExcelImportState> {
 	private static final Logger logger = Logger.getLogger(NamedAreaLevelExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "AreaLevels";

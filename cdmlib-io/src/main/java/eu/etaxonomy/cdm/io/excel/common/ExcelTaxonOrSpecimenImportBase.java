@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * @author a.mueller
  * @date 12.07.2011
  */
-public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ROW>, ROW extends ExcelRowBase> extends ExcelImporterBase<STATE> {
+public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ROW>, ROW extends ExcelRowBase> extends ExcelImportBase<STATE> {
 	private static final Logger logger = Logger.getLogger(ExcelTaxonOrSpecimenImportBase.class);
 
 

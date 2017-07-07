@@ -35,11 +35,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.babadshanjan
  * @created 17.12.2008
  */
-public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>>
+public abstract class ExcelImportBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>>
         extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
 
     private static final long serialVersionUID = 2759164811664484732L;
-    private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
+    private static final Logger logger = Logger.getLogger(ExcelImportBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
