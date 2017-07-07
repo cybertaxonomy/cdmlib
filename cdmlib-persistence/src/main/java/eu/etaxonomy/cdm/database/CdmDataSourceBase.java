@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 /**
  * @author a.mueller
  * @created 18.12.2008
- * @veresultSetion 1.0
  */
 abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
