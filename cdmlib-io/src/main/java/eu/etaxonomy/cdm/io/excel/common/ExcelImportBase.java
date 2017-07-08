@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.babadshanjan
  * @created 17.12.2008
  */
-public abstract class ExcelImportBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>>
-        extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
+public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW>, CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
+        extends CdmImportBase<CONFIG, STATE> {
 
     private static final long serialVersionUID = 2759164811664484732L;
     private static final Logger logger = Logger.getLogger(ExcelImportBase.class);

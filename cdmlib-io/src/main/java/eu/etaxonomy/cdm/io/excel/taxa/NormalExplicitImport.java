@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 
 @Component
-public class NormalExplicitImport extends TaxonExcelImporterBase {
+public class NormalExplicitImport extends TaxonExcelImportBase {
     private static final long serialVersionUID = 3642423349766191160L;
 
     private static final Logger logger = Logger.getLogger(NormalExplicitImport.class);
