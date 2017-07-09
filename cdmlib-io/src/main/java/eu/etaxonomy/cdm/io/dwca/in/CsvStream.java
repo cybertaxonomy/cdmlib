@@ -83,7 +83,7 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 			next = null;
 			return resultItem;
 		}else{
-			resultMap = new HashMap<String, String>();
+			resultMap = new HashMap<>();
 			try {
 				String[] next = csvReader.readNext();
 				line++;
@@ -176,7 +176,6 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 			return "CsvStream for " + CdmUtils.Nz(archiveEntry.getRowType() + " at line " + line);
 		}
 	}
-
 
 
 }

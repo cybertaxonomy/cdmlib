@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 
 /**
  * {@link GenericApplicationContext Generic application context} which allows progress monitoring.
+ *
  * @author a.mueller
  * @date 29.09.2011
  *
@@ -55,6 +56,7 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
         return countTasks;
     }
 
+    @Override
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
         String task = "Invoke bean factory post processors";
         checkMonitorCancelled(currentMonitor);
@@ -64,6 +66,7 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
         checkMonitorCancelled(currentMonitor);
     }
 
+    @Override
     protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory){
         checkMonitorCancelled(currentMonitor);
         String task = "Finish bean factory initialization";
@@ -89,10 +92,6 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
         return currentMonitor;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.springframework.context.support.AbstractApplicationContext#refresh()
-     */
     public void refresh(IProgressMonitor monitor) throws BeansException, IllegalStateException {
         checkMonitorCancelled(monitor);
         String message = "Refresh application context. This might take a while ...";

@@ -858,7 +858,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
     @Override
     public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths)  {
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add(fieldName);
         if(appendedPropertyPaths != null && !appendedPropertyPaths.isEmpty()) {
             for(String app : appendedPropertyPaths) {
