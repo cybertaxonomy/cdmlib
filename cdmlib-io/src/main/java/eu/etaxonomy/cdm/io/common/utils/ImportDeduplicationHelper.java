@@ -20,6 +20,8 @@ import java.util.function.Predicate;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -27,6 +29,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -61,12 +64,53 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private Map<String, Institution> institutionMap = new HashMap<>();
     //using titleCache
     private Map<String, Set<INonViralName>> nameMap = new HashMap<>();
-    private static Map<String, Set<Rights>> copyrightMap = new HashMap<>();
+    private Map<String, Set<Rights>> copyrightMap = new HashMap<>();
 
 
     private IMatchStrategy referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
     private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
 
+
+
+    public void restartSession(){
+        restartSession(repository, null);
+    }
+
+    public void restartSession(ICdmRepository repository, ImportResult importResult){
+        if (repository == null){
+            return;
+        }
+        personMap = refreshMap(personMap, (IService)repository.getAgentService(), importResult);
+        teamMap = refreshMap(teamMap, (IService)repository.getAgentService(), importResult);
+        institutionMap = refreshMap(institutionMap, (IService)repository.getAgentService(), importResult);
+    }
+
+
+    /**
+     * @param oldMap
+     * @param service
+     * @return
+     */
+    private <T extends ICdmBase> Map<String, T> refreshMap(Map<String, T> oldMap,
+            IService<T> service, ImportResult importResult) {
+        Map<String, T> newMap = new HashMap<>();
+        for (String key : oldMap.keySet()){
+            T old = oldMap.get(key);
+            if (old!= null){
+                T cdmBase = service.find(old.getId());
+                if (cdmBase == null){
+                    String message = "No cdm object was found for id " + old.getId() + " of class " + old.getClass().getSimpleName();
+                    importResult.addWarning(message);
+                }else{
+                    newMap.put(key, cdmBase);
+                }
+            }else{
+                String message = "Value for key " +  key + " was null in deduplication map";
+                importResult.addWarning(message);
+            }
+        }
+        return newMap;
+    }
 
 // ************************** FACTORY *******************************/
 
@@ -436,5 +480,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             return right.getUuid().toString();
         }
     }
+
 
 }
