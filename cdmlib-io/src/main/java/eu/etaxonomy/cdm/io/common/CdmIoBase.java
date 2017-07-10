@@ -43,7 +43,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     private static final long serialVersionUID = -2216451655392574659L;
     private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
-    private final Set<IIoObserver> observers = new HashSet<IIoObserver>();
+    private final Set<IIoObserver> observers = new HashSet<>();
     protected String ioName = null;
 
 

@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class RepresentationCsvImportConfigurator
         extends SimpleImportConfiguratorBase<InputStreamReader>{
+
     private static final long serialVersionUID = -3602889553095677715L;
 
     private boolean overrideWithEmpty;

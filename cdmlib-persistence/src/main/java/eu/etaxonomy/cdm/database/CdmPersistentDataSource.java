@@ -471,13 +471,13 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			ICdmDataSource dataSource)  throws IllegalArgumentException{
 
 		if(dataSource.getDatabaseType() == null){
-			new IllegalArgumentException("Database type not specified");
+			throw new IllegalArgumentException("Database type not specified");
 		}
 
 		if(dataSource.getDatabaseType().equals(DatabaseTypeEnum.H2)){
 			Class<? extends DataSource> dataSourceClass =  LocalH2.class;
 			if(dataSource.getMode() == null) {
-				new IllegalArgumentException("H2 mode not specified");
+			    throw new IllegalArgumentException("H2 mode not specified");
 			}
 			return save(
 					strDataSourceName,
@@ -565,7 +565,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			CdmPersistentDataSource dataSource = (CdmPersistentDataSource)obj;
 			return (getName() == dataSource.getName());
 		}
-
 	}
 
 	@Override
@@ -573,16 +572,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		if (getName() != null){
 			return getName();
 		}else{
-			return null;
+			return super.toString();
 		}
 	}
-
-
-
-
-
-
-
-
-
 }

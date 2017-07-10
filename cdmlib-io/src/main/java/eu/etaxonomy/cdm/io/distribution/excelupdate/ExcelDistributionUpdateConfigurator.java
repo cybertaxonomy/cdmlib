@@ -50,7 +50,6 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
      */
     @Override
     public <STATE extends ImportStateBase> STATE getNewState() {
-        // TODO Auto-generated method stub
         return (STATE)new ExcelDistributionUpdateState(this);
     }
 

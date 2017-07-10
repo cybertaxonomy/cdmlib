@@ -20,7 +20,8 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ImportResult;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @Component
 public class ExcelDistributionUpdate
-            extends ExcelImporterBase<ExcelDistributionUpdateState>{
+            extends ExcelImportBase<ExcelDistributionUpdateState, ExcelDistributionUpdateConfigurator, ExcelRowBase>{
 
     private static final long serialVersionUID = 621338661492857764L;
     private static final Logger logger = Logger.getLogger(ExcelDistributionUpdate.class);

@@ -36,7 +36,8 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 
-public interface IIdentifiableEntityService<T extends IdentifiableEntity> extends IAnnotatableService<T> {
+public interface IIdentifiableEntityService<T extends IdentifiableEntity>
+            extends IAnnotatableService<T> {
 
     /**
      * (Re-)generate the title caches for all objects of this concrete IdentifiableEntity class.

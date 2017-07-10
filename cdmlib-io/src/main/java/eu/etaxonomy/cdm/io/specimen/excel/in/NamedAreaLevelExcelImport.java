@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportBase;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
@@ -27,8 +27,13 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
  * @created 15.05.2010
  */
 @Component
-public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExcelImportState>  implements ICdmIO<SpecimenCdmExcelImportState> {
-	private static final Logger logger = Logger.getLogger(NamedAreaLevelExcelImport.class);
+public class NamedAreaLevelExcelImport
+         extends ExcelImportBase<SpecimenCdmExcelImportState, SpecimenCdmExcelImportConfigurator, SpecimenRow>
+         implements ICdmIO<SpecimenCdmExcelImportState> {
+
+    private static final long serialVersionUID = 6790172880945153291L;
+
+    private static final Logger logger = Logger.getLogger(NamedAreaLevelExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "AreaLevels";
 
@@ -41,18 +46,18 @@ public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExc
 	private static final String GEOSERVER_ATTRIBUTE_COLUMN = "GeoserverAttribute";
 	private static final String ORDER_INDEX_COLUMN = "OrderIndex";
 
-	
+
 	public NamedAreaLevelExcelImport() {
 		super();
 	}
-	
+
 	@Override
 	protected void analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
 		Set<String> keys = record.keySet();
-    	
+
     	NamedAreaLevellRow row = new NamedAreaLevellRow();
     	state.setNamedAreaLevelRow(row);
-    	
+
     	for (String originalKey: keys) {
     		Integer index = 0;
     		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
@@ -68,15 +73,15 @@ public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExc
 					continue;
 				}
     		}
-    		
-    		String value = (String) record.get(indexedKey);
+
+    		String value = record.get(indexedKey);
     		if (! StringUtils.isBlank(value)) {
     			if (logger.isDebugEnabled()) { logger.debug(key + ": " + value); }
         		value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
     		}else{
     			continue;
     		}
-    		
+
     		if (key.equalsIgnoreCase(UUID_COLUMN)) {
     			row.setUuid(UUID.fromString(value)); //VALIDATE UUID
  			} else if(key.equalsIgnoreCase(LABEL_COLUMN)) {
@@ -90,9 +95,9 @@ public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExc
 			} else if(key.equalsIgnoreCase(GEOSERVER_LABEL_COLUMN)) {
 				row.setGeoserverLabel(value);
 			} else if(key.equalsIgnoreCase(GEOSERVER_ATTRIBUTE_COLUMN)) {
-				row.setGeoServerAttribute(value);		
+				row.setGeoServerAttribute(value);
 			} else if(key.equalsIgnoreCase(ORDER_INDEX_COLUMN)) {
-				row.setOrderIndex(value);		
+				row.setOrderIndex(value);
 			}else {
 				state.setUnsuccessfull();
 				logger.error("Unexpected column header " + key);
@@ -105,25 +110,25 @@ public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExc
 	@Override
 	protected void firstPass(SpecimenCdmExcelImportState state) {
 		NamedAreaLevellRow row = state.getNamedAreaLevelRow();
-		
+
 		//level
 		UUID uuid = row.getUuid();
 		String label = row.getAbbreviation();
 		String text = row.getDescription();
 		String labelAbbrev = row.getAbbreviation();
-		
+
 		NamedAreaLevel level = getNamedAreaLevel(state, uuid, label, text, labelAbbrev, null);
-		
+
 		//TODO orderIndex
-		
+
 		//TODO geoserverLabel
-		
+
 		//TODO geoserverAttribute
-		
+
 		if (StringUtils.isNotBlank(row.getPostfix())){
 			state.putPostfixLevel(row.getPostfix(), level);
 		}
-		
+
 		//save
 		getTermService().save(level);
 		return;
@@ -146,10 +151,11 @@ public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExc
 		return true;
 	}
 
-	protected String getWorksheetName() {
+	@Override
+    protected String getWorksheetName() {
 		return WORKSHEET_NAME;
 	}
-	
+
 	@Override
 	protected boolean needsNomenclaturalCode() {
 		return false;

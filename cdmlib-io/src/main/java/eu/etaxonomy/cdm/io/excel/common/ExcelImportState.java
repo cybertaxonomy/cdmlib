@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  */
 public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
-        extends ImportStateBase<CONFIG, ExcelImporterBase>{
+        extends ImportStateBase<CONFIG, ExcelImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
 

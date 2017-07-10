@@ -34,7 +34,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 
 	private DatabaseTypeEnum dbType;
-	private String server;
 	private String database;
 	private int port = -1;
 	private String username;
