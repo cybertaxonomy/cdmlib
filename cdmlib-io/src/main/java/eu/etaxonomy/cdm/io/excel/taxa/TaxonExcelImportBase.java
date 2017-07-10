@@ -17,13 +17,11 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase;
 /**
  * @author a.babadshanjan
  * @created 09.01.2009
+ * @version 1.0
  */
 public abstract class TaxonExcelImportBase
-        extends ExcelTaxonOrSpecimenImportBase<TaxonExcelImportState, ExcelImportConfiguratorBase, NormalExplicitRow> {
-
-    private static final long serialVersionUID = -7413084876263450421L;
-
-    @SuppressWarnings("unused")
+extends ExcelTaxonOrSpecimenImportBase<TaxonExcelImportState, ExcelImportConfiguratorBase, NormalExplicitRow> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImportBase.class);
 
 	/*
@@ -86,7 +84,9 @@ public abstract class TaxonExcelImportBase
     protected static final String INFRA_GENUS_COLUMN = "Infragenus";
     protected static final String SPECIES_COLUMN = "Species";
     protected static final String INFRA_SPECIES_COLUMN = "InfraSpecies";
-    protected static final String INFRA_SPECIES_RANK_COLUMN = "Infraspecific rank";
+    protected static final String INFRA_SPECIES_EPITHET_COLUMN = "Infraspecificepithet";
+
+    protected static final String INFRA_SPECIES_RANK_COLUMN = "Infraspecificrank";
     protected static final String FULLNAME_COLUMN = "Fullnamewithoutfamilyandauthors";
     protected static final String HYBRID_GENUS_COLUMN = "HybridGenus";
     protected static final String HYBRID_COLUMN = "Hybrid";
@@ -103,4 +103,5 @@ public abstract class TaxonExcelImportBase
     protected static final String SOURCE_COLUMN = "Source";
     protected static final String SOURCE_ID_COLUMN = "SourceId";
 }
+
 

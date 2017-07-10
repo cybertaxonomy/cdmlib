@@ -174,7 +174,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
             normalExplicitRow.setInfraGenus(value);
         }else if(key.equalsIgnoreCase(SPECIES_COLUMN)) {
             normalExplicitRow.setSpecies(value);
-        }else if(key.equalsIgnoreCase(INFRA_SPECIES_COLUMN)) {
+        }else if(key.equalsIgnoreCase(INFRA_SPECIES_COLUMN) || key.equalsIgnoreCase(INFRA_SPECIES_EPITHET_COLUMN)) {
             normalExplicitRow.setInfraSpecies(value);
         }else if(key.equalsIgnoreCase(INFRA_SPECIES_RANK_COLUMN)) {
             normalExplicitRow.setInfraSpecies_Rank(value);
@@ -277,9 +277,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		if (cdmUuid != null){
 			taxonBase = getTaxonService().find(cdmUuid);
 		}else{
-			if (rankStr == null){
+			if (rankStr == null || StringUtils.isBlank(rankStr)){
 			    if (taxonDataHolder.getInfraSpecies() != null){
-			        if (taxonDataHolder.getInfraSpecies_Rank() !=  null){
+			        if (taxonDataHolder.getInfraSpecies_Rank() !=  null || !StringUtils.isBlank(taxonDataHolder.getInfraSpecies_Rank()) ){
 			            try {
                             rank = Rank.getRankByNameOrIdInVoc(taxonDataHolder.getInfraSpecies_Rank());
                         } catch (UnknownCdmTypeException e) {
@@ -367,6 +367,15 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		    taxonBase.getName().addIdentifier(Identifier.NewInstance(ipni_id, DefinedTerm.IPNI_NAME_IDENTIFIER()));
 		}
 
+		if (source != null){
+		    Reference sourceRef = state.getReference(source);
+		    if (sourceRef == null){
+		        sourceRef = ReferenceFactory.newGeneric();
+		        sourceRef.setTitleCache(source, true);
+		        state.putReference(source, sourceRef);
+		    }
+		    taxonBase.addSource(OriginalSourceType.PrimaryTaxonomicSource, source_id,"Taxon" ,sourceRef, null);
+		}
 
 		//state.putTaxon(id, taxonBase);
 		taxonBase = getTaxonService().save(taxonBase);
