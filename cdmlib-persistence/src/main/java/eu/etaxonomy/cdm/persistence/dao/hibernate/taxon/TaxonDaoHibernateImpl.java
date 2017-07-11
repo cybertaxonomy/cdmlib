@@ -20,6 +20,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -435,8 +436,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     hql +=  " from %s t " +
                             " where t.id in (:taxa) ";
 
-                } else{
+                } else if (StringUtils.isBlank(queryString)){
                     hql = "select " + selectWhat + " from %s t";
+                } else{
+                    return null;
                 }
 
             String classString;
