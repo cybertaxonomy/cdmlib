@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -22,8 +20,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -76,31 +72,42 @@ public class Character extends Feature {
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
 
-    /**
-     * Creates a new empty feature instance.
-     *
-     * @see #NewInstance(String, String, String)
-     */
     public static Character NewInstance() {
         return new Character();
     }
 
+
     /**
-     * Creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
-     * a label and a label abbreviation.
+     * Class constructor: creates a new character instance associated with
+     * the given structure and property node
      *
-     * @param   term         the string (in the default language) describing the
-     *                       new feature to be created
-     * @param   label        the string identifying the new feature to be created
-     * @param   labelAbbrev  the string identifying (in abbreviated form) the
-     *                       new feature to be created
-     * @see                  #readCsvLine(List, Language)
-     * @see                  #NewInstance()
+     * @param structure The structure feature node for this character
+     * @param property The property feature node for this character
+     * @see #Feature()
      */
     public static Character NewInstance(FeatureNode structure, FeatureNode property){
         return new Character(structure, property, null, null, null);
     }
 
+
+    /**
+     * Class constructor: creates a new character instance associated with
+     * the given structure and property node with a description
+     * (in the {@link Language#DEFAULT() default language}), a label and a label
+     * abbreviation.
+     *
+     * @param structure The structure feature node for this character
+     * @param property The property feature node for this character
+     * @param term
+     *            the string (in the default language) describing the new
+     *            feature to be created
+     * @param label
+     *            the string identifying the new feature to be created
+     * @param labelAbbrev
+     *            the string identifying (in abbreviated form) the new feature
+     *            to be created
+     * @see #Feature()
+     */
     public static Character NewInstance(FeatureNode structure, FeatureNode property, String term, String label, String labelAbbrev){
         return new Character(structure, property, term, label, labelAbbrev);
     }
@@ -114,15 +121,22 @@ public class Character extends Feature {
 
 
     /**
-     * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
-     * a label and a label abbreviation.
+     * Class constructor: creates a new character instance associated with
+     * the given structure and property node with a description
+     * (in the {@link Language#DEFAULT() default language}), a label and a label
+     * abbreviation.
      *
-     * @param   term         the string (in the default language) describing the
-     *                       new feature to be created
-     * @param   label        the string identifying the new feature to be created
-     * @param   labelAbbrev  the string identifying (in abbreviated form) the
-     *                       new feature to be created
-     * @see                  #Feature()
+     * @param structure The structure feature node for this character
+     * @param property The property feature node for this character
+     * @param term
+     *            the string (in the default language) describing the new
+     *            feature to be created
+     * @param label
+     *            the string identifying the new feature to be created
+     * @param labelAbbrev
+     *            the string identifying (in abbreviated form) the new feature
+     *            to be created
+     * @see #Feature()
      */
     protected Character(FeatureNode structure, FeatureNode property, String term, String label, String labelAbbrev) {
         super(term, label, labelAbbrev);
