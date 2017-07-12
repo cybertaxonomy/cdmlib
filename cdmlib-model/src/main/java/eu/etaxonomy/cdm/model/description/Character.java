@@ -62,7 +62,7 @@ public class Character extends Feature {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private FeatureNode structure;
 
     @XmlElement(name = "Property")
@@ -70,7 +70,7 @@ public class Character extends Feature {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private FeatureNode property;
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
