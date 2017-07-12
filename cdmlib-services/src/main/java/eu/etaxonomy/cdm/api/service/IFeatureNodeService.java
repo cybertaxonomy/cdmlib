@@ -40,19 +40,19 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
 
     /**
      * Adds the specified feature as a child node to the given feature node
-     * @param node the feature node where the new feature should be added
+     * @param parentNode the feature node where the new feature should be added
      * @param featureChild the feature which should be added to the given feature node
      * @return the result of the operation
      */
-    public UpdateResult addChildFeaturNode(FeatureNode node, Feature featureChild);
+    public UpdateResult addChildFeatureNode(FeatureNode parentNode, Feature featureChild);
 
     /**
      * Adds the specified feature as a child node to the given feature node
-     * @param nodeUUID the UUID of the feature node where the new feature should be added
+     * @param parentNodeUUID the UUID of the feature node where the new feature should be added
      * @param featureChildUuid the UUID of the feature which should be added to the given feature node
      * @return the result of the operation
      */
-    public UpdateResult addChildFeaturNode(UUID nodeUUID, UUID featureChildUuid);
+    public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID featureChildUuid);
 
     /**
      * Moves a given {@link FeatureNode} to the target node at the given position;
