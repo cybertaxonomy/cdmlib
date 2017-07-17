@@ -633,11 +633,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.setAbort();
             result.addException(new Exception("The moving type "+ movingType +" is not supported."));
         }
-        result.addUpdatedObject(newParent);
-        result.addUpdatedObject(taxonNode.getParent());
-        result.setCdmEntity(taxonNode);
+
 
         taxonNode = newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        result.addUpdatedObject(newParent);
+        result.addUpdatedObject(oldParent);
+        result.setCdmEntity(taxonNode);
 
         dao.saveOrUpdate(taxonNode);
         dao.saveOrUpdate(oldParent);
