@@ -70,6 +70,8 @@ import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.format.CdmFormatterFactory;
+import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -412,7 +414,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Partial gatheringDate = gatheringEvent.getGatheringDate();
             String dateString = null;
             if (gatheringDate != null) {
-                gatheringDate.toString();
+                dateString = gatheringDate.toString();
             }
             else if(gatheringEvent.getTimeperiod()!=null && gatheringEvent.getTimeperiod().getFreeText()!=null){
                 dateString = gatheringEvent.getTimeperiod().getFreeText();
@@ -524,24 +526,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
 
-        // check identifiers in priority order accNo>barCode>catalogNumber>collection
-        String identifier = derivedUnit.getMostSignificantIdentifier();
-        if(CdmUtils.isBlank(identifier) && derivedUnit.getCollection()!=null){
-        	identifier = derivedUnit.getCollection().toString();
+        //specimen identifier
+        FormatKey collectionKey = FormatKey.COLLECTION_CODE;
+        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] { FormatKey.COLLECTION_CODE });
+        if (CdmUtils.isBlank(specimenIdentifier)) {
+            collectionKey = FormatKey.COLLECTION_NAME;
         }
-        if(CdmUtils.isBlank(identifier)){
-        	identifier = derivedUnit.getTitleCache();
-        	if(CdmUtils.isBlank(identifier) && !derivedUnit.isProtectedTitleCache()){
-        		//regenerate title cache if it is empty
-        		derivedUnit.setTitleCache(null);
-        		identifier = derivedUnit.getTitleCache();
-        	}
+        specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                collectionKey, FormatKey.SPACE,
+                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.SPACE });
+        if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getUuid().toString();
         }
-        if(CdmUtils.isBlank(identifier)){
-        	//default fallback UUID
-        	identifier = derivedUnit.getUuid().toString();
-        }
-        preservedSpecimenDTO.setAccessionNumber(identifier);
+        preservedSpecimenDTO.setAccessionNumber(specimenIdentifier);
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
 
         //preferred stable URI
