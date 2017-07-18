@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
@@ -42,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -72,9 +70,6 @@ public class EditGeoService implements IEditGeoService {
 
     @Autowired
     private IGeoServiceAreaMapping areaMapping;
-
-    @Autowired
-    private IDescriptionService descriptionService;
 
     @Autowired
     private ITermVocabularyDao vocabDao;
@@ -205,16 +200,14 @@ public class EditGeoService implements IEditGeoService {
      * {@inheritDoc}
      */
     @Override
-    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
+    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(
+            List<SpecimenOrObservationBase> specimensOrObersvations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
-        List<Point> fieldUnitPoints = new ArrayList<Point>();
-        List<Point> derivedUnitPoints = new ArrayList<Point>();
+        List<Point> fieldUnitPoints = new ArrayList<>();
+        List<Point> derivedUnitPoints = new ArrayList<>();
 
-        IndividualsAssociation individualsAssociation;
-        DerivedUnit derivedUnit;
-
-        for (SpecimenOrObservationBase specimenOrObservationBase : specimensOrObersvations) {
+        for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObersvations) {
             SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao
                     .load(specimenOrObservationBase.getUuid());
 
@@ -243,6 +236,7 @@ public class EditGeoService implements IEditGeoService {
                 hideMarkedAreas, fallbackAreaMarkerType, recipe, langs);
     }
 
+    @Override
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
@@ -271,7 +265,7 @@ public class EditGeoService implements IEditGeoService {
 
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null) {
-            for (SpecimenOrObservationBase original : originals) {
+            for (SpecimenOrObservationBase<?> original : originals) {
                 if (original instanceof FieldUnit) {
                     if (((FieldUnit) original).getGatheringEvent() != null) {
                         Point point = ((FieldUnit) original).getGatheringEvent().getExactLocation();
@@ -327,7 +321,7 @@ public class EditGeoService implements IEditGeoService {
             areas.addAll(areaVocabulary.getTerms());
         }
         if(namedAreaUuids != null && !namedAreaUuids.isEmpty()){
-            for(DefinedTermBase dtb : termDao.list(namedAreaUuids, null, null, null, null)){
+            for(DefinedTermBase<?> dtb : termDao.list(namedAreaUuids, null, null, null, null)){
                 areas.add((NamedArea)dtb);
             }
         }
