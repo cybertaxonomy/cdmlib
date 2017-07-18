@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -212,8 +213,10 @@ public class EditGeoService implements IEditGeoService {
                     .load(specimenOrObservationBase.getUuid());
 
             if (specimenOrObservation instanceof FieldUnit) {
-                fieldUnitPoints.add(((FieldUnit) specimenOrObservation).getGatheringEvent()
-                        .getExactLocation());
+                GatheringEvent gatherEvent = ((FieldUnit) specimenOrObservation).getGatheringEvent();
+                if (gatherEvent != null && gatherEvent.getExactLocation() != null){
+                    fieldUnitPoints.add(gatherEvent.getExactLocation());
+                }
             }
             if (specimenOrObservation instanceof DerivedUnit) {
                 registerDerivedUnitLocations((DerivedUnit) specimenOrObservation, derivedUnitPoints);
