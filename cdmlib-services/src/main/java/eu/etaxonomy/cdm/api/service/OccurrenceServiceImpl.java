@@ -396,7 +396,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
             // Country
             NamedArea country = gatheringEvent.getCountry();
-            fieldUnitDTO.setCountry(country != null ? country.getDescription() : null);
+            fieldUnitDTO.setCountry(country != null ? country.getLabel() : null);
             // Collection
             AgentBase collector = gatheringEvent.getCollector();
             String fieldNumber = fieldUnit.getFieldNumber();
