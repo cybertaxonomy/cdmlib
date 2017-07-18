@@ -83,7 +83,7 @@ public class EditGeoServiceUtilities {
 
     private static HashMap<SpecimenOrObservationType, Color> getDefaultSpecimenOrObservationTypeColors() {
         if(defaultSpecimenOrObservationTypeColors == null){
-            defaultSpecimenOrObservationTypeColors = new HashMap<SpecimenOrObservationType, Color>();
+            defaultSpecimenOrObservationTypeColors = new HashMap<>();
             defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.FieldUnit, Color.ORANGE);
             defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.DerivedUnit, Color.RED);
             defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.LivingSpecimen, Color.GREEN);
@@ -571,10 +571,10 @@ public class EditGeoServiceUtilities {
 
         specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("legend", "0");
 
-        Map<String, String> styleAndData = new HashMap<String, String>();
+        Map<String, String> styleAndData = new HashMap<>();
 
         addToStyleAndData(fieldUnitPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
         addToStyleAndData(derivedUnitPoints, SpecimenOrObservationType.DerivedUnit, specimenOrObservationTypeColors, styleAndData);
