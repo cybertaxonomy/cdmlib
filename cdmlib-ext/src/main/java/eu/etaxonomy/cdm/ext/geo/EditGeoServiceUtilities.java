@@ -620,10 +620,12 @@ public class EditGeoServiceUtilities {
             String style =  "c/" + Integer.toHexString(specimenOrObservationTypeColors.get(specimenOrObservationType).getRGB()).substring(2) + "/10/noLabel";
             StringBuilder data = new StringBuilder();
             for(Point point : points){
-                if(data.length() > 0){
-                    data.append('|');
+                if (point != null){  //should not be null, but just in case
+                    if(data.length() > 0){
+                        data.append('|');
+                    }
+                    data.append(point.getLatitude() + "," + point.getLongitude());
                 }
-                data.append(point.getLatitude() + "," + point.getLongitude());
             }
             int index = styleAndData.size() + 1;
             styleAndData.put(index + ":" +style, index + ":" +data.toString());
