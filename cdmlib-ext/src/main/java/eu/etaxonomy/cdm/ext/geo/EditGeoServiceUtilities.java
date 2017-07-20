@@ -83,7 +83,7 @@ public class EditGeoServiceUtilities {
 
     private static HashMap<SpecimenOrObservationType, Color> getDefaultSpecimenOrObservationTypeColors() {
         if(defaultSpecimenOrObservationTypeColors == null){
-            defaultSpecimenOrObservationTypeColors = new HashMap<SpecimenOrObservationType, Color>();
+            defaultSpecimenOrObservationTypeColors = new HashMap<>();
             defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.FieldUnit, Color.ORANGE);
             defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.DerivedUnit, Color.RED);
             defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.LivingSpecimen, Color.GREEN);
@@ -571,10 +571,10 @@ public class EditGeoServiceUtilities {
 
         specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("legend", "0");
 
-        Map<String, String> styleAndData = new HashMap<String, String>();
+        Map<String, String> styleAndData = new HashMap<>();
 
         addToStyleAndData(fieldUnitPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
         addToStyleAndData(derivedUnitPoints, SpecimenOrObservationType.DerivedUnit, specimenOrObservationTypeColors, styleAndData);
@@ -620,10 +620,12 @@ public class EditGeoServiceUtilities {
             String style =  "c/" + Integer.toHexString(specimenOrObservationTypeColors.get(specimenOrObservationType).getRGB()).substring(2) + "/10/noLabel";
             StringBuilder data = new StringBuilder();
             for(Point point : points){
-                if(data.length() > 0){
-                    data.append('|');
+                if (point != null){  //should not be null, but just in case
+                    if(data.length() > 0){
+                        data.append('|');
+                    }
+                    data.append(point.getLatitude() + "," + point.getLongitude());
                 }
-                data.append(point.getLatitude() + "," + point.getLongitude());
             }
             int index = styleAndData.size() + 1;
             styleAndData.put(index + ":" +style, index + ":" +data.toString());

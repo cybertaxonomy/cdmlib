@@ -98,20 +98,20 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 }
 
 	 @Override
-    public UpdateResult addChildFeaturNode(FeatureNode node, Feature featureChild){
-	     return addChildFeaturNode(node.getUuid(), featureChild.getUuid());
-	 }
-
-	 @Override
-    public UpdateResult addChildFeaturNode(UUID nodeUUID, UUID featureChildUuid){
-	     FeatureNode node = load(nodeUUID);
-	     Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
+	 public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild){
 	     UpdateResult result = new UpdateResult();
-	     FeatureNode childNode = FeatureNode.NewInstance(child);
+	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
 	     save(childNode);
 	     node.addChild(childNode);
 	     result.addUpdatedObject(node);
 	     return result;
+	 }
+
+	 @Override
+	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID featureChildUuid){
+	     FeatureNode node = load(nodeUUID);
+	     Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
+	     return addChildFeatureNode(node, child);
 	 }
 
 	 @Override

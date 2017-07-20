@@ -108,6 +108,8 @@ public class ConversationHolder {
 
     private boolean closed = false;
 
+    private FlushMode defaultFlushMode = FlushMode.COMMIT;
+
     /**
      * Simple constructor used by Spring only
      */
@@ -115,17 +117,37 @@ public class ConversationHolder {
         closed = false;
     }
 
+    /**
+     * Create a new Conversation holder and bind it immediately.
+     *
+     * @param dataSource
+     * @param sessionFactory
+     * @param transactionManager
+     */
     public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory,
             PlatformTransactionManager transactionManager) {
+        this(dataSource, sessionFactory, transactionManager, true);
+    }
+
+    /**
+     * Create a new Conversation holder and optionally bind it immediately.
+     *
+     * @param dataSource
+     * @param sessionFactory
+     * @param transactionManager
+     */
+    public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory,
+            PlatformTransactionManager transactionManager, boolean bindNow) {
         this();
         this.dataSource = dataSource;
         this.sessionFactory = sessionFactory;
         this.transactionManager = transactionManager;
 
-        bind();
-
-        if(TransactionSynchronizationManager.hasResource(getDataSource())){
-            TransactionSynchronizationManager.unbindResource(getDataSource());
+        if(bindNow) {
+            bind();
+            if(TransactionSynchronizationManager.hasResource(getDataSource())){
+                TransactionSynchronizationManager.unbindResource(getDataSource());
+            }
         }
 
     }
@@ -139,6 +161,7 @@ public class ConversationHolder {
         logger.info("Binding resources for ConversationHolder");
 
         if(TransactionSynchronizationManager.isSynchronizationActive()){
+            logger.trace("Clearing active  transaction synchronization");
             TransactionSynchronizationManager.clearSynchronization();
         }
 
@@ -149,10 +172,15 @@ public class ConversationHolder {
 
 
             if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
+                logger.trace("Unbinding resource from TransactionSynchronizationManager with key: " + getSessionFactory());
                 TransactionSynchronizationManager.unbindResource(getSessionFactory());
             }
 
-            logger.info("Binding Session to TransactionSynchronizationManager: Session: " + getSessionHolder());
+            if(logger.isTraceEnabled()){
+                logger.trace("Binding Session to TransactionSynchronizationManager:" + getSessionHolder() + " Session [" + getSessionHolder().getSession().hashCode() + "] with key: " + getSessionFactory());
+            } else {
+                logger.info("Binding Session to TransactionSynchronizationManager: Session: " + getSessionHolder());
+            }
             TransactionSynchronizationManager.bindResource(getSessionFactory(), getSessionHolder());
 
 
@@ -194,8 +222,8 @@ public class ConversationHolder {
 
     public SessionHolder getSessionHolder(){
         if(this.sessionHolder == null){
-            logger.info("Creating new SessionHolder");
             this.sessionHolder = new SessionHolder(getSession());
+            logger.info("Creating new SessionHolder:" + sessionHolder);
         }
         return this.sessionHolder;
     }
@@ -354,7 +382,7 @@ public class ConversationHolder {
         // This will create a new session which must be explicitly managed by this conversation, which includes
         // binding / unbinding / closing session as well as starting / committing transactions.
         Session session = sessionFactory.openSession();
-        session.setFlushMode(FlushMode.COMMIT);
+        session.setFlushMode(getDefaultFlushMode());
 
         return session;
     }
@@ -431,6 +459,20 @@ public class ConversationHolder {
 
     public boolean isCompleted(){
         return transactionStatus == null || transactionStatus.isCompleted();
+    }
+
+    /**
+     * @return the defaultFlushMode
+     */
+    public FlushMode getDefaultFlushMode() {
+        return defaultFlushMode;
+    }
+
+    /**
+     * @param defaultFlushMode the defaultFlushMode to set
+     */
+    public void setDefaultFlushMode(FlushMode defaultFlushMode) {
+        this.defaultFlushMode = defaultFlushMode;
     }
 
 

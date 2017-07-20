@@ -40,8 +40,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * The class to arrange {@link Feature features} (characters) in a tree structure.
  * Feature trees are essential as interactive multiple-access keys for
  * determination process and for systematical output arrangement of
- * {@link DescriptionElementBase description elements} according to different goals but may also be used
- * to define flat feature subsets for filtering purposes.<BR>
+ * {@link DescriptionElementBase description elements} according to different goals
+ * but may also be used to define flat feature subsets for filtering purposes.<BR>
  * A feature tree is build on {@link FeatureNode feature nodes}.
  * <P>
  * This class corresponds partially to ConceptTreeDefType according to the SDD

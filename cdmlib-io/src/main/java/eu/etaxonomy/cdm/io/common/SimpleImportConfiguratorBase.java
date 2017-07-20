@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.terms.RepresentationCsvImport;
 
 /**
  * @author a.mueller
@@ -30,14 +29,6 @@ public abstract class SimpleImportConfiguratorBase<SOURCE extends Object>
         setDestination(destination);
     }
 
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void makeIoClassList(){
-        ioClassList = new Class[]{
-            RepresentationCsvImport.class,
-        };
-    }
 
     /**
      * {@inheritDoc}

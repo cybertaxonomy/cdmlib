@@ -34,7 +34,7 @@
                   
 				          (1)
 				          Do NOT specify the dataSource in the sessionFactory for example in the 
-				          org.springframework.orm.hibernate4.LocalSessionFactoryBean
+				          org.springframework.orm.hibernate5.LocalSessionFactoryBean
 				          !!!==> If *dataSource* is set, this will override corresponding settings in Hibernate properties.!!!
  						  If this is set, the Hibernate settings should not define a connection provider to 
  					      avoid meaningless double configuration.

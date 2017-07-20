@@ -14,16 +14,16 @@ package eu.etaxonomy.cdm.io.common;
  *
  */
 public abstract class SimpleImport<CONFIG extends ImportConfiguratorBase, SOURCE extends Object>
-            extends CdmImportBase<CONFIG, EmptyImportState>{
-    private static final long serialVersionUID = 8928228863002861242L;
+            extends CdmImportBase<CONFIG, EmptyImportState<CONFIG, SimpleImport>>{
 
+    private static final long serialVersionUID = 8928228863002861242L;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doInvoke(EmptyImportState state) {
-        this.doInvoke((CONFIG)state.getConfig());
+    protected void doInvoke(EmptyImportState<CONFIG, SimpleImport> state) {
+        this.doInvoke(state.getConfig());
         return;
     }
 
