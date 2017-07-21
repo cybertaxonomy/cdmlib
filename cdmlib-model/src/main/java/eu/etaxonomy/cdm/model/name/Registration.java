@@ -145,12 +145,22 @@ public class Registration extends AnnotatableEntity {
         return new Registration();
     }
 
+
+    /**
+     * @param identifier
+     * @param specificIdentifier
+     * @param name can be <code>null</code>
+     * @param typeDesignations can be <code>null</code>
+     * @return
+     */
     public static Registration NewInstance(String identifier, String specificIdentifier,
             TaxonName name, Set<TypeDesignationBase> typeDesignations){
         Registration result = new Registration();
         result.setIdentifier(identifier);
         result.setSpecificIdentifier(specificIdentifier);
-        result.setName(name);
+        if(name != null){
+            result.setName(name);
+        }
         if (typeDesignations != null){
             result.setTypeDesignations(typeDesignations);
         }
