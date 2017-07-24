@@ -52,22 +52,22 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     private static final Logger logger = Logger.getLogger(ClassificationServiceImplTest.class);
 
     @SpringBeanByType
-    IClassificationService service;
+    private IClassificationService service;
 
     @SpringBeanByType
-    ITaxonService taxonService;
+    private ITaxonService taxonService;
 
     @SpringBeanByType
-    ITaxonNodeService taxonNodeService;
+    private ITaxonNodeService taxonNodeService;
 
     @SpringBeanByType
-    IClassificationService classificationService;
+    private IClassificationService classificationService;
 
     @SpringBeanByType
-    IClassificationDao classificationDao;
+    private IClassificationDao classificationDao;
 
     @SpringBeanByType
-    IReferenceDao referenceDao;
+    private IReferenceDao referenceDao;
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "childNodes",
