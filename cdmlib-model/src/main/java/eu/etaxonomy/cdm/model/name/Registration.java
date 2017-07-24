@@ -158,9 +158,7 @@ public class Registration extends AnnotatableEntity {
         Registration result = new Registration();
         result.setIdentifier(identifier);
         result.setSpecificIdentifier(specificIdentifier);
-        if(name != null){
-            result.setName(name);
-        }
+        result.setName(name);
         if (typeDesignations != null){
             result.setTypeDesignations(typeDesignations);
         }
@@ -193,7 +191,9 @@ public class Registration extends AnnotatableEntity {
     public TaxonName getName() {return name;}
     public void setName(TaxonName name) {
         if (this.name != null && !this.name.equals(name)){
-            name.getRegistrations().remove(this);
+            if(name != null){
+                name.getRegistrations().remove(this);
+            }
         }
         this.name = name;
         this.name.getRegistrations().add(this);
