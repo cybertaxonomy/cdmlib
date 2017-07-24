@@ -52,7 +52,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private static final String basAuthorString = "Basio, A.";
 	private static final String exBasAuthorString = "ExBas. N.";
 
-	private NonViralNameDefaultCacheStrategy strategy;
+	private TaxonNameDefaultCacheStrategy strategy;
 	private TaxonName familyName;
 	private TaxonName genusName;
 	private TaxonName subGenusName;
@@ -79,7 +79,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	 */
 	@Before
 	public void setUp() throws Exception {
-		strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+		strategy = TaxonNameDefaultCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
 		genusName = TaxonNameFactory.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
 
@@ -132,7 +132,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	 */
 	@Test
 	public final void testNewInstance() {
-	    NonViralNameDefaultCacheStrategy cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
+	    TaxonNameDefaultCacheStrategy cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
 		assertNotNull(cacheStrategy);
 	}
 
@@ -214,7 +214,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, INonViralName.class);
+		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class);
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
 	}

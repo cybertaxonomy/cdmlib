@@ -85,8 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.ViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -607,7 +606,7 @@ public class TaxonName
      * Class constructor: creates a new taxon name instance
      * only containing its {@link Rank rank} and
      * its {@link HomotypicalGroup homotypical group} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      * The new taxon name will be also added to the set of taxon names
      * belonging to this homotypical group.
      *
@@ -636,7 +635,7 @@ public class TaxonName
      * its {@link HomotypicalGroup homotypical group},
      * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
      * its {@link eu.etaxonomy.cdm.model.reference.Reference nomenclatural reference} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      * The new non viral taxon name instance will be also added to the set of
      * non viral taxon names belonging to this homotypical group.
      *
@@ -679,15 +678,15 @@ public class TaxonName
         }else if (this.cacheStrategy != null){
            //
         }else if (getNameType() == NomenclaturalCode.NonViral){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType().isBotanical()){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICZN){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICNB){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();;
+            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }else if (getNameType() == NomenclaturalCode.ICVCN){
-            this.cacheStrategy = ViralNameDefaultCacheStrategy.NewInstance();
+            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }
     }
 
