@@ -97,9 +97,9 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         for (String key : oldMap.keySet()){
             T old = oldMap.get(key);
             if (old!= null){
-                T cdmBase = service.find(old.getId());
+                T cdmBase = service.find(old.getUuid());
                 if (cdmBase == null){
-                    String message = "No cdm object was found for id " + old.getId() + " of class " + old.getClass().getSimpleName();
+                    String message = "No cdm object was found for uuid " + old.getUuid() + " of class " + old.getClass().getSimpleName();
                     importResult.addWarning(message);
                 }else{
                     newMap.put(key, cdmBase);
