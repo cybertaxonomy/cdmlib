@@ -75,9 +75,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		String strCountry = null;
 		NamedArea country = facade.getCountry();
 		Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
-		//TODO currently the label is the 3 digit representation of the country and text is the full text.
-		//this is against the common way of handling text, label and labelabbrev in defined terms
-		strCountry = repCountry == null ? null: repCountry.getText();
+		strCountry = repCountry == null ? null: repCountry.getLabel();
 		result = CdmUtils.concat(", ", result, strCountry);
 
 		//locality
