@@ -10,6 +10,7 @@ target
 .umlproject
 .externalToolBuilders
 error.log
+cdmlib-developer.log
 
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
 cdmlib-io/cdmlib-io.uml
