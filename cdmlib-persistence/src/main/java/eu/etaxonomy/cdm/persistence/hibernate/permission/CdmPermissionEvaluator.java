@@ -54,7 +54,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
-        logger.info("UNINMPLEMENTED: hasPermission always returns false");
+        logger.warn("UNINMPLEMENTED: hasPermission always returns false");
         // TODO Auto-generated method stub
         return false;
     }
