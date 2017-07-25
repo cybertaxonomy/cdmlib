@@ -8,9 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,17 +16,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.security.access.intercept.RunAsUserToken;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -74,14 +66,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 //@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
-public class FirstDataInserter implements ApplicationListener<ContextRefreshedEvent> {
+public class FirstDataInserter extends RunAsAuthenticator implements ApplicationListener<ContextRefreshedEvent> {
 
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
-
-    /**
-     * must match the key in eu/etaxonomy/cdm/services_security.xml
-     */
-    private static final String RUN_AS_KEY = "TtlCx3pgKC4l";
 
     public static final String[] editorGroupAuthorities = new String[]{
             "REFERENCE.[CREATE,READ]",
@@ -123,10 +110,6 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
     private boolean firstDataInserted = false;
 
-    private Authentication authentication;
-
-    private ApplicationContext applicationContext;
-
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
@@ -150,7 +133,6 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         } else {
             progressMonitor = new NullProgressMonitor();
         }
-        applicationContext = event.getApplicationContext();
 
         insertFirstData();
     }
@@ -162,7 +144,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         // application contexts like in web applications
         if(!firstDataInserted){
 
-            runAsAuthentication();
+            runAsAuthentication(Role.ROLE_ADMIN);
 
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 
@@ -179,49 +161,6 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         } else {
             logger.debug("insertFirstData() already executed before, skipping this time");
         }
-    }
-
-    /**
-     * needed to work around the broken @RunAs("ROLE_ADMIN") which
-     * seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
-     */
-    private void restoreAuthentication() {
-        if(runAsAuthenticationProvider == null){
-            logger.debug("no RunAsAuthenticationProvider set, thus nothing to restore");
-        }
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-        logger.debug("last authentication restored: " + (authentication != null ? authentication : "NULL"));
-    }
-
-    /**
-     *
-     * needed to work around the broken @RunAs("ROLE_ADMIN") which seems to be
-     * broken in spring see: https://jira.springsource.org/browse/SEC-1671
-     */
-    private void runAsAuthentication() {
-        if(runAsAuthenticationProvider == null){
-            logger.debug("no RunAsAuthenticationProvider set, skipping run-as authentication");
-            return;
-        }
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        authentication = securityContext.getAuthentication();
-
-
-        Collection<GrantedAuthority> rules = new ArrayList<GrantedAuthority>();
-        rules.add(Role.ROLE_ADMIN);
-        RunAsUserToken adminToken = new RunAsUserToken(
-                RUN_AS_KEY,
-                "system-admin",
-                null,
-                rules,
-                (authentication != null ? authentication.getClass() : AnonymousAuthenticationToken.class));
-
-        Authentication runAsAuthentication = runAsAuthenticationProvider.authenticate(adminToken);
-        SecurityContextHolder.getContext().setAuthentication(runAsAuthentication);
-
-        logger.debug("switched to run-as authentication: " + runAsAuthentication);
     }
 
 
@@ -354,20 +293,5 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         commonService.saveAllMetaData(metaData);
         logger.info("Metadata created.");
     }
-
-    /**
-     * @return the runAsAuthenticationProvider
-     */
-    public AuthenticationProvider getRunAsAuthenticationProvider() {
-        return runAsAuthenticationProvider;
-    }
-
-    /**
-     * @param runAsAuthenticationProvider the runAsAuthenticationProvider to set
-     */
-    public void setRunAsAuthenticationProvider(AuthenticationProvider runAsAuthenticationProvider) {
-        this.runAsAuthenticationProvider = runAsAuthenticationProvider;
-    }
-
 
 }
