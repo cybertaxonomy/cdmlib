@@ -598,7 +598,7 @@ public class TaxonName
      */
     protected TaxonName() {
         super();
-//        rectifyNameCacheStrategy();
+        rectifyNameCacheStrategy();
     }
 
 
@@ -617,7 +617,7 @@ public class TaxonName
      * @see    					 #TaxonName(HomotypicalGroup)
      */
     protected TaxonName(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
-        super();
+        this();
         setNameType(type);
         this.setRank(rank);
         if (homotypicalGroup == null){
@@ -625,7 +625,6 @@ public class TaxonName
         }
         homotypicalGroup.addTypifiedName(this);
         this.homotypicalGroup = homotypicalGroup;
-        rectifyNameCacheStrategy();
     }
 
 
@@ -672,20 +671,13 @@ public class TaxonName
     }
 
 
+    /**
+     * This method was originally needed to distinguish cache strategies
+     * depending on the name type. Now we have a unified cache strategy
+     * which does not require this anymore. Maybe we could even further remove this method.
+     */
     private void rectifyNameCacheStrategy(){
-        if (getNameType() == null){
-            this.cacheStrategy = null;
-        }else if (this.cacheStrategy != null){
-           //
-        }else if (getNameType() == NomenclaturalCode.NonViral){
-            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType().isBotanical()){
-            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType() == NomenclaturalCode.ICZN){
-            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType() == NomenclaturalCode.ICNB){
-            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType() == NomenclaturalCode.ICVCN){
+        if (this.cacheStrategy == null){
             this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }
     }
@@ -803,7 +795,6 @@ public class TaxonName
     @Override
     public void setNameType(NomenclaturalCode nameType) {
         this.nameType = nameType;
-        rectifyNameCacheStrategy();
     }
 
     /**
