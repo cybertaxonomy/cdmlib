@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import sun.security.provider.PolicyParser.ParsingException;
@@ -103,7 +103,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     private PasswordEncoder passwordEncoder;
 
     @SpringBean("cdmPermissionEvaluator")
-    private CdmPermissionEvaluator permissionEvaluator;
+    private ICdmPermissionEvaluator permissionEvaluator;
 
     @TestDataSource
     protected DataSource dataSource;

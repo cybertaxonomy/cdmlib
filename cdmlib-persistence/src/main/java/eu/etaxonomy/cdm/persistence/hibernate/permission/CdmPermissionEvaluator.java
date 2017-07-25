@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -68,43 +70,25 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
 
         CdmAuthority evalPermission;
-        EnumSet<CRUD> requiredOperation;
+        EnumSet<CRUD> requiredOperation = null;
 
         if(authentication == null) {
             return false;
         }
 
         if(logger.isDebugEnabled()){
-            StringBuilder grantedAuthoritiesTxt = new StringBuilder();
-            for(GrantedAuthority ga : authentication.getAuthorities()){
-                grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
-            }
-            if(grantedAuthoritiesTxt.length() == 0){
-                grantedAuthoritiesTxt.append("    - ").append("<No GrantedAuthority given>").append("\n");
-            }
-            logger.debug("hasPermission()\n"
-                    + "  User '" + authentication.getName() + "':\n"
-                    + grantedAuthoritiesTxt
-                    + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
-                    + "  Permission: " + permission);
+            String targteDomainObjText = "  Object: " + ((CdmBase)targetDomainObject).instanceToString();
+            logUserAndRequirement(authentication, permission.toString(), targteDomainObjText);
         }
         try {
-            // FIXME refactor into Operation ======
-            if (Operation.isOperation(permission)){
-                requiredOperation = (EnumSet<CRUD>)permission;
-            } else {
-                // try to treat as string
-                requiredOperation = Operation.fromString(permission.toString());
-            }
-            // =======================================
+            requiredOperation = operationFrom(permission);
 
         } catch (IllegalArgumentException e) {
             logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
-            return true; // it might be wrong to return true
+            return true; // FIXME it might be wrong to return true
         }
 
         evalPermission = authorityRequiredFor((CdmBase)targetDomainObject, requiredOperation);
-
 
         if (evalPermission.permissionClass != null) {
             logger.debug("starting evaluation => ...");
@@ -114,6 +98,72 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
             return true;
         }
 
+    }
+
+
+    @Override
+    public <T extends CdmBase> boolean hasPermission(Authentication authentication, Class<T> targetDomainObjectClass,
+            EnumSet<CRUD> requiredOperations) {
+
+        if(authentication == null) {
+            return false;
+        }
+
+        if(logger.isDebugEnabled()){
+            String targteDomainObjClassText = "  Cdm-Type: " + targetDomainObjectClass.getSimpleName();
+            logUserAndRequirement(authentication, requiredOperations.toString(), targteDomainObjClassText);
+        }
+
+        CdmAuthority evalPermission = new CdmAuthority(CdmPermissionClass.getValueOf(targetDomainObjectClass), null, requiredOperations, null);
+
+        T instance;
+        try {
+            Constructor<T> c = targetDomainObjectClass.getDeclaredConstructor();
+            c.setAccessible(true);
+            instance = c.newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+            logger.error("Error while creating permission test instance ==> will deny", e);
+            return false;
+        }
+
+        return evalPermission(authentication, evalPermission, instance);
+    }
+
+    /**
+     * @param authentication
+     * @param permission
+     * @param targteDomainObjText
+     */
+    protected void logUserAndRequirement(Authentication authentication, String permissions, String targteDomainObjText) {
+        StringBuilder grantedAuthoritiesTxt = new StringBuilder();
+        for(GrantedAuthority ga : authentication.getAuthorities()){
+            grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
+        }
+        if(grantedAuthoritiesTxt.length() == 0){
+            grantedAuthoritiesTxt.append("    - ").append("<No GrantedAuthority given>").append("\n");
+        }
+        logger.debug("hasPermission()\n"
+                + "  User '" + authentication.getName() + "':\n"
+                + grantedAuthoritiesTxt
+                + targteDomainObjText + "\n"
+                + "  Permission: " + permissions);
+    }
+
+    /**
+     * @param permission
+     * @return
+     */
+    protected EnumSet<CRUD> operationFrom(Object permission) {
+        EnumSet<CRUD> requiredOperation;
+        // FIXME refactor into Operation ======
+        if (Operation.isOperation(permission)){
+            requiredOperation = (EnumSet<CRUD>)permission;
+        } else {
+            // try to treat as string
+            requiredOperation = Operation.fromString(permission.toString());
+        }
+        // =======================================
+        return requiredOperation;
     }
 
     /**

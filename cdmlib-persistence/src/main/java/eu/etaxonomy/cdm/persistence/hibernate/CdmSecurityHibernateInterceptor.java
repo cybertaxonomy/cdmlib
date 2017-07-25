@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 /**
@@ -45,13 +45,13 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     public static final Logger logger = Logger.getLogger(CdmSecurityHibernateInterceptor.class);
 
 
-    private CdmPermissionEvaluator permissionEvaluator;
+    private ICdmPermissionEvaluator permissionEvaluator;
 
-    public CdmPermissionEvaluator getPermissionEvaluator() {
+    public ICdmPermissionEvaluator getPermissionEvaluator() {
         return permissionEvaluator;
     }
 
-    public void setPermissionEvaluator(CdmPermissionEvaluator permissionEvaluator) {
+    public void setPermissionEvaluator(ICdmPermissionEvaluator permissionEvaluator) {
         this.permissionEvaluator = permissionEvaluator;
     }
 
