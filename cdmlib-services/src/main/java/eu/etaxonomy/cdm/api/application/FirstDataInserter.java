@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -66,7 +65,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 //@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
-public class FirstDataInserter extends RunAsAuthenticator implements ApplicationListener<ContextRefreshedEvent> {
+public class FirstDataInserter extends AbstractDataInserter {
 
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
