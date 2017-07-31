@@ -69,7 +69,7 @@ public class FirstDataInserter extends AbstractDataInserter {
 
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
-    public static final String[] editorGroupAuthorities = new String[]{
+    public static final String[] EDITOR_GROUP_AUTHORITIES = new String[]{
             "REFERENCE.[CREATE,READ]",
             "TAXONNAME.[CREATE,READ,UPDATE]",
             "TEAMORPERSONBASE.[CREATE,READ]",
@@ -78,11 +78,15 @@ public class FirstDataInserter extends AbstractDataInserter {
             "DESCRIPTIONELEMENTBASE.[CREATE,UPDATE,DELETE,READ]",
     };
 
-    public static final String[] projectManagerGroupAuthorities = new String[]{
+    public static final String[] PROJECT_MANAGER_GROUP_AUTHORITIES = new String[]{
             "REFERENCE.[UPDATE,DELETE]",
             "TAXONNAME.[DELETE]",
             "TEAMORPERSONBASE.[UPDATE,DELETE]",
             Role.ROLE_PROJECT_MANAGER.toString(),
+    };
+
+    public static final String[] ADMIN_GROUP_AUTHORITIES = new String[]{
+            Role.ROLE_ADMIN.toString()
     };
 
     @Autowired
@@ -188,8 +192,9 @@ public class FirstDataInserter extends AbstractDataInserter {
     private void checkDefaultGroups(){
 
         progressMonitor.subTask("Checking default groups");
-        checkGroup(Group.groupEditorUuid, "Editor", editorGroupAuthorities);
-        checkGroup(Group.groupProjectManagerUuid, "ProjectManager", projectManagerGroupAuthorities);
+        checkGroup(Group.GROUP_EDITOR_UUID, "Editor", EDITOR_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, "ProjectManager", PROJECT_MANAGER_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_ADMIN_UUID, "Admin", ADMIN_GROUP_AUTHORITIES);
         progressMonitor.worked(1);
     }
 
