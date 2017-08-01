@@ -129,17 +129,17 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_StatisticalMeasure")
-	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
+	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<>();
 
 	/* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
+	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<>();
 
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
-	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<MeasurementUnit>();
+	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<>();
 
 
     //copy from RelationshipTermBase
@@ -151,7 +151,7 @@ public class Feature extends DefinedTermBase<Feature> {
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(depth = 2)
-    private Set<Representation> inverseRepresentations = new HashSet<Representation>();
+    private Set<Representation> inverseRepresentations = new HashSet<>();
 
     private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");

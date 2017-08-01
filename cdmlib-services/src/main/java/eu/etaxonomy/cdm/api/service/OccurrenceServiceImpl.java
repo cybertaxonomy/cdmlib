@@ -528,7 +528,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         //specimen identifier
         FormatKey collectionKey = FormatKey.COLLECTION_CODE;
-        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] { FormatKey.COLLECTION_CODE });
+        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
         if (CdmUtils.isBlank(specimenIdentifier)) {
             collectionKey = FormatKey.COLLECTION_NAME;
         }
