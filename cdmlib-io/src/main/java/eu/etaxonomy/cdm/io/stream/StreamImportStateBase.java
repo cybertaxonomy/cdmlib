@@ -135,12 +135,12 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 
 
 	public  void loadRelatedObjects (InMemoryMapping mapping){
-		Map<String, Map<String, IdentifiableEntity>> result = new HashMap<String, Map<String,IdentifiableEntity>>();
+		Map<String, Map<String, IdentifiableEntity>> result = new HashMap<>();
 
 		List<MappingEntry<String, String, Class, Integer>> mappingEntryList = mapping.getEntryList();
 
 		//order ids by destination classes
-		Map<Class, Set<Integer>> destinationNamespaceMap = new HashMap<Class, Set<Integer>>();
+		Map<Class, Set<Integer>> destinationNamespaceMap = new HashMap<>();
 		for (MappingEntry<String, String, Class, Integer> entry : mappingEntryList){
 			Set<Integer> idSet = destinationNamespaceMap.get(entry.getDestinationNamespace());
 			if (idSet == null){
@@ -151,14 +151,14 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		}
 
 		//retrieve cdm objects per class
-		Map<Class, Map<Integer, IdentifiableEntity>> classMap = new HashMap<Class, Map<Integer,IdentifiableEntity>>();
+		Map<Class, Map<Integer, IdentifiableEntity>> classMap = new HashMap<>();
 		for (Class<?> cdmClass : destinationNamespaceMap.keySet()){
 			IIdentifiableEntityService<?> classService = getCurrentIO().getServiceByClass(cdmClass);
 			Set<Integer> idSet = destinationNamespaceMap.get(cdmClass);
 			List<? extends IdentifiableEntity> relatedObjects = classService.findById(idSet);
 
 			//put into id map
-			Map<Integer, IdentifiableEntity> idMap = new HashMap<Integer, IdentifiableEntity>();
+			Map<Integer, IdentifiableEntity> idMap = new HashMap<>();
 			for (IdentifiableEntity<?> identEnt : relatedObjects){
 				idMap.put(identEnt.getId(), identEnt);
 			}
@@ -199,7 +199,7 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 //	}
 
 	public void unloadPartitionStore(Map<String, Map<String, IdentifiableEntity>> partitionStore) {
-		this.partitionStore = new HashMap<String, Map<String,IdentifiableEntity>>();
+		this.partitionStore = new HashMap<>();
 	}
 
 	public IImportMapping getMapping() {
@@ -210,7 +210,7 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 	private Map<String, IdentifiableEntity> getOrMakeNamespaceMap(Map<String, Map<String, IdentifiableEntity>> relatedObjectMap2, String namespace) {
 		Map<String, IdentifiableEntity> namespaceMap = relatedObjectMap2.get(namespace);
 		if (namespaceMap == null){
-			namespaceMap = new HashMap<String, IdentifiableEntity>();
+			namespaceMap = new HashMap<>();
 			relatedObjectMap2.put(namespace, namespaceMap);
 		}
 		return namespaceMap;

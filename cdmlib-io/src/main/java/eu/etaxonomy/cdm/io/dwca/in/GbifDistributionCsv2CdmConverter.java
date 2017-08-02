@@ -49,7 +49,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 	@Override
     public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+		List<MappedCdmBase> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -92,7 +92,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		}
 
 		//return
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
@@ -168,7 +168,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
  		result.add(TermUri.DWC_LOCATION_ID.toString());
  		return result;
