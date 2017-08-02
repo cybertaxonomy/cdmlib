@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -347,6 +348,9 @@ public class EditGeoService implements IEditGeoService {
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
+        if (propertyPaths == null){
+            propertyPaths = Arrays.asList(new String []{});
+        }
         // Adding default initStrategies to improve the performance of this method
         // adding 'status' and 'area' has a good positive effect:
         // filterDistributions() only takes 21% of the total method time (before it was 46%)
