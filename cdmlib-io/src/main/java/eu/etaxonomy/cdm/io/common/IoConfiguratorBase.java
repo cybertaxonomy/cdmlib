@@ -42,7 +42,8 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 
 //	private Set<IIoObserver> observers = new HashSet<>();
 
-	//etc
+
+    //etc
 	private IProgressMonitor progressMonitor;
 
 
@@ -117,9 +118,6 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		this.authenticationToken = token;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#authenticateAsDefaultAdmin()
-	 */
 	@Override
 	public void authenticateAsDefaultAdmin() {
 		setAuthentication(Configuration.adminLogin, Configuration.adminPassword);

@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
  * @author a.mueller
  * @created 04.06.2013
  */
-public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImportStateBase> extends StreamImportConfiguratorBase<STATE, URI> implements IImportConfigurator {
+public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImportStateBase>
+        extends StreamImportConfiguratorBase<STATE, URI> implements IImportConfigurator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaDataImportConfiguratorBase.class);
 //	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();

@@ -77,10 +77,8 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	public ICdmRepository getCdmAppController() {
 		return this.cdmApp;
 	}
-
 	/**
-	 * @param cdmApp
-	 *            the cdmApp to set
+	 * @see #getCdmAppController()
 	 */
 	public void setCdmAppController(ICdmRepository cdmApp) {
 		this.cdmApp = cdmApp;

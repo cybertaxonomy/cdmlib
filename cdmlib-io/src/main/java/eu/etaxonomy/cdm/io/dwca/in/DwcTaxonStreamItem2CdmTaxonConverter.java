@@ -140,7 +140,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
 
 		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
-			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
+			sec = new MappedCdmBase<>(state.getTransactionalSourceReference());
 		}
 		if (sec != null){
 			taxonBase.setSec(sec.getCdmBase());
@@ -251,8 +251,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}
-
-
 
 	}
 

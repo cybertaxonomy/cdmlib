@@ -33,10 +33,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class PostMergeEntityListener implements MergeEventListener {
     private static final long serialVersionUID = 1565797119368313987L;
 
-    private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<Session, Set<CdmBase>>();
+    private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
 
     public static void addSession(Session session) {
-        newEntitiesMap.put(session, new HashSet<CdmBase>());
+        newEntitiesMap.put(session, new HashSet<>());
     }
 
     public static void removeSession(Session session) {

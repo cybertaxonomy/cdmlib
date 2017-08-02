@@ -126,7 +126,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 
 	@Override
     public Map<String, Set<String>> getPartitionForeignKeys(IReader<StreamItem> instream) {
-		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> result = new HashMap<>();
 
 		while (instream.hasNext()){
 			StreamItem next = instream.read();
@@ -169,9 +169,9 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	}
 
 
-	protected <T extends TaxonBase> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
+	protected <T extends TaxonBase<?>> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
 		if (clazz == null){
-			clazz = (Class)TaxonBase.class;
+			clazz = (Class<T>)TaxonBase.class;
 		}
 		List<T> taxonList = state.get(TermUri.DWC_TAXON.toString(), id, clazz);
 		if (taxonList.size() > 1){

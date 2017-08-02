@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author n.hoffmann
  * @created 24.03.2009
- * @version 1.0
  */
 public class CdmPostDataChangeObservableListener implements
 		  PostDeleteEventListener
@@ -69,7 +68,7 @@ public class CdmPostDataChangeObservableListener implements
 	/**
 	 * Observing objects
 	 */
-	private final Set<ICdmPostDataChangeObserver> observers = new HashSet<ICdmPostDataChangeObserver>();
+	private final Set<ICdmPostDataChangeObserver> observers = new HashSet<>();
 
 
 	/**
@@ -112,7 +111,7 @@ public class CdmPostDataChangeObservableListener implements
 	public void delayedNotify(){
 		if(delayed && changeEvents.size() > 0){
 			Set<ICdmPostDataChangeObserver> modificationSaveObservers
-						= new HashSet<ICdmPostDataChangeObserver>(observers);
+						= new HashSet<>(observers);
 			for( ICdmPostDataChangeObserver observer : modificationSaveObservers){
 				observer.update(changeEvents);
 			}

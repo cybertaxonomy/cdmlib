@@ -22,7 +22,9 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
  * @author a.mueller
  * @created 05.05.2011
  */
-public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaImportState> implements IImportConfigurator {
+public class DwcaImportConfigurator
+        extends DwcaDataImportConfiguratorBase<DwcaImportState>
+        implements IImportConfigurator {
 
     private static final long serialVersionUID = 6932718596034946336L;
     @SuppressWarnings("unused")

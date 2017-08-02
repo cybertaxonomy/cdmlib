@@ -31,11 +31,11 @@ import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedM
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * For now this is a test if we can improve performance for bean initializing
@@ -336,8 +336,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             //TODO check if other code works with audited data at all as we use HQL queries
             if (!node.hasWildcardToManySibling()){  //if wildcard sibling exists the lazies are already prepared there
                 Collection<?> collection = (Collection<?>)propertyValue;
-                //TODO it is difficult to find out if an envers collection is initiallized
-                //but possiblie via reflection. If the "delegate" parameter is null it is not yet initialized.
+                //TODO it is difficult to find out if an envers collection is initialized
+                //but possibly via reflection. If the "delegate" parameter is null it is not yet initialized.
                 //However, as we do not know if envers initialization works at all together with the AdvancedBeanInitializer
                 //we initialize each collection immediately here by calling size()
                 collection.size();  //initialize

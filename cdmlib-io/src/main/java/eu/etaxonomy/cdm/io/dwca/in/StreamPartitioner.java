@@ -38,8 +38,9 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 	private final StreamImportStateBase<StreamImportConfiguratorBase, StreamImportBase> state;
 	private ConcatenatingReader<MappedCdmBase<? extends CdmBase>> outStream;
 
-	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, StreamImportStateBase state, Integer size){
-		 this.inStream = new LookAheadStream<ITEM>(input);
+	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter,
+	        StreamImportStateBase<StreamImportConfiguratorBase, StreamImportBase> state, Integer size){
+		 this.inStream = new LookAheadStream<>(input);
 		 this.converter = converter;
 		 this.partitionSize = size;
 		 this.state = state;
@@ -73,12 +74,12 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 	}
 
 	private void handleNextPartition(){
-	    List<ITEM> lookaheadArray = new ArrayList<ITEM>();
+	    List<ITEM> lookaheadArray = new ArrayList<>();
 		while (this.inStream.hasNextLookAhead(partitionSize)){
 			lookaheadArray.add(this.inStream.readLookAhead());
 		}
 
-		IReader<ITEM> lookaheadStream = new ListReader<ITEM>(lookaheadArray);
+		IReader<ITEM> lookaheadStream = new ListReader<>(lookaheadArray);
 
 		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 		IImportMapping mapping = state.getMapping();
@@ -118,12 +119,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 			if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
 			    Set<String> requiredSourceNamespaces = converter.requiredSourceNamespaces();
 				if (requiredSourceNamespaces.contains(item.getNamespace())){
-					if (item.getCdmBase().isInstanceOf(IdentifiableEntity.class)) {
-					    IdentifiableEntity identEntity = CdmBase.deproxy(item.getCdmBase(), IdentifiableEntity.class);
-                        state.addRelatedObject(item.getNamespace(), item.getSourceId(), identEntity);
-                    }else{
-
-                    }
+					state.addRelatedObject(item.getNamespace(), item.getSourceId(), item.getCdmBase());
 				}
 			}
 		}

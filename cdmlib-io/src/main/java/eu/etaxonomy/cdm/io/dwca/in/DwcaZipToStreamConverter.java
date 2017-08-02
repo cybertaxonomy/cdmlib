@@ -68,12 +68,12 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	);
 
 	private final URI dwcaZip;
-	private final Map<String, DwcaMetaDataRecord> metaRecords = new HashMap<String, DwcaMetaDataRecord>();
+	private final Map<String, DwcaMetaDataRecord> metaRecords = new HashMap<>();
 	private Archive archive;
 
 /// ******************** FACTORY ********************************/
 
-	public static DwcaZipToStreamConverter NewInstance(URI dwcaZip){
+	public static DwcaZipToStreamConverter<DwcaImportState> NewInstance(URI dwcaZip){
 		return new DwcaZipToStreamConverter(dwcaZip);
 	}
 

@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -168,7 +167,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
 			props.addPropertyValue(key, persistentProperties.getProperty(key));
-			Properties a = Environment.getProperties();
+//			Properties a = Environment.getProperties();
 		}
 
 		bd.setPropertyValues(props);

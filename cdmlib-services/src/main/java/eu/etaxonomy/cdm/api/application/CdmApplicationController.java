@@ -359,17 +359,10 @@ public class CdmApplicationController implements ICdmRepository {
 		init();
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#finalize()
-	 */
 	@Override
 	public void finalize(){
 		close();
 	}
-
 
 	/**
 	 * closes the application

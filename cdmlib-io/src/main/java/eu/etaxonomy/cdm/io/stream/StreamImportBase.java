@@ -75,7 +75,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 			ItemFilter<StreamItem> filter = partitionConverter.getItemFilter();
 			IItemStream filteredStream = filter == null ? recordStream : new FilteredStream(recordStream, filter);
-			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<>(filteredStream,
+			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner(filteredStream,
 					partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
 
 			int i = 1;

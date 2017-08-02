@@ -58,7 +58,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
         if (!config.isDoSplitRelationshipImport()){
             return null;
         }else{
-            return new DwcTaxonStreamItem2CdmTaxonConverter(state, true);  //the converter also is implementing the ItemFilter interfacem, this way we guarantee that the evaluation if the item is a synonym, lower or higher taxon is the same during taxon creation and relationship creation
+            return new DwcTaxonStreamItem2CdmTaxonConverter<>(state, true);  //the converter also is implementing the ItemFilter interfacem, this way we guarantee that the evaluation if the item is a synonym, lower or higher taxon is the same during taxon creation and relationship creation
         }
     }
 

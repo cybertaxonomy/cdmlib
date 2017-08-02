@@ -16,16 +16,16 @@ public class CdmIoApplicationController extends CdmApplicationController {
 
 
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
-	
-	
+
+
 	public static CdmIoApplicationController NewInstance() throws DataSourceNotFoundException {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), defaultDbSchemaValidation, false);
 	}
-	
+
 	public static CdmIoApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), dbSchemaValidation, false);
 	}
-	
+
 	/**
 	 * Constructor, opens an spring ApplicationContext by using the according data source and the
 	 * default database schema validation type
@@ -35,7 +35,7 @@ public class CdmIoApplicationController extends CdmApplicationController {
 		return CdmIoApplicationController.NewInstance(dataSource, defaultDbSchemaValidation, false);
 	}
 
-	
+
 	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
 		return CdmIoApplicationController.NewInstance(dataSource, dbSchemaValidation, false);
 	}
@@ -65,5 +65,5 @@ public class CdmIoApplicationController extends CdmApplicationController {
 		super(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor, null);
 		
 	}
-	
+
 }
