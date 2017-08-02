@@ -405,7 +405,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
-        List<TaxonBase> results = new ArrayList<TaxonBase>();
+        List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
@@ -420,7 +420,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
-        List<TaxonBase> results = new ArrayList<TaxonBase>();
+        List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
@@ -432,7 +432,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedTo);
 
-        List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+        List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
@@ -443,7 +443,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedTo);
 
-        List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+        List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
@@ -454,7 +454,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedFrom);
 
-        List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+        List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
@@ -465,7 +465,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedFrom);
 
-        List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+        List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
@@ -525,7 +525,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
             Integer limit, Integer start, List<String> propertyPaths) {
 
-        Set<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new HashSet<Taxon>(), maxDepth);
+        Set<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new HashSet<>(), maxDepth);
         relatedTaxa.remove(taxon);
         beanInitializer.initializeAll(relatedTaxa, propertyPaths);
         return relatedTaxa;
@@ -731,7 +731,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){
-        List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
+        List<MediaRepresentation> medRep = new ArrayList<>();
         taxon = (Taxon)dao.load(taxon.getUuid());
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
         for (TaxonDescription taxDesc: descriptions){
@@ -763,9 +763,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         logger.trace("listMedia() - START");
 
-        Set<Taxon> taxa = new HashSet<Taxon>();
-        List<Media> taxonMedia = new ArrayList<Media>();
-        List<Media> nonImageGalleryImages = new ArrayList<Media>();
+        Set<Taxon> taxa = new HashSet<>();
+        List<Media> taxonMedia = new ArrayList<>();
+        List<Media> nonImageGalleryImages = new ArrayList<>();
 
         if (limitToGalleries == null) {
             limitToGalleries = false;
@@ -781,7 +781,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         if(includeTaxonDescriptions != null && includeTaxonDescriptions){
             logger.trace("listMedia() - includeTaxonDescriptions");
-            List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+            List<TaxonDescription> taxonDescriptions = new ArrayList<>();
             // --- TaxonDescriptions
             for (Taxon t : taxa) {
                 taxonDescriptions.addAll(descriptionService.listTaxonDescriptions(t, null, null, null, null, propertyPath));
@@ -807,7 +807,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         if(includeOccurrences != null && includeOccurrences) {
             logger.trace("listMedia() - includeOccurrences");
-            Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<SpecimenOrObservationBase>();
+            Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<>();
             // --- Specimens
             for (Taxon t : taxa) {
                 specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(null, t, null, null, null, null));
@@ -846,7 +846,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(includeTaxonNameDescriptions != null && includeTaxonNameDescriptions) {
             logger.trace("listMedia() - includeTaxonNameDescriptions");
             // --- TaxonNameDescription
-            Set<TaxonNameDescription> nameDescriptions = new HashSet<TaxonNameDescription>();
+            Set<TaxonNameDescription> nameDescriptions = new HashSet<>();
             for (Taxon t : taxa) {
                 nameDescriptions .addAll(t.getName().getDescriptions());
             }
@@ -1455,7 +1455,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             throw luceneParseException;
         }
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
 
         // ---  initialize taxa, thighlight matches ....
@@ -1485,7 +1485,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             throw luceneParseException;
         }
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
 
         // ---  initialize taxa, thighlight matches ....
@@ -1664,7 +1664,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         boolean addDistributionFilter = namedAreas != null && namedAreas.size() > 0;
 
         List<LuceneSearch> luceneSearches = new ArrayList<LuceneSearch>();
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<>();
 
         /*
           ======== filtering by distribution , HOWTO ========
@@ -1764,7 +1764,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             byCommonNameSearch.setSortFields(sortFields);
 
             DuplicateFilter df = new DuplicateFilter("inDescription.taxon.id");
-            HashSet<String> results=new HashSet();
+            Set<String> results=new HashSet<>();
 //            ScoreDoc[] hits = searcher.search(tq,df, 1000).scoreDocs;
 //
 //            byCommonNameSearch.setFilter(df);
@@ -2001,7 +2001,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             throw luceneParseException;
         }
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
 
         // --- initialize taxa, highlight matches ....
@@ -2039,7 +2039,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
 
@@ -2202,8 +2202,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<String> taxonNames = new ArrayList<String>();
 
         for (TaxonNode node: nodes){
-           // HashMap<String, String> synonymsGenus = new HashMap<String, String>(); // Changed this to be able to store the idInSource to a genusName
-           // List<String> synonymsEpithet = new ArrayList<String>();
+           // Map<String, String> synonymsGenus = new HashMap<>(); // Changed this to be able to store the idInSource to a genusName
+           // List<String> synonymsEpithet = new ArrayList<>();
 
             if (node.getClassification().equals(classification)){
                 if (!node.isTopmostNode()){
@@ -2482,7 +2482,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     private Synonym createPotentialCombination(String idInSourceParent,
             IZoologicalName parentSynZooName, 	IZoologicalName zooSynName, String synParentGenus,
             String synParentInfragenericName, String synParentSpecificEpithet,
-            TaxonBase syn, HashMap<UUID, IZoologicalName> zooHashMap) {
+            TaxonBase syn, Map<UUID, IZoologicalName> zooHashMap) {
         Synonym potentialCombination;
         Reference sourceReference;
         IZoologicalName inferredSynName;
@@ -2550,7 +2550,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     private Synonym createInferredGenus(Taxon taxon,
-            HashMap<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
+            Map<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
             String epithetOfTaxon, String genusOfTaxon,
             List<String> taxonNames, IZoologicalName zooParentName,
             TaxonBase syn) {
@@ -2628,7 +2628,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     private Synonym createInferredEpithets(Taxon taxon,
-            HashMap<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
+            Map<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
             String epithetOfTaxon, String infragenericEpithetOfTaxon,
             String infraspecificEpithetOfTaxon, List<String> taxonNames,
             TaxonName parentName, TaxonBase syn) {
@@ -2728,7 +2728,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param zooHashMap
      * @return
      */
-    private IZoologicalName getZoologicalName(UUID uuid, HashMap <UUID, IZoologicalName> zooHashMap) {
+    private IZoologicalName getZoologicalName(UUID uuid, Map <UUID, IZoologicalName> zooHashMap) {
         IZoologicalName taxonName =nameDao.findZoologicalNameByUUID(uuid);
         if (taxonName == null) {
             taxonName = zooHashMap.get(uuid);
@@ -2801,7 +2801,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public List<Classification> listClassifications(TaxonBase taxonBase, Integer limit, Integer start, List<String> propertyPaths) {
 
         // TODO quickly implemented, create according dao !!!!
-        Set<TaxonNode> nodes = new HashSet<TaxonNode>();
+        Set<TaxonNode> nodes = new HashSet<>();
         Set<Classification> classifications = new HashSet<>();
         List<Classification> list = new ArrayList<>();
 
@@ -2971,7 +2971,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         //preliminary implementation
 
-        Set<Taxon> taxa = new HashSet<Taxon>();
+        Set<Taxon> taxa = new HashSet<>();
         TaxonBase taxonBase = find(taxonUuid);
         if (taxonBase == null){
             return new IncludedTaxaDTO();
@@ -3010,12 +3010,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     private Set<Taxon> makeRelatedIncluded(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
 
         //children
-        Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
+        Set<TaxonNode> taxonNodes = new HashSet<>();
         for (Taxon taxon: uncheckedTaxa){
             taxonNodes.addAll(taxon.getTaxonNodes());
         }
 
-        Set<Taxon> children = new HashSet<Taxon>();
+        Set<Taxon> children = new HashSet<>();
         if (! config.onlyCongruent){
             for (TaxonNode node: taxonNodes){
                 List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true, null);
@@ -3032,18 +3032,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (existingTaxa.contains(uuid)){
                 it.remove();
             }else{
-                existingTaxa.addIncludedTaxon(uuid, new ArrayList<UUID>(), false);
+                existingTaxa.addIncludedTaxon(uuid, new ArrayList<>(), false);
             }
         }
 
         //concept relations
-        Set<Taxon> uncheckedAndChildren = new HashSet<Taxon>(uncheckedTaxa);
+        Set<Taxon> uncheckedAndChildren = new HashSet<>(uncheckedTaxa);
         uncheckedAndChildren.addAll(children);
 
         Set<Taxon> relatedTaxa = makeConceptIncludedTaxa(uncheckedAndChildren, existingTaxa, config);
 
 
-        Set<Taxon> result = new HashSet<Taxon>(relatedTaxa);
+        Set<Taxon> result = new HashSet<>(relatedTaxa);
         return result;
     }
 
@@ -3052,7 +3052,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @return the set of these computed taxa
      */
     private Set<Taxon> makeConceptIncludedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
-        Set<Taxon> result = new HashSet<Taxon>();
+        Set<Taxon> result = new HashSet<>();
 
         for (Taxon taxon : unchecked){
             Set<TaxonRelationship> fromRelations = taxon.getRelationsFromThisTaxon();
@@ -3086,7 +3086,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (existingTaxa.contains(uuid)){
                 it.remove();
             }else{
-                existingTaxa.addIncludedTaxon(uuid, new ArrayList<UUID>(), false);
+                existingTaxa.addIncludedTaxon(uuid, new ArrayList<>(), false);
             }
         }
         return result;
@@ -3109,13 +3109,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 
 		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, subtreeFilter, matchmode);
-        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
         	daoResults = dao.findByIdentifier(clazz, identifier, identifierType, subtreeFilter,
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
 
-        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
         		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
@@ -3137,7 +3137,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         Long numberOfResults = dao.countByMarker(clazz, markerType, markerValue, subtreeFilter);
-        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByMarker(clazz, markerType, markerValue, subtreeFilter,
                     includeEntity, titleType, pageSize, pageNumber, propertyPaths);

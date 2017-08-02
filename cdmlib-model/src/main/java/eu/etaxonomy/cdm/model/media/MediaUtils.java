@@ -28,10 +28,13 @@ public class MediaUtils {
      *
      *
      */
-    public static MediaRepresentation findBestMatchingRepresentation(Media media, Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
+    public static MediaRepresentation findBestMatchingRepresentation(Media media,
+            Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height,
+            Integer widthOrDuration, String[] mimeTypes){
         // find best matching representations of each media
         SortedMap<Integer, MediaRepresentation> prefRepresentations
-        = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes, size, widthOrDuration, height);
+                = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes,
+                        size, widthOrDuration, height);
         try {
             // take first one and remove all other representations
             MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
@@ -165,7 +168,8 @@ public class MediaUtils {
                 candidateRepresentations.addAll(media.getRepresentations());
 
                 SortedMap<Integer, MediaRepresentation> prefRepresentations
-                    = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType, mimeTypes, size, widthOrDuration, height);
+                    = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType,
+                            mimeTypes, size, widthOrDuration, height);
                 try {
                     if(prefRepresentations.size() > 0){
                         // Media.representations is a set
@@ -177,7 +181,6 @@ public class MediaUtils {
                     logger.debug(nse);
                     /* IGNORE */
                 }
-
             }
         }
         else{
@@ -295,7 +298,7 @@ public class MediaUtils {
                         int sizeOfPart = part.getSize();
                         int distance = sizeOfPart - size;
                         if (distance < 0) {
-                            distance*= -1;
+                            distance *= -1;
                         }
                         dwa += distance;
                     }
