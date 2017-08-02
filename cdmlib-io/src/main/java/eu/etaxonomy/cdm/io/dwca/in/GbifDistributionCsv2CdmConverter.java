@@ -114,17 +114,22 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 	private NamedArea getAreaByLocationId(StreamItem item, String locationId) {
 		String namespace = TermUri.DWC_LOCATION_ID.toString();
+		if (locationId == null){
+		    return null;
+		}
 		List<NamedArea> result = state.get(namespace, locationId, NamedArea.class);
 		if (result.isEmpty()){
 			//try to find in cdm
-			NamedArea newArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(locationId);
+			NamedArea newArea = getTdwgArea(locationId);
 			if (newArea == null){
-//				state.getCurrentIO().getTermService().findByAreaCode
+			    //TODO could be idInVocabulary (with not voc given), abbrevTitle of any representation, ...
+//				state.getCurrentIO().getTermService().listByCode
 			}
 			if (newArea == null){
 				newArea = NamedArea.NewInstance(locationId, locationId, locationId);
 			}
 
+			state.putMapping(namespace, locationId, newArea);
 			return newArea;
 		}
 		if (result.size() > 1){
@@ -133,6 +138,19 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		}
 		return result.iterator().next();
 	}
+
+    /**
+     * @param locationId
+     * @return
+     */
+    protected NamedArea getTdwgArea(String locationId) {
+        if (locationId == null){
+            return null;
+        }else if (locationId.startsWith("TDWG:")){
+            locationId = locationId.substring("TDWG:".length()); //CoL case
+        }
+        return TdwgAreaProvider.getAreaByTdwgAbbreviation(locationId);
+    }
 
 	@Override
 	public String getSourceId(StreamItem item) {
