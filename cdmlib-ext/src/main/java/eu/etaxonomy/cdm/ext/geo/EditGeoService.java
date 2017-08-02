@@ -360,7 +360,7 @@ public class EditGeoService implements IEditGeoService {
         // moved the load from the filter method to the getDescriptionElementForTaxon()
         // method.
         // overall improvement by this means is by 42% (from 77,711 ms to 44,868 ms)
-        ArrayList<String> initStrategy = new ArrayList<String>(propertyPaths);
+        ArrayList<String> initStrategy = new ArrayList<>(propertyPaths);
         if(!initStrategy.contains("status")) {
             initStrategy.add("status");
         }
@@ -371,7 +371,7 @@ public class EditGeoService implements IEditGeoService {
             initStrategy.add("markers.markerType");
         }
         if(omitLevels == null) {
-            omitLevels = new HashSet<NamedAreaLevel>(0);
+            omitLevels = new HashSet<>(0);
         }
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);

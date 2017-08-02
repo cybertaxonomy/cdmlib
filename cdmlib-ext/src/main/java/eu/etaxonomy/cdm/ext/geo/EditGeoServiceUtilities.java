@@ -26,7 +26,6 @@ import java.util.UUID;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -171,9 +170,9 @@ public class EditGeoServiceUtilities {
          */
         boolean generateMultipleAreaDataParameters = false;
 
-        List<String>  perLayerAreaData = new ArrayList<String>();
-        Map<Integer, String> areaStyles = new HashMap<Integer, String>();
-        List<String> legendSortList = new ArrayList<String>();
+        List<String>  perLayerAreaData = new ArrayList<>();
+        Map<Integer, String> areaStyles = new HashMap<>();
+        List<String> legendSortList = new ArrayList<>();
 
         String borderWidth = "0.1";
         String borderColorRgb = "";
@@ -187,12 +186,12 @@ public class EditGeoServiceUtilities {
 
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
-        Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
-        List<PresenceAbsenceTerm> statusList = new ArrayList<PresenceAbsenceTerm>();
+        Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<>();
+        List<PresenceAbsenceTerm> statusList = new ArrayList<>();
 
         groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
 
         //style
         int styleCounter = 0;
@@ -202,7 +201,7 @@ public class EditGeoServiceUtilities {
 
             //getting the area title
             if (languages == null){
-                languages = new ArrayList<Language>();
+                languages = new ArrayList<>();
             }
             if (languages.size() == 0){
                 languages.add(Language.DEFAULT());
@@ -237,18 +236,18 @@ public class EditGeoServiceUtilities {
          * key: the style id
          * value: the count of how often the style has been used for different layers, starts with 0 for first time use
          */
-        Map<Integer, Integer> styleUsage = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> styleUsage = new HashMap<>();
 
         char styleChar;
         for (String layerString : layerMap.keySet()){
             // each layer
-            styledAreasPerLayer = new ArrayList<String>();
+            styledAreasPerLayer = new ArrayList<>();
             Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
             for (int style: styleMap.keySet()){
                 // stylesPerLayer
                 styleChar = getStyleAbbrev(style);
                 Set<Distribution> distributionSet = styleMap.get(style);
-                areasPerStyle = new ArrayList<String>();
+                areasPerStyle = new ArrayList<>();
                 for (Distribution distribution: distributionSet){
                     // areasPerStyle
                     areasPerStyle.add(encode(getAreaCode(distribution, mapping)));
@@ -259,7 +258,7 @@ public class EditGeoServiceUtilities {
         }
 
         if(areaStyles.size() > 0){
-            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
+            ArrayList<Integer> styleIds = new ArrayList<>(areaStyles.size());
             styleIds.addAll(areaStyles.keySet());
             Collections.sort(styleIds); // why is it necessary to sort here?
             StringBuilder db = new StringBuilder();
@@ -280,15 +279,10 @@ public class EditGeoServiceUtilities {
 //            Collections.reverse(legendSortList);
             // remove the prepended order index (like 000000000000001 ) from the legend entries
             @SuppressWarnings("unchecked")
-            Collection<String> legendEntries = CollectionUtils.collect(legendSortList, new Transformer()
-            {
-                @Override
-                public String transform(Object o)
-                {
-                  String s = ((String) o);
-                  return s.substring(INT_MAX_LENGTH, s.length());
-                }
-              });
+            Collection<String> legendEntries = CollectionUtils.collect(legendSortList, (o)->{
+                      String s = ((String) o);
+                      return s.substring(INT_MAX_LENGTH, s.length());
+                  });
 
             parameters.put("title", StringUtils.join(legendEntries.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
         }
@@ -327,7 +321,7 @@ public class EditGeoServiceUtilities {
             if(status == null){
                 continue;
             }
-            status = HibernateProxyHelper.deproxy(status, PresenceAbsenceTerm.class);
+            status = HibernateProxyHelper.deproxy(status);
             if (! statusList.contains(status)){
                 statusList.add(status);
             }
