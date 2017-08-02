@@ -28,14 +28,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  *
  */
-public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<IReader<MappedCdmBase>>{
+public class StreamPartitioner<ITEM extends IConverterInput>
+            implements INamespaceReader<IReader<MappedCdmBase<? extends CdmBase>>>{
 	private static final Logger logger = Logger.getLogger(StreamPartitioner.class);
 
 	private final int partitionSize;
 	private final LookAheadStream<ITEM> inStream;
 	private final IPartitionableConverter converter;
 	private final StreamImportStateBase<StreamImportConfiguratorBase, StreamImportBase> state;
-	private ConcatenatingReader<MappedCdmBase> outStream;
+	private ConcatenatingReader<MappedCdmBase<? extends CdmBase>> outStream;
 
 	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, StreamImportStateBase state, Integer size){
 		 this.inStream = new LookAheadStream<ITEM>(input);
@@ -47,7 +48,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 
 
 	private void initNewOutStream(){
-		outStream = new ConcatenatingReader<MappedCdmBase>();
+		outStream = new ConcatenatingReader<>();
 	}
 
 	@Override
@@ -61,10 +62,10 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 	}
 
 	@Override
-	public IReader<MappedCdmBase> read() {
+	public IReader<MappedCdmBase<? extends CdmBase>> read() {
 		logger.debug("Start partitioner read");
 		handleNextPartition();
-		IReader<MappedCdmBase> result = this.outStream;
+		IReader<MappedCdmBase<? extends CdmBase>> result = this.outStream;
 
 		initNewOutStream();
 		logger.debug("End partitioner read");
@@ -88,14 +89,18 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		state.loadRelatedObjects(partialMapping);
 
 		while (inStream.isLookingAhead() && inStream.hasNext()){
-			IReader<MappedCdmBase> resultReader = converter.map(inStream.read());
-			List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();  //maybe better let converter return list from the beginning
+			IReader<MappedCdmBase<? extends CdmBase>> resultReader = converter.map(inStream.read());
+			List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();  //maybe better let converter return list from the beginning
 			while (resultReader.hasNext()){
-				MappedCdmBase item = resultReader.read();
+				MappedCdmBase<? extends CdmBase> item = resultReader.read();
 				resultList.add(item);
-				addItemToRelatedObjects(item);
+				if (item.getCdmBase().isInstanceOf(IdentifiableEntity.class)) {
+				    addItemToRelatedObjects((MappedCdmBase<IdentifiableEntity>)item);
+				}else{
+				    logger.error("Non identifiable objects can not be added to related objects yet");
+				}
 			}
-			outStream.add(new ListReader<MappedCdmBase>(resultList));
+			outStream.add(new ListReader<>(resultList));
 		}
 
 		return;
@@ -107,13 +112,18 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 	 * Add new items to the local mapping
 	 * @param item
 	 */
-	private void addItemToRelatedObjects(MappedCdmBase<IdentifiableEntity> item) {
+	private void addItemToRelatedObjects(MappedCdmBase<? extends IdentifiableEntity> item) {
 		CdmBase cdmBase = item.getCdmBase();
 		if (cdmBase.getId() == 0){
 			if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
 			    Set<String> requiredSourceNamespaces = converter.requiredSourceNamespaces();
 				if (requiredSourceNamespaces.contains(item.getNamespace())){
-					state.addRelatedObject(item.getNamespace(), item.getSourceId(),  item.getCdmBase());
+					if (item.getCdmBase().isInstanceOf(IdentifiableEntity.class)) {
+					    IdentifiableEntity identEntity = CdmBase.deproxy(item.getCdmBase(), IdentifiableEntity.class);
+                        state.addRelatedObject(item.getNamespace(), item.getSourceId(), identEntity);
+                    }else{
+
+                    }
 				}
 			}
 		}

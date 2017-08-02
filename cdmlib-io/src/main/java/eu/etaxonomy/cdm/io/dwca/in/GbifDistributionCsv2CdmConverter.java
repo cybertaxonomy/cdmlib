@@ -48,8 +48,8 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 	}
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -62,12 +62,12 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			String locationId = item.get(TermUri.DWC_LOCATION_ID);
 			NamedArea area = getAreaByLocationId(item, locationId);
 			if (area != null){
-				MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(TermUri.DWC_LOCATION_ID), area);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(TermUri.DWC_LOCATION_ID), area);
 				resultList.add(mcb);
 			}else if (! config.isExcludeLocality()){
 				String locality = item.get(TermUri.DWC_LOCALITY);
 				area = getAreaByLocality(item, locality);
-				MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(TermUri.DWC_LOCALITY), area);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(TermUri.DWC_LOCALITY), area);
 				resultList.add(mcb);
 			}
 
@@ -82,7 +82,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 				desc.addElement(distribution);
 
 				//save taxon
-				MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
 				resultList.add(mcb);
 			}
 

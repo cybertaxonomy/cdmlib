@@ -51,8 +51,8 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	}
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -84,7 +84,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 					}
 				}
 
-				if (addRights && (rights != null || rights != "")) {
+				if (addRights && (isNotBlank(rights))) {
 					Rights copyright = Rights.NewInstance(rights, language);
 					taxonDescription.addRights(copyright);
 				}
@@ -99,7 +99,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 				fireWarningEvent(message, item, 4);
 			}
 
-			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
+			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
 		}else{
 			String message = "Taxon is not available for id '%s'";
@@ -107,7 +107,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			fireWarningEvent(message, item, 12);
 		}
 
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
@@ -133,7 +133,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	 * @param resultList
 	 * @return
 	 */
-	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase> resultList) {
+	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		String descriptionType = item.get(TermUri.DC_TYPE);
 		item.remove(TermUri.DC_TYPE);
 
@@ -156,7 +156,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 				feature.setSupportsTextData(true);
 //				state.putMapping(namespace, type, feature);
 				state.getCurrentIO().saveNewTerm(feature);
-				MappedCdmBase  mcb = new MappedCdmBase(namespace, descriptionType, feature);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(namespace, descriptionType, feature);
 				resultList.add(mcb);
 			}
 			return feature;

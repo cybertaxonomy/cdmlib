@@ -109,8 +109,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
     }
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem csvTaxonRecord){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem csvTaxonRecord){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		//TODO what if not transactional?
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -118,13 +118,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 		//taxon
 		TaxonBase<?> taxonBase = getTaxonBase(csvTaxonRecord);
-		MappedCdmBase  mcb = new MappedCdmBase(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
+		MappedCdmBase<TaxonBase<?>>  mcb = new MappedCdmBase<>(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
 		resultList.add(mcb);
 
 		//original source
 		String id = csvTaxonRecord.get(ID);
 		IdentifiableSource source = taxonBase.addSource(OriginalSourceType.Import, id, "Taxon", sourceReference, sourceReferenceDetail);
-		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
+		MappedCdmBase<IdentifiableSource> mappedSource = new MappedCdmBase<>(csvTaxonRecord.get(ID), source);
 		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
 
@@ -212,7 +212,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<MappedCdmBase<? extends CdmBase>>(resultList);
 	}
 
 
@@ -381,7 +381,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference sourceReference, String sourceReferecenDetail) {
+	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase<? extends CdmBase>> resultList, Reference sourceReference, String sourceReferecenDetail) {
 		TermUri idTerm = TermUri.DWC_DATASET_ID;
 		TermUri strTerm = TermUri.DWC_DATASET_NAME;
 
@@ -413,9 +413,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				//source
 				IdentifiableSource source = classification.addSource(OriginalSourceType.Import, classificationId, "Dataset", sourceReference, sourceReferecenDetail);
 				//add to result
-				resultList.add(new MappedCdmBase(idTerm, datasetId, classification));
-				resultList.add(new MappedCdmBase(strTerm, datasetName, classification));
-				resultList.add(new MappedCdmBase(source));
+				resultList.add(new MappedCdmBase<>(idTerm, datasetId, classification));
+				resultList.add(new MappedCdmBase<>(strTerm, datasetName, classification));
+				resultList.add(new MappedCdmBase<>(source));
 				//TODO this is not so nice but currently necessary as classifications are requested in the same partition
 				state.putMapping(idTerm.toString(), classificationId, classification);
 				state.putMapping(strTerm.toString(), classificationName, classification);
@@ -449,7 +449,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return id;
 	}
 
-	private MappedCdmBase<Reference> getNameAccordingTo(StreamItem item, List<MappedCdmBase> resultList) {
+	private MappedCdmBase<Reference> getNameAccordingTo(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		if (config.isDatasetsAsSecundumReference()){
 			//TODO store nameAccordingTo info some where else or let the user define where to store it.
 			return null;
@@ -500,7 +500,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
+	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase<? extends CdmBase>> resultList, Reference sourceReference) {
 		TaxonName name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
@@ -559,7 +559,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param idIsInternal
 	 * @return
 	 */
-	private MappedCdmBase<Reference> getReference(StreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
+	private MappedCdmBase<Reference> getReference(StreamItem item,
+	        List<MappedCdmBase<? extends CdmBase>> resultList, TermUri idTerm,
+	        TermUri strTerm, boolean idIsInternal) {
 		Reference newRef = null;
 		Reference sourceCitation = null;
 

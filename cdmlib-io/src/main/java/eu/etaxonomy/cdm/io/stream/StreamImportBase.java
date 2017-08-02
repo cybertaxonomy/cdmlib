@@ -42,8 +42,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>> extends CdmImportBase<CONFIG, STATE>{
-	private static final Logger logger = Logger.getLogger(StreamImportBase.class);
+public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>>
+        extends CdmImportBase<CONFIG, STATE>{
+
+    private static final long serialVersionUID = -125414263689509881L;
+    private static final Logger logger = Logger.getLogger(StreamImportBase.class);
 
 
 	protected void makeSourceRef(STATE state) {
@@ -72,7 +75,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 			ItemFilter<StreamItem> filter = partitionConverter.getItemFilter();
 			IItemStream filteredStream = filter == null ? recordStream : new FilteredStream(recordStream, filter);
-			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<StreamItem>(filteredStream,
+			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<>(filteredStream,
 					partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
 
 			int i = 1;
@@ -81,7 +84,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 				TransactionStatus tx = startTransaction();
 
 				try {
-					IReader<MappedCdmBase> partStream = partitionStream.read();
+					IReader<MappedCdmBase<? extends CdmBase>> partStream = partitionStream.read();
 
 					fireProgressEvent("Handel " + i + ". partition", i + ". partition");
 					logger.info("Handel " + i++ + ". partition");
@@ -140,7 +143,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 			state.setSuccess(false);
 			return;
 		}
-		IReader<MappedCdmBase> resultReader = converter.map(item);
+		IReader<MappedCdmBase<? extends CdmBase>> resultReader = converter.map(item);
 		handleResults(state, resultReader, item.getLocation());
 		return;
 	}
@@ -151,7 +154,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	 * @param item
 	 * @param resultReader
 	 */
-	private void handleResults(STATE state, IReader<MappedCdmBase> resultReader, String location) {
+	private void handleResults(STATE state, IReader<MappedCdmBase<? extends CdmBase>> resultReader, String location) {
 		while (resultReader.hasNext()){
 
 			MappedCdmBase<?> mappedCdmBase = resultReader.read();
@@ -277,11 +280,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	}
 
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmImportBase#getFeature(eu.etaxonomy.cdm.io.common.ImportStateBase, java.util.UUID, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
-	 */
 	//Make public to allow to use by converters
 	@Override
 	public Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc) {

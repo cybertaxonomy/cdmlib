@@ -52,8 +52,8 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	}
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
@@ -91,7 +91,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 				if (typeStatus.isInstanceOf(SpecimenTypeDesignationStatus.class)){
 					SpecimenTypeDesignationStatus status = CdmBase.deproxy(typeStatus, SpecimenTypeDesignationStatus.class);
 					name.addSpecimenTypeDesignation(specimen, status, null, null, null, false, true);
-					MappedCdmBase<?>  mcb = new MappedCdmBase(taxon);
+					MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(taxon);
 					resultList.add(mcb);
 				}else if (typeStatus.isInstanceOf(NameTypeDesignationStatus.class)){
 					String message = "NameTypeDesignation not yet implemented";
@@ -103,7 +103,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 				}
 			}
 
-			MappedCdmBase<?>  mcb = new MappedCdmBase(specimen);
+			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(specimen);
 			resultList.add(mcb);
 
 		}else{
@@ -112,23 +112,24 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		}
 
 		//return
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
-	private Collection getCollection(DwcaDataImportStateBase state, StreamItem item, List<MappedCdmBase> resultList) {
+	private Collection getCollection(DwcaDataImportStateBase state, StreamItem item,
+	        List<MappedCdmBase<? extends CdmBase>> resultList) {
 		String institutionCode = item.get(TermUri.DWC_INSTITUTION_CODE);
 		String collectionCode = item.get(TermUri.DWC_COLLECTION_CODE);
 		//institution
 		Institution institution = getInstitutionByInstitutionCode(item, institutionCode);
 		if (institution != null){
-			MappedCdmBase  mcb = new MappedCdmBase(item.term, item.get(TermUri.DWC_INSTITUTION_CODE), institution);
+			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, item.get(TermUri.DWC_INSTITUTION_CODE), institution);
 			resultList.add(mcb);
 		}
 		//collection
 		Collection collection = getCollectionByCollectionCode(item, collectionCode, institution);
 		if (collection != null){
-			MappedCdmBase  mcb = new MappedCdmBase(item.term, item.get(TermUri.DWC_COLLECTION_CODE), collection);
+			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, item.get(TermUri.DWC_COLLECTION_CODE), collection);
 			resultList.add(mcb);
 		}
 		return collection;
@@ -280,7 +281,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
  		result.add(TermUri.DWC_LOCATION_ID.toString());
  		return result;

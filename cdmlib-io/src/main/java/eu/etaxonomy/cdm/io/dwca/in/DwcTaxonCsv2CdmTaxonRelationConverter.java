@@ -64,8 +64,8 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 
 
     @Override
-    public IReader<MappedCdmBase> map(StreamItem item){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csvRecord = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -79,7 +79,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 			fireWarningEvent(warning, item, 8);
 		}else{
 
-			MappedCdmBase mcb = new MappedCdmBase(taxonBase);
+			MappedCdmBase<? extends CdmBase> mcb = new MappedCdmBase<>(taxonBase);
 			resultList.add(mcb);
 
 			handleAcceptedNameUsage(item, state, taxonBase, id);
@@ -128,7 +128,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
@@ -168,8 +168,10 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 	}
 
 
-	private void handleParentNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id, List<MappedCdmBase> resultList) {
-		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
+	private void handleParentNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state,
+	        TaxonBase<?> taxonBase, String id, List<MappedCdmBase<? extends CdmBase>> resultList) {
+
+	    if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
 			String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
 			if (id.equals(parentId)){
 				//taxon can't be it's own child
@@ -188,13 +190,14 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 					if (classification == null){
 						String warning = "Classification not found. Can't create parent-child relationship";
 						fireWarningEvent(warning, item, 12);
-					}
-					try {
-						classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
-					} catch (IllegalStateException e) {
-						String message = "Exception occurred when trying to add a child to a parent in a classification: %s";
-						message = String.format(message, e.getMessage());
-						fireWarningEvent(message, item, 12);
+					}else{
+					    try {
+					        classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
+					    } catch (IllegalStateException e) {
+					        String message = "Exception occurred when trying to add a child to a parent in a classification: %s";
+					        message = String.format(message, e.getMessage());
+					        fireWarningEvent(message, item, 12);
+					    }
 					}
 				}
 			}else if (taxonBase.isInstanceOf(Synonym.class)){
@@ -211,13 +214,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 				fireWarningEvent(message, item, 12);
 			}
 		}
-
-
 	}
 
 
-	private Classification getClassification(StreamItem item, List<MappedCdmBase> resultList) {
-		Set<Classification> resultSet = new HashSet<Classification>();
+	private Classification getClassification(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
+		Set<Classification> resultSet = new HashSet<>();
 		//
 		if (config.isDatasetsAsClassifications()){
 			String datasetKey = item.get(TermUri.DWC_DATASET_ID);
@@ -241,7 +242,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 				if (StringUtils.isNotBlank(config.getClassificationName())){
 					newClassification.setName(LanguageString.NewInstance(config.getClassificationName(), Language.DEFAULT()));
 				}
-				resultList.add(new MappedCdmBase(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, newClassification));
+				resultList.add(new MappedCdmBase<>(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, newClassification));
 				resultSet.add(newClassification);
 			}
 		}
@@ -254,7 +255,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 	}
 
 
-	private void handleAcceptedNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase taxonBase, String id) {
+	private void handleAcceptedNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id) {
 		if (acceptedNameUsageExists(item)){
 			String accId = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
 			handleAcceptedNameUsageParam(item, state, taxonBase, id, accId);
