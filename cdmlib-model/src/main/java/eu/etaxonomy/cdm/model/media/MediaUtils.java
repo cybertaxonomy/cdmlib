@@ -158,10 +158,10 @@ public class MediaUtils {
 
         Map<Media, MediaRepresentation> returnMediaList;
         if(mediaList != null){
-            returnMediaList = new LinkedHashMap<Media, MediaRepresentation>(mediaList.size());
+            returnMediaList = new LinkedHashMap<>(mediaList.size());
             for(Media media : mediaList){
 
-                Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<MediaRepresentation>();
+                Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<>();
                 candidateRepresentations.addAll(media.getRepresentations());
 
                 SortedMap<Integer, MediaRepresentation> prefRepresentations
@@ -181,7 +181,7 @@ public class MediaUtils {
             }
         }
         else{
-            returnMediaList = new HashMap<Media, MediaRepresentation>();
+            returnMediaList = new HashMap<>();
         }
         return returnMediaList;
     }
@@ -246,11 +246,12 @@ public class MediaUtils {
      *
      *
      */
-    private static SortedMap<Integer, MediaRepresentation> filterAndOrderMediaRepresentations(Set<MediaRepresentation> mediaRepresentations,
+    private static SortedMap<Integer, MediaRepresentation> filterAndOrderMediaRepresentations(
+            Set<MediaRepresentation> mediaRepresentations,
             Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypeRegexes,
             Integer size, Integer widthOrDuration, Integer height) {
 
-        SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<Integer, MediaRepresentation>();
+        SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<>();
 
 
         size = (size == null ? new Integer(0) : size );
@@ -264,11 +265,12 @@ public class MediaUtils {
             int representationCnt = 0;
             for (MediaRepresentation representation : mediaRepresentations) {
 
-                List<MediaRepresentationPart> matchingParts = new ArrayList<MediaRepresentationPart>();
+                List<MediaRepresentationPart> matchingParts = new ArrayList<>();
 
 
                 // check MIME type
-                boolean mimeTypeOK = representation.getMimeType() == null || mimeTypePattern.matcher(representation.getMimeType()).matches();
+                boolean mimeTypeOK = representation.getMimeType() == null
+                        || mimeTypePattern.matcher(representation.getMimeType()).matches();
                 logger.debug("mimeTypeOK: " + Boolean.valueOf(mimeTypeOK).toString());
 
                 int dwa = 0;
@@ -278,7 +280,8 @@ public class MediaUtils {
                 for (MediaRepresentationPart part : representation.getParts()) {
 
                     // check representationPartType
-                    boolean representationPartTypeOK = representationPartType == null || part.getClass().isAssignableFrom(representationPartType);
+                    boolean representationPartTypeOK = representationPartType == null
+                            || part.getClass().isAssignableFrom(representationPartType);
                     logger.debug("representationPartTypeOK: " + Boolean.valueOf(representationPartTypeOK).toString());
 
                     if ( !(representationPartTypeOK && mimeTypeOK) ) {
