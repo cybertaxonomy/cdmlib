@@ -204,22 +204,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
     /**
-     * @param taxon
-     * @param taxTree
-     * @param propertyPaths
-     * @param size
-     * @param height
-     * @param widthOrDuration
-     * @param mimeTypes
-     * @return
-     *
-     * @deprecated use getAllMediaForChildNodes(TaxonNode taxonNode, ...) instead
-     * if you have a classification and a taxon that is in it, you should also have the according taxonNode
-     */
-    @Deprecated
-    public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, Classification taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
-
-    /**
      *
      * @param taxonNode
      * @param propertyPaths

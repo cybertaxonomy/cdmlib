@@ -480,12 +480,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     }
 
-    @Override
-    public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, Classification taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
-        TaxonNode node = taxTree.getNode(taxon);
-
-        return getAllMediaForChildNodes(node, propertyPaths, size, height, widthOrDuration, mimeTypes);
-    }
 
     @Override
     @Transactional(readOnly = false)
