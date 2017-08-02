@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 public class MediaUtils {
 
     private static final Logger logger = Logger.getLogger(MediaUtils.class);
@@ -307,18 +309,18 @@ public class MediaUtils {
                     if (height != 0 && widthOrDuration != 0){
                         int durationWidthWeight = 0;
 
-                        if (part instanceof ImageFile) {
-                            ImageFile image = (ImageFile) part;
-                            durationWidthWeight = image.getWidth() * image.getHeight() - height * widthOrDuration;
+                        if (part.isInstanceOf(ImageFile.class)) {
+                            ImageFile image = CdmBase.deproxy(part, ImageFile.class);
+                            if (image.getWidth() != null && image.getHeight() != null){
+                                durationWidthWeight = image.getWidth() * image.getHeight() - height * widthOrDuration;
+                            }
                         }
-                        else if (part instanceof MovieFile){
-                            MovieFile movie = (MovieFile) part;
+                        else if (part.isInstanceOf(MovieFile.class)){
+                            MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
                             durationWidthWeight = movie.getDuration() - widthOrDuration;
-
-                        }else if (part instanceof AudioFile){
-                            AudioFile audio = (AudioFile) part;
+                        }else if (part.isInstanceOf(AudioFile.class)){
+                            AudioFile audio = CdmBase.deproxy(part, AudioFile.class);
                             durationWidthWeight = audio.getDuration() - widthOrDuration;
-
                         }
                         if (durationWidthWeight < 0) {
                             durationWidthWeight *= -1;
