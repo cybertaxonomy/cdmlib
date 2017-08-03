@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.io.Serializable;
+
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
 import org.hibernate.envers.boot.internal.EnversIntegrator;
@@ -17,7 +19,9 @@ import org.hibernate.envers.boot.internal.EnversIntegrator;
  * @date 03.08.2017
  *
  */
-public class HibernateConfiguration {
+public class HibernateConfiguration implements Serializable{
+
+    private static final long serialVersionUID = -894395918847594447L;
 
     public final static String SHOW_SQL = "hibernate.show_sql";
 
