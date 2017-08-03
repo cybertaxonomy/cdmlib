@@ -95,11 +95,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 			while (resultReader.hasNext()){
 				MappedCdmBase<? extends CdmBase> item = resultReader.read();
 				resultList.add(item);
-				if (item.getCdmBase().isInstanceOf(IdentifiableEntity.class)) {
-				    addItemToRelatedObjects((MappedCdmBase<IdentifiableEntity>)item);
-				}else{
-				    logger.error("Non identifiable objects can not be added to related objects yet");
-				}
+				addItemToRelatedObjects(item);
 			}
 			outStream.add(new ListReader<>(resultList));
 		}
@@ -113,14 +109,17 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 	 * Add new items to the local mapping
 	 * @param item
 	 */
-	private void addItemToRelatedObjects(MappedCdmBase<? extends IdentifiableEntity> item) {
+	private void addItemToRelatedObjects(MappedCdmBase<? extends CdmBase> item) {
 		CdmBase cdmBase = item.getCdmBase();
 		if (cdmBase.getId() == 0){
 			if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
+			    IdentifiableEntity<?> identifiableEntity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
 			    Set<String> requiredSourceNamespaces = converter.requiredSourceNamespaces();
 				if (requiredSourceNamespaces.contains(item.getNamespace())){
-					state.addRelatedObject(item.getNamespace(), item.getSourceId(), item.getCdmBase());
+					state.addRelatedObject(item.getNamespace(), item.getSourceId(), identifiableEntity);
 				}
+			}else{
+			    if (logger.isTraceEnabled()){logger.trace("Non identifiable are not added to related objects");}
 			}
 		}
 	}
