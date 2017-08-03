@@ -171,7 +171,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 
 	protected <T extends TaxonBase<?>> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
 		if (clazz == null){
-			clazz = (Class<T>)TaxonBase.class;
+			clazz = (Class)TaxonBase.class;
 		}
 		List<T> taxonList = state.get(TermUri.DWC_TAXON.toString(), id, clazz);
 		if (taxonList.size() > 1){
