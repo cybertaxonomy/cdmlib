@@ -19,6 +19,7 @@ import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.config.ICdmSource;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 public interface ICdmDataSource  extends DataSource,ICdmSource {
 
@@ -39,11 +40,22 @@ public interface ICdmDataSource  extends DataSource,ICdmSource {
 	 * @param hbm2dll
 	 * @param showSql
 	 * @param formatSql
+	 * @param registerSearchListener
 	 * @param cacheProviderClass
-	 * @return BeanDefinition
+	 * @return
+	 * @deprecated use {@link #getHibernatePropertiesBean(DbSchemaValidation, Boolean, Boolean, Boolean, Boolean, Class)} instead
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass);
+	@Deprecated
+    public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql,
+            Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass);
 
+	/**
+	 * @param hbm2dll schema validation
+	 * @param hibernateConfig the hibernate configuration
+	 * @return the computed {@link BeanDefinition bean definition}
+	 */
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
+	        HibernateConfiguration hibernateConfig);
 
 	/**
 	 * @return

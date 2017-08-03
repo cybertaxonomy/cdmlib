@@ -18,13 +18,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.hibernate.cache.spi.RegionFactory;
+import org.hibernate.envers.boot.internal.EnversIntegrator;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import eu.etaxonomy.cdm.config.CdmSource;
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * @author a.mueller
@@ -371,6 +379,40 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
     public java.util.logging.Logger getParentLogger() {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
         return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+    }
+
+    //********************* Base methods for CdmDataSource and CdmPersistentDatasource
+    /**
+     * @param hbm2dll
+     * @param showSql
+     * @param formatSql
+     * @param registerAuditing
+     * @param registerSearchListener
+     * @param cacheProviderClass
+     * @return
+     */
+    protected AbstractBeanDefinition makeHibernatePropertiesBean(DatabaseTypeEnum dbType,
+            DbSchemaValidation hbm2dll, boolean showSql,
+            boolean formatSql, boolean registerAuditing, boolean registerSearchListener,
+            Class<? extends RegionFactory> cacheProviderClass) {
+
+        AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
+        MutablePropertyValues hibernateProps = new MutablePropertyValues();
+
+        Properties props = new Properties();
+        props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
+        props.setProperty("hibernate.dialect", dbType.getHibernateDialectCanonicalName());
+//      OLD:props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
+        props.setProperty(HibernateConfiguration.CACHE_PROVIDER_CLASS, cacheProviderClass.getName());
+        props.setProperty(HibernateConfiguration.SHOW_SQL, String.valueOf(showSql));
+        props.setProperty(HibernateConfiguration.FORMAT_SQL, String.valueOf(formatSql));
+        props.setProperty(HibernateConfiguration.REGISTER_SEARCH, String.valueOf(registerSearchListener));
+        props.setProperty(EnversIntegrator.AUTO_REGISTER, String.valueOf(registerAuditing));
+
+        hibernateProps.add("properties",props);
+        bd.setPropertyValues(hibernateProps);
+        return bd;
+
     }
 
 

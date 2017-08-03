@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 
 /**
@@ -108,5 +109,10 @@ public interface IIoConfigurator extends IIoObservable{
 	 * @see Configuration#adminPassword
 	 */
 	public void authenticateAsDefaultAdmin();
-		
+
+    /**
+     * @return the hibernate configuration to use, if some values are set
+     */
+    public HibernateConfiguration getHibernateConfig();
+
 }

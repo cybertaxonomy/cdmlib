@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * Base class for all import/export configurators.
@@ -37,6 +38,8 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 
 	//authentification token
 	protected UsernamePasswordAuthenticationToken authenticationToken;
+
+	protected HibernateConfiguration hibernateConfig = new HibernateConfiguration();
 
 
 
@@ -122,6 +125,11 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	public void authenticateAsDefaultAdmin() {
 		setAuthentication(Configuration.adminLogin, Configuration.adminPassword);
 	}
+
+    @Override
+    public HibernateConfiguration getHibernateConfig() {
+        return hibernateConfig;
+    }
 
 
 }
