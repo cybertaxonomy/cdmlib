@@ -1263,18 +1263,20 @@ public class Language extends DefinedTermBase<Language> {
         }
         return null;
     }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
-     */
-    @Override
-    public String toString() {
-        if (this.getLabel() != null){
-            return this.getLabel();
-        }else{
-            return super.toString();
+    public static Language getLanguageByIsoCode(String code){
+        if (StringUtils.isBlank(code)){
+            return null;
         }
+        for (Language language : termMap.values()){
+            if (code.equalsIgnoreCase(language.getIso639_1())){
+                return language;
+            } else if (code.equalsIgnoreCase(language.getIso639_2())){
+                return language;
+            }
+        }
+        return null;
     }
+
 
     @Override
     protected void setDefaultTerms(TermVocabulary<Language> termVocabulary) {
@@ -1330,5 +1332,16 @@ public class Language extends DefinedTermBase<Language> {
             }
         }
     }
+
+
+ // ******************************** toString *********************/
+     @Override
+     public String toString() {
+         if (this.getLabel() != null){
+             return this.getLabel();
+         }else{
+             return super.toString();
+         }
+     }
 
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -65,11 +64,12 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			String description = item.get(TermUri.DC_DESCRIPTION);
 			//String license = item.get(TermUri.DC_LICENSE);//lorna check - often empty in SP dwca
 
-			//TODO: Create the Language from the TermUri.DC_LANGUAGE in the dwca
-			Language language = getLanguage(item);
+			Language language = getDcLanguage(item, resultList);
+			if(language == null){
+			    language = Language.UNKNOWN_LANGUAGE();
+			}
 
-
-			if (StringUtils.isNotBlank(description)){
+			if (isNotBlank(description)){
 				Feature feature = getFeatureByDcType(item, resultList);
 
 				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
@@ -110,21 +110,6 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		return new ListReader<>(resultList);
 	}
 
-
-	private Language getLanguage(StreamItem item) {
-		//TODO
-
-		Language language = Language.DEFAULT();
-		String langString = item.get(TermUri.DC_LANGUAGE);
-
-		/*if (langString != null) {
-			if (!langString.equals("")) {
-				language = getTermService().getLanguageByIso(langString.substring(0, 2));
-				//can getTermService from StreamImportBase which calls GbifDescriptionCsv2CdmConverter.map
-			}
-		}*/
-		return language;
-	}
 
 	/**
 	 * Determines the feature by the dc:type attribute. Tries to reuse existing
@@ -193,7 +178,8 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
- 		return result;
+ 		result.add(TermUri.DC_LANGUAGE.toString());
+        return result;
 	}
 
 //******************* TO STRING ******************************************/

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping;
 import eu.etaxonomy.cdm.io.dwca.in.MappedCdmBase;
 import eu.etaxonomy.cdm.io.dwca.in.MappingEntry;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -85,16 +86,19 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		if (! mappedCdmBase.getCdmBase().isInstanceOf(IdentifiableEntity.class)){
 			throw new IllegalArgumentException("Mapped cdmBase does not map an identifiable entity");
 		}
-		mapping.putMapping(mappedCdmBase.getNamespace(), mappedCdmBase.getSourceId(), CdmBase.deproxy(mappedCdmBase.getCdmBase(), IdentifiableEntity.class));
+		putMapping(mappedCdmBase.getNamespace(), mappedCdmBase.getSourceId(), CdmBase.deproxy(mappedCdmBase.getCdmBase(), IdentifiableEntity.class));
 	}
 
 
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity<?> destinationObject){
-		mapping.putMapping(namespace, sourceKey, destinationObject);
+	    putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
 
 	public void putMapping(String namespace, String sourceKey, IdentifiableEntity<?> destinationObject){
-		mapping.putMapping(namespace, sourceKey, destinationObject);
+		if (destinationObject.isInstanceOf(DefinedTermBase.class)){
+		    addRelatedObject(namespace, sourceKey, destinationObject);
+		}
+	    mapping.putMapping(namespace, sourceKey, destinationObject);
 	}
 
 

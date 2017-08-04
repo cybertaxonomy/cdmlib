@@ -59,11 +59,11 @@ public class GbifVernacularNameCsv2CdmConverter
 		if (taxon != null){
 			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
 			String vernacular = item.get(TermUri.DWC_VERNACULAR_NAME);
-			//TODO language, area,
 			TaxonDescription desc = getTaxonDescription(taxon, false);
 
-			//TODO
-			Language language = null;
+			//TODO area,
+			Language language = getDcLanguage(item, resultList);
+
 			CommonTaxonName commonName = CommonTaxonName.NewInstance(vernacular, language);
 			desc.addElement(commonName);
 			resultList.add(mcb);
@@ -101,9 +101,10 @@ public class GbifVernacularNameCsv2CdmConverter
 
 	@Override
 	public final Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
- 		return result;
+ 		result.add(TermUri.DC_LANGUAGE.toString());
+        return result;
 	}
 
 //************************ STRING ************************************************/

@@ -27,9 +27,11 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -38,9 +40,10 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- *
  * @author a.mueller
  *
+ * @param <CONFIG>
+ * @param <STATE>
  */
 public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>>
         extends CdmImportBase<CONFIG, STATE>{
@@ -92,6 +95,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 					handleResults(state, partStream, location);
 					commitTransaction(tx);
 				} catch (Exception e) {
+				    e.printStackTrace();
 					String message = "An exception occurred while handling partition: " + e;
 					String codeLocation;
 					if (e.getStackTrace().length > 0){
@@ -164,7 +168,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 				IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
 
 				String namespace = mappedCdmBase.getNamespace();
-				state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
+				state.putMapping(namespace, mappedCdmBase.getSourceId(), entity);
 			}
 		}
 	}
@@ -280,12 +284,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	}
 
 
-	//Make public to allow to use by converters
-	@Override
-	public Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc) {
-		return super.getFeature(state, uuid, label, description, labelAbbrev, voc);
-	}
-
 	/**
 	 * Saves a new term. Immediate saving is required to avoid by Transient-Object-Exceptions.
 	 * @param newTerm
@@ -293,6 +291,33 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	public void saveNewTerm(DefinedTermBase newTerm) {
 		getTermService().save(newTerm);
 	}
+
+
+    //Make public to allow to use by converters
+    @Override
+    public Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc) {
+        return super.getFeature(state, uuid, label, description, labelAbbrev, voc);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * If uuid is null a random one is created.
+     */
+    @Override
+    public Language getLanguage(STATE state,
+            UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc) {
+        if (uuid == null){
+            uuid = UUID.randomUUID();
+        }
+        return super.getLanguage(state, uuid, label, text, labelAbbrev, voc);
+    }
+
+    public NamedArea getNamedArea(STATE state, UUID namedAreaUuid,
+            String label, String description, String abbrevLabel, TermVocabulary voc) {
+        return super.getNamedArea(state, namedAreaUuid, label, description, abbrevLabel,
+                null, null, voc, null);
+    }
 
 
 

@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -111,7 +112,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 	 */
 	private void addItemToRelatedObjects(MappedCdmBase<? extends CdmBase> item) {
 		CdmBase cdmBase = item.getCdmBase();
-		if (cdmBase.getId() == 0){
+		if (cdmBase.getId() == 0 || cdmBase.isInstanceOf(DefinedTermBase.class)){
 			if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
 			    IdentifiableEntity<?> identifiableEntity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
 			    Set<String> requiredSourceNamespaces = converter.requiredSourceNamespaces();
