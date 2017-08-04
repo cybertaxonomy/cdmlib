@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -63,7 +64,10 @@ public class Field {
     @XmlAttribute(required = true)
     protected String term;
     @XmlAttribute(required = true)
-    protected byte index;
+    protected byte index = -1;
+    @XmlTransient
+    protected String defaultValue;
+
 
     public String getTerm() {
         return term;
@@ -79,10 +83,18 @@ public class Field {
     public void setIndex(byte value) {
         this.index = value;
     }
-    
+
+    @XmlAttribute(required = false)
+    public String getDefault() {
+        return defaultValue;
+    }
+    public void setDefault(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     @Override
     public String toString(){
-    	return "[" + index + ";" + term + "]";
+    	return "[" + index + ";" + term + (defaultValue != null? ";" + defaultValue:"") + "]";
     }
 
 }

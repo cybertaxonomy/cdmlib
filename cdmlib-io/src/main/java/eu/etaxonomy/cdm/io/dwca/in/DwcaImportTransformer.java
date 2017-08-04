@@ -45,7 +45,7 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("associations")){
 			return Feature.INDIVIDUALS_ASSOCIATION();   //correct ?
 		}else if (key.equalsIgnoreCase("distribution")){
-			return Feature.DISTRIBUTION();
+			return Feature.DISTRIBUTION_GENERAL();
 		}else if (key.equalsIgnoreCase("habitat")){
 			return Feature.HABITAT();
 		}else if (key.equalsIgnoreCase("uses")){

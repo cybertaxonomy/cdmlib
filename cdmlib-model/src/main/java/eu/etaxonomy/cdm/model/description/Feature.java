@@ -156,6 +156,7 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
     private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
+    private static final UUID uuidDistributionGeneral = UUID.fromString("fd8c64f0-6ea5-44b0-9f70-e95833d6076e");
     private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
     private static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
     private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
@@ -707,6 +708,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature DISTRIBUTION(){
 		return getTermByUuid(uuidDistribution);
 	}
+
+    /**
+     * Returns the feature for general text-based
+     * distributions
+     */
+    public static final Feature DISTRIBUTION_GENERAL(){
+        return getTermByUuid(uuidDistributionGeneral);
+    }
 
 	/**
 	 * Returns the "discussion" feature. This feature can only be described

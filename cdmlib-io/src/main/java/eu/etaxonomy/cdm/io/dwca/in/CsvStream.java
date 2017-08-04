@@ -119,7 +119,7 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 	                        break;
 		                }
 			        }
-					String value = next[index];
+					String value = field.getDefault()!= null? field.getDefault(): next[index];
 					String term = field.getTerm();
 					resultMap.put(term, value);
 				}
