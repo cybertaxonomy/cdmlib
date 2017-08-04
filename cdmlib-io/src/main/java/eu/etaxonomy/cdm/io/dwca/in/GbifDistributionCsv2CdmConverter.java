@@ -13,10 +13,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -59,30 +61,35 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
 
+		    String locality = item.get(TermUri.DWC_LOCALITY);
 			String locationId = item.get(TermUri.DWC_LOCATION_ID);
-			NamedArea area = getAreaByLocationId(item, locationId);
+			NamedArea area = getAreaByLocationId(item, locationId, locality, resultList);
 			if (area != null){
-				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(TermUri.DWC_LOCATION_ID), area);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(TermUri.DWC_LOCATION_ID, csv.get(TermUri.DWC_LOCATION_ID.toString()), area);
 				resultList.add(mcb);
 			}else if (! config.isExcludeLocality()){
-				String locality = item.get(TermUri.DWC_LOCALITY);
 				area = getAreaByLocality(item, locality);
-				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(TermUri.DWC_LOCALITY), area);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(TermUri.DWC_LOCALITY, csv.get(TermUri.DWC_LOCALITY.toString()), area);
 				resultList.add(mcb);
 			}
 
 			if (area != null){
 
-				//TODO language, area,
 				TaxonDescription desc = getTaxonDescription(taxon, false);
 
-				//TODO
 				PresenceAbsenceTerm status = null;
+				String establishmentMeans = item.get(TermUri.DWC_ESTABLISHMENT_MEANS);
+				String occurrenceStatus = item.get(TermUri.DWC_OCCURRENCE_STATUS);
+				if (isBlank(establishmentMeans) && isBlank(occurrenceStatus)){
+				    status = PresenceAbsenceTerm.PRESENT();
+				}else{
+				    //FIXME TODO status
+				}
 				Distribution distribution = Distribution.NewInstance(area, status);
 				desc.addElement(distribution);
 
 				//save taxon
-				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID.toString()), taxon);
 				resultList.add(mcb);
 			}
 
@@ -112,31 +119,51 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		return result.iterator().next();
 	}
 
-	private NamedArea getAreaByLocationId(StreamItem item, String locationId) {
+	private NamedArea getAreaByLocationId(StreamItem item, String locationId, String newLabel, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		String namespace = TermUri.DWC_LOCATION_ID.toString();
-		if (locationId == null){
+		if (isBlank(locationId)){
 		    return null;
 		}
 		List<NamedArea> result = state.get(namespace, locationId, NamedArea.class);
-		if (result.isEmpty()){
-			//try to find in cdm
-			NamedArea newArea = getTdwgArea(locationId);
-			if (newArea == null){
-			    //TODO could be idInVocabulary (with not voc given), abbrevTitle of any representation, ...
-//				state.getCurrentIO().getTermService().listByCode
-			}
-			if (newArea == null){
-				newArea = NamedArea.NewInstance(locationId, locationId, locationId);
-			}
+		try{
+    		if (result.isEmpty()){
+    		    NamedArea newArea = state.getTransformer().getNamedAreaByKey(locationId);
+    		    if (newArea != null){
+                    return newArea;
+                }
+    		  //try to find in cdm
+                newArea = getTdwgArea(locationId);
+                if (newArea != null){
+                    return newArea;
+                }
 
-			state.putMapping(namespace, locationId, newArea);
-			return newArea;
-		}
-		if (result.size() > 1){
-			String message = "There is more than 1 cdm entity matching given locationId '%s'. I take an arbitrary one.";
-			fireWarningEvent(String.format(message, locationId), item, 4);
-		}
-		return result.iterator().next();
+    		    String label = isNotBlank(newLabel)? newLabel : locationId;
+    		    UUID namedAreaUuid = state.getTransformer().getNamedAreaUuid(locationId);
+    		    newArea = state.getCurrentIO().getNamedArea(state, namedAreaUuid, label, label, locationId, null);
+
+    		    //should not happen
+    		    if (newArea == null){
+    		        newArea = NamedArea.NewInstance(label, label, locationId);
+    //            state.putMapping(namespace, type, newArea);
+                    state.getCurrentIO().saveNewTerm(newArea);
+                    MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(namespace, locationId, newArea);
+                    resultList.add(mcb);
+                }
+
+
+    			state.putMapping(namespace, locationId, newArea);
+    			return newArea;
+    		}
+    		if (result.size() > 1){
+    			String message = "There is more than 1 cdm entity matching given locationId '%s'. I take an arbitrary one.";
+    			fireWarningEvent(String.format(message, locationId), item, 4);
+    		}
+    		return result.iterator().next();
+        } catch (UndefinedTransformerMethodException e) {
+            String message = "GetNamedArea not yet supported by DwcA-Transformer. This should not have happend. Please contact your application developer.";
+            fireWarningEvent(message, item, 8);
+            return null;
+        }
 	}
 
     /**
@@ -189,6 +216,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
  		result.add(TermUri.DWC_LOCATION_ID.toString());
+ 		result.add(TermUri.DWC_LOCALITY.toString());
  		return result;
 	}
 
