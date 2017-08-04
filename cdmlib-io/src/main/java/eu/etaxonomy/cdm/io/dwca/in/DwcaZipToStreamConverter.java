@@ -120,7 +120,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 
 	public IReader<CsvStream> getEntriesStream(STATE state){
 		//core
-		List<CsvStream> streamList = new ArrayList<CsvStream>();
+		List<CsvStream> streamList = new ArrayList<>();
 		try {
 			if (state.getConfig().isDoTaxa()){
 			    streamList.add(getCoreStream(state)); //for taxa and names
@@ -157,7 +157,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 				state.setSuccess(false);
 			}
 		}
-		IReader<CsvStream> result = new ListReader<CsvStream>(streamList);
+		IReader<CsvStream> result = new ListReader<>(streamList);
 		return result;
 	}
 

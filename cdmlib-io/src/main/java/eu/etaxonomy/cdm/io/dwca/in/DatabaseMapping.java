@@ -217,7 +217,7 @@ public class DatabaseMapping implements IImportMapping {
         String result = key.replace("'", "''");
         if (result.length() > SOURCE_KEY_LENGTH){
             //TODO better use MD5 hash or similar
-            logger.info("Source key was trunkated: " + key);
+            logger.info("Source key was truncated: " + key);
             result = result.substring(0, SOURCE_KEY_LENGTH);
         }
         return result;

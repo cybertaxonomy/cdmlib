@@ -109,9 +109,9 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 	                        for(int i=0;i<next.length;i++) {
                                 messageSB.append(next[i]);
                                 if(i < next.length-1){
-                                        messageSB.append(",");
+                                    messageSB.append(",");
                                 } else {
-                                        messageSB.append("]");
+                                    messageSB.append("]");
                                 }
 	                        }
 	                        message = messageSB.toString();

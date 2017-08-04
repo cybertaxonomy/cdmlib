@@ -1280,9 +1280,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
      */
     private String[] getDatasetIdName(Set<IdentifiableSource> sources) {
         String didname[] = {"",""};
-        Iterator<IdentifiableSource> itr = sources.iterator();
-        while(itr.hasNext()) {
-            IdentifiableSource source = itr.next();
+        Iterator<IdentifiableSource> sourcesItr = sources.iterator();
+        while(sourcesItr.hasNext()) {
+            IdentifiableSource source = sourcesItr.next();
             Reference ref = source.getCitation();
             Set<IdentifiableSource> ref_sources = ref.getSources();
             Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();

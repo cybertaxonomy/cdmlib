@@ -125,7 +125,7 @@ public class Feature extends DefinedTermBase<Feature> {
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
-	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<TermVocabulary<DefinedTerm>>();
+	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_StatisticalMeasure")

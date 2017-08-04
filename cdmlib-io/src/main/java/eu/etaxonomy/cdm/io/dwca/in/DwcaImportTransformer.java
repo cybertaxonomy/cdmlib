@@ -29,9 +29,7 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 
 	private static final UUID uuidFeatureBiology = UUID.fromString("daf92173-a262-49f1-9a45-923941d9c557");
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
-	 */
+
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		if (key == null){
@@ -53,9 +51,6 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("uses")){
 			return Feature.USES();
 		}
-
-
-
 
 		return null;
 	}
@@ -98,10 +93,6 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 
 		return null;
 	}
-
-
-
-
 
 
 }

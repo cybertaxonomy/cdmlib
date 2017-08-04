@@ -212,7 +212,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
-		return new ListReader<MappedCdmBase<? extends CdmBase>>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
@@ -379,7 +379,11 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase<? extends CdmBase>> resultList, Reference sourceReference, String sourceReferecenDetail) {
+	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase,
+	        List<MappedCdmBase<? extends CdmBase>> resultList,
+	        Reference sourceReference,
+	        String sourceReferecenDetail) {
+
 		TermUri idTerm = TermUri.DWC_DATASET_ID;
 		TermUri strTerm = TermUri.DWC_DATASET_NAME;
 
@@ -577,7 +581,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
 						newRef.addSource(OriginalSourceType.Import, refId, idTerm.toString(), sourceCitation, null);
-						MappedCdmBase<Reference> idResult = new MappedCdmBase<Reference>(idTerm, refId, newRef);
+						MappedCdmBase<Reference> idResult = new MappedCdmBase<>(idTerm, refId, newRef);
 						resultList.add(idResult);
 					}
 				}else{
@@ -589,7 +593,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				List<Reference> nomRefs = state.get(strTerm.toString(), refStr, Reference.class);
 				if (nomRefs.size() > 0){
 					//TODO handle list.size > 1 , do we need a list here ?
-					result = new MappedCdmBase<Reference>(strTerm, refStr , nomRefs.get(0));
+					result = new MappedCdmBase<>(strTerm, refStr , nomRefs.get(0));
 				}else{
 					// new Reference
 					if (newRef == null){
@@ -597,7 +601,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					}
 					newRef.setTitleCache(refStr, true);
 					//TODO distinguish available year, authorship, etc. if
-					result = new MappedCdmBase<Reference>(strTerm, refStr, newRef);
+					result = new MappedCdmBase<>(strTerm, refStr, newRef);
 					resultList.add(result);
 				}
 			}
@@ -787,7 +791,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_NAME_PUBLISHED_IN_ID.toString());
  		result.add(TermUri.DWC_NAME_PUBLISHED_IN.toString());
  		if (!config.isDatasetsAsSecundumReference()){
@@ -817,8 +821,4 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
-
-
 }

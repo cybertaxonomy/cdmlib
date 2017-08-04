@@ -35,7 +35,6 @@ import au.com.bytecode.opencsv.CSVWriter;
  * or ISO codes.  http://www.ietf.org/rfc/rfc4646.txt
  * http://www.loc.gov/standards/iso639-2/php/English_list.php
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:31
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -1280,7 +1279,7 @@ public class Language extends DefinedTermBase<Language> {
     @Override
     protected void setDefaultTerms(TermVocabulary<Language> termVocabulary) {
         if (termMap == null){  //there are 2 language vocabularies now
-            termMap = new HashMap<UUID, Language>();
+            termMap = new HashMap<>();
         }
         for (Language term : termVocabulary.getTerms()){
             termMap.put(term.getUuid(), term);
