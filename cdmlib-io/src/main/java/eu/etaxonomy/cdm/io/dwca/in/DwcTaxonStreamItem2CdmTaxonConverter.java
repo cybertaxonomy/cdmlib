@@ -27,9 +27,11 @@ import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -368,11 +370,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					String message = "LSID is malformed and can't be handled as LSID: %s";
 					message = String.format(message, identifier);
 					fireWarningEvent(message, csvTaxonRecord, 4);
+					Identifier.NewInstance(taxonBase, identifier, DefinedTerm.getTermByClassAndUUID(DefinedTerm.class, DefinedTerm.uuidLsid));
 				}
 			}else{
-				String message = "Identifier type not supported: %s";
+				Identifier.NewInstance(taxonBase, identifier, null);
+			    String message = "Identifier type not recognized. Create generic identifier: %s";
 				message = String.format(message, identifier);
-				fireWarningEvent(message, csvTaxonRecord, 4);
+				fireWarningEvent(message, csvTaxonRecord, 1);
 			}
 		}
 
