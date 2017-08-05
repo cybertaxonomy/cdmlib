@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
@@ -127,6 +128,26 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 
     @Override
     public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException {
+        if (key == null){
+            return null;
+        }else if (key.equalsIgnoreCase("xyz")){
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public PresenceAbsenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
+        if (key == null){
+            return null;
+        }else if (key.equalsIgnoreCase("xyz")){
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
         if (key == null){
             return null;
         }else if (key.equalsIgnoreCase("xyz")){

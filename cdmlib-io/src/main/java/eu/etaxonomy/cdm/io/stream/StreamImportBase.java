@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -333,4 +334,9 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
         return super.getExtensionType(state, uuid, label, description, labelAbbrev);
     }
 
+    @Override
+    public PresenceAbsenceTerm getPresenceTerm(STATE state,
+            UUID statusUuid, String label, String description, String labelAbbrev, boolean isAbsenceTerm) {
+        return super.getPresenceTerm(state, statusUuid, label, description, labelAbbrev, isAbsenceTerm, null);
+    }
 }

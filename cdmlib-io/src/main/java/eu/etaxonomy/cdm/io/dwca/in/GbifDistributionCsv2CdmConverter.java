@@ -17,11 +17,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -61,6 +63,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
 
+		    //area
 		    String locality = item.get(TermUri.DWC_LOCALITY);
 			String locationId = item.get(TermUri.DWC_LOCATION_ID);
 			NamedArea area = getAreaByLocationId(item, locationId, locality, resultList);
@@ -73,18 +76,16 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 				resultList.add(mcb);
 			}
 
+			//status
+			String establishmentMeans = item.get(TermUri.DWC_ESTABLISHMENT_MEANS);
+	        String occurrenceStatus = item.get(TermUri.DWC_OCCURRENCE_STATUS);
+			PresenceAbsenceTerm status = getPresenceAbsenceStatus(item, establishmentMeans, occurrenceStatus, resultList);
+
 			if (area != null){
 
 				TaxonDescription desc = getTaxonDescription(taxon, false);
 
-				PresenceAbsenceTerm status = null;
-				String establishmentMeans = item.get(TermUri.DWC_ESTABLISHMENT_MEANS);
-				String occurrenceStatus = item.get(TermUri.DWC_OCCURRENCE_STATUS);
-				if (isBlank(establishmentMeans) && isBlank(occurrenceStatus)){
-				    status = PresenceAbsenceTerm.PRESENT();
-				}else{
-				    //FIXME TODO status
-				}
+
 				Distribution distribution = Distribution.NewInstance(area, status);
 				desc.addElement(distribution);
 
@@ -104,7 +105,79 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 
 
-	private NamedArea getAreaByLocality(StreamItem item, String locality) {
+	/**
+     * @param item
+	 * @param occurrenceStatus
+	 * @param establishmentMeans
+     * @param resultList
+     * @return
+     */
+    private PresenceAbsenceTerm getPresenceAbsenceStatus(StreamItem item,
+            String establishmentMeans, String occurrenceStatus, List<MappedCdmBase<? extends CdmBase>> resultList) {
+
+        PresenceAbsenceTerm status = null;
+        if (isBlank(establishmentMeans) && isBlank(occurrenceStatus)){
+            status = PresenceAbsenceTerm.PRESENT();
+        }else{
+            String statusStr = CdmUtils.concat(" - ", occurrenceStatus, establishmentMeans);
+            String namespace = PresenceAbsenceTerm.class.getCanonicalName();
+            List<PresenceAbsenceTerm> result = state.get(namespace, statusStr, PresenceAbsenceTerm.class);
+            try{
+                if (result.isEmpty()){
+                    PresenceAbsenceTerm newStatus = state.getTransformer().getPresenceTermByKey(statusStr);
+                    if (newStatus != null){
+                        return newStatus;
+                    }
+                    //try to find in cdm
+                    newStatus = getExistingPresenceAbsenceTerm(statusStr);
+                    if (newStatus != null){
+                        return newStatus;
+                    }
+
+                    UUID statusUuid = state.getTransformer().getPresenceTermUuid(statusStr);
+                    newStatus = state.getCurrentIO().getPresenceTerm(state, statusUuid, statusStr, statusStr, null, false);
+
+                    //should not happen
+                    if (newStatus == null){
+                        newStatus = PresenceAbsenceTerm.NewPresenceInstance(statusStr, statusStr, statusStr);
+                        state.getCurrentIO().saveNewTerm(newStatus);
+                        MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(namespace, statusStr, newStatus);
+                        resultList.add(mcb);
+                    }
+
+                    state.putMapping(namespace, statusStr, newStatus);
+                    return newStatus;
+                }
+                if (result.size() > 1){
+                    String message = "There is more than 1 cdm entity matching given occurrence status/establishment means '%s'."
+                            + " I take an arbitrary one.";
+                    fireWarningEvent(String.format(message, statusStr), item, 4);
+                }
+                return result.iterator().next();
+            } catch (UndefinedTransformerMethodException e) {
+                String message = "GetNamedArea not yet supported by DwcA-Transformer. This should not have happend. Please contact your application developer.";
+                fireWarningEvent(message, item, 8);
+                return null;
+            }
+        }
+        return status;
+    }
+
+    /**
+     * @param statusStr
+     * @return
+     */
+    private PresenceAbsenceTerm getExistingPresenceAbsenceTerm(String statusStr) {
+        TermVocabulary<PresenceAbsenceTerm> voc = PresenceAbsenceTerm.PRESENT().getVocabulary();
+        for (PresenceAbsenceTerm status: voc.getTerms()){
+            if (statusStr.equalsIgnoreCase(status.getLabel())){
+                return status;
+            }
+        }
+        return null;
+    }
+
+    private NamedArea getAreaByLocality(StreamItem item, String locality) {
 		String namespace = TermUri.DWC_LOCALITY.toString();
 		List<NamedArea> result = state.get(namespace, locality, NamedArea.class);
 		if (result.isEmpty()){
