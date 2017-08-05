@@ -287,6 +287,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return null;
 	}
 
+	/**
+	 * @see #getMarkerType(ImportStateBase, UUID, String, String, String, TermVocabulary, Language)
+	 */
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev){
 		return getMarkerType(state, uuid, label, description, labelAbbrev, null, null);
 	}
@@ -296,6 +299,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 
+	/**
+     * @see #getMarkerType(ImportStateBase, UUID, String, String, String, TermVocabulary, Language)
+     */
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc, Language language){
 		if (uuid == null){
 			uuid = UUID.randomUUID();

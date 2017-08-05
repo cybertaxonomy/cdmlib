@@ -30,8 +30,28 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 
 	private static final UUID uuidFeatureBiology = UUID.fromString("daf92173-a262-49f1-9a45-923941d9c557");
 
+	private static final UUID uuidMarkerTypeIsExtinct = UUID.fromString("e861a3f1-6f67-407d-9171-8dadbb330016");
+
+	private static final UUID uuidExtensionTypeModified = UUID.fromString("5e3d4930-e672-42c1-813c-c3cee7aef965");
+
+
+    @Override
+    public UUID getExtensionTypeUuid(String key) throws UndefinedTransformerMethodException {
+        if (key == null){return null;
+        }else if (key.equalsIgnoreCase("modified")){return uuidExtensionTypeModified;
+        }
+        return null;
+    }
 
 	@Override
+    public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
+	    if (key == null){return null;
+        }else if (key.equalsIgnoreCase("isExtinct")){return uuidMarkerTypeIsExtinct;
+        }
+	    return null;
+    }
+
+    @Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		if (key == null){
 			return null;

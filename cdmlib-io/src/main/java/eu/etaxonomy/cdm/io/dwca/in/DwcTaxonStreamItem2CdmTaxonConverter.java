@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
@@ -34,6 +36,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -153,7 +157,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 		//NON core
 	    //term="http://purl.org/dc/terms/identifier"
-		//currently only LSIDs
+		//currently only LSIDs or generic
 		handleIdentifier(csvTaxonRecord, taxonBase);
 
 		//TaxonRemarks
@@ -214,17 +218,86 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
+		handleModified(csvTaxonRecord, taxonBase);
+
+		handleIsExtinct(csvTaxonRecord, taxonBase);
+
+
+
 		return new ListReader<>(resultList);
 	}
 
 
 
-	/**
+    /**
+     * @param csvTaxonRecord
+     * @param taxonBase
+     */
+    private void handleIsExtinct(StreamItem item, TaxonBase<?> taxonBase) {
+        String isExtinctStr = item.get(TermUri.GBIF_IS_EXTINCT);
+        if (isBlank(isExtinctStr)){
+            return;
+        }
+        Boolean isExtinct = getBoolean(isExtinctStr, item);
+        if (isExtinct != null){
+            try {
+                UUID isExtinctUuid = state.getTransformer().getMarkerTypeUuid("isExtinct");
+                MarkerType markerType = state.getCurrentIO().getMarkerType(state, isExtinctUuid, "extinct", "extinct", "extinct");
+                Marker.NewInstance(taxonBase, isExtinct, markerType);
+
+            } catch (UndefinedTransformerMethodException e) {
+                String message = "GetMarkerType not available for import. This should not happen. Please conntact developer";
+                fireWarningEvent(message, item.getLocation(), 8);
+            }
+        }
+
+    }
+
+    /**
+     * @param item
+     * @param isExtinctStr
+     * @return
+     */
+    private Boolean getBoolean(String booleanStr, StreamItem item) {
+        try {
+            return Boolean.valueOf(booleanStr);
+        } catch (Exception e) {
+            String message = "Boolean value could not be parsed";
+            fireWarningEvent(message, item, 4);
+            return null;
+        }
+    }
+
+
+
+    /**
+     * @param csvTaxonRecord
+     * @param taxonBase
+     */
+    private void handleModified(StreamItem item, TaxonBase<?> taxonBase) {
+        String modifiedStr = item.get(TermUri.DC_MODIFIED);
+        if (isBlank(modifiedStr)){
+            return;
+        }
+
+        try {
+            UUID modifiedUuid = state.getTransformer().getExtensionTypeUuid("modified");
+            ExtensionType extensionType = state.getCurrentIO().getExtensionType(state, modifiedUuid, "modified", "modified", "modified");
+            Extension.NewInstance(taxonBase, modifiedStr, extensionType);
+
+        } catch (UndefinedTransformerMethodException e) {
+            String message = "GetMarkerType not available for import. This should not happen. Please conntact developer";
+            fireWarningEvent(message, item.getLocation(), 8);
+        }
+
+
+    }
+
+    /**
 	 * @param item
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
-
 
 		String references = item.get(TermUri.DC_REFERENCES);
 

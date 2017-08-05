@@ -26,8 +26,10 @@ import eu.etaxonomy.cdm.io.dwca.in.StreamPartitioner;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -306,11 +308,11 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
      */
     @Override
     public Language getLanguage(STATE state,
-            UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc) {
+            UUID uuid, String label, String description, String labelAbbrev, TermVocabulary voc) {
         if (uuid == null){
             uuid = UUID.randomUUID();
         }
-        return super.getLanguage(state, uuid, label, text, labelAbbrev, voc);
+        return super.getLanguage(state, uuid, label, description, labelAbbrev, voc);
     }
 
     public NamedArea getNamedArea(STATE state, UUID namedAreaUuid,
@@ -319,6 +321,16 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
                 null, null, voc, null);
     }
 
+    @Override
+    public MarkerType getMarkerType(STATE state, UUID uuid, String label,
+            String description, String labelAbbrev) {
+        return super.getMarkerType(state, uuid, label, description, labelAbbrev);
+    }
 
+    @Override
+    public ExtensionType getExtensionType(STATE state, UUID uuid, String label,
+            String description, String labelAbbrev) {
+        return super.getExtensionType(state, uuid, label, description, labelAbbrev);
+    }
 
 }
