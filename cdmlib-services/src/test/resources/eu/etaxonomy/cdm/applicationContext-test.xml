@@ -9,12 +9,9 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
     ">
 
-    <context:property-override location="classpath:override.properties"/>
+   <context:property-override location="classpath:override.properties"/>
 
-    <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>    
-    <!-- No component scan for eu.etaxonomy.cdm.api.application, therefore we add the bean explicitly -->
-    <bean id="cdmRepository" class="eu.etaxonomy.cdm.api.application.CdmRepository"/>
-    <bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder" scope="prototype"/>
+   <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
    
  <!--    <context:component-scan base-package="eu/etaxonomy/cdm/api/validation">
     </context:component-scan>
