@@ -111,7 +111,7 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 			}else if (Reference.class.isAssignableFrom(clazz)){
 				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
-				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
+				getOccurrenceService().updateTitleCache((Class) clazz, null, null, null);
 			}
 			//Sequence
 			else if (Sequence.class.isAssignableFrom(clazz)){
