@@ -130,8 +130,13 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                             } else if ( (config.isDeleteFromDescription() && config.getDeleteFrom() instanceof Taxon  && config.getDeleteFrom().getId() == desc.getTaxon().getId())|| config.isDeleteFromEveryWhere()){
                                 Taxon taxon = desc.getTaxon();
                                 updatedObject = taxon;
-                                desc.removeElement(textData);
-                                textData.removeMedia(media);
+
+                                while(textData.getMedia().contains(media)){
+                                    textData.removeMedia(media);
+                                }
+                                if (textData.getMedia().isEmpty()){
+                                    desc.removeElement(textData);
+                                }
                                 if (desc.getElements().isEmpty()){
                                     taxon.removeDescription(desc);
                                 }
@@ -181,10 +186,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                             }
                         }
                     }
-                }else if (ref instanceof MediaRepresentation){
-                    MediaRepresentation mediaRep = HibernateProxyHelper.deproxy(ref, MediaRepresentation.class);
-                    media.removeRepresentation(mediaRep);
-                } else if (ref instanceof MediaSpecimen){
+                } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
+                        || (ref instanceof MediaSpecimen && config.isDeleteFromEveryWhere())){
                     MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
                     if (config.getDeleteFrom().getId() == mediaSpecimen.getId() || config.isDeleteFromEveryWhere()){
                         mediaSpecimen.setMediaSpecimen(null);
