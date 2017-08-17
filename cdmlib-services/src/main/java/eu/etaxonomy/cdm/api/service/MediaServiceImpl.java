@@ -160,9 +160,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                                     specimen.removeDescription(desc);
                                 }
                             } else {
-                             // this should not be happen, because it is not deletable. see isDeletable
                                 result.setAbort();
-
 
                             }
                         }else if (description instanceof TaxonNameDescription){
@@ -179,7 +177,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                                     name.removeDescription(desc);
                                 }
                             } else {
-                             // this should not be happen, because it is not deletable. see isDeletable
+
                                 result.setAbort();
 
 
@@ -192,6 +190,11 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     if (config.getDeleteFrom().getId() == mediaSpecimen.getId() || config.isDeleteFromEveryWhere()){
                         mediaSpecimen.setMediaSpecimen(null);
                         updatedObject = mediaSpecimen;
+                    } else {
+
+                        result.setAbort();
+
+
                     }
                 }
 
