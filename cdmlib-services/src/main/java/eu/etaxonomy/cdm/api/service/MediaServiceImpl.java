@@ -187,15 +187,15 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                 } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
                         || (ref instanceof MediaSpecimen && config.isDeleteFromEveryWhere())){
                     MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
-                    if (config.getDeleteFrom().getId() == mediaSpecimen.getId() || config.isDeleteFromEveryWhere()){
+
                         mediaSpecimen.setMediaSpecimen(null);
                         updatedObject = mediaSpecimen;
-                    } else {
 
-                        result.setAbort();
+                }else {
+
+                    result.setAbort();
 
 
-                    }
                 }
 
             }
