@@ -84,6 +84,7 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
 
                 if (oId != null){
                     id = Integer.valueOf(oId.toString());
+                    rowArray = new Integer[2];
                     oParentId = row[1];
                     if (oParentId != null){
                         parentId = Integer.valueOf(oParentId.toString());
@@ -92,9 +93,7 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
                     }else{
                         rowArray[1]= null;
                     }
-                    rowArray = new Integer[2];
                     rowArray[0]= id;
-
                     result.add(rowArray);
                 }
             }
