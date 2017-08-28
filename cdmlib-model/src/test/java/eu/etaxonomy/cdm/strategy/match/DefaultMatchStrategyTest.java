@@ -10,9 +10,10 @@
 package eu.etaxonomy.cdm.strategy.match;
 
 import java.net.URI;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -69,7 +70,7 @@ public class DefaultMatchStrategyTest {
 	private Annotation annotation2;
 	private String annotationString2;
 	private String title2 = "Title2";
-	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
+	private ZonedDateTime created2 = ZonedDateTime.of(1999, 3, 1, 0, 0, 0, 0, ZoneId.systemDefault());
 	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;

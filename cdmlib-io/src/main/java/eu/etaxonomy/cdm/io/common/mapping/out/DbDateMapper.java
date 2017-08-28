@@ -10,9 +10,10 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
+import java.time.ZonedDateTime;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
+
 
 /**
  * @author a.mueller
@@ -27,7 +28,7 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, null);
 	}
 
-	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString, DateTime defaultValue){
+	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString, ZonedDateTime defaultValue){
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, defaultValue);
 	}
 
@@ -35,7 +36,7 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	private DbDateMapper(String cdmAttributeString, String dbAttributeString, DateTime defaultValue) {
+	private DbDateMapper(String cdmAttributeString, String dbAttributeString, ZonedDateTime defaultValue) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 	}
 
@@ -88,7 +89,7 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 	 */
 	@Override
 	public Class<?> getTypeClass() {
-		return DateTime.class;
+		return ZonedDateTime.class;
 	}
 
 

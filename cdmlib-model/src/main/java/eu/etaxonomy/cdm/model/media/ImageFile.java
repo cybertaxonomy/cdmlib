@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.media;
 
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -21,7 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -82,7 +82,7 @@ public class ImageFile extends MediaRepresentationPart {
 	 * @param width the width of the image file
 	 * @return
 	 */
-	public static Media NewMediaInstance(DateTime mediaCreated, AgentBase artist, URI uri, String mimeType, String suffix, Integer size, Integer height, Integer width){
+	public static Media NewMediaInstance(ZonedDateTime mediaCreated, AgentBase artist, URI uri, String mimeType, String suffix, Integer size, Integer height, Integer width){
 		Media media = Media.NewInstance();
 		media.setMediaCreated(mediaCreated);
 		media.setArtist(artist);

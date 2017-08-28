@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+      <property name="connection.release_mode">after_transaction</property>
+
+      <!-- Connection Pooling -->
+<!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
+      <property name="hibernate.connection.provider_class">org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl</property>
+	    <!--
+          Configuring the C3P0ConnectionProvider
+          ========================================
+          see http://www.mchange.com/projects/c3p0/index.html#hibernate-specific
+          and also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
+
+          IMPORTANT:
+          Because of the constraint (1) the org.hibernate.connection.C3P0ConnectionProvider are not be used
+          for the Cdm Library because it requires the dataSource bean in some cases.
+
+          (1)
+          Do NOT specify the dataSource in the sessionFactory for example in the
+          org.springframework.orm.hibernate3.LocalSessionFactoryBean
+          !!!==> If *dataSource* is set, this will override corresponding settings in Hibernate properties.!!!
+			  If this is set, the Hibernate settings should not define a connection provider to
+		      avoid meaningless double configuration.
+          (2)
+          Hibernate uses the hibernate.c3p0.max_size property to determine if c3p0
+          is beeing used.  Therefore the max_size property MUST be set. - maybe not need in hibernate 3.4 +
+
+          (3) If you are using Hibernate's C3P0ConnectionProvider you must set the following properties
+          in your hibernate configuration, using hibernate-specific configuration keys.
+          All other properties must be defined as usual in a c3p0.properties file.
+          This is confusing, and will hopefully be simplified some time in the future, but for now...
+          
+          DOCUMENTATION UPDATE (2015-05-22):
+          Hibernate's C3P0ConnectionProvider renames 7 c3p0 configuration properties, which, 
+          if set in your hibernate configuration, will override any configuration you may have set 
+          in a c3p0.properties file.
+          TODO: are points (2) and (3) still valid? I don't think so! (AK)
+
+            hibernate.c3p0.acquire_increment
+			hibernate.c3p0.idle_test_period
+			hibernate.c3p0.timeout
+			hibernate.c3p0.max_size
+			hibernate.c3p0.max_statements
+			hibernate.c3p0.min_size
+			hibernate.c3p0.validate
+      -->
+      <mapping package="eu.etaxonomy.cdm.model.common"/>
+      <!-- Agent Package -->
+      <mapping class="eu.etaxonomy.cdm.model.agent.Address"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.AgentBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.Contact"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.Institution"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.InstitutionalMembership"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.Person"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.Team"/>
+      <mapping class="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase"/>
+      <!-- Common Package -->
+      <mapping class="eu.etaxonomy.cdm.model.common.Annotation"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.AnnotationType"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Credit"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.DefinedTerm"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.DefinedTermBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Identifier"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.IntextReference"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Group"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Language"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.LanguageString"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.LSID"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.LSIDAuthority"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.OrderedTerm"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.OrderedTermBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.OrderedTermVocabulary"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.OriginalSourceBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.RelationshipTermBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Representation"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.TermVocabulary"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.User"/>
+      <!-- Description Package -->
+      <mapping class="eu.etaxonomy.cdm.model.description.CategoricalData"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.CommonTaxonName"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.DescriptionBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementSource"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.Distribution"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.Character"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.FeatureNode"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.FeatureTree"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.KeyStatement"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.MediaKey"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.IndividualsAssociation"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.MeasurementUnit"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.MultiAccessKey"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.PolytomousKey"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.PolytomousKeyNode"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.QuantitativeData"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.SpecimenDescription"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.State"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.StateData"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.StatisticalMeasure"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.TaxonDescription"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.TaxonInteraction"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.TaxonNameDescription"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.TextData"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.TextFormat"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.WorkingSet"/>
+      <!-- Location Package -->
+      <mapping class="eu.etaxonomy.cdm.model.location.NamedArea"/>
+      <mapping class="eu.etaxonomy.cdm.model.location.NamedAreaLevel"/>
+      <mapping class="eu.etaxonomy.cdm.model.location.NamedAreaType"/>
+      <mapping class="eu.etaxonomy.cdm.model.location.ReferenceSystem"/>
+      <mapping class="eu.etaxonomy.cdm.model.location.Point"/>
+      <mapping class="eu.etaxonomy.cdm.model.location.Country"/>
+      <!-- Media Package -->
+      <mapping class="eu.etaxonomy.cdm.model.media.AudioFile"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.ImageFile"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.Media"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentationPart"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.MovieFile"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.Rights"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.RightsType"/>
+      <!-- Meta Data Package -->
+      <mapping class="eu.etaxonomy.cdm.model.metadata.CdmMetaData"/>
+      <mapping class="eu.etaxonomy.cdm.model.metadata.CdmPreference"/>
+      <!-- Molecular Package -->
+      <mapping class="eu.etaxonomy.cdm.model.molecular.PhylogeneticTree"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.DnaQuality"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.DnaSample"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.Amplification"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.AmplificationResult"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.Primer"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.Sequence"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.SequenceString"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.SingleRead"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.SingleReadAlignment"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.Cloning"/>
+      <!-- Name Package -->
+      <mapping class="eu.etaxonomy.cdm.model.name.HomotypicalGroup"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.HybridRelationship"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.HybridRelationshipType"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NameRelationship"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NameRelationshipType"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NameTypeDesignation"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalCode"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatus"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatusType"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.Rank"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.Registration"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.TaxonName"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
+      <!-- Occurrence Package -->
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.Collection"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEvent"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEventType"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.MediaSpecimen"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.DeterminationEvent"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.FieldUnit"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.PreservationMethod"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
+      <!-- Reference Package -->
+      <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
+
+      <!-- Taxon Package -->
+      <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
+      
+      <!-- Validation Package -->
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidation"/>
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityConstraintViolation"/>
+      
+      <!-- View Package -->
+      <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
+      
+      <!-- for filling caches -->
+      <!-- since hibernate 4 listeners are not handled via hibernate.cfg.xml anymore -->
+      <!--  http://stackoverflow.com/questions/8616146/eventlisteners-using-hibernate-4-0-with-spring-3-1-0-release
+            https://community.jboss.org/wiki/HibernateCoreMigrationGuide40 -->
+
+    </session-factory>
+</hibernate-configuration>

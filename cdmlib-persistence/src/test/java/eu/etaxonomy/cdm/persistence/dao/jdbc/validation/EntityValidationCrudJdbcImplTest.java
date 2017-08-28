@@ -14,6 +14,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +30,6 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -150,7 +151,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
         // All same as in @DataSet:
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+        ZonedDateTime created = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
 
         Employee emp = new Employee();
         emp.setId(100);
@@ -202,7 +203,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
         // All identical to @DataSet:
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+        ZonedDateTime created = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
 
         Employee emp = new Employee();
         emp.setId(100);
@@ -248,7 +249,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     // having 1 entityconstraintviolation)
     public void testSameErrorOtherEntity() {
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+        ZonedDateTime created = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
 
         // Not in @DataSet
         Employee emp = new Employee();
@@ -293,7 +294,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     // having 1 entityconstraintviolation)
     public void testOneOldOneNewError() {
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+        ZonedDateTime created = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
 
         // Same entity as in @DataSet
         Employee emp = new Employee();
@@ -353,7 +354,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     // increased.
     public void testAllErrorsSolved() {
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+        ZonedDateTime created = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
 
         Employee emp = new Employee();
         emp.setId(100);

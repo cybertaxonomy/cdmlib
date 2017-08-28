@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.persistence.FlushModeType;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.Sort;
@@ -42,7 +45,6 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.type.Type;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -293,7 +295,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             Session session = getSession();
             if(transientObject.getId() != 0 && VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
                 VersionableEntity versionableEntity = (VersionableEntity)transientObject;
-                versionableEntity.setUpdated(new DateTime());
+                versionableEntity.setUpdated(ZonedDateTime.now());
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
                   User user = (User)authentication.getPrincipal();
@@ -390,7 +392,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     @Override
     public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException{
     	Session session = getSession();
-    	FlushMode currentFlushMode = session.getFlushMode();
+    	FlushModeType currentFlushMode = session.getFlushMode();
     	try {
     		// set flush mode to manual so that the session does not flush
     		// when before performing the query

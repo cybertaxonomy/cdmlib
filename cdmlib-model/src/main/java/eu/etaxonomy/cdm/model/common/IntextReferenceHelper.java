@@ -19,6 +19,7 @@ public final class IntextReferenceHelper {
 
     public static IntextReference addIntextReference(IIntextReferenceTarget target, IIntextReferencable referencedEntity, String start, String inner, String end){
         IntextReference intextReference = IntextReference.NewInstance(target, referencedEntity, 0, 0);
+      // intextReference.setInnerText(inner);
         referencedEntity.setText(start + intextReference.toInlineString(inner) + end);
         referencedEntity.getIntextReferences().add(intextReference);
         return intextReference;
@@ -29,9 +30,25 @@ public final class IntextReferenceHelper {
             throw new IndexOutOfBoundsException("Start and end must be within bounds");
         }
         IntextReference intextReference = IntextReference.NewInstance(target, referencedEntity, 0, 0);
+//        intextReference.setInnerText(text.substring(start,end));
         referencedEntity.setText(text.substring(0, start) + intextReference.toInlineString(text.substring(start,end))
             + text.substring(end));
         referencedEntity.getIntextReferences().add(intextReference);
         return intextReference;
+    }
+    public static IntextReference addIntextReference(IIntextReferenceTarget target, IntextReference intextRef, int start, int end){
+        String text = intextRef.getReferencedEntity().getText();
+        if (start < 0 || end < 0 || start > end || end > text.length()){
+            throw new IndexOutOfBoundsException("Start and end must be within bounds");
+        }
+        intextRef.setTarget(target);
+//        intextRef.setInnerText(text.substring(start,end));
+        intextRef.getReferencedEntity().setText(text.substring(0, start) + intextRef.toInlineString(text.substring(start,end))
+            + text.substring(end));
+        intextRef.setStartPos(start);
+        intextRef.setEndPos(end);
+//        intextRef.getReferencedEntity().getIntextReferences().add(intextReference);
+        return intextRef;
+
     }
 }

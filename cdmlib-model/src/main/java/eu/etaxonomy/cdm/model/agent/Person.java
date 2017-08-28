@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,7 +30,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -333,7 +333,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	public TimePeriod getLifespan(){
 		if(lifespan == null) {
-			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
+			this.lifespan = TimePeriod.NewInstance(LocalDate.now(), LocalDate.now());
 		}
 		return this.lifespan;
 	}
@@ -342,7 +342,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	public void setLifespan(TimePeriod lifespan){
 		if (lifespan == null){
-			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
+			this.lifespan = TimePeriod.NewInstance(LocalDate.now(), LocalDate.now());
 		}
 		this.lifespan = lifespan;
 	}

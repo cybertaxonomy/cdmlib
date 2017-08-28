@@ -2,13 +2,13 @@ package eu.etaxonomy.cdm.remote.view;
 
 import java.io.File;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dozer.Mapper;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,11 +52,11 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
     @Before
     public void setUp() throws Exception {
-    
+
         model = new HashMap<String,Object>();
         identifyView = new IdentifyView();
         identifyView.setMarshaller(marshaller);
-        
+
         metaDataRecord = new CsvDemoMetaDataRecord(true, "/tmp", "");
         config = CsvDemoExportConfigurator.NewInstance(null, null);
 
@@ -77,12 +77,12 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
         Taxon taxon = Taxon.NewInstance(null, null);
         taxon.setTitleCache("TitleCache", true);
-        taxon.setCreated(new DateTime());
+        taxon.setCreated(ZonedDateTime.now());
 
         demoRecord.setScientificName(taxon.getTitleCache());
         demoRecord.setAuthorName("Author");
         demoRecord.setDatasetName("Classification");
-        
+
         ArrayList<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
         logger.info(recordList.size());
         recordList.add(demoRecord);

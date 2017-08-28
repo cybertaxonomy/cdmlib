@@ -10,10 +10,10 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -110,7 +110,7 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 	 */
 	@Override
 	public Class<?> getTypeClass() {
-		return DateTime.class;
+		return ZonedDateTime.class;
 	}
 
 }

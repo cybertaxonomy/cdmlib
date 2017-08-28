@@ -4,11 +4,11 @@
 package eu.etaxonomy.cdm.database.data;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -495,7 +495,7 @@ public class FullCoverageDataGenerator {
 		media.addRepresentation(mediaRepresentation);
 
 		media.putTitle(Language.ENGLISH(), "Media title");
-		media.setMediaCreated(DateTime.now());
+		media.setMediaCreated(ZonedDateTime.now());
 		media.putDescription(Language.ENGLISH(), "Media description");
 		handleIdentifiableEntity(media);
 
@@ -602,7 +602,7 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(mu);
 		dnaQuality.setConcentrationUnit(mu);
 		dnaQuality.setPurificationMethod("purification method");
-		dnaQuality.setQualityCheckDate(DateTime.now());
+		dnaQuality.setQualityCheckDate(ZonedDateTime.now());
 		dnaQuality.setQualityTerm(null); //TODO
 		dnaQuality.setRatioOfAbsorbance260_230(22.0);
 		dnaQuality.setRatioOfAbsorbance260_280(3.9);

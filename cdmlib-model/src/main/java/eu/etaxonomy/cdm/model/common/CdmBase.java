@@ -13,6 +13,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,13 +50,12 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
@@ -126,13 +126,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
     @XmlElement (name = "Created", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
+//    @Type(type="dateTimeUserType")
+    @Type(type="org.hibernate.type.ZonedDateTimeType")
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.IGNORE)
     @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = DateTimeBridge.class)
+    @FieldBridge(impl = ZonedDateTimeBridge.class)
     @Audited
-    private DateTime created;
+    private ZonedDateTime created;
 
     @XmlElement (name = "CreatedBy")
     @XmlIDREF
@@ -148,7 +149,10 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      */
     public CdmBase() {
         this.uuid = UUID.randomUUID();
-        this.created = new DateTime().withMillisOfSecond(0);
+        this.created = ZonedDateTime.now();
+        this.created = this.created.withSecond(0);
+        this.created = this.created.withNano(0);
+
     }
 
     public static void setNewEntityListener(NewEntityListener nel) {
@@ -269,13 +273,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
 
     @Override
-    public DateTime getCreated() {
+    public ZonedDateTime getCreated() {
         return created;
     }
     @Override
-    public void setCreated(DateTime created) {
+    public void setCreated(ZonedDateTime created) {
         if (created != null){
-            created = created.withMillisOfSecond(0);
+            created = created.withNano(0);
+            created = created.withSecond(0);
             //created.set(Calendar.MILLISECOND, 0);  //old, can be deleted
         }
         this.created = created;
@@ -497,7 +502,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         //TODO ?
         result.setId(0);
         result.setUuid(UUID.randomUUID());
-        result.setCreated(new DateTime());
+        result.setCreated(ZonedDateTime.now());
         result.setCreatedBy(null);
 
         //no changes to: -

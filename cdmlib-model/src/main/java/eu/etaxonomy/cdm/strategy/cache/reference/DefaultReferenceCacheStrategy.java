@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -155,9 +154,9 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
      * @param accessed
      * @return
      */
-    private String getAccessedString(DateTime accessed) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-        String result = formatter.print(accessed);
+    private String getAccessedString(ZonedDateTime accessed) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String result = accessed.format(formatter);
         if (result.endsWith(" 00:00")){
             result = result.replace(" 00:00", "");
         }

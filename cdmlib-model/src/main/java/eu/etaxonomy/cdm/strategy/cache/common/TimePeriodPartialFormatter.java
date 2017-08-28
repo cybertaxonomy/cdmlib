@@ -9,8 +9,11 @@
 
 package eu.etaxonomy.cdm.strategy.cache.common;
 
-import org.joda.time.ReadablePartial;
-import org.joda.time.format.DateTimeFormatter;
+
+
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
@@ -20,23 +23,22 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @created 14-Jul-2013 (formerly inner class in TimePeriod)
  *
  */
-public class TimePeriodPartialFormatter extends DateTimeFormatter{
-	
+public class TimePeriodPartialFormatter {
+    DateTimeFormatter innerFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
 	public static TimePeriodPartialFormatter NewInstance(){
 		return new TimePeriodPartialFormatter();
 	}
-	
-	private TimePeriodPartialFormatter(){
-		super(null, null);
-	}
-	
-	@Override
-    public String print(ReadablePartial partial){
+
+
+
+
+    public String print(Temporal partial){
 		//TODO
 		String result = "";
-		String year = (partial.isSupported(TimePeriod.YEAR_TYPE))? String.valueOf(partial.get(TimePeriod.YEAR_TYPE)):null;
-		String month = (partial.isSupported(TimePeriod.MONTH_TYPE))? String.valueOf(partial.get(TimePeriod.MONTH_TYPE)):null;;
-		String day = (partial.isSupported(TimePeriod.DAY_TYPE))? String.valueOf(partial.get(TimePeriod.DAY_TYPE)):null;;
+		String year = (partial.isSupported(ChronoField.YEAR))? String.valueOf(partial.get(ChronoField.YEAR)):null;
+		String month = (partial.isSupported(ChronoField.MONTH_OF_YEAR))? String.valueOf(partial.get(ChronoField.MONTH_OF_YEAR)):null;;
+		String day = (partial.isSupported(ChronoField.DAY_OF_MONTH))? String.valueOf(partial.get(ChronoField.DAY_OF_MONTH)):null;;
 
 		if (month !=null){
 			if (year == null){

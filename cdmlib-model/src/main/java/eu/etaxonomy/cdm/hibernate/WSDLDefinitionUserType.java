@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.hibernate;
 
@@ -27,18 +27,19 @@ import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+
 import com.ibm.wsdl.factory.WSDLFactoryImpl;
 
 import eu.etaxonomy.cdm.model.common.LSIDWSDLLocator;
 
 /**
- * UserType which allows persistence of a wsdl definition - used to persist the 
+ * UserType which allows persistence of a wsdl definition - used to persist the
  * wsdl definition of an LSIDAuthority
- * 
+ *
  * @author ben
  *
  * @see org.cateproject.model.lsid.PersistableLSIDAuthority
@@ -49,12 +50,13 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 	private static final long serialVersionUID = 186785968465961559L;
 	private static final int[] SQL_TYPES = { Types.CLOB };
 
-	public Object deepCopy(Object o) throws HibernateException {
-		
+	@Override
+    public Object deepCopy(Object o) throws HibernateException {
+
 		if (o == null) {
             return null;
         }
-		
+
 		Definition d = (Definition) o;
 
         try {
@@ -72,7 +74,7 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 		}
 	}
 
-	
+
 	//not tested if this works with jadira.usertype
 	@Override
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
@@ -87,7 +89,7 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 			throw new HibernateException(e);
 		}
 	}
-	
+
 	//not tested if this works with jadira.usertype
 	@Override
 	public Serializable disassemble(Object value) throws HibernateException {
@@ -106,7 +108,7 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 
 
 	@Override
-	public Definition nullSafeGet(ResultSet rs, String[]names, SessionImplementor session, Object o)
+	public Definition nullSafeGet(ResultSet rs, String[]names, SharedSessionContractImplementor session, Object o)
 			throws HibernateException, SQLException {
 		Clob val = (Clob)StandardBasicTypes.CLOB.nullSafeGet(rs, names, session, o);
 //		Clob val = (Clob) rs.getClob(names[0]);
@@ -126,15 +128,15 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 		}
 	}
 
-	
+
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) 
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
-		if (value == null) { 
+		if (value == null) {
 //            statement.setNull(index, Types.CLOB);   //old version
             StandardBasicTypes.CLOB.nullSafeSet(statement, value, index, session);
-        } else { 
+        } else {
 			try {
 				Definition definition = (Definition) value;
 				WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
@@ -146,12 +148,13 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 			} catch (WSDLException e) {
 				throw new HibernateException(e);
 			}
-			
+
         }
 	}
 
-	
-	public Class returnedClass() {
+
+	@Override
+    public Class returnedClass() {
 		return Definition.class;
 	}
 

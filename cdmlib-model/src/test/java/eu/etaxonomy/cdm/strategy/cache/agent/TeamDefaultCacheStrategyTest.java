@@ -212,6 +212,7 @@ public class TeamDefaultCacheStrategyTest {
 		Assert.assertEquals("team1 title cache should be created by elements",
 		        "P1LN, P.", team1.getTitleCache());
 		person1.setFirstname("O.");
+		person1.setTitleCache(null, false);
 		Assert.assertEquals("team1 title cache should be P1LN, O.", "P1LN, O.", team1.getTitleCache());
 	}
 

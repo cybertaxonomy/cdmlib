@@ -9,12 +9,11 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.validation.GroupSequence;
 import javax.validation.groups.Default;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -40,7 +39,7 @@ public interface ICdmBase {
 
 	public void setUuid(UUID uuid);
 
-	public DateTime getCreated();
+	public ZonedDateTime getCreated();
 
 	/**
 	 * Sets the timestamp this object was created.
@@ -50,7 +49,7 @@ public interface ICdmBase {
 	 *
 	 * @param created
 	 */
-	public void setCreated(DateTime created);
+	public void setCreated(ZonedDateTime created);
 
 	public User getCreatedBy();
 

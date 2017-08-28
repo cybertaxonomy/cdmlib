@@ -17,13 +17,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -1787,12 +1787,12 @@ public class NonViralNameParserImplTest {
 
     @Test  //#5072
     public final void testLongRunningParsingCapitals(){
-        DateTime start = DateTime.now();
+        ZonedDateTime start = ZonedDateTime.now();
         String nameStr = "Nazeris fujianensis JIAYAO HU, LIZHEN LI, MEIJUN ZHAO,2010";  //name from CoL that created problems
         INonViralName name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICZN, null);
-        DateTime end = DateTime.now();
-        Duration duration = new Duration(start, end);
-        long seconds = duration.getStandardSeconds();
+        ZonedDateTime end = ZonedDateTime.now();
+        Duration duration = Duration.between(start, end);
+        long seconds = duration.getSeconds();
         //this is the critical part of the test that must not be changed
         Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
 
@@ -1804,11 +1804,11 @@ public class NonViralNameParserImplTest {
 
         //name only
         String nameStr = "Dictyocoela berillonum R.S. Terry, J.E. Sm., R.G. Sharpe, T. Rigaud, D.T.J. Littlewood, J.E. Ironside, D. Rollinson & D. Bou";
-        DateTime start = DateTime.now();
+        ZonedDateTime start = ZonedDateTime.now();
         INonViralName name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICNAFP, null);
-        DateTime end = DateTime.now();
-        Duration duration = new Duration(start, end);
-        long seconds = duration.getStandardSeconds();
+        ZonedDateTime end = ZonedDateTime.now();
+        Duration duration = Duration.between(start, end);
+        long seconds = duration.getSeconds();
         //this is the critical part of the test that must not be changed
         Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
         //the following may be discussed
@@ -1817,11 +1817,11 @@ public class NonViralNameParserImplTest {
 
         //with reference
         nameStr = "Dictyocoela berillonum R.S. Terry, J.E. Sm., R.G. Sharpe, T. Rigaud, D.T.J. Littlewood, J.E. Ironside, D. Rollinson & D. Bou in Species Fauna Atlantica Of Blues Animals 3: p.345. 1758.";
-        start = DateTime.now();
+        start = ZonedDateTime.now();
         name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICNAFP, null);
-        end = DateTime.now();
-        duration = new Duration(start, end);
-        seconds = duration.getStandardSeconds();
+        end = ZonedDateTime.now();
+        duration = Duration.between(start, end);
+        seconds = duration.getSeconds();
         //this is the critical part of the test that must not be changed
         Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
         //the following may be discussed
@@ -1839,11 +1839,11 @@ public class NonViralNameParserImplTest {
         String authorStr = "R.S. Terry J.E. Sm. R.G. Sharpe T. Rigaud T.H. Rigseaud D.T. Li, R.G. Sharpe, T. Rigaud, D.T.J. Littlewood & D. Bou";
         TeamOrPersonBase[] authorArray = new TeamOrPersonBase[4];
         try {
-            DateTime start = DateTime.now();
+            ZonedDateTime start = ZonedDateTime.now();
             parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
-            DateTime end = DateTime.now();
-            Duration duration = new Duration(start, end);
-            long seconds = duration.getStandardSeconds();
+            ZonedDateTime end = ZonedDateTime.now();
+            Duration duration = Duration.between(start, end);
+            long seconds = duration.getSeconds();
 //            System.out.println(seconds);
             //this is the critical part of the test that must not be changed
             Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);

@@ -121,8 +121,10 @@ public class IntextReference extends VersionableEntity {
 
 	private int endPos;
 
+//	private String innerText;
 
-    private enum CDM_INTEXT_CLASS{
+
+    public enum CDM_INTEXT_CLASS{
         REFERENCE("reference"),
         TAXONNAME("name"),
         AGENT("agent"),
@@ -152,14 +154,23 @@ public class IntextReference extends VersionableEntity {
         return result;
     }
 
+    public static IntextReference NewEmptyInstance(IIntextReferencable referencedEntity){
+        IntextReference result = new IntextReference(null, referencedEntity, 0, 0);
+        return result;
+    }
+
 
 	public static LanguageString NewReferencedLanguageString(IIntextReferenceTarget target, String pre, String middle, String post, Language language){
         LanguageString result = LanguageString.NewInstance(null, language);
         IntextReference intextReference = IntextReference.NewInstance(target, result, 0, 0);
+//        intextReference.setInnerText(middle);
 	    result.addIntextReference(intextReference);
 	    result.setText(pre + intextReference.toInlineString(middle) + post);
         return result;
     }
+
+
+
 
     public static LanguageString NewReferencedLanguageString(IIntextReferenceTarget target, String text, int start, int end, Language language){
         if (start < 0 || end < 0 || start > end || end > text.length()){
@@ -168,6 +179,7 @@ public class IntextReference extends VersionableEntity {
         LanguageString result = LanguageString.NewInstance(text, language);
         IntextReference intextReference = IntextReference.NewInstance(target, result, start, end);
         result.addIntextReference(intextReference);
+//        intextReference.setInnerText(text.substring(start, end));
         String intext = text.substring(0, start) +
                 intextReference.toInlineString(text.substring(start, end)) + text.substring(end);
         result.setText(intext);
@@ -184,7 +196,9 @@ public class IntextReference extends VersionableEntity {
 
 	   private IntextReference(IIntextReferenceTarget target, IIntextReferencable referencedEntity, int start, int end) {
            super();
-           setTarget(target);
+           if (target != null){
+               setTarget(target);
+           }
            setReferencedEntity(referencedEntity);
 
            this.startPos = start;
@@ -192,7 +206,7 @@ public class IntextReference extends VersionableEntity {
    }
 
 
-    private CDM_INTEXT_CLASS myClass(){
+    public CDM_INTEXT_CLASS myClass(){
         if (agent != null){
             return CDM_INTEXT_CLASS.AGENT;
         }else if (media != null){
@@ -236,14 +250,14 @@ public class IntextReference extends VersionableEntity {
        }else if (key != null){
            return key;
        }else{
-           throw new IllegalStateException("Intext reference has no target object defined");
+           return null;
        }
    }
 
    /**
      * @param target
      */
-    private void setTarget(IIntextReferenceTarget target) {
+    public void setTarget(IIntextReferenceTarget target) {
         target = CdmBase.deproxy(target);
         if (target instanceof TaxonName){
             this.taxonName = (TaxonName)target;
@@ -313,6 +327,14 @@ public class IntextReference extends VersionableEntity {
 	public void setEndPos(int endPos) {
 		this.endPos = endPos;
 	}
+
+//	public String getInnerText() {
+//        return innerText;
+//    }
+//
+//    public void setInnerText(String innerText) {
+//        this.innerText = innerText;
+//    }
 
 	private static final String CDM_PREFIX = "cdm:";
 	public String toInlineString(String innerText){

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.hibernate;
 
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 
@@ -57,7 +57,7 @@ public class BigDecimalUserType implements UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
 		BigDecimal bigDecimal = (BigDecimal) StandardBasicTypes.BIG_DECIMAL.nullSafeGet(rs, names, session, owner);
 
 //		BigDecimal bigDecimal = rs.getBigDecimal(names[0]);
@@ -66,14 +66,14 @@ public class BigDecimalUserType implements UserType {
 		}
 		return bigDecimal.setScale(rs.getInt(names[1]), BigDecimal.ROUND_HALF_UP);
 	}
-	
+
 
 	@Override
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, null, index, session);
 			StandardBasicTypes.INTEGER.nullSafeSet(st, null, index, session);
-			
+
 //			st.setNull(index, Types.DECIMAL);
 //			st.setNull(index + 1, Types.INTEGER);
 		} else {
@@ -84,7 +84,7 @@ public class BigDecimalUserType implements UserType {
 			StandardBasicTypes.INTEGER.nullSafeSet(st, bdec.scale(), index + 1, session);
 		}
 	}
-	
+
 
 	@Override
 	public Object replace(Object arg0, Object arg1, Object arg2) throws HibernateException {
@@ -100,6 +100,8 @@ public class BigDecimalUserType implements UserType {
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
+
+
 
 
 

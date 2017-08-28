@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,9 +33,6 @@ import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.util.ResourceUtils;
 import org.xml.sax.SAXException;
 
@@ -335,7 +334,7 @@ public class SDDDocumentBuilder {
 				d = reference;
 			}
 		}
-		DateTime dt = d.getCreated();
+		ZonedDateTime dt = d.getCreated();
 		String date = dt.toString().substring(0, 19);
 		technicalMetadata.setAttribute("created", date);
 
@@ -579,10 +578,10 @@ public class SDDDocumentBuilder {
 		if (((Reference) database).getUpdated() != null) {
 			ElementImpl dateModified = new ElementImpl(document, DATE_MODIFIED);
 
-			DateTime c = ((Reference) database).getUpdated();
-			DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+			ZonedDateTime c = ((Reference) database).getUpdated();
+			DateTimeFormatter fmt = DateTimeFormatter.ISO_DATE_TIME;
 
-			String date = fmt.print(c);
+			String date = c.format(fmt);
 			dateModified.appendChild(document.createTextNode(date));
 
 			revisionData.appendChild(dateModified);

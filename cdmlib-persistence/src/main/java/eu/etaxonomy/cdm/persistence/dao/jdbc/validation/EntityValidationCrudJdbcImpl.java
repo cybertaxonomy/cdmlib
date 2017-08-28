@@ -14,6 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -23,7 +26,6 @@ import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -258,7 +260,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
                 newValidation.setId(id);
             }
             stmt.setInt(vr_id, newValidation.getId());
-            stmt.setDate(vr_created, new Date(newValidation.getCreated().getMillis()));
+            stmt.setDate(vr_created, new Date(newValidation.getCreated().toEpochSecond()));
             stmt.setString(vr_uuid, newValidation.getUuid().toString());
             stmt.setString(vr_crudeventtype, newValidation.getCrudEventType().toString());
             stmt.setString(vr_validatedentityclass, newValidation.getValidatedEntityClass());
@@ -267,7 +269,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
             stmt.setString(vr_userfriendlydescription, newValidation.getUserFriendlyDescription());
             stmt.setString(vr_userfriendlytypename, newValidation.getUserFriendlyTypeName());
             stmt.setInt(vr_validationcount, 1);
-            stmt.setDate(vr_updated, new Date(newValidation.getCreated().getMillis()));
+            stmt.setDate(vr_updated, new Date(newValidation.getCreated().toEpochSecond()));
             stmt.setString(vr_status, EntityValidationStatus.IN_PROGRESS.toString());
             if (newValidation.getCreatedBy() != null) {
                 stmt.setInt(vr_createdby_id, newValidation.getCreatedBy().getId());
@@ -316,7 +318,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
                     error.setId(id);
                 }
                 stmt.setInt(cv_id, error.getId());
-                stmt.setDate(cv_created, new Date(error.getCreated().getMillis()));
+                stmt.setDate(cv_created, new Date(error.getCreated().toEpochSecond()));
                 stmt.setString(cv_uuid, error.getUuid().toString());
                 stmt.setString(cv_invalidvalue, error.getInvalidValue());
                 stmt.setString(cv_message, error.getMessage());
@@ -412,9 +414,10 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
             if (rs.next()) {
                 result = EntityValidation.newInstance();
                 result.setId(rs.getInt("id"));
-                Date d = rs.getDate("created");
+                LocalDateTime d = rs.getTimestamp("created").toLocalDateTime();
+
                 if (!rs.wasNull()) {
-                    result.setCreated(new DateTime(d.getTime()));
+                    result.setCreated(ZonedDateTime.of (d,ZoneId.systemDefault()));
                 }
                 String s = rs.getString("uuid");
                 if (!rs.wasNull()) {
@@ -492,7 +495,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
             while (rs.next()) {
                 EntityConstraintViolation error = EntityConstraintViolation.newInstance();
                 error.setId(rs.getInt("id"));
-                error.setCreated(new DateTime(rs.getDate("created").getTime()));
+                error.setCreated(ZonedDateTime.of (rs.getTimestamp("created").toLocalDateTime(), ZoneId.systemDefault()));
                 error.setUuid(UUID.fromString(rs.getString("uuid")));
                 error.setInvalidValue(rs.getString("invalidvalue"));
                 error.setMessage(rs.getString("message"));

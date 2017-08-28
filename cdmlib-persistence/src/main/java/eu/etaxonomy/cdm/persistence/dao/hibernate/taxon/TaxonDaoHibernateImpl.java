@@ -802,7 +802,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
             if (onlyAttachedToTaxon){
-                query.add(new NotNullAuditExpression(new EntityPropertyName("acceptedTaxon")));
+                query.add(new NotNullAuditExpression("acceptedTaxon", new EntityPropertyName("acceptedTaxon")));
             }
             query.addProjection(AuditEntity.id().count());
 
@@ -850,7 +850,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             return ((Number)criteria.uniqueResult()).intValue();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
-            query.add(new NotNullAuditExpression(new EntityPropertyName("acceptedTaxon")));
+            query.add(new NotNullAuditExpression("acceptedTaxon",new EntityPropertyName("acceptedTaxon")));
             query.addProjection(AuditEntity.id().count());
 
             if(type != null) {

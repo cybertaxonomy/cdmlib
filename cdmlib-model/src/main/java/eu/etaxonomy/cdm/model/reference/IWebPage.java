@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 /**
  * This interface represents electronic publications available on the world wide web.
@@ -38,12 +38,12 @@ public interface IWebPage extends IPublicationBase {
      * @return the accessed date
      */
 	//#5258
-    public DateTime getAccessed();
+    public ZonedDateTime getAccessed();
 
     /**
      * @param accessed
      * @see #getAccessed()
      */
-    public void setAccessed(DateTime accessed);
+    public void setAccessed(ZonedDateTime accessed);
 
 }

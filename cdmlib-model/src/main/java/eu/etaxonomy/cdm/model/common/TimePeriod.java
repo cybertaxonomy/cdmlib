@@ -10,6 +10,14 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,12 +36,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.LocalDate;
-import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -59,9 +62,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 public class TimePeriod implements Cloneable, Serializable {
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = Logger.getLogger(TimePeriod.class);
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
-    public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
-    public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
+//    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
+//    public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
+//    public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -69,7 +72,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = PartialBridge.class)
     @JsonIgnore // currently used for swagger model scanner
-    private Partial start;
+    private Temporal start;
 
     @XmlElement(name = "End")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -77,7 +80,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = PartialBridge.class)
     @JsonIgnore // currently used for swagger model scanner
-    private Partial end;
+    private Temporal end;
 
 
     @XmlElement(name = "FreeText")
@@ -98,7 +101,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(Partial startDate){
+    public static TimePeriod NewInstance(Temporal startDate){
         return new TimePeriod(startDate);
     }
 
@@ -107,7 +110,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(Partial startDate, Partial endDate){
+    public static TimePeriod NewInstance(LocalDate startDate, LocalDate endDate){
         return new TimePeriod(startDate, endDate);
     }
 
@@ -126,13 +129,13 @@ public class TimePeriod implements Cloneable, Serializable {
      * @return
      */
     public static TimePeriod NewInstance(Integer startYear, Integer endYear){
-        Partial startDate = null;
-        Partial endDate = null;
+        Temporal startDate = null;
+        Temporal endDate = null;
         if (startYear != null){
-            startDate = new Partial().with(YEAR_TYPE, startYear);
+            startDate = Year.of(startYear);
         }
         if (endYear != null){
-            endDate = new Partial().with(YEAR_TYPE, endYear);
+            endDate = Year.of(endYear);
         }
         return new TimePeriod(startDate, endDate);
     }
@@ -152,7 +155,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * The <code>ReadableInstant</code> is stored as the starting instant.
      * @return
      */
-    public static TimePeriod NewInstance(ReadableInstant readableInstant){
+    public static TimePeriod NewInstance(Instant readableInstant){
         return NewInstance(readableInstant, null);
     }
 
@@ -161,8 +164,8 @@ public class TimePeriod implements Cloneable, Serializable {
      * @return
      */
     public static TimePeriod NewInstance(Calendar startCalendar, Calendar endCalendar){
-        Partial startDate = null;
-        Partial endDate = null;
+        LocalDate startDate = null;
+        LocalDate endDate = null;
         if (startCalendar != null){
             startDate = calendarToPartial(startCalendar);
         }
@@ -196,9 +199,9 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method to create a TimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
      * @return
      */
-    public static TimePeriod NewInstance(ReadableInstant startInstant, ReadableInstant endInstant){
-        Partial startDate = null;
-        Partial endDate = null;
+    public static TimePeriod NewInstance(Instant startInstant, Instant endInstant){
+        LocalDate startDate = null;
+        LocalDate endDate = null;
         if (startInstant != null){
             startDate = readableInstantToPartial(startInstant);
         }
@@ -215,10 +218,10 @@ public class TimePeriod implements Cloneable, Serializable {
      * @param calendar
      * @return
      */
-    public static Partial calendarToPartial(Calendar calendar){
-        LocalDate ld = new LocalDate(calendar);
-        Partial partial = new Partial(ld);
-        return partial;
+    public static LocalDate calendarToPartial(Calendar calendar){
+        LocalDate ld = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) +1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        return ld;
     }
 
     /**
@@ -226,15 +229,14 @@ public class TimePeriod implements Cloneable, Serializable {
      * @param calendar
      * @return
      */
-    public static Partial readableInstantToPartial(ReadableInstant readableInstant){
-        DateTime dt = readableInstant.toInstant().toDateTime();
-        LocalDate ld = dt.toLocalDate();
-        Partial partial = new Partial(ld);
-        return partial;
+    public static LocalDate readableInstantToPartial(Instant readableInstant){
+//        Date date = Date.from(readableInstant);
+        LocalDateTime ld = LocalDateTime.ofInstant(readableInstant, ZoneId.systemDefault());
+        return ld.toLocalDate();
     }
 
 
-    public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
+    public static Integer getPartialValue(Temporal partial, ChronoField type){
         if (partial == null || ! partial.isSupported(type)){
             return null;
         }else{
@@ -252,10 +254,10 @@ public class TimePeriod implements Cloneable, Serializable {
     protected TimePeriod() {
         super();
     }
-    public TimePeriod(Partial startDate) {
+    public TimePeriod(Temporal startDate) {
         start=startDate;
     }
-    public TimePeriod(Partial startDate, Partial endDate) {
+    public TimePeriod(Temporal startDate, Temporal endDate) {
         start=startDate;
         end=endDate;
     }
@@ -264,21 +266,21 @@ public class TimePeriod implements Cloneable, Serializable {
 
 
     @JsonIgnore // currently used for swagger model scanner
-    public Partial getStart() {
+    public Temporal getStart() {
         return start;
     }
 
-    public void setStart(Partial start) {
+    public void setStart(Temporal start) {
         this.start = start;
     }
 
 
     @JsonIgnore // currently used for swagger model scanner
-    public Partial getEnd() {
+    public Temporal getEnd() {
         return end;
     }
 
-    public void setEnd(Partial end) {
+    public void setEnd(Temporal end) {
         this.end = end;
     }
 
@@ -354,80 +356,128 @@ public class TimePeriod implements Cloneable, Serializable {
 
     @Transient
     public Integer getStartYear(){
-        return getPartialValue(start, YEAR_TYPE);
+        if (start instanceof Temporal){
+            return getPartialValue(start, ChronoField.YEAR);
+        }
+        return null;
     }
 
     @Transient
     public Integer getStartMonth(){
-        return getPartialValue(start, MONTH_TYPE);
+        if (start instanceof Temporal){
+            return getPartialValue(start, ChronoField.MONTH_OF_YEAR);
+        }
+        return null;
     }
 
     @Transient
     public Integer getStartDay(){
-        return getPartialValue(start, DAY_TYPE);
+        if (start instanceof Temporal){
+            return getPartialValue(start, ChronoField.DAY_OF_MONTH);
+        }
+        return null;
     }
 
     @Transient
     public Integer getEndYear(){
-        return getPartialValue(end, YEAR_TYPE);
+        if (end instanceof Temporal){
+            return getPartialValue(end, ChronoField.YEAR);
+        }
+        return null;
     }
 
     @Transient
     public Integer getEndMonth(){
-        return getPartialValue(end, MONTH_TYPE);
+        if (end instanceof LocalDate){
+            return getPartialValue(end, ChronoField.MONTH_OF_YEAR);
+        }
+        return null;
     }
 
     @Transient
     public Integer getEndDay(){
-        return getPartialValue(end, DAY_TYPE);
+        if (end instanceof LocalDate){
+            return getPartialValue(end, ChronoField.DAY_OF_MONTH);
+        }
+        return null;
     }
 
+
     public TimePeriod setStartYear(Integer year){
-        return setStartField(year, YEAR_TYPE);
+        return setStartField(year, ChronoField.YEAR);
     }
 
     public TimePeriod setStartMonth(Integer month) throws IndexOutOfBoundsException{
-        return setStartField(month, MONTH_TYPE);
+        return setStartField(month, ChronoField.MONTH_OF_YEAR);
     }
 
     public TimePeriod setStartDay(Integer day) throws IndexOutOfBoundsException{
-        return setStartField(day, DAY_TYPE);
+        return setStartField(day, ChronoField.DAY_OF_MONTH);
     }
 
     public TimePeriod setEndYear(Integer year){
-        return setEndField(year, YEAR_TYPE);
+        return setEndField(year, ChronoField.YEAR);
     }
 
     public TimePeriod setEndMonth(Integer month) throws IndexOutOfBoundsException{
-        return setEndField(month, MONTH_TYPE);
+        return setEndField(month, ChronoField.MONTH_OF_YEAR);
     }
 
     public TimePeriod setEndDay(Integer day) throws IndexOutOfBoundsException{
-        return setEndField(day, DAY_TYPE);
+        return setEndField(day, ChronoField.DAY_OF_MONTH);
     }
 
-    public static Partial setPartialField(Partial partial, Integer value, DateTimeFieldType type)
+    public static Temporal setPartialField(Temporal partial, Integer value, ChronoField type)
             throws IndexOutOfBoundsException{
-        if (partial == null){
-            partial = new Partial();
-        }
+//        if (partial == null){
+//            partial = LocalDate.now();
+//        }
         if (value == null){
-            return partial.without(type);
+            if (partial instanceof LocalDate){
+                return (partial);
+            }
         }else{
             checkFieldValues(value, type, partial);
-            return partial.with(type, value);
+            if (partial instanceof LocalDate){
+                return ((LocalDate)partial).with(type, value);
+            } else if (partial instanceof Year){
+                if(type.equals(ChronoField.MONTH_OF_YEAR)){
+                    return ((Year)partial).atMonth(value);
+                }else if (type.equals(ChronoField.YEAR)){
+                    return ((Year)partial).with(type, value);
+                } else if (type.equals(ChronoField.DAY_OF_MONTH)){
+                    return ((Year)partial).atDay(value);
+                }
+            } else if (partial instanceof YearMonth){
+                if(type.equals(ChronoField.MONTH_OF_YEAR)){
+                    return ((YearMonth)partial).withMonth(value);
+                }else if (type.equals(ChronoField.YEAR)){
+                    return ((YearMonth)partial).with(type, value);
+                } else if (type.equals(ChronoField.DAY_OF_MONTH)){
+                    return ((YearMonth)partial).atDay(value);
+                }
+            } else if (partial == null){
+                if(type.equals(ChronoField.MONTH_OF_YEAR) || type.equals(ChronoField.DAY_OF_MONTH) ){
+                    return null;
+                }else if (type.equals(ChronoField.YEAR)){
+                    return Year.of(value);
+                }
+            }
+
+
         }
+        return partial;
     }
 
     @Transient
-    private TimePeriod setStartField(Integer value, DateTimeFieldType type)
+    private TimePeriod setStartField(Integer value, ChronoField type)
             throws IndexOutOfBoundsException{
         start = setPartialField(start, value, type);
         return this;
     }
 
     @Transient
-    private TimePeriod setEndField(Integer value, DateTimeFieldType type)
+    private TimePeriod setEndField(Integer value, ChronoField type)
             throws IndexOutOfBoundsException{
         end = setPartialField(end, value, type);
         return this;
@@ -442,17 +492,17 @@ public class TimePeriod implements Cloneable, Serializable {
      * @param type
      * @throws IndexOutOfBoundsException
      */
-    private static void checkFieldValues(Integer value, DateTimeFieldType type, Partial partial)
+    private static void checkFieldValues(Integer value, ChronoField type, Temporal partial)
             throws IndexOutOfBoundsException{
         int max = 9999999;
-        if (type.equals(MONTH_TYPE)){
+        if (type.equals(ChronoField.MONTH_OF_YEAR)){
             max = 12;
         }
-        if (type.equals(DAY_TYPE)){
+        if (type.equals(ChronoField.DAY_OF_MONTH)){
             max = 31;
             Integer month = null;
-            if (partial.isSupported(MONTH_TYPE)){
-                month = partial.get(MONTH_TYPE);
+            if (partial.isSupported(ChronoField.MONTH_OF_YEAR)){
+                month = partial.get(ChronoField.MONTH_OF_YEAR);
             }
             if (month != null){
                 if (month == 2){
@@ -469,13 +519,13 @@ public class TimePeriod implements Cloneable, Serializable {
 
     private void initStart(){
         if (start == null){
-            start = new Partial();
+            start = LocalDate.now();
         }
     }
 
     private void initEnd(){
         if (end == null){
-            end = new Partial();
+            end = LocalDate.now();
         }
     }
 
@@ -491,7 +541,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Override
     public String toString(){
         String result = null;
-        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
+//        TimePeriodPartialFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         if ( StringUtils.isNotBlank(this.getFreeText())){
             result = this.getFreeText();
         }else{
@@ -508,9 +558,9 @@ public class TimePeriod implements Cloneable, Serializable {
 
     public String getTimePeriod(){
         String result = null;
-        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
-        String strStart = start != null ? start.toString(formatter): null;
-        String strEnd = end != null ? end.toString(formatter): null;
+        TimePeriodPartialFormatter formatter = TimePeriodPartialFormatter.NewInstance();
+        String strStart = start != null ? formatter.print(start): null;
+        String strEnd = end != null ? formatter.print(end): null;
         result = CdmUtils.concat("-", strStart, strEnd);
 
         return result;

@@ -10,11 +10,11 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -100,8 +100,8 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
         result = compare(name1, name2, false);
 
         if (result == 0){
-            DateTime date11 = taxonBase1.getCreated();
-            DateTime date12 = taxonBase2.getCreated();
+            ZonedDateTime date11 = taxonBase1.getCreated();
+            ZonedDateTime date12 = taxonBase2.getCreated();
             if (date11 == null && date12 == null) {
                 result = 0;
             }else if (date11 == null) {

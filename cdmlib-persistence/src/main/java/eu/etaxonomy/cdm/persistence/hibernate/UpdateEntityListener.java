@@ -9,11 +9,12 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.time.ZonedDateTime;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
-import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -32,7 +33,7 @@ public class UpdateEntityListener implements SaveOrUpdateEventListener {
 		if(entity != null && VersionableEntity.class.isAssignableFrom(entity.getClass())) {
 
 			VersionableEntity versionableEntity = (VersionableEntity)entity;
-			versionableEntity.setUpdated(new DateTime());
+			versionableEntity.setUpdated(ZonedDateTime.now());
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 			  User user = (User)authentication.getPrincipal();

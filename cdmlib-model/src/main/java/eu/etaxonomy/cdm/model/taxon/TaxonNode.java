@@ -786,7 +786,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 
         nodeSet.add(this);
-
+        removeNullValueFromChildren();
         for(TaxonNode childNode : getChildNodes()){
             nodeSet.addAll(childNode.getDescendants());
         }

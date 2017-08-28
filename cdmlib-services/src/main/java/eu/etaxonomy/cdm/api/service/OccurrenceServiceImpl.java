@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +35,6 @@ import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
-import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
@@ -411,7 +411,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             fieldUnitDTO.setCollection(collectionString);
             // Date
-            Partial gatheringDate = gatheringEvent.getGatheringDate();
+            Temporal gatheringDate = gatheringEvent.getGatheringDate();
             String dateString = null;
             if (gatheringDate != null) {
                 dateString = gatheringDate.toString();

@@ -18,7 +18,7 @@ import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.TypeMismatchException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
@@ -48,7 +48,7 @@ public class URIUserType extends AbstractUserType implements UserType {
 
 
 	@Override
-	public URI nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public URI nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 
@@ -64,7 +64,7 @@ public class URIUserType extends AbstractUserType implements UserType {
     }
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
           StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);

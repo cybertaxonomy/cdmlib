@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -550,7 +551,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				int hourOfDay = Integer.parseInt(nameCreated.substring(11,13));
 				int minuteOfHour = Integer.parseInt(nameCreated.substring(14,16));
 				int secondOfMinute = Integer.parseInt(nameCreated.substring(17,19));
-				DateTime created = new DateTime(year,monthOfYear,dayOfMonth,hourOfDay,minuteOfHour,secondOfMinute,0);
+				ZonedDateTime created = ZonedDateTime.of(year,monthOfYear,dayOfMonth,hourOfDay,minuteOfHour,secondOfMinute,0, ZoneId.systemDefault());
 				sourceReference.setCreated(created);
 				sec.setCreated(created);
 			}
@@ -833,18 +834,19 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			String stringDateModified = (String)ImportHelper.getXmlInputValue(elRevisionData, "DateModified",sddNamespace);
 
 			if (stringDateModified != null) {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-				Date d = null;
+
+				LocalDateTime ldt = null;
+
 				try {
-					d = sdf.parse(stringDateModified);
+				    ldt = LocalDateTime.parse(stringDateModified, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss"));
 				} catch(Exception e) {
 					System.err.println("Exception :");
 					e.printStackTrace();
 				}
 
-				DateTime updated = null;
-				if (d != null) {
-					updated = new DateTime(d);
+				ZonedDateTime updated = null;
+				if (ldt != null) {
+					updated = ZonedDateTime.of(null, null, null);
 					sourceReference.setUpdated(updated);
 					sec.setUpdated(updated);
 				}

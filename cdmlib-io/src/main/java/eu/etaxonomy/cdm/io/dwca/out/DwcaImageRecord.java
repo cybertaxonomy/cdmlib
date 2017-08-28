@@ -11,10 +11,10 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -39,7 +39,7 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	private Point coordinates;
 	private String format;
 	private Set<Rights> license;
-	private DateTime created;
+	private ZonedDateTime created;
 	private AgentBase<?> creator;
 	private AgentBase<?> contributor;
 	private AgentBase<?> publisher;
@@ -170,11 +170,11 @@ public class DwcaImageRecord extends DwcaRecordBase{
 		this.license = set;
 	}
 
-	public DateTime getCreated() {
+	public ZonedDateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(DateTime created) {
+	public void setCreated(ZonedDateTime created) {
 		this.created = created;
 	}
 

@@ -10,13 +10,14 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -133,7 +134,7 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	 * @return
 	 */
 	protected String getNowString() {
-		return DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
+		return ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
 	}
 
 	@Override

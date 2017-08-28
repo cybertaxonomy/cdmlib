@@ -1,10 +1,10 @@
 package eu.etaxonomy.cdm.remote.view.oaipmh;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.envers.RevisionType;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -23,30 +23,31 @@ import eu.etaxonomy.cdm.remote.view.OaiPmhResponseView;
 
 public abstract class ListRecordsView extends OaiPmhResponseView {
 
+    @Override
     protected void constructResponse(OAIPMH oaiPmh,Map<String,Object> model) {
     	oaiPmh.getRequest().setVerb(Verb.LIST_RECORDS);
     	oaiPmh.getRequest().setValue((String)model.get("request"));
     	oaiPmh.getRequest().setMetadataPrefix((MetadataPrefix)model.get("metadataPrefix"));
 
         if(model.containsKey("from")) {
-            oaiPmh.getRequest().setFrom((DateTime)model.get("from"));
+            oaiPmh.getRequest().setFrom((ZonedDateTime)model.get("from"));
         }
 
         if(model.containsKey("until")) {
-            oaiPmh.getRequest().setUntil((DateTime)model.get("until"));
+            oaiPmh.getRequest().setUntil((ZonedDateTime)model.get("until"));
         }
 
         if(model.containsKey("set")) {
             oaiPmh.getRequest().setSet((SetSpec)model.get("set"));
         }
-        
+
         ListRecords listRecords = new ListRecords();
-        
+
 
         if(model.containsKey("pager")){
 			for(AuditEventRecord auditEventRecord : ((Pager<AuditEventRecord>)model.get("pager")).getRecords()) {
 	        	Record record = new Record();
-	        	Header header = (Header)mapper.map(auditEventRecord.getAuditableObject(), Header.class);
+	        	Header header = mapper.map(auditEventRecord.getAuditableObject(), Header.class);
 		        record.setHeader(header);
 		        if(!auditEventRecord.getRevisionType().equals(RevisionType.DEL)) {
 		            Metadata metadata = new Metadata();
@@ -61,7 +62,7 @@ public abstract class ListRecordsView extends OaiPmhResponseView {
 			if(model.containsKey("resumptionToken")) {
 				listRecords.setResumptionToken((ResumptionToken)model.get("resumptionToken"));
 			}
-			
+
         } else if(model.containsKey("entitylist")){
 			for( IdentifiableEntity idetifiableEntity : ((List<IdentifiableEntity>)model.get("entitylist"))) {
 	        	Record record = new Record();
@@ -72,7 +73,7 @@ public abstract class ListRecordsView extends OaiPmhResponseView {
 	        }
         }
 
-        
+
         oaiPmh.setListRecords(listRecords);
     }
 

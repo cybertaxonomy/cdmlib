@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.reference;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -48,11 +49,10 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.DOI;
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -303,8 +303,8 @@ public class Reference
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.EQUAL)
-    @FieldBridge(impl = DateTimeBridge.class)
-    private DateTime accessed;
+    @FieldBridge(impl = ZonedDateTimeBridge.class)
+    private ZonedDateTime accessed;
 
     @XmlElement(name ="Abstract" )
 	@Column(length=65536, name="referenceAbstract")
@@ -360,7 +360,7 @@ public class Reference
     @Type(type="dateTimeUserType")
     //TODO needed??
     @Basic(fetch = FetchType.LAZY)
-    private DateTime lastRetrieved;
+    private ZonedDateTime lastRetrieved;
 
     @XmlElement(name ="ExternalId" )
 //    @Field
@@ -716,12 +716,12 @@ public class Reference
 
 
 	@Override
-    public DateTime getAccessed() {
+    public ZonedDateTime getAccessed() {
         return accessed;
     }
 
 	@Override
-    public void setAccessed(DateTime accessed) {
+    public void setAccessed(ZonedDateTime accessed) {
         this.accessed = accessed;
     }
 

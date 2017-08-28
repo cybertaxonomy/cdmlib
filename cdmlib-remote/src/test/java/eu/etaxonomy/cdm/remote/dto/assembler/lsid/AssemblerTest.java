@@ -9,6 +9,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.time.Year;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,9 +29,6 @@ import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -118,8 +118,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 
         taxon = Taxon.NewInstance(name, (Reference)sec);
-        taxon.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-        taxon.setUpdated(new DateTime(2005, 12, 25, 12, 0, 0, 0));
+        taxon.setCreated(ZonedDateTime.of(20014, 12, 25, 12, 0, 0, 0, ZoneId.systemDefault()));
+        taxon.setUpdated(ZonedDateTime.of(20014, 12, 25, 12, 0, 0, 0, ZoneId.systemDefault()));
         taxon.setTitleCache("titleCache", true);
         taxon.setLsid(lsid);
 
@@ -155,8 +155,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book = ReferenceFactory.newBook();
         book.setTitle("Book.title");
         book.setAuthorship(authorship);
-        book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-        book.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
+        book.setCreated(ZonedDateTime.of(20014, 12, 25, 12, 0, 0, 0, ZoneId.systemDefault()));
+        book.setDatePublished(new TimePeriod(Year.of(1800)));
         book.setEdition("1st Edition");
         book.setEditor("Editor");
         book.setIsbn("isbn");
@@ -173,8 +173,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
         bookSection.setAuthorship(authorship);
-        bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-        bookSection.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
+        bookSection.setCreated(ZonedDateTime.of(20014, 12, 25, 12, 0, 0, 0, ZoneId.systemDefault()));
+        bookSection.setDatePublished(new TimePeriod(Year.of(1800)));
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
@@ -204,7 +204,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals("IdentifiableEntity.titleCache should be copied into BaseThing.title",taxon.getTitleCache(),taxonConcept.getTitle());
         assertEquals("IdentifiableEntity.lsid should be copied into BaseThing.identifier",taxon.getLsid().toString(),taxonConcept.getIdentifier().toString());
         assertEquals("BaseThing.sameAs should refer to the proxy version of the lsid","http://lsid.example.org/" + taxon.getLsid().toString(),taxonConcept.getSameAs());
-        assertEquals("CdmBase.created should be copied into BaseThing.created",new DateTime(2004, 12, 25, 12, 0, 0, 0),taxonConcept.getCreated());
+        assertEquals("CdmBase.created should be copied into BaseThing.created",ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, ZoneId.systemDefault()),taxonConcept.getCreated());
         assertNotNull("TaxonBase.sec should be mapped into BaseThing.publishedInCitation",taxonConcept.getPublishedInCitation());
         assertEquals("TaxonBase.sec.titleCache should be mapped into BaseThing.publishedInCitation.title",sec.getTitleCache(),taxonConcept.getPublishedInCitation().getTitle());
         assertNotNull("TaxonBase.sec.authorship should be mapped into TaxonConcept.accordingTo",taxonConcept.getAccordingTo());
@@ -448,7 +448,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
 		@Override
 		public Object getImplementation(
-				org.hibernate.engine.spi.SessionImplementor session)
+				org.hibernate.engine.spi.SharedSessionContractImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
 			return null;
@@ -474,7 +474,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
 		@Override
 		public void setSession(
-				org.hibernate.engine.spi.SessionImplementor session)
+				org.hibernate.engine.spi.SharedSessionContractImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
 

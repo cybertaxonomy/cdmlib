@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+
+
+
 
 /**
  * @author a.mueller
@@ -21,12 +23,12 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class DateTimeFormatterTesting {
     public static void main (String[] args){
-        DateTime dt = new DateTime();
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+        ZonedDateTime dt = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 
         Instant.now();
 
-        System.out.println(formatter.print(dt));
+        System.out.println(dt.format(formatter));
 
     }
 }

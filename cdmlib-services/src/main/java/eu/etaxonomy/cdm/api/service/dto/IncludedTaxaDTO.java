@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 
 /**
  * @author a.mueller
@@ -25,15 +25,15 @@ public class IncludedTaxaDTO {
 		private UUID taxonUuid;
 		private List<UUID> pathToTaxon = new ArrayList<UUID>();
 		private boolean doubtful = false;
-	
-		
+
+
 		public IncludedTaxon(UUID taxonUuid, List<UUID> pathToTaxon, boolean doubtful) {
 			this.taxonUuid = taxonUuid;
 			this.pathToTaxon = pathToTaxon;
 			this.doubtful = doubtful;
 		}
-		
-		
+
+
 		public UUID getTaxonUuid() {
 			return taxonUuid;
 		}
@@ -53,20 +53,20 @@ public class IncludedTaxaDTO {
 			this.doubtful = doubtful;
 		}
 
-		
+
 		@Override
 		public String toString(){
 			return taxonUuid == null? super.toString() : taxonUuid.toString();
 		}
 
 	}
-	
+
 	private List<IncludedTaxon> includedTaxa = new ArrayList<IncludedTaxaDTO.IncludedTaxon>();
 
-	private DateTime date = DateTime.now();
-	
+	private ZonedDateTime date = ZonedDateTime.now();
+
 	//** ******************* CONSTRUCTOR **************************/
-	
+
 	public IncludedTaxaDTO() {}
 
 	public IncludedTaxaDTO(UUID taxonUuid) {
@@ -75,7 +75,7 @@ public class IncludedTaxaDTO {
 	}
 
  // ************************** GETTER / SETTER  ***********************/
-	
+
 	public List<IncludedTaxon> getIncludedTaxa() {
 		return includedTaxa;
 	}
@@ -83,22 +83,22 @@ public class IncludedTaxaDTO {
 	public void setIncludedTaxa(List<IncludedTaxon> includedTaxa) {
 		this.includedTaxa = includedTaxa;
 	}
-	
+
 	public void addIncludedTaxon(IncludedTaxon includedTaxon){
 		includedTaxa.add(includedTaxon);
 	}
-	
+
 	public void addIncludedTaxon(UUID taxonUuid, List<UUID> uuidPath, boolean doubtful){
 		includedTaxa.add(new IncludedTaxon(taxonUuid, uuidPath, doubtful));
 	}
-	
-	public DateTime getDate() {
+
+	public ZonedDateTime getDate() {
 		return date;
 	}
-	public void setDate(DateTime date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
-	
+
 	public int getSize(){
 		return includedTaxa.size();
 	}
@@ -111,7 +111,7 @@ public class IncludedTaxaDTO {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString(){
 		String result = "";
@@ -121,10 +121,10 @@ public class IncludedTaxaDTO {
 		if (result.length() > 0){
 			result = result.substring(0, result.length() - 1);
 		}
-		
+
 		result = "[" + result + "]";
 		return result;
 	}
-	
-	
+
+
 }

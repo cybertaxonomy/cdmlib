@@ -69,15 +69,16 @@ public class DdlCreator {
 		//FIXME #4716
 		EnversService enversService = new EnversServiceImpl();
 //		. .getFor(config.);
-		SchemaExport schemaExport = new SchemaExport(config);
+		SchemaExport schemaExport = new SchemaExport();
+
 		schemaExport.setDelimiter(";");
-		schemaExport.drop(false, false);
+//		schemaExport.drop(false, false);
 		schemaExport.setOutputFile(String.format("%s.%s.%s ", new Object[] {"new-cdm", lowerCaseDialectName, "sql" }));
 		boolean consolePrint = true;
 		boolean exportInDatabase = false;
-		schemaExport.create(consolePrint, exportInDatabase);
+//		schemaExport.create(consolePrint, exportInDatabase);
 
-		schemaExport.execute(consolePrint, exportInDatabase, false, true);
+//		schemaExport.execute(consolePrint, exportInDatabase, false, true);
 
 	}
 }

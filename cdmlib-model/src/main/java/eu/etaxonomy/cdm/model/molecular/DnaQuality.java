@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
+import java.time.ZonedDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,9 +32,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -86,7 +87,7 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
 	//FIXME preliminary as it is not yet decided if we will use a string or a MoME #4552
     private MaterialOrMethodEvent typedPurificationMethod;
-	
+
     private String purificationMethod;
 
 
@@ -114,9 +115,9 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
     @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = DateTimeBridge.class)
+    @FieldBridge(impl = ZonedDateTimeBridge.class)
     @Audited
-    private DateTime qualityCheckDate;
+    private ZonedDateTime qualityCheckDate;
 
 
 // ******************* CONSTRUCTOR *************************/
@@ -170,11 +171,11 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 		this.concentrationUnit = concentrationUnit;
 	}
 
-	public DateTime getQualityCheckDate() {
+	public ZonedDateTime getQualityCheckDate() {
 		return qualityCheckDate;
 	}
 
-	public void setQualityCheckDate(DateTime qualityCheckDate) {
+	public void setQualityCheckDate(ZonedDateTime qualityCheckDate) {
 		this.qualityCheckDate = qualityCheckDate;
 	}
 

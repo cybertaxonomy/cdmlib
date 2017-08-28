@@ -5,19 +5,19 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.List;
 
 import org.hibernate.collection.internal.PersistentMap;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 public class PersistentMultiLanguageText extends PersistentMap implements IMultiLanguageText {
 	private static final long serialVersionUID = -7104619652295153920L;
 
-	public PersistentMultiLanguageText(SessionImplementor sessionImplementor, MultilanguageText collection) {
+	public PersistentMultiLanguageText(SharedSessionContractImplementor sessionImplementor, MultilanguageText collection) {
 		super(sessionImplementor, collection);
 	}
 
@@ -28,7 +28,8 @@ public class PersistentMultiLanguageText extends PersistentMap implements IMulti
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#add(eu.etaxonomy.cdm.model.common.LanguageString)
 	 */
-	@Deprecated
+	@Override
+    @Deprecated
 	public LanguageString add(LanguageString languageString) {
 		if (languageString == null){
 			return null;
@@ -37,15 +38,17 @@ public class PersistentMultiLanguageText extends PersistentMap implements IMulti
 		}
 	}
 
-	public LanguageString put(LanguageString languageString) {
+	@Override
+    public LanguageString put(LanguageString languageString) {
 		if (languageString == null){
 			return null;
 		}else{
 			return (LanguageString)super.put(languageString.getLanguage(), languageString);
 		}
 	}
-	
-	public LanguageString getPreferredLanguageString(List<Language> languages) {
+
+	@Override
+    public LanguageString getPreferredLanguageString(List<Language> languages) {
 		LanguageString languageString = null;
 		for (Language language : languages) {
 			languageString = (LanguageString)super.get(language);
@@ -56,7 +59,8 @@ public class PersistentMultiLanguageText extends PersistentMap implements IMulti
 		return (LanguageString)super.get(Language.DEFAULT());
 	}
 
-	public String getText(Language language) {
+	@Override
+    public String getText(Language language) {
 		LanguageString languageString = (LanguageString)super.get(language);
 		if (languageString != null){
 			return languageString.getText();

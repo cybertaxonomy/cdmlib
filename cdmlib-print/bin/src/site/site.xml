@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="CDM Print Publisher" xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+    <skin>
+        <groupId>eu.etaxonomy.site</groupId>
+        <artifactId>platform-site-skin</artifactId>
+        <version>1.0</version>
+    </skin>
+    <body>
+        <menu name="General Information">
+            <item name="Overview" href="index.html"/>
+            <item name="Output Formats" href="formats.html"/>
+            <item name="Download" href="download.html"/>
+        </menu>
+        <menu name="Developer">
+            <item name="Getting started" href="getting-started.html"/>
+            <item name="Writing Templates" href="writing-templates.html"/>
+            <item name="Troubleshooting" href="troubleshooting.html"/>
+            <item name="Wiki" href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/PrintPublisher"/>
+        </menu>
+        <menu name="Project">
+            <item name="Mailing Lists" href="mail-lists.html"/>
+            <item name="Project Team" href="team-list.html"/>
+            <item name="Continuous Integration" href="integration.html"/>
+            <item name="Issue Tracking" href="https://dev.e-taxonomy.eu/redmine/projects/edit"/>
+            <item name="Source Repository" href="source-repository.html"/>
+            <item name="License" href="license.html"/>
+        </menu>
+    </body>
+</project>

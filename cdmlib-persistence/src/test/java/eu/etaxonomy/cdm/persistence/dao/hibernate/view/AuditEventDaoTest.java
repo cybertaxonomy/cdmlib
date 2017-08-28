@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.view;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -33,11 +33,11 @@ public class AuditEventDaoTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private IAuditEventDao auditEventDao;
 
-	private DateTime dateTime;
+	private ZonedDateTime dateTime;
 
 	@Before
 	public void setUp() {
-		dateTime = new DateTime();
+		dateTime = ZonedDateTime.now();
 	}
 
 

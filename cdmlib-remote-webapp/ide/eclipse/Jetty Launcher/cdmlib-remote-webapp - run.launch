@@ -20,7 +20,7 @@
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.path.0" value=""/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.type.0" value="DEFAULT"/>
 <booleanAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.embedded" value="false"/>
-<intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.microVersion" value="1"/>
+<intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.microVersion" value="6"/>
 <intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.minorVersion" value="4"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.path" value="${jetty-runtime-9}"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.version" value="JETTY_9_3"/>
@@ -56,5 +56,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="net.sourceforge.eclipsejetty.launcher.JettyLaunchClassPathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.eclipsejetty.starter.jetty9.Jetty9LauncherMain"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cdmlib-remote-webapp"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx500M&#10;-XX:PermSize=150m&#10;&#10;-Dlog4j.configDebug=false&#10;-Dlog4j.configuration=file:///${system_property:user.home}/.cdmLibrary/log4j.properties&#10;&#10;-Dcdm.forceSchemaUpdate=true&#10;-Dspring.profiles.active=remoting"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1000M&#13;&#10;-XX:PermSize=150m&#13;&#10;&#13;&#10;-Dlog4j.configDebug=false&#13;&#10;-Dlog4j.configuration=file:///${system_property:user.home}/.cdmLibrary/log4j.properties&#13;&#10;&#13;&#10;-Dcdm.forceSchemaUpdate=true&#13;&#10;-Dspring.profiles.active=remoting"/>
 </launchConfiguration>

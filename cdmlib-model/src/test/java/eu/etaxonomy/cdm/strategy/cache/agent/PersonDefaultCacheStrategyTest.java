@@ -121,6 +121,7 @@ public class PersonDefaultCacheStrategyTest {
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title cache should start with Person#0", "Person#0", person3.getTitleCache().substring(0, 8));
 		person3.setFirstname("Klaus");
+		person3.setTitleCache(null, false);
 		Assert.assertEquals("Person3 title cache should be Klaus", "K.", person3.getTitleCache());
 	}
 
@@ -147,6 +148,7 @@ public class PersonDefaultCacheStrategyTest {
                 expected, pers.getTitleCache());
 
         pers.setInitials(null);
+        pers.setTitleCache(null, false);
         expected = "Last, F.";
         Assert.assertEquals("Initials should be computed from firstname if not set manually",
                 expected, pers.getTitleCache());

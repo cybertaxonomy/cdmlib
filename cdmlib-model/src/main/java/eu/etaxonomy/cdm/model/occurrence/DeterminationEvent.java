@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 
+import java.time.LocalDate;
+import java.time.temporal.Temporal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +35,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -172,7 +173,7 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	@Transient
-	public Partial getIdentificationDate(){
+	public Temporal getIdentificationDate(){
 		return this.getTimeperiod().getStart();
 	}
 
@@ -180,7 +181,7 @@ public class DeterminationEvent extends EventBase {
 	 *
 	 * @param identificationDate    identificationDate
 	 */
-	public void setIdentificationDate(Partial identificationDate){
+	public void setIdentificationDate(LocalDate identificationDate){
 		this.getTimeperiod().setStart(identificationDate);
 	}
 

@@ -10,11 +10,11 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -73,7 +73,7 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	private String taxonomicStatus;
 	private NomenclaturalStatusType nomenclaturalStatus;
 	private String taxonRemarks;
-	private DateTime modified;
+	private ZonedDateTime modified;
 	private Language language;
 	private Set<Rights> rights;
 	private String rightsHolder;
@@ -562,10 +562,10 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public void setTaxonRemarks(String taxonRemarks) {
 		this.taxonRemarks = taxonRemarks;
 	}
-	public DateTime getModified() {
+	public ZonedDateTime getModified() {
 		return modified;
 	}
-	public void setModified(DateTime modified) {
+	public void setModified(ZonedDateTime modified) {
 		this.modified = modified;
 	}
 	public Language getLanguage() {

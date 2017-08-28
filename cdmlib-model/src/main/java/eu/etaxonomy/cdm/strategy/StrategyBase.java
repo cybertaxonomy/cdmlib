@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.strategy;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
@@ -80,7 +80,7 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 	 */
 	protected boolean isUserType(Class<?> fieldType) {
 		if (	fieldType == TimePeriod.class ||
-				fieldType == DateTime.class ||
+				fieldType == ZonedDateTime.class ||
 				fieldType == LSID.class ||
 				fieldType == Contact.class ||
 				fieldType == URI.class ||

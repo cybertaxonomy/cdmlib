@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,8 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 
@@ -35,50 +34,50 @@ import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 public class OaiDc {
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String title;
-	
+
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String creator;
-	
+
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String subject;
-	
+
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String description;
-	
+
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String publisher;
-	
+
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String contributor;
 
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    private DateTime date;
-    
+    private ZonedDateTime date;
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String type;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String format;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private URI identifier;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String source;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String language;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String relation;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String coverage;
-    
+
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String rights;
-    
+
     public String getTitle() {
 		return title;
 	}
@@ -92,7 +91,7 @@ public class OaiDc {
 	 * <p>
 	 * Examples of a Creator include a person, an organization, or a service.
 	 * Typically, the name of a Creator should be used to indicate the entity.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCreator() {
@@ -104,21 +103,21 @@ public class OaiDc {
 	 * <p>
 	 * Examples of a Creator include a person, an organization, or a service.
 	 * Typically, the name of a Creator should be used to indicate the entity.
-	 * 
+	 *
 	 * @param creator
 	 */
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
 
-	/**	 
+	/**
 	 * The topic of the resource.
 	 * <p>
 	 * Typically, the subject will be represented using keywords, key phrases,
 	 * or classification codes. Recommended best practice is to use a controlled
 	 * vocabulary. To describe the spatial or temporal topic of the resource,
 	 * use the Coverage element.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getSubject() {
@@ -132,20 +131,20 @@ public class OaiDc {
 	 * or classification codes. Recommended best practice is to use a controlled
 	 * vocabulary. To describe the spatial or temporal topic of the resource,
 	 * use the Coverage element.
-	 * 
+	 *
 	 * @param subject
 	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-	
+
 	/**
 	 * An account of the resource.
 	 * <p>
 	 * Description may include but is not limited to: an abstract, a table of
 	 * contents, a graphical representation, or a free-text account of the
 	 * resource.
-	 * 
+	 *
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -158,7 +157,7 @@ public class OaiDc {
 	 * Description may include but is not limited to: an abstract, a table of
 	 * contents, a graphical representation, or a free-text account of the
 	 * resource.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDescription() {
@@ -170,7 +169,7 @@ public class OaiDc {
 	 * <p>
 	 * Examples of a Publisher include a person, an organization, or a service.
 	 * Typically, the name of a Publisher should be used to indicate the entity.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getPublisher() {
@@ -182,13 +181,13 @@ public class OaiDc {
 	 * <p>
 	 * Examples of a Publisher include a person, an organization, or a service.
 	 * Typically, the name of a Publisher should be used to indicate the entity.
-	 * 
+	 *
 	 */
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
-	
-	
+
+
 	public void setContributor(String contributor) {
 		this.contributor = contributor;
 	}
@@ -197,14 +196,14 @@ public class OaiDc {
 		return contributor;
 	}
 
-	public DateTime getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(DateTime date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
-	
+
 	/**
 	 * The nature or genre of the resource.
 	 * <p>
@@ -212,7 +211,7 @@ public class OaiDc {
 	 * DCMI Type Vocabulary [DCMITYPE] {@link http://dublincore.org/documents/dcmi-type-vocabulary/}. To describe the file
 	 * format, physical medium, or dimensions of the resource, use the Format
 	 * element.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getType() {
@@ -226,7 +225,7 @@ public class OaiDc {
 	 * DCMI Type Vocabulary [DCMITYPE] {@link http://dublincore.org/documents/dcmi-type-vocabulary/}. To describe the file
 	 * format, physical medium, or dimensions of the resource, use the Format
 	 * element.
-	 * 
+	 *
 	 * @param type
 	 */
 	public void setType(String type) {
@@ -270,7 +269,7 @@ public class OaiDc {
 	 * <p>
 	 * Recommended best practice is to identify the related resource by means of
 	 * a string conforming to a formal identification system.
-	 * 
+	 *
 	 * @param relation
 	 */
 	public void setRelation(String relation) {
@@ -302,7 +301,7 @@ public class OaiDc {
 	 * as the Thesaurus of Geographic Names [TGN]. Where appropriate, named
 	 * places or time periods can be used in preference to numeric identifiers
 	 * such as sets of coordinates or date ranges.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCoverage() {
@@ -322,7 +321,7 @@ public class OaiDc {
 	 * as the Thesaurus of Geographic Names [TGN]. Where appropriate, named
 	 * places or time periods can be used in preference to numeric identifiers
 	 * such as sets of coordinates or date ranges.
-	 * 
+	 *
 	 * @param coverage
 	 */
 	public void setCoverage(String coverage) {
@@ -335,7 +334,7 @@ public class OaiDc {
 	 * Typically, rights information includes a statement about various property
 	 * rights associated with the resource, including intellectual property
 	 * rights.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getRights() {
@@ -348,7 +347,7 @@ public class OaiDc {
 	 * Typically, rights information includes a statement about various property
 	 * rights associated with the resource, including intellectual property
 	 * rights.
-	 * 
+	 *
 	 * @param rights
 	 */
 	public void setRights(String rights) {

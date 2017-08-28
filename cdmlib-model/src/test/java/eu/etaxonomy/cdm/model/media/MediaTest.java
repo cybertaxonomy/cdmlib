@@ -10,9 +10,10 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.net.URI;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -78,7 +79,7 @@ public class MediaTest {
         media1 = Media.NewInstance();
         team1 = Team.NewInstance();
         media1.setArtist(team1);
-        media1.setMediaCreated(new DateTime(2002, 1,1,0,0,0,0));
+        media1.setMediaCreated(ZonedDateTime.of(2002, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
         languageString1 = LanguageString.NewInstance("media1Desc", Language.DEFAULT());
         media1.addDescription(languageString1);
         media1.putDescription(Language.GERMAN(), "media1Desc2");

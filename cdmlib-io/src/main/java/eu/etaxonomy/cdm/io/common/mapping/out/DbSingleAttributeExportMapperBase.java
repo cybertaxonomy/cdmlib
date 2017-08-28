@@ -13,9 +13,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -121,9 +122,8 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				}else if (sqlType == Types.BOOLEAN){
 					getPreparedStatement().setBoolean(getIndex(), (Boolean)value);
 				}else if (sqlType == Types.DATE){
-					java.util.Date date = ((DateTime)value).toDate();
-					long t = date.getTime();
-					java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(t);
+					LocalDateTime date = ((ZonedDateTime)value).toLocalDateTime();
+					java.sql.Timestamp sqlTimestamp = java.sql.Timestamp.valueOf(date);
 					getPreparedStatement().setTimestamp(getIndex(), sqlTimestamp);
 				}else{
 					throw new IllegalArgumentException("SqlType not yet supported yet: " + sqlType);

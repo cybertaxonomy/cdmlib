@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +34,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -89,7 +89,7 @@ public class Registration extends AnnotatableEntity {
     @Basic(fetch = FetchType.LAZY)
 //    @Field(analyze = Analyze.NO)
 //    @FieldBridge(impl = DateTimeBridge.class)
-    private DateTime registrationDate;
+    private ZonedDateTime registrationDate;
 
     @XmlAttribute(name ="Status")
     @Column(name="status", length=10)
@@ -182,8 +182,8 @@ public class Registration extends AnnotatableEntity {
     public RegistrationStatus getStatus() {return status;}
     public void setStatus(RegistrationStatus status) {this.status = status;}
 
-    public DateTime getRegistrationDate() {return registrationDate;}
-    public void setRegistrationDate(DateTime registrationDate) {this.registrationDate = registrationDate;}
+    public ZonedDateTime getRegistrationDate() {return registrationDate;}
+    public void setRegistrationDate(ZonedDateTime registrationDate) {this.registrationDate = registrationDate;}
 
     public Institution getInstitution() {return institution;}
     public void setInstitution(Institution institution) {this.institution = institution;}

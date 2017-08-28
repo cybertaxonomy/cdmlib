@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.remote.controller.dto;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,9 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.lucene.document.Document;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -127,7 +126,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
-    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Autowired
     private ITaxonService taxonService;
@@ -827,8 +826,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     String modified = "";
                     if(taxon.getSec() != null) {
                         secTitle = taxon.getSec().getTitleCache();
-                        DateTime dt = taxon.getUpdated();
-                        modified = fmt.print(dt);
+                        ZonedDateTime dt = taxon.getUpdated();
+                        modified = dt.format(fmt);
                     }
 
                     Set<IdentifiableSource> sources = taxon.getSources();
@@ -871,8 +870,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         modified = "";
                         if(syn.getSec() != null) {
                             secTitle = syn.getSec().getTitleCache();
-                            DateTime dt = syn.getUpdated();
-                            modified = fmt.print(dt);
+                            ZonedDateTime dt = syn.getUpdated();
+                            modified = dt.format(fmt);
                         }
 
                         sources = syn.getSources();
@@ -908,8 +907,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         modified = "";
                         if(tr.getToTaxon().getSec() != null) {
                             secTitle = tr.getToTaxon().getSec().getTitleCache();
-                            DateTime dt = tr.getToTaxon().getUpdated();
-                            modified = fmt.print(dt);
+                            ZonedDateTime dt = tr.getToTaxon().getUpdated();
+                            modified = dt.format(fmt);
                         }
 
                         sources = tr.getToTaxon().getSources();
@@ -944,8 +943,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
                         if(tr.getFromTaxon().getSec() != null) {
                             secTitle = tr.getFromTaxon().getSec().getTitleCache();
-                            DateTime dt = tr.getFromTaxon().getSec().getUpdated();
-                            modified = fmt.print(dt);
+                            ZonedDateTime dt = tr.getFromTaxon().getSec().getUpdated();
+                            modified = dt.format(fmt);
                         }
 
                         sources = tr.getFromTaxon().getSources();
@@ -969,8 +968,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     Synonym synonym = (Synonym) tb;
                     TaxonName nvn = synonym.getName();
                  // update taxon information object with synonym related data
-                    DateTime dt = synonym.getUpdated();
-                    String modified = fmt.print(dt);
+                    ZonedDateTime dt = synonym.getUpdated();
+                    String modified = dt.format(fmt);
 
                     Set<IdentifiableSource> sources = synonym.getSources();
                     String[] didname = getDatasetIdName(sources);
@@ -1003,7 +1002,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         String relLabel = synonym.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
                         dt = accTaxon.getUpdated();
-                        modified = fmt.print(dt);
+                        modified =dt.format(fmt);
 
                         sources = accTaxon.getSources();
                         didname = getDatasetIdName(sources);

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>cdmlib-parent</artifactId>
+    <groupId>eu.etaxonomy</groupId>
+    <version>4.10.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.etaxonomy</groupId>
+  <artifactId>cdmlib-print</artifactId>
+  <packaging>jar</packaging>
+  <name>CDM Print Publisher</name>
+  <description>EDIT CDM Print Publishing Framework</description>
+  <scm>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-print.git
+    </connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-print.git
+    </developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-print</url>
+  </scm>
+  <developers>
+    <developer>
+      <!-- your SVN account id please! -->
+      <id>n.hoffmann</id>
+      <name>
+				Niels Hoffmann
+			</name>
+      <email>n.hoffmann [at] bgbm.org</email>
+      <organization>
+				Botanic Garden Botanical Museum Berlin
+			</organization>
+      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <url>http://www.bgbm.org/bgbm/staff/wiss/HoffmannN/default.htm</url>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-remote</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>fop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.odftoolkit</groupId>
+      <artifactId>odfdom-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+  </dependencies>
+</project>

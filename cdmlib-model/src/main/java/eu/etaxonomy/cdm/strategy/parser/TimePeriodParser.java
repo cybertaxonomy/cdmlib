@@ -8,18 +8,18 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -115,12 +115,12 @@ public class TimePeriodParser {
     private static boolean isDateString(String periodString) {
 		String[] startEnd = makeStartEnd(periodString);
 		String start = startEnd[0];
-		DateTime startDateTime = dateStringParse(start, true);
+		ZonedDateTime startDateTime = dateStringParse(start, true);
 		if (startDateTime == null){
 			return false;
 		}
 		if (startEnd.length > 1){
-			DateTime endDateTime = dateStringParse(startEnd[1], true);
+			ZonedDateTime endDateTime = dateStringParse(startEnd[1], true);
 			if (endDateTime != null){
 				return true;
 			}
@@ -142,17 +142,21 @@ public class TimePeriodParser {
 	}
 
 
-	private static DateTime dateStringParse(String string, boolean strict) {
-		DateFormat dateFormat = DateFormat.getDateInstance();
-		ParsePosition pos = new ParsePosition(0);
-		Date a = dateFormat.parse(string, pos);
-		if (a == null || pos.getIndex() != string.length()){
-			return null;
-		}
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(a);
-		DateTime result = new DateTime(cal);
-		return result;
+	private static ZonedDateTime dateStringParse(String string, boolean strict) {
+
+	    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+	    ZonedDateTime dateTime = ZonedDateTime.parse(string, formatter);
+	    return dateTime;
+//		DateFormat dateFormat = DateFormat.getDateInstance();
+//		ParsePosition pos = new ParsePosition(0);
+//		Date a = dateFormat.parse(string, pos);
+//		if (a == null || pos.getIndex() != string.length()){
+//			return null;
+//		}
+//		Calendar cal = Calendar.getInstance();
+//		cal.setTime(a);
+//		LocalDate result = LocalDate.
+//		return result;
 	}
 
 
@@ -162,8 +166,8 @@ public class TimePeriodParser {
 	 */
 	private static void parseDotDatePattern(String periodString,TimePeriod result) {
 		String[] dates = periodString.split("-");
-		Partial dtStart = null;
-		Partial dtEnd = null;
+		Temporal dtStart = null;
+		Temporal dtEnd = null;
 
 		if (dates.length > 2 || dates.length <= 0){
 			logger.warn("More than 1 '-' in period String: " + periodString);
@@ -197,7 +201,7 @@ public class TimePeriodParser {
     private static void parseDateWithMonthName(String dateString, TimePeriod result) {
         String[] dates = dateString.split("(\\.|\\s+)+");
 
-        Partial partial = new Partial();
+        Temporal partial = null;
 
 
         if (dates.length > 3 || dates.length < 2){
@@ -217,15 +221,15 @@ public class TimePeriodParser {
                     logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
                 }else if (year < 1700 && year > 2100){
                     logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-                    partial = partial.with(TimePeriod.YEAR_TYPE, year);
+                    partial = Year.of(year);
                 }else{
-                    partial = partial.with(TimePeriod.YEAR_TYPE, year);
+                    partial = Year.of(year);
                 }
                 if (month != null && month != 0){
-                    partial = partial.with(TimePeriod.MONTH_TYPE, month);
+                    partial = YearMonth.of(year, month);
                 }
                 if (day != null && day != 0){
-                    partial = partial.with(TimePeriod.DAY_TYPE, day);
+                    partial = LocalDate.of(year, month, day);
                 }
 
                 result.setStart(partial);
@@ -297,8 +301,8 @@ public class TimePeriodParser {
 	private static void parseStandardPattern(String periodString,
 			TimePeriod result) {
 		String[] years = periodString.split("-");
-		Partial dtStart = null;
-		Partial dtEnd = null;
+		Temporal dtStart = null;
+		Temporal dtEnd = null;
 
 		if (years.length > 2 || years.length <= 0){
 			logger.warn("More than 1 '-' in period String: " + periodString);
@@ -312,8 +316,8 @@ public class TimePeriodParser {
 				//end
 				if (years.length >= 2 && ! StringUtils.isBlank(years[1])){
 					years[1] = years[1].trim();
-					if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
-						years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
+					if (years[1].length()==2 && dtStart != null && dtStart.isSupported(ChronoField.YEAR)){
+						years[1] = String.valueOf(dtStart.get(ChronoField.YEAR)/100) + years[1];
 					}
 					dtEnd = parseSingleDate(years[1]);
 				}
@@ -333,9 +337,9 @@ public class TimePeriodParser {
 	}
 
 
-	protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
+	protected static Temporal parseSingleDate(String singleDateString) throws IllegalArgumentException{
 		//FIXME until now only quick and dirty and incomplete
-		Partial partial =  new Partial();
+		Year partial =  null;
 		singleDateString = singleDateString.trim();
 		if (CdmUtils.isNumeric(singleDateString)){
 			try {
@@ -344,9 +348,9 @@ public class TimePeriodParser {
 					logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
 				}else if (year < 1700 && year > 2100){
 					logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-					partial = partial.with(TimePeriod.YEAR_TYPE, year);
+					partial = Year.of(year);
 				}else{
-					partial = partial.with(TimePeriod.YEAR_TYPE, year);
+					partial = Year.of(year);
 				}
 			} catch (NumberFormatException e) {
 				logger.debug("Not a Integer format in getCalendar()");
@@ -359,8 +363,8 @@ public class TimePeriodParser {
 
 	}
 
-	protected static Partial parseSingleDotDate(String singleDateString) throws IllegalArgumentException{
-		Partial partial =  new Partial();
+	protected static Temporal parseSingleDotDate(String singleDateString) throws IllegalArgumentException{
+		Temporal partial =  null;
 		singleDateString = singleDateString.trim();
 		String[] split = singleDateString.split("\\.");
 		int length = split.length;
@@ -378,18 +382,21 @@ public class TimePeriodParser {
 			Integer day = Integer.valueOf(strDay.trim());
 			if (year < 1000 && year > 2100){
 				logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
-			}else if (year < 1700 && year > 2100){
-				logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-				partial = partial.with(TimePeriod.YEAR_TYPE, year);
 			}else{
-				partial = partial.with(TimePeriod.YEAR_TYPE, year);
+			    if (year < 1700 && year > 2100){
+			        logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
+			    }
+				if (month != null && month != 0){
+				    if (day != null && day != 0){
+				        partial = LocalDate.of(year, month, day);
+				    }else{
+				        partial = YearMonth.of(year, month);
+				    }
+				}else{
+				    partial = Year.of(year);
+				}
 			}
-			if (month != null && month != 0){
-				partial = partial.with(TimePeriod.MONTH_TYPE, month);
-			}
-			if (day != null && day != 0){
-				partial = partial.with(TimePeriod.DAY_TYPE, day);
-			}
+
 		} catch (NumberFormatException e) {
 			logger.debug("Not a Integer format somewhere in " + singleDateString);
 			throw new IllegalArgumentException(e);

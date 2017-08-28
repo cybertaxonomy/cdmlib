@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -31,10 +32,9 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "updated",
     "updatedBy"
 })
-@XmlJavaTypeAdapter(value=DateTimeAdapter.class,type=DateTime.class)
+@XmlJavaTypeAdapter(value=DateTimeAdapter.class,type=ZonedDateTime.class)
 @MappedSuperclass
 @Audited
 public abstract class VersionableEntity extends CdmBase implements IVersionableEntity{
@@ -71,12 +71,13 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	//@XmlElement(name ="Updated")
 	//@XmlElement(name ="Updated")
-	@Type(type="dateTimeUserType")
+//	@Type(type="dateTimeUserType")
+	@Type(type="org.hibernate.type.ZonedDateTimeType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
 	@Field(analyze = Analyze.NO)
-	@FieldBridge(impl = DateTimeBridge.class)
-	private DateTime updated;
+	@FieldBridge(impl = ZonedDateTimeBridge.class)
+	private ZonedDateTime updated;
 
 	@XmlElement(name = "UpdatedBy")
 	@XmlIDREF
@@ -104,7 +105,7 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 	 * @return
 	 */
 	@Override
-    public DateTime getUpdated(){
+    public ZonedDateTime getUpdated(){
 		return this.updated;
 	}
 
@@ -113,7 +114,7 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 	 * @param updated    updated
 	 */
 	@Override
-    public void setUpdated(DateTime updated){
+    public void setUpdated(ZonedDateTime updated){
 		this.updated = updated;
 	}
 

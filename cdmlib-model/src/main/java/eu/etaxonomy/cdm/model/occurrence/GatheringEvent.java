@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +41,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
-import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
@@ -277,14 +277,14 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 */
 
 	@Transient
-	public Partial getGatheringDate(){
+	public Temporal getGatheringDate(){
 	    if(this.getTimeperiod()!=null){
 	        return this.getTimeperiod().getStart();
 	    }
 	    return null;
 	}
 
-	public void setGatheringDate(Partial gatheringDate){
+	public void setGatheringDate(Temporal gatheringDate){
 		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}
 

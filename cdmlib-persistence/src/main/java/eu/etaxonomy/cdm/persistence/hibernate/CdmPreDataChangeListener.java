@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.time.ZonedDateTime;
+
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 import org.hibernate.event.spi.PreUpdateEvent;
 import org.hibernate.event.spi.PreUpdateEventListener;
-import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -45,7 +46,7 @@ public class CdmPreDataChangeListener
             Object entity = event.getEntity();
             if (VersionableEntity.class.isAssignableFrom(entity.getClass())) {
                 VersionableEntity versionableEntity = (VersionableEntity)entity;
-                versionableEntity.setUpdated(new DateTime());
+                versionableEntity.setUpdated(ZonedDateTime.now());
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
                     User user = (User)authentication.getPrincipal();
@@ -67,7 +68,7 @@ public class CdmPreDataChangeListener
                 ICdmBase cdmBase = (ICdmBase)entity;
 
                 if (cdmBase.getCreated() == null){
-                    cdmBase.setCreated(new DateTime());
+                    cdmBase.setCreated(ZonedDateTime.now());
                 }
                 if(cdmBase.getCreatedBy() == null) {
                     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

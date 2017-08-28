@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!--
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+   -->
+	<parent>
+	    <groupId>eu.etaxonomy</groupId>
+	    <artifactId>cdmlib-parent</artifactId>
+	    <version>4.10.0-SNAPSHOT</version>
+	    <relativePath>../pom.xml</relativePath>
+	</parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>cdmlib-ext</artifactId>
+  <name>CDM External</name>
+  <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-extern/</url>
+  </scm>
+
+  <dependencies>
+ 	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-services</artifactId>
+  	</dependency>
+    <dependency>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-test</artifactId>
+        <scope>test</scope>
+        <version>${project.version}</version>
+    </dependency>
+<!--   	<dependency> -->
+<!--   		<groupId>eu.etaxonomy</groupId> -->
+<!--   		<artifactId>cdmlib-persistence</artifactId> -->
+<!--   		<type>test-jar</type> -->
+<!--   		<scope>test</scope> -->
+<!--   		<version>${project.version}</version> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-core</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     probably most unitils dependencies can be deleted from here -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-database</artifactId> -->
+<!--       <exclusions> -->
+<!--       	<exclusion> -->
+<!--       		<groupId>commons-dbcp</groupId> -->
+<!--       		<artifactId>commons-dbcp</artifactId> -->
+<!--       	</exclusion> -->
+<!--       </exclusions> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-easymock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-mock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-inject</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-spring</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--     </dependency>  -->
+<!--     <dependency> -->
+<!--       <groupId>xmlunit</groupId> -->
+<!--       <artifactId>xmlunit</artifactId> -->
+<!--   	</dependency> -->
+
+    <dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient</artifactId>
+	</dependency>
+	<dependency>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+		<classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+	<dependency>
+        <groupId>net.sf.ezmorph</groupId>
+        <artifactId>ezmorph</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+

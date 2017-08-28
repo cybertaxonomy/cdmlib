@@ -9,9 +9,10 @@
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
 
+import java.time.ZonedDateTime;
+
 import org.dozer.CustomConverter;
 import org.dozer.MappingException;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
@@ -28,12 +29,12 @@ public class TimePeriodConverter implements CustomConverter {
 			//convert from TimePeriod -> DateTime
 			//FIXME .toDateTime(null) most probably not correct
 			if(((TimePeriod)source).getStart() != null){
-				return ((TimePeriod)source).getStart().toDateTime(null);
+				return ((TimePeriod)source).getStart();
 			} else {
 				return null;
 			}
 
-		} else if (source instanceof DateTime) {
+		} else if (source instanceof ZonedDateTime) {
 
 			//convert from DateTime -> TimePeriod
 			//FIXME implement

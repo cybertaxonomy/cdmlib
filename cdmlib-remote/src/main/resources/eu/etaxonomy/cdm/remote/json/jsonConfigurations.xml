@@ -175,7 +175,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
+        <entry key="java.time.ZonedDateTime">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>
@@ -254,7 +254,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
+        <entry key="java.time.ZonedDateTime">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>
@@ -408,7 +408,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
+        <entry key="java.time.ZonedDateTime">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>
@@ -478,7 +478,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
+        <entry key="java.time.ZonedDateTime">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>
@@ -534,7 +534,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
+        <entry key="java.time.ZonedDateTime">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>

@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.URI;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +21,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.dozer.Mapper;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -75,7 +75,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		taxonConcept.setHasName(taxonName);
 		taxonConcept.setIdentifier(new URI("urn:lsid:example.org:taxonconcepts:1"));
 		taxonConcept.setTitle("Lorem ipsum");
-		taxonConcept.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0,DateTimeZone.UTC));
+		taxonConcept.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0,ZoneId.systemDefault()));
 
 
 		Relation relation = new Relation();

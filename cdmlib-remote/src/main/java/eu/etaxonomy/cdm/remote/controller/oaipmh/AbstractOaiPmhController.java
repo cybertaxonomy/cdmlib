@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.joda.time.DateTime;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -147,7 +147,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(DateTime.class, new IsoDateTimeEditor());
+        binder.registerCustomEditor(ZonedDateTime.class, new IsoDateTimeEditor());
         binder.registerCustomEditor(LSID.class, new LSIDPropertyEditor());
         binder.registerCustomEditor(MetadataPrefix.class, new MetadataPrefixEditor());
         binder.registerCustomEditor(SetSpec.class, new SetSpecEditor());
@@ -282,8 +282,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "!resumptionToken"})
     public ModelAndView listIdentifiers(
-            @RequestParam(value = "from", required = false) DateTime from,
-            @RequestParam(value = "until", required = false) DateTime until,
+            @RequestParam(value = "from", required = false) ZonedDateTime from,
+            @RequestParam(value = "until", required = false) ZonedDateTime until,
             @RequestParam(value = "metadataPrefix",required = true) MetadataPrefix metadataPrefix,
             @RequestParam(value = "set", required = false) SetSpec set) {
 
@@ -388,8 +388,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListRecords", "!resumptionToken"})
-    public ModelAndView listRecords(@RequestParam(value = "from", required = false) DateTime from,
-            @RequestParam(value = "until", required = false) DateTime until,
+    public ModelAndView listRecords(@RequestParam(value = "from", required = false) ZonedDateTime from,
+            @RequestParam(value = "until", required = false) ZonedDateTime until,
             @RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix,
             @RequestParam(value = "set", required = false) SetSpec set) {
 

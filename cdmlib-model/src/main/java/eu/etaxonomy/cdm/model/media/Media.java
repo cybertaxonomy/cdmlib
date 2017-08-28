@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,7 +45,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -109,7 +109,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
-    private DateTime mediaCreated;
+    private ZonedDateTime mediaCreated;
 
      // TODO once hibernate annotations support custom collection type
     // private MultilanguageText description = new MultilanguageText();
@@ -323,11 +323,11 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
 
 
 
-    public DateTime getMediaCreated(){
+    public ZonedDateTime getMediaCreated(){
         return this.mediaCreated;
     }
 
-    public void setMediaCreated(DateTime mediaCreated){
+    public void setMediaCreated(ZonedDateTime mediaCreated){
         this.mediaCreated = mediaCreated;
     }
 

@@ -337,6 +337,10 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			}
 			 //taxon
             taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthor, basionymAuthor, referenceStr, dateStr, nameStatus, taxonomicStatus);
+            taxonBase.getName().addSource(OriginalSourceType.Import, taxonDataHolder.getId(),"TaxonName" ,state.getConfig().getSourceReference(), null);
+
+            taxonBase.addSource(OriginalSourceType.Import, taxonDataHolder.getId(),"TaxonName" ,state.getConfig().getSourceReference(), null);
+
 		}
 
 		if (taxonBase == null){
@@ -931,9 +935,6 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			}
 			taxonBase = taxon;
 		}
-		taxonBase.getName().addSource(OriginalSourceType.Import, null,"TaxonName" ,state.getConfig().getSourceReference(), null);
-
-		taxonBase.addSource(OriginalSourceType.Import, null,"TaxonName" ,state.getConfig().getSourceReference(), null);
 
 		return taxonBase;
 	}

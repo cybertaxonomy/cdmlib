@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.csv.redlist.demo;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,8 +22,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
@@ -293,7 +293,7 @@ public abstract class CsvDemoRecordBase {
 		}
 	}
 
-	protected String getDate(DateTime date) {
+	protected String getDate(ZonedDateTime date) {
 		if (date == null){
 			return "";
 		}else{
@@ -424,7 +424,7 @@ public abstract class CsvDemoRecordBase {
 		if (period == null){
 			return "";
 		}else{
-			Partial date = useEnd? period.getEnd(): period.getStart();
+			Temporal date = useEnd? period.getEnd(): period.getStart();
 			if (date == null){
 				return "";
 			}else{

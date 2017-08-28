@@ -12,9 +12,12 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -160,6 +163,7 @@ public class DefaultReferenceCacheStrategyTest {
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
 		article1.setInJournal(null);
+		article1.setTitleCache(null, false);
 		Assert.assertEquals("Team1, My article in " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
@@ -174,12 +178,15 @@ public class DefaultReferenceCacheStrategyTest {
         article1.setDatePublished(TimePeriod.NewInstance(1975));
         Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
         article1.setPages("12-22");
+        article1.setTitleCache(null, false);
         Assert.assertEquals("Team1, My article in My journal: 12-22. 1975", article1.getTitleCache());
 
         article1.setVolume("7");
+        article1.setTitleCache(null, false);
         Assert.assertEquals("Team1, My article in My journal 7: 12-22. 1975", article1.getTitleCache());
 
         article1.setSeriesPart("II");
+        article1.setTitleCache(null, false);
         //TODO unclear if punctuation is correct
         Assert.assertEquals("Team1, My article in My journal, II, 7: 12-22. 1975", article1.getTitleCache());
    }
@@ -314,6 +321,8 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3", book1.getTitleCache());
 
         book1.setPages("1-405");
+        book1.setTitleCache(null, false);
+
         Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3: 1-405", book1.getTitleCache());
 
     }
@@ -400,15 +409,21 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(TimePeriod.NewInstance(1975));
+        book1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1975", bookSection1.getTitleCache());
         book1.setDatePublished(null);
         bookSection1.setDatePublished(TimePeriod.NewInstance(1976));
+        bookSection1.setTitleCache(null, false);
+        book1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
         book1.setDatePublished(TimePeriod.NewInstance(1977));
+        book1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
 
 
         bookSection1.setInBook(null);
+        bookSection1.setTitleCache(null, false);
+        book1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in - undefined book -. 1976", bookSection1.getTitleCache());
 
     }
@@ -424,12 +439,15 @@ public class DefaultReferenceCacheStrategyTest {
         book1.setDatePublished(TimePeriod.NewInstance(1975));
         //TODO still unclear which is correct
 //      Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
+        book1.setTitleCache(null, false);
         Assert.assertEquals("in TT., My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
 
         book1.setSeriesPart("2");
+        book1.setTitleCache(null, false);
         Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
         //#6496 don't show pages in nom.ref. citations
         bookSection1.setPages("35-39");
+        book1.setTitleCache(null, false);
         Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
 
     }
@@ -451,6 +469,7 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection.setInBook(book);
         bookSection.setAuthorship(sectionTeam);
         bookSection.setPages("222-251");
+        book1.setTitleCache(null, false);
         Assert.assertEquals("Chaudhary S. A. - 73. Hedypnois - 87. Crepis in Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3). 2000", bookSection.getTitleCache());
 
     }
@@ -621,6 +640,8 @@ public class DefaultReferenceCacheStrategyTest {
 
         //only inref has volume
         generic1.setVolume(null);
+        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
+        generic1.setAbbrevTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getTitleCache());
         Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getAbbrevTitleCache());
@@ -699,9 +720,11 @@ public class DefaultReferenceCacheStrategyTest {
         webPage1.setTitle("Flora of Israel Online");
         webPage1.setUri(URI.create("http://flora.huji.ac.il"));
         webPage1.setAuthorship(webPageTeam1);
-        webPage1.setAccessed(DateTime.parse("2001-01-05"));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        webPage1.setAccessed(ZonedDateTime.of(LocalDateTime.parse("2001-01-05T12:00:00", formatter), ZoneId.systemDefault()));
+        webPage1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.",
-                "Authorteam, D., Flora of Israel Online - http://flora.huji.ac.il [accessed 2001-01-05]",
+                "Authorteam, D., Flora of Israel Online - http://flora.huji.ac.il [accessed 2001-01-05 12:00]",
                 webPage1.getTitleCache());
     }
 

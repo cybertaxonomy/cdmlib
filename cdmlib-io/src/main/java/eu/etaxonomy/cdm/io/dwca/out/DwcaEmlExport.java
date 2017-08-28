@@ -11,16 +11,15 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -143,7 +142,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 			String text;
 
 			elementName = "dateStamp";
-			text = new DateTime().toString();
+			text = ZonedDateTime.now().toString();
 			writeTextElement(writer, elementName, text);
 
 			elementName = "citation";
@@ -202,9 +201,9 @@ public class DwcaEmlExport extends DwcaExportBase {
 
 			}
 
-			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 			elementName = "pubDate";
-			text = emlRecord.getPublicationDate().toString(dateFormatter);
+			text = emlRecord.getPublicationDate().format(dateFormatter);
 			writeTextElement(writer, elementName, text);
 
 			elementName = "language";
@@ -400,11 +399,11 @@ public class DwcaEmlExport extends DwcaExportBase {
 	}
 
 
-	private void writeCalendarDate(XMLStreamWriter writer, Partial partial) throws XMLStreamException {
+	private void writeCalendarDate(XMLStreamWriter writer, Temporal partial) throws XMLStreamException {
 		//calendarDate
 		String elementName = "calendarDate";
 		//FIXME must be something like 37723
-		String text = partial.toDateTime(new DateTime()).toString();
+		String text = partial.toString();
 		writeTextElement(writer, elementName, text);
 
 	}

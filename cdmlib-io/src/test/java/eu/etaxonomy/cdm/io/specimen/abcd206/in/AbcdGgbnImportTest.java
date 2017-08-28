@@ -18,12 +18,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -254,7 +255,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull("Dna quality is null", dnaQuality!=null);
         assertEquals(new Double("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
         assertEquals(new Double("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
-        assertEquals(new DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
+        assertEquals(ZonedDateTime.of(2008, 4, 15, 0, 0,0,0, ZoneId.systemDefault()),dnaQuality.getQualityCheckDate());
 //        assertEquals(MeasurementUnit.NewInstance(, label, labelAbbrev)DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
 
         //amplifications

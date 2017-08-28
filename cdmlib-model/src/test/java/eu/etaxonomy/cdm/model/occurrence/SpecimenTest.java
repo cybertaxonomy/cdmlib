@@ -17,11 +17,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -221,7 +221,7 @@ public class SpecimenTest {
 		String catalogNumber = "catNumber";
 		Collection collection = Collection.NewInstance();
 		collection.setCode("code");
-		DateTime created = new DateTime();
+		ZonedDateTime created = ZonedDateTime.now();
 		Person createdBy = Person.NewTitledInstance("creator");
 		DerivationEvent derivedFrom = DerivationEvent.NewInstance(null);
 		int id = 22;

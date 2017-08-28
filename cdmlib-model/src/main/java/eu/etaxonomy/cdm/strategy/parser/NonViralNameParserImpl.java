@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.strategy.parser;
 
+import java.time.Year;
+import java.time.temporal.Temporal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -16,8 +18,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -577,14 +577,14 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return
 	 * @throws StringNotParsableException
 	 */
-	private static Partial parseSingleDate(String singleDateString)
+	private static Temporal parseSingleDate(String singleDateString)
 			throws StringNotParsableException{
-		Partial dt = new Partial();
+		Temporal dt = null;
 		if (CdmUtils.isNumeric(singleDateString)){
 			try {
 				Integer year = Integer.valueOf(singleDateString.trim());
 				if (year > 1750 && year < 2050){
-					dt = dt.with(DateTimeFieldType.year(), year);
+					dt = Year.of(year);
 				}else{
 					dt = null;
 				}

@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
-import java.util.Date;
 import java.util.UUID;
 
 import org.w3c.dom.Element;
@@ -101,7 +100,7 @@ public class AbcdDnaParser {
                     derivedFrom.setActor(preparationAgent);
                 }
                 //preparation date
-                Date preparationDate = AbcdParseUtility.parseFirstDate(((Element) node).getElementsByTagName(prefix+"preparationDate"));
+                java.time.LocalDate preparationDate = AbcdParseUtility.parseFirstDate(((Element) node).getElementsByTagName(prefix+"preparationDate"));
                 derivedFrom.setTimeperiod(TimePeriod.NewInstance(preparationDate, null));
                 //sample designation
                 NodeList sampleDesignationsList = ((Element) node).getElementsByTagName(prefix+"sampleDesignations");

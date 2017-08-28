@@ -47,7 +47,7 @@ import org.hibernate.type.MaterializedClobType;
 import org.hibernate.type.SerializableType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
-import org.jadira.usertype.dateandtime.joda.PersistentDateTime;
+import org.hibernate.type.ZonedDateTimeType;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
@@ -441,7 +441,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	protected static boolean isNoDoType(Type propertyType) {
 		boolean result = false;
 		Class<?>[] classes = new Class[]{
-				PersistentDateTime.class,
+		        ZonedDateTimeType.class,
 				WSDLDefinitionUserType.class,
 				UUIDUserType.class,
 				PartialUserType.class,

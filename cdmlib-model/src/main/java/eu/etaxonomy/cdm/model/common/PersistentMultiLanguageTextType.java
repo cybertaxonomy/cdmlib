@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.collection.spi.PersistentCollection;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.usertype.UserCollectionType;
 
@@ -62,14 +62,14 @@ public class PersistentMultiLanguageTextType implements UserCollectionType {
 	}
 
 	@Override
-	public PersistentCollection instantiate(SessionImplementor session, CollectionPersister persister) throws HibernateException {
+	public PersistentCollection instantiate(SharedSessionContractImplementor session, CollectionPersister persister) throws HibernateException {
 		return new PersistentMultiLanguageText();
 	}
 
 	@Override
 	public Object replaceElements(Object original, Object target, CollectionPersister collectionPersister,
 			Object owner, @SuppressWarnings("rawtypes") Map copyCache,
-			SessionImplementor sessionImplementor) throws HibernateException {
+			SharedSessionContractImplementor sessionImplementor) throws HibernateException {
 
 		@SuppressWarnings("unchecked")
         Map<Object,Object> result = (Map<Object,Object>) target;
@@ -87,7 +87,7 @@ public class PersistentMultiLanguageTextType implements UserCollectionType {
 	}
 
 	@Override
-	public PersistentCollection wrap(SessionImplementor sessionImplementor, Object collection) {
+	public PersistentCollection wrap(SharedSessionContractImplementor sessionImplementor, Object collection) {
 		return new PersistentMultiLanguageText( sessionImplementor, (MultilanguageText) collection );
 	}
 
