@@ -96,7 +96,6 @@ public class TaxonNodeOutStreamPartitioner<STATE extends XmlExportState> {
 		this.partitionSize = partitionSize;
 		this.state = state;
 		this.parentMonitor = parentMonitor;
-		this.parentMonitor.beginTask("Start", totalCount);
 		this.parentTicks = parentTicks;
 
 

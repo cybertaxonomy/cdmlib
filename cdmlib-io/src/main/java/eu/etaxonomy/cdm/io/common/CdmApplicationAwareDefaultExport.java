@@ -216,6 +216,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 
 		List<Integer> stepCounts = countSteps(state, ioList);
 		Integer totalCount = stepCounts.get(stepCounts.size()-1);
+		config.getProgressMonitor().beginTask("Start Export", totalCount);
 		config.getProgressMonitor().worked(1);
 		IProgressMonitor parentMonitor = SubProgressMonitor
 		        .NewStarted(config.getProgressMonitor(), 99, "Process data", totalCount);
@@ -228,7 +229,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 			    String ioName = export.getClass().getSimpleName();
 			    SubProgressMonitor ioMonitor = SubProgressMonitor
 			            .NewStarted(parentMonitor, counts, ioName, counts );
-			    state.getConfig().setProgressMonitor(ioMonitor);
+//			    state.getConfig().setProgressMonitor(ioMonitor);
 			    state.setCurrentIO(export);
 				export.invoke(state);
 				ioMonitor.done();
