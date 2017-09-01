@@ -191,6 +191,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         mediaSpecimen.setMediaSpecimen(null);
                         updatedObject = mediaSpecimen;
 
+                }else if (ref instanceof MediaRepresentation){
+                    continue;
+
                 }else {
 
                     result.setAbort();
