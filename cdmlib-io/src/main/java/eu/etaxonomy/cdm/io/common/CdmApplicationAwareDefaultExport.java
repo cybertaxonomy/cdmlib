@@ -228,7 +228,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 			    String ioName = export.getClass().getSimpleName();
 			    SubProgressMonitor ioMonitor = SubProgressMonitor
 			            .NewStarted(parentMonitor, counts, ioName, counts );
-			    state.setCurrentMonitor(ioMonitor);
+			    state.getConfig().setProgressMonitor(ioMonitor);
 			    state.setCurrentIO(export);
 				export.invoke(state);
 				ioMonitor.done();

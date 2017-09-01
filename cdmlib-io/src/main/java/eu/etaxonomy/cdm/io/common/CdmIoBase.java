@@ -243,7 +243,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
     @Override
     public void updateProgress(STATE state, String message, int worked) {
-        if (state.getCurrentMonitor() == null){
+        if (state.getConfig().getProgressMonitor() == null){
             IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
             if(progressMonitor != null){
                 progressMonitor.worked(worked);

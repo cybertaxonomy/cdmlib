@@ -101,6 +101,7 @@ public class IOServiceImpl implements IIOService {
             public Serializable doRun(IRemotingProgressMonitor monitor) {
 
                 configurator.setProgressMonitor(monitor);
+                monitor.beginTask("Start Export", 100);
                 ExportResult result = export(configurator);
 //                for(byte[] report : result.getReports()) {
 //                    monitor.addReport(new String(report));

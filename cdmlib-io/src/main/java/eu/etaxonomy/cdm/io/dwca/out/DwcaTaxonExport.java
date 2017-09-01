@@ -100,6 +100,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
             state.getResult().addException(e, message);
         }finally{
             flushWriter(state, file);
+
         }
     }
 
