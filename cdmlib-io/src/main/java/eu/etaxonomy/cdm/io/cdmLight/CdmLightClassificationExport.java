@@ -295,14 +295,64 @@ public class CdmLightClassificationExport
             List<DescriptionElementBase> simpleFacts) {
         try {
             CdmLightExportTable table = CdmLightExportTable.SIMPLE_FACT;
-
+            CdmLightExportTable tableMedia = CdmLightExportTable.MEDIA;
             for (DescriptionElementBase element: simpleFacts){
-                handleSingleSimpleFact(state, cdmBase, table, element);
+                if (element.getModifyingText().isEmpty()){
+                    handleSimpleMediaFact(state, cdmBase, tableMedia, element);
+                }else{
+                    handleSingleSimpleFact(state, cdmBase, table, element);
+                }
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling simple facts for " +
                     cdmBaseStr(cdmBase) + ": " + e.getMessage());
         }
+    }
+
+    /**
+     * @param state
+     * @param cdmBase
+     * @param tableMedia
+     * @param element
+     */
+    private void handleSimpleMediaFact(CdmLightExportState state, CdmBase cdmBase, CdmLightExportTable table,
+            DescriptionElementBase element) {
+        try {
+            String[] csvLine;
+            handleSource(state, element, CdmLightExportTable.MEDIA);
+
+            if (element instanceof TextData){
+               TextData textData = (TextData)element;
+               csvLine = new String[table.getSize()];
+               csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
+               if (cdmBase instanceof Taxon){
+                   csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
+                   csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = "";
+               }else if (cdmBase instanceof TaxonName){
+                   csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = "";
+                   csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, cdmBase);
+               }
+
+
+               String mediaUris = "";
+               for (Media media: textData.getMedia()){
+                   String mediaString = extractMediaUris(media.getRepresentations().iterator());
+                   if (!StringUtils.isBlank(mediaString)){
+                       mediaUris +=  mediaString + ";";
+                   }
+                   else{
+                       state.getResult().addWarning("Empty Media object for uuid: " +
+                               cdmBase.getUuid() + " uuid of media: " + media.getUuid());
+                   }
+               }
+               csvLine[table.getIndex(CdmLightExportTable.MEDIA_URI)] = mediaUris;
+
+            }
+        } catch (Exception e) {
+            state.getResult().addException(e, "An unexpected error occurred when handling single simple fact " +
+                    cdmBaseStr(element) + ": " + e.getMessage());
+        }
+
     }
 
     /**
