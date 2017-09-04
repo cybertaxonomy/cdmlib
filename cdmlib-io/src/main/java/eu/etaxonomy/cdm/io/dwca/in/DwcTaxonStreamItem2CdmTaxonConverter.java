@@ -689,13 +689,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
 	private void checkAuthorship(TaxonName nameBase, StreamItem item) {
-		if (!nameBase.isNonViral()){
+		if (nameBase.isViral()){
 			return;
 		}
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
 
 		if (! nameBase.isProtectedTitleCache()){
-			if (StringUtils.isBlank(nameBase.getAuthorshipCache())){
+			if (isBlank(nameBase.getAuthorshipCache())){
 				if (nameBase.isBotanical() || nameBase.isZoological()){
 					//TODO can't we also parse NonViralNames correctly ?
 					try {

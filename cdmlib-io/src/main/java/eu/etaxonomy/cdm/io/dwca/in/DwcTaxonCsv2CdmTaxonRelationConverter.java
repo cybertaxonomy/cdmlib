@@ -289,6 +289,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 				} else{
 					accTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
 				}
+
 				// FIXME : no information regarding misapplied name available at this point,
 				//         hence a regexp check for 'misapplied' is done to add them as a relationship
 			} else if(taxonBase.isInstanceOf(Taxon.class) && taxStatus != null && taxStatus.matches("misapplied.*")) {
