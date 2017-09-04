@@ -33,7 +33,7 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 
 	private static final UUID uuidMarkerTypeIsExtinct = UUID.fromString("e861a3f1-6f67-407d-9171-8dadbb330016");
 
-	private static final UUID uuidExtensionTypeModified = UUID.fromString("5e3d4930-e672-42c1-813c-c3cee7aef965");
+	public static final UUID uuidExtensionTypeModified = UUID.fromString("5e3d4930-e672-42c1-813c-c3cee7aef965");
 
 
     @Override

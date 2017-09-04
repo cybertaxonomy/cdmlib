@@ -60,6 +60,11 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 		ORIGINAL_SOURCE
 	}
 
+    public enum ModifiedUse{
+        UPDATED,
+        MARKER
+    }
+
 
 	/**
 	 * @param uri
