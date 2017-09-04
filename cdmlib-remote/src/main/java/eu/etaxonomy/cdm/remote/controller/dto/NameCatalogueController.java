@@ -26,6 +26,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Document;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
+import eu.etaxonomy.cdm.io.dwca.in.DwcaImportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -829,6 +831,10 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         secTitle = taxon.getSec().getTitleCache();
                         DateTime dt = taxon.getUpdated();
                         modified = fmt.print(dt);
+                    }
+                    String extMod = taxon.getExtensionsConcat(DwcaImportTransformer.uuidExtensionTypeModified,";");
+                    if (StringUtils.isNotBlank(extMod)){
+                        modified = extMod;  //use any
                     }
 
                     Set<IdentifiableSource> sources = taxon.getSources();

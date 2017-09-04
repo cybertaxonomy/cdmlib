@@ -49,6 +49,7 @@ import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
@@ -433,6 +434,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         for (Extension extension : getExtensions()){
             if (extension.getType().getUuid().equals(extensionTypeUuid)){
                 result.add(extension.getValue());
+            }
+        }
+        return result;
+    }
+
+    public String getExtensionsConcat(UUID extensionTypeUuid, String separator){
+        String result = null;
+        for (Extension extension : getExtensions()){
+            if (extension.getType().getUuid().equals(extensionTypeUuid)){
+                result = CdmUtils.concat(separator, result, extension.getValue());
             }
         }
         return result;
