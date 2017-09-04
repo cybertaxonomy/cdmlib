@@ -297,7 +297,7 @@ public class CdmLightClassificationExport
             CdmLightExportTable table = CdmLightExportTable.SIMPLE_FACT;
             CdmLightExportTable tableMedia = CdmLightExportTable.MEDIA;
             for (DescriptionElementBase element: simpleFacts){
-                if (element.getModifyingText().isEmpty()){
+                if (element.getModifyingText().isEmpty() && !element.getMedia().isEmpty()){
                     handleSimpleMediaFact(state, cdmBase, tableMedia, element);
                 }else{
                     handleSingleSimpleFact(state, cdmBase, table, element);
@@ -514,8 +514,9 @@ public class CdmLightClassificationExport
                 if (ref != null){
                     if (state.getReferenceFromStore(ref.getId()) == null){
                         handleReference(state, ref);
-                        csvLine[table.getIndex(CdmLightExportTable.REFERENCE_FK)] = getId(state, ref);
+
                     }
+                    csvLine[table.getIndex(CdmLightExportTable.REFERENCE_FK)] = getId(state, ref);
                 }
                 csvLine[table.getIndex(CdmLightExportTable.FACT_FK)] = getId(state, element);
 
