@@ -131,7 +131,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             throws HomotypicalGroupChangeException;
 
     /**
-     * TODO still needed and correct?
      * Change a synonym into a related concept
      *
      * @param synonym
@@ -143,24 +142,25 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param reference
      * @param microReference
      * @return
-     * 				the newly created concept
+     * 				update result with the newly created concept
      */
     public UpdateResult changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
-     * TODO still needed and correct?
-     * Change a synonym into a related concept
+     *
+     * Change a related concept into synonym
      *
      * @param synonym
-     * 				the synonym to change into the concept taxon
+     * 				the concept taxon to change into a synonym
      * @param toTaxon
-     * 				the taxon the newly created concept should be related to
-     * @param taxonRelationshipType
-     * 				the type of relationship
-     * @param reference
-     * @param microReference
+     * 				the taxon the newly created synonym should be related to
+     * @param oldRelationshipType
+     *              the type of old concept relationship
+     * @param synonymRelationshipType
+     * 				the type of new synonym relationship
+     *
      * @return
-     * 				the newly created concept
+     * 				update result with the newly created synonym
      * @throws DataChangeNoRollbackException
      */
   public 	UpdateResult changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
