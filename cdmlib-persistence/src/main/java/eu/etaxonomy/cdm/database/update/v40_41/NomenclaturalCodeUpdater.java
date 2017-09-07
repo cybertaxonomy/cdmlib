@@ -75,10 +75,7 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase {
 	            logger.warn("Nomenclatural code updated");
 	        }
 	    }
-
 	    return;
 	}
-
-
 
 }

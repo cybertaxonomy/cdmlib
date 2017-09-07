@@ -171,11 +171,11 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		ResultSetMetaData metaData = idResultSet.getMetaData();
 		int nOfIdColumns = metaData.getColumnCount();
 		currentPartition++;
-		currentIdLists = new ArrayList[nOfIdColumns];
+		currentIdLists = new List[nOfIdColumns];
 		currentIdListType = new int[nOfIdColumns];
 
 		for (int col = 0; col< currentIdLists.length; col++){
-			currentIdLists[col] = new ArrayList<String>();
+			currentIdLists[col] = new ArrayList<>();
 			currentIdListType[col] = metaData.getColumnType(col + 1);
 		}
 		List<String> currentIdList;

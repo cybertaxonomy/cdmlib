@@ -288,7 +288,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 
 	/**
-	 * Saves a new term. Immediate saving is required to avoid by Transient-Object-Exceptions.
+	 * Saves a new term. Immediate saving is required to avoid transient object exceptions.
 	 * @param newTerm
 	 */
 	public void saveNewTerm(DefinedTermBase newTerm) {

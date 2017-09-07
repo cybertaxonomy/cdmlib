@@ -124,7 +124,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     @XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<T> generalizationOf = new HashSet<T>();
+    private Set<T> generalizationOf = new HashSet<>();
 
 //	@XmlElement(name = "PartOf")
 //	@XmlIDREF
@@ -146,7 +146,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     @XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<T> includes = new HashSet<T>();
+    private Set<T> includes = new HashSet<>();
 
     @XmlElementWrapper(name = "Media")
     @XmlElement(name = "Medium")
@@ -154,7 +154,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<Media> media = new HashSet<Media>();
+    private Set<Media> media = new HashSet<>();
 
     @XmlElement(name = "TermVocabulary")
     @XmlIDREF

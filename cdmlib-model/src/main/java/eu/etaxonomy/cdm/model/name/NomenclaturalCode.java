@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.Language;
  *
  * @author a.mueller
  * @created 19.05.2008
- * @version 2.0
  */
 
 @XmlType(name = "NomenclaturalCode")
@@ -104,9 +103,10 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 
+	@Deprecated
 	private String dtype;
 
-	private NomenclaturalCode(UUID uuid, String titleCache, String dtype){
+	private NomenclaturalCode(UUID uuid, String titleCache, @Deprecated String dtype){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
 		this.dtype = dtype;
 	}
@@ -156,6 +156,11 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		return null;
 	}
 
+	/**
+	 * @deprecated not relevant anymore, used only by NomenclaturalCodeUpdater
+	 * which is used for 4.0->4.1 schema update.
+	 */
+	@Deprecated
     public static NomenclaturalCode fromDtype(String string){
         for(NomenclaturalCode code : NomenclaturalCode.values()){
             if(code.dtype.equalsIgnoreCase(string)) {
@@ -242,13 +247,6 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		}
 	}
 
-
-    /**
-     * @return the dtype of the according CDM class
-     */
-    public String getDtype() {
-        return dtype;
-    }
 
 // *************************** DELEGATE **************************************/
 
