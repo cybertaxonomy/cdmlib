@@ -63,18 +63,18 @@ public class DwcaImport
 			}else{
 				return new DwcTaxonCsv2CdmTaxonRelationConverter(state);
 			}
-//		}else if (namespace.equals(TermUri.GBIF_VERNACULAR_NAMES)){
-//			return new GbifVernacularNameCsv2CdmConverter(state);
-//		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
-//			return new GbifDescriptionCsv2CdmConverter(state);
-//		}else if (namespace.equals(TermUri.GBIF_DISTRIBUTION)){
-//			return new GbifDistributionCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_VERNACULAR_NAMES)){
+			return new GbifVernacularNameCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
+			return new GbifDescriptionCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_DISTRIBUTION)){
+			return new GbifDistributionCsv2CdmConverter(state);
 		}else if (namespace.equals(TermUri.GBIF_REFERENCE)){
 			return new GbifReferenceCsv2CdmConverter(state);
-//		}else if (namespace.equals(TermUri.GBIF_TYPES_AND_SPECIMEN)){
-//			return new GbifTypesAndSpecimen2CdmConverter(state);
-//		}else if (namespace.equals(TermUri.EOL_AGENT)){
-//			return new EolAgent2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_TYPES_AND_SPECIMEN)){
+			return new GbifTypesAndSpecimen2CdmConverter(state);
+		}else if (namespace.equals(TermUri.EOL_AGENT)){
+			return new EolAgent2CdmConverter(state);
 		}else{
 			String message = "No converter available for %s";
 			logger.error(String.format(message, namespace));
@@ -82,46 +82,6 @@ public class DwcaImport
 		}
 	}
 
-
-//	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partitionStream) {
-//		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partitionStream.getTerm(), state);
-//		if (converter == null){
-//			state.setSuccess(false);
-//			return;
-//		}
-//
-//		IReader<CsvStreamItem> lookaheadStream = partitionStream.getLookaheadReader();
-//		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
-//		IImportMapping mapping = state.getMapping();
-//		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
-//		state.loadRelatedObjects(partialMapping);
-//
-//		ConcatenatingReader<MappedCdmBase> reader = new ConcatenatingReader<MappedCdmBase>();
-//
-//		IReader<CsvStreamItem> inputStream = partitionStream.read();
-//		while (inputStream.hasNext()){
-//			IReader<MappedCdmBase> resultReader = converter.map(inputStream.read());
-//			reader.add(resultReader);
-//		}
-//
-//		while (reader.hasNext()){
-//			MappedCdmBase mappedCdmBase = (reader.read());
-//			CdmBase cdmBase = mappedCdmBase.getCdmBase();
-//			//locate
-//			//TODO find a way to define the location
-//			String location = "partitionStream";
-//			//save
-//			save(cdmBase, state, location);
-//			//store in mapping
-//			if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
-//				IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
-//				String namespace = mappedCdmBase.getNamespace();
-//				//TODO also store in partition mapping
-//				state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
-//			}
-//		}
-//		return;
-//	}
 
 	@Override
 	protected boolean doCheck(DwcaImportState state) {
