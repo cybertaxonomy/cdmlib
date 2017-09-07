@@ -63,18 +63,18 @@ public class DwcaImport
 			}else{
 				return new DwcTaxonCsv2CdmTaxonRelationConverter(state);
 			}
-		}else if (namespace.equals(TermUri.GBIF_VERNACULAR_NAMES)){
-			return new GbifVernacularNameCsv2CdmConverter(state);
-		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
-			return new GbifDescriptionCsv2CdmConverter(state);
-		}else if (namespace.equals(TermUri.GBIF_DISTRIBUTION)){
-			return new GbifDistributionCsv2CdmConverter(state);
+//		}else if (namespace.equals(TermUri.GBIF_VERNACULAR_NAMES)){
+//			return new GbifVernacularNameCsv2CdmConverter(state);
+//		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
+//			return new GbifDescriptionCsv2CdmConverter(state);
+//		}else if (namespace.equals(TermUri.GBIF_DISTRIBUTION)){
+//			return new GbifDistributionCsv2CdmConverter(state);
 		}else if (namespace.equals(TermUri.GBIF_REFERENCE)){
 			return new GbifReferenceCsv2CdmConverter(state);
-		}else if (namespace.equals(TermUri.GBIF_TYPES_AND_SPECIMEN)){
-			return new GbifTypesAndSpecimen2CdmConverter(state);
-		}else if (namespace.equals(TermUri.EOL_AGENT)){
-			return new EolAgent2CdmConverter(state);
+//		}else if (namespace.equals(TermUri.GBIF_TYPES_AND_SPECIMEN)){
+//			return new GbifTypesAndSpecimen2CdmConverter(state);
+//		}else if (namespace.equals(TermUri.EOL_AGENT)){
+//			return new EolAgent2CdmConverter(state);
 		}else{
 			String message = "No converter available for %s";
 			logger.error(String.format(message, namespace));

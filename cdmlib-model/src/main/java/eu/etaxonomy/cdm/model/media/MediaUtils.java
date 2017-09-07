@@ -36,7 +36,7 @@ public class MediaUtils {
         // find best matching representations of each media
         SortedMap<Integer, MediaRepresentation> prefRepresentations
                 = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes,
-                        size, widthOrDuration, height);
+                        size, widthOrDuration, height, false);
         try {
             // take first one and remove all other representations
             MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
@@ -107,6 +107,17 @@ public class MediaUtils {
         return mediaRepresentationPart;
     }
 
+    /**
+     * @see #findPreferredMedia(List, Class, String[], String[], Integer, Integer, Integer, boolean)
+     */
+    public static Map<Media, MediaRepresentation> findPreferredMedia(List<Media> mediaList,
+            Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, String[] sizeTokens,
+            Integer widthOrDuration, Integer height, Integer size
+            ) {
+        return findPreferredMedia(mediaList, representationPartType, mimeTypes, sizeTokens,
+                widthOrDuration, height, size, false);
+    }
+
 
     /**
      * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
@@ -125,11 +136,15 @@ public class MediaUtils {
      * @param widthOrDuration
      * @param height
      * @param size
+     * @param onlyBestMatchIfFilterMatches if <code>true</code> and all required filter parameters
+     *      (like size, width and height) are not <code>null</code> only the best matching representation is returned.
+     *       Otherwise all representations are returned in sorted order.
      * @return
      */
     public static Map<Media, MediaRepresentation> findPreferredMedia(List<Media> mediaList,
             Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, String[] sizeTokens,
-            Integer widthOrDuration, Integer height, Integer size) {
+            Integer widthOrDuration, Integer height, Integer size,
+            boolean onlyBestMatchIfFilterMatches) {
 
         if(mimeTypes != null) {
             for(int i=0; i<mimeTypes.length; i++){
@@ -171,7 +186,7 @@ public class MediaUtils {
 
                 SortedMap<Integer, MediaRepresentation> prefRepresentations
                     = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType,
-                            mimeTypes, size, widthOrDuration, height);
+                            mimeTypes, size, widthOrDuration, height, false);
                 try {
                     if(prefRepresentations.size() > 0){
                         // Media.representations is a set
@@ -242,19 +257,23 @@ public class MediaUtils {
     }
 
     */
+
     /**
+     * @param mediaRepresentations
+     * @param representationPartType
      * @param mimeTypeRegexes
      * @param size
      * @param widthOrDuration
      * @param height
+     * @param onlyBestMatchIfFilterMatches if <code>true</code> and all required filter parameters
+     *      (like size, width and height) are not <code>null</code> only the best matching representation is returned.
+     *       Otherwise all representations are returned in sorted order.
      * @return
-     *
-     *
      */
     private static SortedMap<Integer, MediaRepresentation> filterAndOrderMediaRepresentations(
             Set<MediaRepresentation> mediaRepresentations,
             Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypeRegexes,
-            Integer size, Integer widthOrDuration, Integer height) {
+            Integer size, Integer widthOrDuration, Integer height, boolean onlyBestMatchIfFilterMatches) {
 
         SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<>();
 
@@ -264,6 +283,7 @@ public class MediaUtils {
         height = (height == null ? new Integer(0) : height);
         mimeTypeRegexes = (mimeTypeRegexes == null ? new String[]{".*"} : mimeTypeRegexes);
 
+        boolean filterMatches = true;
         for (String mimeTypeRegex : mimeTypeRegexes) {
             // getRepresentationByMimeType
             Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
@@ -280,7 +300,6 @@ public class MediaUtils {
 
                 int dwa = 0;
 
-
                 //first the size is used for comparison
                 for (MediaRepresentationPart part : representation.getParts()) {
 
@@ -296,6 +315,8 @@ public class MediaUtils {
                     logger.debug(part + " matches");
                     matchingParts.add(part);
 
+                    boolean partFilterMatches = false;
+
                     if (part.getSize()!= null){
                         int sizeOfPart = part.getSize();
                         int distance = sizeOfPart - size;
@@ -303,6 +324,9 @@ public class MediaUtils {
                             distance *= -1;
                         }
                         dwa += distance;
+                        if (size > 0){
+                            partFilterMatches = true;
+                        }
                     }
 
                     //if height and width/duration is defined, add this information, too
@@ -327,7 +351,10 @@ public class MediaUtils {
                         }
                         dwa += durationWidthWeight;
 
+                    }else{
+                        partFilterMatches = true;
                     }
+                    filterMatches &= partFilterMatches;
                 } // loop parts
                 logger.debug("matchingParts.size():" + matchingParts.size());
                 if(matchingParts.size() > 0 ){
@@ -343,6 +370,17 @@ public class MediaUtils {
             } // loop representations
         } // loop mime types
         logger.debug(prefRepr.size() + " preferred representations found");
-        return prefRepr;
+
+        if (onlyBestMatchIfFilterMatches && filterMatches){
+            SortedMap<Integer, MediaRepresentation> result = new TreeMap<>();
+            try {
+                result.put(prefRepr.firstKey(), prefRepr.get(prefRepr.firstKey()));
+                return result;
+            } catch (Exception e) {
+                return result;
+            }
+        }else{
+            return prefRepr;
+        }
     }
 }

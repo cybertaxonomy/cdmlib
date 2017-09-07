@@ -106,7 +106,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	@Deprecated
 	private String dtype;
 
-	private NomenclaturalCode(UUID uuid, String titleCache, @Deprecated String dtype){
+	private NomenclaturalCode(UUID uuid, String titleCache, String dtype){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
 		this.dtype = dtype;
 	}
