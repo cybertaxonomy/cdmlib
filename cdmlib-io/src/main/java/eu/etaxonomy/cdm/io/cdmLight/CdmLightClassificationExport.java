@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -115,6 +116,20 @@ public class CdmLightClassificationExport
                 return;
             }
             //TODO MetaData
+            for (LogicFilter<Classification> classificationFilter : config.getTaxonNodeFilter().getClassificationFilter()){
+                UUID classificationUuid = classificationFilter.getUuid();
+                Classification classification = getClassificationService().find(classificationUuid);
+                if (classification == null){
+                    String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
+                    state.getResult().addWarning(message);
+                }else{
+                    TaxonNode root = classification.getRootNode();
+                    UUID uuid = root.getUuid();
+                    root = getTaxonNodeService().load(uuid);
+                    handleSingleClassification(state, root.getUuid());
+                }
+            }
+
             for (LogicFilter<TaxonNode> taxonNodeFilter : config.getTaxonNodeFilter().getTaxonNodesFilter()){
                 UUID nodeUuid = taxonNodeFilter.getUuid();
                 handleSingleClassification(state, nodeUuid);
