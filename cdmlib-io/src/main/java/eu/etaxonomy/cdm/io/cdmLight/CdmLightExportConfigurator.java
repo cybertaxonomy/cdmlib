@@ -9,10 +9,8 @@
 package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -28,7 +26,10 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
     private static final long serialVersionUID = -1562074221435082060L;
 
 
-    private Set<UUID> classificationUuids = new HashSet<>();
+//    private Set<UUID> classificationUuids = new HashSet<>();
+//
+//    private Set<UUID> taxonNodeUuids = new HashSet<>();
+    private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
 
     private CsvIOConfigurator csvIOConfig = CsvIOConfigurator.NewInstance();
 
@@ -99,12 +100,12 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
         };
     }
 
-    public Set<UUID> getClassificationUuids() {
-        return classificationUuids;
-    }
-    public void setClassificationUuids(Set<UUID> classificationUuids) {
-        this.classificationUuids = classificationUuids;
-    }
+//    public Set<UUID> getClassificationUuids() {
+//        return classificationUuids;
+//    }
+//    public void setClassificationUuids(Set<UUID> classificationUuids) {
+//        this.classificationUuids = classificationUuids;
+//    }
     public boolean isHighLightPrimaryCollector() {
         return isHighlightPrimaryCollector;
     }
@@ -114,6 +115,26 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
     }
     public void setCreateZipFile(boolean createZipFile) {
         this.createZipFile = createZipFile;
+    }
+
+
+//    public Set<UUID> getTaxonNodeUuids() {
+//        return taxonNodeUuids;
+//    }
+//
+//
+//    public void setTaxonNodeUuids(Set<UUID> taxonNodeUuids) {
+//        this.taxonNodeUuids = taxonNodeUuids;
+//    }
+
+
+    public TaxonNodeFilter getTaxonNodeFilter() {
+        return taxonNodeFilter;
+    }
+
+
+    public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
+        this.taxonNodeFilter = taxonNodeFilter;
     }
 
 }
