@@ -46,7 +46,6 @@ public class MobotOpenUrlServiceWrapperTest {
 
 
 	@Test
-	@Ignore
 	public void testDoResolveAndPage_1() {
 
 	    try {
