@@ -73,7 +73,9 @@ public class MobotOpenUrlServiceWrapperTest {
 			OpenUrlReference reference = refList.get(0);
 			logger.info(reference.toString());
 			// title cache
-			Assert.assertEquals("Manual of North American Diptera /  by Samuel W. Williston.", reference.getTitleCache());
+			Assert.assertEquals("Manual of North American Diptera /", reference.getTitleCache());
+			// TODO Authorship missing see #6939
+			// Assert.assertEquals("Williston, Samuel W. (Samuel Wendell),", reference.getAuthorship().getTitleCache());
 			Assert.assertEquals("Page 16", reference.getPages());
 
 			// -------------------------
@@ -86,7 +88,7 @@ public class MobotOpenUrlServiceWrapperTest {
 			Assert.assertNotNull(refList);
 			OpenUrlReference reference_plus1 = refList.get(0);
 			logger.info(reference_plus1.toString());
-			Assert.assertEquals("Manual of North American Diptera /  by Samuel W. Williston.", reference_plus1.getTitleCache());
+			Assert.assertEquals("Manual of North American Diptera /", reference_plus1.getTitleCache());
 			Assert.assertEquals("Page 18", reference_plus1.getPages());
 			Assert.assertTrue(reference.getItemUri().equals(reference_plus1.getItemUri()));
 			Assert.assertTrue(! reference.getUri().equals(reference_plus1.getUri()));
