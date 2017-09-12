@@ -613,7 +613,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             //			for (NamedArea area : otherAreas) {
             //				getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
             //			}
-           save(derivedUnitFacade.getFieldUnit(false), state);
+//           save(derivedUnitFacade.getFieldUnit(false), state);
            if (derivedUnitFacade.getFieldUnit(false) != null){
                state.setFieldUnit(derivedUnitFacade.getFieldUnit(false));
            }
@@ -1011,6 +1011,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         }
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
+        derivedUnitFacade.setFieldUnit(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
         derivedUnitFacade.setKindOfUnit(kindOfUnit);
         return derivedUnitFacade;
     }

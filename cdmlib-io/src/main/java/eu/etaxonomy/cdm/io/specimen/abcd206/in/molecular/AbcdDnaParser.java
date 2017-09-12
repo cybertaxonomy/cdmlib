@@ -49,7 +49,10 @@ public class AbcdDnaParser {
     }
 
     public DnaSample parse(Element item, Abcd206ImportState state) {
-        FieldUnit fieldUnit = FieldUnit.NewInstance();
+        FieldUnit fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+        if (fieldUnit == null){
+            fieldUnit = FieldUnit.NewInstance();
+        }
         DnaSample dnaSample = DnaSample.NewInstance();
         DerivationEvent.NewSimpleInstance(fieldUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
