@@ -6,11 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.operation.config;
 
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.io.common.DefaultImportState;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.operation.SecundumUpdater;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -21,6 +25,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  */
 public class SetSecundumForSubtreeConfigurator extends ImportConfiguratorBase<DefaultImportState<SetSecundumForSubtreeConfigurator>, Object> implements IImportConfigurator{
+    private static final long serialVersionUID = 1202667588493272030L;
+
     private UUID subtreeUuid;
     private Reference newSecundum;
     private boolean includeAcceptedTaxa = true;

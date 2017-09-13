@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.operation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +22,9 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.DefaultImportState;
+import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 
 /**
  * @author k.luther
@@ -134,12 +137,8 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
         }
     }
 
-
-
-
     @Override
     protected boolean isIgnore(DefaultImportState<SortIndexUpdaterConfigurator> state) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -148,7 +147,6 @@ public class SortIndexUpdaterWrapper extends CdmImportBase<SortIndexUpdaterConfi
      */
     @Override
     protected boolean doCheck(DefaultImportState<SortIndexUpdaterConfigurator> state) {
-        // TODO Auto-generated method stub
         return true;
     }
 

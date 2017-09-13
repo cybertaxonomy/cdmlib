@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.operation;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -14,6 +14,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.DefaultImportState;
+import eu.etaxonomy.cdm.io.operation.config.SetSecundumForSubtreeConfigurator;
 
 /**
  * @author k.luther
@@ -22,11 +25,10 @@ import eu.etaxonomy.cdm.api.service.UpdateResult;
  */
 @Component
 public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigurator, DefaultImportState<SetSecundumForSubtreeConfigurator>>  {
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 6788425152444747546L;
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(SecundumUpdater.class);
 
 
@@ -51,12 +53,12 @@ public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigur
         return;
 
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected boolean doCheck(DefaultImportState<SetSecundumForSubtreeConfigurator> state) {
-        // TODO Auto-generated method stub
         return true;
     }
     /**
@@ -64,11 +66,8 @@ public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigur
      */
     @Override
     protected boolean isIgnore(DefaultImportState<SetSecundumForSubtreeConfigurator> state) {
-        // TODO Auto-generated method stub
         return false;
     }
-
-
 
 }
 

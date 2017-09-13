@@ -11,15 +11,15 @@ package eu.etaxonomy.cdm.io.service;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportResult;
-import eu.etaxonomy.cdm.io.common.SetSecundumForSubtreeConfigurator;
-import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
