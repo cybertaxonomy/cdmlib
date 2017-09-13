@@ -121,6 +121,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		}
 		//FIXME write test
         String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId + " ORDER BY taxa.titleCache " + limit;
+        @SuppressWarnings("unchecked")
         List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
 
        return result;
@@ -131,7 +132,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         int classificationId = classification.getId();
         //FIXME write test
         String queryString = "SELECT DISTINCT COUNT('nodes.*') FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
-         List<BigInteger> result = getSession().createSQLQuery(queryString).list();
+         @SuppressWarnings("unchecked")
+        List<BigInteger> result = getSession().createSQLQuery(queryString).list();
          return result.get(0).intValue ();
     }
 
@@ -142,6 +144,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         query.setParameter("parentId", parent.getId());
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -166,6 +169,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -187,6 +191,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         query.setParameter("childId", child.getId());
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -220,7 +225,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     crit.setFirstResult(0);
                 }
             }
-    		List<TaxonNode> results = crit.list();
+    		@SuppressWarnings("unchecked")
+            List<TaxonNode> results = crit.list();
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
@@ -264,6 +270,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, query);
 
+        @SuppressWarnings("unchecked")
         List<TaxonNodeAgentRelation> records = query.list();
 
         if(propertyPaths != null) {
