@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @created 29.01.2009
- * @version 1.0
  */
 public interface IImportConfigurator extends IIoConfigurator {
 

@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
-import eu.etaxonomy.cdm.io.operation.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
@@ -122,7 +122,7 @@ public class IOServiceImpl implements IIOService {
             public Serializable doRun(IRemotingProgressMonitor monitor) {
 
                 configurator.setProgressMonitor(monitor);
-                ImportResult result =updateData((SetSecundumForSubtreeConfigurator)configurator);
+                ImportResult result =updateData((SecundumForSubtreeConfigurator)configurator);
 
                 return result;
             }
@@ -151,7 +151,7 @@ public class IOServiceImpl implements IIOService {
     }
 
     @Override
-    public ImportResult updateData(SetSecundumForSubtreeConfigurator configurator) {
+    public ImportResult updateData(SecundumForSubtreeConfigurator configurator) {
         ImportResult result;
 
         result = cdmImport.invoke(configurator);

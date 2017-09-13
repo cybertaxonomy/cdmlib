@@ -21,14 +21,14 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 08.07.2016
  *
  */
-public class SortIndexUpdaterConfigurator  extends ImportConfiguratorBase<DefaultImportState<SetSecundumForSubtreeConfigurator>, Object> implements IImportConfigurator{
+public class SortIndexUpdaterConfigurator
+        extends ImportConfiguratorBase<DefaultImportState<SortIndexUpdaterConfigurator>, Object>
+        implements IImportConfigurator{
 
 
     private boolean doTaxonNode = true;
     private boolean doFeatureNode = true;
     private boolean doPolytomousKeyNode = true;
-
-    private String subTreeIndex = null;
 
     private SortIndexUpdaterConfigurator(ICdmDataSource destination){
         super(null);
@@ -106,7 +106,7 @@ public class SortIndexUpdaterConfigurator  extends ImportConfiguratorBase<Defaul
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
-                     SortIndexUpdaterWrapper.class
+                SortIndexUpdaterWrapper.class
         };
     }
 

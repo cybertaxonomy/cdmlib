@@ -16,20 +16,21 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
-import eu.etaxonomy.cdm.io.operation.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.PublishForSubtreeConfigurator;
 
 /**
- * @author k.luther
- * @date 14.03.2017
+ * @author a.mueller
+ * @date 13.09.2017
  *
  */
 @Component
-public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigurator, DefaultImportState<SetSecundumForSubtreeConfigurator>>  {
+public class PublishForSubtreeUpdater
+        extends CdmImportBase<PublishForSubtreeConfigurator, DefaultImportState<PublishForSubtreeConfigurator>>  {
 
-    private static final long serialVersionUID = 6788425152444747546L;
+    private static final long serialVersionUID = -8472720162647029724L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(SecundumUpdater.class);
+    private static final Logger logger = Logger.getLogger(PublishForSubtreeUpdater.class);
 
 
     /**
@@ -44,9 +45,9 @@ public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigur
      * {@inheritDoc}
      */
     @Override
-    protected void doInvoke(DefaultImportState<SetSecundumForSubtreeConfigurator> state) {
-        SetSecundumForSubtreeConfigurator config = state.getConfig();
-        state.getConfig().getProgressMonitor().beginTask("Update Secundum References ", 100);
+    protected void doInvoke(DefaultImportState<PublishForSubtreeConfigurator> state) {
+        PublishForSubtreeConfigurator config = state.getConfig();
+        state.getConfig().getProgressMonitor().beginTask("Update pulish flag References ", 100);
 
         UpdateResult result = getTaxonNodeService().setSecundumForSubtree(config.getSubtreeUuid(),  config.getNewSecundum(), config.isIncludeAcceptedTaxa(), config.isIncludeSynonyms(), config.isOverwriteExistingAccepted(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), config.getProgressMonitor());
 
@@ -58,14 +59,14 @@ public class SecundumUpdater extends CdmImportBase<SetSecundumForSubtreeConfigur
      * {@inheritDoc}
      */
     @Override
-    protected boolean doCheck(DefaultImportState<SetSecundumForSubtreeConfigurator> state) {
+    protected boolean doCheck(DefaultImportState<PublishForSubtreeConfigurator> state) {
         return true;
     }
     /**
      * {@inheritDoc}
      */
     @Override
-    protected boolean isIgnore(DefaultImportState<SetSecundumForSubtreeConfigurator> state) {
+    protected boolean isIgnore(DefaultImportState<PublishForSubtreeConfigurator> state) {
         return false;
     }
 

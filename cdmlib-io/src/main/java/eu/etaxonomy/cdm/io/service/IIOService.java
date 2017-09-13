@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
-import eu.etaxonomy.cdm.io.operation.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
@@ -105,7 +105,7 @@ public interface IIOService {
      * @param configurator
      * @return
      */
-    ImportResult updateData(SetSecundumForSubtreeConfigurator configurator);
+    ImportResult updateData(SecundumForSubtreeConfigurator configurator);
 
     /**
      * @param configurator
