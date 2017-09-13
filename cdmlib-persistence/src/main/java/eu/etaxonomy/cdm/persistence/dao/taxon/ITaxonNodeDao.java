@@ -136,4 +136,21 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public  Set<Synonym> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
 
+    /**
+     * @param subTreeIndex
+     * @param publish
+     * @param includeSharedTaxa
+     * @return
+     */
+    public Set<Taxon> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa);
+
+    /**
+     * @param subTreeIndex
+     * @param publish
+     * @param includeSharedTaxa
+     * @return
+     */
+    public Set<Synonym> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
+            boolean includeSharedTaxa);
+
 }

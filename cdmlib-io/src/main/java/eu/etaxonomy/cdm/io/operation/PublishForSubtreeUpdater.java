@@ -47,9 +47,9 @@ public class PublishForSubtreeUpdater
     @Override
     protected void doInvoke(DefaultImportState<PublishForSubtreeConfigurator> state) {
         PublishForSubtreeConfigurator config = state.getConfig();
-        state.getConfig().getProgressMonitor().beginTask("Update pulish flag References ", 100);
+        state.getConfig().getProgressMonitor().beginTask("Update pulish flag", 100);
 
-        UpdateResult result = getTaxonNodeService().setSecundumForSubtree(config.getSubtreeUuid(),  config.getNewSecundum(), config.isIncludeAcceptedTaxa(), config.isIncludeSynonyms(), config.isOverwriteExistingAccepted(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), config.getProgressMonitor());
+        UpdateResult result = getTaxonNodeService().setPublishForSubtree(config.getSubtreeUuid(),  config.isPublish(), config.isIncludeAcceptedTaxa(), config.isIncludeSynonyms(), config.isIncludeSharedTaxa(), config.getProgressMonitor());
 
         return;
 

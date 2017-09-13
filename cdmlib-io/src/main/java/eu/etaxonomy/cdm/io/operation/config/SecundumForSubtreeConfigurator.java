@@ -30,15 +30,9 @@ public class SecundumForSubtreeConfigurator
 
     private Reference newSecundum;
     private boolean emptySecundumDetail = true;
-    private IProgressMonitor monitor;
+    private boolean overwriteExistingAccepted = true;
+    private boolean overwriteExistingSynonyms = true;
 
-    /**
-     * @param monitor the monitor to set
-     */
-    @Override
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
-    }
 
     /**
      * @param subtreeUuid
@@ -72,12 +66,19 @@ public class SecundumForSubtreeConfigurator
         this.emptySecundumDetail = emptySecundumDetail;
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public IProgressMonitor getMonitor() {
-        return monitor;
+
+    public boolean isOverwriteExistingAccepted() {
+        return overwriteExistingAccepted;
+    }
+    public void setOverwriteExistingAccepted(boolean overwriteExistingAccepted) {
+        this.overwriteExistingAccepted = overwriteExistingAccepted;
+    }
+
+    public boolean isOverwriteExistingSynonyms() {
+        return overwriteExistingSynonyms;
+    }
+    public void setOverwriteExistingSynonyms(boolean overwriteExistingSynonyms) {
+        this.overwriteExistingSynonyms = overwriteExistingSynonyms;
     }
 
     /**

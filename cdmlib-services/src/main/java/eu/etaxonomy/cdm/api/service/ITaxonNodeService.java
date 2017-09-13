@@ -253,6 +253,23 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public UpdateResult setSecundumForSubtree(UUID subtreeUuid,  Reference newSec, boolean includeAcceptedTaxa, boolean includeSynonyms, boolean overwriteExistingAccepted, boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
+
+    /**
+     * Sets the publish flag for all taxa and/or synonyms of the subtree.
+     * @param subtreeUuid
+     * @param publish
+     * @param includeAcceptedTaxa
+     * @param includeSynonyms
+     * @param overwriteExistingAccepted
+     * @param overwriteExistingSynonyms
+     * @param includeSharedTaxa
+     * @param progressMonitor
+     * @return
+     */
+    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
+            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor progressMonitor);
+
+
     /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.
      * @param filter

@@ -32,8 +32,6 @@ public abstract class ForSubtreeConfiguratorBase<CONFIG extends ImportConfigurat
     private UUID subtreeUuid;
     private boolean includeAcceptedTaxa = true;
     private boolean includeSynonyms = true;
-    private boolean overwriteExistingAccepted = true;
-    private boolean overwriteExistingSynonyms = true;
     private boolean includeSharedTaxa = true;
     private IProgressMonitor monitor;
 
@@ -70,19 +68,6 @@ public abstract class ForSubtreeConfiguratorBase<CONFIG extends ImportConfigurat
         this.subtreeUuid = subtreeUuid;
     }
 
-    public boolean isOverwriteExistingAccepted() {
-        return overwriteExistingAccepted;
-    }
-    public void setOverwriteExistingAccepted(boolean overwriteExistingAccepted) {
-        this.overwriteExistingAccepted = overwriteExistingAccepted;
-    }
-
-    public boolean isOverwriteExistingSynonyms() {
-        return overwriteExistingSynonyms;
-    }
-    public void setOverwriteExistingSynonyms(boolean overwriteExistingSynonyms) {
-        this.overwriteExistingSynonyms = overwriteExistingSynonyms;
-    }
 
     public boolean isIncludeSynonyms() {
         return includeSynonyms;

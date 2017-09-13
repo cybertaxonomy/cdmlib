@@ -13,13 +13,12 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.operation.PublishForSubtreeUpdater;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * Configurator for the setSecundumForSubtree operation.
+ * Configurator for the setPublishForSubtree operation.
  *
  * @author a.mueller
- * @date 06.01.2017
+ * @date 13.09.2017
  *
  */
 public class PublishForSubtreeConfigurator
@@ -28,25 +27,15 @@ public class PublishForSubtreeConfigurator
 
     private static final long serialVersionUID = 1202667588493272030L;
 
-    private Reference newSecundum;
-    private boolean emptySecundumDetail = true;
-    private IProgressMonitor monitor;
-
-    /**
-     * @param monitor the monitor to set
-     */
-    @Override
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
-    }
+    private boolean publish = false;
 
     /**
      * @param subtreeUuid
      * @param newSecundum
      */
-    public PublishForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IProgressMonitor monitor) {
+    public PublishForSubtreeConfigurator(UUID subtreeUuid, boolean publish, IProgressMonitor monitor) {
         super(subtreeUuid, monitor);
-        this.newSecundum = newSecundum;
+        this.publish = publish;
     }
 
     /**
@@ -58,26 +47,11 @@ public class PublishForSubtreeConfigurator
         // this.newSecundum = newSecundum;
     }
 
-    public Reference getNewSecundum() {
-        return newSecundum;
+    public boolean isPublish() {
+        return publish;
     }
-    public void setNewSecundum(Reference newSecundum) {
-        this.newSecundum = newSecundum;
-    }
-
-    public boolean isEmptySecundumDetail() {
-        return emptySecundumDetail;
-    }
-    public void setEmptySecundumDetail(boolean emptySecundumDetail) {
-        this.emptySecundumDetail = emptySecundumDetail;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public IProgressMonitor getMonitor() {
-        return monitor;
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     /**

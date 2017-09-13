@@ -872,6 +872,111 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNull(taxon5.getSecMicroReference());
     }
 
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    public void testSetPublishForSubtree(){
+        UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
+
+        //assert current state
+        Assert.assertTrue(taxonService.find(1).isPublish());
+        Assert.assertTrue(taxonService.find(2).isPublish());
+        Assert.assertTrue(taxonService.find(3).isPublish());
+        Assert.assertTrue(taxonService.find(4).isPublish());
+        Assert.assertTrue(taxonService.find(5).isPublish());
+
+        //set publish
+//        SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid);
+//        config.setNewSecundum(newSec);
+        boolean publish = false;
+        taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, true, true, true, null);
+
+        commitAndStartNewTransaction(new String[]{});
+        Assert.assertEquals(publish, taxonService.find(1).isPublish());
+        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        Assert.assertEquals(publish, taxonService.find(3).isPublish());
+        Assert.assertEquals(true, taxonService.find(4).isPublish());
+        Assert.assertEquals(publish, taxonService.find(5).isPublish());
+    }
+
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    public void testSetPublishForSubtreeOnlyAccepted(){
+        UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
+
+        //assert current state
+        Assert.assertTrue(taxonService.find(1).isPublish());
+        Assert.assertTrue(taxonService.find(2).isPublish());
+        Assert.assertTrue(taxonService.find(3).isPublish());
+        Assert.assertTrue(taxonService.find(4).isPublish());
+        Assert.assertTrue(taxonService.find(5).isPublish());
+
+        //set secundum
+//        SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
+//        config.setIncludeSynonyms(false);
+        boolean publish = false;
+        taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, true, false, true, null);
+
+        commitAndStartNewTransaction();
+        Assert.assertEquals(publish, taxonService.find(1).isPublish());
+        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        Assert.assertEquals(true, taxonService.find(3).isPublish());
+        Assert.assertEquals(true, taxonService.find(4).isPublish());
+        Assert.assertEquals(publish, taxonService.find(5).isPublish());
+    }
+
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    public void testSetPublishForSubtreeOnlySynonyms(){
+        UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
+
+        //assert current state
+        Assert.assertTrue(taxonService.find(1).isPublish());
+        Assert.assertTrue(taxonService.find(2).isPublish());
+        Assert.assertTrue(taxonService.find(3).isPublish());
+        Assert.assertTrue(taxonService.find(4).isPublish());
+        Assert.assertTrue(taxonService.find(5).isPublish());
+
+        //set secundum
+//        SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
+//        config.setIncludeAcceptedTaxa(false);
+        boolean publish = false;
+        taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, false, true, true, null);
+
+        commitAndStartNewTransaction(new String[]{});
+        Assert.assertEquals(true, taxonService.find(1).isPublish());
+        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        Assert.assertEquals(publish, taxonService.find(3).isPublish());
+        Assert.assertEquals(true, taxonService.find(4).isPublish());
+        Assert.assertEquals(true, taxonService.find(5).isPublish());
+    }
+
+
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    public void testSetPublishForSubtreeNoShared(){
+        UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
+
+        //assert current state
+        Assert.assertTrue(taxonService.find(1).isPublish());
+        Assert.assertTrue(taxonService.find(2).isPublish());
+        Assert.assertTrue(taxonService.find(3).isPublish());
+        Assert.assertTrue(taxonService.find(4).isPublish());
+        Assert.assertTrue(taxonService.find(5).isPublish());
+
+        //set secundum
+     //   SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
+   //     config.setIncludeSharedTaxa(false);
+        boolean publish = false;
+        taxonNodeService.setPublishForSubtree(subTreeUuid, publish, true, true, false, null);
+
+        commitAndStartNewTransaction(new String[]{});
+        Assert.assertEquals("Shared taxon must not be set", true, taxonService.find(1).isPublish());
+        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        Assert.assertEquals("Synonym of shared taxon must not be set", true, taxonService.find(3).isPublish());
+        Assert.assertEquals(true, taxonService.find(4).isPublish());
+        Assert.assertEquals(publish, taxonService.find(5).isPublish());
+    }
+
 
     @Override
 //    @Test
