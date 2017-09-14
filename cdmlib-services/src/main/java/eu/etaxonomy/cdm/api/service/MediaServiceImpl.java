@@ -250,6 +250,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                             continue;
                         } else{
                             message = "The media can't be deleted from the database because it is referenced by another taxon. ("+desc.getTaxon().getTitleCache()+")";
+                            result.setAbort();
                         }
 
                     } else if (description instanceof SpecimenDescription){
@@ -258,6 +259,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                             continue;
                         } else{
                             message = "The media can't be deleted from the database because it is referenced by another specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
+                            result.setAbort();
                         }
                     } else if (description instanceof TaxonNameDescription){
                         TaxonNameDescription desc = HibernateProxyHelper.deproxy(description, TaxonNameDescription.class);
@@ -265,6 +267,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                             continue;
                         } else{
                             message = "The media can't be deleted from the database because it is referenced by another specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
+                            result.setAbort();
                         }
                     }
                 }
