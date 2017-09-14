@@ -809,7 +809,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                     //parent-child relation:
                                     //copy derivation event and connect parent and sub derivative
-                                    if(associationWrapper.getAssociationType().contains("individual") || associationWrapper.getAssociationType().contains("culture") || associationWrapper.getAssociationType().contains("sample")){
+//                                    if(associationWrapper.getAssociationType().contains("individual") || associationWrapper.getAssociationType().contains("culture") || associationWrapper.getAssociationType().contains("sample") || associationWrapper.getAssociationType().contains("same in situ")){
                                         if(currentDerivedFrom==null){
                                             state.getReport().addInfoMessage(String.format("No derivation event found for unit %s. Defaulting to ACCESSIONING event.",SpecimenImportUtility.getUnitID(currentUnit, config)));
                                             DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, DerivationEventType.ACCESSIONING());
@@ -823,30 +823,30 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                         }
                                         state.getReport().addDerivate(associatedUnit, currentUnit, config);
-                                    }
+//                                    }
                                     //siblings relation
                                     //connect current unit to field unit of associated unit
-                                    else if(associationWrapper.getAssociationType().contains("population")|| associationWrapper.getAssociationType().contains("sample")){
-                                        //no associated field unit -> using current one
-                                        if(associatedFieldUnit==null){
-                                            if(currentFieldUnit!=null){
-                                                DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
-                                            }
-                                        }
-                                        else{
-                                            if(currentDerivedFrom==null){
-                                                state.getReport().addInfoMessage("No derivation event found for unit "+SpecimenImportUtility.getUnitID(currentUnit, config)+". Defaulting to ACCESIONING event.");
-                                                DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
-                                            }
-                                            if(currentDerivedFrom!=null && associatedFieldUnit!=currentFieldUnit){
-                                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
-                                                updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                                updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                                updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                                updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
-                                            }
-                                        }
-                                    }
+//                                    else if(associationWrapper.getAssociationType().contains("population")|| associationWrapper.getAssociationType().contains("sample")){
+//                                        //no associated field unit -> using current one
+//                                        if(associatedFieldUnit==null){
+//                                            if(currentFieldUnit!=null){
+//                                                DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
+//                                            }
+//                                        }
+//                                        else{
+//                                            if(currentDerivedFrom==null){
+//                                                state.getReport().addInfoMessage("No derivation event found for unit "+SpecimenImportUtility.getUnitID(currentUnit, config)+". Defaulting to ACCESIONING event.");
+//                                                DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
+//                                            }
+//                                            if(currentDerivedFrom!=null && associatedFieldUnit==currentFieldUnit){
+//                                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
+//                                                updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
+//                                                updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
+//                                                updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
+//                                                updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
+//                                            }
+//                                        }
+//                                    }
 
                                     //delete current field unit if replaced
                                     if(currentFieldUnit!=null && currentDerivedFrom!=null
