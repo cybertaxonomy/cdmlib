@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
-import eu.etaxonomy.cdm.io.operation.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
@@ -115,23 +114,23 @@ public class IOServiceImpl implements IIOService {
         return uuid;
     }
 
-    @Override
-    public UUID monitUpdateData(final IImportConfigurator configurator) {
-        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-            @Override
-            public Serializable doRun(IRemotingProgressMonitor monitor) {
-
-                configurator.setProgressMonitor(monitor);
-                ImportResult result =updateData((SecundumForSubtreeConfigurator)configurator);
-
-                return result;
-            }
-        };
-        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
-        monitorThread.start();
-        return uuid;
-    }
+//    @Override
+//    public UUID monitUpdateData(final IImportConfigurator configurator) {
+//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+//            @Override
+//            public Serializable doRun(IRemotingProgressMonitor monitor) {
+//
+//                configurator.setProgressMonitor(monitor);
+//                ImportResult result =updateData((SecundumForSubtreeConfigurator)configurator);
+//
+//                return result;
+//            }
+//        };
+//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+//        monitorThread.setPriority(3);
+//        monitorThread.start();
+//        return uuid;
+//    }
 
     @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
@@ -150,13 +149,13 @@ public class IOServiceImpl implements IIOService {
         }
     }
 
-    @Override
-    public ImportResult updateData(SecundumForSubtreeConfigurator configurator) {
-        ImportResult result;
-
-        result = cdmImport.invoke(configurator);
-        return result;
-    }
+//    @Override
+//    public ImportResult updateData(SecundumForSubtreeConfigurator configurator) {
+//        ImportResult result;
+//
+//        result = cdmImport.invoke(configurator);
+//        return result;
+//    }
 
     @Override
     public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData) {
