@@ -451,7 +451,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     //#3465
     @Override
-    public Set<Taxon> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
         //for some reason this does not work, maybe because the listeners are not activated,
         //but also the first taxon for some reason does not get updated in terms of secundum, but only by the udpate listener
 //        String where = "SELECT t.id FROM TaxonNode tn JOIN tn.taxon t " +
@@ -474,7 +474,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public Set<Synonym> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+    public Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
 
         String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
         if (!overwriteExisting){
@@ -499,6 +499,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             }
         }
         Set<T> result = new HashSet<>(synonymList);
+
         return result;
     }
 
