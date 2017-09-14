@@ -191,12 +191,12 @@ public class Registration extends AnnotatableEntity {
     public TaxonName getName() {return name;}
     public void setName(TaxonName name) {
         if (this.name != null && !this.name.equals(name)){
-            if(name != null){
-                name.getRegistrations().remove(this);
-            }
+            this.name.getRegistrations().remove(this);
+        }
+        if (name != null && !name.equals(this.name)){
+            name.getRegistrations().add(this);
         }
         this.name = name;
-        this.name.getRegistrations().add(this);
     }
 
     public User getSubmitter() {return submitter;}
