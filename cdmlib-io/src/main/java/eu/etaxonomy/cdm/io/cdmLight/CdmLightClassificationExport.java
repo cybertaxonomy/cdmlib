@@ -110,7 +110,7 @@ public class CdmLightClassificationExport
             CdmLightExportConfigurator config = state.getConfig();
             config.setFieldsTerminatedBy(",");
 
-            if (config.getTaxonNodeFilter().getTaxonNodesFilter().isEmpty()){
+            if (config.getTaxonNodeFilter().getTaxonNodesFilter().isEmpty() && config.getTaxonNodeFilter().getClassificationFilter().isEmpty()){
                 //TODO
                 state.setEmptyData();
                 return;
