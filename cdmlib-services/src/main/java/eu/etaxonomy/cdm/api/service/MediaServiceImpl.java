@@ -266,7 +266,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     if (desc.getTaxonName() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof TaxonName && ((TaxonName)deleteFrom).getId() == desc.getTaxonName().getId()))){
                         continue;
                     } else{
-                        message = "The media can't be deleted from the database because it is referenced by another specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
+                        message = "The media can't be deleted from the database because it is referenced by another specimen or observation. ("+desc.getTaxonName().getTitleCache()+")";
                         result.setAbort();
                     }
                 }
