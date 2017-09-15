@@ -122,7 +122,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
                     DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
 
-                    if (description.isImageGallery()){
+
                         if (description instanceof TaxonDescription){
                             TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
                             if (desc.getTaxon() == null ){
@@ -183,7 +183,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
                             }
                         }
-                    }
+
                 } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
                         || (ref instanceof MediaSpecimen && config.isDeleteFromEveryWhere())){
                     MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
@@ -204,7 +204,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             }
             if (result.isOk()){
                 dao.delete(media);
-            } else{
+            }
                 if (updatedObject instanceof
                          TaxonBase){
                     taxonService.update((TaxonBase)updatedObject);
@@ -218,7 +218,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         SpecimenOrObservationBase){
                    specimenService.update((SpecimenOrObservationBase)updatedObject);
                }
-            }
+
         }
         return result;
     }
