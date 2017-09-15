@@ -30,11 +30,14 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -50,6 +53,7 @@ public class UnitsGatheringArea {
     private static final boolean DEBUG = false;
     private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
     private boolean useTDWGarea = false;
+
 
     private DefinedTermBase<?> wbc;
 
@@ -93,9 +97,12 @@ public class UnitsGatheringArea {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
 
-        HashSet<String> areaToAdd= new HashSet<String>();
-        HashSet<UUID> areaSet = new HashSet<UUID>();
 
+
+        HashSet<UUID> areaSet = new HashSet<UUID>();
+        TermVocabulary continentVocabulary = null;
+        TermVocabulary countryVocabulary = null;
+        TermVocabulary specimenImportVocabulary = null;
         HashMap<String, UUID> matchingTermsToUuid = new HashMap<String, UUID>();
         for (java.util.Map.Entry<String, String> entry : namedAreaList.entrySet()){
             String namedAreaStr = entry.getKey();
@@ -108,7 +115,9 @@ public class UnitsGatheringArea {
                 //check for continents
                 List<DefinedTermBase> exactMatchingContinentTerms = new ArrayList<DefinedTermBase>();
                 if(namedAreaClass!=null && namedAreaClass.equalsIgnoreCase("continent")){
-                   TermVocabulary continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                    if (continentVocabulary == null){
+                        continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                    }
                    Set terms = continentVocabulary.getTerms();
                    for (Object object : terms) {
                        if(object instanceof DefinedTermBase && exactMatchingTerms.contains(object)){
@@ -136,20 +145,55 @@ public class UnitsGatheringArea {
                 logger.info("selected area: "+areaUUID);
             }
             if (areaUUID == null){
-                areaToAdd.add(namedAreaStr);
+                if (namedAreaStr != null){
+
+                    NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
+                    ar.setTitleCache(namedAreaStr, true);
+                    if (namedAreaClass != null){
+                        if (namedAreaClass.equals("continent")){
+                            if (continentVocabulary == null){
+                                continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                            }
+                            continentVocabulary.addTerm(ar);
+                        }else if(namedAreaClass.equals("country") ){
+                            if (countryVocabulary == null){
+                               countryVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                            }
+                            countryVocabulary.addTerm(ar);
+                        } else{
+                            if (specimenImportVocabulary == null){
+                                specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                                if (specimenImportVocabulary == null){
+                                    specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                                    specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                                    specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+                                }
+                                specimenImportVocabulary.addTerm(ar);
+                            }
+
+                        }
+                    }
+
+                    termService.saveOrUpdate(ar);
+                    this.areas.add(ar);
+                    addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
+                }
             } else {
                 areaSet.add(areaUUID);
                 addNamedAreaDecision(namedAreaStr,areaUUID, config);
             }
 
         }
-        for (String areaStr:areaToAdd){
-            NamedArea ar = NamedArea.NewInstance();
-            ar.setTitleCache(areaStr, true);
-            termService.saveOrUpdate(ar);
-            this.areas.add(ar);
-            addNamedAreaDecision(areaStr,ar.getUuid(), config);
-        }
+//        for (String areaStr:areaToAdd){
+//            if (areaStr != null){
+//                NamedArea ar = NamedArea.NewInstance(areaStr, areaStr, areaStr);
+//                ar.setTitleCache(areaStr, true);
+//
+//                termService.saveOrUpdate(ar);
+//                this.areas.add(ar);
+//                addNamedAreaDecision(areaStr,ar.getUuid(), config);
+//            }
+//        }
         if (!areaSet.isEmpty()){
             List<DefinedTermBase> ldtb = termService.find(areaSet);
             if (!ldtb.isEmpty()) {
@@ -248,7 +292,7 @@ public class UnitsGatheringArea {
 
                 }
                 if (areaUUID == null){
-                    NamedArea ar = NamedArea.NewInstance();
+                    NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);
                     //FIXME add vocabulary
                     logger.warn("Vocabulary not yet set for new country");
                     ar.setTitleCache(fullName, true);
