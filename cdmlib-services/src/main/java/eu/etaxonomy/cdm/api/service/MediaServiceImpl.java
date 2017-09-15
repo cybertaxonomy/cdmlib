@@ -249,7 +249,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     if (desc.getTaxon() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof Taxon && ((Taxon)deleteFrom).getId() == desc.getTaxon().getId()))){
                         continue;
                     } else{
-                        message = "The media can't be deleted from the database because it is referenced by another taxon. ("+desc.getTaxon().getTitleCache()+")";
+                        message = "The media can't be deleted from the database because it is referenced by a taxon. ("+desc.getTaxon().getTitleCache()+")";
                         result.setAbort();
                     }
 
@@ -258,7 +258,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     if (desc.getDescribedSpecimenOrObservation() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof SpecimenOrObservationBase && ((SpecimenOrObservationBase)deleteFrom).getId() == desc.getDescribedSpecimenOrObservation().getId()))){
                         continue;
                     } else{
-                        message = "The media can't be deleted from the database because it is referenced by another specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
+                        message = "The media can't be deleted from the database because it is referenced by a specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
                         result.setAbort();
                     }
                 } else if (description instanceof TaxonNameDescription){
@@ -266,7 +266,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     if (desc.getTaxonName() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof TaxonName && ((TaxonName)deleteFrom).getId() == desc.getTaxonName().getId()))){
                         continue;
                     } else{
-                        message = "The media can't be deleted from the database because it is referenced by another specimen or observation. ("+desc.getTaxonName().getTitleCache()+")";
+                        message = "The media can't be deleted from the database because it is referenced by a scientific name. ("+desc.getTaxonName().getTitleCache()+")";
                         result.setAbort();
                     }
                 }
