@@ -155,13 +155,13 @@ public class CdmLightClassificationExport
                 state.getResult().addWarning(message);
             }else{
                 TaxonNode root = taxonNode;
-
-//                UUID uuid = root.getUuid();
-//
-//                root = getTaxonNodeService().load(uuid);
-                for (TaxonNode child : root.getChildNodes()){
-                    handleTaxon(state, child);
-                    //TODO progress monitor
+                if (root.hasTaxon()){
+                    handleTaxon(state, root);
+                }else{
+                    for (TaxonNode child : root.getChildNodes()){
+                        handleTaxon(state, child);
+                        //TODO progress monitor
+                    }
                 }
             }
         } catch (Exception e) {
