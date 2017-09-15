@@ -54,6 +54,10 @@ public class UnitsGatheringArea {
     private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
     private boolean useTDWGarea = false;
 
+    TermVocabulary continentVocabulary = null;
+    TermVocabulary countryVocabulary = null;
+    TermVocabulary specimenImportVocabulary = null;
+
 
     private DefinedTermBase<?> wbc;
 
@@ -63,7 +67,7 @@ public class UnitsGatheringArea {
     }
 
     public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config, ITermService termService,
-            IOccurrenceService occurrenceService){
+            IOccurrenceService occurrenceService, IVocabularyService vocService){
 
         this.setCountry(isoCountry, country, config, termService, occurrenceService);
     }
@@ -100,9 +104,7 @@ public class UnitsGatheringArea {
 
 
         HashSet<UUID> areaSet = new HashSet<UUID>();
-        TermVocabulary continentVocabulary = null;
-        TermVocabulary countryVocabulary = null;
-        TermVocabulary specimenImportVocabulary = null;
+
         HashMap<String, UUID> matchingTermsToUuid = new HashMap<String, UUID>();
         for (java.util.Map.Entry<String, String> entry : namedAreaList.entrySet()){
             String namedAreaStr = entry.getKey();
@@ -146,37 +148,7 @@ public class UnitsGatheringArea {
             }
             if (areaUUID == null){
                 if (namedAreaStr != null){
-
-                    NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
-                    ar.setTitleCache(namedAreaStr, true);
-                    if (namedAreaClass != null){
-                        if (namedAreaClass.equals("continent")){
-                            if (continentVocabulary == null){
-                                continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
-                            }
-                            continentVocabulary.addTerm(ar);
-                        }else if(namedAreaClass.equals("country") ){
-                            if (countryVocabulary == null){
-                               countryVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
-                            }
-                            countryVocabulary.addTerm(ar);
-                        } else{
-                            if (specimenImportVocabulary == null){
-                                specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                                if (specimenImportVocabulary == null){
-                                    specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
-                                    specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                                    specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
-                                }
-                                specimenImportVocabulary.addTerm(ar);
-                            }
-
-                        }
-                    }
-
-                    termService.saveOrUpdate(ar);
-                    this.areas.add(ar);
-                    addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
+                    createNamedArea(config, termService, vocabularyService, namedAreaStr, namedAreaClass);
                 }
             } else {
                 areaSet.add(areaUUID);
@@ -200,6 +172,47 @@ public class UnitsGatheringArea {
                 this.areas.addAll(ldtb);
             }
         }
+    }
+
+    /**
+     * @param config
+     * @param termService
+     * @param vocabularyService
+     * @param namedAreaStr
+     * @param namedAreaClass
+     */
+    private void createNamedArea(ImportConfiguratorBase<?, ?> config, ITermService termService,
+            IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
+        NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
+        ar.setTitleCache(namedAreaStr, true);
+        if (namedAreaClass != null){
+            if (namedAreaClass.equals("continent")){
+                if (continentVocabulary == null){
+                    continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                }
+                continentVocabulary.addTerm(ar);
+            }else if(namedAreaClass.equals("country") ){
+                if (countryVocabulary == null){
+                   countryVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                }
+                countryVocabulary.addTerm(ar);
+            } else{
+                if (specimenImportVocabulary == null){
+                    specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                    if (specimenImportVocabulary == null){
+                        specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                        specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                        specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+                    }
+                    specimenImportVocabulary.addTerm(ar);
+                }
+
+            }
+        }
+
+        termService.saveOrUpdate(ar);
+        this.areas.add(ar);
+        addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
     }
 
     private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms, String areaType){
@@ -292,6 +305,7 @@ public class UnitsGatheringArea {
 
                 }
                 if (areaUUID == null){
+                    createNamedArea(config, termService, null, fullName, "country");
                     NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);
                     //FIXME add vocabulary
                     logger.warn("Vocabulary not yet set for new country");

@@ -438,7 +438,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // count
                 UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
                 //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-                unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country, (state.getConfig()), cdmAppController.getTermService(), cdmAppController.getOccurrenceService());
+                unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country, (state.getConfig()), cdmAppController.getTermService(), cdmAppController.getOccurrenceService(), cdmAppController.getVocabularyService());
 
                 DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
 

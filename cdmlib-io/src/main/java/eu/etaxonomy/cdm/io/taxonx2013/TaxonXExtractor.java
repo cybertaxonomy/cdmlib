@@ -353,7 +353,7 @@ public class TaxonXExtractor {
 
         // country
         unitsGatheringArea = new UnitsGatheringArea();
-        unitsGatheringArea.setParams(null, country, state2.getConfig(), importer.getTermService(), importer.getOccurrenceService());
+        unitsGatheringArea.setParams(null, country, state2.getConfig(), importer.getTermService(), importer.getOccurrenceService(), importer.getVocabularyService());
         //TODO other areas
         if (StringUtils.isNotBlank(stateprov)){
         	Map<String, String> namedAreas = new HashMap<String, String>();

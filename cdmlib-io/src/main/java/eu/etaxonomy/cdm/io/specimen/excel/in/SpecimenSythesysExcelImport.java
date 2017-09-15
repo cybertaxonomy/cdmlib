@@ -651,7 +651,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             unitsGatheringArea.useTDWGareas(this.useTDWGarea);
             //            unitsGatheringArea.setConfig(config, getOccurrenceService(),getTermService());
-            unitsGatheringArea.setParams(isocountry, country, config, getTermService(), getOccurrenceService());
+            unitsGatheringArea.setParams(isocountry, country, config, getTermService(), getOccurrenceService(), getVocabularyService());
             DefinedTermBase areaCountry =unitsGatheringArea.getCountry();
 
 
