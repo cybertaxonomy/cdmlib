@@ -20,7 +20,8 @@ public enum SwaggerGroupsConfig {
     DATA_EXPORT("Data export"),
     GENERIC_REST_API("Generic REST API"),
     WEB_PORTAL_SERVICES("Web Portal Services"),
-    CATALOGUE_SERVICES("Catalogue Services");
+    CATALOGUE_SERVICES("Catalogue Services"),
+    OAIPMH("OAI-PMH");
 
     private String groupName;
 

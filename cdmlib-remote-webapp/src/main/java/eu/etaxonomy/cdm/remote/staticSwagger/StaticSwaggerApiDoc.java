@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  * otherwise provided by springfox-swagger2. In contrast to the original controller
  * this implementation serves static json files which contain the api documentation.
  * <p>
- * The static api doc files are created by the integration test class <code>SwaggerGroupsIT</code>.
+ * The static api doc files are created by the integration test class <code>SwaggerStaticIT</code>.
  * <p>
  * For more details see {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
  *
