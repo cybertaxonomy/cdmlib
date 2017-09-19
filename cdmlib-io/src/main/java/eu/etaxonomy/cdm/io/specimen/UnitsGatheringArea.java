@@ -69,7 +69,7 @@ public class UnitsGatheringArea {
     public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config, ITermService termService,
             IOccurrenceService occurrenceService, IVocabularyService vocService){
 
-        this.setCountry(isoCountry, country, config, termService, occurrenceService);
+        this.setCountry(isoCountry, country, config, termService, occurrenceService, vocService);
     }
 
     /*
@@ -255,7 +255,7 @@ public class UnitsGatheringArea {
      * @param app: the CDM application controller
      */
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
-            IOccurrenceService occurrenceService){
+            IOccurrenceService occurrenceService, IVocabularyService vocService){
 
 
         if (!StringUtils.isEmpty(iso)){
@@ -305,7 +305,7 @@ public class UnitsGatheringArea {
 
                 }
                 if (areaUUID == null){
-                    createNamedArea(config, termService, null, fullName, "country");
+                    createNamedArea(config, termService, vocService, fullName, "country");
                     NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);
                     //FIXME add vocabulary
                     logger.warn("Vocabulary not yet set for new country");
