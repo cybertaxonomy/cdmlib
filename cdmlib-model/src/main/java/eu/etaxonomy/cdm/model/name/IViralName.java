@@ -16,6 +16,9 @@ package eu.etaxonomy.cdm.model.name;
  * viral taxon must be taxonomically included in another viral taxon with
  * higher rank. For examples see ICTVdb:
  * "http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm"
+ * <p>
+ * For the 2017 version of the ICVCN see https://talk.ictvonline.org/information/w/ictv-information/383/ictv-code
+ *
  * <P>
  * This class corresponds to: NameViral according to the ABCD schema.
  *

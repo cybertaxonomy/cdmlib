@@ -376,24 +376,26 @@ public class TaxonNameDefaultCacheStrategy
     }
 
     @Override
-    public List<TaggedText> getTaggedTitle(TaxonName nonViralName) {
-        if (nonViralName == null){
+    public List<TaggedText> getTaggedTitle(TaxonName taxonName) {
+        if (taxonName == null){
             return null;
         }
 
         List<TaggedText> tags = new ArrayList<>();
 
+        if (taxonName.isViral()){
+            return getViralTaggedTitle(taxonName);
+        }
         //TODO how to handle protected fullTitleCache here?
-
-        if (nonViralName.isProtectedTitleCache()){
+        if (taxonName.isProtectedTitleCache()){
             //protected title cache
-            tags.add(new TaggedText(TagEnum.name, nonViralName.getTitleCache()));
+            tags.add(new TaggedText(TagEnum.name, taxonName.getTitleCache()));
             return tags;
-        }else if (nonViralName.isHybridFormula()){
+        }else if (taxonName.isHybridFormula()){
             //hybrid formula
             String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
             boolean isFirst = true;
-            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            List<HybridRelationship> rels = taxonName.getOrderedChildRelationships();
             for (HybridRelationship rel: rels){
                 if (! isFirst){
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
@@ -402,19 +404,38 @@ public class TaxonNameDefaultCacheStrategy
                 tags.addAll(getTaggedTitle(rel.getParentName()));
             }
             return tags;
-        }else if (nonViralName.isAutonym()){
+        }else if (taxonName.isAutonym()){
             //Autonym
-            tags.addAll(handleTaggedAutonym(nonViralName));
+            tags.addAll(handleTaggedAutonym(taxonName));
         }else{ //not Autonym
-            List<TaggedText> nameTags = getTaggedName(nonViralName);
+            List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
-            String authorCache = getAuthorshipCache(nonViralName);
+            String authorCache = getAuthorshipCache(taxonName);
             if (StringUtils.isNotBlank(authorCache)){
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
 
         return tags;
+    }
+
+    /**
+     * @param taxonName
+     * @return
+     */
+    private List<TaggedText> getViralTaggedTitle(TaxonName viralName) {
+        List<TaggedText> tags = new ArrayList<>();
+        if (viralName.isProtectedTitleCache()){
+            //protected title cache
+            tags.add(new TaggedText(TagEnum.name, viralName.getTitleCache()));
+            return tags;
+        }else{
+            if (StringUtils.isNotBlank(viralName.getAcronym())){
+                //this is not according to the code
+                tags.add(new TaggedText(TagEnum.name, viralName.getAcronym()));
+            }
+            return tags;
+        }
     }
 
     /**
