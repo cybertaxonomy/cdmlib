@@ -30,8 +30,8 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
 
     protected List<String> knownABCDelements = new ArrayList<String>();
     protected HashMap<String,String> allABCDelements = new HashMap<String,String>();
-    public String gatheringAgents ="";
-
+    public String gatheringAgentsText ="";
+    public List<String> gatheringAgentsList=new ArrayList<String>();
 
     //per unit
 

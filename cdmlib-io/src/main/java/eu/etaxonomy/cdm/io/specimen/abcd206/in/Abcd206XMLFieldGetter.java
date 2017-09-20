@@ -1066,7 +1066,8 @@ public class Abcd206XMLFieldGetter {
      */
     protected void getGatheringPeople(Element root) {
         try {
-            dataHolder.gatheringAgents = "";
+            dataHolder.gatheringAgentsText = "";
+            dataHolder.gatheringAgentsList = new ArrayList<String>();
 
             NodeList group = root.getElementsByTagName(prefix + "GatheringAgent");
             for (int i = 0; i < group.getLength(); i++) {
@@ -1082,7 +1083,7 @@ public class Abcd206XMLFieldGetter {
                                 path = "";
                                 if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
 
-                                    dataHolder.gatheringAgents += persons.item(k).getTextContent();
+                                    dataHolder.gatheringAgentsList.add(persons.item(k).getTextContent());
                                 }
                             }
                         }
@@ -1104,7 +1105,7 @@ public class Abcd206XMLFieldGetter {
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
                                 if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
-                                    dataHolder.gatheringAgents+=persons.item(k).getTextContent();
+                                    dataHolder.gatheringAgentsText=persons.item(k).getTextContent();
                                 }
                             }
                         }
@@ -1114,7 +1115,8 @@ public class Abcd206XMLFieldGetter {
             }
 
         } catch (NullPointerException e) {
-            dataHolder.gatheringAgents = "";
+            dataHolder.gatheringAgentsText = "";
+            dataHolder.gatheringAgentsList = new ArrayList<String>();
         }
 
     }

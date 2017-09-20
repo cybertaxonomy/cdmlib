@@ -434,7 +434,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 unitsGatheringEvent.setGatheringDepth(state.getDataHolder().getGatheringDepthText(),state.getDataHolder().getGatheringDepthMin(), state.getDataHolder().getGatheringDepthMax(), state.getDataHolder().getGatheringDepthUnit());
                 //unitsGatheringEvent.setHeight(heightText, heightMin, heightMax, heightUnit);
-                unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgents), config);
+                if(state.getDataHolder().gatheringAgentsList.isEmpty()) {
+                    unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgentsText), config);
+                }else{
+                    unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString()), config);
+                }
                 // count
                 UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
                 //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
@@ -1076,18 +1080,34 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private void prepareCollectors(Abcd206ImportState state, NodeList unitsList, Abcd206XMLFieldGetter abcdFieldGetter) {
 
         TeamOrPersonBase<?> teamOrPerson = null;
-
+        Team team = null;
         //ImportHelper.setOriginalSource(teamOrPerson, state.getConfig().getSourceReference(), collector, "Collector");
         for (int i = 0; i < unitsList.getLength(); i++) {
             this.getCollectorsFromXML((Element) unitsList.item(i), abcdFieldGetter, state);
-            if (!StringUtils.isBlank(state.getDataHolder().gatheringAgents)){
-                teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgents);
-                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgents)) {
-                    state.getPersonStore().put(state.getDataHolder().gatheringAgents, teamOrPerson);
-                    if (logger.isDebugEnabled()) { logger.debug("Stored author " + state.getDataHolder().gatheringAgents  ); }
-                } else {
-                    logger.warn("Not imported author with duplicated aut_id " + state.getDataHolder().gatheringAgents  );
+            if (!(state.getDataHolder().gatheringAgentsList.isEmpty())){
+                if (state.getDataHolder().gatheringAgentsList.size() == 1){
+                    teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsList.get(0));
+                }else{
+                    team = new Team();
+                    for(String collector: state.getDataHolder().gatheringAgentsList){
+                        teamOrPerson = parseAuthorString(collector);
+                        if (teamOrPerson instanceof Person){
+                            team.addTeamMember((Person)teamOrPerson);
+                        }else{
+                            for (Person person: ((Team)teamOrPerson).getTeamMembers()){
+                                team.addTeamMember(person);
+                            }
+                        }
+                    }
                 }
+                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgentsList.toString())) {
+                    state.getPersonStore().put(state.getDataHolder().gatheringAgentsList.toString(), teamOrPerson);
+                    if (logger.isDebugEnabled()) { logger.debug("Stored author " + state.getDataHolder().gatheringAgentsList.toString());}
+                    logger.warn("Not imported author with duplicated aut_id " + state.getDataHolder().gatheringAgentsList.toString() );
+                }
+            }
+            if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText) && state.getDataHolder().gatheringAgentsList.isEmpty()){
+                teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsText);
             }
 
         }
