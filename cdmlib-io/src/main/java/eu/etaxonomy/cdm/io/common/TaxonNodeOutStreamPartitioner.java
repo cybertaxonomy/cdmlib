@@ -27,14 +27,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 01.07.2017
  */
-public class TaxonNodeOutStreamPartitioner<STATE extends XmlExportState> {
+public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
     private static final Logger logger = Logger.getLogger(TaxonNodeOutStreamPartitioner.class);
 
 //************************* STATIC ***************************************************/
 
 	public static <ST  extends XmlExportState>  TaxonNodeOutStreamPartitioner NewInstance(
-	        ICdmRepository repository, XmlExportState state,
+	        ICdmRepository repository, IoStateBase state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
 		TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner

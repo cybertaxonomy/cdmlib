@@ -22,11 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.filter.LogicFilter;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
+import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
+import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -71,7 +73,6 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -107,33 +108,54 @@ public class CdmLightClassificationExport
     @Override
     protected void doInvoke(CdmLightExportState state) {
         try {
+
+            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
             CdmLightExportConfigurator config = state.getConfig();
             config.setFieldsTerminatedBy(",");
 
-            if (config.getTaxonNodeFilter().getTaxonNodesFilter().isEmpty() && config.getTaxonNodeFilter().getClassificationFilter().isEmpty()){
-                //TODO
-                state.setEmptyData();
-                return;
-            }
-            //TODO MetaData
-            for (LogicFilter<Classification> classificationFilter : config.getTaxonNodeFilter().getClassificationFilter()){
-                UUID classificationUuid = classificationFilter.getUuid();
-                Classification classification = getClassificationService().find(classificationUuid);
-                if (classification == null){
-                    String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
-                    state.getResult().addWarning(message);
-                }else{
-                    TaxonNode root = classification.getRootNode();
-                    UUID uuid = root.getUuid();
-                    root = getTaxonNodeService().load(uuid);
-                    handleSingleClassification(state, root.getUuid());
-                }
-            }
+//            if (config.getTaxonNodeFilter().getTaxonNodesFilter().isEmpty() && config.getTaxonNodeFilter().getClassificationFilter().isEmpty()){
+//                //TODO
+//                state.setEmptyData();
+//                return;
+//            }
 
-            for (LogicFilter<TaxonNode> taxonNodeFilter : config.getTaxonNodeFilter().getTaxonNodesFilter()){
-                UUID nodeUuid = taxonNodeFilter.getUuid();
-                handleSingleClassification(state, nodeUuid);
-            }
+
+
+//            for (LogicFilter<Classification> classificationFilter : config.getTaxonNodeFilter().getClassificationFilter()){
+//                UUID classificationUuid = classificationFilter.getUuid();
+//                Classification classification = getClassificationService().find(classificationUuid);
+//                if (classification == null){
+//                    String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
+//                    state.getResult().addWarning(message);
+//                }else{
+//                    TaxonNode root = classification.getRootNode();
+//                    UUID uuid = root.getUuid();
+//                    root = getTaxonNodeService().load(uuid);
+//                    handleSingleClassification(state, root.getUuid());
+//                }
+//            }
+
+
+            @SuppressWarnings("unchecked")
+            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
+              = TaxonNodeOutStreamPartitioner.NewInstance(
+                    this, state, state.getConfig().getTaxonNodeFilter(),
+                    100, monitor, null);
+
+
+                monitor.subTask("Start partitioning");
+
+                TaxonNode node = partitioner.next();
+                while (node != null){
+                  handleTaxonNode(state, node.getUuid());
+                  node = partitioner.next();
+                }
+
+
+//            for (LogicFilter<TaxonNode> taxonNodeFilter : config.getTaxonNodeFilter().getTaxonNodesFilter()){
+//                UUID nodeUuid = taxonNodeFilter.getUuid();
+//                handleSingleClassification(state, nodeUuid);
+//            }
             state.getProcessor().createFinalResult(state);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred in main method doInvoke() " +
@@ -145,7 +167,7 @@ public class CdmLightClassificationExport
      * @param state
      * @param classificationUuid
      */
-    private void handleSingleClassification(CdmLightExportState state, UUID taxonNodeUuid) {
+    private void handleTaxonNode(CdmLightExportState state, UUID taxonNodeUuid) {
         try {
             TaxonNode taxonNode = getTaxonNodeService().find(taxonNodeUuid);
 
@@ -217,9 +239,9 @@ public class CdmLightClassificationExport
        }
 
        taxonNode.removeNullValueFromChildren();
-       for (TaxonNode child: taxonNode.getChildNodes()){
-           handleTaxon(state, child);
-       }
+//       for (TaxonNode child: taxonNode.getChildNodes()){
+//           handleTaxon(state, child);
+//       }
 
     }
 
