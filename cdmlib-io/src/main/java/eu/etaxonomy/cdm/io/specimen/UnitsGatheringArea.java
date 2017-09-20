@@ -185,18 +185,18 @@ public class UnitsGatheringArea {
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
         NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
         ar.setTitleCache(namedAreaStr, true);
-        if (namedAreaClass != null){
-            if (namedAreaClass.equals("continent")){
-                if (continentVocabulary == null){
-                    continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
-                }
-                continentVocabulary.addTerm(ar);
-            }else if(namedAreaClass.equals("country") ){
-                if (countryVocabulary == null){
-                   countryVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
-                }
-                countryVocabulary.addTerm(ar);
-            } else{
+//        if (namedAreaClass != null){
+//            if (namedAreaClass.equals("continent")){
+//                if (continentVocabulary == null){
+//                    continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+//                }
+//                continentVocabulary.addTerm(ar);
+//            }else if(namedAreaClass.equals("country") ){
+//                if (countryVocabulary == null){
+//                   countryVocabulary = vocabularyService.load(NamedArea.);
+//                }
+//                countryVocabulary.addTerm(ar);
+//            } else{
                 if (specimenImportVocabulary == null){
                     specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
                     if (specimenImportVocabulary == null){
@@ -207,8 +207,8 @@ public class UnitsGatheringArea {
                     specimenImportVocabulary.addTerm(ar);
                 }
 
-            }
-        }
+//            }
+//        }
 
         termService.saveOrUpdate(ar);
         this.areas.add(ar);
@@ -274,8 +274,9 @@ public class UnitsGatheringArea {
                 	List<UUID> countryUuids = new ArrayList<UUID>();
                 	HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 
-                	List<Country> countryList = termService.list(Country.class, 0, 0, null, null);
-                	for (NamedArea na:countryList){
+                	Pager<Country> countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
+
+                	for (NamedArea na:countryList.getRecords()){
 	                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
 	                   		countryUuids.add(na.getUuid());
 	                   	}

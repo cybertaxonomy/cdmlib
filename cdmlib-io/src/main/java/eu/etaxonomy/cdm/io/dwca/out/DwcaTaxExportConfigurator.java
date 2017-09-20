@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 
@@ -65,7 +64,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	private List<UUID> featureExclusions = new ArrayList<>();
 
-	private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
+
 
 	private String defaultTaxonSource;
 
@@ -313,12 +312,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		return fieldsTerminatedBy;
 	}
 
-	public TaxonNodeFilter getTaxonNodeFilter() {
-	    return taxonNodeFilter;
-	}
-	public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
-	    this.taxonNodeFilter = taxonNodeFilter;
-	}
+
 
 
     public boolean isDoSynonyms() {

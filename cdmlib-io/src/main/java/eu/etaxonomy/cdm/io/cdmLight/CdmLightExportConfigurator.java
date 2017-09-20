@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
 
-import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -29,7 +28,7 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
 //    private Set<UUID> classificationUuids = new HashSet<>();
 //
 //    private Set<UUID> taxonNodeUuids = new HashSet<>();
-    private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
+
 
     private CsvIOConfigurator csvIOConfig = CsvIOConfigurator.NewInstance();
 
@@ -128,13 +127,6 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
 //    }
 
 
-    public TaxonNodeFilter getTaxonNodeFilter() {
-        return taxonNodeFilter;
-    }
 
-
-    public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
-        this.taxonNodeFilter = taxonNodeFilter;
-    }
 
 }

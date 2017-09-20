@@ -158,15 +158,16 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	@Override
     public Country getCountryByIso(String iso3166) {
 		// If iso639 = "" query returns non-unique result. We prevent this here:
-		if (StringUtils.isBlank(iso3166)) { return null; }
+		if (StringUtils.isBlank(iso3166) || iso3166.length()<2 || iso3166.length()>3) { return null; }
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		  Query query = getSession().createQuery("from Country where iso3166_A2 = :isoCode");
+		  Query query = getSession().createQuery("from Country where iso3166_A2 = :isoCode OR idInVocabulary = :isoCode");
 		  query.setParameter("isoCode", iso3166);
 		  return (Country) query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Country.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("iso3166_A2").eq(iso3166));
+			query.add(AuditEntity.property("idInVocabulary").eq(iso3166));
 			return (Country) query.getSingleResult();
 		}
 	}

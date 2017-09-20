@@ -42,6 +42,13 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 
 	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales);
 
+	 /**
+     * Returns the country with the isoCode iso639, works only with string length 2 or 3
+     *
+     * @param iso639 the isoCode of the searched country
+     *
+     * @return country with isoCode iso639
+     */
 	public Country getCountryByIso(String iso639);
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz );
