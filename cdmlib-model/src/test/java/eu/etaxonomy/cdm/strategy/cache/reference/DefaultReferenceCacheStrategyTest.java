@@ -694,8 +694,8 @@ public class DefaultReferenceCacheStrategyTest {
 // ********************************** WEB PAGE ********************************************/
 
     @Test
+    //still preliminary, may be modified in future
     public void testWebPageGetTitleCache(){
-        //still preliminary, may be modified in future
         webPage1.setUri(URI.create("http://flora.huji.ac.il"));
         Assert.assertEquals("Unexpected title cache.",
                 "http://flora.huji.ac.il",

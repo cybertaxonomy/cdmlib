@@ -50,9 +50,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         this.accessDecisionManager = accessDecisionManager;
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.io.Serializable, java.lang.String, java.lang.Object)
-     */
     @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
@@ -61,10 +58,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         return false;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
-     */
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
@@ -77,7 +70,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         }
 
         if(logger.isDebugEnabled()){
-            String targteDomainObjText = "  Object: " + ((CdmBase)targetDomainObject).instanceToString();
+            String targteDomainObjText = "  Object: " + (targetDomainObject == null? "null":((CdmBase)targetDomainObject).instanceToString());
             logUserAndRequirement(authentication, permission.toString(), targteDomainObjText);
         }
         try {

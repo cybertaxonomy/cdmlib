@@ -402,7 +402,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
 
     /**
-     * This returns an String that identifies the cdm instacne well without being necessarily unique.
+     * This returns an String that identifies the cdm instance well without being necessarily unique.
      * The string representation combines the class name the {@link #id} and {@link #uuid}.
      * <p>
      * <b>For example</b>: Taxon#13&lt;b5938a98-c1de-4dda-b040-d5cc5bfb3bc0&gt;
