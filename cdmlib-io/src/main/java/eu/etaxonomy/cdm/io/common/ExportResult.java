@@ -24,10 +24,15 @@ public class ExportResult extends IoResultBase implements Serializable {
 
     private ExportResultState state;
 
-    private ExportDataWrapper<?> data ;  //resulting files
+    //resulting files
+    private ExportDataWrapper<?> data ;
+
+    private ExportType exportType;
 
 
 // **************************** FACTORY ****************************************/
+
+
 
     public static ExportResult NewInstance(ExportResultType type){
         return new ExportResult(type);
@@ -119,6 +124,18 @@ public class ExportResult extends IoResultBase implements Serializable {
 
     }
 
+    /**
+     * @return the exportType
+     */
+    public ExportType getExportType() {
+        return exportType;
+    }
 
+    /**
+     * @param exportType the exportType to set
+     */
+    public void setExportType(ExportType exportType) {
+        this.exportType = exportType;
+    }
 
 }
