@@ -74,6 +74,10 @@
              <value>TaxonInteraction.feature</value>
              <value>TextData.feature</value>
              <value>IdentifiableSource.citation</value>
+             
+             <value>Registration.name</value>
+             <value>Registration.typeDesignations</value>
+             <value>Registration.institution</value>
 
              <value>SearchResult.entity</value>
              
