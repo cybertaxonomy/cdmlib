@@ -120,12 +120,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                             Taxon taxon = desc.getTaxon();
                             updatedObject = taxon;
 
-                            while(textData.getMedia().contains(media)){
-                                textData.removeMedia(media);
-                            }
-                            if (textData.getMedia().isEmpty()){
-                                desc.removeElement(textData);
-                            }
+                            handleDeleteMedia(media, textData, desc);
                             if (desc.getElements().isEmpty()){
                                 taxon.removeDescription(desc);
                             }
@@ -140,8 +135,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof SpecimenOrObservationBase  && config.getDeleteFrom().getId() == desc.getDescribedSpecimenOrObservation().getId())  || config.isDeleteFromEveryWhere()){
                             SpecimenOrObservationBase<?> specimen = desc.getDescribedSpecimenOrObservation();
                             updatedObject = specimen;
-                            desc.removeElement(textData);
-                            textData.removeMedia(media);
+                            handleDeleteMedia(media, textData, desc);
                             if (desc.getElements().isEmpty()){
                                 specimen.removeDescription(desc);
                             }
@@ -157,8 +151,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof TaxonName  && config.getDeleteFrom().getId() == desc.getTaxonName().getId())   || config.isDeleteFromEveryWhere()){
                             TaxonName name= desc.getTaxonName();
                             updatedObject = name;
-                            desc.removeElement(textData);
-                            textData.removeMedia(media);
+                            handleDeleteMedia(media, textData, desc);
                             if (desc.getElements().isEmpty()){
                                 name.removeDescription(desc);
                             }
@@ -170,7 +163,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
                 } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
                         || (ref instanceof MediaSpecimen && config.isDeleteFromEveryWhere())){
-                    MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
+                        MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
 
                         mediaSpecimen.setMediaSpecimen(null);
                         updatedObject = mediaSpecimen;
@@ -187,14 +180,31 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             }
             if (updatedObject instanceof TaxonBase){
                 taxonService.update((TaxonBase)updatedObject);
-                result.addUpdatedObject(updatedObject);
             }else if (updatedObject instanceof TaxonName){
                 nameService.update((TaxonName)updatedObject);
             }else if (updatedObject instanceof SpecimenOrObservationBase){
                 specimenService.update((SpecimenOrObservationBase)updatedObject);
             }
+            if (updatedObject != null){
+                result.addUpdatedObject(updatedObject);
+            }
         }
         return result;
+    }
+
+    /**
+     * @param media
+     * @param textData
+     * @param desc
+     */
+    private void handleDeleteMedia(Media media, TextData textData, DescriptionBase desc) {
+        while(textData.getMedia().contains(media)){
+            textData.removeMedia(media);
+        }
+        //if the textData contains text it should not be deleted
+        if (textData.getMedia().isEmpty() && textData.getMultilanguageText().isEmpty()){
+            desc.removeElement(textData);
+        }
     }
 
 
