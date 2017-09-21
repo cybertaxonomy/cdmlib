@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -155,7 +157,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 
 
 	protected User getUser(STATE state, String userString){
-		if (CdmUtils.isBlank(userString)){
+		if (StringUtils.isBlank(userString)){
 			return null;
 		}
 		userString = userString.trim();
@@ -165,13 +167,34 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			user = getTransformedUser(userString,state);
 		}
 		if (user == null){
+		    user = getExistingUser(state, userString, user);
+		}
+		if (user == null){
 			user = makeNewUser(userString, state);
 		}
 		if (user == null){
-			logger.warn("User is null");
+			throw new RuntimeException ("User must not be null");
 		}
 		return user;
 	}
+
+    /**
+     * @param state
+     * @param userString
+     * @param user
+     * @return
+     */
+    protected User getExistingUser(STATE state, String userString, User user) {
+        List<User> list = getUserService().listByUsername(userString, MatchMode.EXACT, null, null, null, null, null);
+        if (!list.isEmpty()){
+            if (list.size()>1){
+                logger.warn("More than 1 user with name " + userString + " exists");
+            }
+            user = list.get(0);
+            state.putUser(userString, user);
+        }
+        return user;
+    }
 
 	private User getTransformedUser(String userString, STATE state){
 		Method method = state.getConfig().getUserTransformationMethod();

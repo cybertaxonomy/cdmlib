@@ -130,7 +130,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         if (desc.getDescribedSpecimenOrObservation() == null ){
                             continue;
                         } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof SpecimenOrObservationBase  && config.getDeleteFrom().getId() == desc.getDescribedSpecimenOrObservation().getId())  || config.isDeleteFromEveryWhere()){
-                            SpecimenOrObservationBase<?> specimen = desc.getDescribedSpecimenOrObservation();
+                            SpecimenOrObservationBase specimen = desc.getDescribedSpecimenOrObservation();
                             updatedObject = specimen;
                             handleDeleteMedia(media, textData, desc, specimen);
                         } else {
