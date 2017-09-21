@@ -17,9 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,30 +88,4 @@ public class RegistrationController extends BaseController<Registration, IRegist
     }
 */
 
-    // =============================================================
-    // TODO move into userHelper Class? See Vaddin CdmUserHelper!
-    /**
-     * @return
-     */
-    private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
-
-    public boolean userIsAutheticated() {
-        Authentication authentication = getAuthentication();
-        if(authentication != null){
-            return authentication.isAuthenticated();
-        }
-        return false;
-    }
-
-
-    public boolean userIsAnnonymous() {
-        Authentication authentication = getAuthentication();
-        return authentication != null
-                && authentication.isAuthenticated()
-                && authentication instanceof AnonymousAuthenticationToken;
-    }
-    // =============================================================
 }

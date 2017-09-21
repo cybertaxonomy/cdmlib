@@ -14,6 +14,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -98,5 +101,32 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
 
         return b.toString();
     }
+
+    // =============================================================
+    // TODO move into userHelper Class? See Vaddin CdmUserHelper!
+    /**
+     * @return
+     */
+    private Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+
+    public boolean userIsAutheticated() {
+        Authentication authentication = getAuthentication();
+        if(authentication != null){
+            return authentication.isAuthenticated();
+        }
+        return false;
+    }
+
+
+    public boolean userIsAnnonymous() {
+        Authentication authentication = getAuthentication();
+        return authentication != null
+                && authentication.isAuthenticated()
+                && authentication instanceof AnonymousAuthenticationToken;
+    }
+    // =============================================================
 
 }
