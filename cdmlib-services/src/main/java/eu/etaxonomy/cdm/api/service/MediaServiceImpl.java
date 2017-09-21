@@ -48,21 +48,18 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
 
-	@Override
+    @Override
     @Autowired
 	protected void setDao(IMediaDao dao) {
 		this.dao = dao;
 	}
 
-	 @Autowired
-	 private IDescriptionService descriptionService;
-
-	 @Autowired
-     private IOccurrenceService specimenService;
-	 @Autowired
-     private ITaxonService taxonService;
-	 @Autowired
-     private INameService nameService;
+	@Autowired
+    private IOccurrenceService specimenService;
+	@Autowired
+    private ITaxonService taxonService;
+	@Autowired
+    private INameService nameService;
 
 	@Override
     public Pager<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -88,9 +85,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-	 */
 	@Override
 	@Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends Media> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Media> cacheStrategy, IProgressMonitor monitor) {
@@ -101,9 +95,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IMediaService#delete(java.util.UUID, eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator)
-     */
     @Override
     @Transactional(readOnly=false)
     public DeleteResult delete(UUID mediaUuid, MediaDeletionConfigurator config) {
@@ -114,75 +105,68 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         CdmBase updatedObject = null;
         if (result.isOk()){
             Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
-            String message = null;
             for (CdmBase ref: references){
 
                if (ref instanceof TextData){
 
                     TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
-                    DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
+                    DescriptionBase<?> description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
 
+                    if (description instanceof TaxonDescription){
+                        TaxonDescription desc = (TaxonDescription)description;
+                        if (desc.getTaxon() == null ){
+                            continue;
+                        } else if ( (config.isDeleteFromDescription() && config.getDeleteFrom() instanceof Taxon  && config.getDeleteFrom().getId() == desc.getTaxon().getId())|| config.isDeleteFromEveryWhere()){
+                            Taxon taxon = desc.getTaxon();
+                            updatedObject = taxon;
 
-                        if (description instanceof TaxonDescription){
-                            TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-                            if (desc.getTaxon() == null ){
-                                continue;
-                            } else if ( (config.isDeleteFromDescription() && config.getDeleteFrom() instanceof Taxon  && config.getDeleteFrom().getId() == desc.getTaxon().getId())|| config.isDeleteFromEveryWhere()){
-                                Taxon taxon = desc.getTaxon();
-                                updatedObject = taxon;
-
-                                while(textData.getMedia().contains(media)){
-                                    textData.removeMedia(media);
-                                }
-                                if (textData.getMedia().isEmpty()){
-                                    desc.removeElement(textData);
-                                }
-                                if (desc.getElements().isEmpty()){
-                                    taxon.removeDescription(desc);
-                                }
-
-                            } else {
-                                // this should not be happen, because it is not deletable. see isDeletable
-                                result.setAbort();
-
-
-                            }
-                        } else if (description instanceof SpecimenDescription){
-                            SpecimenDescription desc = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
-                            if (desc.getDescribedSpecimenOrObservation() == null ){
-                                continue;
-                            } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof SpecimenOrObservationBase  && config.getDeleteFrom().getId() == desc.getDescribedSpecimenOrObservation().getId())  || config.isDeleteFromEveryWhere()){
-                                SpecimenOrObservationBase<?> specimen = desc.getDescribedSpecimenOrObservation();
-                                updatedObject = specimen;
-                                desc.removeElement(textData);
+                            while(textData.getMedia().contains(media)){
                                 textData.removeMedia(media);
-                                if (desc.getElements().isEmpty()){
-                                    specimen.removeDescription(desc);
-                                }
-                            } else {
-                                result.setAbort();
-
                             }
-                        }else if (description instanceof TaxonNameDescription){
-                            TaxonNameDescription desc = HibernateProxyHelper.deproxy(description, TaxonNameDescription.class);
-
-                            if (desc.getTaxonName() == null ){
-                                continue;
-                            } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof TaxonName  && config.getDeleteFrom().getId() == desc.getTaxonName().getId())   || config.isDeleteFromEveryWhere()){
-                                TaxonName name= desc.getTaxonName();
-                                updatedObject = name;
+                            if (textData.getMedia().isEmpty()){
                                 desc.removeElement(textData);
-                                textData.removeMedia(media);
-                                if (desc.getElements().isEmpty()){
-                                    name.removeDescription(desc);
-                                }
-                            } else {
-
-                                result.setAbort();
-
-
                             }
+                            if (desc.getElements().isEmpty()){
+                                taxon.removeDescription(desc);
+                            }
+                        } else {
+                            // this should not be happen, because it is not deletable. see isDeletable
+                            result.setAbort();
                         }
+                    } else if (description instanceof SpecimenDescription){
+                        SpecimenDescription desc = (SpecimenDescription)description;
+                        if (desc.getDescribedSpecimenOrObservation() == null ){
+                            continue;
+                        } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof SpecimenOrObservationBase  && config.getDeleteFrom().getId() == desc.getDescribedSpecimenOrObservation().getId())  || config.isDeleteFromEveryWhere()){
+                            SpecimenOrObservationBase<?> specimen = desc.getDescribedSpecimenOrObservation();
+                            updatedObject = specimen;
+                            desc.removeElement(textData);
+                            textData.removeMedia(media);
+                            if (desc.getElements().isEmpty()){
+                                specimen.removeDescription(desc);
+                            }
+                        } else {
+                            // this should not be happen, because it is not deletable. see isDeletable
+                            result.setAbort();
+                        }
+                    }else if (description instanceof TaxonNameDescription){
+                        TaxonNameDescription desc = (TaxonNameDescription)description;
+
+                        if (desc.getTaxonName() == null ){
+                            continue;
+                        } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof TaxonName  && config.getDeleteFrom().getId() == desc.getTaxonName().getId())   || config.isDeleteFromEveryWhere()){
+                            TaxonName name= desc.getTaxonName();
+                            updatedObject = name;
+                            desc.removeElement(textData);
+                            textData.removeMedia(media);
+                            if (desc.getElements().isEmpty()){
+                                name.removeDescription(desc);
+                            }
+                        } else {
+                            // this should not be happen, because it is not deletable. see isDeletable
+                            result.setAbort();
+                        }
+                    }
 
                 } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
                         || (ref instanceof MediaSpecimen && config.isDeleteFromEveryWhere())){
@@ -195,30 +179,20 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     continue;
 
                 }else {
-
                     result.setAbort();
-
-
                 }
-
             }
             if (result.isOk()){
                 dao.delete(media);
             }
-                if (updatedObject instanceof
-                         TaxonBase){
-                    taxonService.update((TaxonBase)updatedObject);
-                    result.addUpdatedObject(updatedObject);
-                }
-                if (updatedObject instanceof
-                        TaxonName){
-                   nameService.update((TaxonName)updatedObject);
-               }
-                if (updatedObject instanceof
-                        SpecimenOrObservationBase){
-                   specimenService.update((SpecimenOrObservationBase)updatedObject);
-               }
-
+            if (updatedObject instanceof TaxonBase){
+                taxonService.update((TaxonBase)updatedObject);
+                result.addUpdatedObject(updatedObject);
+            }else if (updatedObject instanceof TaxonName){
+                nameService.update((TaxonName)updatedObject);
+            }else if (updatedObject instanceof SpecimenOrObservationBase){
+                specimenService.update((SpecimenOrObservationBase)updatedObject);
+            }
         }
         return result;
     }
@@ -282,8 +256,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
         }
 
-
         return result;
-
     }
 }
