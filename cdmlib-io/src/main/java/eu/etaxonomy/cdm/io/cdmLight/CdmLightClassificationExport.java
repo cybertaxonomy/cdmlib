@@ -197,7 +197,7 @@ public class CdmLightClassificationExport
      * @param taxon
      */
     private void handleTaxon(CdmLightExportState state, TaxonNode taxonNode) {
-
+        try{
       //  Taxon taxon = taxonNode.getTaxon();
         if (taxonNode == null){
             state.getResult().addError ("The taxonNode was null.", "handleTaxon");
@@ -242,7 +242,10 @@ public class CdmLightClassificationExport
 //       for (TaxonNode child: taxonNode.getChildNodes()){
 //           handleTaxon(state, child);
 //       }
-
+        }catch (Exception e){
+            state.getResult().addException(e, "An unexpected error occurred when handling the taxon node of " +
+                    cdmBaseStr(taxonNode.getTaxon()) + ": " + e.getMessage());
+        }
     }
 
     /**
@@ -250,6 +253,7 @@ public class CdmLightClassificationExport
      * @param taxon
      */
     private void handleDescriptions(CdmLightExportState state, CdmBase cdmBase) {
+        try{
         if (cdmBase instanceof Taxon){
             Taxon taxon = HibernateProxyHelper.deproxy(cdmBase, Taxon.class);
             Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -302,6 +306,10 @@ public class CdmLightClassificationExport
             if (!simpleFacts.isEmpty()){
                 handleSimpleFacts(state, name, simpleFacts);
             }
+        }
+        }catch (Exception e){
+            state.getResult().addException(e, "An unexpected error occurred when handling description of" +
+                    cdmBaseStr(cdmBase) + ": " + e.getMessage());
         }
     }
 
@@ -541,9 +549,11 @@ public class CdmLightClassificationExport
      */
     private void handleSource(CdmLightExportState state, DescriptionElementBase element, CdmLightExportTable factsTable) {
         CdmLightExportTable table = CdmLightExportTable.FACT_SOURCES;
+        try {
         Set<DescriptionElementSource> sources = element.getSources();
+
         for (DescriptionElementSource source: sources){
-            try {
+
                 String[] csvLine = new  String[table.getSize()];
                 Reference ref = source.getCitation();
                 if ((ref == null) && (source.getNameUsedInSource() == null)){
@@ -564,10 +574,11 @@ public class CdmLightClassificationExport
                     continue;
                 }
                 state.getProcessor().put(table, source, csvLine);
-            } catch (Exception e) {
-                state.getResult().addException(e, "An unexpected error occurred when handling single source " +
-                        cdmBaseStr(element) + ": " + e.getMessage());
-            }
+
+        }
+        } catch (Exception e) {
+            state.getResult().addException(e, "An unexpected error occurred when handling single source " +
+                    cdmBaseStr(element) + ": " + e.getMessage());
         }
 
     }
@@ -664,6 +675,7 @@ public class CdmLightClassificationExport
      */
     private void handleSynonym(CdmLightExportState state, Synonym syn) {
        try {
+
            TaxonName name = syn.getName();
            handleName(state, name);
 
@@ -1585,6 +1597,7 @@ public class CdmLightClassificationExport
      * @param it
      */
     private String extractMediaUris(Iterator<MediaRepresentation> it) {
+
         String mediaUriString = "";
         boolean first = true;
         while(it.hasNext()){
@@ -1603,6 +1616,7 @@ public class CdmLightClassificationExport
                 }
             }
         }
+
         return mediaUriString;
     }
 
