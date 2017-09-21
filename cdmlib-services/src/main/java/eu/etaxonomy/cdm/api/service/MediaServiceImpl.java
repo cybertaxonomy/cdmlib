@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -119,11 +120,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         } else if ( (config.isDeleteFromDescription() && config.getDeleteFrom() instanceof Taxon  && config.getDeleteFrom().getId() == desc.getTaxon().getId())|| config.isDeleteFromEveryWhere()){
                             Taxon taxon = desc.getTaxon();
                             updatedObject = taxon;
-
-                            handleDeleteMedia(media, textData, desc);
-                            if (desc.getElements().isEmpty()){
-                                taxon.removeDescription(desc);
-                            }
+                            handleDeleteMedia(media, textData, desc, taxon);
                         } else {
                             // this should not be happen, because it is not deletable. see isDeletable
                             result.setAbort();
@@ -135,10 +132,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof SpecimenOrObservationBase  && config.getDeleteFrom().getId() == desc.getDescribedSpecimenOrObservation().getId())  || config.isDeleteFromEveryWhere()){
                             SpecimenOrObservationBase<?> specimen = desc.getDescribedSpecimenOrObservation();
                             updatedObject = specimen;
-                            handleDeleteMedia(media, textData, desc);
-                            if (desc.getElements().isEmpty()){
-                                specimen.removeDescription(desc);
-                            }
+                            handleDeleteMedia(media, textData, desc, specimen);
                         } else {
                             // this should not be happen, because it is not deletable. see isDeletable
                             result.setAbort();
@@ -151,10 +145,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof TaxonName  && config.getDeleteFrom().getId() == desc.getTaxonName().getId())   || config.isDeleteFromEveryWhere()){
                             TaxonName name= desc.getTaxonName();
                             updatedObject = name;
-                            handleDeleteMedia(media, textData, desc);
-                            if (desc.getElements().isEmpty()){
-                                name.removeDescription(desc);
-                            }
+                            handleDeleteMedia(media, textData, desc, name);
                         } else {
                             // this should not be happen, because it is not deletable. see isDeletable
                             result.setAbort();
@@ -196,14 +187,19 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
      * @param media
      * @param textData
      * @param desc
+     * @param taxon
      */
-    private void handleDeleteMedia(Media media, TextData textData, DescriptionBase desc) {
+    private <T extends DescriptionBase<?>> void handleDeleteMedia(Media media, TextData textData, T desc,
+            IDescribable<T> describable) {
         while(textData.getMedia().contains(media)){
             textData.removeMedia(media);
         }
         //if the textData contains text it should not be deleted
         if (textData.getMedia().isEmpty() && textData.getMultilanguageText().isEmpty()){
             desc.removeElement(textData);
+        }
+        if (desc.getElements().isEmpty()){
+            describable.removeDescription(desc);
         }
     }
 
