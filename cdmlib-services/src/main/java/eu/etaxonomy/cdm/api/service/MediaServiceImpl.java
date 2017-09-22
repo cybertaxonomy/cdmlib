@@ -177,8 +177,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
      * @param desc
      * @param taxon
      */
-    private <T extends DescriptionBase<?>> IDescribable<DescriptionBase> handleDeleteMedia(Media media, TextData textData,
-            DescriptionBase<?> desc, IDescribable<DescriptionBase> describable) {
+    private IDescribable<DescriptionBase<?>> handleDeleteMedia(Media media, TextData textData,
+            DescriptionBase<?> desc, IDescribable<DescriptionBase<?>> describable) {
         while(textData.getMedia().contains(media)){
             textData.removeMedia(media);
         }
