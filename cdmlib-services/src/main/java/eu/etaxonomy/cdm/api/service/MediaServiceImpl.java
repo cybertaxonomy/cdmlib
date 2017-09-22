@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -41,7 +42,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -61,6 +61,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     private ITaxonService taxonService;
 	@Autowired
     private INameService nameService;
+
 
 	@Override
     public Pager<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -107,50 +108,41 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
             for (CdmBase ref: references){
 
-                CdmBase updatedObject = null;
-
-               if (ref instanceof TextData){
+                IDescribable<?> updatedObject = null;
+                IService<ICdmBase> service = null;
+                if (ref instanceof TextData){
 
                     TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
                     DescriptionBase<?> description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
 
+                    IDescribable<?> objectToUpdate = null;
+                    boolean deleteIsMatchingInstance = false;
                     if (description instanceof TaxonDescription){
-                        TaxonDescription desc = (TaxonDescription)description;
-                        if (desc.getTaxon() == null ){
-                            continue;
-                        } else if ( (config.isDeleteFromDescription() && config.getDeleteFrom() instanceof Taxon  && config.getDeleteFrom().getId() == desc.getTaxon().getId())|| config.isDeleteFromEveryWhere()){
-                            Taxon taxon = desc.getTaxon();
-                            updatedObject = taxon;
-                            handleDeleteMedia(media, textData, desc, taxon);
-                        } else {
-                            // this should not be happen, because it is not deletable. see isDeletable
-                            result.setAbort();
-                        }
-                    } else if (description instanceof SpecimenDescription){
-                        SpecimenDescription desc = (SpecimenDescription)description;
-                        if (desc.getDescribedSpecimenOrObservation() == null ){
-                            continue;
-                        } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof SpecimenOrObservationBase  && config.getDeleteFrom().getId() == desc.getDescribedSpecimenOrObservation().getId())  || config.isDeleteFromEveryWhere()){
-                            SpecimenOrObservationBase specimen = desc.getDescribedSpecimenOrObservation();
-                            updatedObject = specimen;
-                            handleDeleteMedia(media, textData, desc, specimen);
-                        } else {
-                            // this should not be happen, because it is not deletable. see isDeletable
-                            result.setAbort();
-                        }
+                        objectToUpdate = ((TaxonDescription)description).getTaxon();
+                        deleteIsMatchingInstance = config.getDeleteFrom() instanceof Taxon;
+                        service = (IService)taxonService;
+                    }else if (description instanceof SpecimenDescription){
+                        objectToUpdate = ((SpecimenDescription)description).getDescribedSpecimenOrObservation();
+                        deleteIsMatchingInstance = config.getDeleteFrom() instanceof SpecimenOrObservationBase;
+                        service = (IService)specimenService;
                     }else if (description instanceof TaxonNameDescription){
-                        TaxonNameDescription desc = (TaxonNameDescription)description;
+                        objectToUpdate = ((TaxonNameDescription)description).getTaxonName();
+                        deleteIsMatchingInstance = config.getDeleteFrom() instanceof TaxonName;
+                        service = (IService)nameService;
+                    }else{
+                        throw new RuntimeException("Unsupported DescriptionBase class");
+                    }
 
-                        if (desc.getTaxonName() == null ){
-                            continue;
-                        } else if ((config.isDeleteFromDescription() && config.getDeleteFrom() instanceof TaxonName  && config.getDeleteFrom().getId() == desc.getTaxonName().getId())   || config.isDeleteFromEveryWhere()){
-                            TaxonName name= desc.getTaxonName();
-                            updatedObject = name;
-                            handleDeleteMedia(media, textData, desc, name);
-                        } else {
-                            // this should not be happen, because it is not deletable. see isDeletable
-                            result.setAbort();
-                        }
+                    if (objectToUpdate == null ){
+                        continue;
+                    } else if ( (config.isDeleteFromDescription() && deleteIsMatchingInstance  &&
+                                   config.getDeleteFrom().getId() == objectToUpdate.getId())
+                                || config.isDeleteFromEveryWhere()){
+                        updatedObject = handleDeleteMedia(media, textData, description,
+                                (IDescribable)objectToUpdate);
+                    } else {
+                        // this should not be happen, because it is not deletable. see isDeletable
+                        result.setAbort();
                     }
 
                 } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
@@ -159,23 +151,17 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
                         mediaSpecimen.setMediaSpecimen(null);
                         updatedObject = mediaSpecimen;
-
+                        service = (IService)specimenService;
                 }else if (ref instanceof MediaRepresentation){
                     continue;
-
                 }else {
                     result.setAbort();
                 }
-               if (updatedObject instanceof TaxonBase){
-                   taxonService.update((TaxonBase)updatedObject);
-               }else if (updatedObject instanceof TaxonName){
-                   nameService.update((TaxonName)updatedObject);
-               }else if (updatedObject instanceof SpecimenOrObservationBase){
-                   specimenService.update((SpecimenOrObservationBase)updatedObject);
-               }
-               if (updatedObject != null){
-                   result.addUpdatedObject(updatedObject);
-               }
+
+                if (updatedObject != null){
+                    service.update(updatedObject); //service should always be != null if updatedObject != null
+                    result.addUpdatedObject((CdmBase)updatedObject);
+                }
             }
             if (result.isOk()){
                 dao.delete(media);
@@ -191,8 +177,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
      * @param desc
      * @param taxon
      */
-    private <T extends DescriptionBase<?>> void handleDeleteMedia(Media media, TextData textData, T desc,
-            IDescribable<T> describable) {
+    private <T extends DescriptionBase<?>> IDescribable<DescriptionBase> handleDeleteMedia(Media media, TextData textData,
+            DescriptionBase<?> desc, IDescribable<DescriptionBase> describable) {
         while(textData.getMedia().contains(media)){
             textData.removeMedia(media);
         }
@@ -203,6 +189,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         if (desc.getElements().isEmpty()){
             describable.removeDescription(desc);
         }
+        return describable;
     }
 
 
