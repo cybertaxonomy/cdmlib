@@ -821,9 +821,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @return a set of all parent nodes
      */
     protected Set<TaxonNode> getAncestors(){
-        Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+        Set<TaxonNode> nodeSet = new HashSet<>();
         if(this.getParent() != null){
-        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent());
         	nodeSet.add(parent);
             nodeSet.addAll(parent.getAncestors());
         }
@@ -836,11 +836,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @return the first found instance of a parent taxon node with the given rank
      */
     public TaxonNode getAncestorOfRank(Rank rank){
-        TaxonBase taxon = HibernateProxyHelper.deproxy(this.getTaxon(), Taxon.class);
+        Taxon taxon = CdmBase.deproxy(this.getTaxon());
         if (taxon == null){
             return null;
         }
-        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
+        TaxonName name = CdmBase.deproxy(taxon.getName());
         if (name.getRank().isHigher(rank)){
         	return null;
         }
@@ -849,12 +849,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         }
 
         if(this.getParent() != null){
-        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent());
             return parent.getAncestorOfRank(rank);
         }
 		return null;
 
     }
+
 
     /**
      * Whether this TaxonNode is a direct child of the classification TreeNode

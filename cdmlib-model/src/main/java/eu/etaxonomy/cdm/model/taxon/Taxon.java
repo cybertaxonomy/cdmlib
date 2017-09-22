@@ -1437,7 +1437,7 @@ public class Taxon
         Taxon result;
         result = (Taxon)super.clone();
 
-        result.setRelationsFromThisTaxon(new HashSet<TaxonRelationship>());
+        result.setRelationsFromThisTaxon(new HashSet<>());
 
         for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
             TaxonRelationship newRelationship = (TaxonRelationship)fromRelationship.clone();
@@ -1445,7 +1445,7 @@ public class Taxon
             result.relationsFromThisTaxon.add(newRelationship);
         }
 
-        result.setRelationsToThisTaxon(new HashSet<TaxonRelationship>());
+        result.setRelationsToThisTaxon(new HashSet<>());
         for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
             TaxonRelationship newRelationship = (TaxonRelationship)toRelationship.clone();
             newRelationship.setRelatedTo(result);
@@ -1466,7 +1466,7 @@ public class Taxon
         }
 
 
-        result.taxonNodes = new HashSet<TaxonNode>();
+        result.taxonNodes = new HashSet<>();
 
         /*for (TaxonNode taxonNode : this.getTaxonNodes()){
             TaxonNode newTaxonNode = (TaxonNode)taxonNode.clone();
@@ -1479,7 +1479,8 @@ public class Taxon
     }
 
     public void clearDescriptions() {
-		this.descriptions = new HashSet<TaxonDescription>();
+		this.descriptions = new HashSet<>();
 	}
+
 
 }

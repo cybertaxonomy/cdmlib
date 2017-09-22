@@ -333,9 +333,9 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param name
 	 */
 	private void handleUninomialOrGenus(DwcaTaxonRecord record, INonViralName name) {
-		//epethita
+		//epitheta
 		String firstEpi = name.getGenusOrUninomial();
-		if (!StringUtils.isBlank(firstEpi)){
+		if (StringUtils.isNotBlank(firstEpi)){
 			Rank rank = name.getRank();
 			if (rank != null){
 				if (rank.isLower(Rank.GENUS())){
