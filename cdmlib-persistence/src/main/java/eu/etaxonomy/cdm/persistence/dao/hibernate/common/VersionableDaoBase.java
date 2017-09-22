@@ -379,10 +379,10 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
          */
         @SuppressWarnings("unchecked")
         List<Object[]> objs = query.getResultList();
-        List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
+        List<AuditEventRecord<T>> records = new ArrayList<>();
 
         for(Object[] obj : objs) {
-        	records.add(new AuditEventRecordImpl<T>(obj));
+        	records.add(new AuditEventRecordImpl<>(obj));
         }
 
         for(AuditEventRecord<T> record : records) {
