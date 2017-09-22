@@ -67,24 +67,24 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     public Pager<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countMediaKeys(taxonomicScope, geoScopes);
 
-		List<MediaKey> results = new ArrayList<MediaKey>();
+		List<MediaKey> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMediaKeys(taxonomicScope, geoScopes, pageSize, pageNumber, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<MediaKey>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
     public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
 
-		List<Rights> results = new ArrayList<Rights>();
+		List<Rights> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getRights(t, pageSize, pageNumber,propertyPaths);
 		}
 
-		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
