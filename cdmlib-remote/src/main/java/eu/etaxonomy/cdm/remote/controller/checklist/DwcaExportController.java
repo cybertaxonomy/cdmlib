@@ -215,6 +215,8 @@ public class DwcaExportController
             @RequestParam(value = "doResourceRelations", defaultValue="true") Boolean doResourceRelations,
             @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
             @RequestParam(value = "withHigherClassification", defaultValue="false") Boolean withHigherClassification,
+            @RequestParam(value = "includeHeader", defaultValue="false") Boolean includeHeader,
+
 //          @RequestParam(value = "area", required = false) final UuidList areas,
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
@@ -275,7 +277,7 @@ public class DwcaExportController
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,
                                     doTypesAndSpecimen, doResourceRelations, doReferences,
-                                    withHigherClassification);
+                                    withHigherClassification, includeHeader);
                             performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
@@ -364,6 +366,7 @@ public class DwcaExportController
      * @param doResourceRelations
      * @param doTypesAndSpecimen
      * @param withHigherClassification
+     * @param includeHeader
       */
     private DwcaTaxExportConfigurator setDwcaTaxExportConfigurator(File cacheFile,
             IRestServiceProgressMonitor progressMonitor,
@@ -372,7 +375,8 @@ public class DwcaExportController
             Boolean doVernaculars, Boolean doDistributions,
             Boolean doDescriptions, Boolean doImages,
             Boolean doTypesAndSpecimen, Boolean doResourceRelations,
-            Boolean doReferences, Boolean withHigherClassification) {
+            Boolean doReferences, Boolean withHigherClassification,
+            Boolean includeHeader) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -395,6 +399,7 @@ public class DwcaExportController
         config.setDoReferences(doReferences);
         config.setDoResourceRelations(doResourceRelations);
         config.setWithHigherClassification(withHigherClassification);
+        config.setHasHeaderLines(includeHeader);
 
         config.setProgressMonitor(progressMonitor);
 
