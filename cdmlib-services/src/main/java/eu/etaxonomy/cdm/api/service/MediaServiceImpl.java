@@ -103,10 +103,11 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Media media = this.load(mediaUuid);
 
         result = isDeletable(mediaUuid, config);
-        CdmBase updatedObject = null;
         if (result.isOk()){
             Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(media);
             for (CdmBase ref: references){
+
+                CdmBase updatedObject = null;
 
                if (ref instanceof TextData){
 
