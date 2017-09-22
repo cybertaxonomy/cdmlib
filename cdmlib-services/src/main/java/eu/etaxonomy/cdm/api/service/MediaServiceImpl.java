@@ -165,20 +165,21 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                 }else {
                     result.setAbort();
                 }
+               if (updatedObject instanceof TaxonBase){
+                   taxonService.update((TaxonBase)updatedObject);
+               }else if (updatedObject instanceof TaxonName){
+                   nameService.update((TaxonName)updatedObject);
+               }else if (updatedObject instanceof SpecimenOrObservationBase){
+                   specimenService.update((SpecimenOrObservationBase)updatedObject);
+               }
+               if (updatedObject != null){
+                   result.addUpdatedObject(updatedObject);
+               }
             }
             if (result.isOk()){
                 dao.delete(media);
             }
-            if (updatedObject instanceof TaxonBase){
-                taxonService.update((TaxonBase)updatedObject);
-            }else if (updatedObject instanceof TaxonName){
-                nameService.update((TaxonName)updatedObject);
-            }else if (updatedObject instanceof SpecimenOrObservationBase){
-                specimenService.update((SpecimenOrObservationBase)updatedObject);
-            }
-            if (updatedObject != null){
-                result.addUpdatedObject(updatedObject);
-            }
+
         }
         return result;
     }
