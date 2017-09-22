@@ -220,7 +220,6 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 		    handleHigherClassification(state, record, taxon, classification);
 
-			record.setHigherClassification(null);
 			//... higher ranks
 			handleUninomialOrGenus(record, name);
 			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
