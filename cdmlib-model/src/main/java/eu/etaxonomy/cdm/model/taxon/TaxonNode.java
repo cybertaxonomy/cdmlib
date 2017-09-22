@@ -853,7 +853,40 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return parent.getAncestorOfRank(rank);
         }
 		return null;
+    }
 
+    /**
+     * Returns the ancestor taxa, starting with the highest (e.g. kingdom)
+     * @return
+     */
+    public List<Taxon> getAncestorTaxaList(){
+        List<Taxon> result = new ArrayList<>();
+        TaxonNode current = this;
+        while (current != null){
+            if (current.getTaxon() != null){
+                result.add(0, current.getTaxon());
+            }
+            current = current.getParent();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the ancestor taxon nodes, that do have a taxon attached
+     * (excludes the root node) starting with the highest
+     *
+     * @return
+     */
+    public List<TaxonNode> getAncestorList(){
+        List<TaxonNode> result = new ArrayList<>();
+        TaxonNode current = this.getParent();
+        while (current != null){
+            if (current.getTaxon() != null){
+                result.add(0, current);
+            }
+            current = current.getParent();
+        }
+        return result;
     }
 
 

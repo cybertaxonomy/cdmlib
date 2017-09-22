@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -213,11 +214,12 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		record.setTaxonConceptId(taxonBase.getUuid());
 
 		//Classification
-		if (state.getConfig().isWithHigherClassification()){
-			//FIXME all classification and rank specific fields are meant to represent the classification
-			//currently the information is only compiled for the exact same range but it should be compiled
-			//for all ranks above the rank of this taxon
-			//TODO we do not support this yet
+		if (state.getConfig().isWithHigherClassification()
+		        && taxonBase.isInstanceOf(Taxon.class)){
+			//all classification and rank specific fields are meant to represent the classification
+			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+		    handleHigherClassification(state, record, taxon, classification);
+
 			record.setHigherClassification(null);
 			//... higher ranks
 			handleUninomialOrGenus(record, name);
@@ -296,6 +298,60 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	}
 
 	/**
+     * @param state
+     * @param record
+     * @param taxonBase
+     * @param classification
+     */
+    private void handleHigherClassification(DwcaTaxExportState state, DwcaTaxonRecord record, Taxon taxon,
+            Classification classification) {
+        TaxonNode node = taxon.getTaxonNode(classification);
+        if (node == null){
+            return;
+        }
+        record.setKingdom(nameOf(node.getAncestorOfRank(Rank.KINGDOM())));
+        record.setPhylum(nameOf(node.getAncestorOfRank(Rank.PHYLUM())));
+        record.setClazz(nameOf(node.getAncestorOfRank(Rank.CLASS())));
+        record.setOrder(nameOf(node.getAncestorOfRank(Rank.ORDER())));
+        record.setFamily(nameOf(node.getAncestorOfRank(Rank.FAMILY())));
+        record.setGenus(nameOf(node.getAncestorOfRank(Rank.GENUS())));
+        List<TaxonNode> ancestors = node.getAncestorList();
+        String higherClassification = higherClassificationString(ancestors);
+        record.setHigherClassification(higherClassification);
+    }
+
+    /**
+     * @param ancestors
+     */
+    private String higherClassificationString(List<TaxonNode> ancestors) {
+        String result = "";
+        for (TaxonNode node : ancestors){
+            String nameOfNode = nameOf(node);
+            if (StringUtils.isBlank(nameOfNode)){
+                nameOfNode = "-";
+            }
+            result = CdmUtils.concat("|", result, nameOfNode);
+        }
+        return result;
+    }
+
+    /**
+     * @param ancestorOfRank
+     * @return
+     */
+    private String nameOf(TaxonNode node) {
+        if (node != null && node.getTaxon()!= null){
+            Taxon taxon = node.getTaxon();
+            if (taxon.getName()!= null){
+                return taxon.getName().getTitleCache();
+            }else{
+                return taxon.getTitleCache();
+            }
+        }
+        return null;
+    }
+
+    /**
 	 * @param record
 	 * @param name
 	 * @param type

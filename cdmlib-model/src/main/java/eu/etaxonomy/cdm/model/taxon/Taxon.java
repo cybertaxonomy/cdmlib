@@ -416,7 +416,20 @@ public class Taxon
 
     }
 
-
+    /**
+     * @param classification
+     */
+    public TaxonNode getTaxonNode(Classification classification) {
+        if (classification == null){
+            return null;
+        }
+        for (TaxonNode node : this.getTaxonNodes()){
+            if (classification.equals(node.getClassification())){
+                return node;
+            }
+        }
+        return null;
+    }
 
 
     /**
