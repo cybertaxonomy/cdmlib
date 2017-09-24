@@ -145,11 +145,11 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         result.setAbort();
                     }
 
-                } else if (ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen){
-                        MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
-                        mediaSpecimen.setMediaSpecimen(null);
-                        updatedObject = mediaSpecimen;
-                        service = (IService)specimenService;
+//                } else if (ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen){
+//                        MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
+//                        mediaSpecimen.setMediaSpecimen(null);
+//                        updatedObject = mediaSpecimen;
+//                        service = (IService)specimenService;
                 }else if (ref instanceof MediaRepresentation){
                     continue;
                 }else {
