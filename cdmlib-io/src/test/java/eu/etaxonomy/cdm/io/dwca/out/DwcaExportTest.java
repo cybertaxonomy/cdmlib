@@ -221,7 +221,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"3f52e136-f2e1-4f9a-9010-2f35908fbd39\",\"Genus species Mill.\",\"Species\",\"accepted\"";
 //        System.out.println(coreStr);
         Assert.assertTrue(coreStr.contains(expected));
-        String expectedClassification = "\"Family L.|Genus Humb.|Genus species Mill.\"";
+        String expectedClassification = "\"Family|Genus|Genus species\"";
         Assert.assertTrue(coreStr.contains(expectedClassification));
 
 
