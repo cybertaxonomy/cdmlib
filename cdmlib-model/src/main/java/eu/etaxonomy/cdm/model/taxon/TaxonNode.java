@@ -831,7 +831,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     }
 
     /**
-     * Retrieves the first ancestor of the given rank
+     * Retrieves the first ancestor of the given rank. If any of the ancestors
+     * has no taxon or has a rank > the given rank <code>null</code> is returned.
+     * If <code>this</code> taxon is already of given rank this taxon is returned.
      * @param rank the rank the ancestor should have
      * @return the first found instance of a parent taxon node with the given rank
      */
@@ -841,11 +843,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return null;
         }
         TaxonName name = CdmBase.deproxy(taxon.getName());
-        if (name.getRank().isHigher(rank)){
-        	return null;
-        }
-        if (name.getRank().equals(rank)){
-        	return this;
+        if (name != null && name.getRank() != null){
+            if (name.getRank().isHigher(rank)){
+                return null;
+            }
+            if (name.getRank().equals(rank)){
+                return this;
+            }
         }
 
         if(this.getParent() != null){

@@ -214,17 +214,15 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		record.setTaxonConceptId(taxonBase.getUuid());
 
 		//Classification
-		if (state.getConfig().isWithHigherClassification()
-		        && taxonBase.isInstanceOf(Taxon.class)){
+		if (state.getConfig().isWithHigherClassification()){
 			//all classification and rank specific fields are meant to represent the classification
-			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-		    handleHigherClassification(state, record, taxon, classification);
+		    handleHigherClassification(state, record, acceptedTaxon, classification);
 
 			//... higher ranks
-			handleUninomialOrGenus(record, name);
-			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
-				record.setSubgenus(name.getNameCache());
-			}
+//			handleUninomialOrGenus(record, name);
+//			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
+//				record.setSubgenus(name.getNameCache());
+//			}
 			//record.setSubgenus(name.getInfraGenericEpithet());
 		}
 		if (name.getRank() != null &&  (name.getRank().isSupraGeneric() || name.getRank().isGenus())){
@@ -314,6 +312,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         record.setOrder(nameOf(node.getAncestorOfRank(Rank.ORDER())));
         record.setFamily(nameOf(node.getAncestorOfRank(Rank.FAMILY())));
         record.setGenus(nameOf(node.getAncestorOfRank(Rank.GENUS())));
+        record.setSubgenus(nameOf(node.getAncestorOfRank(Rank.SUBGENUS())));
         List<TaxonNode> ancestors = node.getAncestorList();
         String higherClassification = higherClassificationString(ancestors);
         record.setHigherClassification(higherClassification);
@@ -341,8 +340,13 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
     private String nameOf(TaxonNode node) {
         if (node != null && node.getTaxon()!= null){
             Taxon taxon = node.getTaxon();
-            if (taxon.getName()!= null){
-                return taxon.getName().getTitleCache();
+            TaxonName name = taxon.getName();
+            if (name!= null){
+                if (isNotBlank(name.getNameCache())){
+                    return name.getNameCache();
+                }else{
+                    return name.getTitleCache();
+                }
             }else{
                 return taxon.getTitleCache();
             }
@@ -383,40 +387,40 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		}
 	}
 
-	/**
-	 * @param record
-	 * @param name
-	 */
-	private void handleUninomialOrGenus(DwcaTaxonRecord record, INonViralName name) {
-		//epitheta
-		String firstEpi = name.getGenusOrUninomial();
-		if (StringUtils.isNotBlank(firstEpi)){
-			Rank rank = name.getRank();
-			if (rank != null){
-				if (rank.isLower(Rank.GENUS())){
-					record.setGenus(firstEpi);
-				}else if (rank.equals(Rank.GENUS())){
-					record.setGenus(firstEpi);
-				}else if (rank.equals(Rank.KINGDOM())){
-					record.setKingdom(firstEpi);
-				}else if (rank.equals(Rank.PHYLUM())){
-					record.setPhylum(firstEpi);
-				}else if (rank.equals(Rank.CLASS())){
-					record.setClazz(firstEpi);
-				}else if (rank.equals(Rank.ORDER())){
-					record.setOrder(firstEpi);
-				}else if (rank.equals(Rank.FAMILY())){
-					record.setFamily(firstEpi);
-				}else{
-					// !!!
-					String message = "Rank not covered. Set uninomial as genus instead: " + rank.getLabel();
-					logger.warn(message);
+//	/**
+//	 * @param record
+//	 * @param name
+//	 */
+//	private void handleUninomialOrGenus(DwcaTaxonRecord record, INonViralName name) {
+//		//epitheta
+//		String firstEpi = name.getGenusOrUninomial();
+//		if (StringUtils.isNotBlank(firstEpi)){
+//			Rank rank = name.getRank();
+//			if (rank != null){
+//				if (rank.isLower(Rank.GENUS())){
 //					record.setGenus(firstEpi);
-				}
-
-			}
-		}
-	}
+//				}else if (rank.equals(Rank.GENUS())){
+//					record.setGenus(firstEpi);
+//				}else if (rank.equals(Rank.KINGDOM())){
+//					record.setKingdom(firstEpi);
+//				}else if (rank.equals(Rank.PHYLUM())){
+//					record.setPhylum(firstEpi);
+//				}else if (rank.equals(Rank.CLASS())){
+//					record.setClazz(firstEpi);
+//				}else if (rank.equals(Rank.ORDER())){
+//					record.setOrder(firstEpi);
+//				}else if (rank.equals(Rank.FAMILY())){
+//					record.setFamily(firstEpi);
+//				}else{
+//					// !!!
+//					String message = "Rank not covered. Set uninomial as genus instead: " + rank.getLabel();
+//					logger.warn(message);
+////					record.setGenus(firstEpi);
+//				}
+//
+//			}
+//		}
+//	}
 
 
 	/**
