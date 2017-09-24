@@ -145,10 +145,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         result.setAbort();
                     }
 
-                } else if ((ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen)
-                        || (ref instanceof MediaSpecimen && config.isDeleteFromEveryWhere())){
+                } else if (ref instanceof MediaSpecimen && config.getDeleteFrom().getId() == ref.getId() && config.getDeleteFrom() instanceof MediaSpecimen){
                         MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(ref, MediaSpecimen.class);
-
                         mediaSpecimen.setMediaSpecimen(null);
                         updatedObject = mediaSpecimen;
                         service = (IService)specimenService;
@@ -240,8 +238,12 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     }
                 }
 
-            } else {
+            }if (ref instanceof MediaSpecimen){
+               message = "The media can't be deleted from the database because it is referenced by a mediaspecimen. ("+((MediaSpecimen)ref).getTitleCache()+")";
+               result.setAbort();
+            }else {
                 message = "The media can't be completely deleted because it is referenced by another " + ref.getUserFriendlyTypeName() ;
+                result.setAbort();
             }
             if (message != null){
                 result.addException(new ReferencedObjectUndeletableException(message));
