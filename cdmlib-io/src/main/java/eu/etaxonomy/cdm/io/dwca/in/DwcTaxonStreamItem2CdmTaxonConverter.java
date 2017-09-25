@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,17 +22,22 @@ import org.apache.log4j.Logger;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -109,8 +115,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
     }
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem csvTaxonRecord){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem csvTaxonRecord){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		//TODO what if not transactional?
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -118,13 +124,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 		//taxon
 		TaxonBase<?> taxonBase = getTaxonBase(csvTaxonRecord);
-		MappedCdmBase  mcb = new MappedCdmBase(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
+		MappedCdmBase<TaxonBase<?>>  mcb = new MappedCdmBase<>(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
 		resultList.add(mcb);
 
 		//original source
 		String id = csvTaxonRecord.get(ID);
 		IdentifiableSource source = taxonBase.addSource(OriginalSourceType.Import, id, "Taxon", sourceReference, sourceReferenceDetail);
-		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
+		MappedCdmBase<IdentifiableSource> mappedSource = new MappedCdmBase<>(csvTaxonRecord.get(ID), source);
 		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
 
@@ -140,7 +146,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
 
 		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
-			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
+			sec = new MappedCdmBase<>(state.getTransactionalSourceReference());
 		}
 		if (sec != null){
 			taxonBase.setSec(sec.getCdmBase());
@@ -151,7 +157,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 		//NON core
 	    //term="http://purl.org/dc/terms/identifier"
-		//currently only LSIDs
+		//currently only LSIDs or generic
 		handleIdentifier(csvTaxonRecord, taxonBase);
 
 		//TaxonRemarks
@@ -212,17 +218,86 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
-		return new ListReader<MappedCdmBase>(resultList);
+		handleModified(csvTaxonRecord, taxonBase);
+
+		handleIsExtinct(csvTaxonRecord, taxonBase);
+
+
+
+		return new ListReader<>(resultList);
 	}
 
 
 
-	/**
+    /**
+     * @param csvTaxonRecord
+     * @param taxonBase
+     */
+    private void handleIsExtinct(StreamItem item, TaxonBase<?> taxonBase) {
+        String isExtinctStr = item.get(TermUri.GBIF_IS_EXTINCT);
+        if (isBlank(isExtinctStr)){
+            return;
+        }
+        Boolean isExtinct = getBoolean(isExtinctStr, item);
+        if (isExtinct != null){
+            try {
+                UUID isExtinctUuid = state.getTransformer().getMarkerTypeUuid("isExtinct");
+                MarkerType markerType = state.getCurrentIO().getMarkerType(state, isExtinctUuid, "extinct", "extinct", "extinct");
+                Marker.NewInstance(taxonBase, isExtinct, markerType);
+
+            } catch (UndefinedTransformerMethodException e) {
+                String message = "GetMarkerType not available for import. This should not happen. Please conntact developer";
+                fireWarningEvent(message, item.getLocation(), 8);
+            }
+        }
+
+    }
+
+    /**
+     * @param item
+     * @param isExtinctStr
+     * @return
+     */
+    private Boolean getBoolean(String booleanStr, StreamItem item) {
+        try {
+            return Boolean.valueOf(booleanStr);
+        } catch (Exception e) {
+            String message = "Boolean value could not be parsed";
+            fireWarningEvent(message, item, 4);
+            return null;
+        }
+    }
+
+
+
+    /**
+     * @param csvTaxonRecord
+     * @param taxonBase
+     */
+    private void handleModified(StreamItem item, TaxonBase<?> taxonBase) {
+        String modifiedStr = item.get(TermUri.DC_MODIFIED);
+        if (isBlank(modifiedStr)){
+            return;
+        }
+
+        try {
+            UUID modifiedUuid = state.getTransformer().getExtensionTypeUuid("modified");
+            ExtensionType extensionType = state.getCurrentIO().getExtensionType(state, modifiedUuid, "modified", "modified", "modified");
+            Extension.NewInstance(taxonBase, modifiedStr, extensionType);
+
+        } catch (UndefinedTransformerMethodException e) {
+            String message = "GetMarkerType not available for import. This should not happen. Please conntact developer";
+            fireWarningEvent(message, item.getLocation(), 8);
+        }
+
+
+    }
+
+    /**
 	 * @param item
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
-
 
 		String references = item.get(TermUri.DC_REFERENCES);
 
@@ -251,8 +326,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}
-
-
 
 	}
 
@@ -370,18 +443,24 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					String message = "LSID is malformed and can't be handled as LSID: %s";
 					message = String.format(message, identifier);
 					fireWarningEvent(message, csvTaxonRecord, 4);
+					Identifier.NewInstance(taxonBase, identifier, DefinedTerm.getTermByClassAndUUID(DefinedTerm.class, DefinedTerm.uuidLsid));
 				}
 			}else{
-				String message = "Identifier type not supported: %s";
+				Identifier.NewInstance(taxonBase, identifier, null);
+			    String message = "Identifier type not recognized. Create generic identifier: %s";
 				message = String.format(message, identifier);
-				fireWarningEvent(message, csvTaxonRecord, 4);
+				fireWarningEvent(message, csvTaxonRecord, 1);
 			}
 		}
 
 	}
 
 
-	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference sourceReference, String sourceReferecenDetail) {
+	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase,
+	        List<MappedCdmBase<? extends CdmBase>> resultList,
+	        Reference sourceReference,
+	        String sourceReferecenDetail) {
+
 		TermUri idTerm = TermUri.DWC_DATASET_ID;
 		TermUri strTerm = TermUri.DWC_DATASET_NAME;
 
@@ -413,9 +492,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				//source
 				IdentifiableSource source = classification.addSource(OriginalSourceType.Import, classificationId, "Dataset", sourceReference, sourceReferecenDetail);
 				//add to result
-				resultList.add(new MappedCdmBase(idTerm, datasetId, classification));
-				resultList.add(new MappedCdmBase(strTerm, datasetName, classification));
-				resultList.add(new MappedCdmBase(source));
+				resultList.add(new MappedCdmBase<>(idTerm, datasetId, classification));
+				resultList.add(new MappedCdmBase<>(strTerm, datasetName, classification));
+				resultList.add(new MappedCdmBase<>(source));
 				//TODO this is not so nice but currently necessary as classifications are requested in the same partition
 				state.putMapping(idTerm.toString(), classificationId, classification);
 				state.putMapping(strTerm.toString(), classificationName, classification);
@@ -449,7 +528,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return id;
 	}
 
-	private MappedCdmBase<Reference> getNameAccordingTo(StreamItem item, List<MappedCdmBase> resultList) {
+	private MappedCdmBase<Reference> getNameAccordingTo(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		if (config.isDatasetsAsSecundumReference()){
 			//TODO store nameAccordingTo info some where else or let the user define where to store it.
 			return null;
@@ -500,7 +579,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
+	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase<? extends CdmBase>> resultList, Reference sourceReference) {
 		TaxonName name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
@@ -559,7 +638,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param idIsInternal
 	 * @return
 	 */
-	private MappedCdmBase<Reference> getReference(StreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
+	private MappedCdmBase<Reference> getReference(StreamItem item,
+	        List<MappedCdmBase<? extends CdmBase>> resultList, TermUri idTerm,
+	        TermUri strTerm, boolean idIsInternal) {
 		Reference newRef = null;
 		Reference sourceCitation = null;
 
@@ -577,7 +658,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
 						newRef.addSource(OriginalSourceType.Import, refId, idTerm.toString(), sourceCitation, null);
-						MappedCdmBase<Reference> idResult = new MappedCdmBase<Reference>(idTerm, refId, newRef);
+						MappedCdmBase<Reference> idResult = new MappedCdmBase<>(idTerm, refId, newRef);
 						resultList.add(idResult);
 					}
 				}else{
@@ -589,7 +670,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				List<Reference> nomRefs = state.get(strTerm.toString(), refStr, Reference.class);
 				if (nomRefs.size() > 0){
 					//TODO handle list.size > 1 , do we need a list here ?
-					result = new MappedCdmBase<Reference>(strTerm, refStr , nomRefs.get(0));
+					result = new MappedCdmBase<>(strTerm, refStr , nomRefs.get(0));
 				}else{
 					// new Reference
 					if (newRef == null){
@@ -597,7 +678,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					}
 					newRef.setTitleCache(refStr, true);
 					//TODO distinguish available year, authorship, etc. if
-					result = new MappedCdmBase<Reference>(strTerm, refStr, newRef);
+					result = new MappedCdmBase<>(strTerm, refStr, newRef);
 					resultList.add(result);
 				}
 			}
@@ -608,13 +689,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
 	private void checkAuthorship(TaxonName nameBase, StreamItem item) {
-		if (!nameBase.isNonViral()){
+		if (nameBase.isViral()){
 			return;
 		}
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
 
 		if (! nameBase.isProtectedTitleCache()){
-			if (StringUtils.isBlank(nameBase.getAuthorshipCache())){
+			if (isBlank(nameBase.getAuthorshipCache())){
 				if (nameBase.isBotanical() || nameBase.isZoological()){
 					//TODO can't we also parse NonViralNames correctly ?
 					try {
@@ -787,7 +868,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_NAME_PUBLISHED_IN_ID.toString());
  		result.add(TermUri.DWC_NAME_PUBLISHED_IN.toString());
  		if (!config.isDatasetsAsSecundumReference()){
@@ -817,8 +898,4 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
-
-
 }

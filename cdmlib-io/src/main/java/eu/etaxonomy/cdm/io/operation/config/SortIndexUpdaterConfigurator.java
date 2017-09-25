@@ -6,9 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.operation.config;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.DefaultImportState;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.operation.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -16,14 +21,14 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 08.07.2016
  *
  */
-public class SortIndexUpdaterConfigurator  extends ImportConfiguratorBase<DefaultImportState<SetSecundumForSubtreeConfigurator>, Object> implements IImportConfigurator{
+public class SortIndexUpdaterConfigurator
+        extends ImportConfiguratorBase<DefaultImportState<SortIndexUpdaterConfigurator>, Object>
+        implements IImportConfigurator{
 
 
     private boolean doTaxonNode = true;
     private boolean doFeatureNode = true;
     private boolean doPolytomousKeyNode = true;
-
-    private String subTreeIndex = null;
 
     private SortIndexUpdaterConfigurator(ICdmDataSource destination){
         super(null);
@@ -101,7 +106,7 @@ public class SortIndexUpdaterConfigurator  extends ImportConfiguratorBase<Defaul
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
-                     SortIndexUpdaterWrapper.class
+                SortIndexUpdaterWrapper.class
         };
     }
 

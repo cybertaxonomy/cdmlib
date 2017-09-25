@@ -35,7 +35,6 @@ import au.com.bytecode.opencsv.CSVWriter;
  * or ISO codes.  http://www.ietf.org/rfc/rfc4646.txt
  * http://www.loc.gov/standards/iso639-2/php/English_list.php
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:31
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -1264,23 +1263,25 @@ public class Language extends DefinedTermBase<Language> {
         }
         return null;
     }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
-     */
-    @Override
-    public String toString() {
-        if (this.getLabel() != null){
-            return this.getLabel();
-        }else{
-            return super.toString();
+    public static Language getLanguageByIsoCode(String code){
+        if (StringUtils.isBlank(code)){
+            return null;
         }
+        for (Language language : termMap.values()){
+            if (code.equalsIgnoreCase(language.getIso639_1())){
+                return language;
+            } else if (code.equalsIgnoreCase(language.getIso639_2())){
+                return language;
+            }
+        }
+        return null;
     }
+
 
     @Override
     protected void setDefaultTerms(TermVocabulary<Language> termVocabulary) {
         if (termMap == null){  //there are 2 language vocabularies now
-            termMap = new HashMap<UUID, Language>();
+            termMap = new HashMap<>();
         }
         for (Language term : termVocabulary.getTerms()){
             termMap.put(term.getUuid(), term);
@@ -1331,5 +1332,16 @@ public class Language extends DefinedTermBase<Language> {
             }
         }
     }
+
+
+ // ******************************** toString *********************/
+     @Override
+     public String toString() {
+         if (this.getLabel() != null){
+             return this.getLabel();
+         }else{
+             return super.toString();
+         }
+     }
 
 }

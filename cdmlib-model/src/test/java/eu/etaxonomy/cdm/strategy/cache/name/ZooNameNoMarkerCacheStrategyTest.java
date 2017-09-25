@@ -35,7 +35,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
 
-	private NonViralNameDefaultCacheStrategy strategy;
+	private TaxonNameDefaultCacheStrategy strategy;
 	private TaxonName familyName;
 	private TaxonName subGenusName;
 	private TaxonName speciesName;
@@ -185,7 +185,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, INonViralName.class);
+		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class);
 
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));

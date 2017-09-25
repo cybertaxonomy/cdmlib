@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
  */
 public class AbcdTransformer extends InputTransformerBase{
 
+    private static final long serialVersionUID = 5946317528955718151L;
 
     /**
      * {@inheritDoc}

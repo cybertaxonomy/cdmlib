@@ -22,7 +22,9 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
  * @author a.mueller
  * @created 05.05.2011
  */
-public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaImportState> implements IImportConfigurator {
+public class DwcaImportConfigurator
+        extends DwcaDataImportConfiguratorBase<DwcaImportState>
+        implements IImportConfigurator {
 
     private static final long serialVersionUID = 6932718596034946336L;
     @SuppressWarnings("unused")
@@ -79,60 +81,34 @@ public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaI
     public boolean isNoQuotes() {
             return isNoQuotes;
     }
-
     public void setNoQuotes(boolean isNoQuotes) {
             this.isNoQuotes = isNoQuotes;
     }
 
-    /**
-     * @return the doTaxonRelationships
-     */
     public boolean isDoTaxonRelationships() {
         return doTaxonRelationships;
     }
-
     public void setDoTaxonRelationships(boolean doTaxonRelationships) {
         this.doTaxonRelationships = doTaxonRelationships;
     }
 
-    /**
-     * @return the doOnlyTaxonRelationships
-     */
     public boolean isDoTaxa() {
         return doTaxa;
     }
-
-    /**
-     * @param doOnlyTaxonRelationships the doOnlyTaxonRelationships to set
-     */
     public void setDoTaxa(boolean doTaxa) {
         this.doTaxa = doTaxa;
     }
 
-    /**
-     * @return the doExtensions
-     */
     public boolean isDoExtensions() {
         return doExtensions;
     }
-
-    /**
-     * @param doExtensions the doExtensions to set
-     */
     public void setDoExtensions(boolean doExtensions) {
         this.doExtensions = doExtensions;
     }
 
-
-    /**
-     * @return the keepMappingForFurtherImports
-     */
     public boolean isKeepMappingForFurtherImports() {
         return keepMappingForFurtherImports;
     }
-    /**
-     * @param keepMapping
-     */
     public void setKeepMappingForFurtherImports(boolean keepMapping) {
         keepMappingForFurtherImports = keepMapping;
     }

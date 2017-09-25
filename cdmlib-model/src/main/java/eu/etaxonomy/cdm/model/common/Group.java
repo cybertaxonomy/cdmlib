@@ -48,9 +48,10 @@ public class Group extends CdmBase {
     private static final long serialVersionUID = 7216686200093054648L;
     private static final Logger logger = Logger.getLogger(Group.class);
 
-    public final static UUID groupEditorUuid = UUID.fromString("22e5e8af-b99c-4884-a92f-71978efd3770");
-    public final static UUID groupProjectManagerUuid = UUID.fromString("645191ae-32a4-4d4e-9b86-c90e0d41944a");
-    public final static UUID groupPublisherUuid = UUID.fromString("c1f20ad8-1782-40a7-b06b-ce4773acb5ea");
+    public final static UUID GROUP_EDITOR_UUID = UUID.fromString("22e5e8af-b99c-4884-a92f-71978efd3770");
+    public final static UUID GROUP_PROJECT_MANAGER_UUID = UUID.fromString("645191ae-32a4-4d4e-9b86-c90e0d41944a");
+    public final static UUID GROUP_PUBLISHER_UUID = UUID.fromString("c1f20ad8-1782-40a7-b06b-ce4773acb5ea");
+    public final static UUID GROUP_ADMIN_UUID = UUID.fromString("1739df71-bf73-4dc6-8320-aaaf72cb555f");
 
 //*********************** FACTORY *********************/
 

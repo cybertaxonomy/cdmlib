@@ -56,7 +56,8 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 
 		if (createNew == true || cdmApp == null) {
 			ClassPathResource applicationContextResource = new ClassPathResource(DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
-			cdmApp = CdmApplicationController.NewInstance(applicationContextResource, cdmSource,schemaValidation, omitTermLoading);
+			cdmApp = CdmApplicationController.NewInstance(applicationContextResource, cdmSource, schemaValidation,
+			        config.getHibernateConfig(), omitTermLoading, config.getProgressMonitor());
 			if (cdmApp != null) {
 				return true;
 			} else {
@@ -77,10 +78,8 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	public ICdmRepository getCdmAppController() {
 		return this.cdmApp;
 	}
-
 	/**
-	 * @param cdmApp
-	 *            the cdmApp to set
+	 * @see #getCdmAppController()
 	 */
 	public void setCdmAppController(ICdmRepository cdmApp) {
 		this.cdmApp = cdmApp;

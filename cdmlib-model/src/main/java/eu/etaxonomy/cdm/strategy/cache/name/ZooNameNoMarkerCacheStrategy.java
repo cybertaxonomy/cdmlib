@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public class ZooNameNoMarkerCacheStrategy
-                extends NonViralNameDefaultCacheStrategy {
+                extends TaxonNameDefaultCacheStrategy {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategy.class);

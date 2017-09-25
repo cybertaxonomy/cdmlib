@@ -16,14 +16,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * @author a.mueller
@@ -49,6 +48,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean showSql = false;
 	private boolean formatSql = false;
 	private boolean registerSearchListener = false;
+	private boolean registerAuditing = true;
 	private Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
 
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password){
@@ -168,7 +168,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
 			props.addPropertyValue(key, persistentProperties.getProperty(key));
-			Properties a = Environment.getProperties();
+//			Properties a = Environment.getProperties();
 		}
 
 		bd.setPropertyValues(props);
@@ -192,47 +192,39 @@ public class CdmDataSource extends CdmDataSourceBase {
 
 	@Override
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
-		boolean showSql = false;
-		boolean formatSql = false;
-		boolean registerSearchListener = false;
-		Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
-		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
+        HibernateConfiguration hibernateConfig = HibernateConfiguration.NewDefaultInstance();
+		return getHibernatePropertiesBean(hbm2dll, hibernateConfig);
 	}
 
-	@Override
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
+    @Override
+    @Deprecated
+    public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql,
+            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
+        HibernateConfiguration hibernateConfig = HibernateConfiguration.NewInstance(showSql, formatSql,
+                registerSearchListener, null, cacheProviderClass);
+        return getHibernatePropertiesBean(hbm2dll, hibernateConfig);
+    }
+
+    @Override
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
+	        HibernateConfiguration hibernateConfig){
+        if (hibernateConfig == null){
+            hibernateConfig = new HibernateConfiguration();  //empty
+        }
+
+        boolean showSql = hibernateConfig.getShowSql(this.showSql);
+        boolean formatSql = hibernateConfig.getFormatSql(this.formatSql);
+        boolean registerAuditing = hibernateConfig.getRegisterEnvers(this.registerAuditing);
+        boolean registerSearchListener = hibernateConfig.getRegisterSearch(this.registerSearchListener);
+        Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass(this.cacheProviderClass);
+
 		//Hibernate default values
 		if (hbm2dll == null){
 			hbm2dll = this.hbm2dll;
 		}
-		if (showSql == null){
-			showSql = this.showSql;
-		}
-		if (formatSql == null){
-			formatSql = this.formatSql;
-		}
-		if (cacheProviderClass == null){
-			cacheProviderClass = this.cacheProviderClass;
-		}
-		if(registerSearchListener == null){
-			registerSearchListener = this.registerSearchListener;
-		}
 
-		DatabaseTypeEnum dbtype = dbType;
-		AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
-		MutablePropertyValues hibernateProps = new MutablePropertyValues();
-
-		Properties props = new Properties();
-		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
-		props.setProperty("hibernate.dialect", dbtype.getHibernateDialectCanonicalName());
-//		OLD:props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
-		props.setProperty("hibernate.cache.region.factory_class", cacheProviderClass.getName());
-		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
-		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
-		props.setProperty("hibernate.search.autoregister_listeners", String.valueOf(registerSearchListener));
-
-		hibernateProps.addPropertyValue("properties",props);
-		bd.setPropertyValues(hibernateProps);
+		AbstractBeanDefinition bd = makeHibernatePropertiesBean(dbType, hbm2dll, showSql, formatSql, registerAuditing,
+                registerSearchListener, cacheProviderClass);
 		return bd;
 	}
 

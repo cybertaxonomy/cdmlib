@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -100,6 +101,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
             state.getResult().addException(e, message);
         }finally{
             flushWriter(state, file);
+
         }
     }
 
@@ -213,16 +215,14 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 		//Classification
 		if (state.getConfig().isWithHigherClassification()){
-			//FIXME all classification and rank specific fields are meant to represent the classification
-			//currently the information is only compiled for the exact same range but it should be compiled
-			//for all ranks above the rank of this taxon
-			//TODO we do not support this yet
-			record.setHigherClassification(null);
+			//all classification and rank specific fields are meant to represent the classification
+		    handleHigherClassification(state, record, acceptedTaxon, classification);
+
 			//... higher ranks
-			handleUninomialOrGenus(record, name);
-			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
-				record.setSubgenus(name.getNameCache());
-			}
+//			handleUninomialOrGenus(record, name);
+//			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
+//				record.setSubgenus(name.getNameCache());
+//			}
 			//record.setSubgenus(name.getInfraGenericEpithet());
 		}
 		if (name.getRank() != null &&  (name.getRank().isSupraGeneric() || name.getRank().isGenus())){
@@ -295,6 +295,66 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	}
 
 	/**
+     * @param state
+     * @param record
+     * @param taxonBase
+     * @param classification
+     */
+    private void handleHigherClassification(DwcaTaxExportState state, DwcaTaxonRecord record, Taxon taxon,
+            Classification classification) {
+        TaxonNode node = taxon.getTaxonNode(classification);
+        if (node == null){
+            return;
+        }
+        record.setKingdom(nameOf(node.getAncestorOfRank(Rank.KINGDOM())));
+        record.setPhylum(nameOf(node.getAncestorOfRank(Rank.PHYLUM())));
+        record.setClazz(nameOf(node.getAncestorOfRank(Rank.CLASS())));
+        record.setOrder(nameOf(node.getAncestorOfRank(Rank.ORDER())));
+        record.setFamily(nameOf(node.getAncestorOfRank(Rank.FAMILY())));
+        record.setGenus(nameOf(node.getAncestorOfRank(Rank.GENUS())));
+        record.setSubgenus(nameOf(node.getAncestorOfRank(Rank.SUBGENUS())));
+        List<TaxonNode> ancestors = node.getAncestorList();
+        String higherClassification = higherClassificationString(ancestors);
+        record.setHigherClassification(higherClassification);
+    }
+
+    /**
+     * @param ancestors
+     */
+    private String higherClassificationString(List<TaxonNode> ancestors) {
+        String result = "";
+        for (TaxonNode node : ancestors){
+            String nameOfNode = nameOf(node);
+            if (StringUtils.isBlank(nameOfNode)){
+                nameOfNode = "-";
+            }
+            result = CdmUtils.concat("|", result, nameOfNode);
+        }
+        return result;
+    }
+
+    /**
+     * @param ancestorOfRank
+     * @return
+     */
+    private String nameOf(TaxonNode node) {
+        if (node != null && node.getTaxon()!= null){
+            Taxon taxon = node.getTaxon();
+            TaxonName name = taxon.getName();
+            if (name!= null){
+                if (isNotBlank(name.getNameCache())){
+                    return name.getNameCache();
+                }else{
+                    return name.getTitleCache();
+                }
+            }else{
+                return taxon.getTitleCache();
+            }
+        }
+        return null;
+    }
+
+    /**
 	 * @param record
 	 * @param name
 	 * @param type
@@ -327,40 +387,40 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		}
 	}
 
-	/**
-	 * @param record
-	 * @param name
-	 */
-	private void handleUninomialOrGenus(DwcaTaxonRecord record, INonViralName name) {
-		//epethita
-		String firstEpi = name.getGenusOrUninomial();
-		if (!StringUtils.isBlank(firstEpi)){
-			Rank rank = name.getRank();
-			if (rank != null){
-				if (rank.isLower(Rank.GENUS())){
-					record.setGenus(firstEpi);
-				}else if (rank.equals(Rank.GENUS())){
-					record.setGenus(firstEpi);
-				}else if (rank.equals(Rank.KINGDOM())){
-					record.setKingdom(firstEpi);
-				}else if (rank.equals(Rank.PHYLUM())){
-					record.setPhylum(firstEpi);
-				}else if (rank.equals(Rank.CLASS())){
-					record.setClazz(firstEpi);
-				}else if (rank.equals(Rank.ORDER())){
-					record.setOrder(firstEpi);
-				}else if (rank.equals(Rank.FAMILY())){
-					record.setFamily(firstEpi);
-				}else{
-					// !!!
-					String message = "Rank not covered. Set uninomial as genus instead: " + rank.getLabel();
-					logger.warn(message);
+//	/**
+//	 * @param record
+//	 * @param name
+//	 */
+//	private void handleUninomialOrGenus(DwcaTaxonRecord record, INonViralName name) {
+//		//epitheta
+//		String firstEpi = name.getGenusOrUninomial();
+//		if (StringUtils.isNotBlank(firstEpi)){
+//			Rank rank = name.getRank();
+//			if (rank != null){
+//				if (rank.isLower(Rank.GENUS())){
 //					record.setGenus(firstEpi);
-				}
-
-			}
-		}
-	}
+//				}else if (rank.equals(Rank.GENUS())){
+//					record.setGenus(firstEpi);
+//				}else if (rank.equals(Rank.KINGDOM())){
+//					record.setKingdom(firstEpi);
+//				}else if (rank.equals(Rank.PHYLUM())){
+//					record.setPhylum(firstEpi);
+//				}else if (rank.equals(Rank.CLASS())){
+//					record.setClazz(firstEpi);
+//				}else if (rank.equals(Rank.ORDER())){
+//					record.setOrder(firstEpi);
+//				}else if (rank.equals(Rank.FAMILY())){
+//					record.setFamily(firstEpi);
+//				}else{
+//					// !!!
+//					String message = "Rank not covered. Set uninomial as genus instead: " + rank.getLabel();
+//					logger.warn(message);
+////					record.setGenus(firstEpi);
+//				}
+//
+//			}
+//		}
+//	}
 
 
 	/**

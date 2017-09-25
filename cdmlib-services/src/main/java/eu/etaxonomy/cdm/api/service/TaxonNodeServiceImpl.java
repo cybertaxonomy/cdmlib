@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
@@ -33,6 +35,8 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -50,6 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -79,6 +84,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
+
+    @Autowired
+    IProgressMonitorService progressMonitorService;
+
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -748,13 +757,60 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult setSecundumForSubtree(UUID subtreeUuid,  Reference newSec, boolean includeAcceptedTaxa, boolean includeSynonyms, boolean overwriteExistingAccepted, boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
+    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config) {
+        UpdateResult result = new UpdateResult();
+       // IProgressMonitor monitor = config.getMonitor();
+        IProgressMonitor monitor = config.getMonitor();
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
+        }
+        monitor.beginTask("Update Secundum Reference", 100);
+        if (config.getSubtreeUuid() == null){
+            result.setError();
+            result.addException(new NullPointerException("No subtree given"));
+            monitor.done();
+            return result;
+        }
+        TaxonNode subTree = find(config.getSubtreeUuid());
+        if (subTree == null){
+            result.setError();
+            result.addException(new NullPointerException("Subtree does not exist"));
+            monitor.done();
+            return result;
+        }
+        TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+
+        //Reference ref = config.getNewSecundum();
+        if (config.isIncludeAcceptedTaxa()){
+            monitor.subTask("Update Accepted Taxa");
+            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
+            taxonService.saveOrUpdate(updatedTaxa);
+            result.addUpdatedObjects(updatedTaxa);
+        }
+        if (config.isIncludeSynonyms()){
+            monitor.subTask("Update Synonyms");
+            Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+            taxonService.saveOrUpdate(updatedSynonyms);
+            result.addUpdatedObjects(updatedSynonyms);
+        }
+
+        monitor.done();
+        return result;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
+            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
        // IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        monitor.beginTask("Update Secundum Reference", 100);
+        monitor.beginTask("Update publish flag", 100);
         if (subtreeUuid == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
@@ -773,12 +829,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //Reference ref = config.getNewSecundum();
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
-            Set<Taxon> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, overwriteExistingAccepted, includeSharedTaxa, emptyDetail);
+            Set<Taxon> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
-            Set<Synonym> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, overwriteExistingSynonyms, includeSharedTaxa , emptyDetail);
+            Set<Synonym> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
             result.addUpdatedObjects(updatedSynonyms);
         }
         monitor.done();
@@ -800,5 +856,26 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public List<Integer> idList(TaxonNodeFilter filter){
         return nodeFilterDao.idList(filter);
     }
+
+    @Override
+    public UUID monitSetSecundum(final SetSecundumForSubtreeConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+
+                configurator.setMonitor(monitor);
+                UpdateResult result = setSecundumForSubtree(configurator);
+
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
+
+
 
 }

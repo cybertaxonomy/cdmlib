@@ -91,7 +91,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	public boolean isUsePartitions() {
 		return usePartitions;
 	}
-
 	public void setUsePartitions(boolean usePartitions) {
 		this.usePartitions = usePartitions;
 	}
@@ -99,7 +98,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	public void setDefaultPartitionSize(int defaultPartitionSize) {
 		this.defaultPartitionSize = defaultPartitionSize;
 	}
-
 	public int getDefaultPartitionSize() {
 		return defaultPartitionSize;
 	}
@@ -107,7 +105,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	public IImportMapping.MappingType getMappingType() {
 		return mappingType;
 	}
-
 	public void setMappingType(IImportMapping.MappingType mappingType) {
 		this.mappingType = mappingType;
 	}
@@ -123,30 +120,17 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	}
 
 
-    /**
-     * @return the databaseMappingFile
-     */
     public String getDatabaseMappingFile() {
         return databaseMappingFile;
     }
-
-    /**
-     * @param databaseMappingFile the databaseMappingFile to set
-     */
     public void setDatabaseMappingFile(String databaseMappingFile) {
         this.databaseMappingFile = databaseMappingFile;
     }
 
 
-    /**
-     * @return the stateUuid
-     */
     public UUID getStateUuid() {
         return stateUuid;
     }
-    /**
-     * @param stateuuid
-     */
     public void setStateUuid(UUID stateUuid) {
         this.stateUuid = stateUuid;
     }

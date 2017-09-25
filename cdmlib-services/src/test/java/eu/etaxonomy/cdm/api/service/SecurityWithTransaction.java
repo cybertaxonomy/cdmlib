@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 
@@ -73,7 +73,7 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
     private AuthenticationManager authenticationManager;
 
     @SpringBeanByName
-    private CdmPermissionEvaluator permissionEvaluator;
+    private ICdmPermissionEvaluator permissionEvaluator;
 
     private UsernamePasswordAuthenticationToken token;
 

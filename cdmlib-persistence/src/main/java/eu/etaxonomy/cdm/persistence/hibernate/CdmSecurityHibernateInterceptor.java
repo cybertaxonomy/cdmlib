@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 /**
@@ -45,13 +45,13 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     public static final Logger logger = Logger.getLogger(CdmSecurityHibernateInterceptor.class);
 
 
-    private CdmPermissionEvaluator permissionEvaluator;
+    private ICdmPermissionEvaluator permissionEvaluator;
 
-    public CdmPermissionEvaluator getPermissionEvaluator() {
+    public ICdmPermissionEvaluator getPermissionEvaluator() {
         return permissionEvaluator;
     }
 
-    public void setPermissionEvaluator(CdmPermissionEvaluator permissionEvaluator) {
+    public void setPermissionEvaluator(ICdmPermissionEvaluator permissionEvaluator) {
         this.permissionEvaluator = permissionEvaluator;
     }
 
@@ -89,10 +89,6 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 //        exculdeMap.get(TaxonName.class).add("taxonBases");
     }
 
-
-    /* (non-Javadoc)
-     * @see org.hibernate.EmptyInterceptor#onSave(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-     */
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] type) {
 
@@ -105,10 +101,6 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         return true;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.hibernate.EmptyInterceptor#onFlushDirty(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-     */
     @Override
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
 
@@ -140,10 +132,6 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     }
 
 
-
-    /* (non-Javadoc)
-     * @see org.hibernate.EmptyInterceptor#onDelete(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
-     */
     @Override
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 
@@ -256,6 +244,5 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         int key = ArrayUtils.indexOf(propertyNames, propertyNameToTest);
         return propertyIsModified(currentState, previousState, key);
     }
-
 
 }

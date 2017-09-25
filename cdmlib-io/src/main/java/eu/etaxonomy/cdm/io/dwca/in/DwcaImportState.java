@@ -22,6 +22,4 @@ public class DwcaImportState extends DwcaDataImportStateBase<DwcaImportConfigura
 	public DwcaImportState(DwcaImportConfigurator config) {
 		super(config);
 	}
-
-
 }

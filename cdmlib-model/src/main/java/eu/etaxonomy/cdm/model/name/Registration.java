@@ -145,6 +145,14 @@ public class Registration extends AnnotatableEntity {
         return new Registration();
     }
 
+
+    /**
+     * @param identifier
+     * @param specificIdentifier
+     * @param name can be <code>null</code>
+     * @param typeDesignations can be <code>null</code>
+     * @return
+     */
     public static Registration NewInstance(String identifier, String specificIdentifier,
             TaxonName name, Set<TypeDesignationBase> typeDesignations){
         Registration result = new Registration();
@@ -183,10 +191,12 @@ public class Registration extends AnnotatableEntity {
     public TaxonName getName() {return name;}
     public void setName(TaxonName name) {
         if (this.name != null && !this.name.equals(name)){
-            name.getRegistrations().remove(this);
+            this.name.getRegistrations().remove(this);
+        }
+        if (name != null && !name.equals(this.name)){
+            name.getRegistrations().add(this);
         }
         this.name = name;
-        this.name.getRegistrations().add(this);
     }
 
     public User getSubmitter() {return submitter;}

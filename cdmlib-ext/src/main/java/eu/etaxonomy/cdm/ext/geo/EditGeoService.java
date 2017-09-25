@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -347,6 +348,9 @@ public class EditGeoService implements IEditGeoService {
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
+        if (propertyPaths == null){
+            propertyPaths = Arrays.asList(new String []{});
+        }
         // Adding default initStrategies to improve the performance of this method
         // adding 'status' and 'area' has a good positive effect:
         // filterDistributions() only takes 21% of the total method time (before it was 46%)
@@ -356,7 +360,7 @@ public class EditGeoService implements IEditGeoService {
         // moved the load from the filter method to the getDescriptionElementForTaxon()
         // method.
         // overall improvement by this means is by 42% (from 77,711 ms to 44,868 ms)
-        ArrayList<String> initStrategy = new ArrayList<String>(propertyPaths);
+        ArrayList<String> initStrategy = new ArrayList<>(propertyPaths);
         if(!initStrategy.contains("status")) {
             initStrategy.add("status");
         }
@@ -367,7 +371,7 @@ public class EditGeoService implements IEditGeoService {
             initStrategy.add("markers.markerType");
         }
         if(omitLevels == null) {
-            omitLevels = new HashSet<NamedAreaLevel>(0);
+            omitLevels = new HashSet<>(0);
         }
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);

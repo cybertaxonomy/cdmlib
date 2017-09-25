@@ -23,6 +23,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * This class is a wrapper class to wrap an {@link javax.sql.DataSource} to an
@@ -222,12 +223,23 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	}
 
 	@Override
+	@Deprecated
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 			Boolean showSql, Boolean formatSql, Boolean registerSearchListener,
 			Class<? extends RegionFactory> cacheProviderClass) {
 		//TODO is it possible/required to build a properties bean here?
 		throw new UnsupportedOperationException("getHibernatePropertiesBean() not supported by WrappedCdmDataSource");
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
+            HibernateConfiguration hibernateConfig) {
+        //TODO is it possible/required to build a properties bean here?
+        throw new UnsupportedOperationException("getHibernatePropertiesBean() not supported by WrappedCdmDataSource");
+    }
 
 	@Override
 	public String getFilePath() {
@@ -396,4 +408,5 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 			throw new RuntimeException(e);
 		}
 	}
+
 }

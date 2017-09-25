@@ -1,3 +1,7 @@
+package eu.etaxonomy.cdm.api.service.config;
+
+import java.io.Serializable;
+
 /**
 * Copyright (C) 2017 EDIT
 * European Distributed Institute of Taxonomy
@@ -6,11 +10,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.common;
+
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -20,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 06.01.2017
  *
  */
-public class SetSecundumForSubtreeConfigurator extends ImportConfiguratorBase<DefaultImportState<SetSecundumForSubtreeConfigurator>, Object> implements IImportConfigurator{
+public class SetSecundumForSubtreeConfigurator implements Serializable{
     private UUID subtreeUuid;
     private Reference newSecundum;
     private boolean includeAcceptedTaxa = true;
@@ -29,12 +33,12 @@ public class SetSecundumForSubtreeConfigurator extends ImportConfiguratorBase<De
     private boolean overwriteExistingSynonyms = true;
     private boolean emptySecundumDetail = true;
     private boolean includeSharedTaxa = true;
-    private IProgressMonitor monitor;
+    private IRemotingProgressMonitor monitor;
 
     /**
      * @param monitor the monitor to set
      */
-    public void setMonitor(IProgressMonitor monitor) {
+    public void setMonitor(IRemotingProgressMonitor monitor) {
         this.monitor = monitor;
     }
 
@@ -42,8 +46,7 @@ public class SetSecundumForSubtreeConfigurator extends ImportConfiguratorBase<De
      * @param subtreeUuid
      * @param newSecundum
      */
-    public SetSecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IProgressMonitor monitor) {
-        super(null);
+    public SetSecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor) {
         this.subtreeUuid = subtreeUuid;
         this.newSecundum = newSecundum;
         this.monitor = monitor;
@@ -54,7 +57,6 @@ public class SetSecundumForSubtreeConfigurator extends ImportConfiguratorBase<De
      * @param newSecundum
      */
     public SetSecundumForSubtreeConfigurator(UUID subtreeUuid) {
-        super(null);
         this.subtreeUuid = subtreeUuid;
         // this.newSecundum = newSecundum;
     }
@@ -182,43 +184,9 @@ public class SetSecundumForSubtreeConfigurator extends ImportConfiguratorBase<De
     /**
      * @return
      */
-    public IProgressMonitor getMonitor() {
+    public IRemotingProgressMonitor getMonitor() {
 
         return monitor;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public DefaultImportState getNewState() {
-      return new DefaultImportState(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void makeIoClassList() {
-        ioClassList = new Class[]{
-                SecundumUpdater.class
-                };
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Reference getSourceReference() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isValid(){
-        return true;
     }
 
 }

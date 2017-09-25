@@ -106,13 +106,15 @@
           <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</a-hint>
           <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
         </field>
+        <!-- FIXME: complete mapping #6324 
         <field>
-          <!-- FIXME: this mapping is no longer valid see issue #6324 -->
-          <a>synonymRelations</a>
+          <a>synonyms</a>
           <b>hasRelationship</b>
-          <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</a-hint>
+          <a-hint>eu.etaxonomy.cdm.model.taxon.Synonym</a-hint>
           <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
+          // Synonym can not be directly mapped to Relationship !!!!
         </field>
+          -->
         <field>
             <a>descriptions</a>
             <b>describedBy</b>
@@ -147,27 +149,6 @@
            <a>updatedBy.username</a>
            <b>contributor</b>
        </field-exclude>
-    </mapping> 
-    
-    <mapping> 
-        <class-a>eu.etaxonomy.cdm.model.taxon.SynonymRelationship</class-a>
-        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
-        <field>
-            <a>synonym</a>
-            <b>fromTaxon</b>
-        </field>
-        <field>
-            <a>acceptedTaxon</a>
-            <b>toTaxon</b>
-        </field>
-        <field-exclude>
-            <a>createdBy.username</a>
-            <b>creator</b>
-        </field-exclude>
-        <field-exclude>
-            <a>updatedBy.username</a>
-            <b>contributor</b>
-        </field-exclude>        
     </mapping>
     
 </mappings>

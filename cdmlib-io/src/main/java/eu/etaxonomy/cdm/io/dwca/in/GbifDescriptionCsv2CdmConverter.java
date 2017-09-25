@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -51,8 +50,8 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	}
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -65,11 +64,12 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			String description = item.get(TermUri.DC_DESCRIPTION);
 			//String license = item.get(TermUri.DC_LICENSE);//lorna check - often empty in SP dwca
 
-			//TODO: Create the Language from the TermUri.DC_LANGUAGE in the dwca
-			Language language = getLanguage(item);
+			Language language = getDcLanguage(item, resultList);
+			if(language == null){
+			    language = Language.UNKNOWN_LANGUAGE();
+			}
 
-
-			if (StringUtils.isNotBlank(description)){
+			if (isNotBlank(description)){
 				Feature feature = getFeatureByDcType(item, resultList);
 
 				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
@@ -84,7 +84,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 					}
 				}
 
-				if (addRights && (rights != null || rights != "")) {
+				if (addRights && (isNotBlank(rights))) {
 					Rights copyright = Rights.NewInstance(rights, language);
 					taxonDescription.addRights(copyright);
 				}
@@ -99,7 +99,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 				fireWarningEvent(message, item, 4);
 			}
 
-			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
+			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
 		}else{
 			String message = "Taxon is not available for id '%s'";
@@ -107,24 +107,9 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			fireWarningEvent(message, item, 12);
 		}
 
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
-
-	private Language getLanguage(StreamItem item) {
-		//TODO
-
-		Language language = Language.DEFAULT();
-		String langString = item.get(TermUri.DC_LANGUAGE);
-
-		/*if (langString != null) {
-			if (!langString.equals("")) {
-				language = getTermService().getLanguageByIso(langString.substring(0, 2));
-				//can getTermService from StreamImportBase which calls GbifDescriptionCsv2CdmConverter.map
-			}
-		}*/
-		return language;
-	}
 
 	/**
 	 * Determines the feature by the dc:type attribute. Tries to reuse existing
@@ -133,7 +118,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	 * @param resultList
 	 * @return
 	 */
-	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase> resultList) {
+	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		String descriptionType = item.get(TermUri.DC_TYPE);
 		item.remove(TermUri.DC_TYPE);
 
@@ -156,7 +141,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 				feature.setSupportsTextData(true);
 //				state.putMapping(namespace, type, feature);
 				state.getCurrentIO().saveNewTerm(feature);
-				MappedCdmBase  mcb = new MappedCdmBase(namespace, descriptionType, feature);
+				MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(namespace, descriptionType, feature);
 				resultList.add(mcb);
 			}
 			return feature;
@@ -193,7 +178,8 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
- 		return result;
+ 		result.add(TermUri.DC_LANGUAGE.toString());
+        return result;
 	}
 
 //******************* TO STRING ******************************************/

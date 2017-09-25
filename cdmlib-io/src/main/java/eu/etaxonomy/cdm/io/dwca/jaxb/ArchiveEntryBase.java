@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "archiveEntryBase")
 public abstract class ArchiveEntryBase {
-	
+
 
     @XmlElement(required = true)
     protected Files files;
@@ -49,27 +49,9 @@ public abstract class ArchiveEntryBase {
     @XmlAttribute(required = true)
     protected String encoding;
 
-
-    /**
-     * Gets the value of the files property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Files }
-     *     
-     */
     public Files getFiles() {
         return files;
     }
-
-    /**
-     * Sets the value of the files property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Files }
-     *     
-     */
     public void setFiles(Files value) {
         this.files = value;
     }
@@ -77,77 +59,43 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Gets the value of the field property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the field property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getField().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Field }
-     * 
-     * 
+     *
+     *
      */
     public List<Field> getField() {
         if (field == null) {
-            field = new ArrayList<Field>();
+            field = new ArrayList<>();
         }
         return this.field;
     }
 
-    /**
-     * Gets the value of the rowType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getRowType() {
         return rowType;
     }
-
-    /**
-     * Sets the value of the rowType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setRowType(String value) {
         this.rowType = value;
     }
 
-    /**
-     * Gets the value of the linesTerminatedBy property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getLinesTerminatedBy() {
         return normalizeSpecialChars(linesTerminatedBy);
     }
-
-    /**
-     * Sets the value of the linesTerminatedBy property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setLinesTerminatedBy(String value) {
         this.linesTerminatedBy = normalizeSpecialChars(value);
     }
@@ -166,7 +114,7 @@ public abstract class ArchiveEntryBase {
 
 	/**
      * Gets the value of the ignoreHeaderLines property.
-     * 
+     *
      */
     public boolean getIgnoreHeaderLines() {
         return ignoreHeaderLines;
@@ -174,7 +122,7 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Sets the value of the ignoreHeaderLines property.
-     * 
+     *
      */
     public void setIgnoreHeaderLines(boolean value) {
         this.ignoreHeaderLines = value;
@@ -182,11 +130,11 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Gets the value of the fieldsTerminatedBy property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getFieldsTerminatedBy() {
         return normalizeSpecialChars(fieldsTerminatedBy);
@@ -194,11 +142,11 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Sets the value of the fieldsTerminatedBy property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setFieldsTerminatedBy(String value) {
         this.fieldsTerminatedBy = normalizeSpecialChars(value);
@@ -206,11 +154,11 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Gets the value of the fieldsEnclosedBy property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getFieldsEnclosedBy() {
         return normalizeSpecialChars(fieldsEnclosedBy);
@@ -218,11 +166,11 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Sets the value of the fieldsEnclosedBy property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setFieldsEnclosedBy(String value) {
         this.fieldsEnclosedBy = normalizeSpecialChars(value);
@@ -230,11 +178,11 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Gets the value of the encoding property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getEncoding() {
         return encoding;
@@ -242,11 +190,11 @@ public abstract class ArchiveEntryBase {
 
     /**
      * Sets the value of the encoding property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setEncoding(String value) {
         this.encoding = value;

@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxExportConfigurator;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -68,12 +69,11 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
  */
 @Controller
 @RequestMapping(value = { "/dwca" })
-public class DwcaExportController extends AbstractController implements ResourceLoaderAware{
+public class DwcaExportController
+            extends AbstractController<CdmBase,IService<CdmBase>>
+            implements ResourceLoaderAware{
 
 
-    /**
-     *
-     */
     private static final String DWCATAX = "dwcatax_";
 
     private static final String DWCA_TAX_EXPORT_DOC_RESSOURCE = "classpath:eu/etaxonomy/cdm/doc/remote/apt/dwca-tax-export-default.apt";
@@ -123,7 +123,6 @@ public class DwcaExportController extends AbstractController implements Resource
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 //        binder.registerCustomEditor(NamedArea.class, new TermBaseListPropertyEditor<>(termService));
-//        binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
 
 
@@ -215,6 +214,9 @@ public class DwcaExportController extends AbstractController implements Resource
             @RequestParam(value = "doTypesAndSpecimen", defaultValue="true") Boolean doTypesAndSpecimen,
             @RequestParam(value = "doResourceRelations", defaultValue="true") Boolean doResourceRelations,
             @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
+            @RequestParam(value = "withHigherClassification", defaultValue="false") Boolean withHigherClassification,
+            @RequestParam(value = "includeHeader", defaultValue="false") Boolean includeHeader,
+
 //          @RequestParam(value = "area", required = false) final UuidList areas,
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
@@ -274,7 +276,8 @@ public class DwcaExportController extends AbstractController implements Resource
                             DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,
-                                    doTypesAndSpecimen, doResourceRelations, doReferences);
+                                    doTypesAndSpecimen, doResourceRelations, doReferences,
+                                    withHigherClassification, includeHeader);
                             performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
@@ -362,6 +365,8 @@ public class DwcaExportController extends AbstractController implements Resource
      * @param doReferences
      * @param doResourceRelations
      * @param doTypesAndSpecimen
+     * @param withHigherClassification
+     * @param includeHeader
       */
     private DwcaTaxExportConfigurator setDwcaTaxExportConfigurator(File cacheFile,
             IRestServiceProgressMonitor progressMonitor,
@@ -370,7 +375,8 @@ public class DwcaExportController extends AbstractController implements Resource
             Boolean doVernaculars, Boolean doDistributions,
             Boolean doDescriptions, Boolean doImages,
             Boolean doTypesAndSpecimen, Boolean doResourceRelations,
-            Boolean doReferences) {
+            Boolean doReferences, Boolean withHigherClassification,
+            Boolean includeHeader) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -392,6 +398,8 @@ public class DwcaExportController extends AbstractController implements Resource
         config.setDoTypesAndSpecimen(doTypesAndSpecimen);
         config.setDoReferences(doReferences);
         config.setDoResourceRelations(doResourceRelations);
+        config.setWithHigherClassification(withHigherClassification);
+        config.setHasHeaderLines(includeHeader);
 
         config.setProgressMonitor(progressMonitor);
 

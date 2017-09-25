@@ -120,7 +120,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
 
     private static Map<String, UUID> tdwgAbbrevMap = null;
-    private static Map<String, UUID> tdwglabelMap = null;
+    private static Map<String, UUID> tdwgLabelMap = null;
 
     private static Map<UUID, NamedArea> tdwgTermMap = null;
     private static Map<UUID, NamedArea> continentMap = null;
@@ -370,7 +370,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     public void resetTerms(){
         termMap = null;
         tdwgAbbrevMap = null;
-   		tdwglabelMap = null;
+   		tdwgLabelMap = null;
    		tdwgTermMap = null;
    		continentMap = null;
    		waterbodyMap = null;
@@ -418,11 +418,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     @Deprecated //preliminary, will be removed in future
     public static NamedArea getAreaByTdwgLabel(String tdwgLabel){
-        if (tdwglabelMap == null){
+        if (tdwgLabelMap == null){
             initTdwgMaps();
         }
         tdwgLabel = tdwgLabel.toLowerCase();
-        UUID uuid = tdwglabelMap.get(tdwgLabel);
+        UUID uuid = tdwgLabelMap.get(tdwgLabel);
         if (uuid == null){
             logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
             return null;
@@ -433,7 +433,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     @Deprecated //preliminary, will be removed in future
     public static boolean isTdwgAreaLabel(String label){
         label = (label == null? null : label.toLowerCase());
-        if (tdwglabelMap.containsKey(label)){
+        if (tdwgLabelMap.containsKey(label)){
             return true;
         }else{
             return false;
@@ -487,21 +487,21 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
 
 	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
-		continentMap = new HashMap<UUID, NamedArea>();
+		continentMap = new HashMap<>();
 		for (NamedArea term : termVocabulary.getTerms()){
 			continentMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setDefaultWaterbodyTerms(TermVocabulary<NamedArea> termVocabulary) {
-		waterbodyMap = new HashMap<UUID, NamedArea>();
+		waterbodyMap = new HashMap<>();
 		for (NamedArea term : termVocabulary.getTerms()){
 			waterbodyMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
-        tdwgTermMap = new HashMap<UUID, NamedArea>();
+        tdwgTermMap = new HashMap<>();
         for (NamedArea term : tdwgTermVocabulary.getTerms()){
             tdwgTermMap.put(term.getUuid(), term);  //TODO casting
             addTdwgArea(term);
@@ -524,14 +524,14 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         }
         //init map
         if (tdwgAbbrevMap == null){
-        	tdwgAbbrevMap = new HashMap<String, UUID>();
+        	tdwgAbbrevMap = new HashMap<>();
         }
-        if (tdwglabelMap == null){
-        	tdwglabelMap = new HashMap<String, UUID>();
+        if (tdwgLabelMap == null){
+        	tdwgLabelMap = new HashMap<>();
         }
         //add to map
         tdwgAbbrevMap.put(tdwgAbbrevLabel, area.getUuid());
-        tdwglabelMap.put(tdwgLabel, area.getUuid());
+        tdwgLabelMap.put(tdwgLabel, area.getUuid());
         //add type
         area.setType(NamedAreaType.ADMINISTRATION_AREA());
         //add level
@@ -549,8 +549,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     }
 
     private static void initTdwgMaps(){
-    	tdwglabelMap = new HashMap<String, UUID>();
-    	tdwgAbbrevMap = new HashMap<String, UUID>();
+    	tdwgLabelMap = new HashMap<>();
+    	tdwgAbbrevMap = new HashMap<>();
     }
 
 
@@ -564,7 +564,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         }else if (termVocabulary.getUuid().equals(NamedArea.uuidWaterbodyVocabulary)){
         	this.setDefaultWaterbodyTerms(termVocabulary);
         }else{
-	    	termMap = new HashMap<UUID, NamedArea>();
+	    	termMap = new HashMap<>();
 	        for (NamedArea term : termVocabulary.getTerms()){
 	            termMap.put(term.getUuid(), term);
 	        }
@@ -598,7 +598,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     public static class LevelNode {
         NamedAreaLevel level;
-        List<NamedAreaNode> areaList = new ArrayList<NamedAreaNode>();
+        List<NamedAreaNode> areaList = new ArrayList<>();
 
         public NamedAreaNode add(NamedArea area) {
             NamedAreaNode node = new NamedAreaNode();
@@ -653,7 +653,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     public static class NamedAreaNode {
         NamedArea area;
-        List<LevelNode> levelList = new ArrayList<LevelNode>();
+        List<LevelNode> levelList = new ArrayList<>();
 
         public LevelNode getLevelNode(NamedAreaLevel level) {
             for (LevelNode node : levelList) {
@@ -667,7 +667,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         public List<NamedAreaNode> getList(NamedAreaLevel level) {
             LevelNode node = getLevelNode(level);
             if (node == null) {
-                return new ArrayList<NamedAreaNode>();
+                return new ArrayList<>();
             } else {
                 return node.areaList;
             }
@@ -750,7 +750,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     @Transient
     public List<NamedArea> getAllLevelList() {
-        List<NamedArea> result = new ArrayList<NamedArea>();
+        List<NamedArea> result = new ArrayList<>();
         NamedArea copyArea = this;
         result.add(copyArea);
         while (copyArea.getPartOf() != null) {

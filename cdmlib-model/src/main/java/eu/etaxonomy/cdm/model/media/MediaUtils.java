@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 public class MediaUtils {
 
     private static final Logger logger = Logger.getLogger(MediaUtils.class);
@@ -28,10 +30,13 @@ public class MediaUtils {
      *
      *
      */
-    public static MediaRepresentation findBestMatchingRepresentation(Media media, Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
+    public static MediaRepresentation findBestMatchingRepresentation(Media media,
+            Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height,
+            Integer widthOrDuration, String[] mimeTypes){
         // find best matching representations of each media
         SortedMap<Integer, MediaRepresentation> prefRepresentations
-        = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes, size, widthOrDuration, height);
+                = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes,
+                        size, widthOrDuration, height);
         try {
             // take first one and remove all other representations
             MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
@@ -158,14 +163,15 @@ public class MediaUtils {
 
         Map<Media, MediaRepresentation> returnMediaList;
         if(mediaList != null){
-            returnMediaList = new LinkedHashMap<Media, MediaRepresentation>(mediaList.size());
+            returnMediaList = new LinkedHashMap<>(mediaList.size());
             for(Media media : mediaList){
 
-                Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<MediaRepresentation>();
+                Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<>();
                 candidateRepresentations.addAll(media.getRepresentations());
 
                 SortedMap<Integer, MediaRepresentation> prefRepresentations
-                    = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType, mimeTypes, size, widthOrDuration, height);
+                    = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType,
+                            mimeTypes, size, widthOrDuration, height);
                 try {
                     if(prefRepresentations.size() > 0){
                         // Media.representations is a set
@@ -177,11 +183,10 @@ public class MediaUtils {
                     logger.debug(nse);
                     /* IGNORE */
                 }
-
             }
         }
         else{
-            returnMediaList = new HashMap<Media, MediaRepresentation>();
+            returnMediaList = new HashMap<>();
         }
         return returnMediaList;
     }
@@ -246,11 +251,12 @@ public class MediaUtils {
      *
      *
      */
-    private static SortedMap<Integer, MediaRepresentation> filterAndOrderMediaRepresentations(Set<MediaRepresentation> mediaRepresentations,
+    private static SortedMap<Integer, MediaRepresentation> filterAndOrderMediaRepresentations(
+            Set<MediaRepresentation> mediaRepresentations,
             Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypeRegexes,
             Integer size, Integer widthOrDuration, Integer height) {
 
-        SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<Integer, MediaRepresentation>();
+        SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<>();
 
 
         size = (size == null ? new Integer(0) : size );
@@ -264,11 +270,12 @@ public class MediaUtils {
             int representationCnt = 0;
             for (MediaRepresentation representation : mediaRepresentations) {
 
-                List<MediaRepresentationPart> matchingParts = new ArrayList<MediaRepresentationPart>();
+                List<MediaRepresentationPart> matchingParts = new ArrayList<>();
 
 
                 // check MIME type
-                boolean mimeTypeOK = representation.getMimeType() == null || mimeTypePattern.matcher(representation.getMimeType()).matches();
+                boolean mimeTypeOK = representation.getMimeType() == null
+                        || mimeTypePattern.matcher(representation.getMimeType()).matches();
                 logger.debug("mimeTypeOK: " + Boolean.valueOf(mimeTypeOK).toString());
 
                 int dwa = 0;
@@ -278,7 +285,8 @@ public class MediaUtils {
                 for (MediaRepresentationPart part : representation.getParts()) {
 
                     // check representationPartType
-                    boolean representationPartTypeOK = representationPartType == null || part.getClass().isAssignableFrom(representationPartType);
+                    boolean representationPartTypeOK = representationPartType == null
+                            || part.getClass().isAssignableFrom(representationPartType);
                     logger.debug("representationPartTypeOK: " + Boolean.valueOf(representationPartTypeOK).toString());
 
                     if ( !(representationPartTypeOK && mimeTypeOK) ) {
@@ -292,7 +300,7 @@ public class MediaUtils {
                         int sizeOfPart = part.getSize();
                         int distance = sizeOfPart - size;
                         if (distance < 0) {
-                            distance*= -1;
+                            distance *= -1;
                         }
                         dwa += distance;
                     }
@@ -301,18 +309,18 @@ public class MediaUtils {
                     if (height != 0 && widthOrDuration != 0){
                         int durationWidthWeight = 0;
 
-                        if (part instanceof ImageFile) {
-                            ImageFile image = (ImageFile) part;
-                            durationWidthWeight = image.getWidth() * image.getHeight() - height * widthOrDuration;
+                        if (part.isInstanceOf(ImageFile.class)) {
+                            ImageFile image = CdmBase.deproxy(part, ImageFile.class);
+                            if (image.getWidth() != null && image.getHeight() != null){
+                                durationWidthWeight = image.getWidth() * image.getHeight() - height * widthOrDuration;
+                            }
                         }
-                        else if (part instanceof MovieFile){
-                            MovieFile movie = (MovieFile) part;
+                        else if (part.isInstanceOf(MovieFile.class)){
+                            MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
                             durationWidthWeight = movie.getDuration() - widthOrDuration;
-
-                        }else if (part instanceof AudioFile){
-                            AudioFile audio = (AudioFile) part;
+                        }else if (part.isInstanceOf(AudioFile.class)){
+                            AudioFile audio = CdmBase.deproxy(part, AudioFile.class);
                             durationWidthWeight = audio.getDuration() - widthOrDuration;
-
                         }
                         if (durationWidthWeight < 0) {
                             durationWidthWeight *= -1;

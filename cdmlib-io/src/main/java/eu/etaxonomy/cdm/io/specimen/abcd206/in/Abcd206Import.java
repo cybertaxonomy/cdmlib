@@ -434,11 +434,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 unitsGatheringEvent.setGatheringDepth(state.getDataHolder().getGatheringDepthText(),state.getDataHolder().getGatheringDepthMin(), state.getDataHolder().getGatheringDepthMax(), state.getDataHolder().getGatheringDepthUnit());
                 //unitsGatheringEvent.setHeight(heightText, heightMin, heightMax, heightUnit);
-                unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgents), config);
+                if(state.getDataHolder().gatheringAgentsList.isEmpty()) {
+                    unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgentsText), config);
+                }else{
+                    unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString()), config);
+                }
                 // count
                 UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
                 //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-                unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country, (state.getConfig()), cdmAppController.getTermService(), cdmAppController.getOccurrenceService());
+                unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country, (state.getConfig()), cdmAppController.getTermService(), cdmAppController.getOccurrenceService(), cdmAppController.getVocabularyService());
 
                 DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
 
@@ -613,7 +617,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             //			for (NamedArea area : otherAreas) {
             //				getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
             //			}
-           save(derivedUnitFacade.getFieldUnit(false), state);
+//           save(derivedUnitFacade.getFieldUnit(false), state);
            if (derivedUnitFacade.getFieldUnit(false) != null){
                state.setFieldUnit(derivedUnitFacade.getFieldUnit(false));
            }
@@ -809,7 +813,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                     //parent-child relation:
                                     //copy derivation event and connect parent and sub derivative
-                                    if(associationWrapper.getAssociationType().contains("individual") || associationWrapper.getAssociationType().contains("culture") || associationWrapper.getAssociationType().contains("sample")){
+//                                    if(associationWrapper.getAssociationType().contains("individual") || associationWrapper.getAssociationType().contains("culture") || associationWrapper.getAssociationType().contains("sample") || associationWrapper.getAssociationType().contains("same in situ")){
                                         if(currentDerivedFrom==null){
                                             state.getReport().addInfoMessage(String.format("No derivation event found for unit %s. Defaulting to ACCESSIONING event.",SpecimenImportUtility.getUnitID(currentUnit, config)));
                                             DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, DerivationEventType.ACCESSIONING());
@@ -823,30 +827,30 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                         }
                                         state.getReport().addDerivate(associatedUnit, currentUnit, config);
-                                    }
+//                                    }
                                     //siblings relation
                                     //connect current unit to field unit of associated unit
-                                    else if(associationWrapper.getAssociationType().contains("population")|| associationWrapper.getAssociationType().contains("sample")){
-                                        //no associated field unit -> using current one
-                                        if(associatedFieldUnit==null){
-                                            if(currentFieldUnit!=null){
-                                                DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
-                                            }
-                                        }
-                                        else{
-                                            if(currentDerivedFrom==null){
-                                                state.getReport().addInfoMessage("No derivation event found for unit "+SpecimenImportUtility.getUnitID(currentUnit, config)+". Defaulting to ACCESIONING event.");
-                                                DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
-                                            }
-                                            if(currentDerivedFrom!=null && associatedFieldUnit!=currentFieldUnit){
-                                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
-                                                updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                                updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                                updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                                updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
-                                            }
-                                        }
-                                    }
+//                                    else if(associationWrapper.getAssociationType().contains("population")|| associationWrapper.getAssociationType().contains("sample")){
+//                                        //no associated field unit -> using current one
+//                                        if(associatedFieldUnit==null){
+//                                            if(currentFieldUnit!=null){
+//                                                DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
+//                                            }
+//                                        }
+//                                        else{
+//                                            if(currentDerivedFrom==null){
+//                                                state.getReport().addInfoMessage("No derivation event found for unit "+SpecimenImportUtility.getUnitID(currentUnit, config)+". Defaulting to ACCESIONING event.");
+//                                                DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
+//                                            }
+//                                            if(currentDerivedFrom!=null && associatedFieldUnit==currentFieldUnit){
+//                                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
+//                                                updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
+//                                                updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
+//                                                updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
+//                                                updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
+//                                            }
+//                                        }
+//                                    }
 
                                     //delete current field unit if replaced
                                     if(currentFieldUnit!=null && currentDerivedFrom!=null
@@ -1011,6 +1015,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         }
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
+        derivedUnitFacade.setFieldUnit(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
         derivedUnitFacade.setKindOfUnit(kindOfUnit);
         return derivedUnitFacade;
     }
@@ -1075,18 +1080,34 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private void prepareCollectors(Abcd206ImportState state, NodeList unitsList, Abcd206XMLFieldGetter abcdFieldGetter) {
 
         TeamOrPersonBase<?> teamOrPerson = null;
-
+        Team team = null;
         //ImportHelper.setOriginalSource(teamOrPerson, state.getConfig().getSourceReference(), collector, "Collector");
         for (int i = 0; i < unitsList.getLength(); i++) {
             this.getCollectorsFromXML((Element) unitsList.item(i), abcdFieldGetter, state);
-            if (!StringUtils.isBlank(state.getDataHolder().gatheringAgents)){
-                teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgents);
-                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgents)) {
-                    state.getPersonStore().put(state.getDataHolder().gatheringAgents, teamOrPerson);
-                    if (logger.isDebugEnabled()) { logger.debug("Stored author " + state.getDataHolder().gatheringAgents  ); }
-                } else {
-                    logger.warn("Not imported author with duplicated aut_id " + state.getDataHolder().gatheringAgents  );
+            if (!(state.getDataHolder().gatheringAgentsList.isEmpty())){
+                if (state.getDataHolder().gatheringAgentsList.size() == 1){
+                    teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsList.get(0));
+                }else{
+                    team = new Team();
+                    for(String collector: state.getDataHolder().gatheringAgentsList){
+                        teamOrPerson = parseAuthorString(collector);
+                        if (teamOrPerson instanceof Person){
+                            team.addTeamMember((Person)teamOrPerson);
+                        }else{
+                            for (Person person: ((Team)teamOrPerson).getTeamMembers()){
+                                team.addTeamMember(person);
+                            }
+                        }
+                    }
                 }
+                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgentsList.toString())) {
+                    state.getPersonStore().put(state.getDataHolder().gatheringAgentsList.toString(), teamOrPerson);
+                    if (logger.isDebugEnabled()) { logger.debug("Stored author " + state.getDataHolder().gatheringAgentsList.toString());}
+                    logger.warn("Not imported author with duplicated aut_id " + state.getDataHolder().gatheringAgentsList.toString() );
+                }
+            }
+            if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText) && state.getDataHolder().gatheringAgentsList.isEmpty()){
+                teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsText);
             }
 
         }

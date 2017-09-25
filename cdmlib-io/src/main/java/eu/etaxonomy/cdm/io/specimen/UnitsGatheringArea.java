@@ -30,11 +30,14 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -51,6 +54,11 @@ public class UnitsGatheringArea {
     private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
     private boolean useTDWGarea = false;
 
+    TermVocabulary continentVocabulary = null;
+    TermVocabulary countryVocabulary = null;
+    TermVocabulary specimenImportVocabulary = null;
+
+
     private DefinedTermBase<?> wbc;
 
 
@@ -59,9 +67,9 @@ public class UnitsGatheringArea {
     }
 
     public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config, ITermService termService,
-            IOccurrenceService occurrenceService){
+            IOccurrenceService occurrenceService, IVocabularyService vocService){
 
-        this.setCountry(isoCountry, country, config, termService, occurrenceService);
+        this.setCountry(isoCountry, country, config, termService, occurrenceService, vocService);
     }
 
     /*
@@ -93,7 +101,8 @@ public class UnitsGatheringArea {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
 
-        HashSet<String> areaToAdd= new HashSet<String>();
+
+
         HashSet<UUID> areaSet = new HashSet<UUID>();
 
         HashMap<String, UUID> matchingTermsToUuid = new HashMap<String, UUID>();
@@ -108,7 +117,9 @@ public class UnitsGatheringArea {
                 //check for continents
                 List<DefinedTermBase> exactMatchingContinentTerms = new ArrayList<DefinedTermBase>();
                 if(namedAreaClass!=null && namedAreaClass.equalsIgnoreCase("continent")){
-                   TermVocabulary continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                    if (continentVocabulary == null){
+                        continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                    }
                    Set terms = continentVocabulary.getTerms();
                    for (Object object : terms) {
                        if(object instanceof DefinedTermBase && exactMatchingTerms.contains(object)){
@@ -136,26 +147,56 @@ public class UnitsGatheringArea {
                 logger.info("selected area: "+areaUUID);
             }
             if (areaUUID == null){
-                areaToAdd.add(namedAreaStr);
+                if (namedAreaStr != null){
+                    createNamedArea(config, termService, vocabularyService, namedAreaStr, namedAreaClass);
+                }
             } else {
                 areaSet.add(areaUUID);
                 addNamedAreaDecision(namedAreaStr,areaUUID, config);
             }
 
         }
-        for (String areaStr:areaToAdd){
-            NamedArea ar = NamedArea.NewInstance();
-            ar.setTitleCache(areaStr, true);
-            termService.saveOrUpdate(ar);
-            this.areas.add(ar);
-            addNamedAreaDecision(areaStr,ar.getUuid(), config);
-        }
+//        for (String areaStr:areaToAdd){
+//            if (areaStr != null){
+//                NamedArea ar = NamedArea.NewInstance(areaStr, areaStr, areaStr);
+//                ar.setTitleCache(areaStr, true);
+//
+//                termService.saveOrUpdate(ar);
+//                this.areas.add(ar);
+//                addNamedAreaDecision(areaStr,ar.getUuid(), config);
+//            }
+//        }
         if (!areaSet.isEmpty()){
             List<DefinedTermBase> ldtb = termService.find(areaSet);
             if (!ldtb.isEmpty()) {
                 this.areas.addAll(ldtb);
             }
         }
+    }
+
+    /**
+     * @param config
+     * @param termService
+     * @param vocabularyService
+     * @param namedAreaStr
+     * @param namedAreaClass
+     */
+    private void createNamedArea(ImportConfiguratorBase<?, ?> config, ITermService termService,
+            IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
+        NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
+        ar.setTitleCache(namedAreaStr, true);
+        if (specimenImportVocabulary == null){
+            specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+            if (specimenImportVocabulary == null){
+                specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+            }
+        }
+        specimenImportVocabulary.addTerm(ar);
+        termService.saveOrUpdate(ar);
+        this.areas.add(ar);
+        addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
     }
 
     private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms, String areaType){
@@ -198,7 +239,7 @@ public class UnitsGatheringArea {
      * @param app: the CDM application controller
      */
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
-            IOccurrenceService occurrenceService){
+            IOccurrenceService occurrenceService, IVocabularyService vocService){
 
 
         if (!StringUtils.isEmpty(iso)){
@@ -217,8 +258,9 @@ public class UnitsGatheringArea {
                 	List<UUID> countryUuids = new ArrayList<UUID>();
                 	HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 
-                	List<Country> countryList = termService.list(Country.class, 0, 0, null, null);
-                	for (NamedArea na:countryList){
+                	Pager<Country> countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
+
+                	for (NamedArea na:countryList.getRecords()){
 	                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
 	                   		countryUuids.add(na.getUuid());
 	                   	}
@@ -248,7 +290,8 @@ public class UnitsGatheringArea {
 
                 }
                 if (areaUUID == null){
-                    NamedArea ar = NamedArea.NewInstance();
+                    createNamedArea(config, termService, vocService, fullName, "country");
+                    NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);
                     //FIXME add vocabulary
                     logger.warn("Vocabulary not yet set for new country");
                     ar.setTitleCache(fullName, true);

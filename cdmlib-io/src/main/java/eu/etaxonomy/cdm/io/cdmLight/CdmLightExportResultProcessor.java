@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -125,6 +126,7 @@ public class CdmLightExportResultProcessor {
                 }
 
                 state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
+                state.getResult().setExportType(ExportType.CDM_LIGHT);
 
             }
         }

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IoResultBase;
-import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 
 /**
@@ -30,7 +29,7 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 
 	private RESULT result;
 
-	private IProgressMonitor currentMonitor;
+//	private IProgressMonitor currentMonitor;
 
 	//TODO config not necessary ones it it implemented in constructor for IOs too.
 	public void initialize(CONFIG config){
@@ -60,12 +59,12 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
     }
 
 
-    public IProgressMonitor getCurrentMonitor() {
-        return currentMonitor;
-    }
-    public void setCurrentMonitor(IProgressMonitor currentMonitor) {
-        this.currentMonitor = currentMonitor;
-    }
+//    public IProgressMonitor getCurrentMonitor() {
+//        return currentMonitor;
+//    }
+//    public void setCurrentMonitor(IProgressMonitor currentMonitor) {
+//        this.currentMonitor = currentMonitor;
+//    }
 
 
 

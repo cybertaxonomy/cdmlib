@@ -79,10 +79,10 @@ public abstract class NameCacheStrategyBase
      * @return
      */
     @Override
-    public List<TaggedText> getNomStatusTags(TaxonName nonViralName, boolean includeSeparatorBefore,
+    public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
 
-        Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
+        Set<NomenclaturalStatus> ncStati = taxonName.getStatus();
         Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
         List<TaggedText> nomStatusTags = new ArrayList<>();
         while (iterator.hasNext()) {
@@ -141,13 +141,13 @@ public abstract class NameCacheStrategyBase
      * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
      */
     @Override
-    public String getTitleCache(TaxonName nonViralName) {
-        return getTitleCache(nonViralName, null);
+    public String getTitleCache(TaxonName taxonName) {
+        return getTitleCache(taxonName, null);
     }
 
     @Override
-    public String getTitleCache(TaxonName nonViralName, HTMLTagRules htmlTagRules) {
-        List<TaggedText> tags = getTaggedTitle(nonViralName);
+    public String getTitleCache(TaxonName taxonName, HTMLTagRules htmlTagRules) {
+        List<TaggedText> tags = getTaggedTitle(taxonName);
         if (tags == null){
             return null;
         }else{
@@ -177,28 +177,28 @@ public abstract class NameCacheStrategyBase
     protected abstract List<TaggedText> doGetTaggedTitle(TaxonName taxonName);
 
     @Override
-    public List<TaggedText> getTaggedFullTitle(TaxonName nonViralName) {
+    public List<TaggedText> getTaggedFullTitle(TaxonName taxonName) {
         List<TaggedText> tags = new ArrayList<>();
 
         //null
-        if (nonViralName == null){
+        if (taxonName == null){
             return null;
         }
 
         //protected full title cache
-        if (nonViralName.isProtectedFullTitleCache()){
-            tags.add(new TaggedText(TagEnum.fullName, nonViralName.getFullTitleCache()));
+        if (taxonName.isProtectedFullTitleCache()){
+            tags.add(new TaggedText(TagEnum.fullName, taxonName.getFullTitleCache()));
             return tags;
         }
 
         //title cache
 //      String titleCache = nonViralName.getTitleCache();
-        List<TaggedText> titleTags = getTaggedTitle(nonViralName);
+        List<TaggedText> titleTags = getTaggedTitle(taxonName);
         tags.addAll(titleTags);
 
         //reference
-        String microReference = nonViralName.getNomenclaturalMicroReference();
-        INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
+        String microReference = taxonName.getNomenclaturalMicroReference();
+        INomenclaturalReference ref = taxonName.getNomenclaturalReference();
         String referenceCache = null;
         if (ref != null){
             Reference reference = HibernateProxyHelper.deproxy(ref, Reference.class);
@@ -213,16 +213,16 @@ public abstract class NameCacheStrategyBase
             tags.add(new TaggedText(TagEnum.reference, referenceCache));
         }
 
-        addOriginalSpelling(tags, nonViralName);
+        addOriginalSpelling(tags, taxonName);
 
         //nomenclatural status
-        tags.addAll(getNomStatusTags(nonViralName, true, false));
+        tags.addAll(getNomStatusTags(taxonName, true, false));
         return tags;
 
     }
 
-    protected void addOriginalSpelling(List<TaggedText> tags, TaxonName name){
-        String originalName = getOriginalNameString(name, tags);
+    protected void addOriginalSpelling(List<TaggedText> tags, TaxonName taxonName){
+        String originalName = getOriginalNameString(taxonName, tags);
         if (StringUtils.isNotBlank(originalName)){
             tags.add(new TaggedText(TagEnum.name, originalName));
         }

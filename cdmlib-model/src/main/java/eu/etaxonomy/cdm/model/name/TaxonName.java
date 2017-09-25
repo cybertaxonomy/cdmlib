@@ -75,6 +75,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -85,8 +86,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.ViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -186,7 +186,8 @@ public class TaxonName
             extends IdentifiableEntity<INameCacheStrategy>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
                 IBotanicalName, ICultivarPlantName, IFungusName,
-                IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable {
+                IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable,
+                IDescribable<TaxonNameDescription>{
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
@@ -599,7 +600,7 @@ public class TaxonName
      */
     protected TaxonName() {
         super();
-//        rectifyNameCacheStrategy();
+        rectifyNameCacheStrategy();
     }
 
 
@@ -607,7 +608,7 @@ public class TaxonName
      * Class constructor: creates a new taxon name instance
      * only containing its {@link Rank rank} and
      * its {@link HomotypicalGroup homotypical group} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      * The new taxon name will be also added to the set of taxon names
      * belonging to this homotypical group.
      *
@@ -618,7 +619,7 @@ public class TaxonName
      * @see    					 #TaxonName(HomotypicalGroup)
      */
     protected TaxonName(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
-        super();
+        this();
         setNameType(type);
         this.setRank(rank);
         if (homotypicalGroup == null){
@@ -626,7 +627,6 @@ public class TaxonName
         }
         homotypicalGroup.addTypifiedName(this);
         this.homotypicalGroup = homotypicalGroup;
-        rectifyNameCacheStrategy();
     }
 
 
@@ -636,7 +636,7 @@ public class TaxonName
      * its {@link HomotypicalGroup homotypical group},
      * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
      * its {@link eu.etaxonomy.cdm.model.reference.Reference nomenclatural reference} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      * The new non viral taxon name instance will be also added to the set of
      * non viral taxon names belonging to this homotypical group.
      *
@@ -673,21 +673,14 @@ public class TaxonName
     }
 
 
+    /**
+     * This method was originally needed to distinguish cache strategies
+     * depending on the name type. Now we have a unified cache strategy
+     * which does not require this anymore. Maybe we could even further remove this method.
+     */
     private void rectifyNameCacheStrategy(){
-        if (getNameType() == null){
-            this.cacheStrategy = null;
-        }else if (this.cacheStrategy != null){
-           //
-        }else if (getNameType() == NomenclaturalCode.NonViral){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType().isBotanical()){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType() == NomenclaturalCode.ICZN){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
-        }else if (getNameType() == NomenclaturalCode.ICNB){
-            this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();;
-        }else if (getNameType() == NomenclaturalCode.ICVCN){
-            this.cacheStrategy = ViralNameDefaultCacheStrategy.NewInstance();
+        if (this.cacheStrategy == null){
+            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }
     }
 
@@ -804,7 +797,6 @@ public class TaxonName
     @Override
     public void setNameType(NomenclaturalCode nameType) {
         this.nameType = nameType;
-        rectifyNameCacheStrategy();
     }
 
     /**

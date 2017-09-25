@@ -61,8 +61,8 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	}
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -108,11 +108,12 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		handleType(reference, strType, taxon, resultList, item);
 
 
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
-	private void handleType(Reference reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, StreamItem item) {
+	private void handleType(Reference reference, String strType, TaxonBase<?> taxon,
+	        List<MappedCdmBase<? extends CdmBase>> resultList, StreamItem item) {
 		// TODO handleType not yet implemented
 
 		if (taxon == null){
@@ -231,7 +232,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		return tp;
 	}
 
-	private TeamOrPersonBase handleCreator(String strCreator) {
+	private TeamOrPersonBase<?> handleCreator(String strCreator) {
 		Team team = Team.NewTitledInstance(strCreator, strCreator);
 		return team;
 	}

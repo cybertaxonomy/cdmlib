@@ -66,7 +66,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
 
-	    IProgressMonitor monitor = state.getCurrentMonitor();
+	    IProgressMonitor monitor = state.getConfig().getProgressMonitor();
 
 		List<DwcaDataExportBase> exports =  Arrays.asList(new DwcaDataExportBase[]{
 	        new DwcaTaxonExport(state),
@@ -79,13 +79,16 @@ public class DwcaTaxExport extends DwcaExportBase {
 	        new DwcaImageExport(state)
 		});
 
+
 		@SuppressWarnings("unchecked")
 	    TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
-	      = TaxonNodeOutStreamPartitioner.NewInstance(
-                this, state, state.getConfig().getTaxonNodeFilter(),
-                100, monitor, null);
+	          = TaxonNodeOutStreamPartitioner.NewInstance(
+                    this, state, state.getConfig().getTaxonNodeFilter(),
+                    100, monitor, null);
 		try {
+
 		    monitor.subTask("Start partitioning");
+
 		    TaxonNode node = partitioner.next();
 			while (node != null){
 			    for (DwcaDataExportBase export : exports){

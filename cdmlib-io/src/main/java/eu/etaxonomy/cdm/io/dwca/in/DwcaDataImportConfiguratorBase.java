@@ -23,12 +23,13 @@ import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
  * @author a.mueller
  * @created 04.06.2013
  */
-public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImportStateBase> extends StreamImportConfiguratorBase<STATE, URI> implements IImportConfigurator {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaDataImportConfiguratorBase.class);
-//	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
+public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImportStateBase>
+        extends StreamImportConfiguratorBase<STATE, URI> implements IImportConfigurator {
 
-//	private static final String DEFAULT_REF_TITLE = "DwC-A Import";
+    private static final long serialVersionUID = 7091818889753715572L;
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DwcaDataImportConfiguratorBase.class);
 
 	private boolean doSplitRelationshipImport = false;
 	private boolean doSynonymRelationships = true;
@@ -43,7 +44,8 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	private boolean useParentAsAcceptedIfAcceptedNotExists = true;
 
 	//distribution
-	private boolean excludeLocality = false;   //if set to true the dwc locality is not considered during distribution import
+	//if set to true the dwc locality is not considered during distribution import
+	private boolean excludeLocality = false;
 
 	//reference
 	private boolean guessNomenclaturalReferences = false;
@@ -57,6 +59,11 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 		SECUNDUM,
 		ORIGINAL_SOURCE
 	}
+
+    public enum ModifiedUse{
+        UPDATED,
+        MARKER
+    }
 
 
 	/**
@@ -75,7 +82,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isDeduplicateNamePublishedIn() {
 		return deduplicateNamePublishedIn;
 	}
-
 	public void setDeduplicateNamePublishedIn(boolean deduplicateNamePublishedIn) {
 		this.deduplicateNamePublishedIn = deduplicateNamePublishedIn;
 	}
@@ -84,7 +90,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 			boolean scientificNameIdAsOriginalSourceId) {
 		this.scientificNameIdAsOriginalSourceId = scientificNameIdAsOriginalSourceId;
 	}
-
 	public boolean isScientificNameIdAsOriginalSourceId() {
 		return scientificNameIdAsOriginalSourceId;
 	}
@@ -93,10 +98,17 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 		return this.datasetUse.equals(DatasetUse.CLASSIFICATION);
 	}
 
+	//exclude Locality
+	/**
+	 * Should the locality attribute in distributions be excluded from creating
+	 * named areas used in distributions?
+	 */
 	public boolean isExcludeLocality() {
 		return excludeLocality;
 	}
-
+	/**
+	 * @see #isExcludeLocality()
+	 */
 	public void setExcludeLocality(boolean excludeLocality) {
 		this.excludeLocality = excludeLocality;
 	}
@@ -104,7 +116,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isValidateRankConsistency() {
 		return validateRankConsistency;
 	}
-
 	public void setValidateRankConsistency(boolean validateRankConsistency) {
 		this.validateRankConsistency = validateRankConsistency;
 	}
@@ -112,11 +123,9 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isDatasetsAsSecundumReference() {
 		return this.datasetUse.equals(DatasetUse.SECUNDUM);
 	}
-
 	public boolean isDatasetsAsOriginalSource() {
 		return this.datasetUse.equals(DatasetUse.ORIGINAL_SOURCE);
 	}
-
 
 	public void setDatasetUse(DatasetUse datasetUse) {
 		this.datasetUse = datasetUse;
@@ -125,7 +134,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isGuessNomenclaturalReferences() {
 		return guessNomenclaturalReferences;
 	}
-
 	public void setGuessNomenclaturalReferences(boolean guessNomenclaturalReferences) {
 		this.guessNomenclaturalReferences = guessNomenclaturalReferences;
 	}
@@ -133,7 +141,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isHandleAllRefsAsCitation() {
 		return handleAllRefsAsCitation;
 	}
-
 	public void setHandleAllRefsAsCitation(boolean handleAllRefsAsCitation) {
 		this.handleAllRefsAsCitation = handleAllRefsAsCitation;
 	}
@@ -141,7 +148,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isUseSourceReferenceAsSec() {
 		return useSourceReferenceAsSec;
 	}
-
 	public void setUseSourceReferenceAsSec(boolean useSourceReferenceAsSec) {
 		this.useSourceReferenceAsSec = useSourceReferenceAsSec;
 	}
@@ -149,64 +155,36 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isUseParentAsAcceptedIfAcceptedNotExists() {
 		return useParentAsAcceptedIfAcceptedNotExists;
 	}
-
 	public void setUseParentAsAcceptedIfAcceptedNotExists(boolean useParentAsAcceptedIfAcceptedNotExists) {
 		this.useParentAsAcceptedIfAcceptedNotExists = useParentAsAcceptedIfAcceptedNotExists;
 	}
 
-
-    /**
-     * @return the doSplitRelationshipImport
-     */
     public boolean isDoSplitRelationshipImport() {
         return doSplitRelationshipImport;
     }
-
-    /**
-     * @param doSplitRelationshipImport the doSplitRelationshipImport to set
-     */
     public void setDoSplitRelationshipImport(boolean doSplitRelationshipImport) {
         this.doSplitRelationshipImport = doSplitRelationshipImport;
     }
 
-    /**
-     * @return the doSynonymRelationships
-     */
     public boolean isDoSynonymRelationships() {
         return doSynonymRelationships;
     }
-
-    /**
-     * @param doSynonymRelationships the doSynonymRelationships to set
-     */
     public void setDoSynonymRelationships(boolean doSynonymRelationships) {
         this.doSynonymRelationships = doSynonymRelationships;
     }
 
-    /**
-     * @return the doHigherRankRelationships
-     */
+
     public boolean isDoHigherRankRelationships() {
         return doHigherRankRelationships;
     }
-
-    /**
-     * @param doHigherRankRelationships the doHigherRankRelationships to set
-     */
     public void setDoHigherRankRelationships(boolean doHigherRankRelationships) {
         this.doHigherRankRelationships = doHigherRankRelationships;
     }
 
-    /**
-     * @return the doLowerRankRelationships
-     */
+
     public boolean isDoLowerRankRelationships() {
         return doLowerRankRelationships;
     }
-
-    /**
-     * @param doLowerRankRelationships the doLowerRankRelationships to set
-     */
     public void setDoLowerRankRelationships(boolean doLowerRankRelationships) {
         this.doLowerRankRelationships = doLowerRankRelationships;
     }

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.application;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -77,6 +78,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
@@ -146,12 +148,19 @@ public class CdmApplicationController implements ICdmRepository {
 
 	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource,
 			DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
-		return CdmApplicationController.NewInstance(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, null);
+		return CdmApplicationController.NewInstance(applicationContextResource, dataSource, dbSchemaValidation,
+		        null, omitTermLoading, null);
 	}
-
+    public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource,
+            DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
+        return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation,
+                null, omitTermLoading, progressMonitor, null);
+    }
 	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource,
-			DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
-		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor, null);
+			DbSchemaValidation dbSchemaValidation, HibernateConfiguration hibernateConfig,
+			boolean omitTermLoading, IProgressMonitor progressMonitor){
+		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation,
+		        hibernateConfig, omitTermLoading, progressMonitor, null);
 	}
 
 
@@ -198,7 +207,8 @@ public class CdmApplicationController implements ICdmRepository {
 	 * @param omitTermLoading
 	 */
 	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation,
-			boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
+	        HibernateConfiguration hibernateConfig,
+	        boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 
 		if (dbSchemaValidation == null) {
@@ -207,7 +217,7 @@ public class CdmApplicationController implements ICdmRepository {
 		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : getClasspathResource();
 		this.progressMonitor = progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 
-		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, listeners);
+		setNewDataSource(dataSource, dbSchemaValidation, hibernateConfig, omitTermLoading, listeners);
 	}
 
 
@@ -217,8 +227,9 @@ public class CdmApplicationController implements ICdmRepository {
 	 *
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading,
-			List<ApplicationListener> listeners){
+	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation,
+	        HibernateConfiguration hibernateConfig,
+	        boolean omitTermLoading, List<ApplicationListener> listeners){
 
 		if (dbSchemaValidation == null) {
 			dbSchemaValidation = defaultDbSchemaValidation;
@@ -239,7 +250,7 @@ public class CdmApplicationController implements ICdmRepository {
 		applicationContext.registerBeanDefinition("dataSource", datasourceBean);
 		progressMonitor.worked(1);
 
-		BeanDefinition hibernatePropBean = dataSource.getHibernatePropertiesBean(dbSchemaValidation);
+		BeanDefinition hibernatePropBean = dataSource.getHibernatePropertiesBean(dbSchemaValidation, hibernateConfig);
 		applicationContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
 
 		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(applicationContext);
@@ -256,7 +267,7 @@ public class CdmApplicationController implements ICdmRepository {
 		}
 
 		if (listeners != null) {
-			for (ApplicationListener listener : listeners) {
+			for (ApplicationListener<?> listener : listeners) {
 				applicationContext.addApplicationListener(listener);
 			}
 		}
@@ -278,6 +289,35 @@ public class CdmApplicationController implements ICdmRepository {
 		progressMonitor.done();
 		return true;
 	}
+
+	/**
+     * Overrides all default with values in hibernate config, if defined
+     * @param hibernatePropBean
+     * @param hibernateConfig
+     */
+    private void registerHibernateConfig(BeanDefinition hibernatePropBean, HibernateConfiguration hibernateConfig) {
+        setHibernateProperty(hibernatePropBean, HibernateConfiguration.REGISTER_ENVERS,
+                hibernateConfig.getRegisterEnvers());
+        setHibernateProperty(hibernatePropBean, HibernateConfiguration.REGISTER_SEARCH,
+                hibernateConfig.getRegisterSearch());
+        setHibernateProperty(hibernatePropBean, HibernateConfiguration.SHOW_SQL,
+                hibernateConfig.getShowSql());
+        setHibernateProperty(hibernatePropBean, HibernateConfiguration.FORMAT_SQL,
+                hibernateConfig.getFormatSql());
+    }
+
+
+    private void setHibernateProperty(BeanDefinition hibernatePropBean, String key, Boolean value) {
+	    if (value != null){
+	        setHibernateProperty(hibernatePropBean, key, String.valueOf(value));
+	    }
+	}
+    private void setHibernateProperty(BeanDefinition hibernatePropBean, String key, String value) {
+        if (value != null){
+            Properties props = (Properties)hibernatePropBean.getPropertyValues().get("properties");
+            props.setProperty(key, value);
+        }
+    }
 
 
 	/**
@@ -304,7 +344,7 @@ public class CdmApplicationController implements ICdmRepository {
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource){
 		//logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false, null);
+		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, null, false, null);
 	}
 
 
@@ -316,7 +356,7 @@ public class CdmApplicationController implements ICdmRepository {
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		//logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, dbSchemaValidation, false, null);
+		return setNewDataSource(dataSource, dbSchemaValidation, null, false, null);
 	}
 
 
@@ -329,7 +369,7 @@ public class CdmApplicationController implements ICdmRepository {
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, null);
+		return setNewDataSource(dataSource, dbSchemaValidation, null, omitTermLoading, null);
 	}
 
 
@@ -343,7 +383,7 @@ public class CdmApplicationController implements ICdmRepository {
 	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading,
 			List<ApplicationListener> listeners){
 		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, listeners);
+		return setNewDataSource(dataSource, dbSchemaValidation, null, omitTermLoading, listeners);
 	}
 
 
@@ -359,17 +399,10 @@ public class CdmApplicationController implements ICdmRepository {
 		init();
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#finalize()
-	 */
 	@Override
 	public void finalize(){
 		close();
 	}
-
 
 	/**
 	 * closes the application

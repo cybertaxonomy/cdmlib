@@ -229,9 +229,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
     public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
         boolean result = removeChildNode(node);
+        if (node.hasTaxon()){
+            node.getTaxon().removeTaxonNode(node);
+            node.setTaxon(null);
+        }
 
-        node.getTaxon().removeTaxonNode(node);
-        //node.setTaxon(null);
         if (deleteChildren){
             ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
             for (TaxonNode childNode : childNodes){
@@ -248,10 +250,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
      */
     protected boolean removeChildNode(TaxonNode node){
         boolean result = false;
+        rootNode = HibernateProxyHelper.deproxy(rootNode, TaxonNode.class);
         if(!rootNode.getChildNodes().contains(node)){
             throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
         }
-        rootNode = HibernateProxyHelper.deproxy(rootNode, TaxonNode.class);
+//        rootNode = HibernateProxyHelper.deproxy(rootNode, TaxonNode.class);
         result = rootNode.removeChildNode(node);
 
         node.setParent(null);

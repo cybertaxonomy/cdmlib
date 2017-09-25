@@ -30,9 +30,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
-					implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
-	@SuppressWarnings("unused")
+public class GbifVernacularNameCsv2CdmConverter
+            extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
+		    implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifVernacularNameCsv2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
 
@@ -45,8 +47,8 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -55,13 +57,13 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		String id = csv.get(CORE_ID);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
-			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
+			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
 			String vernacular = item.get(TermUri.DWC_VERNACULAR_NAME);
-			//TODO language, area,
 			TaxonDescription desc = getTaxonDescription(taxon, false);
 
-			//TODO
-			Language language = null;
+			//TODO area,
+			Language language = getDcLanguage(item, resultList);
+
 			CommonTaxonName commonName = CommonTaxonName.NewInstance(vernacular, language);
 			desc.addElement(commonName);
 			resultList.add(mcb);
@@ -71,9 +73,10 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		}
 
 		//return
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 
 	}
+
 
 
 	@Override
@@ -98,9 +101,10 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 
 	@Override
 	public final Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
- 		return result;
+ 		result.add(TermUri.DC_LANGUAGE.toString());
+        return result;
 	}
 
 //************************ STRING ************************************************/
@@ -111,9 +115,5 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
-
-
 
 }

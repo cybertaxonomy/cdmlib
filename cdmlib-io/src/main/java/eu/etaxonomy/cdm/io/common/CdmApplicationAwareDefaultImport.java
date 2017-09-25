@@ -192,7 +192,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
                     cdmIo.invoke(state);
-//                    result.addReport(state.getReportAsByteArray());
+                    result.addReport(state.getReportAsByteArray());
                     unRegisterObservers(config, cdmIo);
                 }else{
                     String message = "cdmIO was null";

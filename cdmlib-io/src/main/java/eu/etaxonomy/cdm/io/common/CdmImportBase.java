@@ -113,6 +113,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
 	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
 
+	public static final UUID uuidUserDefinedLanguageVocabulary = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b");
 
 
 	private static final String UuidOnly = "UUIDOnly";
@@ -286,6 +287,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return null;
 	}
 
+	/**
+	 * @see #getMarkerType(ImportStateBase, UUID, String, String, String, TermVocabulary, Language)
+	 */
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev){
 		return getMarkerType(state, uuid, label, description, labelAbbrev, null, null);
 	}
@@ -295,6 +299,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 
+	/**
+     * @see #getMarkerType(ImportStateBase, UUID, String, String, String, TermVocabulary, Language)
+     */
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc, Language language){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -431,7 +438,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
 
 			if (vocabularyPreference == null){
-				vocabularyPreference =  new ArrayList<TermVocabulary<NamedArea>>();
+				vocabularyPreference =  new ArrayList<>();
 			}
 			if (vocabularyPreference.isEmpty()){  //add TDWG vocabulary if preferences are empty
 				vocabularyPreference.add(Country.GERMANY().getVocabulary());
@@ -890,7 +897,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 				language.setUuid(uuid);
 				if (voc == null){
-					UUID uuidLanguageVoc = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b");
+					UUID uuidLanguageVoc = uuidUserDefinedLanguageVocabulary;
 					boolean isOrdered = false;
 					voc = getVocabulary(TermType.Language, uuidLanguageVoc, "User defined languages", "User defined languages", "User defined languages", null, isOrdered, language);
 				}

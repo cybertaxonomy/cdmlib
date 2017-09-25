@@ -38,7 +38,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
-	private NonViralNameDefaultCacheStrategy strategy;
+	private TaxonNameDefaultCacheStrategy strategy;
 	private TaxonName familyName;
 	private IZoologicalName genusName;
 	private TaxonName subGenusName;
@@ -80,7 +80,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+		strategy = TaxonNameDefaultCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
 		genusName = TaxonNameFactory.PARSED_ZOOLOGICAL(genusNameString, Rank.GENUS());
 
@@ -207,7 +207,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, INonViralName.class);
+		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class);
 
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));

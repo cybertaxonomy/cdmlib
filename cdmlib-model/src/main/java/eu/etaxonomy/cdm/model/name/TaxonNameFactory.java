@@ -37,7 +37,7 @@ public class TaxonNameFactory {
     /**
      * Creates a new non viral taxon name instance
      * only containing its {@link common.Rank rank} and
-      * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+      * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      *
      * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
      * @see    #NewInstance(Rank, HomotypicalGroup)
@@ -56,7 +56,7 @@ public class TaxonNameFactory {
      * Creates a new non viral taxon name instance
      * only containing its {@link common.Rank rank},
      * its {@link HomotypicalGroup homotypical group} and
-      * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+      * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      * The new non viral taxon name instance will be also added to the set of
      * non viral taxon names belonging to this homotypical group.
      *
@@ -88,7 +88,7 @@ public class TaxonNameFactory {
     /**
      * Creates a new bacterial taxon name instance
      * only containing its {@link Rank rank} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      *
      * @param  rank  the rank to be assigned to <i>this</i> bacterial taxon name
      * @see    #NewInstance(Rank, HomotypicalGroup)
@@ -105,7 +105,7 @@ public class TaxonNameFactory {
      * Creates a new bacterial taxon name instance
      * only containing its {@link Rank rank},
      * its {@link HomotypicalGroup homotypical group} and
-     * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+     * the {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy default cache strategy}.
      * The new bacterial taxon name instance will be also added to the set of
      * bacterial taxon names belonging to this homotypical group.
      *

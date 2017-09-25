@@ -425,4 +425,20 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
         return formatter.print(new DateTime());
     }
 
+    /**
+     * If <code>false</code> auditing is switched off during import.
+     * This is only applicable if an own application context is started
+     * for the import/export. For imports into/from running application contexts
+     * it has no affect.
+     */
+    public boolean isRegisterAuditing() {
+        return hibernateConfig.getRegisterEnvers();
+    }
+    /**
+     * @see #isRegisterAuditing()
+     */
+    public void setRegisterAuditing(boolean registerAuditing) {
+        this.hibernateConfig.setRegisterEnvers(registerAuditing);
+    }
+
 }

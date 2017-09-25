@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.filter;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  * @author a.mueller
  *
  */
-public class LogicFilter<T extends CdmBase> {
+public class LogicFilter<T extends CdmBase> implements Serializable{
 
     public enum Op{
         OR, AND, NOT;

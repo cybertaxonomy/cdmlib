@@ -52,7 +52,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 
-    private NonViralNameDefaultCacheStrategy strategy;
+    private TaxonNameDefaultCacheStrategy strategy;
 
     private static final String familyNameString = "Familia";
     private static final String genusNameString = "Genus";
@@ -88,7 +88,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
      */
     @Before
     public void setUp() throws Exception {
-        strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+        strategy = TaxonNameDefaultCacheStrategy.NewInstance();
         familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
         genusName = TaxonNameFactory.PARSED_BOTANICAL(genusNameString, Rank.GENUS());
 
@@ -116,7 +116,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 //**************************** TESTS **************************************************
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testGetTitleCache() {
@@ -125,7 +125,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testGetFullTitleCache() {
@@ -149,7 +149,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testGetNameCache() {
@@ -172,7 +172,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         String unrankedCache;
         TaxonName unrankedName = TaxonNameFactory.NewBotanicalInstance(Rank.INFRASPECIFICTAXON());
         unrankedName.setGenusOrUninomial("Genus");
-        NonViralNameDefaultCacheStrategy strategy = NonViralNameDefaultCacheStrategy.NewInstance();
+        TaxonNameDefaultCacheStrategy strategy = TaxonNameDefaultCacheStrategy.NewInstance();
             //infraspecific
         unrankedName.setInfraSpecificEpithet("infraspecific");
         unrankedName.setSpecificEpithet("species");
@@ -207,7 +207,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testNameCacheWithInfraGenericEpithet() {
@@ -227,7 +227,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testGetAuthorshipCache() {
@@ -253,7 +253,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testHybridNames() {
@@ -489,7 +489,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#setNameAuthorSeperator(java.lang.String)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setNameAuthorSeperator(java.lang.String)}.
      */
     @Test
     public void testGetSetNameAuthorSeperator() {
@@ -501,8 +501,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#setBasionymStart(java.lang.String)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getBasionymStart()}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setBasionymStart(java.lang.String)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getBasionymStart()}.
      */
     @Test
     public void testGetSetBasionymStart() {
@@ -514,8 +514,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#setBasionymEnd(java.lang.String)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getBasionymEnd()}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setBasionymEnd(java.lang.String)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getBasionymEnd()}.
     */
     @Test
     public void testGetSetBasionymEnd() {
@@ -527,8 +527,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#setExAuthorSeperator(java.lang.String)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getExAuthorSeperator()}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setExAuthorSeperator(java.lang.String)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getExAuthorSeperator()}.
      */
     @Test
     public void testGetSetExAuthorSeperator() {
@@ -540,8 +540,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#setBasionymAuthorCombinationAuthorSeperator(java.lang.CharSequence)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getBasionymAuthorCombinationAuthorSeperator()}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setBasionymAuthorCombinationAuthorSeperator(java.lang.CharSequence)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getBasionymAuthorCombinationAuthorSeperator()}.
      */
     @Test
     public void testSetBasionymAuthorCombinationAuthorSeperator() {
@@ -616,7 +616,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.NonViralName)}.
+     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.NonViralName)}.
      */
     @Test
     public void testGetTaggedNameSpeciesAggregate() {

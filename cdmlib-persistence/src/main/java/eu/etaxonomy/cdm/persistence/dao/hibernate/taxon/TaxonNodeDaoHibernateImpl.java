@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
@@ -120,6 +121,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		}
 		//FIXME write test
         String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId + " ORDER BY taxa.titleCache " + limit;
+        @SuppressWarnings("unchecked")
         List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
 
        return result;
@@ -130,7 +132,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         int classificationId = classification.getId();
         //FIXME write test
         String queryString = "SELECT DISTINCT COUNT('nodes.*') FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
-         List<BigInteger> result = getSession().createSQLQuery(queryString).list();
+         @SuppressWarnings("unchecked")
+        List<BigInteger> result = getSession().createSQLQuery(queryString).list();
          return result.get(0).intValue ();
     }
 
@@ -141,6 +144,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         query.setParameter("parentId", parent.getId());
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -165,6 +169,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -186,6 +191,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         query.setParameter("childId", child.getId());
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -219,7 +225,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     crit.setFirstResult(0);
                 }
             }
-    		List<TaxonNode> results = crit.list();
+    		@SuppressWarnings("unchecked")
+            List<TaxonNode> results = crit.list();
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
@@ -263,6 +270,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, query);
 
+        @SuppressWarnings("unchecked")
         List<TaxonNodeAgentRelation> records = query.list();
 
         if(propertyPaths != null) {
@@ -443,7 +451,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     //#3465
     @Override
-    public Set<Taxon> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
         //for some reason this does not work, maybe because the listeners are not activated,
         //but also the first taxon for some reason does not get updated in terms of secundum, but only by the udpate listener
 //        String where = "SELECT t.id FROM TaxonNode tn JOIN tn.taxon t " +
@@ -457,55 +465,111 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 //        query.setParameter("newSec", newSec);
 //        int n = query.executeUpdate();
 
-        String where = "SELECT t FROM TaxonNode tn JOIN tn.taxon t " +
-                " WHERE tn.treeIndex like '%s%%' ";
+        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
         if (!overwriteExisting){
-            where += " AND t.sec IS NULL ";
+            queryStr += " AND t.sec IS NULL ";
         }
-        if (!includeSharedTaxa){
-            where += " AND t.taxonNodes.size <= 1  ";
-        }
-
-        where = String.format(where, subTreeIndex.toString());
-        Query query1 = getSession().createQuery(where);
-        @SuppressWarnings("unchecked")
-        List<Taxon> taxonList = query1.list();
-        for (Taxon taxon : taxonList){
-            taxon.setSec(newSec);
-            if (emptyDetail){
-                taxon.setSecMicroReference(null);
-            }
-        }
-
-        Set<Taxon> result = new HashSet<>(taxonList);
-        return result;
+        return setSecundum(newSec, emptyDetail, queryStr);
 
     }
 
     @Override
-    public Set<Synonym> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
-        String where = "SELECT syn FROM TaxonNode tn JOIN tn.taxon t JOIN t.synonyms syn" +
-                " WHERE tn.treeIndex like '%s%%' ";
+    public Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail) {
+
+        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
         if (!overwriteExisting){
-            where += " AND syn.sec IS NULL ";
+            queryStr += " AND syn.sec IS NULL ";
         }
-        if (!includeSharedTaxa){
-            where += " AND t.taxonNodes.size <= 1  ";
-        }
-        where = String.format(where, subTreeIndex.toString());
-        Query query1 = getSession().createQuery(where);
+        return setSecundum(newSec, emptyDetail, queryStr);
+    }
+    /**
+     * @param newSec
+     * @param emptyDetail
+     * @param queryStr
+     * @return
+     */
+    private <T extends TaxonBase<?>> Set<T> setSecundum(Reference newSec, boolean emptyDetail, String queryStr) {
+        Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
-        List<Synonym> synonymList = query1.list();
-        for (Synonym taxon : synonymList){
-            taxon.setSec(newSec);
+        List<T> synonymList = query.list();
+        for (T taxonBase : synonymList){
+            taxonBase.setSec(newSec);
             if (emptyDetail){
-                taxon.setSecMicroReference(null);
+                taxonBase.setSecMicroReference(null);
             }
         }
-        Set<Synonym> result = new HashSet<>(synonymList);
+        Set<T> result = new HashSet<>(synonymList);
+
         return result;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<Taxon> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
+            boolean includeSharedTaxa) {
+        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
+        return setPublish(publish, queryStr);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<Synonym> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
+            boolean includeSharedTaxa) {
+        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
+        return setPublish(publish, queryStr);
+    }
+
+    /**
+     * @param publish
+     * @param queryStr
+     * @return
+     */
+    private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr) {
+        Query query = getSession().createQuery(queryStr);
+        @SuppressWarnings("unchecked")
+        List<T> taxonList = query.list();
+        for (T taxon : taxonList){
+            taxon.setPublish(publish);
+        }
+
+        Set<T> result = new HashSet<>(taxonList);
+        return result;
+    }
+
+
+    /**
+     * @param includeSharedTaxa
+     * @param subTreeIndex
+     * @return
+     */
+    private String synonymForSubtreeQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex) {
+        String queryStr = "SELECT syn "
+                + " FROM TaxonNode tn JOIN tn.taxon t JOIN t.synonyms syn"
+                + " WHERE tn.treeIndex like '%s%%' ";
+        if (!includeSharedTaxa){
+            queryStr += " AND t.taxonNodes.size <= 1  ";
+        }
+        queryStr = String.format(queryStr, subTreeIndex.toString());
+
+        return queryStr;
+    }
+
+    private String acceptedForSubtreeQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex) {
+        String queryStr = "SELECT t "
+                + " FROM TaxonNode tn JOIN tn.taxon t "
+                + " WHERE tn.treeIndex like '%s%%' ";
+        if (!includeSharedTaxa){
+            queryStr += " AND t.taxonNodes.size <= 1  ";
+        }
+        queryStr = String.format(queryStr, subTreeIndex.toString());
+
+        return queryStr;
+    }
 
 
 }

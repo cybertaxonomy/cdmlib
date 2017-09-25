@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -126,7 +127,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 
 	@Override
     public Map<String, Set<String>> getPartitionForeignKeys(IReader<StreamItem> instream) {
-		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> result = new HashMap<>();
 
 		while (instream.hasNext()){
 			StreamItem next = instream.read();
@@ -169,7 +170,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	}
 
 
-	protected <T extends TaxonBase> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
+	protected <T extends TaxonBase<?>> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
 		if (clazz == null){
 			clazz = (Class)TaxonBase.class;
 		}
@@ -203,6 +204,37 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 		return result;
 	}
+
+
+    protected Language getDcLanguage(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList ) {
+        String namespace = TermUri.DC_LANGUAGE.toString();
+        String languageStr = item.get(TermUri.DC_LANGUAGE);
+        if (isBlank(languageStr)){
+            return null;
+        }
+
+        List<Language> list = state.get(namespace, languageStr, Language.class);
+        if (list.isEmpty()){
+            //try to find in cdm
+            Language lang = Language.getLanguageByIsoCode(languageStr);
+            if (lang == null){
+                 lang = Language.getLanguageByLabel(languageStr);
+            }
+            if (lang == null){
+                lang = state.getCurrentIO().getLanguage(state, null, languageStr, languageStr, languageStr, null);
+            }
+            state.putMapping(namespace, languageStr, lang);
+            list.add(lang);
+//            MappedCdmBase<? extends CdmBase> languageMcb = new MappedCdmBase<>(TermUri.DC_LANGUAGE, languageStr, lang);
+//            resultList.add(languageMcb);
+        }
+        if (list.size() > 1){
+            String message = "There is more than 1 cdm entity matching given language '%s'. I take an arbitrary one.";
+            fireWarningEvent(String.format(message, languageStr), item, 4);
+        }
+        Language result = list.iterator().next();
+        return result;
+    }
 
 	protected boolean isNotBlank(String str){
 		return StringUtils.isNotBlank(str);

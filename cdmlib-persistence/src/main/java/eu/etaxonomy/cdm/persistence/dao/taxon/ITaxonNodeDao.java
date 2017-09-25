@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
@@ -129,11 +130,28 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param ref
      * @return
      */
-    public Set<Taxon> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
+    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
 
     /**
      * @param ref
      */
-    public  Set<Synonym> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
+    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
+
+    /**
+     * @param subTreeIndex
+     * @param publish
+     * @param includeSharedTaxa
+     * @return
+     */
+    public Set<Taxon> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa);
+
+    /**
+     * @param subTreeIndex
+     * @param publish
+     * @param includeSharedTaxa
+     * @return
+     */
+    public Set<Synonym> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
+            boolean includeSharedTaxa);
 
 }

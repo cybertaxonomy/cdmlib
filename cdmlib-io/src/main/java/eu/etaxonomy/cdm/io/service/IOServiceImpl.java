@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
-import eu.etaxonomy.cdm.io.common.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -35,10 +34,10 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
-import eu.etaxonomy.cdm.io.common.SetSecundumForSubtreeConfigurator;
-import eu.etaxonomy.cdm.io.common.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
@@ -101,6 +100,7 @@ public class IOServiceImpl implements IIOService {
             public Serializable doRun(IRemotingProgressMonitor monitor) {
 
                 configurator.setProgressMonitor(monitor);
+//                monitor.beginTask("Start Export", 3);
                 ExportResult result = export(configurator);
 //                for(byte[] report : result.getReports()) {
 //                    monitor.addReport(new String(report));
@@ -114,23 +114,23 @@ public class IOServiceImpl implements IIOService {
         return uuid;
     }
 
-    @Override
-    public UUID monitUpdateData(final IImportConfigurator configurator) {
-        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-            @Override
-            public Serializable doRun(IRemotingProgressMonitor monitor) {
-
-                configurator.setProgressMonitor(monitor);
-                ImportResult result =updateData((SetSecundumForSubtreeConfigurator)configurator);
-
-                return result;
-            }
-        };
-        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
-        monitorThread.start();
-        return uuid;
-    }
+//    @Override
+//    public UUID monitUpdateData(final IImportConfigurator configurator) {
+//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+//            @Override
+//            public Serializable doRun(IRemotingProgressMonitor monitor) {
+//
+//                configurator.setProgressMonitor(monitor);
+//                ImportResult result =updateData((SecundumForSubtreeConfigurator)configurator);
+//
+//                return result;
+//            }
+//        };
+//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+//        monitorThread.setPriority(3);
+//        monitorThread.start();
+//        return uuid;
+//    }
 
     @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
@@ -149,13 +149,13 @@ public class IOServiceImpl implements IIOService {
         }
     }
 
-    @Override
-    public ImportResult updateData(SetSecundumForSubtreeConfigurator configurator) {
-        ImportResult result;
-
-        result = cdmImport.invoke(configurator);
-        return result;
-    }
+//    @Override
+//    public ImportResult updateData(SecundumForSubtreeConfigurator configurator) {
+//        ImportResult result;
+//
+//        result = cdmImport.invoke(configurator);
+//        return result;
+//    }
 
     @Override
     public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData) {

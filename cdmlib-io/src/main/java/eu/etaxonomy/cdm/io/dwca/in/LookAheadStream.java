@@ -24,7 +24,7 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LookAheadStream.class);
 
-	private final Queue<ITEM> fifo = new LinkedBlockingQueue<ITEM>();
+	private final Queue<ITEM> fifo = new LinkedBlockingQueue<>();
 
 	private final INamespaceReader<ITEM> stream;
 

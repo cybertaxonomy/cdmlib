@@ -46,11 +46,11 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * existing methods, e.g. a CacheStrategy for zoological names should overwrite getAuthorAndExAuthor
  * @author a.mueller
  */
-public class NonViralNameDefaultCacheStrategy
+public class TaxonNameDefaultCacheStrategy
         extends NameCacheStrategyBase
         implements INonViralNameCacheStrategy {
 
-    private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
+    private static final Logger logger = Logger.getLogger(TaxonNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
@@ -73,14 +73,14 @@ public class NonViralNameDefaultCacheStrategy
 
 // ************************** FACTORY  ******************************/
 
-    public static NonViralNameDefaultCacheStrategy NewInstance(){
-        return new NonViralNameDefaultCacheStrategy();
+    public static TaxonNameDefaultCacheStrategy NewInstance(){
+        return new TaxonNameDefaultCacheStrategy();
     }
 
 
 // ************ CONSTRUCTOR *******************/
 
-    protected NonViralNameDefaultCacheStrategy(){
+    protected TaxonNameDefaultCacheStrategy(){
         super();
     }
 
@@ -100,7 +100,7 @@ public class NonViralNameDefaultCacheStrategy
 
     /**
      * String the basionym author part starts with e.g. '('.
-     * This should correspond with the {@link NonViralNameDefaultCacheStrategy#getBasionymEnd() basionymEnd} attribute
+     * This should correspond with the {@link TaxonNameDefaultCacheStrategy#getBasionymEnd() basionymEnd} attribute
      * @return
      */
     public String getBasionymStart() {
@@ -112,7 +112,7 @@ public class NonViralNameDefaultCacheStrategy
 
     /**
      * String the basionym author part ends with e.g. ')'.
-     * This should correspond with the {@link NonViralNameDefaultCacheStrategy#getBasionymStart() basionymStart} attribute
+     * This should correspond with the {@link TaxonNameDefaultCacheStrategy#getBasionymStart() basionymStart} attribute
      * @return
      */
     public String getBasionymEnd() {
@@ -167,18 +167,20 @@ public class NonViralNameDefaultCacheStrategy
     public String getAuthorshipCache(TaxonName taxonName) {
         if (taxonName == null){
             return null;
-        }
-        //cache protected
-        if (taxonName.isProtectedAuthorshipCache() == true) {
+        }else if (taxonName.getNameType().isViral()){
+            return null;
+        }else if(taxonName.isProtectedAuthorshipCache() == true) {
+            //cache protected
             return taxonName.getAuthorshipCache();
+        }else{
+            return getNonCacheAuthorshipCache(taxonName);
         }
-        return getNonCacheAuthorshipCache(taxonName);
     }
 
     /**
      * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorship field.
      * @throws NullPointerException if nonViralName is null.
-     * @param nonViralName
+     * @param taxonName
      * @return
      */
     protected String getNonCacheAuthorshipCache(TaxonName nonViralName){
@@ -374,24 +376,26 @@ public class NonViralNameDefaultCacheStrategy
     }
 
     @Override
-    public List<TaggedText> getTaggedTitle(TaxonName nonViralName) {
-        if (nonViralName == null){
+    public List<TaggedText> getTaggedTitle(TaxonName taxonName) {
+        if (taxonName == null){
             return null;
         }
 
         List<TaggedText> tags = new ArrayList<>();
 
+        if (taxonName.isViral()){
+            return getViralTaggedTitle(taxonName);
+        }
         //TODO how to handle protected fullTitleCache here?
-
-        if (nonViralName.isProtectedTitleCache()){
+        if (taxonName.isProtectedTitleCache()){
             //protected title cache
-            tags.add(new TaggedText(TagEnum.name, nonViralName.getTitleCache()));
+            tags.add(new TaggedText(TagEnum.name, taxonName.getTitleCache()));
             return tags;
-        }else if (nonViralName.isHybridFormula()){
+        }else if (taxonName.isHybridFormula()){
             //hybrid formula
             String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
             boolean isFirst = true;
-            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            List<HybridRelationship> rels = taxonName.getOrderedChildRelationships();
             for (HybridRelationship rel: rels){
                 if (! isFirst){
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
@@ -400,21 +404,38 @@ public class NonViralNameDefaultCacheStrategy
                 tags.addAll(getTaggedTitle(rel.getParentName()));
             }
             return tags;
-        }else if (nonViralName.isAutonym()){
+        }else if (taxonName.isAutonym()){
             //Autonym
-            tags.addAll(handleTaggedAutonym(nonViralName));
+            tags.addAll(handleTaggedAutonym(taxonName));
         }else{ //not Autonym
-//			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
-
-            List<TaggedText> nameTags = getTaggedName(nonViralName);
+            List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
-            String authorCache = getAuthorshipCache(nonViralName);
+            String authorCache = getAuthorshipCache(taxonName);
             if (StringUtils.isNotBlank(authorCache)){
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
 
         return tags;
+    }
+
+    /**
+     * @param taxonName
+     * @return
+     */
+    private List<TaggedText> getViralTaggedTitle(TaxonName viralName) {
+        List<TaggedText> tags = new ArrayList<>();
+        if (viralName.isProtectedTitleCache()){
+            //protected title cache
+            tags.add(new TaggedText(TagEnum.name, viralName.getTitleCache()));
+            return tags;
+        }else{
+            if (StringUtils.isNotBlank(viralName.getAcronym())){
+                //this is not according to the code
+                tags.add(new TaggedText(TagEnum.name, viralName.getAcronym()));
+            }
+            return tags;
+        }
     }
 
     /**
@@ -425,6 +446,8 @@ public class NonViralNameDefaultCacheStrategy
     @Override
     public List<TaggedText> getTaggedName(TaxonName nonViralName) {
         if (nonViralName == null){
+            return null;
+        }else if (nonViralName.getNameType().isViral()){
             return null;
         }
         List<TaggedText> tags = new ArrayList<>();
@@ -847,13 +870,17 @@ public class NonViralNameDefaultCacheStrategy
      * {@inheritDoc}
      */
     @Override
-    protected List<TaggedText> doGetTaggedTitle(TaxonName nonViralName) {
+    protected List<TaggedText> doGetTaggedTitle(TaxonName taxonName) {
         List<TaggedText> tags = new ArrayList<>();
-        if (nonViralName.isHybridFormula()){
+        if (taxonName.getNameType().isViral()){
+            String acronym = taxonName.getAcronym();
+            tags.add(new TaggedText(TagEnum.name, acronym));
+            return tags;
+        }else if (taxonName.isHybridFormula()){
             //hybrid formula
             String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
             boolean isFirst = true;
-            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            List<HybridRelationship> rels = taxonName.getOrderedChildRelationships();
             for (HybridRelationship rel: rels){
                 if (! isFirst){
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
@@ -862,15 +889,13 @@ public class NonViralNameDefaultCacheStrategy
                 tags.addAll(getTaggedTitle(rel.getParentName()));
             }
             return tags;
-        }else if (nonViralName.isAutonym()){
+        }else if (taxonName.isAutonym()){
             //Autonym
-            tags.addAll(handleTaggedAutonym(nonViralName));
+            tags.addAll(handleTaggedAutonym(taxonName));
         }else{ //not Autonym
-    //      String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
-
-            List<TaggedText> nameTags = getTaggedName(nonViralName);
+             List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
-            String authorCache = getAuthorshipCache(nonViralName);
+            String authorCache = getAuthorshipCache(taxonName);
             if (StringUtils.isNotBlank(authorCache)){
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }

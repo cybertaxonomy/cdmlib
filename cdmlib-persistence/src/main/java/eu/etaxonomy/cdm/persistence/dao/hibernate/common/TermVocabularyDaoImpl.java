@@ -126,7 +126,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
         Criteria criteria = getSession().createCriteria(type);
         criteria.add(Restrictions.eq("termType", termType));
-
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         //this.addOrder(criteria, orderHints);
 
         List<TermVocabulary<T>> result = criteria.list();

@@ -57,8 +57,8 @@ public class DatabaseMapping implements IImportMapping {
 
 	private ICdmDataSource datasource;
 	private final String mappingId;
-	private final Map<String, Class> shortCuts = new HashMap<String, Class>();
-	private final Map<Class, String> reverseShortCuts = new HashMap<Class, String>();
+	private final Map<String, Class> shortCuts = new HashMap<>();
+	private final Map<Class, String> reverseShortCuts = new HashMap<>();
 
 
 	@Override
@@ -81,7 +81,7 @@ public class DatabaseMapping implements IImportMapping {
 
 	@Override
 	public void putMapping(String namespace, String sourceKey, IdentifiableEntity destinationObject){
-		CdmKey<IdentifiableEntity<?>> cdmKey = new CdmKey(destinationObject);
+		CdmKey<IdentifiableEntity<?>> cdmKey = new CdmKey<>(destinationObject);
 		putMapping(namespace, sourceKey, cdmKey);
 	}
 
@@ -149,7 +149,7 @@ public class DatabaseMapping implements IImportMapping {
 
 	@Override
 	public Set<CdmKey> get(String sourceNamespace, String sourceId) {
-		Set<CdmKey> result = new HashSet<CdmKey>();
+		Set<CdmKey> result = new HashSet<>();
 		String normalizedKey = normalizeKey(sourceId);
 		String selectMappingSql = " SELECT %s, %s FROM %s" +
 				" WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ";
@@ -166,9 +166,9 @@ public class DatabaseMapping implements IImportMapping {
 					throw new RuntimeException("Destination id for import mapping is 'null'");
 				}
 
-				Class clazz = getCdmClass(clazzStr);
+				Class<?> clazz = getCdmClass(clazzStr);
 
-				CdmKey<?> key = new CdmKey(clazz, Integer.valueOf(String.valueOf(id)));
+				CdmKey<?> key = new CdmKey<>(clazz, Integer.valueOf(String.valueOf(id)));
 				result.add(key);
 			}
 		} catch (NumberFormatException e) {
@@ -217,7 +217,7 @@ public class DatabaseMapping implements IImportMapping {
         String result = key.replace("'", "''");
         if (result.length() > SOURCE_KEY_LENGTH){
             //TODO better use MD5 hash or similar
-            logger.info("Source key was trunkated: " + key);
+            logger.info("Source key was truncated: " + key);
             result = result.substring(0, SOURCE_KEY_LENGTH);
         }
         return result;
@@ -257,8 +257,8 @@ public class DatabaseMapping implements IImportMapping {
 	 * @return
 	 * @throws ClassNotFoundException
 	 */
-	private Class getCdmClass(String clazzStr) throws ClassNotFoundException {
-		Class clazz = shortCuts.get(clazzStr);
+	private Class<?> getCdmClass(String clazzStr) throws ClassNotFoundException {
+		Class<?> clazz = shortCuts.get(clazzStr);
 		if (clazz == null){
 			clazz = Class.forName(clazzStr);
 		}

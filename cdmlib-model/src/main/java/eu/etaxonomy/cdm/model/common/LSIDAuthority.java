@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.common;
 
@@ -52,14 +52,14 @@ public class LSIDAuthority extends CdmBase {
 	private static final long serialVersionUID = 9168994979216936689L;
 
 	public static final String AUTHORITY_ID_PREFIX = "lsidauth:";
-	
+
 	private static final String AUTHORITY_PROTOCOL="http";
     private static final String AUTHORITY_PATH="/authority/";
 
     @XmlElement(name = "Authority")
     @NaturalId
 	private String authority;
-	
+
 	// the resolved components of the lsid
     @XmlElement(name = "Server")
 	private String server;
@@ -67,24 +67,25 @@ public class LSIDAuthority extends CdmBase {
 	private int port = -1;
     @XmlElement(name = "Url")
 	private String url;
-	
+
 	// the wsdl describing how to invoke operations on the authority
     @XmlTransient
 	@Type(type = "wsdlDefinitionUserType")
 	private Definition authorityWSDL;
-	
+
     @XmlElement(name = "Namespaces")
     @XmlJavaTypeAdapter(NamespacesAdapter.class)
     @ElementCollection(fetch = FetchType.LAZY)
 	@MapKeyColumn(name="namespaces_mapkey")  //from hibernate 3, maybe changed in future to default "namespaces_key"
     @Column(name="namespaces_element")   //from hibernate 3, maybe changed in future to default "namespaces"
-    private Map<String,Class<? extends IIdentifiableEntity>> namespaces = new HashMap<String,Class<? extends IIdentifiableEntity>>();
-	
+    private Map<String,Class<? extends IIdentifiableEntity>> namespaces = new HashMap<>();
+
 	/**
 	 * Hibernate requires a no-arguement constructor
 	 */
-	private LSIDAuthority() { }
-	
+	@SuppressWarnings("unused")
+    private LSIDAuthority() { }
+
 	/**
 	 * Construct an LSID authority object.
 	 * @param String LSID Authority must be valid authority string, or an ID of the form: lsidauth:<validauthoritystring>"
@@ -92,29 +93,30 @@ public class LSIDAuthority extends CdmBase {
 	public LSIDAuthority(String authstr) throws MalformedLSIDException {
 		try {
 			authority = authstr.toLowerCase();
-			if (authority.startsWith(AUTHORITY_ID_PREFIX))
-				authority = authority.substring(AUTHORITY_ID_PREFIX.length());
+			if (authority.startsWith(AUTHORITY_ID_PREFIX)) {
+                authority = authority.substring(AUTHORITY_ID_PREFIX.length());
+            }
 		} catch (Exception e) {
 			throw new MalformedLSIDException(e, "LSID Authority must be valid authority string, or of form: lsidauth:<validauthoritystring>");
-		}								
+		}
 	}
-	
+
 	/**
 	 * Convenience constructor, construct an LSID authority object
 	 * @param LSID use this LSID's authority to construct this object
 	 */
-	public LSIDAuthority(LSID lsid) throws MalformedLSIDException {
-		authority = lsid.getAuthority();						
-	}		
-	
+	public LSIDAuthority(LSID lsid){
+		authority = lsid.getAuthority();
+	}
+
 	/**
 	 * Returns the authority String
 	 * @return String the authority String
 	 */
 	public String getAuthority() {
-		return authority;	
+		return authority;
 	}
-	
+
 	/**
 	 * Returns the authority ID representation of this authority, lsidauth:authstr
 	 * @return String the ID representation
@@ -122,20 +124,22 @@ public class LSIDAuthority extends CdmBase {
 	public String getAuthorityID() {
 		return AUTHORITY_ID_PREFIX + authority;
 	}
-	
+
 	/**
 	 * Returns the authority String
 	 * @return String the authority String
 	 */
-	public String toString() {
-		return authority;	
+	@Override
+    public String toString() {
+		return authority;
 	}
-	
+
 	/**
 	 * Tests equality on the authority string
 	 * @return
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (o == this){
 	    	return true;
 	    }
@@ -148,7 +152,7 @@ public class LSIDAuthority extends CdmBase {
 	    //AM
 	    return auth.toString().equals(toString());
 	}
-	
+
 	/**
 	 * Returns the port of the resolved Authority, invalid until resolved.
 	 * @return int the port.
@@ -164,19 +168,20 @@ public class LSIDAuthority extends CdmBase {
 	public String getServer() {
 		return server;
 	}
-	
+
 	/**
-	 * Returns the url of the resolved Authority, invalid until resolved.  This overrides the 
+	 * Returns the url of the resolved Authority, invalid until resolved.  This overrides the
 	 * server and port properties, and might contain a full path or even a different protocol.
 	 * @return String
 	 */
 	@Transient
 	public String getUrl() {
 		if (url == null) {
-			if (server != null && port != -1)
-				url = "http://" + getServer() + ":" + getPort() + AUTHORITY_PATH;
-			else
-				return null;
+			if (server != null && port != -1) {
+                url = "http://" + getServer() + ":" + getPort() + AUTHORITY_PATH;
+            } else {
+                return null;
+            }
 		}
 		return url;
 	}
@@ -196,16 +201,16 @@ public class LSIDAuthority extends CdmBase {
 	public void setServer(String server) {
 		this.server = server == "" ? null : server;
 	}
-	
+
 	/**
-	 * Sets the URL to use.  This overrides the server and port properties, and might contain a full path or even a 
+	 * Sets the URL to use.  This overrides the server and port properties, and might contain a full path or even a
 	 * different protocol.
 	 * @param server The server to set
 	 */
 	public void setUrl(String url) {
 		this.url = url == "" ? null : url;
 	}
-	
+
 	/**
 	 * Set the wsdl describing the ports available
 	 * @param LSIDWSDLWrapper the wsdl to set
@@ -213,7 +218,7 @@ public class LSIDAuthority extends CdmBase {
 	public void setWSDL(Definition wsdl) {
 		this.authorityWSDL = wsdl;
 	}
-	
+
 	/**
 	 * get the wsdl describing the ports available
 	 * @return LSIDWSDLWRapper the wsdl
@@ -221,7 +226,7 @@ public class LSIDAuthority extends CdmBase {
 	public Definition getWSDL() {
 		return this.authorityWSDL;
 	}
-	
+
 	/**
 	 * @return boolean, whether or not the authority has been resolved.
 	 */
@@ -229,22 +234,22 @@ public class LSIDAuthority extends CdmBase {
 	public boolean isResolved() {
 		return (getUrl() != null);
 	}
-	
+
 	/**
 	 * get the url of an authority with the given server and port
 	 */
 	public String getAuthorityEnpointURL(String server, int port) {
-		return AUTHORITY_PROTOCOL + "://" + server + ":" + port + AUTHORITY_PATH;	
+		return AUTHORITY_PROTOCOL + "://" + server + ":" + port + AUTHORITY_PATH;
 	}
 
 	public Map<String,Class<? extends IIdentifiableEntity>> getNamespaces() {
 		return namespaces;
 	}
-	
+
 	public void addNamespace(String namespace, Class<? extends IIdentifiableEntity> identifiableClass) {
 		this.namespaces.put(namespace, identifiableClass);
 	}
-	
+
 	public void removeNamespace(String namespace) {
 		this.namespaces.remove(namespace);
 	}

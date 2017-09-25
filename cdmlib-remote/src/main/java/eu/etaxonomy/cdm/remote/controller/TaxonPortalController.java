@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -95,9 +94,6 @@ public class TaxonPortalController extends TaxonController
 
     @Autowired
     private INameService nameService;
-
-    @Autowired
-    private IDescriptionService descriptionService;
 
     @Autowired
     private IClassificationService classificationService;
@@ -606,7 +602,7 @@ public class TaxonPortalController extends TaxonController
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(
                 taxonGalleryMedia, type, mimeTypes, null, widthOrDuration, height, size);
 
-        List<Media> filteredMedia = new ArrayList<Media>(mediaRepresentationMap.size());
+        List<Media> filteredMedia = new ArrayList<>(mediaRepresentationMap.size());
         for (Media media : mediaRepresentationMap.keySet()) {
             media.getRepresentations().clear();
             media.addRepresentation(mediaRepresentationMap.get(media));

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping;
 import eu.etaxonomy.cdm.io.dwca.in.MappedCdmBase;
 import eu.etaxonomy.cdm.io.dwca.in.MappingEntry;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -35,7 +36,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @created 23.11.2011
  */
-public abstract class StreamImportStateBase<CONFIG extends StreamImportConfiguratorBase, IO extends StreamImportBase> extends ImportStateBase<CONFIG, IO>{
+public abstract class StreamImportStateBase<CONFIG extends StreamImportConfiguratorBase, IO extends StreamImportBase>
+            extends ImportStateBase<CONFIG, IO>{
 	private static final Logger logger = Logger.getLogger(StreamImportStateBase.class);
 
 	private UUID uuid = UUID.randomUUID();
@@ -84,16 +86,19 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		if (! mappedCdmBase.getCdmBase().isInstanceOf(IdentifiableEntity.class)){
 			throw new IllegalArgumentException("Mapped cdmBase does not map an identifiable entity");
 		}
-		mapping.putMapping(mappedCdmBase.getNamespace(), mappedCdmBase.getSourceId(), CdmBase.deproxy(mappedCdmBase.getCdmBase(), IdentifiableEntity.class));
+		putMapping(mappedCdmBase.getNamespace(), mappedCdmBase.getSourceId(), CdmBase.deproxy(mappedCdmBase.getCdmBase(), IdentifiableEntity.class));
 	}
 
 
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity<?> destinationObject){
-		mapping.putMapping(namespace, sourceKey, destinationObject);
+	    putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
 
 	public void putMapping(String namespace, String sourceKey, IdentifiableEntity<?> destinationObject){
-		mapping.putMapping(namespace, sourceKey, destinationObject);
+		if (destinationObject.isInstanceOf(DefinedTermBase.class)){
+		    addRelatedObject(namespace, sourceKey, destinationObject);
+		}
+	    mapping.putMapping(namespace, sourceKey, destinationObject);
 	}
 
 
@@ -101,8 +106,8 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		return get(namespace, sourceKey, null);
 	}
 
-	public <CLASS extends IdentifiableEntity> List<CLASS> get(String namespace, String sourceKey,Class<CLASS> destinationClass){
-		List<CLASS> result = new ArrayList<CLASS>();
+	public <CLASS extends IdentifiableEntity> List<CLASS> get(String namespace, String sourceKey, Class<CLASS> destinationClass){
+		List<CLASS> result = new ArrayList<>();
 		if (this.partitionStore != null){
 			Map<String, IdentifiableEntity> namespaceMap = this.partitionStore.get(namespace);
 			if (namespaceMap != null){
@@ -135,30 +140,30 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 
 
 	public  void loadRelatedObjects (InMemoryMapping mapping){
-		Map<String, Map<String, IdentifiableEntity>> result = new HashMap<String, Map<String,IdentifiableEntity>>();
+		Map<String, Map<String, IdentifiableEntity>> result = new HashMap<>();
 
 		List<MappingEntry<String, String, Class, Integer>> mappingEntryList = mapping.getEntryList();
 
 		//order ids by destination classes
-		Map<Class, Set<Integer>> destinationNamespaceMap = new HashMap<Class, Set<Integer>>();
+		Map<Class, Set<Integer>> destinationNamespaceMap = new HashMap<>();
 		for (MappingEntry<String, String, Class, Integer> entry : mappingEntryList){
 			Set<Integer> idSet = destinationNamespaceMap.get(entry.getDestinationNamespace());
 			if (idSet == null){
-				idSet = new HashSet<Integer>();
+				idSet = new HashSet<>();
 				destinationNamespaceMap.put(entry.getDestinationNamespace(), idSet);
 			}
 			idSet.add(entry.getDestinationId());
 		}
 
 		//retrieve cdm objects per class
-		Map<Class, Map<Integer, IdentifiableEntity>> classMap = new HashMap<Class, Map<Integer,IdentifiableEntity>>();
+		Map<Class, Map<Integer, IdentifiableEntity>> classMap = new HashMap<>();
 		for (Class<?> cdmClass : destinationNamespaceMap.keySet()){
 			IIdentifiableEntityService<?> classService = getCurrentIO().getServiceByClass(cdmClass);
 			Set<Integer> idSet = destinationNamespaceMap.get(cdmClass);
 			List<? extends IdentifiableEntity> relatedObjects = classService.findById(idSet);
 
 			//put into id map
-			Map<Integer, IdentifiableEntity> idMap = new HashMap<Integer, IdentifiableEntity>();
+			Map<Integer, IdentifiableEntity> idMap = new HashMap<>();
 			for (IdentifiableEntity<?> identEnt : relatedObjects){
 				idMap.put(identEnt.getId(), identEnt);
 			}
@@ -169,7 +174,7 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 
 		//fill related object map
 		for (MappingEntry<String, String, Class, Integer> entry : mappingEntryList){
-			IdentifiableEntity cdmBase = getCdmObject(classMap, entry);
+			IdentifiableEntity<?> cdmBase = getCdmObject(classMap, entry);
 
 			Map<String, IdentifiableEntity> namespaceMap = getOrMakeNamespaceMap(result, entry.getNamespace());
 			if (cdmBase != null){
@@ -193,13 +198,8 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		}
 	}
 
-
-//	public Map<String, Map<String, IdentifiableEntity>> getPartitionStore() {
-//		return partitionStore;
-//	}
-
 	public void unloadPartitionStore(Map<String, Map<String, IdentifiableEntity>> partitionStore) {
-		this.partitionStore = new HashMap<String, Map<String,IdentifiableEntity>>();
+		this.partitionStore = new HashMap<>();
 	}
 
 	public IImportMapping getMapping() {
@@ -207,11 +207,11 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 	}
 
 
-	private Map<String, IdentifiableEntity> getOrMakeNamespaceMap(Map<String, Map<String, IdentifiableEntity>> relatedObjectMap2, String namespace) {
-		Map<String, IdentifiableEntity> namespaceMap = relatedObjectMap2.get(namespace);
+	private Map<String, IdentifiableEntity> getOrMakeNamespaceMap(Map<String, Map<String, IdentifiableEntity>> relatedObjectMap, String namespace) {
+		Map<String, IdentifiableEntity> namespaceMap = relatedObjectMap.get(namespace);
 		if (namespaceMap == null){
-			namespaceMap = new HashMap<String, IdentifiableEntity>();
-			relatedObjectMap2.put(namespace, namespaceMap);
+			namespaceMap = new HashMap<>();
+			relatedObjectMap.put(namespace, namespaceMap);
 		}
 		return namespaceMap;
 	}
@@ -247,12 +247,7 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 			return references.get(0);
 		}
 
-
-
 	}
-
-
-
 
 
 

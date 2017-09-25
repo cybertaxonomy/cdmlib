@@ -43,8 +43,8 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 	}
 
 	@Override
-    public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+    public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
+		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -62,7 +62,7 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 		}
 
 		//return
-		return new ListReader<MappedCdmBase>(resultList);
+		return new ListReader<>(resultList);
 	}
 
 
@@ -93,7 +93,7 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
 	}

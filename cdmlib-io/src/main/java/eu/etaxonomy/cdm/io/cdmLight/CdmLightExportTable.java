@@ -31,8 +31,8 @@ public enum CdmLightExportTable {
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
     FACT_SOURCES("FactSources", factSourcesColumns()),
-    IDENTIFIER("Identifier", identifierColumns())
-
+    IDENTIFIER("Identifier", identifierColumns()),
+    MEDIA("Media", mediaColumns())
     ;
 
     //Taxon/Synonym
@@ -204,12 +204,21 @@ public enum CdmLightExportTable {
     }
 
 
+
+
+
     /**
      * @return
      */
     private static String[] identifierColumns() {
 
         return new String[]{ NAME_FK, IDENTIFIER_IDS, IDENTIFIER_TYPE};
+    }
+    /**
+     * @return
+     */
+    private static String[] mediaColumns() {
+        return new String[]{ FACT_ID, TAXON_FK, NAME_FK, MEDIA_URI};
     }
 
 

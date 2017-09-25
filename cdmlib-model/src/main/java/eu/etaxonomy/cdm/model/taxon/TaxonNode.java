@@ -781,9 +781,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return
      */
-
+	@Transient
     protected Set<TaxonNode> getDescendants(){
-        Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+        Set<TaxonNode> nodeSet = new HashSet<>();
 
         nodeSet.add(this);
 
@@ -820,10 +820,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return a set of all parent nodes
      */
+    @Transient
     protected Set<TaxonNode> getAncestors(){
-        Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+        Set<TaxonNode> nodeSet = new HashSet<>();
         if(this.getParent() != null){
-        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent());
         	nodeSet.add(parent);
             nodeSet.addAll(parent.getAncestors());
         }
@@ -831,30 +832,71 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     }
 
     /**
-     * Retrieves the first ancestor of the given rank
+     * Retrieves the first ancestor of the given rank. If any of the ancestors
+     * has no taxon or has a rank > the given rank <code>null</code> is returned.
+     * If <code>this</code> taxon is already of given rank this taxon is returned.
      * @param rank the rank the ancestor should have
      * @return the first found instance of a parent taxon node with the given rank
      */
+    @Transient
     public TaxonNode getAncestorOfRank(Rank rank){
-        TaxonBase taxon = HibernateProxyHelper.deproxy(this.getTaxon(), Taxon.class);
+        Taxon taxon = CdmBase.deproxy(this.getTaxon());
         if (taxon == null){
             return null;
         }
-        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
-        if (name.getRank().isHigher(rank)){
-        	return null;
-        }
-        if (name.getRank().equals(rank)){
-        	return this;
+        TaxonName name = CdmBase.deproxy(taxon.getName());
+        if (name != null && name.getRank() != null){
+            if (name.getRank().isHigher(rank)){
+                return null;
+            }
+            if (name.getRank().equals(rank)){
+                return this;
+            }
         }
 
         if(this.getParent() != null){
-        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent());
             return parent.getAncestorOfRank(rank);
         }
 		return null;
-
     }
+
+    /**
+     * Returns the ancestor taxa, starting with the highest (e.g. kingdom)
+     * @return
+     */
+    @Transient
+    public List<Taxon> getAncestorTaxaList(){
+        List<Taxon> result = new ArrayList<>();
+        TaxonNode current = this;
+        while (current != null){
+            if (current.getTaxon() != null){
+                result.add(0, current.getTaxon());
+            }
+            current = current.getParent();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the ancestor taxon nodes, that do have a taxon attached
+     * (excludes the root node) starting with the highest
+     *
+     * @return
+     */
+    @Transient
+    public List<TaxonNode> getAncestorList(){
+        List<TaxonNode> result = new ArrayList<>();
+        TaxonNode current = this.getParent();
+        while (current != null){
+            if (current.getTaxon() != null){
+                result.add(0, current);
+            }
+            current = current.getParent();
+        }
+        return result;
+    }
+
 
     /**
      * Whether this TaxonNode is a direct child of the classification TreeNode

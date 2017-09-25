@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 /**
@@ -35,7 +35,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
     public ProgressMonitorManager<IRestServiceProgressMonitor> progressMonitorManager;
 
     @Autowired
-    public CdmPermissionEvaluator permissionEvaluator;
+    public ICdmPermissionEvaluator permissionEvaluator;
 
     /**
      * {@inheritDoc}

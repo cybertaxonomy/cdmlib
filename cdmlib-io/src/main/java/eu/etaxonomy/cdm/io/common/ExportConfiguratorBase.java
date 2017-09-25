@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -35,6 +36,8 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	private DEST destination;
 	protected IDatabase sourceReference;
 	protected Class<ICdmIO>[] ioClassList;
+
+	 private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
 
 	protected ExportResultType resultType;
 	/**
@@ -197,6 +200,13 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 
 	@Override
 	public ExportResultType getResultType(){return resultType;}
+	public TaxonNodeFilter getTaxonNodeFilter() {
+        return taxonNodeFilter;
+    }
 
+
+    public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
+        this.taxonNodeFilter = taxonNodeFilter;
+    }
 
 }

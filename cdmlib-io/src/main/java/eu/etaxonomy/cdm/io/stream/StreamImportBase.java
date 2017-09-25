@@ -26,10 +26,15 @@ import eu.etaxonomy.cdm.io.dwca.in.StreamPartitioner;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -38,12 +43,16 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- *
  * @author a.mueller
  *
+ * @param <CONFIG>
+ * @param <STATE>
  */
-public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>> extends CdmImportBase<CONFIG, STATE>{
-	private static final Logger logger = Logger.getLogger(StreamImportBase.class);
+public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>>
+        extends CdmImportBase<CONFIG, STATE>{
+
+    private static final long serialVersionUID = -125414263689509881L;
+    private static final Logger logger = Logger.getLogger(StreamImportBase.class);
 
 
 	protected void makeSourceRef(STATE state) {
@@ -72,7 +81,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 			ItemFilter<StreamItem> filter = partitionConverter.getItemFilter();
 			IItemStream filteredStream = filter == null ? recordStream : new FilteredStream(recordStream, filter);
-			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<StreamItem>(filteredStream,
+			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner(filteredStream,
 					partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
 
 			int i = 1;
@@ -81,7 +90,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 				TransactionStatus tx = startTransaction();
 
 				try {
-					IReader<MappedCdmBase> partStream = partitionStream.read();
+					IReader<MappedCdmBase<? extends CdmBase>> partStream = partitionStream.read();
 
 					fireProgressEvent("Handel " + i + ". partition", i + ". partition");
 					logger.info("Handel " + i++ + ". partition");
@@ -89,6 +98,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 					handleResults(state, partStream, location);
 					commitTransaction(tx);
 				} catch (Exception e) {
+				    e.printStackTrace();
 					String message = "An exception occurred while handling partition: " + e;
 					String codeLocation;
 					if (e.getStackTrace().length > 0){
@@ -140,7 +150,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 			state.setSuccess(false);
 			return;
 		}
-		IReader<MappedCdmBase> resultReader = converter.map(item);
+		IReader<MappedCdmBase<? extends CdmBase>> resultReader = converter.map(item);
 		handleResults(state, resultReader, item.getLocation());
 		return;
 	}
@@ -151,7 +161,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	 * @param item
 	 * @param resultReader
 	 */
-	private void handleResults(STATE state, IReader<MappedCdmBase> resultReader, String location) {
+	private void handleResults(STATE state, IReader<MappedCdmBase<? extends CdmBase>> resultReader, String location) {
 		while (resultReader.hasNext()){
 
 			MappedCdmBase<?> mappedCdmBase = resultReader.read();
@@ -161,7 +171,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 				IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
 
 				String namespace = mappedCdmBase.getNamespace();
-				state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
+				state.putMapping(namespace, mappedCdmBase.getSourceId(), entity);
 			}
 		}
 	}
@@ -277,19 +287,8 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	}
 
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmImportBase#getFeature(eu.etaxonomy.cdm.io.common.ImportStateBase, java.util.UUID, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
-	 */
-	//Make public to allow to use by converters
-	@Override
-	public Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc) {
-		return super.getFeature(state, uuid, label, description, labelAbbrev, voc);
-	}
-
 	/**
-	 * Saves a new term. Immediate saving is required to avoid by Transient-Object-Exceptions.
+	 * Saves a new term. Immediate saving is required to avoid transient object exceptions.
 	 * @param newTerm
 	 */
 	public void saveNewTerm(DefinedTermBase newTerm) {
@@ -297,5 +296,47 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	}
 
 
+    //Make public to allow to use by converters
+    @Override
+    public Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc) {
+        return super.getFeature(state, uuid, label, description, labelAbbrev, voc);
+    }
 
+    /**
+     * {@inheritDoc}
+     *
+     * If uuid is null a random one is created.
+     */
+    @Override
+    public Language getLanguage(STATE state,
+            UUID uuid, String label, String description, String labelAbbrev, TermVocabulary voc) {
+        if (uuid == null){
+            uuid = UUID.randomUUID();
+        }
+        return super.getLanguage(state, uuid, label, description, labelAbbrev, voc);
+    }
+
+    public NamedArea getNamedArea(STATE state, UUID namedAreaUuid,
+            String label, String description, String abbrevLabel, TermVocabulary voc) {
+        return super.getNamedArea(state, namedAreaUuid, label, description, abbrevLabel,
+                null, null, voc, null);
+    }
+
+    @Override
+    public MarkerType getMarkerType(STATE state, UUID uuid, String label,
+            String description, String labelAbbrev) {
+        return super.getMarkerType(state, uuid, label, description, labelAbbrev);
+    }
+
+    @Override
+    public ExtensionType getExtensionType(STATE state, UUID uuid, String label,
+            String description, String labelAbbrev) {
+        return super.getExtensionType(state, uuid, label, description, labelAbbrev);
+    }
+
+    @Override
+    public PresenceAbsenceTerm getPresenceTerm(STATE state,
+            UUID statusUuid, String label, String description, String labelAbbrev, boolean isAbsenceTerm) {
+        return super.getPresenceTerm(state, statusUuid, label, description, labelAbbrev, isAbsenceTerm, null);
+    }
 }

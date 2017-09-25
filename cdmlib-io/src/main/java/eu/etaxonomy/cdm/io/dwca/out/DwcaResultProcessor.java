@@ -18,6 +18,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -182,6 +183,7 @@ public class DwcaResultProcessor {
             }
 
             finalResult.putExportData(table.getTableName(), exportStream.toByteArray());
+            finalResult.setExportType(ExportType.DWCA);
         }
     }
 

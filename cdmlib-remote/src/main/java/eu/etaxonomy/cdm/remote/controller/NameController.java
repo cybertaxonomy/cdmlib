@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.name.Registration;
+import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import io.swagger.annotations.Api;
@@ -54,6 +58,10 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
 
     private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
 
+    });
+
+    private static final List<String> NAME_REGISTRATIONS_INIT_STRATEGY = Arrays.asList(new String []{
+            "registrations.typeDesignations.$"
     });
 
     public NameController(){
@@ -88,7 +96,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             HttpServletResponse response) throws IOException {
 
         if (request != null) {
-            logger.info("doGetTypeDesignations()" + request.getRequestURI());
+            logger.info("doGetTypeDesignations()" + requestPathAndQuery(request));
         }
         TaxonName tnb = getCdmBaseInstance(uuid, response,
                 (List<String>) null);
@@ -103,7 +111,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     public List<String> doGetNameCache(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetNameCache()" + request.getRequestURI());
+        logger.info("doGetNameCache()" + requestPathAndQuery(request));
         TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
         String nameCacheString = tnb.getNameCache();
         List<String> result = new ArrayList<>();
@@ -117,11 +125,34 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
+        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
         ModelAndView mv = new ModelAndView();
         mv.addObject(service.getTaggedName(uuid));
         return mv;
+    }
+
+    @RequestMapping(
+            value = {"registrations"},
+            method = RequestMethod.GET)
+    public Set<Registration> doGetRegistrations(@PathVariable("uuid") UUID uuid,
+            HttpServletRequest request, HttpServletResponse response)throws IOException {
+
+        logger.info("doGetRegistrations" + requestPathAndQuery(request));
+        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY);
+        Set<Registration> regs = tnb.getRegistrations();
+        if(regs != null && regs.size() > 0){
+            Set<Registration> regsFiltered = new HashSet<>(regs.size());
+            for(Registration reg : regs){
+                if(userIsAutheticated() && userIsAnnonymous() && reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
+                    regsFiltered.add(reg);
+                } else {
+                    logger.debug("skipping unpublished registration");
+                }
+            }
+            return regsFiltered;
+        }
+        return null;
     }
 
 

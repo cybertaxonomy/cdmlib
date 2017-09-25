@@ -58,8 +58,6 @@ public class MediaUtilsTest {
 
         mediaAudio1 = Media.NewInstance();
         mediaAudio1.addRepresentation(bigMP3Representation);
-
-
     }
 
     private Media findMediaByUUID(Collection<Media> mediaList, UUID uuid){
@@ -74,18 +72,19 @@ public class MediaUtilsTest {
     @Test
     public void testFindPreferredMedia(){
 
-        ArrayList<Media> imageList = new ArrayList<Media>();
+        ArrayList<Media> imageList = new ArrayList<>();
         imageList.add(mediaImage1);
         imageList.add(mediaImage2);
         imageList.add(mediaImage3);
 
-        Map<Media, MediaRepresentation> filteredList = MediaUtils.findPreferredMedia(imageList, ImageFile.class, null, null, null, null, null);
+        Map<Media, MediaRepresentation> filteredList = MediaUtils.findPreferredMedia(
+                imageList, ImageFile.class, null, null, null, null, null);
 
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage1.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage2.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage3.getUuid()));
 
-        ArrayList<Media> mixedMediaList =  new ArrayList<Media>();
+        ArrayList<Media> mixedMediaList =  new ArrayList<>();
         mixedMediaList.add(mediaImage1);
         mixedMediaList.add(mediaImage2);
         mixedMediaList.add(mediaImage3);
@@ -111,14 +110,16 @@ public class MediaUtilsTest {
 
         String[] mimetypes = {".*"};
 
-        Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(mediaImage1, null, null, 200, 300, mimetypes));
-        Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(mediaImage1, null, null, 1500, 1500, mimetypes));
+        Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage1, null, null, 200, 300, mimetypes));
+        Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage1, null, null, 1500, 1500, mimetypes));
 
-        Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(mediaImage1, null, 300, null, null, mimetypes));
-        Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(mediaImage1, null, 1500, null, null, mimetypes));
+        Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage1, null, 300, null, null, mimetypes));
+        Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage1, null, 1500, null, null, mimetypes));
 
     }
-
-
 
 }

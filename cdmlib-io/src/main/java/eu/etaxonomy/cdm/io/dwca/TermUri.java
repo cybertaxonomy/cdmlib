@@ -56,6 +56,8 @@ public enum TermUri {
 	GBIF_ORGANISM_PART("http://rs.gbif.org/terms/1.0/organismPart"),
 	GBIF_IS_PREFERRED_NAME("http://rs.gbif.org/terms/1.0/isPreferredName"),
 	GBIF_VERBATIM_LABEL("http://rs.gbif.org/terms/1.0/verbatimLabel"),
+	GBIF_IS_EXTINCT("http://rs.gbif.org/terms/1.0/isExtinct"),
+
 
 	IUCN_THREAD_STATUS("http://iucn.org/terms/threatStatus"),
 

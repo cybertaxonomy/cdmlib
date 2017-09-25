@@ -27,14 +27,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @created 01.07.2017
  */
-public class TaxonNodeOutStreamPartitioner<STATE extends XmlExportState> {
+public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
     private static final Logger logger = Logger.getLogger(TaxonNodeOutStreamPartitioner.class);
 
 //************************* STATIC ***************************************************/
 
 	public static <ST  extends XmlExportState>  TaxonNodeOutStreamPartitioner NewInstance(
-	        ICdmRepository repository, XmlExportState state,
+	        ICdmRepository repository, IoStateBase state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
 		TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
@@ -105,10 +105,12 @@ public class TaxonNodeOutStreamPartitioner<STATE extends XmlExportState> {
 
 	public void initialize(){
 	    if (totalCount < 0){
+
 	        parentMonitor.subTask("Compute total number of records");
 	        totalCount = ((Long)repository.getTaxonNodeService().count(filter)).intValue();
 	        idList = repository.getTaxonNodeService().idList(filter);
 	        int parTicks = this.parentTicks == null? totalCount : this.parentTicks;
+
 	        monitor = SubProgressMonitor.NewStarted(parentMonitor, parTicks,
 	                "Taxon node streamer", totalCount * (retrieveFactor +  iterateFactor));
 	        idIterator = idList.iterator();

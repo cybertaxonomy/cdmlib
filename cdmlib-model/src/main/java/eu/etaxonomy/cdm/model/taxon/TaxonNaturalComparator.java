@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Comparator to compare {@link TaxonNode taxon nodes} by its user defined ordering
+ *
  * @author k.luther
  */
 public class TaxonNaturalComparator implements Comparator<TaxonNode> {
@@ -54,13 +55,13 @@ public class TaxonNaturalComparator implements Comparator<TaxonNode> {
 			return node1.getSortIndex().compareTo(node2.getSortIndex());
 		}
 		String lastEqualAncestorTreeIndex = "";
-		List<TaxonNode> ancestorAndNode= new ArrayList<TaxonNode>();
+		List<TaxonNode> ancestorAndNode= new ArrayList<>();
 		ancestorAndNode.add(node1);
 		ancestorAndNode.addAll(node1.getAncestors());
 		java.util.Collections.sort(ancestorAndNode, new TreeIndexComparator());
 
 
-		List<TaxonNode> ancestorAndNode2= new ArrayList<TaxonNode>();
+		List<TaxonNode> ancestorAndNode2= new ArrayList<>();
         ancestorAndNode2.add(node2);
         ancestorAndNode2.addAll(node2.getAncestors());
         java.util.Collections.sort(ancestorAndNode2, new TreeIndexComparator());
@@ -95,8 +96,7 @@ public class TaxonNaturalComparator implements Comparator<TaxonNode> {
 
 	private final class TreeIndexComparator implements Comparator<TaxonNode> {
 	    @Override
-	    public int compare(TaxonNode node1,TaxonNode node2)
-	    {
+	    public int compare(TaxonNode node1,TaxonNode node2){
 	        return node1.treeIndex().compareTo(node2.treeIndex());
 	    }
 	}

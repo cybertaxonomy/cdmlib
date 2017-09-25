@@ -304,9 +304,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate end");}
             return transientObject.getUuid();
         } catch (NonUniqueObjectException e) {
-            logger.error("Error in CdmEntityDaoBase.saveOrUpdate(obj)");
-            logger.error(e.getIdentifier());
-            logger.error(e.getEntityName());
+            logger.error("Error in CdmEntityDaoBase.saveOrUpdate(obj). ID="+e.getIdentifier()+". Class="+e.getEntityName());
             logger.error(e.getMessage());
 
             e.printStackTrace();

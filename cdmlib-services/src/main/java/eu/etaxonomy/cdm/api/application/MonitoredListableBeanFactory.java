@@ -34,7 +34,7 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 	private IProgressMonitor currentMonitor;
 
 	private static List<String> beansToMonitor = Arrays.asList("sessionFactory","defaultBeanInitializer","persistentTermInitializer");
-	private final Set<String> alreadyMonitoredBeans = new HashSet<String>();
+	private final Set<String> alreadyMonitoredBeans = new HashSet<>();
 
 	public MonitoredListableBeanFactory(){
 	}

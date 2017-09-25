@@ -30,7 +30,7 @@ public class ListReader<TYPE extends Object> implements IReader<TYPE> {
 	 * @param list
 	 */
 	public ListReader(List<TYPE> list) {
-		this.list = new ArrayList<TYPE>();
+		this.list = new ArrayList<>();
 		this.list.addAll(list);
 	}
 
