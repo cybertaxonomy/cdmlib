@@ -781,9 +781,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return
      */
-
+	@Transient
     protected Set<TaxonNode> getDescendants(){
-        Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+        Set<TaxonNode> nodeSet = new HashSet<>();
 
         nodeSet.add(this);
 
@@ -820,6 +820,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return a set of all parent nodes
      */
+    @Transient
     protected Set<TaxonNode> getAncestors(){
         Set<TaxonNode> nodeSet = new HashSet<>();
         if(this.getParent() != null){
@@ -837,6 +838,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @param rank the rank the ancestor should have
      * @return the first found instance of a parent taxon node with the given rank
      */
+    @Transient
     public TaxonNode getAncestorOfRank(Rank rank){
         Taxon taxon = CdmBase.deproxy(this.getTaxon());
         if (taxon == null){
@@ -863,6 +865,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * Returns the ancestor taxa, starting with the highest (e.g. kingdom)
      * @return
      */
+    @Transient
     public List<Taxon> getAncestorTaxaList(){
         List<Taxon> result = new ArrayList<>();
         TaxonNode current = this;
@@ -881,6 +884,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return
      */
+    @Transient
     public List<TaxonNode> getAncestorList(){
         List<TaxonNode> result = new ArrayList<>();
         TaxonNode current = this.getParent();
