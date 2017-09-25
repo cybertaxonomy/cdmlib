@@ -481,7 +481,7 @@ public class CdmLightClassificationExport
 
                     IndividualsAssociation indAssociation = (IndividualsAssociation)element;
                     if (indAssociation.getAssociatedSpecimenOrObservation() == null){
-                        state.getResult().addWarning("There is an individual association without an specimen associated (Taxon UUID: " + taxon.getUuid() + ") . Could not be exported.");
+                        state.getResult().addWarning("There is an individual association with no specimen associated (Taxon "+ taxon.getTitleCache() + "(" + taxon.getUuid() +"). Could not be exported.");
                         continue;
                     }else{
                         if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
