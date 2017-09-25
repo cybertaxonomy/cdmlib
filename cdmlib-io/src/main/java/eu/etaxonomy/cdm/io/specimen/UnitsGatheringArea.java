@@ -185,31 +185,15 @@ public class UnitsGatheringArea {
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
         NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
         ar.setTitleCache(namedAreaStr, true);
-//        if (namedAreaClass != null){
-//            if (namedAreaClass.equals("continent")){
-//                if (continentVocabulary == null){
-//                    continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
-//                }
-//                continentVocabulary.addTerm(ar);
-//            }else if(namedAreaClass.equals("country") ){
-//                if (countryVocabulary == null){
-//                   countryVocabulary = vocabularyService.load(NamedArea.);
-//                }
-//                countryVocabulary.addTerm(ar);
-//            } else{
-                if (specimenImportVocabulary == null){
-                    specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                    if (specimenImportVocabulary == null){
-                        specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
-                        specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                        specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
-                    }
-                    specimenImportVocabulary.addTerm(ar);
-                }
-
-//            }
-//        }
-
+        if (specimenImportVocabulary == null){
+            specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+            if (specimenImportVocabulary == null){
+                specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+            }
+        }
+        specimenImportVocabulary.addTerm(ar);
         termService.saveOrUpdate(ar);
         this.areas.add(ar);
         addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
