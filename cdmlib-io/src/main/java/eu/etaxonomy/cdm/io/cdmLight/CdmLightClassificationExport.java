@@ -387,8 +387,9 @@ public class CdmLightClassificationExport
                        mediaUris +=  mediaString + ";";
                    }
                    else{
-                       state.getResult().addWarning("Empty Media object for uuid: " +
-                               cdmBase.getUuid() + " uuid of media: " + media.getUuid());
+                       state.getResult().addWarning("Empty Media object for "
+                               + cdmBase.getUserFriendlyTypeName() + " " + cdmBase.getUuid()
+                               + " (media: " + media.getUuid() + ")");
                    }
                }
                csvLine[table.getIndex(CdmLightExportTable.MEDIA_URI)] = mediaUris;
