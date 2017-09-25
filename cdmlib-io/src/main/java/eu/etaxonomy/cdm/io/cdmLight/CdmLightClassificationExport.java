@@ -479,16 +479,22 @@ public class CdmLightClassificationExport
                 if (element instanceof IndividualsAssociation){
 
                     IndividualsAssociation indAssociation = (IndividualsAssociation)element;
-                    if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
-                        SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
+                    if (indAssociation.getAssociatedSpecimenOrObservation() == null){
+                        state.getResult().addWarning("There is an individual association without an specimen associated (Taxon UUID: " + taxon.getUuid() + ") . Could not be exported.");
+                        continue;
+                    }else{
+                        if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
+                            SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
 
-                        if (specimenBase instanceof SpecimenOrObservationBase){
-                            SpecimenOrObservationBase derivedUnit = specimenBase;
-                            handleSpecimen(state, derivedUnit);
-                            csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
-                        }else{
-                            //field units are not supported
-                            state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
+                            if (specimenBase instanceof SpecimenOrObservationBase){
+                                SpecimenOrObservationBase derivedUnit = specimenBase;
+                                handleSpecimen(state, derivedUnit);
+                                csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
+                            }else{
+                                //field units are not supported
+                                state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
+
+                            }
                         }
                     }
                 } else if (element instanceof TextData){
