@@ -61,7 +61,8 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     });
 
     private static final List<String> NAME_REGISTRATIONS_INIT_STRATEGY = Arrays.asList(new String []{
-            "registrations.typeDesignations.$"
+            "registrations.typeDesignations.$",
+            "registrations.institution"
     });
 
     public NameController(){

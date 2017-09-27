@@ -67,7 +67,8 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "typeStatus.representations",
             "typifiedNames.nomenclaturalReference.authorship",
             "citation.authorship.$",
-            "typeSpecimen.media"
+            "typeSpecimen.media",
+            "registrations.institution"
     });
 
 
