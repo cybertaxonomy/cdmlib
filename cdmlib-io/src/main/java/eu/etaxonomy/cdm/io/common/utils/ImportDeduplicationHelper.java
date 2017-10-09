@@ -136,7 +136,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     public ImportDeduplicationHelper(ICdmRepository repository) {
         this.repository = repository;
         if (repository == null){
-            logger.warn("Repository is null. Deduplication does not work agains database");
+            logger.warn("Repository is null. Deduplication does not work against database");
         }
     }
 

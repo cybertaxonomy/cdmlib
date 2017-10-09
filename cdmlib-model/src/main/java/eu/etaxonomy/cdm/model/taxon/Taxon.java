@@ -457,7 +457,7 @@ public class Taxon
      */
     public Set<TaxonRelationship> getRelationsFromThisTaxon() {
         if(relationsFromThisTaxon == null) {
-            this.relationsFromThisTaxon = new HashSet<TaxonRelationship>();
+            this.relationsFromThisTaxon = new HashSet<>();
         }
         return relationsFromThisTaxon;
     }
@@ -472,7 +472,7 @@ public class Taxon
      */
     public Set<TaxonRelationship> getRelationsToThisTaxon() {
         if(relationsToThisTaxon == null) {
-            this.relationsToThisTaxon = new HashSet<TaxonRelationship>();
+            this.relationsToThisTaxon = new HashSet<>();
         }
         return relationsToThisTaxon;
     }
@@ -486,7 +486,7 @@ public class Taxon
      */
     @Transient
     public Set<TaxonRelationship> getTaxonRelations() {
-        Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
+        Set<TaxonRelationship> rels = new HashSet<>();
         rels.addAll(getRelationsToThisTaxon());
         rels.addAll(getRelationsFromThisTaxon());
         return rels;
@@ -517,7 +517,7 @@ public class Taxon
      * 			a set of <code>TaxonRelationship</code>s or <code>null</null> if none exists.
      */
     public Set<TaxonRelationship> getTaxonRelations(Taxon possiblyRelatedTaxon){
-        Set<TaxonRelationship> relations = new HashSet<TaxonRelationship>();
+        Set<TaxonRelationship> relations = new HashSet<>();
 
         for(TaxonRelationship relationship : getTaxonRelations()){
             if(relationship.getFromTaxon().equals(possiblyRelatedTaxon)) {
@@ -802,7 +802,7 @@ public class Taxon
      */
     @Transient
     public Set<Taxon> getMisappliedNames(){
-        Set<Taxon> taxa = new HashSet<Taxon>();
+        Set<Taxon> taxa = new HashSet<>();
         Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
         for (TaxonRelationship rel: rels){
             TaxonRelationshipType tt = rel.getType();
@@ -827,7 +827,7 @@ public class Taxon
      */
     @Transient
     public Set<Taxon> getTaxonForMisappliedName(){
-        Set<Taxon> taxa = new HashSet<Taxon>();
+        Set<Taxon> taxa = new HashSet<>();
         Set<TaxonRelationship> rels = this.getRelationsFromThisTaxon();
         for (TaxonRelationship rel: rels){
             TaxonRelationshipType tt = rel.getType();
