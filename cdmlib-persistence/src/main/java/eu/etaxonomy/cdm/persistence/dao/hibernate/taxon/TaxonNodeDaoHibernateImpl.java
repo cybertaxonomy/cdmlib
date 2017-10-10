@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
@@ -492,15 +493,20 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
         List<T> synonymList = query.list();
+        MergeResult mergeResult;
+        Set<T> result = new HashSet<>();
         for (T taxonBase : synonymList){
+            taxonBase = (T) taxonDao.load(taxonBase.getUuid());
+
             taxonBase.setSec(newSec);
             if (emptyDetail){
                 taxonBase.setSecMicroReference(null);
             }
-        }
-        Set<T> result = new HashSet<>(synonymList);
 
-        return result;
+           result.add(taxonBase);
+
+        }
+      return result;
     }
 
 

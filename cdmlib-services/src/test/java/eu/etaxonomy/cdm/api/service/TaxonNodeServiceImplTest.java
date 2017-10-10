@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -724,7 +724,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(subTreeUuid);
         config.setNewSecundum(newSec);
         taxonNodeService.setSecundumForSubtree(config);
 
@@ -758,7 +758,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
         config.setOverwriteExistingAccepted(false);
         config.setOverwriteExistingSynonyms(false);
         taxonNodeService.setSecundumForSubtree(config);
@@ -793,11 +793,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
         config.setIncludeSynonyms(false);
         taxonNodeService.setSecundumForSubtree(config);
 
-        commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
+//        commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
         Assert.assertNull(taxonService.find(2).getSec());
         Assert.assertNull(taxonService.find(3).getSec());
@@ -825,7 +825,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
         config.setIncludeAcceptedTaxa(false);
         taxonNodeService.setSecundumForSubtree(config);
 
@@ -859,7 +859,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SetSecundumForSubtreeConfigurator config = new SetSecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(subTreeUuid, newSec, null);
         config.setIncludeSharedTaxa(false);
         taxonNodeService.setSecundumForSubtree(config);
 
@@ -886,7 +886,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(5).isPublish());
 
         //set publish
-//        SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid);
+//        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid);
 //        config.setNewSecundum(newSec);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, true, true, true, null);
@@ -912,7 +912,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(5).isPublish());
 
         //set secundum
-//        SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
+//        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
 //        config.setIncludeSynonyms(false);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, true, false, true, null);
@@ -938,7 +938,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(5).isPublish());
 
         //set secundum
-//        SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
+//        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
 //        config.setIncludeAcceptedTaxa(false);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, false, true, true, null);
@@ -965,7 +965,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(5).isPublish());
 
         //set secundum
-     //   SetSecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
+     //   SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
    //     config.setIncludeSharedTaxa(false);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(subTreeUuid, publish, true, true, false, null);
