@@ -75,16 +75,19 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     // Making sure that operation is always initialized, for both
     // - the string representation to have a '[]'
     // - and the object representation to never be null (with check in constructors)
-    EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);;
+    EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);
     UUID targetUuid;
 
-    public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation, UUID uuid){
+    public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation){
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         if(operation != null) {
         	this.operation = operation;
         }
-        this.targetUuid = uuid;
+        if(targetDomainObject.getUuid() == null){
+            throw new NullPointerException("UUID of targetDomainObject is null. CDM entities need to be saved prior using this function");
+        }
+        this.targetUuid = targetDomainObject.getUuid();
     }
 
      public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation, UUID uuid){
@@ -95,6 +98,15 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         }
         this.targetUuid = uuid;
     }
+
+     public CdmAuthority(Class<? extends CdmBase> targetDomainType, String property, EnumSet<CRUD> operation, UUID uuid){
+         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainType);
+          this.property = property;
+          if(operation != null) {
+              this.operation = operation;
+          }
+          this.targetUuid = uuid;
+      }
 
 
     public CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<CRUD> operation, UUID uuid){
