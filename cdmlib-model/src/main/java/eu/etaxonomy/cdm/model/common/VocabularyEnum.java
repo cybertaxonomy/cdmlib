@@ -37,11 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author n.hoffmann
  * @created 03.06.2009
- *
- * @deprecated
- * A static list of vocabularies is not the right way to do this.
- * We will use a service method that will return vocabularies by term type (once that is implemented)
- */
+ **/
 @Deprecated
 public enum VocabularyEnum {
 

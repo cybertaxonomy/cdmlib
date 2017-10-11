@@ -101,7 +101,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
             return;
         } else {
-            Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
+            Map<UUID,DefinedTermBase> terms = new HashMap<>();
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 
             DateTime start = new DateTime();
@@ -110,8 +110,8 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 
             //load uuids from csv files
             logger.info("Start new ... " );
-            Map<UUID, Set<UUID>> uuidMap = new HashMap<UUID, Set<UUID>>();
-            Map<UUID, VocabularyEnum> vocTypeMap = new HashMap<UUID, VocabularyEnum>();
+            Map<UUID, Set<UUID>> uuidMap = new HashMap<>();
+            Map<UUID, VocabularyEnum> vocTypeMap = new HashMap<>();
 
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
                 UUID vocUUID = termLoader.loadUuids(vocabularyType, uuidMap);
@@ -123,8 +123,8 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 
             //find and create missing terms and load vocabularies from repository
             logger.info("Create missing terms ... " );
-            Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<UUID, TermVocabulary<?>>();
-            Map<UUID, Set<UUID>> missingTermUuids = new HashMap<UUID, Set<UUID>>();
+            Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<>();
+            Map<UUID, Set<UUID>> missingTermUuids = new HashMap<>();
 
             vocabularyDao.missingTermUuids(uuidMap, missingTermUuids, vocabularyMap);
 

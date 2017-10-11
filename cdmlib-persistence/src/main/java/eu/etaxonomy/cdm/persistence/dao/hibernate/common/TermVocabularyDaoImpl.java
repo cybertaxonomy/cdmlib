@@ -167,7 +167,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse){
 
-		Set<UUID> missingTermCandidateUuids = new HashSet<UUID>();
+		Set<UUID> missingTermCandidateUuids = new HashSet<>();
 
 		for (Set<UUID> uuidsPerVocSet : uuidsRequested.values()){
 			missingTermCandidateUuids.addAll(uuidsPerVocSet);
@@ -213,7 +213,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 					if (missingTermCandidateUuids.contains(termUuid)){
 						Set<UUID> r = uuidMissingTermsRepsonse.get(vocUUID);
 						if (r == null){
-							r = new HashSet<UUID>();
+							r = new HashSet<>();
 							uuidMissingTermsRepsonse.put(vocUUID, r);
 						}
 						r.add(termUuid);
