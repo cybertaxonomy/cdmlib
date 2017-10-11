@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -134,6 +135,7 @@ public class Group extends CdmBase {
             return false;
         }
     }
+
 //*********************** CLONE ********************************************************/
 
     /**
@@ -165,6 +167,17 @@ public class Group extends CdmBase {
             logger.warn("Object does not implement cloneable");
             e.printStackTrace();
             return null;
+        }
+    }
+
+//************************************** toString ***************************************
+
+    @Override
+    public String toString() {
+        if (StringUtils.isNotBlank(name)){
+            return name;
+        }else{
+            return super.toString();
         }
     }
 }
