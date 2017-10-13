@@ -118,6 +118,13 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         this.targetUuid = uuid;
     }
 
+    public CdmAuthority(CdmPermissionClass permissionClass, EnumSet<CRUD> operation){
+        this.permissionClass = permissionClass;
+        if(operation != null) {
+            this.operation = operation;
+        }
+    }
+
     private CdmAuthority (String authority) throws ParsingException{
 
         String[] tokens = parse(authority);

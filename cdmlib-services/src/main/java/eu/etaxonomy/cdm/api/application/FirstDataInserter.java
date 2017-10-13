@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.application;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,9 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -67,21 +71,30 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 //@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
 public class FirstDataInserter extends AbstractDataInserter {
 
+    /**
+     *
+     */
+    private static final EnumSet<CRUD> CREATE_READ = EnumSet.of(CRUD.CREATE, CRUD.READ);
+    private static final EnumSet<CRUD> UPDATE_DELETE = EnumSet.of(CRUD.UPDATE, CRUD.DELETE);
+    private static final EnumSet<CRUD> CREATE_READ_UPDATE = EnumSet.of(CRUD.CREATE, CRUD.READ, CRUD.UPDATE);
+    private static final EnumSet<CRUD> CREATE_READ_UPDATE_DELETE = EnumSet.of(CRUD.CREATE, CRUD.READ, CRUD.UPDATE, CRUD.DELETE);
+
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
     public static final String[] EDITOR_GROUP_AUTHORITIES = new String[]{
-            "REFERENCE.[CREATE,READ]",
-            "TAXONNAME.[CREATE,READ,UPDATE]",
-            "TEAMORPERSONBASE.[CREATE,READ]",
-            "TAXONBASE.[CREATE,UPDATE,DELETE,READ]",
-            "DESCRIPTIONBASE.[CREATE,UPDATE,DELETE,READ]",
-            "DESCRIPTIONELEMENTBASE.[CREATE,UPDATE,DELETE,READ]",
+            new CdmAuthority(CdmPermissionClass.REFERENCE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.TAXONNAME, CREATE_READ_UPDATE).toString(),
+            new CdmAuthority(CdmPermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.TAXONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(CdmPermissionClass.TYPEDESIGNATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
     };
 
     public static final String[] PROJECT_MANAGER_GROUP_AUTHORITIES = new String[]{
-            "REFERENCE.[UPDATE,DELETE]",
-            "TAXONNAME.[DELETE]",
-            "TEAMORPERSONBASE.[UPDATE,DELETE]",
+            new CdmAuthority(CdmPermissionClass.REFERENCE, UPDATE_DELETE).toString(),
+            new CdmAuthority(CdmPermissionClass.TAXONNAME, EnumSet.of(CRUD.DELETE)).toString(),
+            new CdmAuthority(CdmPermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString(),
             Role.ROLE_PROJECT_MANAGER.toString(),
     };
 
