@@ -18,11 +18,12 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -112,14 +113,14 @@ public class CdmPermissionClassTest {
     }
 
     @Test
-    public void testTYPEDESIGNATION(){
+    public void testSPECIMENOROBSERVATIONBASE(){
         Assert.assertEquals(
-                CdmPermissionClass.TYPEDESIGNATIONBASE,
-                CdmPermissionClass.getValueOf(SpecimenTypeDesignation.NewInstance())
+                CdmPermissionClass.SPECIMENOROBSERVATIONBASE,
+                CdmPermissionClass.getValueOf(FieldUnit.NewInstance())
                 );
         Assert.assertEquals(
-                CdmPermissionClass.TYPEDESIGNATIONBASE,
-                CdmPermissionClass.getValueOf(NameTypeDesignation.NewInstance())
+                CdmPermissionClass.SPECIMENOROBSERVATIONBASE,
+                CdmPermissionClass.getValueOf(DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit))
                 );
     }
 

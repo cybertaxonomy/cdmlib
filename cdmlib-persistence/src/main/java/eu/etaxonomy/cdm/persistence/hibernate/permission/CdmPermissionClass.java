@@ -30,7 +30,7 @@ public enum CdmPermissionClass {
     TAXONNAME,
     TEAMORPERSONBASE,
     REGISTRATION,
-    TYPEDESIGNATIONBASE;
+    SPECIMENOROBSERVATIONBASE;
 
     /**
      * return the appropriate CdmPermissionClass for the given Object

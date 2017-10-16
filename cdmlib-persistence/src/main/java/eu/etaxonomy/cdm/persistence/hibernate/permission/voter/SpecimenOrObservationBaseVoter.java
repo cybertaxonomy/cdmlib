@@ -9,21 +9,21 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author a.kohlbecker
  * @date Feb 24, 2014
  *
  */
-public class TypeDesignationVoter extends CdmPermissionVoter {
+public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#getResponsibilityClass()
      */
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {
-        return TypeDesignationBase.class;
+        return SpecimenOrObservationBase.class;
     }
 
     /* (non-Javadoc)
@@ -31,12 +31,9 @@ public class TypeDesignationVoter extends CdmPermissionVoter {
      */
     @Override
     public boolean isOrpahn(CdmBase object) {
-        if(object instanceof TypeDesignationBase){
-            TypeDesignationBase<?> typeDesignation = (TypeDesignationBase<?>)object;
-            return typeDesignation.getTypifiedNames().isEmpty() && typeDesignation.getRegistrations().isEmpty();
-        } else {
-            throw new RuntimeException("Invalid object type: " + object.getClass().getName());
-        }
+        // the permission to delete a SpecimenOrObservationBase is not granted on base of hierachical
+        // permission propagation, therefore it is save to treat all entities as orphan.
+        return true;
     }
 
 }

@@ -88,7 +88,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             new CdmAuthority(CdmPermissionClass.TAXONBASE, CREATE_READ_UPDATE_DELETE).toString(),
             new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
             new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(CdmPermissionClass.TYPEDESIGNATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
     };
 
     public static final String[] PROJECT_MANAGER_GROUP_AUTHORITIES = new String[]{
