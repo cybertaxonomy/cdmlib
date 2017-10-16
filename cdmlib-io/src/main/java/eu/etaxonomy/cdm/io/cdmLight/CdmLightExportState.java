@@ -38,6 +38,7 @@ public class CdmLightExportState
 
     private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<>();
     private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
+
     private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
     private Map<Integer, Reference> referenceStore = new HashMap<>();
 
@@ -106,10 +107,37 @@ public class CdmLightExportState
     }
 
     /**
-     * @return the homotypicalGroupStore
+     * @return the specimenStore
      */
-    public Map<Integer, TeamOrPersonBase<?>> getAuthorStore() {
-        return authorStore;
+    public Map<Integer, SpecimenOrObservationBase> getSpecimenStore() {
+        return specimenStore;
+    }
+
+
+
+    /**
+     * @param specimenStore the specimenStore to set
+     */
+    public void setSpecimenStore(Map<Integer, SpecimenOrObservationBase> specimenStore) {
+        this.specimenStore = specimenStore;
+    }
+
+
+
+
+
+    /**
+     * @param homotypicalGroupStore the homotypicalGroupStore to set
+     */
+    public void setHomotypicalGroupStore(Map<Integer, HomotypicalGroup> homotypicalGroupStore) {
+        this.homotypicalGroupStore = homotypicalGroupStore;
+    }
+
+    /**
+     * @param authorStore the authorStore to set
+     */
+    public void setAuthorStore(Map<Integer, TeamOrPersonBase<?>> authorStore) {
+        this.authorStore = authorStore;
     }
 
     /**
@@ -118,6 +146,14 @@ public class CdmLightExportState
     public void addAuthorToStore(TeamOrPersonBase<?> author) {
         this.authorStore.put(author.getId(), author);
     }
+
+    /**
+     * @return the homotypicalGroupStore
+     */
+    public Map<Integer, TeamOrPersonBase<?>> getAuthorStore() {
+        return authorStore;
+    }
+
 
     public TeamOrPersonBase<?> getAuthorFromStore(Integer id){
         return authorStore.get(id);
@@ -141,6 +177,17 @@ public class CdmLightExportState
         this.referenceStore.put(ref.getId(), ref);
 
     }
-
+    /**
+     * @param referenceStore the referenceStore to set
+     */
+    public void setReferenceStore(Map<Integer, Reference> referenceStore) {
+        this.referenceStore = referenceStore;
+    }
+    /**
+     * @return the referenceStore
+     */
+    public Map<Integer, Reference> getReferenceStore() {
+        return referenceStore;
+    }
 
 }
