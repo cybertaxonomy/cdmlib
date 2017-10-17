@@ -183,20 +183,22 @@ public class UnitsGatheringArea {
      */
     private void createNamedArea(ImportConfiguratorBase<?, ?> config, ITermService termService,
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
-        NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
-        ar.setTitleCache(namedAreaStr, true);
-        if (specimenImportVocabulary == null){
-            specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+        if (!StringUtils.isBlank(namedAreaStr)){
+            NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
+            ar.setTitleCache(namedAreaStr, true);
             if (specimenImportVocabulary == null){
-                specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
-                specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+                specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                if (specimenImportVocabulary == null){
+                    specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                    specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                    specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+                }
             }
+            specimenImportVocabulary.addTerm(ar);
+            termService.saveOrUpdate(ar);
+            this.areas.add(ar);
+            addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
         }
-        specimenImportVocabulary.addTerm(ar);
-        termService.saveOrUpdate(ar);
-        this.areas.add(ar);
-        addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
     }
 
     private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms, String areaType){

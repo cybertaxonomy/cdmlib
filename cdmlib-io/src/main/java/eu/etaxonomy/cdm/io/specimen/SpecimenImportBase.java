@@ -1012,8 +1012,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        if (!existsInClassification(taxon,state.getClassification(), state)){
 	            if(config.isMoveNewTaxaToDefaultClassification()){
 	                //check if node exists in default classification
-	                if (!existsInClassification(taxon, state.getDefaultClassification(true), state)){
-	                    addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification(true));
+	                if (!existsInClassification(taxon, state.getClassification(), state)){
+	                    addParentTaxon(taxon, state, preferredFlag, state.getClassification());
 	                }
 	            }else{
 	                //add non-existing taxon to current classification
