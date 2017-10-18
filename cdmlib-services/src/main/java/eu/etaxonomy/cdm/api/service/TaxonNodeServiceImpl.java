@@ -785,16 +785,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (config.isIncludeAcceptedTaxa()){
             monitor.subTask("Update Accepted Taxa");
             Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
-//            taxonService.saveOrUpdate(updatedTaxa);
-
+            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (config.isIncludeSynonyms()){
-            monitor.subTask("Update Synonyms");
-            Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
-//            taxonService.saveOrUpdate(updatedSynonyms);
-
-            result.addUpdatedObjects(updatedSynonyms);
+           monitor.subTask("Update Synonyms");
+           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+           taxonService.saveOrUpdate(updatedSynonyms);
+           result.addUpdatedObjects(updatedSynonyms);
         }
 
         monitor.done();
@@ -832,12 +830,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //Reference ref = config.getNewSecundum();
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
-            Set<Taxon> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
+            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
-            Set<Synonym> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
+            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
+            taxonService.saveOrUpdate(updatedSynonyms);
             result.addUpdatedObjects(updatedSynonyms);
         }
         monitor.done();
