@@ -97,7 +97,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 		this.state = state;
 		this.parentMonitor = parentMonitor;
 		this.parentTicks = parentTicks;
-		initialize();
+
 
 	}
 
@@ -126,9 +126,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
 	public TaxonNode next(){
 	    int currentIndexAtStart = currentIndex;
-
+	    initialize();
 	    if(fifo.isEmpty()){
-
 	        List<TaxonNode> list = getNextPartition();
 	        fifo.addAll(list);
 	    }
