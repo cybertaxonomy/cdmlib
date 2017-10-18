@@ -75,7 +75,12 @@ public class CdmDataSource extends CdmDataSourceBase {
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password){
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null);
 	}
-
+    static public CdmDataSource  NewSqlServer2008Instance(String server, String database, int port, String username, String password){
+        return new CdmDataSource(DatabaseTypeEnum.SqlServer2008, server, database, port, username, password, null, null);
+    }
+    static public CdmDataSource  NewSqlServer2012Instance(String server, String database, int port, String username, String password){
+        return new CdmDataSource(DatabaseTypeEnum.SqlServer2012, server, database, port, username, password, null, null);
+    }
 
 	/** in work
 	 * @param code TODO*/

@@ -27,6 +27,8 @@ import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
 import eu.etaxonomy.cdm.database.types.OracleDatabaseType;
 import eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.SqlServer2005DatabaseType;
+import eu.etaxonomy.cdm.database.types.SqlServer2008DatabaseType;
+import eu.etaxonomy.cdm.database.types.SqlServer2012DatabaseType;
 import eu.etaxonomy.cdm.database.types.SybaseDatabaseType;
 
 /**
@@ -42,29 +44,15 @@ public enum DatabaseTypeEnum {
 	//SqlServer2000(6),
 	SqlServer2005(7),
 	Sybase(8),
-	H2(9)
-	;
+	H2(9),
+	SqlServer2008(10),
+    SqlServer2012(11),
+    ;
 
-	/**
-	 *
-	 */
-	private static final String P6SPY_DRIVER_CLASS_NAME = "com.p6spy.engine.spy.P6SpyDriver";
-	private boolean useP6Spy = false;
-
-
-	/**
-	 * @return the useP6Spy
-	 */
-	public boolean isUseP6Spy() {
-		return useP6Spy;
-	}
-
-	/**
-	 * @param useP6Spy the useP6Spy to set
-	 */
-	public void setUseP6Spy(boolean useP6Spy) {
-		this.useP6Spy = useP6Spy;
-	}
+//	/**
+//	 *
+//	 */
+//	private static final String P6SPY_DRIVER_CLASS_NAME = "com.p6spy.engine.spy.P6SpyDriver";
 
 	/**
 	 * Constructor
@@ -91,6 +79,10 @@ public enum DatabaseTypeEnum {
             	this.dbType = new SybaseDatabaseType(); break;
             case 9:
             	this.dbType = new H2DatabaseType(); break;
+            case 10:
+                this.dbType = new SqlServer2008DatabaseType(); break;
+            case 11:
+                this.dbType = new SqlServer2012DatabaseType(); break;
             default:
                 //TODO Exception
         }
@@ -116,12 +108,12 @@ public enum DatabaseTypeEnum {
 	 * @return
 	 */
 	public String getDriverClassName(){
-		if(useP6Spy){
-			return P6SPY_DRIVER_CLASS_NAME;
-
-		} else {
+//		if(useP6Spy){
+//			return P6SPY_DRIVER_CLASS_NAME;
+//
+//		} else {
 			return dbType.getClassString();
-		}
+//		}
 	}
 
 	/**
@@ -200,7 +192,7 @@ public enum DatabaseTypeEnum {
      * @return List of DatabaseEnums
      */
     public static List<DatabaseTypeEnum> getAllTypes(){
-    	List<DatabaseTypeEnum> result = new ArrayList<DatabaseTypeEnum>();
+    	List<DatabaseTypeEnum> result = new ArrayList<>();
     	for (DatabaseTypeEnum dbEnum : DatabaseTypeEnum.values()){
     		result.add(dbEnum);
     	}
@@ -272,6 +264,7 @@ public enum DatabaseTypeEnum {
             //TODO we need to distinguish versions here once we have sql server 2008 database enum
 //            metaData.getDatabaseProductVersion()
             return SqlServer2005;
+            //XX
         }else if (product.toLowerCase().matches("\\.*h2\\.*")) {
             return H2;
         }
