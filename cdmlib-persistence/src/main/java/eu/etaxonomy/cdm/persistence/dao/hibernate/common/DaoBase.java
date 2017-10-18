@@ -9,11 +9,16 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -92,6 +97,37 @@ public abstract class DaoBase {
             }
         }
         return orderString;
+    }
+
+
+    /**
+     * Splits a set of e.g. query parameters into a list of sets with size <code>splitSize</code>.
+     * Only the last set may be smaller if the collection's size is not an exact multiple of split size.
+     * @param collection the collection to split
+     * @param splitSize the split size
+     * @return a list of collections
+     */
+    protected <T extends Object> List<Collection<T>> splitCollection(Set<T> collection, int splitSize) {
+        if (splitSize < 1){
+            throw new IllegalArgumentException("Split size must not be positive integer");
+        }
+        List<Collection<T>> result = new ArrayList<>();
+        Iterator<T> it = collection.iterator();
+        int i = 0;
+        Set<T> nextCollection = new HashSet<>();
+        while (it.hasNext()){
+            nextCollection.add(it.next());
+            i++;
+            if (i == splitSize){
+                result.add(nextCollection);
+                nextCollection = new HashSet<>();
+                i = 0;
+            }
+        }
+        if (!nextCollection.isEmpty()){
+            result.add(nextCollection);
+        }
+        return result;
     }
 
 }

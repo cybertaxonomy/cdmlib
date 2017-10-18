@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -184,8 +186,17 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 				" WHERE terms.uuid IN (:uuids) " +
 				" ORDER BY voc.uuid ";
 		Query query = getSession().createQuery(hql);
-		query.setParameterList("uuids", missingTermCandidateUuids);
-		List<?> persistedUuids = query.list();
+
+		int splitSize = 2000;
+		List<Collection<UUID>> missingTermCandidates = splitCollection(missingTermCandidateUuids, splitSize);
+		List<UUID> persistedUuids = new ArrayList<>();
+
+		for (Collection<UUID> uuids : missingTermCandidates){
+		    query.setParameterList("uuids", uuids);
+		    @SuppressWarnings("unchecked")
+            List<UUID> list = query.list();
+		    persistedUuids.addAll(list);
+		}
 
 
  		//fully load and initialize vocabularies if required
@@ -199,12 +210,17 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 //					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
 					" ORDER BY voc.uuid ";
 			query = getSession().createQuery(hql2);
-			query.setParameterList("termUuids",missingTermCandidateUuids);
-			query.setParameterList("vocUuids",uuidsRequested.keySet());
-			List<TermVocabulary> o = query.list();
-			for (TermVocabulary<?> voc : o){
-				vocabularyResponse.put(voc.getUuid(), voc);
-			}
+			query.setParameterList("termUuids", missingTermCandidateUuids);
+			query.setParameterList("vocUuids", uuidsRequested.keySet());
+
+			for (Collection<UUID> uuids : missingTermCandidates){
+			    query.setParameterList("termUuids", uuids);
+			    @SuppressWarnings("unchecked")
+	            List<TermVocabulary<?>> o = query.list();
+	            for (TermVocabulary<?> voc : o){
+	                vocabularyResponse.put(voc.getUuid(), voc);
+	            }
+	        }
 		}
 
 		//compute missing terms
