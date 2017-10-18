@@ -785,13 +785,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (config.isIncludeAcceptedTaxa()){
             monitor.subTask("Update Accepted Taxa");
             Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
-            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (config.isIncludeSynonyms()){
            monitor.subTask("Update Synonyms");
            Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
-           taxonService.saveOrUpdate(updatedSynonyms);
            result.addUpdatedObjects(updatedSynonyms);
         }
 
@@ -828,7 +826,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
 
-        //Reference ref = config.getNewSecundum();
+
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
             Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
