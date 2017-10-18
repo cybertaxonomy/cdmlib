@@ -30,6 +30,8 @@ public class IdentifierImportConfigurator
     private Class<? extends IdentifiableEntity> cdmClass;
     private UUID uuidIdentifierType;
 
+    private boolean ignoreEmptyIdentifier = true;
+
 
     /**
      * @param source
@@ -83,6 +85,20 @@ public class IdentifierImportConfigurator
     public Reference getSourceReference() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * @return the ignoreEmptyIdentifier
+     */
+    public boolean isIgnoreEmptyIdentifier() {
+        return ignoreEmptyIdentifier;
+    }
+
+    /**
+     * @param ignoreEmptyIdentifier the ignoreEmptyIdentifier to set
+     */
+    public void setIgnoreEmptyIdentifier(boolean ignoreEmptyIdentifier) {
+        this.ignoreEmptyIdentifier = ignoreEmptyIdentifier;
     }
 
 }

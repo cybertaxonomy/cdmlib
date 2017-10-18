@@ -121,7 +121,7 @@ public class IdentifierImport
             uuid = UUID.fromString(uuidStr);
         } catch (Exception e) {
             String message = String.format(
-                    "Entity identifier not recognized as UUID in line %d. Skipped", i);
+                    "Entity identifier not recognized as UUID in line %d. Skipped. Value was: %s", i, uuidStr);
             logger.warn(message);
             return null;
         }
@@ -138,14 +138,20 @@ public class IdentifierImport
         //identifier value
         if (strs.length < 2){
             String message = String.format(
-                    "Record in line %d has no identifier value information. Skipped", i);
+                    "Record in line %d has no identifier value information. Skipped.", i);
             logger.warn(message);
+            this.commitTransaction(tx);
             return null;
         }
-        //skip column 1, it is for default language label, but not used during import
         String value = null;
         if (isNotBlank(strs[1])){
             value = strs[1];
+        }else if (config.isIgnoreEmptyIdentifier()){
+            String message = String.format(
+                    "Record in line %d has empty identifier value information. Skipped.", i);
+            logger.debug(message);
+            this.commitTransaction(tx);
+            return null;
         }
 
         Identifier<?> identifier = Identifier.NewInstance(value, idType);
