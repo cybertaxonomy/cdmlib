@@ -804,6 +804,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
             boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
