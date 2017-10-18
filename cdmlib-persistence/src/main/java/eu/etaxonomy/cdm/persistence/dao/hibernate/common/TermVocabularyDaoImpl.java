@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
+
 	/**
 	 * @param type
 	 */
@@ -78,7 +79,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		    }
 
 		    this.addOrder(criteria, orderHints);
-		    List<T> result = criteria.list();
+		    @SuppressWarnings("unchecked")
+            List<T> result = criteria.list();
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		} else {
@@ -92,7 +94,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		        }
 			}
 
-			List<T> result = query.getResultList();
+			@SuppressWarnings("unchecked")
+            List<T> result = query.getResultList();
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
 		}
@@ -105,7 +108,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
     		Query query = getSession().createQuery("select vocabulary from TermVocabulary vocabulary where vocabulary.termSourceUri= :termSourceUri");
 	    	query.setParameter("termSourceUri", termSourceUri);
 
-		    return (TermVocabulary<T>)query.uniqueResult();
+	    	return (TermVocabulary<T>)query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
@@ -129,6 +132,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         //this.addOrder(criteria, orderHints);
 
+        @SuppressWarnings("unchecked")
         List<TermVocabulary<T>> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -156,6 +160,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
         this.addOrder(criteria, orderHints);
 
+        @SuppressWarnings("unchecked")
         List<TermVocabulary> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -224,4 +229,5 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 		return;
 	}
+
 }
