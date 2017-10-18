@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
-import sun.security.provider.PolicyParser.ParsingException;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
@@ -102,8 +102,8 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 CdmAuthority auth;
                 try {
                     auth = CdmAuthority.fromGrantedAuthority(authority);
-                } catch (ParsingException e) {
-                    logger.debug("skipping " + authority.getAuthority() + " due to ParsingException");
+                } catch (CdmAuthorityParsingException e) {
+                    logger.debug("skipping " + authority.getAuthority() + " due to CdmAuthorityParsingException");
                     continue;
                 }
 

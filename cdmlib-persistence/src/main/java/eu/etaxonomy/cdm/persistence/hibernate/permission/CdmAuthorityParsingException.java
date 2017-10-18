@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2012 EDIT
+* Copyright (C) 2017 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *
@@ -8,19 +8,17 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-
 /**
  * @author a.kohlbecker
- * @date Oct 15, 2012
+ * @since 18.10.2017
  *
  */
-public interface IGrantedAuthorityConverter {
+public class CdmAuthorityParsingException extends Exception {
 
-    /**
-     * @return
-     * @throws CdmAuthorityParsingException
-     */
-    public abstract GrantedAuthorityImpl asNewGrantedAuthority() throws CdmAuthorityParsingException;
+    private static final long serialVersionUID = -1458716979023979164L;
+
+    public CdmAuthorityParsingException(String authority){
+        super(authority);
+    }
 
 }

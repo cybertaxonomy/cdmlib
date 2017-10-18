@@ -21,7 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
@@ -125,7 +124,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         }
     }
 
-    private CdmAuthority (String authority) throws ParsingException{
+    private CdmAuthority (String authority) throws CdmAuthorityParsingException{
 
         String[] tokens = parse(authority);
         // className must never be null
@@ -133,7 +132,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         try {
             permissionClass = CdmPermissionClass.valueOf(tokens[0]);
         } catch (IllegalArgumentException e) {
-            throw new ParsingException(authority);
+            throw new CdmAuthorityParsingException(authority);
         }
         property = tokens[1];
 
@@ -142,7 +141,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
                 operation = Operation.fromString(tokens[2]);
             } catch (IllegalArgumentException e) {
                 logger.warn("cannot parse Operation " + tokens[2]);
-                throw new ParsingException(authority);
+                throw new CdmAuthorityParsingException(authority);
             }
         }
         if(tokens[3] != null){
@@ -190,9 +189,9 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * </ol>
      * @param authority
      * @return an array of tokens
-     * @throws ParsingException
+     * @throws CdmAuthorityParsingException
      */
-    protected String[] parse(String authority) throws ParsingException {
+    protected String[] parse(String authority) throws CdmAuthorityParsingException {
         //
         // regex pattern explained:
         //  (\\w*)             -> classname
@@ -217,7 +216,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
             }
         } else {
             logger.debug("no match");
-            throw new ParsingException("Unsupported authority string: '" + authority + "'");
+            throw new CdmAuthorityParsingException("Unsupported authority string: '" + authority + "'");
         }
 
         return tokens;
@@ -267,9 +266,9 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * instances per <code>GrantedAuthority</code> string in a map.
      *
      * @param authority
-     * @throws ParsingException
+     * @throws CdmAuthorityParsingException
      */
-    public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws ParsingException {
+    public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws CdmAuthorityParsingException {
         CdmAuthority cdmAuthority = grantedAuthorityCache.get(authority.getAuthority());
         if(cdmAuthority == null){
             cdmAuthority = new CdmAuthority(authority.getAuthority());
@@ -280,11 +279,10 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
 
     @Override
-    public GrantedAuthorityImpl asNewGrantedAuthority() throws ParsingException {
+    public GrantedAuthorityImpl asNewGrantedAuthority() throws CdmAuthorityParsingException {
         GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance(getAuthority());
         return grantedAuthority;
     }
-
 
 
 }

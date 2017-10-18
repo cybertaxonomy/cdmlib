@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
-import sun.security.provider.PolicyParser.ParsingException;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 
 /**
  * @author c.mathew
@@ -43,10 +43,10 @@ public class CdmAuthorityTest {
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.hibernate.permission#getAuthority()}.
-	 * @throws ParsingException
+	 * @throws CdmAuthorityParsingException
 	 */
 	@Test
-	public final void testGetAuthority() throws ParsingException {
+	public final void testGetAuthority() throws CdmAuthorityParsingException {
 		// create CdmAuthority object manually
 		CdmPermissionClass tnClass = CdmPermissionClass.TAXONBASE;
 		String property = "Taxon";
