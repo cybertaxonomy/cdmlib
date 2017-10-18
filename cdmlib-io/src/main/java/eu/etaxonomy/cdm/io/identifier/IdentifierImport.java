@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * The csv file has to follow the following format:
  * <BR><BR>
  * 1. field: uuid of the {@link IdentifiableEntity} of class defined in configurator<BR>
- * 2. The value of the identifier (of type defined in configurator)<BR>
+ * 2. The value of the identifier (of type defined in configurator)<BR><BR>
  *
  * NOTE: This import was first written for #6542
  * NOTE 2: TODO It was observed that the last line was not imported.
@@ -103,8 +103,8 @@ public class IdentifierImport
      * @param i line counter
      * @return
      */
-    private IdentifiableEntity<?> handleSingleLine(IdentifierImportConfigurator config, String[] strs,
-            DefinedTerm idType, int i) {
+    private IdentifiableEntity<?> handleSingleLine(IdentifierImportConfigurator config,
+            String[] strs, DefinedTerm idType, int i) {
 
         //no data
         if (strs.length < 1){
