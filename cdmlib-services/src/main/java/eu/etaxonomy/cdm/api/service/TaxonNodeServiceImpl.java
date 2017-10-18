@@ -832,13 +832,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
             Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
-            taxonService.saveOrUpdate(updatedTaxa);
+//            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
-            taxonService.saveOrUpdate(updatedSynonyms);
+//            taxonService.saveOrUpdate(updatedSynonyms);
             result.addUpdatedObjects(updatedSynonyms);
         }
         monitor.done();
