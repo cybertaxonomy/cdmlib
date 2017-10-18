@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author n.hoffmann
  * @created 03.06.2009
  **/
-@Deprecated
 public enum VocabularyEnum {
 
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
