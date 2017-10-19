@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
@@ -78,6 +79,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     UUID targetUuid;
 
     public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation){
+
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         if(operation != null) {
@@ -124,7 +126,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         }
     }
 
-    private CdmAuthority (String authority) throws CdmAuthorityParsingException{
+    protected CdmAuthority (String authority) throws CdmAuthorityParsingException{
 
         String[] tokens = parse(authority);
         // className must never be null
@@ -195,11 +197,11 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         //
         // regex pattern explained:
         //  (\\w*)             -> classname
-        //  (?:\\((\\w*)\\))?  -> (property)
+        //  (?:\\((\\D*)\\))?  -> (property)
         //  \\.?               -> .
         //  (?:\\[(\\D*)\\])(?:\\{([\\da-z\\-]+)\\})? -> Permission and targetUuid
         //
-        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
+        String regex = "(\\w*)(?:\\((\\D*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
         Pattern pattern = Pattern.compile(regex);
         String[] tokens = new String[4];
         logger.debug("parsing '" + authority + "'");
@@ -249,11 +251,24 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         if(property != null){
             sb.append('(').append(property).append(')');
         }
-        sb.append('.').append(operation.toString());
+        sb.append('.').append(operationsToString());
         if(targetUuid != null){
             sb.append('{').append(targetUuid.toString()).append('}');
         }
         return sb.toString() ;
+    }
+
+    /**
+     * @return
+     */
+    protected String operationsToString() {
+        String[] opsstr = new String[operation.size()];
+        int i = 0;
+        for(CRUD crud : operation){
+            opsstr[i++] = crud.name();
+        }
+        String asString = StringUtils.join(opsstr, ",");
+        return "[" + asString + "]";
     }
 
     /**
