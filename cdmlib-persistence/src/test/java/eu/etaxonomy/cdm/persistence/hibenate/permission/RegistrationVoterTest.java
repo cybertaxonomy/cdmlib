@@ -57,9 +57,9 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
         regREJECTED.setStatus(RegistrationStatus.REJECTED);
 
         auth = authentication(
-                new CdmAuthority(regPREPARATION, prep_ready, EnumSet.of(CRUD.UPDATE), regPREPARATION.getUuid()),
-                new CdmAuthority(regREADY, prep_ready, EnumSet.of(CRUD.UPDATE), regPREPARATION.getUuid()),
-                new CdmAuthority(regREJECTED, prep_ready, EnumSet.of(CRUD.UPDATE), regPREPARATION.getUuid())
+                new CdmAuthority(regPREPARATION, prep_ready, EnumSet.of(CRUD.UPDATE)),
+                new CdmAuthority(regREADY, prep_ready, EnumSet.of(CRUD.UPDATE)),
+                new CdmAuthority(regREJECTED, prep_ready, EnumSet.of(CRUD.UPDATE))
                 );
 
     }

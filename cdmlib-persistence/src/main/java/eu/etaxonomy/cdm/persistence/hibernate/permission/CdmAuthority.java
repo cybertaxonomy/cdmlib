@@ -91,14 +91,14 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         this.targetUuid = targetDomainObject.getUuid();
     }
 
-     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation, UUID uuid){
-       this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
-        this.property = property;
-        if(operation != null) {
-        	this.operation = operation;
-        }
-        this.targetUuid = uuid;
-    }
+     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation){
+         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
+          this.property = property;
+          if(operation != null) {
+              this.operation = operation;
+          }
+          this.targetUuid = targetDomainObject.getUuid();
+      }
 
      public CdmAuthority(Class<? extends CdmBase> targetDomainType, String property, EnumSet<CRUD> operation, UUID uuid){
          this.permissionClass = CdmPermissionClass.getValueOf(targetDomainType);
