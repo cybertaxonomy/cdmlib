@@ -68,7 +68,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
     public static final Logger logger = Logger.getLogger(CdmAuthority.class);
 
-    private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<String, CdmAuthority>();
+    private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<>();
 
     CdmPermissionClass permissionClass;
     String property;
