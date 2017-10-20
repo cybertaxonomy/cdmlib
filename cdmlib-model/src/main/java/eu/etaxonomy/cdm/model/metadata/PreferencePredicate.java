@@ -32,7 +32,7 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
 	ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "ShowLifeForm", "editor.SLF"),
 	AbcdImportConfig(UUID.fromString("65380375-d041-458c-8275-c36cdc1f34df"), "AbcdImportConfig", "import.ABCD"),
 	BioCaseProvider(UUID.fromString("bd22c85c-f4e8-4771-ae7b-5750868762c4"), "BioCaseProvider", "import.BP"),
-	DistributionStatusVaadin(UUID.fromString(""), "Distribution Status Vaadin", "vaadin.distribution.statuslist")
+	DistributionStatusVaadin(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Distribution Status Vaadin", "vaadin.distribution.statuslist")
     ;
 
 
