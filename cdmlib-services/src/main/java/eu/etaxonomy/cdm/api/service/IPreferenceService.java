@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -47,8 +48,8 @@ public interface IPreferenceService {
 
      /**
      * Retrieve all matching values for the given preference key.
-     * @param subject
-     * @param predicate
+     * @param subject the {@link PreferenceSubject} represented as string
+     * @param predicate the predicate to retrieve
      * @return
      */
      public List<CdmPreference> list(String subject, String predicate);
@@ -56,7 +57,7 @@ public interface IPreferenceService {
 
      /**
       * Retrieve the best matching value for the given preference key.
-      * @param key
+      * @param key the key defining the data to retrieve
       * @return
       */
      public CdmPreference find(PrefKey key);

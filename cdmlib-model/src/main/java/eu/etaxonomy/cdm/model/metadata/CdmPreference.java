@@ -9,11 +9,16 @@
 package eu.etaxonomy.cdm.model.metadata;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -191,17 +196,53 @@ public final class CdmPreference implements Serializable {
 	}
 
 
+	/**
+	 * @return the subject of the preference
+	 */
 	public String getSubject() {
 		return key.subject;
 	}
 
+	/**
+	 * @return the predicate of the preference
+	 */
 	public String getPredicate() {
 		return key.predicate;
 	}
 
+	/**
+	 * @return the value of the preference
+	 */
 	public String getValue() {
 		return value;
 	}
+
+	/**
+	 * Returns the {@link #getValue() value} as {@link UUID} List.
+	 * Throws an exception if the value can not be parsed as UUID list.
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public List<UUID> getValueUuidList() throws IllegalArgumentException {
+	    List<UUID> result = new ArrayList<>();
+	    if (StringUtils.isBlank(value)){
+	        return result;
+	    }
+	    String[] splits = getValue().split("[,;]");
+	    for (String split : splits ){
+	        try {
+                if (StringUtils.isBlank(split)){
+                    continue; //neglect trailing separators
+                }
+	            UUID uuid = UUID.fromString(split.trim());
+                result.add(uuid);
+            } catch (IllegalArgumentException e) {
+                throw e;
+            }
+	    }
+	    return result;
+    }
+
 
 //
 //  we try to avoid setting of values
