@@ -20,6 +20,8 @@ import javax.persistence.Entity;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 /**
  * This class may hold all prefrences data for a CDM database.
@@ -171,6 +173,26 @@ public final class CdmPreference implements Serializable {
 		}
 		this.value = value;
 	}
+
+    public CdmPreference(PreferenceSubject subject, PreferencePredicate predicate, List<UUID> value){
+        this(subject, predicate, uuidListStr(value));
+    }
+
+    public CdmPreference(PreferenceSubject subject, PreferencePredicate predicate, UUID value){
+        this(subject, predicate, value.toString());
+    }
+
+    /**
+     * @param value
+     * @return
+     */
+    protected static String uuidListStr(List<UUID> value) {
+        String valueStr = "";
+        for (UUID uuid : value){
+            valueStr = CdmUtils.concat(",",valueStr, uuid.toString());
+        }
+        return valueStr;
+    }
 
 
 	/**

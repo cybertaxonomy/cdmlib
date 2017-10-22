@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class PreferenceSubject {
 
     public static final String ROOT = "/";
+    public static final String SEP = "/";
 
     private String subject;
 
@@ -31,8 +32,12 @@ public class PreferenceSubject {
     }
 
     public static PreferenceSubject NewInstance(TaxonNode taxonNode){
-        String result = ROOT + "TaxonNode[" + taxonNode.treeIndex() + "]";
+        String result = ROOT + "TaxonNode[" + taxonNode.treeIndex() + "]" + SEP;
         return new PreferenceSubject(result);
+    }
+
+    public static PreferenceSubject NewVaadinInstance(){
+        return new PreferenceSubject(ROOT +  "Vaadin" + SEP);
     }
 
 
