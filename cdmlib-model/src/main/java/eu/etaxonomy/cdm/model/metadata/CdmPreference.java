@@ -56,12 +56,21 @@ public final class CdmPreference implements Serializable {
     }
 
     /**
-     * @param test
-     * @param string
+     * @param predicate
+     * @param value
      * @return
      */
-    public static CdmPreference NewDatabaseInstance(PreferencePredicate test, String value) {
-        return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), test, value);
+    public static CdmPreference NewDatabaseInstance(PreferencePredicate predicate, String value) {
+        return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), predicate, value);
+    }
+
+    /**
+     * @param predicate
+     * @param value
+     * @return
+     */
+    public static CdmPreference NewVaadinInstance(PreferencePredicate predicate, String value) {
+        return new CdmPreference(PreferenceSubject.NewVaadinInstance(), predicate, value);
     }
 
     public static PrefKey NewKey(PreferenceSubject subject, PreferencePredicate predicate){
@@ -124,8 +133,8 @@ public final class CdmPreference implements Serializable {
             if (predicate.length() > 255) {
                 throw new IllegalArgumentException("Predicate must not be longer then 255 for preference");
             }
-            if (!subject.matches("/([A-Za-z]+\\[.*\\])?")){
-                throw new IllegalArgumentException("Predicate does not follow the required syntax");
+            if (!subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+\\[.*\\]|"+PreferenceSubject.VAADIN+")"+PreferenceSubject.SEP+")?")){
+                throw new IllegalArgumentException("Subject does not follow the required syntax");
             }
 
 

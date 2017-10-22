@@ -87,6 +87,12 @@ public interface IPreferenceService {
       */
      public CdmPreference findDatabase(PreferencePredicate predicate);
 
+     /**
+      * Retrieve the vaadin wide preference for the given predicate.
+      * @param key
+      * @return
+      */
+     public CdmPreference findVaadin(PreferencePredicate predicate);
 
      /**
       * Returns the best matching preference that matches the given

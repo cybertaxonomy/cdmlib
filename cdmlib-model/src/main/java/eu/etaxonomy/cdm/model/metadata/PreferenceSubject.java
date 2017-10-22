@@ -20,6 +20,7 @@ public class PreferenceSubject {
 
     public static final String ROOT = "/";
     public static final String SEP = "/";
+    public static final String VAADIN = "vaadin";
 
     private String subject;
 
@@ -37,7 +38,7 @@ public class PreferenceSubject {
     }
 
     public static PreferenceSubject NewVaadinInstance(){
-        return new PreferenceSubject(ROOT +  "Vaadin" + SEP);
+        return new PreferenceSubject(ROOT +  VAADIN + SEP);
     }
 
 

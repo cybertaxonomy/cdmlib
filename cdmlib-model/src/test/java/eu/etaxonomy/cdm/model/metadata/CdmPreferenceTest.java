@@ -108,7 +108,7 @@ public class CdmPreferenceTest {
         CdmPreference prefs = null;
         String subject2 = null;
         try {
-            subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]";
+            subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]/";
             prefs = new CdmPreference(subject2, predicate, value);
             Assert.assertEquals(subject2, prefs.getSubject());
             Assert.assertEquals(predicate, prefs.getPredicate());
@@ -132,6 +132,13 @@ public class CdmPreferenceTest {
         } catch (Exception e) {
             //ok
         }
+
+        try {
+            prefs = CdmPreference.NewVaadinInstance(PreferencePredicate.AvailableDistributionStatus, value);
+        } catch (Exception e) {
+            Assert.fail("Syntax for /Vaadin/ should not fail");
+        }
+
     }
 
     @Test

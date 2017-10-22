@@ -49,13 +49,20 @@ public class PreferenceServiceImpl implements IPreferenceService {
 	}
 
     /**
-     * Retrieve the database wide preference for the given predicate.
-     * @param key
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public CdmPreference findDatabase(PreferencePredicate predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), predicate);
+        return find(key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CdmPreference findVaadin(PreferencePredicate predicate){
+        PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewVaadinInstance(), predicate);
         return find(key);
     }
 
