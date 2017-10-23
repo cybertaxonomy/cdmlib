@@ -70,6 +70,8 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         Set<String> defaultExculdes = new HashSet<String>();
         defaultExculdes.add("createdBy");  //created by is changed by CdmPreDataChangeListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
         defaultExculdes.add("created");  // same behavior was not yet observed for "created", but to be on the save side we also exclude "created"
+        defaultExculdes.add("updatedBy");
+        defaultExculdes.add("updated");
 
         for ( CdmBaseType type: CdmBaseType.values()){
             exculdeMap.put(type.getBaseClass(), new HashSet<String>());
