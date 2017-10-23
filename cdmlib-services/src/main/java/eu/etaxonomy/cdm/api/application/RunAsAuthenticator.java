@@ -50,7 +50,7 @@ public class RunAsAuthenticator {
     * broken in spring see: https://jira.springsource.org/browse/SEC-1671
      * @param ga
     */
-   protected void runAsAuthentication(GrantedAuthority ga) {
+   public void runAsAuthentication(GrantedAuthority ga) {
        if(runAsAuthenticationProvider == null){
            logger.debug("no RunAsAuthenticationProvider set, skipping run-as authentication");
            return;
@@ -79,7 +79,7 @@ public class RunAsAuthenticator {
     * needed to work around the broken @RunAs("ROLE_ADMIN") which
     * seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
     */
-   protected void restoreAuthentication() {
+   public void restoreAuthentication() {
        if(runAsAuthenticationProvider == null){
            logger.debug("no RunAsAuthenticationProvider set, thus nothing to restore");
        }
