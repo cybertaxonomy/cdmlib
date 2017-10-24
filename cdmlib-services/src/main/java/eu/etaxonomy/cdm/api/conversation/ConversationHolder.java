@@ -458,8 +458,6 @@ public class ConversationHolder {
         }
         longSession = null;
         sessionHolder = null;
-        dataSource = null;
-        transactionStatus = null;
         closed = true;
     }
 
