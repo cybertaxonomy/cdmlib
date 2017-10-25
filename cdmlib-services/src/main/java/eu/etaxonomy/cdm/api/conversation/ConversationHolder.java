@@ -273,7 +273,7 @@ public class ConversationHolder {
      * @return if there is a running transaction
      */
     public boolean isTransactionActive(){
-        return transactionStatus != null;
+        return transactionStatus != null && !transactionStatus.isCompleted();
     }
 
     /* (non-Javadoc)
