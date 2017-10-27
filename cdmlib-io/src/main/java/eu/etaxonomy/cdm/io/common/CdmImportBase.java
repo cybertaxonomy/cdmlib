@@ -663,15 +663,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				feature = Feature.NewInstance(description, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
-//				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
 				if (voc == null){
 					boolean isOrdered = false;
 					voc = getVocabulary(TermType.Feature, uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered, feature);
 				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
+				state.putFeature(feature);
 			}
-			state.putFeature(feature);
 		}
 		return feature;
 	}
