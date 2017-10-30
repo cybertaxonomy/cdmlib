@@ -237,12 +237,12 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
             Representation repr = getRepresentation(language);
             if (repr != null){
                 repr.setLabel(label);
-                this.titleCache = null;  //force titleCache refresh
             }else{
                 repr = Representation.NewInstance(null, label, null, language);
-            this.addRepresentation(repr);
+                this.addRepresentation(repr);
+            }
+            this.titleCache = null; //force titleCache refresh
         }
-    }
     }
 
     @Transient

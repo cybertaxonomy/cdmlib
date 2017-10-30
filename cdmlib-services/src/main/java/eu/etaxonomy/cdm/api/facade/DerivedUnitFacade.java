@@ -111,6 +111,16 @@ public class DerivedUnitFacade {
 		return new DerivedUnitFacade(type, null, null);
 	}
 
+	   /**
+     * Creates a derived unit facade for a new derived unit of type
+     * {@link SpecimenOrObservationType#PreservedSpecimen}.
+     *
+     * @return the derived unit facade
+     */
+    public static DerivedUnitFacade NewPreservedSpecimenInstance() {
+        return new DerivedUnitFacade(SpecimenOrObservationType.PreservedSpecimen, null, null);
+    }
+
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
 	 * <code>type</code>.

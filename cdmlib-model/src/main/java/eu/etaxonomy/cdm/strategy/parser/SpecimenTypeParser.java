@@ -64,7 +64,11 @@ public class SpecimenTypeParser {
 			status = SpecimenTypeDesignationStatus.NEOTYPE();
 		}else if (type.equalsIgnoreCase("isoneo")){
 			status = SpecimenTypeDesignationStatus.ISONEOTYPE();
-		}else if (type.equalsIgnoreCase("type")){
+		}else if (type.equalsIgnoreCase("para")){
+            status = SpecimenTypeDesignationStatus.PARATYPE();
+		}else if (type.equalsIgnoreCase("isopara")){
+            status = SpecimenTypeDesignationStatus.ISOPARATYPE();
+        }else if (type.equalsIgnoreCase("type")){
 			status = SpecimenTypeDesignationStatus.TYPE();
 		}else{
 			String message = "Type Status not supported: " + type;

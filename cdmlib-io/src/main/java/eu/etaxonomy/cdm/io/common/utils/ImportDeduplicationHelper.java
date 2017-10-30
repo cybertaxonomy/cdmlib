@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
@@ -57,18 +59,25 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     boolean nameMapIsInitialized = false;
     boolean agentMapIsInitialized = false;
     boolean copyrightMapIsInitialized = false;
+    boolean collectionMapIsInitialized = false;
+
 
     private Map<String, Set<Reference>> refMap = new HashMap<>();
-    private Map<String, Team> teamMap = new HashMap<>();
-    private Map<String, Person> personMap = new HashMap<>();
+    private Map<String, Set<Team>> teamMap = new HashMap<>();
+    private Map<String, Set<Person>> personMap = new HashMap<>();
     private Map<String, Institution> institutionMap = new HashMap<>();
     //using titleCache
     private Map<String, Set<INonViralName>> nameMap = new HashMap<>();
     private Map<String, Set<Rights>> copyrightMap = new HashMap<>();
+    private Map<String, Set<Collection>> collectionMap = new HashMap<>();
 
 
     private IMatchStrategy referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
+//    private IMatchStrategy collectionMatcher = DefaultMatchStrategy.NewInstance(Collection.class);
     private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
+    private IMatchStrategy personMatcher = DefaultMatchStrategy.NewInstance(Person.class);
+    private IMatchStrategy teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
+
 
 
 
@@ -80,9 +89,14 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         if (repository == null){
             return;
         }
-        personMap = refreshMap(personMap, (IService)repository.getAgentService(), importResult);
-        teamMap = refreshMap(teamMap, (IService)repository.getAgentService(), importResult);
+        refMap = refreshSetMap(refMap, (IService)repository.getReferenceService(), importResult);
+        personMap = refreshSetMap(personMap, (IService)repository.getAgentService(), importResult);
+        teamMap = refreshSetMap(teamMap, (IService)repository.getAgentService(), importResult);
         institutionMap = refreshMap(institutionMap, (IService)repository.getAgentService(), importResult);
+
+        nameMap = refreshSetMap(nameMap, (IService)repository.getNameService(), importResult);
+        collectionMap = refreshSetMap(collectionMap, (IService)repository.getCollectionService(), importResult);
+        //TODO copyright ?
     }
 
 
@@ -103,6 +117,31 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                     importResult.addWarning(message);
                 }else{
                     newMap.put(key, cdmBase);
+                }
+            }else{
+                String message = "Value for key " +  key + " was null in deduplication map";
+                importResult.addWarning(message);
+            }
+        }
+        return newMap;
+    }
+
+    private <T extends ICdmBase> Map<String, Set<T>> refreshSetMap(Map<String, Set<T>> oldMap,
+            IService<T> service, ImportResult importResult) {
+        Map<String, Set<T>> newMap = new HashMap<>();
+        for (String key : oldMap.keySet()){
+            Set<T> oldSet = oldMap.get(key);
+            Set<T> newSet = new HashSet<>();
+            if (oldSet != null){
+                newMap.put(key, newSet);
+                for (T item : oldSet){
+                    T cdmBase = service.find(item.getUuid());
+                    if (cdmBase == null){
+                        String message = "No cdm object was found for uuid " + item.getUuid() + " of class " + item.getClass().getSimpleName();
+                        importResult.addWarning(message);
+                    }else{
+                        newSet.add(cdmBase);
+                    }
                 }
             }else{
                 String message = "Value for key " +  key + " was null in deduplication map";
@@ -173,24 +212,75 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     // AGENTS
     private void putAgentBase(String title, AgentBase<?> agent){
         if (agent.isInstanceOf(Person.class) ){
-            personMap.put(title, CdmBase.deproxy(agent, Person.class));
+            putAgent(title, CdmBase.deproxy(agent, Person.class), personMap);
         }else if (agent.isInstanceOf(Team.class)){
-            teamMap.put(title, CdmBase.deproxy(agent, Team.class));
+            putAgent(title, CdmBase.deproxy(agent, Team.class), teamMap);
         }else{
+//            putAgent(title, CdmBase.deproxy(agent, Institution.class), institutionMap);
             institutionMap.put(title, CdmBase.deproxy(agent, Institution.class));
         }
     }
+    //put agent
+    private <T extends AgentBase> void putAgent(String title, T agent, Map<String, Set<T>> map){
+        Set<T> items = map.get(title);
+        if (items == null){
+            items = new HashSet<>();
+            map.put(title, items);
+        }
+        items.add(agent);
+    }
+//
+//    private TeamOrPersonBase<?> getTeamOrPerson(TeamOrPersonBase<?> agent){
+//        TeamOrPersonBase<?> result = getMatchingPerson(agent) ; // personMap.get(title);
+//        if (result == null){
+//            result = teamMap.get(title);
+//        }
+//        return result;
+//    }
 
-    private TeamOrPersonBase<?> getAgentBase(String title){
-        TeamOrPersonBase<?> result = personMap.get(title);
-        if (result == null){
-            result = teamMap.get(title);
+    private Optional<Person> getMatchingPerson(Person existing){
+        Predicate<Person> matchFilter = person ->{
+            try {
+                return personMatcher.invoke(person, existing);
+            } catch (MatchException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        return Optional.ofNullable(getPersons(existing.getTitleCache()))
+                .orElse(new HashSet<>())
+                .stream()
+                .filter(matchFilter)
+                .findAny();
+    }
+    private TeamOrPersonBase<?> getTeamOrPerson(TeamOrPersonBase<?> agent){
+        TeamOrPersonBase<?> result = agent;
+        if (agent.isInstanceOf(Person.class)){
+            result = getMatchingPerson(CdmBase.deproxy(agent, Person.class)).orElse(null) ; // personMap.get(title);
+        }else if (agent.isInstanceOf(Team.class)) {
+            result = getMatchingTeam(CdmBase.deproxy(agent, Team.class)).orElse(null); // teamMap.get(title);
         }
         return result;
     }
 
-    private Person getPerson(String title){
+    private Optional<Team> getMatchingTeam(Team existing){
+        Predicate<Team> matchFilter = person ->{
+            try {
+                return teamMatcher.invoke(person, existing);
+            } catch (MatchException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        return Optional.ofNullable(getTeam(existing.getTitleCache()))
+                .orElse(new HashSet<>())
+                .stream()
+                .filter(matchFilter)
+                .findAny();
+    }
+    private Set<Person> getPersons(String title){
         return personMap.get(title);
+    }
+    private Set<Team> getTeam(String title){
+        return teamMap.get(title);
     }
 
     //NAMES
@@ -215,6 +305,42 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             }
         };
         return Optional.ofNullable(getNames(existing.getTitleCache()))
+                .orElse(new HashSet<>())
+                .stream()
+                .filter(matchFilter)
+                .findAny();
+    }
+
+    //COLLECTIONS
+    private void putCollection(String title, Collection collection){
+        Set<Collection> collections = collectionMap.get(title);
+        if (collections == null){
+            collections = new HashSet<>();
+            collectionMap.put(title, collections);
+        }
+        collections.add(collection);
+    }
+
+    private Set<Collection> getCollections(String title){
+        return collectionMap.get(title);
+    }
+
+    private Optional<Collection> getMatchingCollections(Collection existing){
+        Predicate<Collection> matchFilter = collection ->{
+//            try {
+                //TODO right Collection matching
+                if (CdmUtils.nullSafeEqual(collection.getName(), existing.getName())
+                        && CdmUtils.nullSafeEqual(collection.getCode(), existing.getCode())){
+                    return true;
+                }else{
+                    return false;
+                }
+//                return collectionMatcher.invoke(collection, existing);
+//            } catch (MatchException e) {
+//                throw new RuntimeException(e);
+//            }
+        };
+        return Optional.ofNullable(getCollections(existing.getTitleCache()))
                 .orElse(new HashSet<>())
                 .stream()
                 .filter(matchFilter)
@@ -269,7 +395,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             return null;
         }else{
             initAgentMap(state);
-            TeamOrPersonBase<?> result = getAgentBase(author.getTitleCache());
+            TeamOrPersonBase<?> result = getTeamOrPerson(author);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
                 if (author instanceof Team){
@@ -323,12 +449,50 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         List<Person> members = team.getTeamMembers();
         for (int i =0; i< members.size(); i++){
             Person person = members.get(i);
-            Person existingPerson = getPerson(person.getTitleCache());
+            Person existingPerson = getMatchingPerson(person).orElse(null);
             if (existingPerson != null){
                 members.set(i, existingPerson);
             }else{
                 putAgentBase(person.getTitleCache(), person);
             }
+        }
+    }
+
+
+    /**
+     * @param state
+     * @param collection
+     * @return
+     */
+    public Collection getExistingCollection(STATE state, Collection collection) {
+        if (collection == null){
+            return null;
+        }else{
+            initCollectionMap(state);
+            Collection result = getMatchingCollections(collection).orElse(null);
+            if (result == null){
+                result = collection;
+                putCollection(result.getTitleCache(), result);
+            }else{
+                if(logger.isDebugEnabled()) {
+                    logger.debug("Matches");
+                 }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @param state
+     */
+    private void initCollectionMap(STATE state) {
+        if (!collectionMapIsInitialized && repository != null){
+            List<String> propertyPaths = Arrays.asList("");
+            List<Collection> existingCollections = repository.getCollectionService().list(null, null, null, null, propertyPaths);
+            for (Collection collection : existingCollections){
+                putCollection(collection.getTitleCache(), collection);
+            }
+            collectionMapIsInitialized = true;
         }
     }
 
@@ -416,6 +580,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
        }
    }
 
+
+
    public Rights getExistingCopyright(STATE state,
            Rights right) {
        if (right == null || !RightsType.COPYRIGHT().equals(right.getType())){
@@ -480,6 +646,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             return right.getUuid().toString();
         }
     }
+
 
 
 }
