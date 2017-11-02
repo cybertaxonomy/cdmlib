@@ -1091,7 +1091,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery,
 	        boolean createNewIfNotExists) {
 		TaxonDescription result = null;
-		Set<TaxonDescription> descriptions= taxon.getDescriptions();
+		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
 			if (description.isImageGallery() == isImageGallery){
 				if (hasCorrespondingSource(ref, description)){

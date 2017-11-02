@@ -35,15 +35,13 @@ public class UpdateEntityListener implements SaveOrUpdateEventListener {
 			versionableEntity.setUpdated(new DateTime());
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-			  User user = (User)authentication.getPrincipal();
-			  versionableEntity.setUpdatedBy(user);
-			  /*CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-			 if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.UPDATE)){
-						throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
-			  }*/
+			    User user = (User)authentication.getPrincipal();
+			    versionableEntity.setUpdatedBy(user);
+    			/*CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+    			if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.UPDATE)){
+    					throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
+    			}*/
 			}
 		}
-
-
 	}
 }

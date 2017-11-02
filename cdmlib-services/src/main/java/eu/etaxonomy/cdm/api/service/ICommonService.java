@@ -162,7 +162,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @param id
      * @return
      */
-    public CdmBase findWithUpdate(Class<? extends CdmBase> clazz, int id);
+    public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id);
 
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>
@@ -173,7 +173,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @return the CdmBase object defined by clazz and id
 	 * @see #find(Class, int, List)
 	 */
-	public CdmBase find(Class<? extends CdmBase> clazz, int id);
+	public <T extends CdmBase> T find(Class<T> clazz, int id);
 
     /**
      * @param clazz the Class of the obejct to find
@@ -182,7 +182,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @return
      * @see #find(Class, int)
      */
-    public CdmBase find(Class<? extends CdmBase> clazz, int id, List<String> propertyPaths);
+    public <T extends CdmBase> T find(Class<T> clazz, int id, List<String> propertyPaths);
 
     /**
      * A generic method to retrieve any CdmBase object by its uuid and class.<BR>
