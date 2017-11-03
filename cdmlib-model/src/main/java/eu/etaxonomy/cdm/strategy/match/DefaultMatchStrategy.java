@@ -203,7 +203,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				Field field = fieldMatcher.getField();
 				List<MatchMode> replaceModeList = replaceMatchers.get(fieldMatcher.getPropertyName());
 				if (replaceModeList == null){
-					replaceModeList = new ArrayList<MatchMode>();
+					replaceModeList = new ArrayList<>();
 				}
 				Class<?> fieldType = field.getType();
 				logger.debug(field.getName() + ": ");
