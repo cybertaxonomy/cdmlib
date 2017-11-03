@@ -212,6 +212,16 @@ public interface IService<T extends ICdmBase>{
     public T load(UUID uuid);
 
     /**
+     * Return a persisted entity that matches the database identifier
+     * supplied as an argument, or null if the entity does not exist
+     *
+     * @param id the database identifier of the entity required
+     * @param propertyPaths
+     * @return
+     */
+    public T load(int id, List<String> propertyPaths);
+
+    /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and
      * recursively initializes all bean properties given in the
      * <code>propertyPaths</code> parameter.
