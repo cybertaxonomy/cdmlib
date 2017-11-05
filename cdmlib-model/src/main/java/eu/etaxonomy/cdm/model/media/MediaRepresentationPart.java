@@ -69,33 +69,25 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private MediaRepresentation mediaRepresentation;
 
-	/**
-	 * Factory method
-	 *
-	 * @return
-	 */
+
+// *************** FACTORY METHOD *********************************/
+
 	public static MediaRepresentationPart NewInstance(URI uri, Integer size) {
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}
 
-	/**
-	 *
-	 */
+
 	protected MediaRepresentationPart() {
 		super();
 	}
-
-	/**
-	 *
-	 */
 	protected MediaRepresentationPart(URI uri, Integer size) {
 		this();
 		this.setUri(uri);
 		this.setSize(size);
 	}
 
-	/*************** getter /setter *************************************/
+//*************** GETTER / SETTER *************************************/
 
 	public MediaRepresentation getMediaRepresentation() {
 		return this.mediaRepresentation;
@@ -109,38 +101,24 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		this.mediaRepresentation = mediaRepresentation;
 	}
 
+	//uri
 	public URI getUri() {
 		return this.uri;
 	}
-
-	/**
-	 *
-	 * @param uri
-	 *            uri
-	 */
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
 
-	/**
-	 * @return
-	 */
+	//size
 	public Integer getSize() {
 		return this.size;
 	}
-
-	/**
-	 * @param size
-	 *            size
-	 */
 	public void setSize(Integer size) {
 		this.size = size;
 	}
 
 //************************* CLONE **************************/
-		/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
+
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		MediaRepresentationPart result = (MediaRepresentationPart)super.clone();
