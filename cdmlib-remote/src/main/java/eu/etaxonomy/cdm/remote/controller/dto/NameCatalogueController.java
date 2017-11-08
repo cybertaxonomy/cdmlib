@@ -186,6 +186,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             "sources.citation.sources.idNamespace",
             "sources.citation.sources.idInSource",
 
+            "extensions.type",
+
             "synonyms.name.rank.titleCache",
             "synonyms.sec.updated",
             "synonyms.sec.titleCache",

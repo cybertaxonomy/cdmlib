@@ -156,7 +156,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
             }
 
             //3. find root nodes
-            Set<AreaNode>hierarchy = new HashSet<AreaNode>();
+            Set<AreaNode>hierarchy = new HashSet<>();
             for(AreaNode node : areaNodeMap.values()) {
                 if(!node.hasParent()) {
                     hierarchy.add(node);

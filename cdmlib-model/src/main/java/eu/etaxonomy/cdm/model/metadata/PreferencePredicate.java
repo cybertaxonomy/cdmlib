@@ -21,20 +21,25 @@ import eu.etaxonomy.cdm.model.common.Language;
  *
  */
 public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
-	NomenclaturalCode(UUID.fromString("39c5cb91-9370-4803-abf7-fa01e7dbe4e2"), "Nomenclatural code", "name.NC"),
-	TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "taxon.TNO"),
-	Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test"),
-	NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "editor.NDV"),
-	IsRedList(UUID.fromString("aaf79c57-b2a9-48a6-b037-fc1b4a75a6e9"), "isRedList", "editor.RL"),
-	DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "editor.DOFU"),
-	ShowCollectingAreasInGeneralSection(UUID.fromString("578a1195-64ce-4dfb-9be9-6f2823288678"), "ShowCollectingAreaInGeneralSection", "editor.SCAGS"),
-	ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "ShowTaxonAssociations", "editor.STA"),
-	AbcdImportConfig(UUID.fromString("65380375-d041-458c-8275-c36cdc1f34df"), "AbcdImportConfig", "import.ABCD"),
-	BioCaseProvider(UUID.fromString("bd22c85c-f4e8-4771-ae7b-5750868762c4"), "BioCaseProvider", "import.BP")
-	;
+    Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test"),
+    //model
+    NomenclaturalCode(UUID.fromString("39c5cb91-9370-4803-abf7-fa01e7dbe4e2"), "Nomenclatural code", "model.name.NC"),
+	//editor
+    TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO"),
+	NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV"),
+	IsRedList(UUID.fromString("aaf79c57-b2a9-48a6-b037-fc1b4a75a6e9"), "isRedList", "model.editor.RL"),
+	DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "model.editor.DOFU"),
+	ShowCollectingAreasInGeneralSection(UUID.fromString("578a1195-64ce-4dfb-9be9-6f2823288678"), "ShowCollectingAreaInGeneralSection", "model.editor.SCAGS"),
+	ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "ShowTaxonAssociations", "model.editor.STA"),
+	ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "ShowLifeForm", "model.editor.SLF"),
+	//import
+	AbcdImportConfig(UUID.fromString("65380375-d041-458c-8275-c36cdc1f34df"), "AbcdImportConfig", "model.import.ABCD"),
+	BioCaseProvider(UUID.fromString("bd22c85c-f4e8-4771-ae7b-5750868762c4"), "BioCaseProvider", "model.import.BP"),
+	//vaadin
+	AvailableDistributionStatus(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Available Distribution Status", "model.distribution.status.term"),
+	AvailableDistributionAreaVocabularies(UUID.fromString("dd1f35d5-dbf3-426b-9ed3-8b5992cb2e27"), "Available Distribution Area Vocabularies", "model.distribution.area.voc")
+    ;
 
-
-    private static final String KEY_PREFIX = "model.";
 
 	private PreferencePredicate(UUID uuid, String defaultString, String key){
 		this(uuid, defaultString, key, null);
@@ -42,7 +47,7 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
 
 	private PreferencePredicate(UUID uuid, String defaultString, String modelKey, PreferencePredicate parent){
 
-	    delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, KEY_PREFIX + modelKey, parent);
+	    delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, modelKey, parent);
 	}
 
 	// *************************** DELEGATE **************************************/

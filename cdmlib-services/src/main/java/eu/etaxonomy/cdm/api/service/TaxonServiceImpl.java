@@ -3212,14 +3212,5 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return this.swapSynonymAndAcceptedTaxon(syn, taxon);
 	}
 
-	@Override
-	public UUID saveOrUpdate(TaxonBase taxonbase){
-	    if (taxonbase.getName()!= null && taxonbase.getName().getId() > 0){
-	        TaxonName name = taxonbase.getName();
-	        name = nameService.load(name.getUuid());
-	        taxonbase.setName(name);
-	    }
-	    return super.saveOrUpdate(taxonbase);
-	}
 
 }

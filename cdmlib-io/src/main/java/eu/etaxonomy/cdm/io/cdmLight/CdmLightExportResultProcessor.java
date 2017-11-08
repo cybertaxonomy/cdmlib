@@ -97,6 +97,10 @@ public class CdmLightExportResultProcessor {
     public void createFinalResult(CdmLightExportState state) {
 
         if (!result.isEmpty() ){
+            state.setAuthorStore(new HashMap<>());
+            state.setHomotypicalGroupStore(new HashMap<>());
+            state.setReferenceStore(new HashMap<>());
+            state.setSpecimenStore(new HashMap<>());
             //Replace quotes by double quotes
             for (CdmLightExportTable table: result.keySet()){
                 //schreibe jede Tabelle in einen Stream...

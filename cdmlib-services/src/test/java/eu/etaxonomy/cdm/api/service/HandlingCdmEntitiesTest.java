@@ -56,6 +56,8 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     private static final String LIE_TEAMMEMBERS_NOSESSION = "failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.agent.Team.teamMembers, could not initialize proxy - no Session";
     private static final String LIE_NOSESSION = "could not initialize proxy - no Session";
 
+    private static final UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
+
     @SpringBeanByType
     private IReferenceService referenceService;
 
@@ -89,7 +91,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
         name.setCombinationAuthorship(combAuthor);
         Taxon taxon = Taxon.NewInstance(name, null);
-        UUID taxonUuid = taxonService.save(taxon).getUuid();
+        taxonService.save(taxon).getUuid();
         printDataSetWithNull(System.out,false,null,includeTables);
     }
 
@@ -104,8 +106,6 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // setting the TransactionMode for this method to DISABLED is important
         // to ensure that transaction boundaries remain at the service layer calls
         // to simulate detachment and update of the persisted object
-
-        UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
 
         // ---- loading taxon with find (uuid) ----
 
@@ -128,7 +128,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // ---- loading taxon with find (id) ----
 
-        taxon = (Taxon)commonService.find(taxon.getClass(), taxon.getId());
+        taxon = commonService.find(taxon.getClass(), taxon.getId());
 
         // at this point the taxonNew object is detached and all lazy loaded proxy
         // objects in the object graph (including teamMembers) will have values of
@@ -213,13 +213,11 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // will have a valid session attached to any lazy loaded proxy objects
         // in the object graph (including teamMembers)
 
-        UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
-
         // ---- loading taxon with find (uuid) ----
 
         Taxon taxon = (Taxon)taxonService.find(taxonUuid);
 
-        // at this point the taxonNew object is detached and all lazy loaded proxy
+        // at this point the taxon object is detached and all lazy loaded proxy
         // objects in the object graph (including teamMembers) will have a new
         // session attached implying that all the following calls will succeed
 
@@ -229,9 +227,9 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // ---- loading taxon with find (id) ----
 
-        taxon = (Taxon)commonService.find(taxon.getClass(), taxon.getId());
+        taxon = commonService.find(taxon.getClass(), taxon.getId());
 
-        // at this point the taxonNew object is detached and all lazy loaded proxy
+        // at this point the taxon object is detached and all lazy loaded proxy
         // objects in the object graph (including teamMembers) will have a new
         // session attached implying that all the following calls will succeed
 
@@ -249,7 +247,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
 
         nvn = CdmBase.deproxy(taxon.getName(),TaxonName.class);
-        team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
+        team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
 
         // since a valid session is now attached to teamMembers, forcing the
         // initializing of the teamMembers (in TeamDefaultCacheStrategy.getTitleCache)
@@ -314,8 +312,6 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // to ensure that transaction boundaries remain at the service layer calls
         // to simulate detachment and update of the persisted object
 
-        UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
-
         // ---- loading taxon with find (uuid) ----
 
         Taxon taxon = (Taxon)taxonService.find(taxonUuid);
@@ -328,7 +324,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // ---- loading taxon with find (id) ----
 
-        taxon = (Taxon)commonService.find(taxon.getClass(), taxon.getId());
+        taxon = commonService.find(taxon.getClass(), taxon.getId());
 
         taxonService.merge(taxon);
 

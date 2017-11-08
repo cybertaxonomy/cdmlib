@@ -197,7 +197,6 @@ public class TimePeriodParser {
     private static void parseDateWithMonthName(String dateString, TimePeriod result) {
         String[] dates = dateString.split("(\\.|\\s+)+");
 
-        Partial partial = new Partial();
 
 
         if (dates.length > 3 || dates.length < 2){
@@ -212,27 +211,41 @@ public class TimePeriodParser {
                 Integer year = Integer.valueOf(strYear.trim());
                 Integer month = monthNrFormName(strMonth.trim());
                 Integer day = strDay == null ? null : Integer.valueOf(strDay.trim());
-                //TODO deduplicate code with other routines
-                if (year < 1000 && year > 2100){
-                    logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
-                }else if (year < 1700 && year > 2100){
-                    logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-                    partial = partial.with(TimePeriod.YEAR_TYPE, year);
-                }else{
-                    partial = partial.with(TimePeriod.YEAR_TYPE, year);
-                }
-                if (month != null && month != 0){
-                    partial = partial.with(TimePeriod.MONTH_TYPE, month);
-                }
-                if (day != null && day != 0){
-                    partial = partial.with(TimePeriod.DAY_TYPE, day);
-                }
+
+                Partial partial = makePartialFromDateParts(year, month, day);
 
                 result.setStart(partial);
             } catch (IllegalArgumentException e) {
                 result.setFreeText(dateString);
             }
         }
+    }
+
+
+    /**
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
+    public static Partial makePartialFromDateParts(Integer year, Integer month, Integer day) {
+        Partial partial = new Partial();
+        //TODO deduplicate code with other routines
+        if (year < 1000 && year > 2100){
+            logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
+        }else if (year < 1700 && year > 2100){
+            logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
+            partial = partial.with(TimePeriod.YEAR_TYPE, year);
+        }else{
+            partial = partial.with(TimePeriod.YEAR_TYPE, year);
+        }
+        if (month != null && month != 0){
+            partial = partial.with(TimePeriod.MONTH_TYPE, month);
+        }
+        if (day != null && day != 0){
+            partial = partial.with(TimePeriod.DAY_TYPE, day);
+        }
+        return partial;
     }
 
 	/**
@@ -333,6 +346,7 @@ public class TimePeriodParser {
 	}
 
 
+
 	protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
 		//FIXME until now only quick and dirty and incomplete
 		Partial partial =  new Partial();
@@ -395,7 +409,63 @@ public class TimePeriodParser {
 			throw new IllegalArgumentException(e);
 		}
 		return partial;
-
 	}
+
+
+    /**
+     * @see #parseEnglishDate(String, String, boolean)
+     * @param strFrom the string representing the first part of the period
+     * @param strTo the string representing the second part of the period
+     * @return the parsed period
+     */
+    public static TimePeriod parseEnglishDate(String strFrom, String strTo) {
+        return parseEnglishDate(strFrom, strTo, false);
+    }
+
+    /**
+     * Parses 1 or 2 dates of format yyyy-mm-dd, where y, m and d are numbers.
+     *
+     * @param timePeriod
+     * @param strFrom the string representing the first part of the period
+     * @param strTo the string representing the second part of the period
+     * @param isAmerican
+     * @return the parsed period
+     */
+    private static TimePeriod parseEnglishDate(String strFrom, String strTo, boolean isAmerican) {
+        Partial dateFrom = parseSingleEnglishDate(strFrom, isAmerican);
+        Partial dateTo = parseSingleEnglishDate(strTo, isAmerican);
+        TimePeriod result = TimePeriod.NewInstance(dateFrom, dateTo);
+        return result;
+    }
+
+
+    private static final String ENGLISH_FORMAT = "\\d{4}-\\d{1,2}-\\d{1,2}";
+    /**
+     * @param strFrom
+     * @return
+     */
+    private static Partial parseSingleEnglishDate(String strDate, boolean isAmerican) {
+        if (StringUtils.isEmpty(strDate)){
+            return null;
+        }
+        strDate = strDate.replace("\\s", "");
+        if (!strDate.matches(ENGLISH_FORMAT)){
+            throw new NumberFormatException("The given date is not of expected format yyyy-mm-dd: " + strDate);
+        }
+        String[] splits = strDate.split("-");
+        Integer year = Integer.valueOf(splits[0]);
+        Integer month = Integer.valueOf(splits[isAmerican? 2 : 1]);
+        Integer day = Integer.valueOf(splits[isAmerican? 1 : 2]);
+        //switch month and day if obvious
+        if (month > 12 && day < 12){
+            Integer tmp = month;
+            month = day;
+            day = tmp;
+        }
+
+        Partial result = makePartialFromDateParts(year, month, day);
+
+        return result;
+    }
 
 }

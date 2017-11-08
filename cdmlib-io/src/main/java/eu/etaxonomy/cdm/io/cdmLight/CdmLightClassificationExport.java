@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -147,7 +146,7 @@ public class CdmLightClassificationExport
 
                 TaxonNode node = partitioner.next();
                 while (node != null){
-                  handleTaxonNode(state, node.getUuid());
+                  handleTaxonNode(state, node);
                   node = partitioner.next();
                 }
 
@@ -167,12 +166,12 @@ public class CdmLightClassificationExport
      * @param state
      * @param classificationUuid
      */
-    private void handleTaxonNode(CdmLightExportState state, UUID taxonNodeUuid) {
+    private void handleTaxonNode(CdmLightExportState state, TaxonNode taxonNode) {
         try {
-            TaxonNode taxonNode = getTaxonNodeService().find(taxonNodeUuid);
+//            TaxonNode taxonNode = getTaxonNodeService().find(taxonNodeUuid);
 
             if (taxonNode == null){
-                String message = String.format("TaxonNode for given taxon node UUID not found. No data imported for %s", taxonNodeUuid.toString());
+                String message = "TaxonNode for given taxon node UUID not found. ";
                 //TODO
                 state.getResult().addWarning(message);
             }else{
@@ -180,15 +179,15 @@ public class CdmLightClassificationExport
                 if (root.hasTaxon()){
                     handleTaxon(state, root);
                 }else{
-                    for (TaxonNode child : root.getChildNodes()){
-                        handleTaxon(state, child);
-                        //TODO progress monitor
-                    }
+//                    for (TaxonNode child : root.getChildNodes()){
+//                        handleTaxon(state, child);
+//                        //TODO progress monitor
+//                    }
                 }
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling classification " +
-                    taxonNodeUuid + ": " + e.getMessage() + e.getStackTrace());
+                    taxonNode.getUuid() + ": " + e.getMessage() + e.getStackTrace());
         }
     }
 

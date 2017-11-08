@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +23,6 @@ import org.junit.Test;
 public class CdmPreferenceTest {
 
 	private String subject;
-	private String subject2;
 	private String predicate;
 	private String value;
 
@@ -106,7 +108,7 @@ public class CdmPreferenceTest {
         CdmPreference prefs = null;
         String subject2 = null;
         try {
-            subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]";
+            subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]/";
             prefs = new CdmPreference(subject2, predicate, value);
             Assert.assertEquals(subject2, prefs.getSubject());
             Assert.assertEquals(predicate, prefs.getPredicate());
@@ -131,6 +133,50 @@ public class CdmPreferenceTest {
             //ok
         }
 
+        try {
+            prefs = CdmPreference.NewVaadinInstance(PreferencePredicate.AvailableDistributionStatus, value);
+        } catch (Exception e) {
+            Assert.fail("Syntax for /Vaadin/ should not fail");
+        }
+
     }
+
+    @Test
+    public void testGetValueUuidList() {
+        //null
+        CdmPreference prefs = new CdmPreference(subject, predicate, null);
+        List<UUID> list = prefs.getValueUuidList();
+        Assert.assertTrue(list.isEmpty());
+        //empty
+        prefs = new CdmPreference(subject, predicate, " ");
+        list = prefs.getValueUuidList();
+        Assert.assertTrue(list.isEmpty());
+        //singleUuid
+        prefs = new CdmPreference(subject, predicate, "1ef35078-fb4a-451d-a15a-127235245358");
+        list = prefs.getValueUuidList();
+        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
+        //mulitple uuids and varying separators
+        prefs = new CdmPreference(subject, predicate, "1ef35078-fb4a-451d-a15a-127235245358,a1184db8-e476-4410-b085-d8844ada47e8;43b2cd7d-401b-4565-853f-88ae1c43c55a");
+        list = prefs.getValueUuidList();
+        Assert.assertEquals(3, list.size());
+        Assert.assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
+        Assert.assertEquals(UUID.fromString("43b2cd7d-401b-4565-853f-88ae1c43c55a"), list.get(2));
+        //trailing and preceding separators and whitespaces
+        prefs = new CdmPreference(subject, predicate, " ; 1ef35078-fb4a-451d-a15a-127235245358 , a1184db8-e476-4410-b085-d8844ada47e8;43b2cd7d-401b-4565-853f-88ae1c43c55a , ");
+        list = prefs.getValueUuidList();
+        Assert.assertEquals(3, list.size());
+        Assert.assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
+        Assert.assertEquals(UUID.fromString("43b2cd7d-401b-4565-853f-88ae1c43c55a"), list.get(2));
+        //non uuids
+        prefs = new CdmPreference(subject, predicate, "xxx 1ef35078-fb4a-451d-a15a-127235245358");
+        try {
+            list = prefs.getValueUuidList();
+            Assert.fail("Parsing non UUIDs must throw exception");
+        } catch (IllegalArgumentException e) {
+            //correct
+        }
+    }
+
 
 }

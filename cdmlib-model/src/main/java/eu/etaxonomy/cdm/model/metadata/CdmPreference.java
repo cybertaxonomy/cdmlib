@@ -9,11 +9,19 @@
 package eu.etaxonomy.cdm.model.metadata;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+
+import org.apache.commons.lang3.StringUtils;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 /**
@@ -44,17 +52,39 @@ import javax.persistence.Entity;
 public final class CdmPreference implements Serializable {
 	private static final long serialVersionUID = 4307599154287181582L;
 
-    public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, String value){
+    public static final CdmPreference NewInstance(PreferenceSubject subject,
+            PreferencePredicate predicate, String value){
         return new CdmPreference(subject, predicate, value);
     }
 
+
+    public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, List<UUID> value){
+        return new CdmPreference(subject, predicate, uuidListStr(value));
+    }
+    public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, UUID ... value){
+        return new CdmPreference(subject, predicate, uuidListStr(Arrays.asList(value)));
+    }
+
+    public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, UUID value){
+        return new CdmPreference(subject, predicate, value.toString());
+    }
+
     /**
-     * @param test
-     * @param string
+     * @param predicate
+     * @param value
      * @return
      */
-    public static CdmPreference NewDatabaseInstance(PreferencePredicate test, String value) {
-        return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), test, value);
+    public static CdmPreference NewDatabaseInstance(PreferencePredicate predicate, String value) {
+        return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), predicate, value);
+    }
+
+    /**
+     * @param predicate
+     * @param value
+     * @return
+     */
+    public static CdmPreference NewVaadinInstance(PreferencePredicate predicate, String value) {
+        return new CdmPreference(PreferenceSubject.NewVaadinInstance(), predicate, value);
     }
 
     public static PrefKey NewKey(PreferenceSubject subject, PreferencePredicate predicate){
@@ -117,8 +147,8 @@ public final class CdmPreference implements Serializable {
             if (predicate.length() > 255) {
                 throw new IllegalArgumentException("Predicate must not be longer then 255 for preference");
             }
-            if (!subject.matches("/([A-Za-z]+\\[.*\\])?")){
-                throw new IllegalArgumentException("Predicate does not follow the required syntax");
+            if (!subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+\\[.*\\]|"+PreferenceSubject.VAADIN+")"+PreferenceSubject.SEP+")?")){
+                throw new IllegalArgumentException("Subject does not follow the required syntax");
             }
 
 
@@ -158,7 +188,7 @@ public final class CdmPreference implements Serializable {
 	private CdmPreference(){}
 
 
-	public CdmPreference(PreferenceSubject subject, PreferencePredicate predicate, String value){
+	private CdmPreference(PreferenceSubject subject, PreferencePredicate predicate, String value){
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
 		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(
@@ -166,6 +196,19 @@ public final class CdmPreference implements Serializable {
 		}
 		this.value = value;
 	}
+
+
+    /**
+     * @param value
+     * @return
+     */
+    protected static String uuidListStr(List<UUID> value) {
+        String valueStr = "";
+        for (UUID uuid : value){
+            valueStr = CdmUtils.concat(",",valueStr, uuid.toString());
+        }
+        return valueStr;
+    }
 
 
 	/**
@@ -191,17 +234,53 @@ public final class CdmPreference implements Serializable {
 	}
 
 
+	/**
+	 * @return the subject of the preference
+	 */
 	public String getSubject() {
 		return key.subject;
 	}
 
+	/**
+	 * @return the predicate of the preference
+	 */
 	public String getPredicate() {
 		return key.predicate;
 	}
 
+	/**
+	 * @return the value of the preference
+	 */
 	public String getValue() {
 		return value;
 	}
+
+	/**
+	 * Returns the {@link #getValue() value} as {@link UUID} List.
+	 * Throws an exception if the value can not be parsed as UUID list.
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public List<UUID> getValueUuidList() throws IllegalArgumentException {
+	    List<UUID> result = new ArrayList<>();
+	    if (StringUtils.isBlank(value)){
+	        return result;
+	    }
+	    String[] splits = getValue().split("[,;]");
+	    for (String split : splits ){
+	        try {
+                if (StringUtils.isBlank(split)){
+                    continue; //neglect trailing separators
+                }
+	            UUID uuid = UUID.fromString(split.trim());
+                result.add(uuid);
+            } catch (IllegalArgumentException e) {
+                throw e;
+            }
+	    }
+	    return result;
+    }
+
 
 //
 //  we try to avoid setting of values

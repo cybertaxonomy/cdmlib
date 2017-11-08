@@ -56,7 +56,7 @@ public class TermLoader implements ITermLoader {
 			CSVReader reader = getCsvReader(vocType);
 			String[] nextLine = reader.readNext();
 			UUID uuidVocabulary = UUID.fromString(nextLine[0]);
-			Set<UUID> termSet = new HashSet<UUID>();
+			Set<UUID> termSet = new HashSet<>();
 			uuidMap.put(uuidVocabulary, termSet);
 
 			while ( (nextLine = reader.readNext()) != null) {

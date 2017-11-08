@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -252,7 +252,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param configurator
      * @return UpdateResult
      */
-    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config);
+    public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config);
 
 
     /**
@@ -296,6 +296,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param configurator
      * @return
      */
-    UUID monitSetSecundum(SetSecundumForSubtreeConfigurator configurator);
+    UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
 
 }

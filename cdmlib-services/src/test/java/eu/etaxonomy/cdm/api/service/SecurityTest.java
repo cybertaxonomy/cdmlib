@@ -62,8 +62,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
-import sun.security.provider.PolicyParser.ParsingException;
 
 
 @DataSet
@@ -363,7 +363,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    public final void testUpdateReferenceAllow() throws ParsingException {
+    public final void testUpdateReferenceAllow() throws CdmAuthorityParsingException {
 
 
         authentication = authenticationManager.authenticate(tokenForUserManager);

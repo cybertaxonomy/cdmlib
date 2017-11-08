@@ -110,8 +110,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
 
 
-    private String cmdServerInstanceName = null;
-
     /**
      * The file to load the {@link DataSource} beans from.
      * This file is usually {@code ./.cdmLibrary/datasources.xml}
@@ -158,9 +156,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         }
 
         // validate correct schema version
+        Connection connection  = null;
         try {
 
-            Connection connection = dataSource.getConnection();
+            connection = dataSource.getConnection();
             String metadataTableName = "CdmMetaData";
             if(inferHibernateDialectName(dataSource).equals(H2CorrectedDialect.class.getName())){
                 metadataTableName = metadataTableName.toUpperCase();
@@ -206,7 +205,14 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             RuntimeException re =   new RuntimeException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
             addErrorMessageToServletContextAttributes(re.getMessage());
             throw re;
-
+        } finally {
+            if(connection != null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // IGNORE //
+                }
+            }
         }
 
 
@@ -217,6 +223,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             CdmUpdater updater = CdmUpdater.NewInstance();
             WrappedCdmDataSource cdmDataSource = new WrappedCdmDataSource(dataSource);
             updater.updateToCurrentVersion(cdmDataSource, null);
+            cdmDataSource.closeOpenConnections();
         }
 
         return dataSource;

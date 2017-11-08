@@ -27,4 +27,6 @@ public interface ICdmPermissionEvaluator extends PermissionEvaluator {
     public <T extends CdmBase> boolean hasPermission(Authentication authentication, Class<T> targetDomainObjectClass,
             EnumSet<CRUD> requiredOperations);
 
+    boolean hasPermission(Authentication authentication, CdmBase targetDomainObject, EnumSet<CRUD> requiredOperation);
+
 }

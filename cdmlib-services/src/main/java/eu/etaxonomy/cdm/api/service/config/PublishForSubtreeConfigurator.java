@@ -6,13 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.operation.config;
+package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.operation.PublishForSubtreeUpdater;
 
 /**
  * Configurator for the setPublishForSubtree operation.
@@ -22,8 +20,7 @@ import eu.etaxonomy.cdm.io.operation.PublishForSubtreeUpdater;
  *
  */
 public class PublishForSubtreeConfigurator
-            extends ForSubtreeConfiguratorBase<PublishForSubtreeConfigurator>
-            implements IImportConfigurator{
+            extends ForSubtreeConfiguratorBase{
 
     private static final long serialVersionUID = 1202667588493272030L;
 
@@ -54,15 +51,6 @@ public class PublishForSubtreeConfigurator
         this.publish = publish;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void makeIoClassList() {
-        ioClassList = new Class[]{
-                PublishForSubtreeUpdater.class
-        };
 
-    }
 
 }

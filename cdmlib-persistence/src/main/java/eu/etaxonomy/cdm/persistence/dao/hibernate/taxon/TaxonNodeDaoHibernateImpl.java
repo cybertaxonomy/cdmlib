@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -43,6 +42,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
@@ -492,15 +492,19 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
         List<T> synonymList = query.list();
+        MergeResult mergeResult;
+        Set<T> result = new HashSet<>();
         for (T taxonBase : synonymList){
+            taxonBase = (T) taxonDao.load(taxonBase.getUuid());
+
             taxonBase.setSec(newSec);
             if (emptyDetail){
                 taxonBase.setSecMicroReference(null);
             }
-        }
-        Set<T> result = new HashSet<>(synonymList);
+           result.add(taxonBase);
 
-        return result;
+        }
+      return result;
     }
 
 
@@ -508,7 +512,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * {@inheritDoc}
      */
     @Override
-    public Set<Taxon> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
+    public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa) {
         String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
         return setPublish(publish, queryStr);
@@ -518,7 +522,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * {@inheritDoc}
      */
     @Override
-    public Set<Synonym> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
+    public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa) {
         String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex);
         return setPublish(publish, queryStr);
@@ -533,11 +537,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
         List<T> taxonList = query.list();
+        Set<T> result = new HashSet<>();
         for (T taxon : taxonList){
+            taxon = (T)taxonDao.load(taxon.getUuid());
             taxon.setPublish(publish);
+            result.add(taxon);
         }
-
-        Set<T> result = new HashSet<>(taxonList);
         return result;
     }
 

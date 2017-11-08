@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
+
 	/**
 	 * @param type
 	 */
@@ -78,7 +81,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		    }
 
 		    this.addOrder(criteria, orderHints);
-		    List<T> result = criteria.list();
+		    @SuppressWarnings("unchecked")
+            List<T> result = criteria.list();
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		} else {
@@ -92,7 +96,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		        }
 			}
 
-			List<T> result = query.getResultList();
+			@SuppressWarnings("unchecked")
+            List<T> result = query.getResultList();
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
 		}
@@ -105,7 +110,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
     		Query query = getSession().createQuery("select vocabulary from TermVocabulary vocabulary where vocabulary.termSourceUri= :termSourceUri");
 	    	query.setParameter("termSourceUri", termSourceUri);
 
-		    return (TermVocabulary<T>)query.uniqueResult();
+	    	return (TermVocabulary<T>)query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
@@ -129,6 +134,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         //this.addOrder(criteria, orderHints);
 
+        @SuppressWarnings("unchecked")
         List<TermVocabulary<T>> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -156,6 +162,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
         this.addOrder(criteria, orderHints);
 
+        @SuppressWarnings("unchecked")
         List<TermVocabulary> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -167,7 +174,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse){
 
-		Set<UUID> missingTermCandidateUuids = new HashSet<UUID>();
+		Set<UUID> missingTermCandidateUuids = new HashSet<>();
 
 		for (Set<UUID> uuidsPerVocSet : uuidsRequested.values()){
 			missingTermCandidateUuids.addAll(uuidsPerVocSet);
@@ -179,8 +186,17 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 				" WHERE terms.uuid IN (:uuids) " +
 				" ORDER BY voc.uuid ";
 		Query query = getSession().createQuery(hql);
-		query.setParameterList("uuids", missingTermCandidateUuids);
-		List<?> persistedUuids = query.list();
+
+		int splitSize = 2000;
+		List<Collection<UUID>> missingTermCandidates = splitCollection(missingTermCandidateUuids, splitSize);
+		List<UUID> persistedUuids = new ArrayList<>();
+
+		for (Collection<UUID> uuids : missingTermCandidates){
+		    query.setParameterList("uuids", uuids);
+		    @SuppressWarnings("unchecked")
+            List<UUID> list = query.list();
+		    persistedUuids.addAll(list);
+		}
 
 
  		//fully load and initialize vocabularies if required
@@ -194,12 +210,17 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 //					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
 					" ORDER BY voc.uuid ";
 			query = getSession().createQuery(hql2);
-			query.setParameterList("termUuids",missingTermCandidateUuids);
-			query.setParameterList("vocUuids",uuidsRequested.keySet());
-			List<TermVocabulary> o = query.list();
-			for (TermVocabulary<?> voc : o){
-				vocabularyResponse.put(voc.getUuid(), voc);
-			}
+			query.setParameterList("termUuids", missingTermCandidateUuids);
+			query.setParameterList("vocUuids", uuidsRequested.keySet());
+
+			for (Collection<UUID> uuids : missingTermCandidates){
+			    query.setParameterList("termUuids", uuids);
+			    @SuppressWarnings("unchecked")
+	            List<TermVocabulary<?>> o = query.list();
+	            for (TermVocabulary<?> voc : o){
+	                vocabularyResponse.put(voc.getUuid(), voc);
+	            }
+	        }
 		}
 
 		//compute missing terms
@@ -213,7 +234,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 					if (missingTermCandidateUuids.contains(termUuid)){
 						Set<UUID> r = uuidMissingTermsRepsonse.get(vocUUID);
 						if (r == null){
-							r = new HashSet<UUID>();
+							r = new HashSet<>();
 							uuidMissingTermsRepsonse.put(vocUUID, r);
 						}
 						r.add(termUuid);
@@ -224,4 +245,5 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 		return;
 	}
+
 }

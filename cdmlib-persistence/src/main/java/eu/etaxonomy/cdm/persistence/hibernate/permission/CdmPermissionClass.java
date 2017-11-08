@@ -28,7 +28,9 @@ public enum CdmPermissionClass {
     CLASSIFICATION,
     REFERENCE,
     TAXONNAME,
-    TEAMORPERSONBASE;
+    TEAMORPERSONBASE,
+    REGISTRATION,
+    SPECIMENOROBSERVATIONBASE;
 
     /**
      * return the appropriate CdmPermissionClass for the given Object
@@ -51,7 +53,8 @@ public enum CdmPermissionClass {
     public static CdmPermissionClass getValueOf(Class o){
 
         try{
-            return CdmPermissionClass.valueOf(o.getSimpleName().toUpperCase());
+            String normalizedName = o.getSimpleName().toUpperCase();
+            return CdmPermissionClass.valueOf(normalizedName);
         } catch(IllegalArgumentException e){
             if (CdmBase.class.isAssignableFrom(o)){
                 return getValueOf(o.getSuperclass());

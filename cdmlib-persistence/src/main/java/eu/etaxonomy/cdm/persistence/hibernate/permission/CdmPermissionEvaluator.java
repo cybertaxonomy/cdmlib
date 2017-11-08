@@ -62,15 +62,12 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
 
-        CdmAuthority evalPermission;
         EnumSet<CRUD> requiredOperation = null;
 
-        if(authentication == null) {
-            return false;
-        }
+        CdmBase cdmEntitiy = (CdmBase)targetDomainObject;
 
         if(logger.isDebugEnabled()){
-            String targteDomainObjText = "  Object: " + (targetDomainObject == null? "null":((CdmBase)targetDomainObject).instanceToString());
+            String targteDomainObjText = "  Object: " + (targetDomainObject == null? "null":cdmEntitiy.instanceToString());
             logUserAndRequirement(authentication, permission.toString(), targteDomainObjText);
         }
         try {
@@ -78,19 +75,35 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
         } catch (IllegalArgumentException e) {
             logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
-            return true; // FIXME it might be wrong to return true
+            return false;
         }
 
-        evalPermission = authorityRequiredFor((CdmBase)targetDomainObject, requiredOperation);
+        return hasPermission(authentication, cdmEntitiy, requiredOperation);
+
+    }
+
+    /**
+     * @param authentication
+     * @param targetDomainObject
+     * @param requiredOperation
+     * @return
+     */
+    @Override
+    public boolean hasPermission(Authentication authentication, CdmBase targetDomainObject, EnumSet<CRUD> requiredOperation) {
+
+        if(authentication == null) {
+            return false;
+        }
+
+        CdmAuthority evalPermission = authorityRequiredFor(targetDomainObject, requiredOperation);
 
         if (evalPermission.permissionClass != null) {
             logger.debug("starting evaluation => ...");
-            return evalPermission(authentication, evalPermission, (CdmBase) targetDomainObject);
+            return evalPermission(authentication, evalPermission, targetDomainObject);
         }else{
             logger.debug("skipping evaluation => true");
             return true;
         }
-
     }
 
 
@@ -165,16 +178,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
      * @return
      */
     private CdmAuthority authorityRequiredFor(CdmBase targetEntity, EnumSet<CRUD> requiredOperation) {
-        CdmAuthority evalPermission;
-        try{
-            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, (targetDomainObject).getUuid());
-            evalPermission = new CdmAuthority(targetEntity, requiredOperation, (targetEntity).getUuid());
-        }catch(NullPointerException e){
-            // TODO document where the NPE is coming from
-
-            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
-            evalPermission = new CdmAuthority(targetEntity, requiredOperation, null);
-        }
+        CdmAuthority evalPermission = new CdmAuthority(targetEntity, requiredOperation);
         return evalPermission;
     }
 

@@ -273,7 +273,7 @@ public class ConversationHolder {
      * @return if there is a running transaction
      */
     public boolean isTransactionActive(){
-        return transactionStatus != null;
+        return transactionStatus != null && !transactionStatus.isCompleted();
     }
 
     /* (non-Javadoc)
@@ -362,11 +362,19 @@ public class ConversationHolder {
      * @return the session associated with this conversation manager
      */
     public Session getSession() {
+
+        String whatStr;
+
         if(longSession == null){
             longSession = getNewSession();
-            logger.info("Creating Session: [" + longSession.hashCode() + "] " + longSession);
+            whatStr = "Creating";
         } else {
-            logger.info("Reusing Session: [" + longSession.hashCode() + "] " + longSession);
+            whatStr = "Reusing";
+        }
+        if(logger.isDebugEnabled()){
+            logger.debug(whatStr + " Session: [" + longSession.hashCode() + "] " + longSession);
+        } else {
+            logger.info(whatStr + " Session: [" + longSession.hashCode() + "] ");
         }
         return longSession;
     }

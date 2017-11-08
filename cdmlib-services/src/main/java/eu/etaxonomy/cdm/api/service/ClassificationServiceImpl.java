@@ -543,7 +543,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * @param configurator to change certain settings, if null then standard settings will be taken
      * @return new classification with parentNodes for each entry in the map
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
 	@Transactional(readOnly = false)
 	@Override
     public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator){
@@ -552,7 +552,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	Map<String, List<TaxonNode>> map = getSortedGenusList(classification.getAllNodes());
 
     	final String APPENDIX = "repaired";
-    	String titleCache = org.apache.commons.lang.StringUtils.isBlank(classification.getTitleCache()) ? " " : classification.getTitleCache() ;
+    	String titleCache = StringUtils.isBlank(classification.getTitleCache()) ? " " : classification.getTitleCache() ;
     	//TODO classification clone???
     	Classification newClassification = Classification.NewInstance(titleCache +" "+ APPENDIX);
     	newClassification.setReference(classification.getReference());

@@ -63,7 +63,11 @@ public class Datasource {
 
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+
+		String server;
+		String database;
+		String username;
 
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
@@ -72,16 +76,15 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 //		String server = "localhost";
-//		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
 //		database = "cdm36";
 ////		database = "cdm_production_edaphobase";
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-		String server = "160.45.63.171";
-		String database = "cdm_production_salvador";
-		String username = "edit";
-		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		String server = "160.45.63.171";
+//		String database = "cdm_production_xxx";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
 //		String server = "test.e-taxonomy.eu";
@@ -96,11 +99,12 @@ public class Datasource {
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
-//		//SQLServer
-//		database = "CDMTest";
-//		int port = 1433;
-//		username = "pesiexport";
-////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+		//SQLServer
+		server = "BGBM-PESISQL";
+		database = "cdm36";
+		int port = 1433;
+		username = "cdmupdater";
+		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
 //		//H2
 //        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
@@ -299,25 +303,6 @@ public class Datasource {
 
 	}
 
-	private void testPostgreServer(){
-		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.PostgreSQL;
-		String server = "192.168.1.17";
-		String database = "cdm_test";
-		String username = "edit";
-		String password = "";
-
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password);
-
-		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", dataSource);
-
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
-		Person agent = Person.NewInstance();
-		appCtr.getAgentService().save(agent);
-		TaxonName tn = TaxonNameFactory.NewBotanicalInstance(null);
-		appCtr.getNameService().save(tn);
-		appCtr.close();
-
-	}
 
 	private void testLocalHsql(){
 		CdmApplicationController appCtr = null;

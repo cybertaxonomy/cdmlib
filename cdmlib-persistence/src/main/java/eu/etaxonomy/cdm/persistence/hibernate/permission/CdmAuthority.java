@@ -15,13 +15,13 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
@@ -68,33 +68,46 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
     public static final Logger logger = Logger.getLogger(CdmAuthority.class);
 
-    private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<String, CdmAuthority>();
+    private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<>();
 
     CdmPermissionClass permissionClass;
     String property;
     // Making sure that operation is always initialized, for both
     // - the string representation to have a '[]'
     // - and the object representation to never be null (with check in constructors)
-    EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);;
+    EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);
     UUID targetUuid;
 
-    public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation, UUID uuid){
+    public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation){
+
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         if(operation != null) {
         	this.operation = operation;
         }
-        this.targetUuid = uuid;
+        if(targetDomainObject.getUuid() == null){
+            throw new NullPointerException("UUID of targetDomainObject is null. CDM entities need to be saved prior using this function");
+        }
+        this.targetUuid = targetDomainObject.getUuid();
     }
 
-     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation, UUID uuid){
-       this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
-        this.property = property;
-        if(operation != null) {
-        	this.operation = operation;
-        }
-        this.targetUuid = uuid;
-    }
+     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation){
+         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
+          this.property = property;
+          if(operation != null) {
+              this.operation = operation;
+          }
+          this.targetUuid = targetDomainObject.getUuid();
+      }
+
+     public CdmAuthority(Class<? extends CdmBase> targetDomainType, String property, EnumSet<CRUD> operation, UUID uuid){
+         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainType);
+          this.property = property;
+          if(operation != null) {
+              this.operation = operation;
+          }
+          this.targetUuid = uuid;
+      }
 
 
     public CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<CRUD> operation, UUID uuid){
@@ -106,7 +119,14 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         this.targetUuid = uuid;
     }
 
-    private CdmAuthority (String authority) throws ParsingException{
+    public CdmAuthority(CdmPermissionClass permissionClass, EnumSet<CRUD> operation){
+        this.permissionClass = permissionClass;
+        if(operation != null) {
+            this.operation = operation;
+        }
+    }
+
+    protected CdmAuthority (String authority) throws CdmAuthorityParsingException{
 
         String[] tokens = parse(authority);
         // className must never be null
@@ -114,7 +134,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         try {
             permissionClass = CdmPermissionClass.valueOf(tokens[0]);
         } catch (IllegalArgumentException e) {
-            throw new ParsingException(authority);
+            throw new CdmAuthorityParsingException(authority);
         }
         property = tokens[1];
 
@@ -123,7 +143,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
                 operation = Operation.fromString(tokens[2]);
             } catch (IllegalArgumentException e) {
                 logger.warn("cannot parse Operation " + tokens[2]);
-                throw new ParsingException(authority);
+                throw new CdmAuthorityParsingException(authority);
             }
         }
         if(tokens[3] != null){
@@ -171,17 +191,17 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * </ol>
      * @param authority
      * @return an array of tokens
-     * @throws ParsingException
+     * @throws CdmAuthorityParsingException
      */
-    protected String[] parse(String authority) throws ParsingException {
+    protected String[] parse(String authority) throws CdmAuthorityParsingException {
         //
         // regex pattern explained:
         //  (\\w*)             -> classname
-        //  (?:\\((\\w*)\\))?  -> (property)
+        //  (?:\\((\\D*)\\))?  -> (property)
         //  \\.?               -> .
         //  (?:\\[(\\D*)\\])(?:\\{([\\da-z\\-]+)\\})? -> Permission and targetUuid
         //
-        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
+        String regex = "(\\w*)(?:\\((\\D*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
         Pattern pattern = Pattern.compile(regex);
         String[] tokens = new String[4];
         logger.debug("parsing '" + authority + "'");
@@ -198,7 +218,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
             }
         } else {
             logger.debug("no match");
-            throw new ParsingException("Unsupported authority string: '" + authority + "'");
+            throw new CdmAuthorityParsingException("Unsupported authority string: '" + authority + "'");
         }
 
         return tokens;
@@ -231,11 +251,24 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         if(property != null){
             sb.append('(').append(property).append(')');
         }
-        sb.append('.').append(operation.toString());
+        sb.append('.').append(operationsToString());
         if(targetUuid != null){
             sb.append('{').append(targetUuid.toString()).append('}');
         }
         return sb.toString() ;
+    }
+
+    /**
+     * @return
+     */
+    protected String operationsToString() {
+        String[] opsstr = new String[operation.size()];
+        int i = 0;
+        for(CRUD crud : operation){
+            opsstr[i++] = crud.name();
+        }
+        String asString = StringUtils.join(opsstr, ",");
+        return "[" + asString + "]";
     }
 
     /**
@@ -248,9 +281,9 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * instances per <code>GrantedAuthority</code> string in a map.
      *
      * @param authority
-     * @throws ParsingException
+     * @throws CdmAuthorityParsingException
      */
-    public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws ParsingException {
+    public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws CdmAuthorityParsingException {
         CdmAuthority cdmAuthority = grantedAuthorityCache.get(authority.getAuthority());
         if(cdmAuthority == null){
             cdmAuthority = new CdmAuthority(authority.getAuthority());
@@ -261,11 +294,10 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
 
     @Override
-    public GrantedAuthorityImpl asNewGrantedAuthority() throws ParsingException {
+    public GrantedAuthorityImpl asNewGrantedAuthority() throws CdmAuthorityParsingException {
         GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance(getAuthority());
         return grantedAuthority;
     }
-
 
 
 }

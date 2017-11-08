@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
-import eu.etaxonomy.cdm.api.service.config.SetSecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
@@ -757,13 +757,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult setSecundumForSubtree(SetSecundumForSubtreeConfigurator config) {
+    public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
        // IProgressMonitor monitor = config.getMonitor();
         IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
+
         monitor.beginTask("Update Secundum Reference", 100);
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -771,7 +772,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             monitor.done();
             return result;
         }
-        TaxonNode subTree = find(config.getSubtreeUuid());
+        TaxonNode subTree = load(config.getSubtreeUuid());
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
@@ -784,14 +785,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (config.isIncludeAcceptedTaxa()){
             monitor.subTask("Update Accepted Taxa");
             Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
-            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (config.isIncludeSynonyms()){
-            monitor.subTask("Update Synonyms");
-            Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
-            taxonService.saveOrUpdate(updatedSynonyms);
-            result.addUpdatedObjects(updatedSynonyms);
+           monitor.subTask("Update Synonyms");
+           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+           result.addUpdatedObjects(updatedSynonyms);
         }
 
         monitor.done();
@@ -803,6 +802,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
             boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
@@ -826,15 +826,17 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
 
-        //Reference ref = config.getNewSecundum();
+
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
-            Set<Taxon> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
+//            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
-            Set<Synonym> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
+            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
+//            taxonService.saveOrUpdate(updatedSynonyms);
             result.addUpdatedObjects(updatedSynonyms);
         }
         monitor.done();
@@ -858,14 +860,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    public UUID monitSetSecundum(final SetSecundumForSubtreeConfigurator configurator) {
+    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-
                 configurator.setMonitor(monitor);
                 UpdateResult result = setSecundumForSubtree(configurator);
-
                 return result;
             }
         };

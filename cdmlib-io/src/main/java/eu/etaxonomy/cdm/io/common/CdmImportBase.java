@@ -663,15 +663,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				feature = Feature.NewInstance(description, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
-//				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
 				if (voc == null){
 					boolean isOrdered = false;
 					voc = getVocabulary(TermType.Feature, uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered, feature);
 				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
+				state.putFeature(feature);
 			}
-			state.putFeature(feature);
 		}
 		return feature;
 	}
@@ -1092,7 +1091,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery,
 	        boolean createNewIfNotExists) {
 		TaxonDescription result = null;
-		Set<TaxonDescription> descriptions= taxon.getDescriptions();
+		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
 			if (description.isImageGallery() == isImageGallery){
 				if (hasCorrespondingSource(ref, description)){
@@ -1442,6 +1441,65 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Float.valueOf(doubleObject.toString());
 		}
 	}
+
+
+    /**
+     * Converts a given string into an integer. If this is not possible
+     * an error is logged in the import result with record location and attribute name.
+     *
+     * @param state
+     * @param strToConvert
+     * @param recordLocation
+     * @param attributeName
+     * @return the converted integer
+     */
+    protected Integer intFromString(STATE state,
+            String strToConvert,
+            String recordLocation,
+            String attributeName) {
+
+        if (strToConvert == null){
+            return null;
+        }
+        try {
+            Integer result = Integer.valueOf(strToConvert);
+            return result;
+        } catch (NumberFormatException e) {
+            String message = "Text '%s' could not be transformed into integer number for attribute %s";
+            message = String.format(message, strToConvert, attributeName);
+            state.getResult().addError(message, e, null, recordLocation);
+        }
+        return null;
+    }
+
+    /**
+     * Converts a given string into a {@link Double}. If this is not possible
+     * an error is logged in the import result with record location and attribute name.
+     *
+     * @param state
+     * @param strToConvert
+     * @param recordLocation
+     * @param attributeName
+     * @return the converted integer
+     */
+    protected Double doubleFromString(STATE state,
+            String strToConvert,
+            String recordLocation,
+            String attributeName) {
+
+        if (strToConvert == null){
+            return null;
+        }
+        try {
+            Double result = Double.valueOf(strToConvert);
+            return result;
+        } catch (NumberFormatException e) {
+            String message = "Text '%s' could not be transformed into number of type Double for attribute %s";
+            message = String.format(message, strToConvert, attributeName);
+            state.getResult().addError(message, e, null, recordLocation);
+        }
+        return null;
+    }
 
 
 	/**

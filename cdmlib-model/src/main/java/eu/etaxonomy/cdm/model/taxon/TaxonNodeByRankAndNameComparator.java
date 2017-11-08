@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -32,8 +33,8 @@ public class TaxonNodeByRankAndNameComparator implements Serializable, Comparato
 		TaxonBase<?> taxon1 = node1.getTaxon();
 		TaxonBase<?> taxon2 = node2.getTaxon();
 
-		TaxonName name1 = taxon1.getName();
-		TaxonName name2 = taxon2.getName();
+		TaxonName name1 = (taxon1 == null) ? null : taxon1.getName();
+		TaxonName name2 = (taxon2 == null) ? null : taxon2.getName();
 
 		Rank rankTax1 = (name1 == null) ? null : name1.getRank();
 		Rank rankTax2 = (name2 == null) ? null : name2.getRank();
@@ -50,19 +51,36 @@ public class TaxonNodeByRankAndNameComparator implements Serializable, Comparato
 				//same rank, order by name
 				int result = name1.compareToName(name2);
 				if (result == 0){
-					return taxon1.getUuid().compareTo(taxon2.getUuid());
+					return getTaxonUuid(taxon1, node1).compareTo(getTaxonUuid(taxon2, node2));
 				}else{
 					return result;
 				}
 			}else {
 				//this is maybe not 100% correct, we need to compare name cases, but it is a very rare case
-				return taxon1.getTitleCache().compareTo(taxon2.getTitleCache());
+				return getTaxonTitle(taxon1, node1).compareTo(getTaxonTitle(taxon2, node2));
 			}
 		}else{
 			//rankTax2.isHigher(rankTax1)
 			return 1;
 		}
 	}
+
+    /**
+     * @param taxon1
+     * @return
+     */
+    public String getTaxonTitle(TaxonBase<?> taxon, TaxonNode node) {
+        return (taxon == null) ? node.getUuid().toString(): taxon.getTitleCache();
+    }
+
+    /**
+     * @param taxon
+     * @param node
+     * @return
+     */
+    private UUID getTaxonUuid(TaxonBase<?> taxon, TaxonNode node) {
+        return (taxon == null) ? node.getUuid(): taxon.getUuid();
+    }
 
 
 

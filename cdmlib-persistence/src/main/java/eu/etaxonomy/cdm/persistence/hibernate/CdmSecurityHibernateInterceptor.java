@@ -8,12 +8,14 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-
-
+import java.beans.Introspector;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +34,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
+
 /**
  * @author k.luther
  * @author a.kohlbecker
@@ -67,6 +70,8 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         Set<String> defaultExculdes = new HashSet<String>();
         defaultExculdes.add("createdBy");  //created by is changed by CdmPreDataChangeListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
         defaultExculdes.add("created");  // same behavior was not yet observed for "created", but to be on the save side we also exclude "created"
+        defaultExculdes.add("updatedBy");
+        defaultExculdes.add("updated");
 
         for ( CdmBaseType type: CdmBaseType.values()){
             exculdeMap.put(type.getBaseClass(), new HashSet<String>());
@@ -111,8 +116,11 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         if (previousState == null){
             return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
-        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(baseType(cdmEntity)))) {
+        Set<String> excludes = exculdeMap.get(baseType(cdmEntity));
+        excludes.addAll(unprotectedCacheFields(currentState, previousState, propertyNames));
+        if (isModified(currentState, previousState, propertyNames, excludes)) {
             // evaluate throws EvaluationFailedException
+            //if(cdmEntity.getCreated())
             checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("Operation.UPDATE permission check suceeded - object update granted");
 
@@ -124,6 +132,36 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             }
         }
         return true;
+    }
+
+    /**
+     * Detects all cache fields and the according protection flags. For cache fields which are not
+     * protected the name of the cache field and of the protection flag are returned.
+     * <p>
+     * This method relies on  the convention that the protection flag for cache fields are named like
+     * {@code protected{CacheFieldName} } whereas the cache fields a always ending with "Cache"
+     *
+     * @param currentState
+     * @param previousState
+     * @param propertyNames
+     * @return
+     */
+    protected Collection<? extends String> unprotectedCacheFields(Object[] currentState, Object[] previousState,
+            String[] propertyNames) {
+
+        List<String> excludes = new ArrayList<>();
+        for(int i = 0; i < propertyNames.length; i ++){
+            if(propertyNames[i].matches("^protected.*Cache$")){
+                if(currentState[i] instanceof Boolean && ((Boolean)currentState[i]) == false && currentState[i].equals(previousState[i])){
+                    excludes.add(propertyNames[i]);
+                    String cacheFieldName = propertyNames[i].replace("protected", "");
+                    cacheFieldName = Introspector.decapitalize(cacheFieldName);
+                    excludes.add(cacheFieldName);
+                }
+            }
+        }
+
+        return excludes;
     }
 
     private Class<? extends CdmBase> baseType(CdmBase cdmEntity) {
