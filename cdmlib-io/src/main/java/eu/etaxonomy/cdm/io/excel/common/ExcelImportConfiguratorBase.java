@@ -29,7 +29,7 @@ public abstract class ExcelImportConfiguratorBase
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 	private byte[] stream;
-	private boolean deduplicateReferences = true;
+	private boolean deduplicateReferences = false;
 	private boolean deduplicateAuthors = false;
 	/**
 	 * @param url
