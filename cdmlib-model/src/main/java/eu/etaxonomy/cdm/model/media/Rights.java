@@ -84,52 +84,39 @@ public class Rights extends LanguageStringBase implements Cloneable{
 
 // ******************** FACTORY ***********************/
 
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static Rights NewInstance() {
 		return new Rights();
 	}
 
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static Rights NewInstance(String text, Language language) {
-		return new Rights(text, language);
+		return new Rights(text, language, null, null);
 	}
 
-	/**
-     * Factory method
-     * @return
-     */
+    public static Rights NewInstance(RightsType type) {
+        return new Rights(null, null, type, null);
+    }
+
+    public static Rights NewInstance(RightsType type, AgentBase agent) {
+        return new Rights(null, null, type, agent);
+    }
+
     public static Rights NewInstance(String text, Language language, RightsType type) {
-        return new Rights(text, language, type);
+        return new Rights(text, language, type, null);
+    }
+
+    public static Rights NewInstance(String text, Language language, RightsType type, AgentBase agent) {
+        return new Rights(text, language, type, agent);
     }
 
 //*********************** CONSTRUCTOR *************************/
 
-	/**
-	 * Default Constructor
-	 */
 	protected Rights() {
 		super();
 	}
-
-	/**
-	 * Constructor
-	 */
-	protected Rights(String text, Language language) {
-		super(text, language);
-	}
-
-	/**
-     * Constructor
-     */
-    protected Rights(String text, Language language, RightsType type) {
+    protected Rights(String text, Language language, RightsType type, AgentBase agent) {
         super(text, language);
         this.setType(type);
+        this.setAgent(agent);
     }
 
 //*********************** GETTER /SETTER *****************************/

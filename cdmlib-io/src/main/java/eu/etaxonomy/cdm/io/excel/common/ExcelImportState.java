@@ -14,6 +14,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -27,6 +28,8 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
 	private Integer currentLine;
 	private ROW currentRow;
     private HashMap<String, String> originalRecord;
+
+    private Reference sourceReference;
 
 
     public ExcelImportState(CONFIG config) {
@@ -69,5 +72,12 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
         this.originalRecord = originalRecord;
     }
 
+
+    public Reference getSourceReference() {
+        return this.sourceReference;
+    }
+    public void setSourceReference(Reference sourceReference) {
+        this.sourceReference = sourceReference;
+    }
 
 }
