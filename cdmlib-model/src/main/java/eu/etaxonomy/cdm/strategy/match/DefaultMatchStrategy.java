@@ -115,9 +115,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return fieldMatcher == null ? defaultMatchMode : fieldMatcher.getMatchMode();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#invoke(eu.etaxonomy.cdm.strategy.match.IMatchable, eu.etaxonomy.cdm.strategy.match.IMatchable)
-	 */
 	@Override
     public <T extends IMatchable> boolean invoke(T matchFirst, T matchSecond)
 			throws MatchException {
