@@ -19,8 +19,8 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaImport;
-import eu.etaxonomy.cdm.io.dwca.in.IImportMapping;
-import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.MappingType;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping.MappingType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 

@@ -15,14 +15,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.dwca.in.FilteredStream;
-import eu.etaxonomy.cdm.io.dwca.in.IConverter;
-import eu.etaxonomy.cdm.io.dwca.in.IPartitionableConverter;
-import eu.etaxonomy.cdm.io.dwca.in.IReader;
-import eu.etaxonomy.cdm.io.dwca.in.ItemFilter;
-import eu.etaxonomy.cdm.io.dwca.in.MappedCdmBase;
-import eu.etaxonomy.cdm.io.dwca.in.StreamPartitioner;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;

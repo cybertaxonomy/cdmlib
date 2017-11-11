@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.stream.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;

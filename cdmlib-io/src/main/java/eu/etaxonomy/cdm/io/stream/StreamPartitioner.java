@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.stream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.stream.StreamImportBase;
-import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping;
+import eu.etaxonomy.cdm.io.stream.mapping.InMemoryMapping;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;

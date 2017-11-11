@@ -20,7 +20,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
+import eu.etaxonomy.cdm.io.stream.mapping.DatabaseMapping;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 

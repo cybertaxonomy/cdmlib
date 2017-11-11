@@ -21,12 +21,11 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.dwca.in.IImportMapping;
-import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
-import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping;
-import eu.etaxonomy.cdm.io.dwca.in.MappedCdmBase;
-import eu.etaxonomy.cdm.io.dwca.in.MappingEntry;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping;
+import eu.etaxonomy.cdm.io.stream.mapping.InMemoryMapping;
+import eu.etaxonomy.cdm.io.stream.mapping.MappingEntry;
+import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping.CdmKey;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;

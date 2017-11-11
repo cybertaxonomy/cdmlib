@@ -20,8 +20,13 @@ import org.apache.log4j.Logger;
 
 import com.ibm.lsid.MalformedLSIDException;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
+import eu.etaxonomy.cdm.io.stream.IReader;
+import eu.etaxonomy.cdm.io.stream.ListReader;
+import eu.etaxonomy.cdm.io.stream.MappedCdmBase;
+import eu.etaxonomy.cdm.io.stream.PartitionableConverterBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;

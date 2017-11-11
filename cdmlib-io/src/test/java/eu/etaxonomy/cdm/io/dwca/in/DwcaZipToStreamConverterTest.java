@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
+import eu.etaxonomy.cdm.io.stream.CsvStream;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 
 

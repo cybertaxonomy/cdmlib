@@ -1,47 +1,48 @@
-package eu.etaxonomy.cdm.io.excel.stream;
+package eu.etaxonomy.cdm.io.stream.excel;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.in.DwcTaxonCsv2CdmTaxonRelationConverter;
 import eu.etaxonomy.cdm.io.dwca.in.DwcTaxonStreamItem2CdmTaxonConverter;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportBase;
-import eu.etaxonomy.cdm.io.dwca.in.IPartitionableConverter;
-import eu.etaxonomy.cdm.io.dwca.in.IReader;
+import eu.etaxonomy.cdm.io.excel.stream.ExcelRecordStream;
+import eu.etaxonomy.cdm.io.excel.stream.ExcelStreamImportState;
+import eu.etaxonomy.cdm.io.excel.stream.ExcelToStreamConverter;
+import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
+import eu.etaxonomy.cdm.io.stream.IReader;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * 
  * @author a.oppermann
  * @date 08.05.2013
- *
  */
 @Component
-public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfigurator, ExcelStreamImportState>{
-	private static final Logger logger = Logger.getLogger(ExcelStreamImport.class);
+public class ExcelStreamImport
+        extends DwcaDataImportBase<ExcelStreamImportConfigurator, ExcelStreamImportState>{
 
-	private ArrayList<HashMap<String, String>> recordList = null;
-	
+    private static final long serialVersionUID = -1067536880817966304L;
+
+    private static final Logger logger = Logger.getLogger(ExcelStreamImport.class);
+
 
 	@Override
 	protected void doInvoke(ExcelStreamImportState state) {
-		
+
 		makeSourceRef(state);
 		URI source = state.getConfig().getSource();
 		ExcelToStreamConverter<ExcelStreamImportState> excelStreamConverter = ExcelToStreamConverter.NewInstance(source);
 
 		try {
 			IReader<ExcelRecordStream> worksheetStream = excelStreamConverter.getWorksheetStream(state);
-		
+
 			while (worksheetStream.hasNext()){
 				ExcelRecordStream recordStream = worksheetStream.read();
 				try {
@@ -63,20 +64,14 @@ public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfi
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.StreamImportBase#getConverter(eu.etaxonomy.cdm.io.dwca.TermUri, eu.etaxonomy.cdm.io.dwca.in.StreamImportStateBase)
-	 */
 	@Override
 	protected IPartitionableConverter<StreamItem, IReader<CdmBase>, String> getConverter(
 			TermUri namespace, ExcelStreamImportState state) {
-		
-		
+
 		if (namespace.equals(TermUri.DWC_TAXON)){
 			if (! state.isTaxaCreated()){
 				return new DwcTaxonStreamItem2CdmTaxonConverter(state);
@@ -89,19 +84,12 @@ public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfi
 			return null;
 		}
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+
 	@Override
 	protected boolean doCheck(ExcelStreamImportState state) {
 		return state.isCheck();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean isIgnore(ExcelStreamImportState state) {
 		return false;  //we only have 1 import class for excel stream import

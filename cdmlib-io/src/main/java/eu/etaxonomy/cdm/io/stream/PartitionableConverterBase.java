@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.stream;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,10 +20,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.stream.StreamImportBase;
-import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
-import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;

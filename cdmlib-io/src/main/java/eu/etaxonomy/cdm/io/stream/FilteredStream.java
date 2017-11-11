@@ -6,19 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.stream;
 
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.stream.IItemStream;
-import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
- * FilteredReader filters a stream. Only a substream of the input items
+ * FilteredReader filters a stream. Only a sub-stream of the input items
  * is in the output stream.
  * @author a.mueller
  * @date 23.11.2011

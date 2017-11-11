@@ -33,11 +33,14 @@ import org.apache.log4j.Logger;
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
+import eu.etaxonomy.cdm.io.stream.CsvStream;
+import eu.etaxonomy.cdm.io.stream.IReader;
+import eu.etaxonomy.cdm.io.stream.ListReader;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * This class transforms a Darwin Core Archive zip file into a set of CSVReaderInputStreams.

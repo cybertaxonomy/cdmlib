@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.io.stream;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.dwca.in.INamespaceReader;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.oppermann

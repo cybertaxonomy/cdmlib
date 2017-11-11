@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.stream;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,13 +18,11 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IIoObservable;
 import eu.etaxonomy.cdm.io.common.ObservableBase;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Field;
-import eu.etaxonomy.cdm.io.stream.IItemStream;
-import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.mueller

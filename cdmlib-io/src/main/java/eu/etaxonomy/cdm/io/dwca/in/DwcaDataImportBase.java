@@ -10,16 +10,17 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.IItemStream;
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  *
  * @author a.mueller
  *
  */
-public abstract class DwcaDataImportBase<CONFIG extends DwcaDataImportConfiguratorBase<STATE>, STATE extends DwcaDataImportStateBase<CONFIG>> extends StreamImportBase<CONFIG, STATE>{
+public abstract class DwcaDataImportBase<CONFIG extends DwcaDataImportConfiguratorBase<STATE>, STATE extends DwcaDataImportStateBase<CONFIG>>
+        extends StreamImportBase<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8816075241549849925L;
     @SuppressWarnings("unused")

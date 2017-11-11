@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.excel.stream;
+package eu.etaxonomy.cdm.io.stream.excel;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -10,6 +10,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.excel.stream.ExcelStreamImportState;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  *
@@ -18,11 +19,13 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBase<ExcelStreamImportState> implements IImportConfigurator {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 5093164389086186710L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelStreamImportConfigurator.class);
 
 	private static final String DEFAULT_REF_TITLE = "Excel Stream Import";
-
 
 	private static IInputTransformer defaultTransformer = null;
 
@@ -38,13 +41,6 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
 	public static ExcelStreamImportConfigurator NewInstance(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){
 		return new ExcelStreamImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
-
-//	/**
-//	 * @param transformer
-//	 */
-//	public ExcelStreamImportConfigurator(IInputTransformer transformer) {
-//		super(transformer);
-//	}
 
 	/**
 	 * Constructor.
@@ -69,17 +65,12 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
         this.stream = stream;
     }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
 	public ExcelStreamImportState getNewState() {
 		return new ExcelStreamImportState(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#makeIoClassList()
-	 */
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void makeIoClassList() {
@@ -88,10 +79,6 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
 		};
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.StreamImportConfiguratorBase#getDefaultSourceReferenceTitle()
-	 */
 	@Override
 	protected String getDefaultSourceReferenceTitle() {
 		return DEFAULT_REF_TITLE;

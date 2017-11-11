@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,9 +20,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.IItemStream;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.oppermann
@@ -31,43 +31,37 @@ import eu.etaxonomy.cdm.io.stream.StreamItem;
  */
 public class ExcelRecordStream  implements IItemStream{
 	private static Logger logger = Logger.getLogger(ExcelRecordStream.class);
-	
+
 	private ExcelStreamImportState state;
-	
+
 	private Sheet sheet;
 //	private ArchiveEntryBase archiveEntry;
 	private TermUri term;
 	private int line = 0;
-	
+
 	private Map<Integer,String> mapping;
-	
+
 	private StreamItem next;
-	
-	
-	
+
+
+
 
 	/**
-	 * Constructor. 
-	 * @param term 
+	 * Constructor.
+	 * @param term
 	 */
 	public ExcelRecordStream(ExcelStreamImportState state, Sheet sheet, TermUri term) {
 		this.state = state;
 		this.sheet = sheet;
 		this.term = term;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.IReader#read()
-	 */
+
 	@Override
 	public StreamItem read() {
 		//FIXME:
 		return readMe();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.IReader#hasNext()
-	 */
 	@Override
 	public boolean hasNext() {
 		if (next != null){
@@ -78,7 +72,6 @@ public class ExcelRecordStream  implements IItemStream{
 		}
 	}
 
-
 	private StreamItem readMe() {
 		StreamItem resultItem;
 		if (next != null){
@@ -86,7 +79,7 @@ public class ExcelRecordStream  implements IItemStream{
 			next = null;
 			return resultItem;
 		}else{
-		
+
 			if (mapping == null){
 				mapping = getHeaderMapping(sheet.getRow(line++));
 			}
@@ -103,28 +96,24 @@ public class ExcelRecordStream  implements IItemStream{
 				int cells = row.getPhysicalNumberOfCells();
 				logger.info("\nROW " + row.getRowNum() + " has " + cells + " cell(s).");
 				Map<String, String> map = new HashMap<String, String>();
-				
+
 				for (int c :mapping.keySet()){
 					Cell cell = row.getCell(c);
 					String value = ExcelUtils.getCellValue(cell);
 					map.put(mapping.get(c), value);
 					logger.info("CELL col=" + cell.getColumnIndex() + " VALUE=" + value);
 				}
-				
+
 				resultItem = new StreamItem(term, map, String.valueOf(line));
-				
+
 				return resultItem;
 			}
 		}
 	}
-	
-	/**
-	 * @param row
-	 * @return
-	 */
+
 	private Map<Integer,String> getHeaderMapping(Row row) {
 		Map<Integer,String> result = new HashMap<Integer, String>();
-		
+
 		int cells = row.getPhysicalNumberOfCells();
 		logger.info("\nROW " + row.getRowNum() + " has " + cells + " cell(s).");
 		for (int c = 0; c < cells; c++) {
@@ -139,7 +128,7 @@ public class ExcelRecordStream  implements IItemStream{
 				logger.warn(String.format(message, c + 1, value));
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -181,51 +170,36 @@ public class ExcelRecordStream  implements IItemStream{
 			logger.warn(String.format(message, key));
 			return null;
 		}
-		
+
 	//Language	TDWG_1	TDWG_2	VernacularName	SysCode
-	
+
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.stream.IItemStream#getTerm()
-	 */
 	@Override
 	public TermUri getTerm() {
 		return this.term;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.stream.IItemStream#getItemLocation()
-	 */
 	@Override
 	public String getItemLocation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.stream.IItemStream#getStreamLocation()
-	 */
 	@Override
 	public String getStreamLocation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.stream.IItemStream#addObservers(java.util.Set)
-	 */
 	@Override
 	public void addObservers(Set<IIoObserver> observers) {
 		// TODO Auto-generated method stub
 		logger.warn("addObservers Not yet implemented");
 	}
-	
+
 //******************** toString *******************************************
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		if (sheet != null && StringUtils.isNotBlank(sheet.getSheetName())){
@@ -234,8 +208,4 @@ public class ExcelRecordStream  implements IItemStream{
 			return super.toString();
 		}
 	}
-	
-	
-	
-
 }
