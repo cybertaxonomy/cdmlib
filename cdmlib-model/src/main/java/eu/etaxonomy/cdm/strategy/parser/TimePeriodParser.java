@@ -47,6 +47,9 @@ public class TimePeriodParser {
 	private static final String strDotDate = "[0-3]?\\d\\.[01]?\\d\\.\\d{4,4}";
 	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strDotDate, strDotDate);
 	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriodPattern);
+	private static final String strSlashDate = "[0-3]?\\d\\/[01]?\\d\\/\\d{4,4}";
+	private static final String strSlashDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strSlashDate, strSlashDate);
+	private static final Pattern slashDatePattern =  Pattern.compile(strSlashDatePeriodPattern);
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|May|June?|July?))";
 	private static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}";
@@ -87,7 +90,9 @@ public class TimePeriodParser {
 			}
 		}else if (dotDatePattern.matcher(periodString).matches()){
 			parseDotDatePattern(periodString, result);
-		}else if (dateWithMonthNamePattern.matcher(periodString).matches()){
+		}else if (slashDatePattern.matcher(periodString).matches()){
+            parseSlashDatePattern(periodString, result);
+        }else if (dateWithMonthNamePattern.matcher(periodString).matches()){
             parseDateWithMonthName(periodString, result);
 		}else if (lifeSpanPattern.matcher(periodString).matches()){
 			parseLifeSpanPattern(periodString, result);
@@ -105,11 +110,34 @@ public class TimePeriodParser {
 //					result.setEnd(endDateTime.toLocalDate());
 //				}
 
+		}else if (isEnglishParsable(periodString)){
+		    TimePeriod enDate = parseEnglishDate(periodString, null);
+		    result.setStart(enDate.getStart());
 		}else{
 			result.setFreeText(periodString);
 		}
 		return result;
 	}
+
+    /**
+     * @param periodString
+     * @return
+     */
+    private static boolean isEnglishParsable(String periodString) {
+        try {
+            TimePeriod en = parseEnglishDate(periodString, null);
+            if (en.getFreeText() == null){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+
 
 
     private static boolean isDateString(String periodString) {
@@ -154,6 +182,40 @@ public class TimePeriodParser {
 		DateTime result = new DateTime(cal);
 		return result;
 	}
+
+    /**
+     * @param periodString
+     * @param result
+     */
+    private static void parseSlashDatePattern(String periodString, TimePeriod result) {
+        String[] dates = periodString.split("-");
+        Partial dtStart = null;
+        Partial dtEnd = null;
+
+        if (dates.length > 2 || dates.length <= 0){
+            logger.warn("More than 1 '-' in period String: " + periodString);
+            result.setFreeText(periodString);
+        }else {
+            try {
+                //start
+                if (! StringUtils.isBlank(dates[0])){
+                    dtStart = parseSingleSlashDate(dates[0].trim());
+                }
+
+                //end
+                if (dates.length >= 2 && ! StringUtils.isBlank(dates[1])){
+                    dtEnd = parseSingleSlashDate(dates[1].trim());
+                }
+
+                result.setStart(dtStart);
+                result.setEnd(dtEnd);
+            } catch (IllegalArgumentException e) {
+                //logger.warn(e.getMessage());
+                result.setFreeText(periodString);
+            }
+        }
+
+    }
 
 
 	/**
@@ -373,7 +435,47 @@ public class TimePeriodParser {
 
 	}
 
-	protected static Partial parseSingleDotDate(String singleDateString) throws IllegalArgumentException{
+	//this code is very redundant to parseSingleDotDate
+   protected static Partial parseSingleSlashDate(String singleDateString) throws IllegalArgumentException{
+        Partial partial =  new Partial();
+        singleDateString = singleDateString.trim();
+        String[] split = singleDateString.split("/");
+        int length = split.length;
+        if (length > 3){
+            throw new IllegalArgumentException(String.format("More than 2 slashes in date '%s'", singleDateString));
+        }
+        String strYear = split[split.length-1];
+        String strMonth = length >= 2? split[split.length-2]: null;
+        String strDay = length >= 3? split[split.length-3]: null;
+
+
+        try {
+            Integer year = Integer.valueOf(strYear.trim());
+            Integer month = strMonth == null? null : Integer.valueOf(strMonth.trim());
+            Integer day = strDay == null? null : Integer.valueOf(strDay.trim());
+            if (year < 1000 && year > 2100){
+                logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
+            }else if (year < 1700 && year > 2100){
+                logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
+                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+            }else{
+                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+            }
+            if (month != null && month != 0){
+                partial = partial.with(TimePeriod.MONTH_TYPE, month);
+            }
+            if (day != null && day != 0){
+                partial = partial.with(TimePeriod.DAY_TYPE, day);
+            }
+        } catch (NumberFormatException e) {
+            logger.debug("Not a Integer format somewhere in " + singleDateString);
+            throw new IllegalArgumentException(e);
+        }
+        return partial;
+    }
+
+    //this code is very redundant to parseSingleDotDate
+    protected static Partial parseSingleDotDate(String singleDateString) throws IllegalArgumentException{
 		Partial partial =  new Partial();
 		singleDateString = singleDateString.trim();
 		String[] split = singleDateString.split("\\.");
@@ -388,8 +490,8 @@ public class TimePeriodParser {
 
 		try {
 			Integer year = Integer.valueOf(strYear.trim());
-			Integer month = Integer.valueOf(strMonth.trim());
-			Integer day = Integer.valueOf(strDay.trim());
+			Integer month = strMonth == null? null : Integer.valueOf(strMonth.trim());
+			Integer day = strDay == null? null : Integer.valueOf(strDay.trim());
 			if (year < 1000 && year > 2100){
 				logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
 			}else if (year < 1700 && year > 2100){
