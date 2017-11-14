@@ -158,7 +158,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
-        return dao.list(type,limit, start, orderHints,propertyPaths);
+        return dao.list(type,limit, start, orderHints, propertyPaths);
     }
 
     @Override

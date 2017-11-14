@@ -250,6 +250,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNotNull(termBase);
     }
 
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 

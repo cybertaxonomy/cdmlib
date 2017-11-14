@@ -67,14 +67,11 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -2493,7 +2490,7 @@ public class TaxonName
      * @param addToAllNames				the boolean indicating whether the type designation should be
      * 									added to all taxon names of the homotypical group the typified
      * 									taxon name belongs to
-     * @return							true if the operation was succesful
+     * @return							true if the operation was successful
      *
      * @throws IllegalArgumentException	if the type designation already has typified names, an {@link IllegalArgumentException exception}
      * 									is thrown. We do this to prevent a type designation to be used for multiple taxon names.
