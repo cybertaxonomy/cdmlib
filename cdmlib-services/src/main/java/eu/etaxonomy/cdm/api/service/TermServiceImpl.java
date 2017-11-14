@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -441,6 +442,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Transactional(readOnly = false)
     public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations){
         return representationDao.saveOrUpdateAll(representations);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(vocs, limit, pattern);
     }
 
 

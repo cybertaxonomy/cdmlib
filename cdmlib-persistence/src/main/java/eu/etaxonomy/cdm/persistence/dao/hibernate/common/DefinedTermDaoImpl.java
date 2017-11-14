@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -709,5 +711,27 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         }
         return result;
     }
+
+
+    @Override
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern){
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery("select uuid, id, titleCache from NamedArea where titleCache like :pattern and vocabulary in :vocs");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+            query.setParameterList("vocs", vocs);
+        } else {
+            query = session.createQuery("select uuid, id, titleCache from NamedArea");
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        return getUuidAndTitleCache(query);
+    }
+
 
 }

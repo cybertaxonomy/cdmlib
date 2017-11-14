@@ -26,11 +26,13 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ITermService extends IIdentifiableEntityService<DefinedTermBase> {
@@ -179,4 +181,12 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return
      */
     public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations);
+
+    /**
+     * @param vocs
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern);
 }
