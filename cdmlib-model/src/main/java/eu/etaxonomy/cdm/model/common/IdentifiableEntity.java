@@ -432,7 +432,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public Set<String> getExtensions(UUID extensionTypeUuid){
         Set<String> result = new HashSet<>();
         for (Extension extension : getExtensions()){
-            if (extension.getType().getUuid().equals(extensionTypeUuid)){
+            if (extension.getType() != null && extension.getType().getUuid().equals(extensionTypeUuid)){
                 result.add(extension.getValue());
             }
         }
