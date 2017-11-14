@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.utility;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -29,10 +30,10 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
      * @param specimenTypeDesignation
      */
     public DerivedUnitConverter(DerivedUnit derivedUnit) {
-        this.du = derivedUnit;
         if(derivedUnit == null){
             throw new NullPointerException();
         }
+        this.du = HibernateProxyHelper.deproxy(derivedUnit, DerivedUnit.class);
     }
 
     /**
