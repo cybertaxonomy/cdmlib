@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -714,11 +713,11 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 
     @Override
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern){
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern){
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from NamedArea where titleCache like :pattern and vocabulary in :vocs");
+            query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
@@ -730,7 +729,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         if (limit != null){
            query.setMaxResults(limit);
         }
-        return getUuidAndTitleCache(query);
+        List<NamedArea> result = query.list();
+        return result;
     }
 
 

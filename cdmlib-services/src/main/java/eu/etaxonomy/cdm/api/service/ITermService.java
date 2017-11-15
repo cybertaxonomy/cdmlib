@@ -182,11 +182,14 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations);
 
+
     /**
      * @param vocs
      * @param limit
      * @param pattern
+     * @param lang
      * @return
      */
-    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern);
+    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern,
+            Language lang);
 }

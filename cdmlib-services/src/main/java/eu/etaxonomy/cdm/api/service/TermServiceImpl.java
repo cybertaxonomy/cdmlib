@@ -446,8 +446,17 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern) {
-        return dao.getUuidAndTitleCache(vocs, limit, pattern);
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
+        List<NamedArea> areas = dao.getUuidAndTitleCache(vocs, limit, pattern);
+
+        List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
+        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
+        for (NamedArea area: areas){
+            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+            result.add(uuidAndTitleCache);
+        }
+
+        return result;
     }
 
 

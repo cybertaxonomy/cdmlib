@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -204,6 +203,6 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      * @param pattern
      * @return
      */
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit,
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit,
             String pattern);
 }
