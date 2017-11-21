@@ -59,12 +59,12 @@ public class CacheMatcher extends FieldMatcherBase {
 
 
 	public List<DoubleResult<String, MatchMode>> getReplaceMatchModes(Matching matching) throws MatchException{
-		List<DoubleResult<String, MatchMode>> result = new ArrayList<DoubleResult<String,MatchMode>>();
+		List<DoubleResult<String, MatchMode>> result = new ArrayList<>();
 		List<FieldMatcher> fieldMatchers = matching.getFieldMatchers(true);
 		for (FieldMatcher fieldMatcher : fieldMatchers){
 			String propertyName = fieldMatcher.getPropertyName();
 			if (isReplaceProperty(propertyName)){
-				result.add(new DoubleResult<String, MatchMode>(propertyName, replaceMatchMode));
+				result.add(new DoubleResult<>(propertyName, replaceMatchMode));
 			}
 		}
 		return result;

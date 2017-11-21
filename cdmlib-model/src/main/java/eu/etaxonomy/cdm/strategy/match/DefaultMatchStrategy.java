@@ -32,13 +32,13 @@ import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 
 /**
  * @author a.mueller
  * @created 06.08.2009
- * @version 1.0
  */
 public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy {
 	private static final long serialVersionUID = 5045874493910155162L;
@@ -76,25 +76,16 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return matchClass;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#getMatching()
-	 */
 	@Override
     public Matching getMatching() {
 		return matching;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#setMatchMode(java.lang.String, eu.etaxonomy.cdm.strategy.match.MatchMode)
-	 */
 	@Override
     public void setMatchMode(String propertyName, MatchMode matchMode)
 			throws MatchException {
@@ -106,9 +97,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#getMatchMode(java.lang.String)
-	 */
 	@Override
     public MatchMode getMatchMode(String propertyName) {
 		FieldMatcher fieldMatcher = matching.getFieldMatcher(propertyName);
@@ -189,7 +177,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 						String propertyName = replacementMode.getFirstResult();
 						List<MatchMode> replaceMatcherList = replaceMatchers.get(propertyName);
 						if (replaceMatcherList == null){
-							replaceMatcherList = new ArrayList<MatchMode>();
+							replaceMatcherList = new ArrayList<>();
 							replaceMatchers.put(propertyName, replaceMatcherList);
 						}
 						replaceMatcherList.add(replacementMode.getSecondResult());

@@ -178,7 +178,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	@Override
 	protected void setDefaultTerms(TermVocabulary<DefinedTerm> termVocabulary) {
 		if (termMap == null){
-			termMap = new HashMap<UUID, DefinedTerm>();
+			termMap = new HashMap<>();
 		}
 		for (DefinedTerm term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);

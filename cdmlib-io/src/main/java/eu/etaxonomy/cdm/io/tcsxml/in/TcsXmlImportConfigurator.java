@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
@@ -33,14 +33,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 @Component
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
-	
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-	
+
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
-	
+
 //	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 //	//names
@@ -49,11 +49,11 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 //	//taxa
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
-	
+
 	private boolean doGetMissingNames = true;
 
-	
-	
+
+
 	public boolean isDoGetMissingNames() {
 		return doGetMissingNames;
 	}
@@ -62,14 +62,14 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		this.doGetMissingNames = doGetMissingNames;
 	}
 
-	private Method functionMetaDataDetailed = null; 
+	private Method functionMetaDataDetailed = null;
 	private ITcsXmlPlaceholderClass placeholderClass;
-	
+
 	//	rdfNamespace
 	Namespace tcsXmlNamespace;
 
 	protected static Namespace nsTcsXml = Namespace.getNamespace("http://www.tdwg.org/schemas/tcs/1.01");
-	
+
 //	@Autowired
 //	TcsXmlMetaDataImport tcsXmlMetaDataImport;
 //	@Autowired
@@ -84,8 +84,9 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 //	TcsXmlTaxonImport tcsXmlTaxonIO;
 //	@Autowired
 //	TcsXmlTaxonRelationsImport tcsXmlTaxonRelationsIO;
-	
-	protected void makeIoClassList(){
+
+	@Override
+    protected void makeIoClassList(){
 //		ioBeans = new String[]{
 //				"tcsXmlMetaDataImport"
 //				, "tcsXmlSpecimensIO"
@@ -93,9 +94,9 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 //				, "tcsXmlTaxonNameIO"
 //				, "tcsXmlTaxonNameRelationsIO"
 //				, "tcsXmlTaxonIO"
-//				, "tcsXmlTaxonRelationsIO"	
+//				, "tcsXmlTaxonRelationsIO"
 //		};
-		
+
 		ioClassList = new Class[]{
 			TcsXmlMetaDataImport.class
 			, TcsXmlSpecimensImport.class
@@ -105,13 +106,13 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 			, TcsXmlTaxonImport.class
 			, TcsXmlTaxonRelationsImport.class
 		};
-	};
-	
+	}
+
 	public static TcsXmlImportConfigurator NewInstance(URI uri,
 			ICdmDataSource destination){
 		return new TcsXmlImportConfigurator(uri, destination);
 	}
-	
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -122,7 +123,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 //		setSource(url);
 //		setDestination(destination);
 	}
-	
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -133,30 +134,33 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		setSource(uri);
 		setDestination(destination);
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public TcsXmlImportState getNewState() {
+	@Override
+    public TcsXmlImportState getNewState() {
 		return new TcsXmlImportState(this);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public URI getSource() {
-		return (URI)super.getSource();
+	@Override
+    public URI getSource() {
+		return super.getSource();
 	}
-	
+
 	/**
 	 * @param file
 	 */
-	public void setSource(URI uri) {
+	@Override
+    public void setSource(URI uri) {
 		super.setSource(uri);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -178,14 +182,14 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		}
 		return null;
 	}
-	
+
 	private boolean makeNamespaces(Element root){
 		tcsXmlNamespace = root.getNamespace();
-		if (tcsXmlNamespace == null 
-				/**|| tcNamespace == null 
-				 * || tnNamespace == null 
-				 * || commonNamespace == null 
-				 * ||	geoNamespace == null 
+		if (tcsXmlNamespace == null
+				/**|| tcNamespace == null
+				 * || tnNamespace == null
+				 * || commonNamespace == null
+				 * ||	geoNamespace == null
 				 * || publicationNamespace == null*/){
 			logger.warn("At least one Namespace is NULL");
 		}
@@ -211,14 +215,15 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
 			return this.getSource().toString();
 		}
 	}
-	
+
 	public Namespace getTcsXmlNamespace() {
 		return tcsXmlNamespace;
 	}
@@ -226,7 +231,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	public void setTcsXmlNamespace(Namespace tcsXmlNamespace) {
 		this.tcsXmlNamespace = tcsXmlNamespace;
 	}
-	
+
 
 	/**
 	 * @return the funMetaDataDetailed
@@ -236,7 +241,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 			functionMetaDataDetailed = getDefaultFunction(TcsXmlMetaDataImport.class, "defaultMetaDataDetailedFunction");
 		}
 		return functionMetaDataDetailed;
-		
+
 	}
 
 	/**
@@ -245,18 +250,18 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	public void setFunctionMetaDataDetailed(Method functionMetaDataDetailed) {
 		this.functionMetaDataDetailed = functionMetaDataDetailed;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	public DO_REFERENCES getDoReferences() {
 		return doReferences;
 	}
 	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
-	
+
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
@@ -288,7 +293,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	public void setDoRelNames(boolean doRelNames) {
 		this.doRelNames = doRelNames;
 	}
-	
+
 	/**
 	 * @return the doMetaData
 	 */
@@ -335,5 +340,5 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		this.placeholderClass = placeholderClass;
 	}
 
-	
+
 }

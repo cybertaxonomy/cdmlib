@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 public enum MatchMode {
 	EQUAL_REQUIRED,  //parameters must be equal and not null
 	EQUAL,			 //parameters must be equal or both null
-	EQUAL_OR_ONE_NULL,   //parameters must be equal at least one parameter is null
+	EQUAL_OR_ONE_NULL,   //parameters must be equal or at least one parameter is null
 	EQUAL_OR_SECOND_NULL,
 	IGNORE,			//matches always
 	MATCH_REQUIRED,
