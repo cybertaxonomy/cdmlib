@@ -974,8 +974,8 @@ public class CdmLightClassificationExport
         CdmLightExportTable table = CdmLightExportTable.IDENTIFIER;
         String[] csvLine;
         try {
-            Set<String>  IPNIidentifiers = name.getIdentifiers(DefinedTerm.IPNI_NAME_IDENTIFIER());
-            Set<String>  tropicosIdentifiers = name.getIdentifiers(DefinedTerm.TROPICOS_NAME_IDENTIFIER());
+            Set<String>  IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
+            Set<String>  tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
             Set<String>  WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
             if (!IPNIidentifiers.isEmpty()){
                 csvLine = new String[table.getSize()];

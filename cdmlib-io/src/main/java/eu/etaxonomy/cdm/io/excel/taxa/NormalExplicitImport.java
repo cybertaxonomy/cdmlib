@@ -364,7 +364,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		}
 
 		if (ipni_id != null){
-		    taxonBase.getName().addIdentifier(Identifier.NewInstance(ipni_id, DefinedTerm.IPNI_NAME_IDENTIFIER()));
+		    taxonBase.getName().addIdentifier(Identifier.NewInstance(ipni_id, DefinedTerm.IDENTIFIER_NAME_IPNI()));
 		}
 
 		if (source != null){
