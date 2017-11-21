@@ -16,19 +16,23 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.tropicos.in.TropicosNameImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+
 
 /**
  * @author a.mueller
@@ -43,8 +47,10 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private INameService nameService;
 
+    @SpringBeanByType
+    private ITaxonService taxonService;
 
-    private TropicosNameImportConfigurator configurator;
+    private TropicosNameImportConfigurator configShort;
     private TropicosNameImportConfigurator configLong;
 
     @Before
@@ -59,7 +65,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
             URL urlLong = this.getClass().getResource(inputFileLong);
             assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
 
-            configurator = TropicosNameImportConfigurator.NewInstance(url.toURI(), null);
+            configShort = TropicosNameImportConfigurator.NewInstance(url.toURI(), null);
             configLong = TropicosNameImportConfigurator.NewInstance(urlLong.toURI(), null);
 
 
@@ -67,7 +73,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
             e.printStackTrace();
             Assert.fail();
         }
-        assertNotNull("Configurator could not be created", configurator);
+        assertNotNull("Configurator could not be created", configShort);
         assertNotNull("Configurator could not be created", configLong);
         assertNotNull("nameService should not be null", nameService);
     }
@@ -78,66 +84,44 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     //@Ignore
     public void testShort() {
-
-        ImportResult result = defaultImport.invoke(configurator);
+        configShort.setCreateTaxa(true);
+        ImportResult result = defaultImport.invoke(configShort);
         String report = result.createReport().toString();
-        Assert.assertTrue(report.length() > 0);
-        System.out.println(report);
+
+
 
         Integer expected = 2;
         Assert.assertEquals(expected, result.getNewRecords(TaxonName.class));
 
+        Assert.assertTrue(report.length() > 0);
+        System.out.println(report);
+
         List<TaxonName> list = nameService.list(TaxonName.class, null, null, null, null);
-        Assert.assertEquals("There should be 3 references, the article and the journal and the source reference",
-                3, list.size());
+        Assert.assertEquals("There should be 2 new taxon names", 2, list.size());
         for (TaxonName name : list){
-//            Assert.assertTrue(ref.getType() == ReferenceType.Article || ref.getType() == ReferenceType.Journal);
-//            if (ref.getType() == ReferenceType.Article){
-//                //title
-//                Assert.assertEquals("Decorsella arborea, a second species in Decorsella (Violaceae), and Decorsella versus Rinorea",
-//                        ref.getTitle());
-//                //author
-//                TeamOrPersonBase<?> author = ref.getAuthorship();
-//                Assert.assertNotNull(author);
-//                Assert.assertTrue(author.isInstanceOf(Person.class));
-//                Person person = CdmBase.deproxy(author, Person.class);
-//                //this may change in future depending on the correct formatting strategy
-//                Assert.assertEquals("Jongkind, C.C.H." ,person.getTitleCache());
-//                Assert.assertEquals("Jongkind" ,person.getLastname());
-//                Assert.assertEquals("Carel C. H." ,person.getFirstname());
-//                //date
-//                TimePeriod date = ref.getDatePublished();
-//                Assert.assertEquals(Integer.valueOf(2017) ,date.getStartYear());
-//                //vol
-//                Assert.assertEquals("47(1)" ,ref.getVolume());
-//                Assert.assertEquals("43-47" ,ref.getPages());
-//
-//                //doi
-//                //Assert.assertEquals(DOI.fromString("10.3372/wi.47.47105"),ref.getDoi());
-//
-//                //Abstract
-//                Assert.assertEquals("Abstract: A new species of Violaceae, Decorsella arborea Jongkind, is described and illustrated. The new species differs from the only other species in the genus, D. paradoxa A. Chev., by the larger size of the plants, smaller leaves, more slender flowers, and stamen filaments that are free for a much larger part. Both species are from the Guineo-Congolian forest of tropical Africa. The differences between Decorsella and Rinorea are discussed. Confirming recent reports, some species of Rinorea can have zygomorphic flowers and some of these can be almost equal in shape to Decorsella flowers. Citation: Jongkind C. C. H. 2017: Decorsella arborea, a second species in Decorsella (Violaceae), and Decorsella versus Rinorea. ? Willdenowia 47: 43?47. doi: https://doi.org/10.3372/wi.47.47105 Version of record first published online on 13 February 2017 ahead of inclusion in April 2017 issue.",
-//                        ref.getReferenceAbstract());
-//
-//                //TODO still missing Y1, Y2, M3, UR
-//
-//            }else if (ref.getType() == ReferenceType.Journal){
-//                Assert.assertEquals("Willdenowia", ref.getTitle());
-//                //or is this part of article?
-//                Assert.assertEquals("Botanic Garden and Botanical Museum Berlin (BGBM)", ref.getPublisher());
-//
-//                //ISSN
-//                Assert.assertEquals("0511-9618" ,ref.getIssn());
-//
-//            }else{
-//                Assert.fail("Only an article and a journal should exist");
-//            }
+            //TODO
         }
 
+        expected = 1;
+        Assert.assertEquals(expected, result.getNewRecords(Reference.class));
     }
 
     @Test
+    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     //@Ignore
+    public void testShortCreateTaxa() {
+        configShort.setCreateTaxa(true);
+        ImportResult result = defaultImport.invoke(configShort);
+
+        Integer expected = 2;
+        Assert.assertEquals(expected, result.getNewRecords(Taxon.class));
+
+        List<Taxon> list = taxonService.list(Taxon.class, null, null, null, null);
+        Assert.assertEquals("There should be 2 new taxa", 2, list.size());
+    }
+
+    @Test
+    @Ignore
     public void testLongFile() {
         ImportResult result = defaultImport.invoke(configLong);
         String report = result.createReport().toString();
@@ -146,51 +130,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
         Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
-//        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
-//        Assert.assertEquals("There should be 2 references, the article and the journal", 2, list.size());
-//        for (Reference ref : list){
-//            Assert.assertTrue(ref.getType() == ReferenceType.Article || ref.getType() == ReferenceType.Journal);
-//            if (ref.getType() == ReferenceType.Article){
-//                //title
-//                Assert.assertEquals("Decorsella arborea, a second species in Decorsella (Violaceae), and Decorsella versus Rinorea",
-//                        ref.getTitle());
-//                //author
-//                TeamOrPersonBase<?> author = ref.getAuthorship();
-//                Assert.assertNotNull(author);
-//                Assert.assertTrue(author.isInstanceOf(Person.class));
-//                Person person = CdmBase.deproxy(author, Person.class);
-//                //this may change in future depending on the correct formatting strategy
-//                Assert.assertEquals("Carel C. H. Jongkind" ,person.getTitleCache());
-//                Assert.assertEquals("Jongkind" ,person.getLastname());
-//                Assert.assertEquals("Carel C. H." ,person.getFirstname());
-//                //date
-//                TimePeriod date = ref.getDatePublished();
-//                Assert.assertEquals(Integer.valueOf(2017) ,date.getStartYear());
-//                //vol
-//                Assert.assertEquals("47(1)" ,ref.getVolume());
-//                Assert.assertEquals("43-47" ,ref.getPages());
-//
-//                //doi
-//                Assert.assertEquals(DOI.fromString("10.3372/wi.47.47105"),ref.getDoi());
-//
-//                //Abstract
-//                Assert.assertEquals("Abstract: A new species of Violaceae, Decorsella arborea Jongkind, is described and illustrated. The new species differs from the only other species in the genus, D. paradoxa A. Chev., by the larger size of the plants, smaller leaves, more slender flowers, and stamen filaments that are free for a much larger part. Both species are from the Guineo-Congolian forest of tropical Africa. The differences between Decorsella and Rinorea are discussed. Confirming recent reports, some species of Rinorea can have zygomorphic flowers and some of these can be almost equal in shape to Decorsella flowers. Citation: Jongkind C. C. H. 2017: Decorsella arborea, a second species in Decorsella (Violaceae), and Decorsella versus Rinorea. ? Willdenowia 47: 43?47. doi: https://doi.org/10.3372/wi.47.47105 Version of record first published online on 13 February 2017 ahead of inclusion in April 2017 issue.",
-//                        ref.getReferenceAbstract());
-//
-//                //TODO still missing Y1, Y2, M3, UR
-//
-//            }else if (ref.getType() == ReferenceType.Journal){
-//                Assert.assertEquals("Willdenowia", ref.getTitle());
-//                //or is this part of article?
-//                Assert.assertEquals("Botanic Garden and Botanical Museum Berlin (BGBM)", ref.getPublisher());
-//
-//                //ISSN
-//                Assert.assertEquals("0511-9618" ,ref.getIssn());
-//
-//            }else{
-//                Assert.fail("Only an article and a journal should exist");
-//            }
-//        }
+
 
     }
 

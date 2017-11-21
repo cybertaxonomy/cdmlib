@@ -189,7 +189,11 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
             String title = state.getConfig().getSourceNameString();
             sourceRef.setTitle(title);
             state.getConfig().setSourceReference(sourceRef);
-            //we do not save here as we expect the reference to be cascaded
+        }
+        if (sourceRef.getId() == 0){
+            //TODO move to base method for saving
+            getReferenceService().saveOrUpdate(sourceRef);
+            state.getResult().addNewRecords(Reference.class.getSimpleName(), 1);
         }
         state.setSourceReference(sourceRef);
 

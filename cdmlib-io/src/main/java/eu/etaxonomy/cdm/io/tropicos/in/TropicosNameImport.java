@@ -116,7 +116,10 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         state.getDedupHelper().replaceAuthorNamesAndNomRef(state, name);
 
         getNameService().saveOrUpdate(name);
+        state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
+
         makeTaxon(state, name);
+
     }
 
 
@@ -361,6 +364,8 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             }
             addSourceReference(state, taxon);
             this.getTaxonService().saveOrUpdate(taxon);
+            state.getResult().addNewRecords(Taxon.class.getSimpleName(), 1);
+
         }
     }
 
