@@ -484,7 +484,8 @@ public class TaxonNameDefaultCacheStrategy
         }else if (rank.isSupraGeneric()){
             tags = getGenusOrUninomialTaggedNameCache(nonViralName);
         }else{
-            logger.warn("Name Strategy for Name (UUID: " + nonViralName.getUuid() +  ") not yet implemented");
+            tags = getRanklessTaggedNameCache(nonViralName);
+            logger.warn("Rank does not belong to a rank class: " + rank.getTitleCache() + ". Used rankless nameCache for name " + nonViralName.getUuid());
         }
         //TODO handle appended phrase here instead of different places, check first if this is true for all
         //cases
