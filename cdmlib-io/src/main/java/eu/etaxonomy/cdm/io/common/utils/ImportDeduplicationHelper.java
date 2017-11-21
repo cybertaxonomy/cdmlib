@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * @date 11.02.2017
  *
  */
-public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
+public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private static final Logger logger = Logger.getLogger(ImportDeduplicationHelper.class);
 
     private ICdmRepository repository;
