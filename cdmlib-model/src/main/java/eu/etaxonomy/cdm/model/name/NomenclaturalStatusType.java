@@ -845,9 +845,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		if (result != null){
 			return result;
 		}else {
-			if (statusAbbreviation == null){
-				statusAbbreviation = "(null)";
-			}
 			throw new UnknownCdmTypeException("Unknown nom. status abbreviation: " + statusAbbreviation);
 		}
 	}

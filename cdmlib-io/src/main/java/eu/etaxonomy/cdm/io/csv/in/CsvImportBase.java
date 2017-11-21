@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.transaction.TransactionStatus;
@@ -21,6 +22,8 @@ import org.springframework.transaction.TransactionStatus;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * A base class for <b>simple</b> CSV imports.
@@ -60,7 +63,7 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
                 List<String> header = Arrays.asList(headerStr);
                 TransactionStatus tx = this.startTransaction();
                 int row = 2;
-                int txN = 0;
+                int txN = 0; //transaction number
                 while (next != null){
                     try {
                         Map<String, String> record = lineToMap(header, next, row, result);
@@ -77,6 +80,10 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
                     } catch (Exception e) {
                         String message = "Exception when handling csv row: " + e.getMessage();
                         state.getResult().addException(e, message, null, state.getLine());
+                        boolean debug = false;
+                        if (debug){
+                            e.printStackTrace();
+                        }
                     }
                 }
                 this.commitTransaction(tx);
@@ -113,7 +120,9 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
      * To be implemented by subclasses if required
      * @param state
      */
-    protected void refreshTransactionStatus(STATE state) {}
+    protected void refreshTransactionStatus(STATE state) {
+        state.resetSession();
+    }
 
     /**
      * @param header
@@ -146,11 +155,53 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
     protected abstract void handleSingleLine(STATE state);
 
     /**
+     * Transaction save method to retrieve the source reference
+     * if either existent or not in the database (uses check for uuid).
+     *
+     * @param state
+     * @return the source reference
+     */
+    protected Reference getTransactionalSourceReference(STATE state) {
+
+        //already loaded?
+        Reference sourceRef = state.getSourceReference();
+        if (sourceRef != null){
+            return sourceRef;
+        }
+
+        //retrieve uuid
+        UUID uuid = state.getConfig().getSourceRefUuid();
+        if (uuid == null){
+            sourceRef = state.getConfig().getSourceReference();
+            if (sourceRef != null){
+                uuid = sourceRef.getUuid();
+            }
+        }
+        if (uuid != null){
+            Reference existingRef = getReferenceService().find(uuid);
+            if (existingRef != null){
+                sourceRef = existingRef;
+            }
+        }
+
+        if (sourceRef == null){
+            sourceRef = ReferenceFactory.newGeneric();
+            String title = state.getConfig().getSourceNameString();
+            sourceRef.setTitle(title);
+            state.getConfig().setSourceReference(sourceRef);
+            //we do not save here as we expect the reference to be cascaded
+        }
+        state.setSourceReference(sourceRef);
+
+        return sourceRef;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected boolean doCheck(STATE state) {
-        return false;
+        return true;
     }
 
     /**
