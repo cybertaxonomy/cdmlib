@@ -300,6 +300,10 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			if (StringUtils.isBlank((String)object)){
 				return null;
 			}
+		}else if (object instanceof TimePeriod){
+		    if ( ((TimePeriod)object).isEmpty()){
+		        return null;
+		    }
 		}
 		return HibernateProxyHelper.deproxy(object);
 	}
