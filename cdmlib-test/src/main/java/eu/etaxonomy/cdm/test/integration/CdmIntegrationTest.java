@@ -9,37 +9,21 @@
 
 package eu.etaxonomy.cdm.test.integration;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
-import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITableIterator;
-import org.dbunit.dataset.filter.ExcludeTableFilter;
 import org.dbunit.dataset.filter.ITableFilterSimple;
-import org.dbunit.dataset.xml.FlatDtdDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.h2.tools.Server;
 import org.junit.Before;
@@ -47,12 +31,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
-import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 import org.unitils.orm.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
+import eu.etaxonomy.cdm.database.DataBaseTablePrinter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -114,12 +97,16 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
     private PlatformTransactionManager transactionManager;
 
+    @SpringBeanByType
+    private DataBaseTablePrinter dbTablePrinter;
+
     protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
 
     @SpringBeanByType
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
+
 
     protected IDatabaseConnection getConnection() {
         IDatabaseConnection connection = null;
@@ -188,27 +175,12 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * annotation (that executes after the test is run), or use
      * {@link CdmTransactionalIntegrationTest}.
      *
+     * @see {@link DataBaseTablePrinter}
      * @param out The OutputStream to write to.
      * @see FlatFullXmlWriter
      */
     public void printDataSet(OutputStream out) {
-        IDatabaseConnection connection = null;
-
-        try {
-            connection = getConnection();
-            IDataSet actualDataSet = connection.createDataSet();
-            FlatXmlDataSet.write(actualDataSet, out);
-        } catch (Exception e) {
-            logger.error(e);
-        } finally {
-            try {
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
+        dbTablePrinter.printDataSet(out);
     }
 
     /**
@@ -219,11 +191,12 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * This was necessary to make this xml database export compatible to the
      * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
      * <p>
+     * @see {@link DataBaseTablePrinter}
      * @param out out The OutputStream to write to.
      * @param includeTableNames
      */
     public void printDataSetWithNull(OutputStream out, String[] includeTableNames) {
-        printDataSetWithNull(out, null, null, includeTableNames);
+        dbTablePrinter.printDataSetWithNull(out, includeTableNames);
     }
 
     /**
@@ -242,11 +215,12 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * annotation (that executes after the test is run), or use
      * {@link CdmTransactionalIntegrationTest}.
      *
+     *@see {@link DataBaseTablePrinter}
      * @param out The OutputStream to write to.
      * @see FlatFullXmlWriter
      */
     public void printDataSetWithNull(OutputStream out) {
-        printDataSetWithNull(out, null, null, null);
+        dbTablePrinter.printDataSetWithNull(out);
     }
 
     /**
@@ -257,45 +231,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
             ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
 
-        ITableFilterSimple excludeFilter = excludeFilterOrig;
-        if(excludeTermLoadingTables != null && excludeTermLoadingTables.equals(true)){
-            ExcludeTableFilter excludeTableFilter = new ExcludeTableFilter();
-
-            for(String tname : termLoadingTables){
-                excludeTableFilter.excludeTable(tname);
-            }
-            excludeFilter = excludeTableFilter;
-        }
-
-        if( excludeFilter != null && includeTableNames != null){
-            throw new RuntimeException("Ambiguous parameters: excludeFilter can not be used together with includeTableNames or excludeTermLoadingTable.");
-        }
-
-        IDatabaseConnection connection = null;
-        try {
-            connection = getConnection();
-            IDataSet dataSet;
-            if (includeTableNames != null) {
-                dataSet = connection.createDataSet(includeTableNames);
-            } else {
-                if (excludeFilter == null){
-                    excludeFilter = new ExcludeTableFilter();
-                }
-                dataSet = new DatabaseDataSet(connection, false, excludeFilter);
-            }
-            FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
-            writer.write(dataSet);
-        } catch (Exception e) {
-            logger.error("Error on writing dataset:", e);
-        } finally {
-            try {
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
+        dbTablePrinter.printDataSetWithNull(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames);
     }
 
     /**
@@ -304,37 +240,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param formatString can be null, otherwise a format string like eg. "&lt; %1$s /&gt;" see also {@link String#format(String, Object...)}
      */
     public void printTableNames(OutputStream out, String formatString) {
-        IDatabaseConnection connection = null;
-        OutputStreamWriter writer = new OutputStreamWriter(out);
 
-        try {
-            connection = getConnection();
-            IDataSet actualDataSet = connection.createDataSet();
-            ITableIterator tableIterator = actualDataSet.iterator();
-            String tableName = null;
-            while(tableIterator.next()){
-                tableName = tableIterator.getTable().getTableMetaData().getTableName();
-                if(formatString != null){
-                    tableName = String.format(formatString, tableName);
-                }
-                writer.append(tableName).append("\n");
-            }
-        } catch (Exception e) {
-            logger.error(e);
-        } finally {
-            try {
-                writer.close();
-            } catch (IOException ioe) {
-                logger.error(ioe);
-            }
-            try {
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
+        dbTablePrinter.printTableNames(out, formatString);
     }
 
     /**
@@ -354,6 +261,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * annotation (that executes after the test is run), or use
      * {@link CdmTransactionalIntegrationTest}.
      *
+     * @see {@link DataBaseTablePrinter}
+     *
      * @see {@link #printDataSet(OutputStream)}
      * @see FlatFullXmlWriter
      *
@@ -363,28 +272,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * 		the names of tables to print (should be in upper case letters)
      */
     public void printDataSet(OutputStream out, String[] includeTableNames) {
-        IDatabaseConnection connection = null;
 
-        if(includeTableNames == null){
-            return;
-        }
+        dbTablePrinter.printDataSet(out, includeTableNames);
 
-        try {
-            connection = getConnection();
-            IDataSet actualDataSet = connection.createDataSet(includeTableNames);
-            FlatXmlDataSet.write(actualDataSet, out);
-
-        } catch (Exception e) {
-            logger.error(e);
-        } finally {
-            try {
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
     }
 
     /**
@@ -404,38 +294,16 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * annotation (that executes after the test is run), or use
      * {@link CdmTransactionalIntegrationTest}.
      *
+     * @see {@link DataBaseTablePrinter}
+     *
      * @see {@link #printDataSet(OutputStream)}
      * @see FlatFullXmlWriter
      * @param out
      * @param filter
      */
     public void printDataSet(OutputStream out, ITableFilterSimple filter) {
-        if (filter == null){
-            filter = new ExcludeTableFilter();
-        }
 
-        IDatabaseConnection connection = null;
-
-        try {
-            connection = getConnection();
-//            FlatXmlDataSet.write(actualDataSet, out);
-
-            IDataSet dataSet = new DatabaseDataSet(connection, false, filter);
-
-            FlatXmlWriter writer = new FlatXmlWriter(out);
-            writer.write(dataSet);
-
-        } catch (Exception e) {
-            logger.error(e);
-        } finally {
-            try {
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
+        dbTablePrinter.printDataSet(out, filter);
     }
 
 
@@ -447,23 +315,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see org.dbunit.dataset.xml.FlatDtdDataSet
      */
     public void printDtd(OutputStream out) {
-        IDatabaseConnection connection = null;
 
-        try {
-            connection = getConnection();
-            IDataSet actualDataSet = connection.createDataSet();
-            FlatDtdDataSet.write(actualDataSet, out);
-        } catch (Exception e) {
-            logger.error(e);
-        } finally {
-            try {
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
+        dbTablePrinter.printDtd(out);
     }
 
     /**
@@ -485,18 +338,22 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts <code>'[null]'</code> place holders for null values instead of skipping them.
      *
+     * see {@link DataBaseTablePrinter}
      *
      * @param includeTableNames
      * @throws FileNotFoundException
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
-        writeDbUnitDataSetFile(includeTableNames, null);
+        dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass());
+
     }
 
     /**
      *
      * Extension of method mentioned in "see also" where you can specify an appendix for the
      * generated DbUnit data set file.
+     *
+     * see {@link DataBaseTablePrinter}
      *
      * @param includeTableNames
      * @param fileAppendix the appendix of the generated DbUnit dataset file
@@ -505,43 +362,15 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix) throws FileNotFoundException {
 
-        String pathname = "src" + File.separator + "test" + File.separator + "resources" + File.separator + this.getClass().getName().replace(".", File.separator);
-        if(fileAppendix!=null){
-            pathname += "."+fileAppendix;
-        }
-        pathname += ".xml";
-        File file = new File(pathname);
-
-        if (file.exists()){
-            logger.warn("** OVERWRITING DbUnit dataset file " + file.getAbsolutePath());
-        } else {
-            logger.warn("Writing new DbUnit dataset file to " + file.getAbsolutePath());
-        }
-
-        printDataSetWithNull(
-            new FileOutputStream(file),
-            false,
-            null,
-            includeTableNames
-         );
+        dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass(), fileAppendix);
     }
 
     /**
-     * Transforms a javax.xml.transform.Source to a java.lang.String (useful for comparison in
-     * XmlUnit tests etc).
-     *
-     * @param source
-     * @return
-     * @throws TransformerException
+     * see {@link DataBaseTablePrinter#transformSourceToString(Source)
      */
     protected String transformSourceToString(Source source) throws TransformerException {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Result result = new StreamResult(outputStream);
-        transformer.transform(source, result);
 
-        return new String(outputStream.toByteArray());
+        return dbTablePrinter.transformSourceToString(source);
     }
 
 
