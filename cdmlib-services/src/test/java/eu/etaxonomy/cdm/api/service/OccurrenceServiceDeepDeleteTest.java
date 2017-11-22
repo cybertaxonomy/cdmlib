@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -52,6 +53,9 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     private IOccurrenceService occurrenceService;
 
     @SpringBeanByType
+    private IEventBaseService eventService;
+
+    @SpringBeanByType
     private ISingleReadDao singleReadDao;
 
     @SpringBeanByType
@@ -73,6 +77,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
         //check initial state
         assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
@@ -83,6 +88,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertEquals(assertMessage, 0, eventService.count(DerivationEvent.class));
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));

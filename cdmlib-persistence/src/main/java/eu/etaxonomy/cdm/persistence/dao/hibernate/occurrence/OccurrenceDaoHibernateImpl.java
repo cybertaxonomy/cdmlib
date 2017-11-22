@@ -467,11 +467,24 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache() {
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache(Integer limit, String pattern) {
         List<UuidAndTitleCache<DerivedUnit>> list = new ArrayList<UuidAndTitleCache<DerivedUnit>>();
         Session session = getSession();
+        Query query;
+        if (pattern != null){
+            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where NOT dtype = " + FieldUnit.class.getSimpleName() +" AND titleCache like :pattern");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() +" where NOT dtype = " + FieldUnit.class.getSimpleName());
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
 
-        Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where NOT dtype = " + FieldUnit.class.getSimpleName());
+
 
         List<Object[]> result = query.list();
 

@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -57,6 +58,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
+
+    @SpringBeanByType
+    private IRegistrationService registrationService;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -780,7 +784,21 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         desigs3 = name3.getTypeDesignations();
+
+        NameTypeDesignation desigNew = NameTypeDesignation.NewInstance();
+        Registration registration = Registration.NewInstance("abc", "abc", name3, null);
+        registration.addTypeDesignation(desigNew);
+
+
+        UUID uuidReg = registrationService.saveOrUpdate(registration);
+        commitAndStartNewTransaction(tableNames);
+
+        name3 = nameService.load(name3.getUuid());
+
+        Set<Registration> regs = name3.getRegistrations();
         Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
+        Assert.assertEquals("name should have 1 registrations", 1, regs.size());
+        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
 
         nameService.deleteTypeDesignation(name3, desig3);
         commitAndStartNewTransaction(tableNames);
@@ -791,6 +809,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        regs = name3.getRegistrations();
+        Assert.assertEquals("name3 should have 1 registration", 1, regs.size());
+        Assert.assertEquals("name should have 1 registrations", 1, regs.size());
+        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();

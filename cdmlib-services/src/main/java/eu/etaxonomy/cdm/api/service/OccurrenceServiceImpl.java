@@ -139,6 +139,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private INameService nameService;
 
     @Autowired
+    private IEventBaseService eventService;
+
+    @Autowired
     private ITaxonService taxonService;
 
     @Autowired
@@ -301,8 +304,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache() {
-        return dao.getDerivedUnitUuidAndTitleCache();
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache(Integer limit, String pattern) {
+        return dao.getDerivedUnitUuidAndTitleCache(limit, pattern);
     }
 
     @Override
@@ -1203,6 +1206,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
 
+        DeleteResult deleteResult = isDeletable(specimen.getUuid(), config);
+        if (!deleteResult.isOk()) {
+            return deleteResult;
+        }
+
         if (config.isDeleteChildren()) {
             Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
             //clone to avoid concurrent modification
@@ -1224,10 +1232,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
 
-        DeleteResult deleteResult = isDeletable(specimen.getUuid(), config);
-        if (!deleteResult.isOk()) {
-            return deleteResult;
-        }
 
         // check related objects
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
@@ -1289,6 +1293,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
                             deleteResult.addUpdatedObject(specimenOrObservationBase);
                         }
+                        // if derivationEvent has no derivates anymore, delete it
+                        eventService.delete(derivationEvent);
                     }
                 }
                 else{
