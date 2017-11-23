@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
-public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
+public interface IWorkingSetService extends IIdentifiableEntityService<WorkingSet> {
 	/**
 	 * Returns a Map of descriptions each with the descriptionelements that match the supplied features (or all description elements if no features are supplied)
 	 *

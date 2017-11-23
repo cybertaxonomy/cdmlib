@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
@@ -16,11 +17,12 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = false)
 public class WorkingSetService extends
-		AnnotatableServiceBase<WorkingSet, IWorkingSetDao> implements IWorkingSetService {
+		IdentifiableServiceBase<WorkingSet, IWorkingSetDao> implements IWorkingSetService {
 
 	@Override
 	@Autowired
@@ -39,4 +41,14 @@ public class WorkingSetService extends
 			Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role) {
 		return dao.getTaxonFeatureDescriptionElementMap(clazz, workingSetUuid, role);
 	}
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateTitleCache(Class<? extends WorkingSet> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<WorkingSet> cacheStrategy, IProgressMonitor monitor) {
+        if (clazz == null) {
+            clazz = WorkingSet.class;
+        }
+        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+    }
+
 }
