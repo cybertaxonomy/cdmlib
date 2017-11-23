@@ -31,9 +31,12 @@ public class TropicosNameImportConfigurator extends CsvImportConfiguratorBase {
     private String classificationName;
     private boolean unplaced = true;  //if new nodes should be created, should they be marked as unplaced?
 
-    private boolean allowTropicosDuplicates;
-    private boolean allowIpniDuplicates;
-    private boolean allowWfoDuplicates;
+    private boolean allowTropicosDuplicates = false;
+    private boolean allowIpniDuplicates = false;
+    private boolean allowWfoDuplicates = false;
+    private boolean reportDuplicateIdentifier = true;
+
+    private boolean addAuthorsToReference = true;
 
     /**
      * @param inputStream
@@ -192,6 +195,40 @@ public class TropicosNameImportConfigurator extends CsvImportConfiguratorBase {
      */
     public void setAllowWfoDuplicates(boolean allowWfoDuplicates) {
         this.allowWfoDuplicates = allowWfoDuplicates;
+    }
+
+    /**
+     * If <code>true</code> the name authors will be added
+     * to the nomenclatural reference (Book or Article) though
+     * it might not be the exact same author.<BR>
+     * Default is <code>true</code>
+     */
+    public boolean isAddAuthorsToReference() {
+        return addAuthorsToReference;
+    }
+    /**
+     * @see #isAddAuthorsToReference()
+     */
+    public void setAddAuthorsToReference(boolean addAuthorsToReference) {
+        this.addAuthorsToReference = addAuthorsToReference;
+    }
+
+    /**
+     * if <code>true</code> duplicate identifiers like
+     * {@link #isAllowTropicosDuplicates() Tropicos IDs}
+     * {@link #isAllowIpniDuplicates() IPNI IDs} or
+     * {@link #isAllowWfoDuplicates() WFO IDs} will be reported.
+     * This is only relevant if duplicates are allowed,
+     * otherwise the duplicates will be reported anyway.
+     */
+    public boolean isReportDuplicateIdentifier() {
+        return reportDuplicateIdentifier;
+    }
+    /**
+     * @see #isReportDuplicateIdentifier()
+     */
+    public void setReportDuplicateIdentifier(boolean reportDuplicateIdentifier) {
+        this.reportDuplicateIdentifier = reportDuplicateIdentifier;
     }
 
 }
