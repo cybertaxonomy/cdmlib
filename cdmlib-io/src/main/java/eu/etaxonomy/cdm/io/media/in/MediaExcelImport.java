@@ -333,9 +333,6 @@ public class MediaExcelImport
         }
 
         Person result = (Person)getDeduplicationHelper(state).getExistingAuthor(null, person);
-        if (result == person){
-            System.out.println("Same person");
-        }
         return person;
     }
 
