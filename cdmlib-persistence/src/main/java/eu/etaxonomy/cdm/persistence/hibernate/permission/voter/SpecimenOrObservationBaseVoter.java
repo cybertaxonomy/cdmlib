@@ -64,7 +64,7 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
         } else {
             if(sob instanceof DerivedUnit) {
                 Set<SpecimenOrObservationBase> originals = HibernateProxyHelper.deproxy(sob, DerivedUnit.class).getOriginals();
-                if(originals.size() == 1){
+                if(originals != null && originals.size() == 1){
                     SpecimenOrObservationBase original = originals.iterator().next();
                     return  propagateGrantsFromOriginal(targetUuid, original);
                 }

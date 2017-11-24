@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.csv.in.CsvImportBase;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -213,6 +214,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             return;
         }
 
+        //Create and set title + in-Reference
         Reference reference;
         if (type == null){
             //TODO check against DB
@@ -235,10 +237,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         }
         reference.setVolume(volume);
 
-        name.setNomenclaturalReference(reference);
-        name.setNomenclaturalMicroReference(detail);
-
-
+        //date
         if (titlePageYear != null){
             if (yearPublished == null){
                 TimePeriod tp = TimePeriodParser.parseString(titlePageYear);
@@ -251,6 +250,19 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             TimePeriod tp = TimePeriodParser.parseString(yearPublished);
             reference.setDatePublished(tp);
         }
+
+        //add to name
+        name.setNomenclaturalReference(reference);
+        name.setNomenclaturalMicroReference(detail);
+        //author
+        if (state.getConfig().isAddAuthorsToReference()){
+            TeamOrPersonBase<?> author = name.getCombinationAuthorship();
+            if (author != null){
+                reference.setAuthorship(author);
+            }
+        }
+
+        //source
         addSourceReference(state, reference);
     }
 
@@ -270,14 +282,23 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             return false;
         }
 
-        //TODO check for existing WFO ID
-        Pager<IdentifiedEntityDTO<TaxonName>> existing = getNameService().findByIdentifier(TaxonName.class, identifier, identifierType, MatchMode.EXACT, false, null, null, null);
-        if (! allowDuplicate && existing.getCount() > 0){
-            String message = "The name with the given identifier (%s: %s) exists already in the database. Record is not imported.";
-            //TODO make language configurable
-            message = String.format(message, identifierType.getPreferredRepresentation(Language.DEFAULT()).getText(), identifier);
-            state.getResult().addWarning(message, state.getRow());
-            return true;
+        if (! allowDuplicate || state.getConfig().isReportDuplicateIdentifier()){
+            //TODO precompute existing per session or, at least, implement count
+            Pager<IdentifiedEntityDTO<TaxonName>> existing = getNameService().findByIdentifier(TaxonName.class, identifier, identifierType, MatchMode.EXACT, false, null, null, null);
+            if (existing.getCount() > 0){
+                //TODO make language configurable
+                Language language = Language.DEFAULT();
+                if (! allowDuplicate){
+                    String message = "The name with the given identifier (%s: %s) exists already in the database. Record is not imported.";
+                    message = String.format(message, identifierType.getPreferredRepresentation(Language.DEFAULT()).getText(), identifier);
+                    state.getResult().addWarning(message, state.getRow());
+                    return true;
+                }else{
+                    String message = "The name with the given identifier (%s: %s) exists already in the database. Record is imported but maybe needs to be reviewed.";
+                    message = String.format(message, identifierType.getPreferredRepresentation(language).getText(), identifier);
+                    state.getResult().addWarning(message, state.getRow());
+                }
+            }
         }
 
         name.addIdentifier(identifier, identifierType);
@@ -320,6 +341,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         }else{
             name = parser.parseSimpleName(nameStr, state.getConfig().getNomenclaturalCode(), null);
         }
+
         if (name.isProtectedTitleCache() || name.isProtectedNameCache() || name.isProtectedAuthorshipCache()){
             String message = "Name (%s) could not be fully parsed, but is processed";
             message = String.format(message, name.getTitleCache());
