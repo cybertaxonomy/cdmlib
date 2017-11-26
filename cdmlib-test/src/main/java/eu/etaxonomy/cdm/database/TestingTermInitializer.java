@@ -144,7 +144,7 @@ public class TestingTermInitializer extends DefaultTermInitializer {
             txStatus = transactionManager.getTransaction(txDefinition);
 
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
-            	initializeAndStore(vocabularyType, new HashMap<UUID,DefinedTermBase>(), null);
+            	initializeAndStore(vocabularyType, new HashMap<>(), null);
             }
             transactionManager.commit(txStatus);
             //txStatus = transactionManager.getTransaction(txDefinition);
