@@ -32,7 +32,7 @@ public interface IAmplificationDao extends IAnnotatableDao<Amplification>{
      * {@link Amplification}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache();
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern);
 
     /**
      * Return a count of {@link Amplification}s matching the given query string in the titleCache, optionally with a particular MatchMode

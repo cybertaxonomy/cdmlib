@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,9 +13,10 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -24,10 +25,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @version 1.0
  */
 public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionableDao<T>{
-	
+
 	/**
 	 * Returns a List of Annotations belonging to the supplied AnnotatableEntity
-	 * 
+	 *
 	 * @param annotatableEntity the entity which is annotated
 	 * @param status The status of the annotations (null to return annotations regardless of status)
 	 * @param pageSize The maximum number of annotations returned (can be null for all annotations)
@@ -37,27 +38,27 @@ public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionab
 	 * @return a List of Annotation instances
 	 */
     public List<Annotation> getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-	
+
     /**
 	 * Returns a count of Annotations belonging to the supplied AnnotatableEntity
-	 * 
+	 *
 	 * @param annotatableEntity the entity which is annotated
 	 * @param status The status of the annotations (null to count all annotations regardless of status)
 	 * @return a count of Annotation instances
 	 */
 	public int countAnnotations(T annotatableEntity, MarkerType status);
-	
+
 	/**
-	 * Returns a count of Markers belonging to the supplied AnnotatableEntity 
-	 * 
+	 * Returns a count of Markers belonging to the supplied AnnotatableEntity
+	 *
 	 * @param annotatableEntity the entity which is marked
 	 * @param technical The type of MarkerTypes to consider (null to count all markers, regardless of whether the makerType is technical or not)
 	 * @return a count of Marker instances
 	 */
 	public int countMarkers(T annotatableEntity, Boolean technical);
-	
+
 	/**
-	 * 
+	 *
 	 * @param annotatableEntity the entity which is marked
 	 * @param technical The type of MarkerTypes to consider (null to count all markers, regardless of whether the makerType is technical or not)
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
@@ -68,11 +69,11 @@ public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionab
 	 */
 	public List<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	/**
-	 * Returns a list of arrays representing counts of entities of type clazz, grouped by their markerTypes. The arrays have two elements. 
+	 * Returns a list of arrays representing counts of entities of type clazz, grouped by their markerTypes. The arrays have two elements.
 	 * The first element is the MarkerType, initialized using the propertyPaths parameter. The second element is the count of all markers of Objects
 	 * of type clazz with that MarkerType. The boolean technical can be used to choose only technical or only non-technical marker types. The list is sorted by
 	 * titleCache of the markerType, in ascending order.
-	 * 
+	 *
 	 * @param clazz optionally restrict the markers to those belonging to this class
 	 * @param technical The type of MarkerTypes to consider (null to count all markers, regardless of whether the makerType is technical or not)
 	 * @param pageSize The maximum number of arrays returned (can be null for all arrays)
@@ -81,13 +82,47 @@ public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionab
 	 * @return
 	 */
 	public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-	
+
 	/**
 	 * returns a count of all markers belonging to that clazz, optionally filtered to include only technical or only non-technical markers.
-	 * 
+	 *
 	 * @param clazz optionally restrict the markers to those belonging to this class
 	 * @param technical The type of MarkerTypes to consider (null to count all markers, regardless of whether the makerType is technical or not)
 	 * @return a count of markers
 	 */
 	public int countMarkers(Class<? extends T> clazz, Boolean technical);
+
+    /**
+     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+     * Retrieving this list is considered to be significantly faster than initializing the fully fledged buiseness
+     * objects. To be used in cases where you want to present large amount of data and provide details after
+     * a selection has been made.
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     * @see #getUuidAndTitleCache(Class, Integer, String)
+     */
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
+
+    /**
+     * Like {@link #getUuidAndTitleCache(Integer, String)} but searching only on a subclass
+     * of the type handled by the DAO.
+     *
+     * @param clazz the (sub)class
+     * @param limit max number of results
+     * @param pattern search pattern
+
+     * @see #getUuidAndTitleCache(Integer, String)
+     */
+    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern);
+
+
+    /**
+     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+     * Retrieving this list is considered to be significantly faster than initializing the fully fledged buiseness
+     * objects. To be used in cases where you want to present large amount of data and provide details after
+     * a selection has been made.
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     */
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
 }
