@@ -207,7 +207,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         taxonName.removeTaxonBase(acceptedTaxon);
 
         synonym.setName(taxonName);
+        synonym.setTitleCache(null, false);
+        synonym.getTitleCache();
         acceptedTaxon.setName(synonymName);
+        acceptedTaxon.setTitleCache(null, false);
+        acceptedTaxon.getTitleCache();
         saveOrUpdate(synonym);
         saveOrUpdate(acceptedTaxon);
         result.addUpdatedObject(acceptedTaxon);
