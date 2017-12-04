@@ -138,11 +138,11 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         Pager<TypeDesignationBase> typeDesignations = nameService.getTypeDesignations(name, null, 100, 0);
         Long oldCount= typeDesignations.getCount();
         //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 4, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
         assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
@@ -150,11 +150,11 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 0, eventService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
         typeDesignations = nameService.getTypeDesignations(name, null, 100, 0);
         Long afterDeleteCount= typeDesignations.getCount();
         assertTrue(oldCount > afterDeleteCount);
