@@ -83,6 +83,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     private IAgentService agentService;
 
     @Autowired
+    private INameService nameService;
+
+    @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
 
     @Autowired
@@ -690,7 +693,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref){
         UpdateResult result = new UpdateResult();
-
+        if (newTaxon.getName().getId() != 0){
+            TaxonName name = nameService.load(newTaxon.getName().getUuid());
+            newTaxon.setName(name);
+        }
         UUID taxonUUID = taxonService.saveOrUpdate(newTaxon);
         newTaxon = (Taxon) taxonService.load(taxonUUID);
 
@@ -729,7 +735,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 //        child = dao.save(child);
 
-        dao.saveOrUpdate(child);
+//        dao.saveOrUpdate(child);
         result.addUpdatedObject(parent);
         if (child != null){
             result.setCdmEntity(child);
@@ -764,22 +770,30 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
+        TaxonNode subTree = load(config.getSubtreeUuid());
+        TreeIndex subTreeIndex = null;
+        if (subTree != null){
+            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            Long count = dao.countChildrenOf(subTree, subTree.getClassification(), true);
+            int intCount = count.intValue();
+            monitor.beginTask("Update Secundum Reference", intCount);
+        }
 
-        monitor.beginTask("Update Secundum Reference", 100);
+
         if (config.getSubtreeUuid() == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
             monitor.done();
             return result;
         }
-        TaxonNode subTree = load(config.getSubtreeUuid());
+
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
         }
-        TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+
 
         //Reference ref = config.getNewSecundum();
         if (config.isIncludeAcceptedTaxa()){
