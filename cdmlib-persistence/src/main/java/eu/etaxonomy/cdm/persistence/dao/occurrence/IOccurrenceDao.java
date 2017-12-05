@@ -239,7 +239,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * {@link DerivedUnit}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-	public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
+	public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache(Integer limit, String pattern);
 
 	/**
 	 * Lists all instances of {@link SpecimenOrObservationBase} which are determined as the <code>taxon name</code> specified as parameter.

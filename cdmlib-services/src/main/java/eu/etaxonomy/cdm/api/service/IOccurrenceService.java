@@ -217,7 +217,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * {@link DerivedUnit}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache(Integer limit, String pattern);
 
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 

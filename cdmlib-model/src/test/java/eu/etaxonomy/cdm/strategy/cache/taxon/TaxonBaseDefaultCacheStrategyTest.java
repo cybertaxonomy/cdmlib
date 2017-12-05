@@ -171,7 +171,8 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		name = TaxonNameFactory.NewBotanicalInstance(null);
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
-		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
+		//remove space since #7094
+		assertEquals("Cichorium glandulosum Boiss. \u0026 A.Huet sec. Sp.Pl.", taxon.getTitleCache());
 	}
 
     @Test

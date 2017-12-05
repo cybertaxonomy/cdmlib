@@ -648,4 +648,23 @@ public class CdmUtils {
         }
     }
 
+
+    /**
+     * Checks if all strings given provide are {@link #isBlank(String) blank}.
+     * Returns <code>true</code> if strs is null or empty
+     * @param strs
+     * @return
+     */
+    public static boolean isBlank(String ... strs) {
+        if (strs == null){
+            return true;
+        }
+        for (String str : strs) {
+            if (isNotBlank(str)){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

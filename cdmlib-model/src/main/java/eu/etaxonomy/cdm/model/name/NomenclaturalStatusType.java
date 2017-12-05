@@ -826,6 +826,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			throw new NullPointerException("Abbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
 		}
 		NomenclaturalStatusType result = null;
+		statusAbbreviation = normalizeStatusAbbrev(statusAbbreviation);
 
 		//TODO handle undefined names correctly
 		boolean isZooname = name.getNameType().equals(NomenclaturalCode.ICZN);
@@ -845,14 +846,22 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		if (result != null){
 			return result;
 		}else {
-			if (statusAbbreviation == null){
-				statusAbbreviation = "(null)";
-			}
 			throw new UnknownCdmTypeException("Unknown nom. status abbreviation: " + statusAbbreviation);
 		}
 	}
 
 	/**
+     * @param statusAbbreviation
+     * @return
+     */
+    private static String normalizeStatusAbbrev(String statusAbbreviation) {
+        if (statusAbbreviation.equalsIgnoreCase("nom. valid")){
+            statusAbbreviation = "nom. val.";  //#7109
+        }
+        return statusAbbreviation;
+    }
+
+    /**
 	 * Returns the nomenclatural status type identified through its label.
 	 *
 	 * @param	statusLabel	the nomenclatural status label

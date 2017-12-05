@@ -70,13 +70,13 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
     private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<>();
 
-    CdmPermissionClass permissionClass;
-    String property;
+    private CdmPermissionClass permissionClass;
+    private String property;
     // Making sure that operation is always initialized, for both
     // - the string representation to have a '[]'
     // - and the object representation to never be null (with check in constructors)
-    EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);
-    UUID targetUuid;
+    private EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);
+    private UUID targetUuid;
 
     public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation){
 

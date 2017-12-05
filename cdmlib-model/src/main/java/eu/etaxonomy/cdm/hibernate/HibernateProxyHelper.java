@@ -18,7 +18,6 @@ import org.hibernate.proxy.HibernateProxy;
 /**
  * @author a.mueller
  * @created 03.03.2009
- * @version 1.0
  */
 public class HibernateProxyHelper {
 	@SuppressWarnings("unused")
@@ -26,10 +25,24 @@ public class HibernateProxyHelper {
 
 
 	// ************************** Hibernate proxies *******************/
-	 public static <T> T deproxy(Object object, Class<T> clazz) throws ClassCastException {
+	/**
+	 * Deproxy and cast the given object to the given class.
+	 * If clazz is <code>null</code>. If object is not an instance of HibernateProxy no
+	 * deproxy is performed.
+	 *
+	 * @param object
+	 * @param clazz
+	 * @return the casted and deproxied object
+	 * @throws ClassCastException
+	 */
+	public static <T> T deproxy(Object object, Class<T> clazz) throws ClassCastException {
 	     if (object instanceof HibernateProxy) {
-	         return clazz.cast(((HibernateProxy) object).getHibernateLazyInitializer().getImplementation());
-	     } else {
+	         object = ((HibernateProxy) object).getHibernateLazyInitializer().getImplementation();
+	         return clazz.cast(object);
+	     }
+	     if (clazz == null){
+	         return (T)object;
+	     }else {
 	         return clazz.cast(object);
 	     }
 	 }

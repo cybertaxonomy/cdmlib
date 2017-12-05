@@ -44,7 +44,7 @@ public class TaxonShortSecCacheStrategyTest {
 	private final String expectedNameCache = "Abies alba";
 	private IBotanicalName name;
 	private Reference sec;
-	private static ITaxonCacheStrategy shortStrategy;
+	private static ITaxonCacheStrategy<?> shortStrategy;
 
 	/**
 	 * @throws java.lang.Exception
@@ -117,7 +117,8 @@ public class TaxonShortSecCacheStrategyTest {
 		name = TaxonNameFactory.NewBotanicalInstance(null);
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
-		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
+		//remove space since #7094
+		assertEquals("Cichorium glandulosum Boiss. \u0026 A.Huet sec. Sp.Pl.", taxon.getTitleCache());
 	}
 
     @Test

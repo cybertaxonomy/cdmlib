@@ -21,6 +21,8 @@
     <context:component-scan base-package="eu/etaxonomy/cdm/persistence/"/>
 
     <bean id="testingTermVocabularyDao" class="eu.etaxonomy.cdm.database.TestingTermVocabularyDao"/>
+    
+    <bean id="dataBaseTablePrinter" class="eu.etaxonomy.cdm.database.DataBaseTablePrinter"/>
 
     <bean id="termInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
         <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>

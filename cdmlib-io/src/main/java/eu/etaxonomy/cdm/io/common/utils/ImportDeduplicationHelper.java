@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.apache.log4j.Logger;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * Helper class for deduplicating authors, references, names, etc.
@@ -50,7 +52,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchException;
  * @date 11.02.2017
  *
  */
-public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
+public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private static final Logger logger = Logger.getLogger(ImportDeduplicationHelper.class);
 
     private ICdmRepository repository;
@@ -79,7 +81,47 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private IMatchStrategy teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
 
 
+ // ************************** FACTORY *******************************/
 
+     public static ImportDeduplicationHelper<?> NewInstance(ICdmRepository repository){
+         return new ImportDeduplicationHelper<>(repository);
+     }
+
+     public static ImportDeduplicationHelper<?> NewStandaloneInstance(){
+         return new ImportDeduplicationHelper<>(null);
+     }
+
+     /**
+      * @param repository
+      * @param state not used, only for correct casting of generics
+      * @return
+      */
+     public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper<STATE> NewInstance(ICdmRepository repository, STATE state){
+         return new ImportDeduplicationHelper<>(repository);
+     }
+
+ // ************************ CONSTRUCTOR *****************************/
+
+     public ImportDeduplicationHelper(ICdmRepository repository) {
+         this.repository = repository;
+         if (repository == null){
+             logger.warn("Repository is null. Deduplication does not work against database");
+         }
+         try {
+             referenceMatcher.setMatchMode("title", MatchMode.EQUAL);
+             teamMatcher.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_OR_SECOND_NULL);
+         } catch (MatchException e) {
+             throw new RuntimeException(e);  //should not happen
+         }
+     }
+
+
+    /**
+     *
+     */
+    public ImportDeduplicationHelper() {
+        this(null);
+    }
 
     public void restartSession(){
         restartSession(repository, null);
@@ -116,7 +158,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
                     String message = "No cdm object was found for uuid " + old.getUuid() + " of class " + old.getClass().getSimpleName();
                     importResult.addWarning(message);
                 }else{
-                    newMap.put(key, cdmBase);
+                    newMap.put(key, CdmBase.deproxy(cdmBase));
                 }
             }else{
                 String message = "Value for key " +  key + " was null in deduplication map";
@@ -129,13 +171,30 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private <T extends ICdmBase> Map<String, Set<T>> refreshSetMap(Map<String, Set<T>> oldMap,
             IService<T> service, ImportResult importResult) {
         Map<String, Set<T>> newMap = new HashMap<>();
+        logger.warn("Start loading map");  //TODO debug only
+        //create UUID set
+        Set<UUID> uuidSet = new HashSet<>();
+        for (String key : oldMap.keySet()){
+            Set<T> oldSet = oldMap.get(key);
+            for (T item : oldSet){
+                UUID uuid = item.getUuid();
+                uuidSet.add(uuid);
+            }
+        }
+        //create uuid-item map
+        Map<UUID, T> itemMap = new HashMap<>();
+        List<T> list = service.find(uuidSet);
+        for (T item : list){
+            itemMap.put(item.getUuid(), item);
+        }
+        //refresh
         for (String key : oldMap.keySet()){
             Set<T> oldSet = oldMap.get(key);
             Set<T> newSet = new HashSet<>();
             if (oldSet != null){
                 newMap.put(key, newSet);
                 for (T item : oldSet){
-                    T cdmBase = service.find(item.getUuid());
+                    T cdmBase = CdmBase.deproxy(itemMap.get(item.getUuid()));
                     if (cdmBase == null){
                         String message = "No cdm object was found for uuid " + item.getUuid() + " of class " + item.getClass().getSimpleName();
                         importResult.addWarning(message);
@@ -151,33 +210,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         return newMap;
     }
 
-// ************************** FACTORY *******************************/
-
-    public static ImportDeduplicationHelper<?> NewInstance(ICdmRepository repository){
-        return new ImportDeduplicationHelper<>(repository);
-    }
-
-    public static ImportDeduplicationHelper<?> NewStandaloneInstance(){
-        return new ImportDeduplicationHelper<>(null);
-    }
-
-    /**
-     * @param repository
-     * @param state not used, only for correct casting of generics
-     * @return
-     */
-    public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper<STATE> NewInstance(ICdmRepository repository, STATE state){
-        return new ImportDeduplicationHelper<>(repository);
-    }
-
-// ************************ CONSTRUCTOR *****************************/
-
-    public ImportDeduplicationHelper(ICdmRepository repository) {
-        this.repository = repository;
-        if (repository == null){
-            logger.warn("Repository is null. Deduplication does not work against database");
-        }
-    }
 
 //************************ PUTTER / GETTER *****************************/
 
@@ -188,21 +220,23 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             refs = new HashSet<>();
             refMap.put(title, refs);
         }
-        refs.add(ref);
+        refs.add(CdmBase.deproxy(ref));
     }
     private Set<Reference> getReferences(String title){
         return refMap.get(title);
     }
 
-    private Optional<Reference> getMatchingReference(Reference existing){
+    private Optional<Reference> getMatchingReference(Reference newReference){
         Predicate<Reference> matchFilter = reference ->{
             try {
-                return referenceMatcher.invoke(reference, existing);
+                return referenceMatcher.invoke(reference, newReference);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
         };
-        return Optional.ofNullable(getReferences(existing.getTitleCache()))
+        newReference.getAbbrevTitleCache(); //TODO better do via matching strategy  (newReference might be null)
+        newReference.getTitleCache(); //TODO better do via matching strategy  (newReference might be null)
+        return Optional.ofNullable(getReferences(newReference.getTitleCache()))
                 .orElse(new HashSet<>())
                 .stream()
                 .filter(matchFilter)
@@ -227,26 +261,20 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             items = new HashSet<>();
             map.put(title, items);
         }
-        items.add(agent);
+        items.add(CdmBase.deproxy(agent));
     }
-//
-//    private TeamOrPersonBase<?> getTeamOrPerson(TeamOrPersonBase<?> agent){
-//        TeamOrPersonBase<?> result = getMatchingPerson(agent) ; // personMap.get(title);
-//        if (result == null){
-//            result = teamMap.get(title);
-//        }
-//        return result;
-//    }
 
-    private Optional<Person> getMatchingPerson(Person existing){
-        Predicate<Person> matchFilter = person ->{
+    private Optional<Person> getMatchingPerson(Person newPerson){
+        Person newPersonDeproxy = CdmBase.deproxy(newPerson);
+        Predicate<Person> matchFilter = (person) ->{
             try {
-                return personMatcher.invoke(person, existing);
+                return personMatcher.invoke(person, newPersonDeproxy);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
         };
-        return Optional.ofNullable(getPersons(existing.getTitleCache()))
+
+        return Optional.ofNullable(getPersons(newPerson.getTitleCache()))
                 .orElse(new HashSet<>())
                 .stream()
                 .filter(matchFilter)
@@ -262,15 +290,18 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
         return result;
     }
 
-    private Optional<Team> getMatchingTeam(Team existing){
-        Predicate<Team> matchFilter = person ->{
+    private Optional<Team> getMatchingTeam(Team newTeam){
+        Team newTeamDeproxy = CdmBase.deproxy(newTeam);
+        Predicate<Team> matchFilter = (team) ->{
             try {
-                return teamMatcher.invoke(person, existing);
+                return teamMatcher.invoke(team, newTeamDeproxy);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
         };
-        return Optional.ofNullable(getTeam(existing.getTitleCache()))
+        //TODO better adapt matching strategy
+//        newTeam.getNomenclaturalTitle();
+        return Optional.ofNullable(getTeams(newTeam.getTitleCache()))
                 .orElse(new HashSet<>())
                 .stream()
                 .filter(matchFilter)
@@ -279,7 +310,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private Set<Person> getPersons(String title){
         return personMap.get(title);
     }
-    private Set<Team> getTeam(String title){
+    private Set<Team> getTeams(String title){
         return teamMap.get(title);
     }
 
@@ -290,7 +321,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             names = new HashSet<>();
             nameMap.put(title, names);
         }
-        names.add(name);
+        names.add(CdmBase.deproxy(name));
     }
     private Set<INonViralName> getNames(String title){
         return nameMap.get(title);
@@ -318,7 +349,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             collections = new HashSet<>();
             collectionMap.put(title, collections);
         }
-        collections.add(collection);
+        collections.add(CdmBase.deproxy(collection));
     }
 
     private Set<Collection> getCollections(String title){
@@ -398,8 +429,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             TeamOrPersonBase<?> result = getTeamOrPerson(author);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
-                if (author instanceof Team){
-                    handleTeam(state, (Team)author);
+                if (author.isInstanceOf(Team.class)){
+                    handleTeam(state, CdmBase.deproxy(author, Team.class));
                 }
                 result = author;
             }
@@ -435,7 +466,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             List<String> propertyPaths = Arrays.asList("");
             List<AgentBase> existingAgents = repository.getAgentService().list(null, null, null, null, propertyPaths);
             for (AgentBase agent : existingAgents){
-                putAgentBase(agent.getTitleCache(), agent);
+                putAgentBase(agent.getTitleCache(), CdmBase.deproxy(agent));
             }
             agentMapIsInitialized = true;
         }
@@ -448,7 +479,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
     private void handleTeam(STATE state, Team team) {
         List<Person> members = team.getTeamMembers();
         for (int i =0; i< members.size(); i++){
-            Person person = members.get(i);
+            Person person = CdmBase.deproxy(members.get(i));
             Person existingPerson = getMatchingPerson(person).orElse(null);
             if (existingPerson != null){
                 members.set(i, existingPerson);
@@ -628,7 +659,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase<?,?>> {
             rights = new HashSet<>();
             copyrightMap.put(key, rights);
         }
-        rights.add(right);
+        rights.add(CdmBase.deproxy(right));
 
     }
 

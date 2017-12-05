@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -441,6 +442,21 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Transactional(readOnly = false)
     public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations){
         return representationDao.saveOrUpdateAll(representations);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
+        List<NamedArea> areas = dao.getUuidAndTitleCache(vocs, limit, pattern);
+
+        List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
+        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
+        for (NamedArea area: areas){
+            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+            result.add(uuidAndTitleCache);
+        }
+
+        return result;
     }
 
 

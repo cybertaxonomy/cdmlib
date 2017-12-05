@@ -1,0 +1,3 @@
+"SourceID","IPNI-ID","OutputNameID","FullnameWithAuthors","OutputAbbreviatedTitle","OutputVolume","OutputPage","OutputYearPublished","OutputTitlePageYear","OutputNomenclatureStatus","OutputBHLLink","NomPubType"
+"wfo-0000444130",,,"Limonium roborowskiilk Ikonn.-Gal.","Trudy Bot. Inst. Akad. Nauk S.S.S.R., Ser. 1, Fl. Sist. Vyssh. Rast.",,"",,"",,,"A"
+"wfo-0000444131","960792-1","50195477","Limonium rigualii M.B.Crespo & Erben","Mitt. Bot. Staatssamml. München","30","459","1992","as 1991","","http://www.biodiversitylibrary.org/openurl?pid=title:14894&volume=30&issue=&spage=459&date=1991","A"

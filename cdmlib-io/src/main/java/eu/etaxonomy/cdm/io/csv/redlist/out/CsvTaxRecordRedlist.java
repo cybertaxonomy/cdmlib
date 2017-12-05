@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 

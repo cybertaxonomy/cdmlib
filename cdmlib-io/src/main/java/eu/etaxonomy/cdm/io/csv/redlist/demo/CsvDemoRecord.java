@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
@@ -62,9 +62,6 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
         datasetId = new CsvDemoId(config);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-     */
     @Override
     protected void registerKnownFields(){
         try {
@@ -185,7 +182,7 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
     //FIXME: hard coded header lines
     private ArrayList<String> setHeadlines(){
 //      if(config.isDoDemoExport()){
-            headlines = new ArrayList<String>();
+            headlines = new ArrayList<>();
 
             if(config.isClassification()){
                 headlines.add("Classification");

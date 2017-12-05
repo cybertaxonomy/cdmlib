@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -26,9 +27,12 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -236,5 +240,134 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         }else{
             return null;
         }
+    }
+
+
+    /**
+     * Returns the taxon for the given CDM uuid. If no taxon exists for the given id
+     * no record is returned. If a name cache, name title cache (full name) or
+     * taxon title cache column is given the name is checked against the given columns.
+     * If they don't manage it is logged as a warning in import result.
+     * <BR>If clazz is given, only objects of the given class are loaded.
+     *
+     *
+     * @param state
+     * @param colTaxonUuid taxon uuid column
+     * @param colNameCache name cache column (if exists)
+     * @param colNameTitleCache name title cache column (if exists)
+     * @param colTaxonTitleCache taxon title cache column (if exists)
+     * @param clazz the clazz null
+     * @param line the row, for debug information
+     * @return the taxon to load
+     */
+    protected <T extends TaxonBase<?>> T getTaxonByCdmId(STATE state, String colTaxonUuid,
+            String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
+            Class<T> clazz, String line) {
+
+        HashMap<String, String> record = state.getOriginalRecord();
+        String strUuidTaxon = record.get(colTaxonUuid);
+        if (strUuidTaxon != null){
+            UUID uuidTaxon;
+            try {
+                uuidTaxon = UUID.fromString(strUuidTaxon);
+            } catch (Exception e) {
+                state.getResult().addError("Taxon uuid has incorrect format. Taxon could not be loaded. Data not imported.", null, line);
+                return null;
+            }
+            TaxonBase<?> result = getTaxonService().find(uuidTaxon);
+            //TODO load only objects of correct class
+            if (result != null && clazz != null && !result.isInstanceOf(clazz)){
+                result = null;
+            }
+
+
+            if (result == null){
+                state.getResult().addError("Taxon for uuid  "+strUuidTaxon+" could not be found in database. "
+                        + "Taxon could not be loaded. Data not imported.", null, line);
+            }else{
+                verifyName(state, colNameCache, colNameTitleCache, colTaxonTitleCache, line, record, result);
+            }
+            result = CdmBase.deproxy(result, clazz);
+
+
+            return CdmBase.deproxy(result, clazz);
+        }else{
+            String message = "No taxon identifier found";
+            state.getResult().addWarning(message, null, line);
+            return null;
+        }
+    }
+
+
+    /**
+     * @see #getTaxonByCdmId(ExcelImportState, String, String, String, String, Class, String)
+     */
+    protected void verifyName(STATE state, String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
+            String line, HashMap<String, String> record, TaxonBase<?> result) {
+        //nameCache
+        String strExpectedNameCache = record.get(colNameCache);
+        String nameCache = result.getName() == null ? null : result.getName().getNameCache();
+        if (isNotBlank(strExpectedNameCache) && (!strExpectedNameCache.equals(nameCache))){
+            String message = "Name cache (%s) does not match expected name (%s)";
+            message = String.format(message, nameCache==null? "null":nameCache, strExpectedNameCache);
+            state.getResult().addWarning(message, null, line);
+        }
+        //name title
+        String strExpectedNameTitleCache = record.get(colNameTitleCache);
+        String nameTitleCache = result.getName() == null ? null : result.getName().getTitleCache();
+        if (isNotBlank(strExpectedNameTitleCache) && (!strExpectedNameTitleCache.equals(nameTitleCache))){
+            String message = "Name title cache (%s) does not match expected name (%s)";
+            message = String.format(message, nameTitleCache==null? "null":nameTitleCache, strExpectedNameTitleCache);
+            state.getResult().addWarning(message, null, line);
+        }
+        //taxon title cache
+        String strExpectedTaxonTitleCache = record.get(colTaxonTitleCache);
+        String taxonTitleCache = result.getTitleCache();
+        if (isNotBlank(strExpectedTaxonTitleCache) && (!strExpectedTaxonTitleCache.equals(taxonTitleCache))){
+            String message = "Name cache (%s) does not match expected name (%s)";
+            message = String.format(message, taxonTitleCache==null? "null":taxonTitleCache, strExpectedTaxonTitleCache);
+            state.getResult().addWarning(message, null, line);
+        }
+    }
+
+
+    /**
+     * Non transaction save method to retrieve the source reference
+     * if either existent or not in the database (uses check for uuid).
+     *
+     * @param state
+     * @return the source reference
+     */
+    protected Reference getSourceReference(STATE state) {
+
+        Reference sourceRef = state.getSourceReference();
+        if (sourceRef != null){
+            return sourceRef;
+        }
+        UUID uuid = state.getConfig().getSourceRefUuid();
+        if (uuid == null){
+            sourceRef = state.getConfig().getSourceReference();
+            if (sourceRef != null){
+                uuid = sourceRef.getUuid();
+            }
+        }
+        if (uuid != null){
+            Reference existingRef = getReferenceService().find(uuid);
+            if (existingRef != null){
+                sourceRef = existingRef;
+            }
+//            else if (sourceRef != null){
+//                getReferenceService().save(sourceRef);
+//            }
+        }
+        if (sourceRef == null){
+            sourceRef = ReferenceFactory.newGeneric();
+            String title = state.getConfig().getSourceNameString();
+            sourceRef.setTitle(title);
+            state.getConfig().setSourceReference(sourceRef);
+        }
+        state.setSourceReference(sourceRef);
+
+        return sourceRef;
     }
 }

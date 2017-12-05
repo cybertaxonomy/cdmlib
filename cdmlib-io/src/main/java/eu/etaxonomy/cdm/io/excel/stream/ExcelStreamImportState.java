@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportStateBase;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaImportState;
+import eu.etaxonomy.cdm.io.stream.excel.ExcelStreamImportConfigurator;
 
 /**
  * 

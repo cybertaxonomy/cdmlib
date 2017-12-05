@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  */
 @Component
 public class RisReferenceImport
-    extends CdmImportBase<RisReferenceImportConfigurator, RisReferenceImportState>{
+        extends CdmImportBase<RisReferenceImportConfigurator, RisReferenceImportState>{
 
     private static final long serialVersionUID = 7022034669942979722L;
     @SuppressWarnings("unused")

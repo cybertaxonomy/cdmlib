@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO extends IAnnotatableDao<T>> extends VersionableServiceBase<T, DAO>
@@ -63,6 +64,18 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 	public int countMarkers(Class<? extends T> clazz, Boolean technical) {
 		return dao.countMarkers(clazz, technical);
 	}
+
+	@Transactional(readOnly = true)
+    @Override
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(limit, pattern);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz,Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(clazz, limit, pattern);
+    }
 
 
 }

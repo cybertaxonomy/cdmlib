@@ -82,7 +82,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
-    private Set<Representation> representations = new HashSet<Representation>();
+    private Set<Representation> representations = new HashSet<>();
 
 //******************* CONSTRUCTOR *************************************/
 

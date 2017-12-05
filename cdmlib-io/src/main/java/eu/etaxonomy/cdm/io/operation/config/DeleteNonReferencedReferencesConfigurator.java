@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.operation.DeleteNonReferencedreferencesUpdater;
+import eu.etaxonomy.cdm.io.operation.DeleteNonReferencedReferencesUpdater;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class DeleteNonReferencedReferencesConfigurator extends ImportConfiguratorBase<DefaultImportState<DeleteNonReferencedReferencesConfigurator>, Object> implements IImportConfigurator{
@@ -69,7 +69,7 @@ public class DeleteNonReferencedReferencesConfigurator extends ImportConfigurato
 	@Override
 	protected void makeIoClassList() {
 		ioClassList = new Class[]{
-				 DeleteNonReferencedreferencesUpdater.class
+				 DeleteNonReferencedReferencesUpdater.class
 		};	
 	}
 

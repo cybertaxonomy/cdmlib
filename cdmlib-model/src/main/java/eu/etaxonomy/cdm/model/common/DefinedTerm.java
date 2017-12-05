@@ -159,12 +159,14 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 		return getTermByUuid(uuidIts1);
 	}
 
-    public static DefinedTerm TROPICOS_NAME_IDENTIFIER(){
+    public static DefinedTerm IDENTIFIER_NAME_TROPICOS(){
         return getTermByUuid(uuidTropicosNameIdentifier);
     }
-
-    public static DefinedTerm IPNI_NAME_IDENTIFIER(){
+    public static DefinedTerm IDENTIFIER_NAME_IPNI(){
         return getTermByUuid(uuidIpniNameIdentifier);
+    }
+    public static DefinedTerm IDENTIFIER_NAME_WFO(){
+        return getTermByUuid(uuidWfoNameIdentifier);
     }
 
 
@@ -176,7 +178,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	@Override
 	protected void setDefaultTerms(TermVocabulary<DefinedTerm> termVocabulary) {
 		if (termMap == null){
-			termMap = new HashMap<UUID, DefinedTerm>();
+			termMap = new HashMap<>();
 		}
 		for (DefinedTerm term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);

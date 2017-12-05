@@ -20,6 +20,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -194,4 +195,14 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @return
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
+
+    /**
+     * @param clazz
+     * @param vocs
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit,
+            String pattern);
 }

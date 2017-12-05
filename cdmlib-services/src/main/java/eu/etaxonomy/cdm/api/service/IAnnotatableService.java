@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAnnotatableService<T extends AnnotatableEntity>
@@ -72,4 +73,28 @@ public interface IAnnotatableService<T extends AnnotatableEntity>
 	 * @return a count of markers
 	 */
 	public int countMarkers(Class<? extends T> clazz, Boolean technical);
+	 /**
+     * Like {@link #getUuidAndTitleCache(Integer, String)} but searching only on a subclass
+     * of the type handled by the DAO.
+     *
+     * @param clazz the (sub)class
+     * @param limit max number of results
+     * @param pattern search pattern
+
+     * @see #getUuidAndTitleCache(Integer, String)
+     */
+    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern);
+
+    /**
+     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+     * Retrieving this list is considered to be significantly faster than initializing the fully fledged business
+     * objects. To be used in cases where you want to present large amount of data and provide details after
+     * a selection has been made.
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     *
+     * @see #getUuidAndTitleCache(Class, Integer, String)
+     */
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
+
 }

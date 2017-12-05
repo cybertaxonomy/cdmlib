@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -172,31 +172,25 @@ public class CsvNameExport extends CsvNameExportBase {
         Set<UUID> childrenUuids = new HashSet<UUID>();
 
 
-        rootNode = HibernateProxyHelper.deproxy(rootNode, TaxonNode.class);
+        rootNode = CdmBase.deproxy(rootNode);
         rootNode.removeNullValueFromChildren();
         for (TaxonNode child: rootNode.getChildNodes()){
-            child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
+            child = CdmBase.deproxy(child);
             childrenUuids.add(child.getUuid());
         }
         Set<UUID> parentsNodesUUID = new HashSet<UUID>(childrenUuids);
         childrenUuids.clear();
         List<TaxonNode> childrenNodes = new ArrayList<TaxonNode>();
-        TaxonName name;
-
 
         findChildren(state, childrenUuids, parentsNodesUUID);
 
 
-        List<HashMap<String,String>> nameRecords = new ArrayList<HashMap<String,String>>();
-        HashMap<String,String> nameRecord = new HashMap<String,String>();
+        List<HashMap<String,String>> nameRecords = new ArrayList<>();
 
         childrenNodes = getTaxonNodeService().find(childrenUuids);
         for(TaxonNode genusNode : childrenNodes)   {
-
             nameRecords.add(createNewRecord(genusNode, state));
-
             refreshTransaction();
-
         }
 
         return nameRecords;
@@ -212,15 +206,15 @@ public class CsvNameExport extends CsvNameExportBase {
     private void findChildren(CsvNameExportState state, Set<UUID> childrenUuids, Set<UUID> parentsNodesUUID) {
         TaxonName name;
         List<TaxonNode> familyNodes = getTaxonNodeService().find(parentsNodesUUID);
-        parentsNodesUUID =new HashSet<UUID>();
+        parentsNodesUUID =new HashSet<>();
         for (TaxonNode familyNode: familyNodes){
-            familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
+            familyNode = CdmBase.deproxy(familyNode);
             familyNode.removeNullValueFromChildren();
             for (TaxonNode child: familyNode.getChildNodes()){
-                child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
-                Taxon taxon = HibernateProxyHelper.deproxy(child.getTaxon());
+                child = CdmBase.deproxy(child);
+                Taxon taxon = CdmBase.deproxy(child.getTaxon());
                 if (taxon != null){
-                    name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
+                    name = CdmBase.deproxy(taxon.getName());
                     if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
                         childrenUuids.add(child.getUuid());
                         if (child.hasChildNodes()){
@@ -254,9 +248,9 @@ public class CsvNameExport extends CsvNameExportBase {
         boolean isInvalidRel = false;
         for (NameRelationship nameRel: nameRelations){
            // NameRelationship nameRel = nameRelations.iterator().next();
-            IBotanicalName fromName = HibernateProxyHelper.deproxy(nameRel.getFromName(), IBotanicalName.class);
+            IBotanicalName fromName = CdmBase.deproxy(nameRel.getFromName());
 
-            nameRel = HibernateProxyHelper.deproxy(nameRel, NameRelationship.class);
+            nameRel = CdmBase.deproxy(nameRel);
             nameRelType = nameRel.getType().getTitleCache();
             String relatedNameString = "";
             if (fromName.equals(synonymName)){
@@ -308,15 +302,11 @@ public class CsvNameExport extends CsvNameExportBase {
                 }else if (nameRel.getType().equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())){
 
                 }
-
-
             }
         }
         if (!first){
             synonymString = synonymString + "]";
         }
-
-
 
         return synonymString;
     }
@@ -328,7 +318,7 @@ public class CsvNameExport extends CsvNameExportBase {
     private boolean getStatus(INonViralName relatedName) {
         boolean result;
         if (!relatedName.getStatus().isEmpty()){
-            NomenclaturalStatus status = HibernateProxyHelper.deproxy(relatedName.getStatus().iterator().next(),NomenclaturalStatus.class);
+            NomenclaturalStatus status = CdmBase.deproxy(relatedName.getStatus().iterator().next());
             if (status.getType().isInvalidType()){
                 result = true;
             }else{
@@ -372,19 +362,19 @@ public class CsvNameExport extends CsvNameExportBase {
         Classification classification = getClassificationService().load(classificationUUID);
         TaxonNode rootNode = classification.getRootNode();
         rootNode = getTaxonNodeService().load(rootNode.getUuid());
-        Set<UUID> childrenUuids = new HashSet<UUID>();
+        Set<UUID> childrenUuids = new HashSet<>();
 
         for (TaxonNode child: rootNode.getChildNodes()){
-            child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
+            child = CdmBase.deproxy(child);
             childrenUuids.add(child.getUuid());
         }
 
         List<TaxonNode> familyNodes = getTaxonNodeService().find(childrenUuids);
         childrenUuids.clear();
-        List<TaxonNode> genusNodes = new ArrayList<TaxonNode>();
+        List<TaxonNode> genusNodes = new ArrayList<>();
         for (TaxonNode familyNode: familyNodes){
             for (TaxonNode child: familyNode.getChildNodes()){
-                child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
+                child = CdmBase.deproxy(child);
                 childrenUuids.add(child.getUuid());
             }
 
@@ -409,7 +399,7 @@ public class CsvNameExport extends CsvNameExportBase {
     private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature, String columnName, CsvNameExportState state){
         StringBuffer descriptionsString = new StringBuffer();
         TextData textElement;
-        Set<Distribution> distributions = new HashSet<Distribution>();
+        Set<Distribution> distributions = new HashSet<>();
         if (taxon.getDescriptions().isEmpty()){
             nameRecord.put(columnName, null);
                 return;
@@ -420,28 +410,22 @@ public class CsvNameExport extends CsvNameExportBase {
                 for (DescriptionElementBase element: elements){
                     if (element.getFeature().equals(feature)){
                         if (element instanceof TextData){
-                            textElement = HibernateProxyHelper.deproxy(element, TextData.class);
+                            textElement = CdmBase.deproxy(element, TextData.class);
                             descriptionsString.append(textElement.getText(Language.ENGLISH()));
 
                         }else if (element instanceof Distribution ){
 
-                            Distribution distribution = HibernateProxyHelper.deproxy(element, Distribution.class);
+                            Distribution distribution = CdmBase.deproxy(element, Distribution.class);
                             distributions.add(distribution);
-
-
                         }
 
                     }
                 }
             }
-
-
-
         }
         if (state.getConfig().isCondensedDistribution()){
             List<Language> langs = new ArrayList<Language>();
             langs.add(Language.ENGLISH());
-
 
             CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );
 
@@ -454,7 +438,7 @@ public class CsvNameExport extends CsvNameExportBase {
                 if (descriptionsString.length()> 0 ){
                     descriptionsString.append(", ");
                 }
-                area = HibernateProxyHelper.deproxy(distribution.getArea(), NamedArea.class);
+                area = CdmBase.deproxy(distribution.getArea());
                 if (area.getIdInVocabulary() != null){
                     descriptionsString.append(area.getIdInVocabulary());
                 }else if (area.getSymbol() != null){
@@ -477,7 +461,7 @@ public class CsvNameExport extends CsvNameExportBase {
             if (notesFeature.getRecords().size() == 0){
                 return null;
             }else{
-                DefinedTermBase feature=  notesFeature.getRecords().iterator().next();
+                DefinedTermBase<?> feature=  notesFeature.getRecords().iterator().next();
                 if (feature instanceof Feature){
                     state.setNotesFeature((Feature)feature);
                     return (Feature) feature;
@@ -490,7 +474,7 @@ public class CsvNameExport extends CsvNameExportBase {
     }
 
     private HashMap<String, String> createNewRecord(TaxonNode childNode, CsvNameExportState state){
-        HashMap<String, String> nameRecord = new HashMap<String,String>();
+        HashMap<String, String> nameRecord = new HashMap<>();
         nameRecord.put("classification", childNode.getClassification().getTitleCache());
         TaxonNode familyNode = getHigherNode(childNode, Rank.FAMILY());
         Taxon taxon;
@@ -501,31 +485,31 @@ public class CsvNameExport extends CsvNameExportBase {
             nameRecord.put("familyName", null);
             nameRecord.put("descriptionsFam", null);
         }else{
-            familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
+            familyNode = CdmBase.deproxy(familyNode);
             familyNode.getTaxon().setProtectedTitleCache(true);
             nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
 
             taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid());
-            taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+            taxon = CdmBase.deproxy(taxon);
             //if publish flag is set
 
             //  if (taxon.isPublish()){
-            name = HibernateProxyHelper.deproxy(taxon.getName(), IBotanicalName.class);
+            name = CdmBase.deproxy(taxon.getName());
             nameRecord.put("familyName", name.getNameCache());
             extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
         }
         TaxonNode genusNode = getHigherNode(childNode, Rank.GENUS());
         if (genusNode!= null){
-            genusNode = HibernateProxyHelper.deproxy(genusNode, TaxonNode.class);
+            genusNode = CdmBase.deproxy(genusNode);
             genusNode.getTaxon().setProtectedTitleCache(true);
             nameRecord.put("genusTaxon", genusNode.getTaxon().getTitleCache());
 
             taxon = (Taxon)getTaxonService().load(genusNode.getTaxon().getUuid());
-            taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+            taxon = CdmBase.deproxy(taxon);
             //if publish flag is set
 
             //  if (taxon.isPublish()){
-            name = HibernateProxyHelper.deproxy(taxon.getName(), IBotanicalName.class);
+            name = CdmBase.deproxy(taxon.getName());
             if (name.getNameCache() != null){
                 nameRecord.put("genusName", name.getNameCache());
             }else{
@@ -539,7 +523,7 @@ public class CsvNameExport extends CsvNameExportBase {
         }
 
         taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
-        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+        taxon = CdmBase.deproxy(taxon);
         //  if (taxon.isPublish()){
 
         INonViralName nonViralName = taxon.getName();
@@ -554,7 +538,7 @@ public class CsvNameExport extends CsvNameExportBase {
 
         getTaxonRelations(nameRecord, taxon);
 
-        name = HibernateProxyHelper.deproxy(getNameService().load(taxon.getName().getUuid()), IBotanicalName.class);
+        name = CdmBase.deproxy(getNameService().load(taxon.getName().getUuid()));
         nameRecord.put("childName",nameString);
         nameRecord.put("nameId", String.valueOf(name.getId()));
         nameRecord.put("nameCache", name.getNameCache());
@@ -572,17 +556,17 @@ public class CsvNameExport extends CsvNameExportBase {
         String statusString = null;
         if (it.hasNext()){
 
-            TypeDesignationBase typeDes = HibernateProxyHelper.deproxy(it.next(), TypeDesignationBase.class);
+            TypeDesignationBase<?> typeDes = CdmBase.deproxy(it.next());
 
             if (typeDes instanceof NameTypeDesignation){
-                NameTypeDesignation nameTypeDes = HibernateProxyHelper.deproxy(typeDes, NameTypeDesignation.class);
+                NameTypeDesignation nameTypeDes = CdmBase.deproxy(typeDes, NameTypeDesignation.class);
 
-                IBotanicalName typeName =  HibernateProxyHelper.deproxy(nameTypeDes.getTypeName(), IBotanicalName.class);
+                IBotanicalName typeName =  CdmBase.deproxy(nameTypeDes.getTypeName());
                 if (typeName != null){
 
                     typeNameString = "<i>" + typeName.getNameCache() +"</i> "  + typeName.getAuthorshipCache();
                     if (nameTypeDes.getTypeStatus() != null){
-                        NameTypeDesignationStatus status = HibernateProxyHelper.deproxy(nameTypeDes.getTypeStatus(), NameTypeDesignationStatus.class);
+                        NameTypeDesignationStatus status = CdmBase.deproxy(nameTypeDes.getTypeStatus());
                         statusString = status.getTitleCache();
                     }
                 }
@@ -590,9 +574,9 @@ public class CsvNameExport extends CsvNameExportBase {
         }
         nameRecord.put("typeName", typeNameString);
         StringBuffer homotypicalSynonyms = new StringBuffer();
-        TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<HomotypicalGroup,List<Synonym>>(new HomotypicalGroupComparator());
+        TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<>(new HomotypicalGroupComparator());
 
-        List<Synonym> homotypicSynonymsList = new ArrayList<Synonym>();
+        List<Synonym> homotypicSynonymsList = new ArrayList<>();
         StringBuffer heterotypicalSynonyms = new StringBuffer();
         List<Synonym> homotypicSynonyms;
 
@@ -600,8 +584,8 @@ public class CsvNameExport extends CsvNameExportBase {
         IBotanicalName synonymName;
         String doubtfulTitleCache;
         for (Synonym synonym: taxon.getSynonyms()){
-            synonymName = HibernateProxyHelper.deproxy(synonym.getName(), IBotanicalName.class);
-            group = HibernateProxyHelper.deproxy(synonymName.getHomotypicalGroup(), HomotypicalGroup.class);
+            synonymName = CdmBase.deproxy(synonym.getName());
+            group = CdmBase.deproxy(synonymName.getHomotypicalGroup());
             synonymName.generateFullTitle();
             if (synonym.isDoubtful()){
                 if (!synonymName.getFullTitleCache().startsWith("?")){
@@ -614,7 +598,7 @@ public class CsvNameExport extends CsvNameExportBase {
                 if (heterotypicSynonymsList.containsKey(group)){
                     heterotypicSynonymsList.get(group).add(synonym);
                 }else{
-                    homotypicSynonyms = new ArrayList<Synonym>();
+                    homotypicSynonyms = new ArrayList<>();
                     homotypicSynonyms.add(synonym);
                     heterotypicSynonymsList.put(group, homotypicSynonyms);
                     homotypicSynonyms= null;
@@ -636,10 +620,10 @@ public class CsvNameExport extends CsvNameExportBase {
             for (TaxonBase<?> synonym : list){
                 NomenclaturalStatus status = null;
                 if (!synonym.getName().getStatus().isEmpty()){
-                    status = HibernateProxyHelper.deproxy(synonym.getName().getStatus().iterator().next(),NomenclaturalStatus.class);
+                    status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());
                     if (status.getType().isInvalidType()){
                         heterotypicalSynonyms.append(" <invalid> ");
-                        synonymName = HibernateProxyHelper.deproxy(synonym.getName(), IBotanicalName.class);
+                        synonymName = CdmBase.deproxy(synonym.getName());
 
                         synonymString = createSynonymNameString(synonymName, state.getConfig().isInvalidNamesQuoted()) ;
                         heterotypicalSynonyms.append(synonymString);
@@ -652,7 +636,7 @@ public class CsvNameExport extends CsvNameExportBase {
                     heterotypicalSynonyms.append(" <homonym> ");
                 }
                 first = false;
-                synonymName = HibernateProxyHelper.deproxy(synonym.getName(), IBotanicalName.class);
+                synonymName = CdmBase.deproxy(synonym.getName());
                 synonymString = createSynonymNameString(synonymName, false);
                 heterotypicalSynonyms.append(synonymString);
             }
@@ -664,10 +648,10 @@ public class CsvNameExport extends CsvNameExportBase {
         for (TaxonBase<?> synonym : homotypicSynonymsList){
 
             if (!synonym.getName().getStatus().isEmpty()){
-                status = HibernateProxyHelper.deproxy(synonym.getName().getStatus().iterator().next(),NomenclaturalStatus.class);
+                status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());
                 if (status.getType().isInvalidType()){
                     homotypicalSynonyms.append(" <invalid> ");
-                    synonymName = HibernateProxyHelper.deproxy(synonym.getName(), IBotanicalName.class);
+                    synonymName = CdmBase.deproxy(synonym.getName());
                     synonymString = createSynonymNameString(synonymName, true);
                     homotypicalSynonyms.append(synonymString);
                     continue;
@@ -679,7 +663,7 @@ public class CsvNameExport extends CsvNameExportBase {
                 homotypicalSynonyms.append(" <homonym> ");
             }
             first = false;
-            synonymName = HibernateProxyHelper.deproxy(synonym.getName(), IBotanicalName.class);
+            synonymName = CdmBase.deproxy(synonym.getName());
 
             synonymString = createSynonymNameString(synonymName, false);
 
@@ -698,14 +682,14 @@ public class CsvNameExport extends CsvNameExportBase {
         String relNameString = null;
         if (nameRelations.size()>0){
             NameRelationship nameRel = nameRelations.iterator().next();
-            IBotanicalName fromName = HibernateProxyHelper.deproxy(nameRel.getFromName(), IBotanicalName.class);
+            IBotanicalName fromName = CdmBase.deproxy(nameRel.getFromName());
             if (fromName.equals(taxon.getName())){
                 relatedName = nameRel.getToName();
 
             }else{
                 relatedName = nameRel.getFromName();
             }
-            nameRel = HibernateProxyHelper.deproxy(nameRel, NameRelationship.class);
+            nameRel = CdmBase.deproxy(nameRel);
             nameRelType = nameRel.getType().getTitleCache();
             relNameString  = createTaggedNameString(relatedName, getStatus(relatedName));
         }
@@ -723,7 +707,7 @@ public class CsvNameExport extends CsvNameExportBase {
      * @param taxon
      */
     private void getTaxonRelations(HashMap<String, String> nameRecord, Taxon taxon) {
-        Set<TaxonRelationship> relations = new HashSet<TaxonRelationship>();
+        Set<TaxonRelationship> relations = new HashSet<>();
         relations =taxon.getTaxonRelations();
         if (relations.isEmpty()){
             nameRecord.put("missappliedNames", null);
@@ -750,11 +734,7 @@ public class CsvNameExport extends CsvNameExportBase {
             }
             nameRecord.put("missappliedNames", nameString.toString());
         }
-
     }
-
-
-
 
 }
 

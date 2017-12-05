@@ -32,7 +32,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  *
  */
 public class TimePeriodParserTest {
-	private static final Logger logger = Logger.getLogger(TimePeriodParserTest.class);
+	@SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(TimePeriodParserTest.class);
 
 //	private TimePeriod onlyStartYear;
 //	private TimePeriod onlyEndYear;
@@ -200,10 +201,34 @@ public class TimePeriodParserTest {
 		Assert.assertEquals(Integer.valueOf(2016), tp.getEndYear());
 		Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
 		Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
+
+        String strSlashDate = "31/12/2015 - 2/1/2016";
+        tp = TimePeriodParser.parseString(strSlashDate);
+        assertNotNull(tp);
+        Assert.assertEquals("31.12.2015-2.1.2016", tp.toString());
+        Assert.assertEquals("2015-2016", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
+        Assert.assertEquals(Integer.valueOf(2016), tp.getEndYear());
+        Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
+        Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
+
+        strSlashDate = "1/12/2015 - 2/1/2016";
+        tp = TimePeriodParser.parseString(strSlashDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1.12.2015-2.1.2016", tp.toString());
+        Assert.assertEquals("2015-2016", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
+        Assert.assertEquals(Integer.valueOf(2016), tp.getEndYear());
+        Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
+        Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
 	}
 
 	@Test
-	public void testParseDateWithMonthes() {
+	public void testParseDateWithMonths() {
 	    String strDate = "24 Aug. 1957";
 	    TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);

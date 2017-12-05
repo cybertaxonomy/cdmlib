@@ -13,8 +13,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.dwca.in.IConverterInput;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.mueller

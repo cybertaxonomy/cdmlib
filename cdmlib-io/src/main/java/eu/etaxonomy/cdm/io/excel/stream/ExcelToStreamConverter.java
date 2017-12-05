@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,25 +25,25 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.dwca.in.IReader;
-import eu.etaxonomy.cdm.io.dwca.in.ListReader;
+import eu.etaxonomy.cdm.io.stream.IReader;
+import eu.etaxonomy.cdm.io.stream.ListReader;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * This class transforms excel archive in to a InputStream.
- * 
+ *
  * @author a.oppermann
  * @date 16.05.2013
  *
  */
 public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
-	
+
 	private static Logger logger = Logger.getLogger(ExcelToStreamConverter.class);
-	
+
 	private URI source;
-	
+
 	/**
-	 * 
+	 *
 	 * Factory
 	 * @param source
 	 * @return
@@ -59,19 +59,19 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 	public ExcelToStreamConverter(URI source){
 		this.source = source;
 	}
-	
+
 	/**
 	 * @param state
 	 * @return
-	 * @throws HttpException 
-	 * @throws IOException 
-	 * @throws InvalidFormatException 
+	 * @throws HttpException
+	 * @throws IOException
+	 * @throws InvalidFormatException
 	 */
 	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException, InvalidFormatException{
 //		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(source));
 //		HSSFWorkbook wb = new HSSFWorkbook(fs);
 		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(source));
-		
+
 		Map<TermUri, Integer> map = new HashMap<TermUri, Integer>();
 		for (int i = 0 ; i < wb.getNumberOfSheets(); i++){
 			String wsName = wb.getSheetName(i);
@@ -83,9 +83,9 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 			}
 			map.put(termUri, i);
 		}
-		
+
 		//core
-		List<ExcelRecordStream> streamList = new ArrayList<ExcelRecordStream>();
+		List<ExcelRecordStream> streamList = new ArrayList<>();
 		TermUri term= TermUri.DWC_TAXON;
 		Integer i = map.get(term);
 		if (i != null){
@@ -96,8 +96,8 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 			String message = "Taxon worksheet not available for %s";
 			logger.warn(String.format(message, "taxa"));
 			state.setSuccess(false);
-		} 
-		
+		}
+
 		//core relationships
 		i = map.get(term);
 		if (i != null){
@@ -108,9 +108,9 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 			String message = "Taxon worksheet not available for %s";
 			logger.warn(String.format(message, "taxon relations"));
 			state.setSuccess(false);
-		} 
-		
-		return new ListReader<ExcelRecordStream>(streamList);
+		}
+
+		return new ListReader<>(streamList);
 	}
 
 
@@ -121,7 +121,7 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 	private TermUri convertSheetName2TermUri(String wsName) {
 		if (StringUtils.isBlank(wsName)){
 			throw new IllegalArgumentException("Worksheet name must not be null or empty");
-			//FIXME: Hard coded worksheet name should be avoided  
+			//FIXME: Hard coded worksheet name should be avoided
 		}else if(wsName.equalsIgnoreCase("Sheet1")){
 			return TermUri.DWC_TAXON;
 		}else{
@@ -140,7 +140,5 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
             }
         }
     }
-	
 
-	
 }

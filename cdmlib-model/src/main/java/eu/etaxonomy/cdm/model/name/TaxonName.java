@@ -339,6 +339,7 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<Registration> registrations = new HashSet<>();
@@ -2493,7 +2494,7 @@ public class TaxonName
      * @param addToAllNames				the boolean indicating whether the type designation should be
      * 									added to all taxon names of the homotypical group the typified
      * 									taxon name belongs to
-     * @return							true if the operation was succesful
+     * @return							true if the operation was successful
      *
      * @throws IllegalArgumentException	if the type designation already has typified names, an {@link IllegalArgumentException exception}
      * 									is thrown. We do this to prevent a type designation to be used for multiple taxon names.

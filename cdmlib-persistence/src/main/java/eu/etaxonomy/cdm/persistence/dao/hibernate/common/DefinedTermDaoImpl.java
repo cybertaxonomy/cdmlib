@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -709,5 +710,29 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         }
         return result;
     }
+
+
+    @Override
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern){
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+            query.setParameterList("vocs", vocs);
+        } else {
+            query = session.createQuery("from NamedArea where vocabulary in :vocs");
+            query.setParameterList("vocs", vocs);
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        List<NamedArea> result = query.list();
+        return result;
+    }
+
 
 }

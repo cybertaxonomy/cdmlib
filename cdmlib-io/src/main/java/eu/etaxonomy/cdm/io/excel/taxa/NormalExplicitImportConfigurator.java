@@ -41,7 +41,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		ioClassList = new Class[] {
 				NormalExplicitImport.class
 		};
-	};
+	}
 
 	public static NormalExplicitImportConfigurator NewInstance(URI uri, ICdmDataSource destination,
 						NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){

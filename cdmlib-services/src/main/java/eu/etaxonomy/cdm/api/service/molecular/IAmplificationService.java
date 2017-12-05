@@ -33,7 +33,7 @@ public interface IAmplificationService extends IAnnotatableService<Amplification
      * {@link Amplification}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache();
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern);
 
     /**
     * Return a List of {@link Amplification}s matching the given query string, optionally with a particular MatchMode

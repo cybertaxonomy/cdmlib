@@ -13,8 +13,11 @@ import java.net.URI;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.CsvStream;
+import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
+import eu.etaxonomy.cdm.io.stream.IReader;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

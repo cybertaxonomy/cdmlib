@@ -54,7 +54,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase implements INonViralNameParser<INonViralName> {
+public class NonViralNameParserImpl
+            extends NonViralNameParserImplRegExBase
+            implements INonViralNameParser<INonViralName> {
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
@@ -63,6 +65,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	final static boolean MAKE_NOT_EMPTY = false;
 
 	private final boolean authorIsAlwaysTeam = false;
+	private final boolean removeSpaceAfterDot = true;
 
 	public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
@@ -1359,10 +1362,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 
 	/**
-	 * Parses an authorTeam String and returns the team.
-	 * !!! TODO (atomization not yet implemented)
+	 * Parses an author (person or team) string and returns the Person or Team.
 	 * @param authorString String representing the author
-	 * @return an Team
+	 * @return a person or team
 	 */
 	public TeamOrPersonBase<?> author (String authorString){
 		if (authorString == null){
@@ -1372,6 +1374,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}else if (! finalTeamSplitterPattern.matcher(authorString).find() && ! authorIsAlwaysTeam){
 			//1 Person
 			Person result = Person.NewInstance();
+			authorString = normalizeNomenclaturalPersonString(authorString);
 			result.setNomenclaturalTitle(authorString);
 			return result;
 		}else{
@@ -1381,7 +1384,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	/**
-	 * Parses an authorString (reprsenting a team into the single authors and add
+	 * Parses an authorString (representing a team into the single authors and add
 	 * them to the return Team.
 	 * @param authorString
 	 * @return Team
@@ -1395,7 +1398,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			    result.setHasMoreMembers(true);
 			}else{
 			    Person person = Person.NewInstance();
-			    person.setNomenclaturalTitle(author);
+			    author = normalizeNomenclaturalPersonString(author);
+	            person.setNomenclaturalTitle(author);
 			    result.addTeamMember(person);
 			}
 		}
@@ -1403,7 +1407,18 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 
-//	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
+/**
+     * @param author
+     * @return
+     */
+    private String normalizeNomenclaturalPersonString(String author) {
+        if (removeSpaceAfterDot){
+            author = author.replaceAll("\\.\\s", ".");
+        }
+        return author;
+    }
+
+    //	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
 //	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.
 	public IBotanicalName parseCultivar(String fullName) throws StringNotParsableException{
 		ICultivarPlantName result = null;
@@ -1509,4 +1524,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		//nom status handled in nom status parser, otherwise we loose additional information like reference etc.
 		//hybrid relationships handled in hybrid formula and at end of fullNameParser
 	}
+
+    /**
+     * @return the removeSpaceAfterDot
+     */
+    public boolean isRemoveSpaceAfterDot() {
+        return removeSpaceAfterDot;
+    }
 }

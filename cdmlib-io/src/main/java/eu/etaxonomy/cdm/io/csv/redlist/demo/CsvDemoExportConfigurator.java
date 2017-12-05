@@ -108,7 +108,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 
 
 	/**
-	 * This is function is only to have a shortcut for
+	 * This function is only to have a shortcut for
 	 * a preselection for available fields. One can still
 	 * select fields manually.
 	 * <p><p>

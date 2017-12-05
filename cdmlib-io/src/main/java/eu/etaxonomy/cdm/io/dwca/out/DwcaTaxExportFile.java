@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.mueller

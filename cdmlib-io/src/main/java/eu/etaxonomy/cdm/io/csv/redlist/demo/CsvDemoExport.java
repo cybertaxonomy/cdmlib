@@ -57,7 +57,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 @Component
 public class CsvDemoExport extends CsvDemoBase {
-	private static final Logger logger = Logger.getLogger(CsvDemoExport.class);
+
+    private static final long serialVersionUID = 8265935377927091897L;
+
+    private static final Logger logger = Logger.getLogger(CsvDemoExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";

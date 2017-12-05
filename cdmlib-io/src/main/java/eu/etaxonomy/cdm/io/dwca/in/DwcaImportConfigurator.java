@@ -29,7 +29,8 @@ public class DwcaImportConfigurator
     private static final long serialVersionUID = 6932718596034946336L;
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
-	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
+
+    private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 
 	private static final String DEFAULT_REF_TITLE = "DwC-A Import";
 
