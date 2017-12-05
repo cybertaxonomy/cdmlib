@@ -511,7 +511,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			}else{
 				//<> titleCache
 				dedupState.result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
-				nextGroup = new ArrayList<T>();
+				nextGroup = new ArrayList<>();
 				nextGroup.add(object);
 				nUnEqual++;
 			}

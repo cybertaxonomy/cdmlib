@@ -14,10 +14,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 @Component
 
-public class DeleteNonReferencedreferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator, DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
+public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator, DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
 
+    private static final long serialVersionUID = -3514276133181062270L;
 
-	@Override
+    @Override
 	protected void doInvoke(
 			DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
 
@@ -62,14 +63,12 @@ public class DeleteNonReferencedreferencesUpdater extends CdmImportBase<DeleteNo
 	@Override
 	protected boolean doCheck(
 			DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	protected boolean isIgnore(
 			DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
