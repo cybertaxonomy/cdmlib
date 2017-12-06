@@ -159,7 +159,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	}
 
 	@Override
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache() {
+	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
 		Query query = getSession().createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = 'Institution'");
 		return getUuidAndTitleCache(query);
 	}

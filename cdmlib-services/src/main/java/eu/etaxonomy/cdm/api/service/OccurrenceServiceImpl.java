@@ -1306,7 +1306,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             FieldUnit fieldUnit = HibernateProxyHelper.deproxy(specimen, FieldUnit.class);
             GatheringEvent event = fieldUnit.getGatheringEvent();
             fieldUnit.setGatheringEvent(null);
-
+            if (event != null){
+                DeleteResult result = eventService.isDeletable(event.getUuid(), null);
+                if (result.isOk()){
+                    eventService.delete(event);
+                }
+            }
 
         }
         deleteResult.includeResult(delete(specimen));

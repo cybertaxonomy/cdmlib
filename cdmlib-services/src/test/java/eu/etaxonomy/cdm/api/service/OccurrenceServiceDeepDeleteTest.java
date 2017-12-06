@@ -22,13 +22,20 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -45,6 +52,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     private final UUID DERIVED_UNIT_UUID = UUID.fromString("448be6e7-f19c-4a10-9a0a-97aa005f817d");
     private final UUID DNA_SAMPLE_UUID = UUID.fromString("bee4212b-aff1-484e-845f-065c7d6216af");
     private final UUID SEQUENCE_UUID = UUID.fromString("0b867369-de8c-4837-a708-5b7d9f6091be");
+    private final UUID FIELD_UNIT2_UUID = UUID.fromString("ae798108-6483-4d09-900f-7f849c43bcc9");
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OccurrenceServiceDeepDeleteTest.class);
@@ -61,6 +69,10 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     @SpringBeanByType
     private ISequenceService sequenceService;
 
+    @SpringBeanByType
+    private INameService nameService;
+
+
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
     public void testDeepDelete_FieldUnit(){
@@ -73,14 +85,64 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         config.setDeleteChildren(true);
 
         FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
+        GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+        fieldUnit.setGatheringEvent(gatheringEvent);
+        FieldUnit fieldUnit2 = (FieldUnit) occurrenceService.load(FIELD_UNIT2_UUID);
+        fieldUnit2.setGatheringEvent(gatheringEvent);
         DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
 
         //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 4, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
+        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
+        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
+        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+        assertEquals("incorrect number of gathering events", 1, eventService.count(GatheringEvent.class));
+        //delete field unit
+        deleteResult = occurrenceService.delete(fieldUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals("incorrect number of gathering events", 1, eventService.count(GatheringEvent.class));
+
+
+        deleteResult = occurrenceService.delete(fieldUnit2, config);
+        assertEquals(assertMessage, 0, eventService.count(GatheringEvent.class));
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
+    public void testDeepDelete_FieldUnitWithTypeDesignation(){
+
+
+        String assertMessage = "Incorrect number of specimens after deletion.";
+        DeleteResult deleteResult = null;
+        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+        config.setDeleteMolecularData(true);
+        config.setDeleteChildren(true);
+        config.setDeleteFromTypeDesignation(true);
+
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
+        TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Test", null, "test", null, null, null, null, null);
+        SpecimenTypeDesignation specimenTypeDesignation = SpecimenTypeDesignation.NewInstance();
+        specimenTypeDesignation.setTypeSpecimen(dnaSample);
+        name.addTypeDesignation(specimenTypeDesignation, false);
+        nameService.save(name);
+        Pager<TypeDesignationBase> typeDesignations = nameService.getTypeDesignations(name, null, 100, 0);
+        Long oldCount= typeDesignations.getCount();
+        //check initial state
+        assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 4, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
         assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
@@ -88,11 +150,14 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 0, eventService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        typeDesignations = nameService.getTypeDesignations(name, null, 100, 0);
+        Long afterDeleteCount= typeDesignations.getCount();
+        assertTrue(oldCount > afterDeleteCount);
     }
 
     @Test

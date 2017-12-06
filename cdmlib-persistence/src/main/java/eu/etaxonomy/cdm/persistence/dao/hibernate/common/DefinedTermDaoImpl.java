@@ -724,7 +724,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
             query.setParameter("pattern", pattern);
             query.setParameterList("vocs", vocs);
         } else {
-            query = session.createQuery("select uuid, id, titleCache from NamedArea");
+            query = session.createQuery("from NamedArea where vocabulary in :vocs");
+            query.setParameterList("vocs", vocs);
         }
         if (limit != null){
            query.setMaxResults(limit);

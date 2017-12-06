@@ -44,12 +44,19 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
     }
 
     @Override
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache() {
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern) {
         List<UuidAndTitleCache<Amplification>> list = new ArrayList<UuidAndTitleCache<Amplification>>();
         Session session = getSession();
-
-        Query query = session.createQuery("select uuid, id, labelCache from Amplification");
-
+        Query query;
+        if (pattern != null){
+            query = session.createQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern");
+            query.setParameter("pattern", pattern);
+        }else{
+            query = session.createQuery("select uuid, id, labelCache from Amplification");
+        }
+        if (limit != null){
+            query.setMaxResults(limit);
+         }
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 

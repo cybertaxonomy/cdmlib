@@ -97,7 +97,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
         CdmAuthority evalPermission = authorityRequiredFor(targetDomainObject, requiredOperation);
 
-        if (evalPermission.permissionClass != null) {
+        if (evalPermission.getPermissionClass() != null) {
             logger.debug("starting evaluation => ...");
             return evalPermission(authentication, evalPermission, targetDomainObject);
         }else{

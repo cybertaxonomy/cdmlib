@@ -45,8 +45,8 @@ public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplificati
     }
 
     @Override
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache() {
-        return dao.getAmplificationUuidAndLabelCache();
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern) {
+        return dao.getAmplificationUuidAndLabelCache(limit, pattern);
     }
 
     @Override
