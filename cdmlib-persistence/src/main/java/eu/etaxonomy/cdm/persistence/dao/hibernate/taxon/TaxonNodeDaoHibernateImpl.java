@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.UuidAndTitleCacheTaxonComparator;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -155,7 +157,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "select tn.uuid, tn.id, tx.titleCache from TaxonNode tn "
+        String queryString = "select tn.uuid, tn.id, tx.titleCache, tx.name.rank from TaxonNode tn "
         		+ "INNER JOIN tn.taxon as tx "
         		+ "INNER JOIN tn.classification as cls "
         		+ "WHERE tx.titleCache like :pattern ";
@@ -172,6 +174,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
+        if (result != null){
+            Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
+        }
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
