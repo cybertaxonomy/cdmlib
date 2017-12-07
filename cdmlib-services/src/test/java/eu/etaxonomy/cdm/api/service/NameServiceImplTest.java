@@ -786,33 +786,20 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs3 = name3.getTypeDesignations();
 
         NameTypeDesignation desigNew = NameTypeDesignation.NewInstance();
-        Registration registration = Registration.NewInstance("abc", "abc", name3, null);
-        registration.addTypeDesignation(desigNew);
-
-
-        UUID uuidReg = registrationService.saveOrUpdate(registration);
         commitAndStartNewTransaction(tableNames);
-
         name3 = nameService.load(name3.getUuid());
 
-        Set<Registration> regs = name3.getRegistrations();
         Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
-        Assert.assertEquals("name should have 1 registrations", 1, regs.size());
-        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
 
         nameService.deleteTypeDesignation(name3, desig3);
         commitAndStartNewTransaction(tableNames);
-
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
-        regs = name3.getRegistrations();
-        Assert.assertEquals("name3 should have 1 registration", 1, regs.size());
-        Assert.assertEquals("name should have 1 registrations", 1, regs.size());
-        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
+
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -825,6 +812,61 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
     }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testDeleteTypeDesignationWithRegistration() {
+        final String[] tableNames = new String[]{
+                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
+                "SpecimenOrObservationBase"};
+
+        TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+
+        Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
+
+        NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
+        name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
+        this.nameService.update(name3);
+
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        desigs3 = name3.getTypeDesignations();
+
+        NameTypeDesignation desigNew = NameTypeDesignation.NewInstance();
+        Registration registration = Registration.NewInstance("abc", "abc", name3, null);
+        registration.addTypeDesignation(desigNew);
+
+        UUID uuidReg = registrationService.saveOrUpdate(registration);
+        commitAndStartNewTransaction(tableNames);
+
+        name3 = nameService.load(name3.getUuid());
+
+        Set<Registration> regs = name3.getRegistrations();
+        desigs3 = name3.getTypeDesignations();
+        Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
+        Assert.assertEquals("name should have 1 registrations", 1, regs.size());
+        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
+
+        nameService.deleteTypeDesignation(name3, desig3);
+        commitAndStartNewTransaction(tableNames);
+
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+
+        regs = name3.getRegistrations();
+        Assert.assertEquals("name3 should have 1 registration", 1, regs.size());
+        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
+
+        desigs3 = name3.getTypeDesignations();
+
+        nameService.deleteTypeDesignation(name3, desigNew);
+        commitAndStartNewTransaction(tableNames);
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        regs = name3.getRegistrations();
+        desigs3 = name3.getTypeDesignations();
+
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("registration should have 0 type designations",0, regs.iterator().next().getTypeDesignations().size());
+    }
+
 
     @Test
     @DataSet

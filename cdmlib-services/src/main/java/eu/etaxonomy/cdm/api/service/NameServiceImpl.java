@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -237,6 +238,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
             typeDesignation.removeType();
+            if (!typeDesignation.getRegistrations().isEmpty()){
+                for(Object reg: typeDesignation.getRegistrations()){
+                    if (reg instanceof Registration){
+                        ((Registration)reg).removeTypeDesignation(typeDesignation);
+                    }
+                }
+            }
             typeDesignationDao.delete(typeDesignation);
         }
     }
