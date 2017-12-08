@@ -529,7 +529,9 @@ public class FeatureNode extends VersionableEntity
 	public Set<Feature> getDistinctFeaturesRecursive(Set<Feature> features){
 		Feature feature = this.getFeature();
 
-		features.add(feature);
+		if(feature!=null){
+		    features.add(feature);
+		}
 
 		for(FeatureNode childNode : this.getChildNodes()){
 			features.addAll(childNode.getDistinctFeaturesRecursive(features));

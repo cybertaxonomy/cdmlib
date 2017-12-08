@@ -70,15 +70,24 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
      */
     @Override
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
+            String identifierFilterPattern, String taxonNameFilterPattern,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         List<Restriction<? extends Object>> restrictions = new ArrayList<>();
+
         if(submitter != null){
             restrictions.add(new Restriction<>("submitter", MatchMode.EXACT, submitter));
         }
         if(includedStatus != null && !includedStatus.isEmpty()){
             restrictions.add(new Restriction<>("status", MatchMode.EXACT, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
         }
+        if(identifierFilterPattern != null){
+            restrictions.add(new Restriction<>("identifier", MatchMode.LIKE, identifierFilterPattern));
+        }
+        if(taxonNameFilterPattern != null){
+            restrictions.add(new Restriction<>("name.titleCache", MatchMode.LIKE, taxonNameFilterPattern));
+        }
+
 
         long numberOfResults = dao.count(Registration.class, restrictions);
 

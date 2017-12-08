@@ -472,18 +472,36 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param criteria
      */
     private void addRestrictions(List<Restriction<?>> restrictions, Criteria criteria) {
+
         List<Criterion> perProperty = new ArrayList<>(restrictions.size());
+        Map<String, String> aliases = new HashMap<>();
+
         for(Restriction<?> propMatchMode : restrictions){
             Collection<? extends Object> values = propMatchMode.getValues();
             if(values != null && !values.isEmpty()){
                 Criterion[] predicates = new Criterion[values.size()];
                 int i = 0;
                 for(Object v : values){
-                    predicates[i++] = createRestriction(propMatchMode.getPropertyName(), v, propMatchMode.getMatchMode());
+                    String propertyPath = propMatchMode.getPropertyName();
+                    // create aliases if the propertyName is a dot separated property path
+                    String[] props =  propertyPath.split("\\.");
+                    String aliasKey = "";
+                    String alias = null;
+                    for(int p = 0; p < props.length -1; p++){
+                        if(!aliases.containsKey(aliasKey + "_" + props[p])){
+                            alias = props[p] + aliases.size();
+                            aliases.put(aliasKey, alias);
+                            criteria.createAlias(props[p], alias);
+                        }
+                    }
+
+                    String propertyName = alias != null ? alias + "." + props[props.length -1] : propertyPath;
+                    predicates[i++] = createRestriction(propertyName, v, propMatchMode.getMatchMode());
                 }
                 perProperty.add(Restrictions.or(predicates));
             }
         }
+
         if(!perProperty.isEmpty()){
             criteria.add(Restrictions.and(perProperty.toArray(new Criterion[perProperty.size()])));
         }
@@ -497,6 +515,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @return
      */
     private Criterion createRestriction(String propertyName, Object value, MatchMode matchMode) {
+
         Criterion restriction;
         if(matchMode == null) {
             restriction = Restrictions.eq(propertyName, value);
