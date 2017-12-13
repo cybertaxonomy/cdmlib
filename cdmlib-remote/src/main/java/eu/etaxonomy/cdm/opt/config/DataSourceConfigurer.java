@@ -26,9 +26,14 @@ import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
@@ -43,6 +48,10 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 
 /**
  * The <code>DataSourceConfigurer</code> can be used as a replacement for a xml configuration in the application context.
+ * <p>
+ * The id of the loaded data source bean aka the <b>cdm instance name</b> is put into the <b>Spring environment</b> from where it can be retrieved using the
+ * key {@link CDM_DATA_SOURCE_ID}.
+ * <p>
  * Enter the following in your application context configuration in order to enable the <code>DataSourceConfigurer</code>:
  *
 <pre>
@@ -83,6 +92,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     protected static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
 
     /**
+     * key for the spring environment to the datasource bean id aka instance name
+     */
+    public static final String CDM_DATA_SOURCE_ID = "cdm.dataSource.id";
+
+    /**
      * Attribute to configure the name of the data source as set as bean name in the datasources.xml.
      * This name usually is used as the prefix for the webapplication root path.
      * <br>
@@ -120,6 +134,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         beanDefinitionFile = filename;
     }
 
+    @Autowired
+    private ConfigurableEnvironment env;
 
     private String dataSourceId = null;
 
@@ -135,6 +151,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
 
     @Bean
+    @Lazy(false)
     public DataSource dataSource() {
 
         String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
@@ -154,6 +171,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         if(dataSource == null){
             return null;
         }
+
+        MutablePropertySources sources = env.getPropertySources();
+        Properties props = new Properties();
+        props.setProperty(CDM_DATA_SOURCE_ID, dataSourceId);
+        sources.addFirst(new PropertiesPropertySource("cdm-datasource",  props));
 
         // validate correct schema version
         Connection connection  = null;

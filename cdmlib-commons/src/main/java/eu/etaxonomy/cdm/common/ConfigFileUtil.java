@@ -59,6 +59,9 @@ public class ConfigFileUtil {
      */
     public Properties getProperties(String instanceName, String propertiesName) throws IOException {
 
+        if(instanceName == null){
+            throw new NullPointerException();
+        }
         if(props == null){
             props = new Properties();
             File uiPropertiesFile = getPropertiesFile(instanceName, propertiesName);
