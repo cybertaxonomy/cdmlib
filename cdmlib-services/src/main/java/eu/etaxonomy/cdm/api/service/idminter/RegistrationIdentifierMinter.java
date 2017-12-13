@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.idminter;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  */
 public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
+
+    private static final Logger logger = Logger.getLogger(RegistrationIdentifierMinter.class);
 
     enum Method {
         naturalNumberIncrement
@@ -59,6 +62,10 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
      */
     @Override
     synchronized public Identifier<String> mint() throws OutOfIdentifiersException {
+
+        if(identifierFormatString == null){
+            logger.warn("identifierFormatString missing");
+        }
 
         switch(method){
             case naturalNumberIncrement:
