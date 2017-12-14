@@ -34,7 +34,9 @@ public class DerivedUnitConverterTest extends Assert {
         assertEquals("test derived unit", target.getTitleCache());
     }
 
+    @Test
     public void toDerivedUnit() throws DerivedUnitConversionException {
+
         MediaSpecimen du = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
         du.setTitleCache("test media specimen", true);
         DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<DerivedUnit>(du);
