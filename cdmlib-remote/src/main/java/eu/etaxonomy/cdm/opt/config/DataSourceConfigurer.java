@@ -30,7 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
@@ -151,7 +152,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
 
     @Bean
-    @Lazy(false)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public DataSource dataSource() {
 
         String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
