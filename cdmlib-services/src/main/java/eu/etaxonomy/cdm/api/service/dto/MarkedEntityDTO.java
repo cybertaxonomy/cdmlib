@@ -59,7 +59,7 @@ public class MarkedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase
      */
     @Override
     public String toString() {
-        return "(" + marker.typeLabel + "; "  + cdmEntity.getTitleCache() + "; " + cdmEntity.cdmUuid +  ")";
+        return "(" + marker.typeLabel + "; "  + cdmEntity.getTitleCache() + "; " + cdmEntity.getUuid() +  ")";
     }
 
 

@@ -11,11 +11,14 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -100,5 +103,15 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
     * @return
     */
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type);
+
+    /**
+     * @param identifier
+     * @param identifierType
+     * @param matchmode
+     * @param limit
+     * @return
+     */
+    public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(String identifier, DefinedTerm identifierType,
+        MatchMode matchmode, Integer limit);
 
 }

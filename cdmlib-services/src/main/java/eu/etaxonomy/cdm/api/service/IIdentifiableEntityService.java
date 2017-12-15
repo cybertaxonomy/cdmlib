@@ -294,4 +294,17 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
             Class<S> clazz, MarkerType markerType, Boolean markerValue,
             boolean includeEntity, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * @param <S>
+     * @param clazz
+     * @param identifier
+     * @param identifierType
+     * @param matchmode
+     * @param includeEntity
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends T>List<IdentifiedEntityDTO<S >> listByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType,
+            MatchMode matchmode, boolean includeEntity, List<String> propertyPaths, Integer limit);
 }

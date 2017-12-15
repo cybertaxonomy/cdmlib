@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -34,12 +35,14 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -65,6 +68,9 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 
 	@SpringBeanByType
 	private ITaxonService taxonService;
+
+	@SpringBeanByType
+    private IReferenceService referenceService;
 
 	@SpringBeanByType
 	private IClassificationService classificationService;
@@ -106,7 +112,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		IdentifiedEntityDTO<Taxon>.CdmEntity entity = taxonPager.getRecords().get(0).getCdmEntity();
 		Taxon taxon = entity.getEntity();
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), taxon.getUuid());
-		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getCdmUuid());
+		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getUuid());
 		Assert.assertEquals("Taxon should have 1 identifier", 1, taxon.getIdentifiers().size());
 		Identifier<?> identifier = taxon.getIdentifiers().get(0);
 		DefinedTerm type = CdmBase.deproxy(identifier.getType(), DefinedTerm.class);
@@ -195,6 +201,39 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertEquals("1 Synonym should be linked to the according classification", Long.valueOf(1), synPager.getCount());
 		Assert.assertEquals("1 Synonym should be linked to the according classification", 1, synPager.getRecords().size());
 
+	}
+
+	@Test
+    @DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+    public final void testListByIdentifier(){
+        //classification Filter
+
+        List<IdentifiedEntityDTO<Taxon>> taxonPager = taxonService.listByIdentifier(Taxon.class, "ext-1234", null, MatchMode.EXACT, false, null, null);//.listByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null);
+        Assert.assertEquals("Result size for 'ext' should be 1", 1, taxonPager.size());
+     //   Assert.assertEquals("Result size for 'ext' should be 1", 1, taxonPager.getRecords().size());
+        taxonPager = taxonService.listByIdentifier(Taxon.class, "ext-1234", null, MatchMode.EXACT, true, null, null);//.listByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null);
+        Assert.assertEquals("Result size for 'ext' should be 1", 1, taxonPager.size());
+        IdentifiedEntityDTO<Taxon> identifierDTO = taxonPager.get(0);
+        Assert.assertTrue(identifierDTO.getCdmEntity() instanceof UuidAndTitleCache);
+
+        List<IdentifiedEntityDTO<Taxon>> taxPager = taxonService.listByIdentifier(Taxon.class, "ext-cache1", null, MatchMode.EXACT, false, null, null);
+        Assert.assertEquals("Result size for 'ext' should be 1", 1, taxPager.size());
+
+        List<IdentifiedEntityDTO<TaxonBase>> tbPager = taxonService.listByIdentifier(TaxonBase.class, "ext-1234", null, MatchMode.EXACT, false, null, null);
+        Assert.assertEquals("Result size for 'ext' should be 1",1, tbPager.size());
+
+
+        //Synonym
+        List<IdentifiedEntityDTO<Synonym>> synPager = taxonService.listByIdentifier(Synonym.class, "ext-syn", null,  MatchMode.BEGINNING, false, null, null);
+        Assert.assertEquals("There should be 2 synonyms with identifier ext-syn", 2, synPager.size());
+
+        List<IdentifiedEntityDTO<Reference>> referenceList = referenceService.listByIdentifier(Reference.class, "123", null, MatchMode.EXACT, false, null, null);//.listByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null);
+        Assert.assertEquals("Result size for 'ext' should be 1", 1, taxonPager.size());
+
+        referenceList = referenceService.listByIdentifier(Reference.class, "123", null, MatchMode.EXACT, true, null, null);//.listByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null);
+        Assert.assertEquals("Result size for 'ext' should be 1", 1, referenceList.size());
+        IdentifiedEntityDTO<Reference> identifierDTOReference = referenceList.get(0);
+        Assert.assertTrue(identifierDTO.getCdmEntity() instanceof UuidAndTitleCache);
 	}
 
 	@Test
