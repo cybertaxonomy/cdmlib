@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since Jun 23, 2017
  *
  */
+@Ignore
 public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
