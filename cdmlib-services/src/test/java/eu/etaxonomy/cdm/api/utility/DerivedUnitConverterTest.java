@@ -21,6 +21,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -90,6 +91,7 @@ public class DerivedUnitConverterTest extends Assert {
 
 
     @Test
+    @Ignore
     public void toMediaSpecimen() throws DerivedUnitConversionException {
         DerivedUnit du = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         du.setTitleCache("test derived unit", true);
@@ -101,6 +103,7 @@ public class DerivedUnitConverterTest extends Assert {
     }
 
     @Test
+    @Ignore
     public void toDerivedUnit() throws DerivedUnitConversionException {
 
         MediaSpecimen du = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
@@ -1158,6 +1161,17 @@ public class DerivedUnitConverterTest extends Assert {
          */
         @Override
         public List<DerivedUnit> getAllChildDerivatives(UUID specimenUuid) {
+            return null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public <S extends SpecimenOrObservationBase> List<IdentifiedEntityDTO<S>> listByIdentifier(Class<S> clazz,
+                String identifier, DefinedTerm identifierType, MatchMode matchmode, boolean includeEntity,
+                List<String> propertyPaths, Integer limit) {
+            // TODO Auto-generated method stub
             return null;
         }
 
