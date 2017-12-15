@@ -41,7 +41,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     @Test
     @DataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueNoDomain(){
-        printDataSet(System.err, new String[]{"REGISTRATION"});
+
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
         minter.setMinLocalId("100");
@@ -53,7 +53,6 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     @Test
     @DataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueAndString(){
-        printDataSet(System.err, new String[]{"REGISTRATION"});
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
         minter.setMinLocalId("100");
@@ -67,7 +66,6 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     @Test
     @DataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueNewRange(){
-        printDataSet(System.err, new String[]{"REGISTRATION"});
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
         minter.setMinLocalId("300");
@@ -80,7 +78,6 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     @Test
     @DataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueOutOfRange(){
-        printDataSet(System.err, new String[]{"REGISTRATION"});
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
         minter.setMinLocalId("100");
