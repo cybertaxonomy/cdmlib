@@ -69,7 +69,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  *
  * @author n.hoffmann,c.mathew
  * @created 12.03.2009
- * @version 1.0
  */
 public class ConversationHolder {
 
@@ -276,23 +275,14 @@ public class ConversationHolder {
         return transactionStatus != null && !transactionStatus.isCompleted();
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#evict(java.lang.Object object)
-     */
     public void evict(Object object){
         getSession().evict(object);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#refresh(java.lang.Object object)
-     */
     public void refresh(Object object){
         getSession().refresh(object);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#clear()
-     */
     public void clear(){
         getSession().clear();
     }
