@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -18,10 +19,16 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @date 2015-01-19
  *
  */
-public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> {
+public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> implements Serializable{
 
-	public class AlternativeIdentifier{
-		UUID typeUuid;
+	private static final long serialVersionUID = -6993723067086766695L;
+
+
+    public class AlternativeIdentifier implements Serializable{
+
+        private static final long serialVersionUID = -6342783530172264106L;
+
+        UUID typeUuid;
 		String typeLabel;
 		String identifier;
 		public AlternativeIdentifier(DefinedTerm identifierType, String identifier) {
@@ -42,8 +49,8 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}
 
-	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier, UUID entityUuid, String titleCache){
-	    super(entityUuid, titleCache);
+	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier, UUID entityUuid, String titleCache, String abbrevTitleCache){
+	    super(entityUuid, titleCache, abbrevTitleCache);
 	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}
 
@@ -57,6 +64,6 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
      */
     @Override
     public String toString() {
-        return "(" + identifier.typeLabel + "; "  + cdmEntity.getTitleCache() + "; " + cdmEntity.cdmUuid +  ")";
+        return "(" + identifier.typeLabel + "; "  + cdmEntity.getTitleCache() + "; " + cdmEntity.getUuid() +  ")";
     }
 }

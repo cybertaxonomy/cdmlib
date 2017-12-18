@@ -601,11 +601,36 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         	if (includeEntity){
         		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
 		return new DefaultPagerImpl<IdentifiedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
+
+	@Override
+    @Transactional(readOnly = true)
+    public <S extends T> List<IdentifiedEntityDTO<S>> listByIdentifier(
+            Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode,
+            boolean includeEntity, List<String> propertyPaths, Integer limit) {
+
+        Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.findByIdentifier(clazz, identifier, identifierType,
+                    matchmode, includeEntity, limit, 0, propertyPaths);
+        }
+
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
+        for (Object[] daoObj : daoResults){
+            if (includeEntity){
+                result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+            }else{
+                result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+            }
+        }
+        return result;
+    }
+
 
     @Override
     @Transactional(readOnly = true)

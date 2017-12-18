@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
 /**
@@ -19,20 +21,33 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @date 21.09.2016
  *
  */
-public abstract class EntityDTOBase<T extends CdmBase> {
+public abstract class EntityDTOBase<T extends CdmBase> implements Serializable{
 
-    public class CdmEntity{
-        UUID cdmUuid;
-        String titleCache;
+    public class CdmEntity extends UuidAndTitleCache implements Serializable{
+//        UUID cdmUuid;
+//        String titleCache;
         T entity;
         public CdmEntity(UUID cdmUuid, String titleCache, T entity) {
-            this.cdmUuid = cdmUuid;
-            this.titleCache = titleCache;
+//            this.cdmUuid = cdmUuid;
+//            this.titleCache = titleCache;
+            super(cdmUuid, titleCache);
+
             this.entity = entity;
 
         }
-        public UUID getCdmUuid() {return cdmUuid;}
-        public String getTitleCache() {return titleCache;}
+        /**
+         * @param entityUuid
+         * @param object
+         * @param label
+         * @param abbrevTitleCache
+         */
+        public CdmEntity(UUID entityUuid, Object object, String label, String abbrevTitleCache) {
+            super(entityUuid, null, label, abbrevTitleCache);
+
+        }
+//        public UUID getCdmUuid() {return super.getUuid();}
+//        @Override
+//        public String getTitleCache() {return super.getTitleCache();}
         public T getEntity() {return entity;}
     }
 
@@ -44,6 +59,9 @@ public abstract class EntityDTOBase<T extends CdmBase> {
 
     public EntityDTOBase(UUID entityUuid, String label){
         this.cdmEntity = new CdmEntity(entityUuid, label, null);
+    }
+    public EntityDTOBase(UUID entityUuid, String label, String abbrevTitleCache){
+        this.cdmEntity = new CdmEntity(entityUuid, null, label, abbrevTitleCache);
     }
 
     public CdmEntity getCdmEntity() {

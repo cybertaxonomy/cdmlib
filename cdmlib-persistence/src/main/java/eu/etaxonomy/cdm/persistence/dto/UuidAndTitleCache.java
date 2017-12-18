@@ -68,6 +68,9 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 		this.isOrphaned = isOrphaned;
 	}
 
+	public UuidAndTitleCache(UUID uuid, String titleCache) {
+        this( uuid, null, titleCache);
+	}
 
 	/**
 	 * @return the titleCache

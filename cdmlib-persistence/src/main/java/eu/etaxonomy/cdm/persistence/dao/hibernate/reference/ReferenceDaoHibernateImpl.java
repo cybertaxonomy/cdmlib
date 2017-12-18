@@ -23,6 +23,7 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IInProceedings;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 
@@ -149,6 +151,46 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		}
 
 		return list;
+	}
+
+	@Override
+	public List<Object[]> findByIdentifierAbbrev(String identifier, DefinedTermBase identifierType,
+            MatchMode matchmode,Integer limit){
+	    checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+
+
+        String queryString = "SELECT ids.type, ids.identifier, %s FROM %s as c " +
+                " INNER JOIN c.identifiers as ids " +
+                " WHERE (1=1) ";
+        queryString = String.format(queryString, "c.uuid, c.titleCache, c.abbrevTitleCache" , "Reference");
+
+        //Matchmode and identifier
+        if (identifier != null){
+            if (matchmode == null || matchmode == MatchMode.EXACT){
+                queryString += " AND ids.identifier = '"  + identifier + "'";
+            }else {
+                queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
+            }
+        }
+        if (identifierType != null){
+            queryString += " AND ids.type = :type";
+        }
+        //order
+        queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
+
+        Query query = getSession().createQuery(queryString);
+
+        //parameters
+        if (identifierType != null){
+            query.setEntity("type", identifierType);
+        }
+
+
+
+        List<Object[]> results = query.list();
+        //initialize
+
+        return results;
 	}
 
 	@Override
