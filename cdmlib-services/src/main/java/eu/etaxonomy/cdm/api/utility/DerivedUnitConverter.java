@@ -106,7 +106,9 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         n.setCatalogNumber(source.getCatalogNumber());
         n.setCollection(source.getCollection());
         DerivationEvent derivationEvent = source.getDerivedFrom();
-        derivationEvent.getDerivatives().remove(source);
+        if(derivationEvent != null){
+            derivationEvent.getDerivatives().remove(source);
+        }
         n.setDerivedFrom(source.getDerivedFrom());
         source.setDerivedFrom(null);
         n.setExsiccatum(source.getExsiccatum());

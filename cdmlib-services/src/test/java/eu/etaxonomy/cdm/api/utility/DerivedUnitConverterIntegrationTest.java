@@ -56,8 +56,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         du.setTitleCache("test derived unit", true);
         du = (DerivedUnit) service.save(du); // intermediate save is essential for this test
         DerivedUnitConverter<MediaSpecimen> duc = DerivedUnitConverterFactory.createDerivedUnitConverter(du, MediaSpecimen.class);
-        MediaSpecimen target = duc.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
-        service.save(target);
+        duc.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
 
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(MediaSpecimen.class, null, null, null, null).size());
@@ -78,8 +77,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         du.setTitleCache("test media specimen", true);
         DerivedUnitConverter<DerivedUnit> duc = DerivedUnitConverterFactory.createDerivedUnitConverter(du, DerivedUnit.class);
         du = (MediaSpecimen) service.save(du); // intermediate save is essential for this test
-        DerivedUnit target = duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.PreservedSpecimen);
-        service.save(target);
+        duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.PreservedSpecimen);
 
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(DerivedUnit.class, null, null, null, null).size());
