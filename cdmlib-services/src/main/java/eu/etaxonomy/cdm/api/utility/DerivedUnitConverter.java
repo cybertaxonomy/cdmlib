@@ -13,6 +13,9 @@ import java.lang.reflect.Method;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -25,7 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
-    private DerivedUnit du;
+    private DerivedUnit source;
 
     IOccurrenceService service;
 
@@ -37,10 +40,14 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
             throw new NullPointerException();
         }
         this.service = service;
-        this.du = HibernateProxyHelper.deproxy(derivedUnit, DerivedUnit.class);
+        this.source = HibernateProxyHelper.deproxy(derivedUnit, DerivedUnit.class);
+
     }
 
     /**
+     * converts the <code>source</code> <code>DerivedUnit</code> this converter has been created for into a <code>DerivedUnit</code> of the type <code>TARGET</code>.
+     * If the <code>source</code> instance was persisted the target instance will also be written into data base and the source is deleted from there.
+     *
      * @param targetType
      * @param recordBasis
      * @throws DerivedUnitConversionException
@@ -48,9 +55,9 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
     @SuppressWarnings("unchecked")
     public TARGET convertTo(Class<TARGET> targetType, SpecimenOrObservationType recordBasis) throws DerivedUnitConversionException {
 
-        if(du.getClass().equals(targetType)){
+        if(source.getClass().equals(targetType)){
             // nothing to do
-            return (TARGET) du;
+            return (TARGET) source;
         }
 
         if(!isSuppoprtedType(targetType)){
@@ -63,7 +70,7 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         if(!canConvert()){
             throw new DerivedUnitConversionException(
                     String.format("%s can not be converted into %s as long it contains unconvertable non null properties",
-                            du.toString(),
+                            source.toString(),
                             targetType.getName())
                     );
         }
@@ -81,7 +88,10 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         }
 
 
-        service.delete(du);
+        if(source.getId() > 0){
+            service.merge(newInstance);
+            service.delete(source);
+        }
 
         return newInstance;
 
@@ -91,38 +101,47 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
      * @param newInstance
      */
     private void copyPropertiesTo(TARGET n) {
-        n.setAccessionNumber(du.getAccessionNumber());
-        n.setBarcode(du.getBarcode());
-        n.setCatalogNumber(du.getCatalogNumber());
-        n.setCollection(du.getCollection());
-        n.setDerivedFrom(du.getDerivedFrom());
-        n.setExsiccatum(du.getExsiccatum());
-        n.setIndividualCount(du.getIndividualCount());
-        n.setKindOfUnit(du.getKindOfUnit());
-        n.setLifeStage(du.getLifeStage());
-        n.setLsid(du.getLsid());
-        n.setOriginalLabelInfo(du.getOriginalLabelInfo());
-        n.setPreferredStableUri(du.getPreferredStableUri());
-        n.setPreservation(du.getPreservation());
-        n.setPublish(du.isPublish());
-        n.setProtectedIdentityCache(du.isProtectedIdentityCache());
-        n.setProtectedTitleCache(du.isProtectedTitleCache());
-        // n.setRecordBasis(du.getRecordBasis()); // not to copy, this it is set for the new instance explicitly
-        n.setSex(du.getSex());
-        n.setStoredUnder(du.getStoredUnder());
-        n.setTitleCache(du.getTitleCache(), n.isProtectedTitleCache());
-        du.getSources().forEach(s -> n.addSource(s));
-        du.getAnnotations().forEach(a -> n.addAnnotation(a));
-        du.getCredits().forEach(c -> n.addCredit(c));
-        du.getDerivationEvents().forEach(de -> n.addDerivationEvent(de));
-        du.getDescriptions().forEach(d -> n.addDescription(d));
-        du.getDeterminations().forEach(det -> n.addDetermination(det));
-        du.getExtensions().forEach(e -> n.addExtension(e));
-        du.getIdentifiers().forEach(i -> n.addIdentifier(i));
-        du.getMarkers().forEach(m -> n.addMarker(m));
-        du.getRights().forEach(r -> n.addRights(r));
-        n.addSources(du.getSources());
-        du.getSpecimenTypeDesignations().forEach(std -> n.addSpecimenTypeDesignation(std));
+        n.setAccessionNumber(source.getAccessionNumber());
+        n.setBarcode(source.getBarcode());
+        n.setCatalogNumber(source.getCatalogNumber());
+        n.setCollection(source.getCollection());
+        DerivationEvent derivationEvent = source.getDerivedFrom();
+        derivationEvent.getDerivatives().remove(source);
+        n.setDerivedFrom(source.getDerivedFrom());
+        source.setDerivedFrom(null);
+        n.setExsiccatum(source.getExsiccatum());
+        n.setIndividualCount(source.getIndividualCount());
+        n.setKindOfUnit(source.getKindOfUnit());
+        n.setLifeStage(source.getLifeStage());
+        n.setLsid(source.getLsid());
+        n.setOriginalLabelInfo(source.getOriginalLabelInfo());
+        n.setPreferredStableUri(source.getPreferredStableUri());
+        n.setPreservation(source.getPreservation());
+        n.setPublish(source.isPublish());
+        n.setProtectedIdentityCache(source.isProtectedIdentityCache());
+        n.setProtectedTitleCache(source.isProtectedTitleCache());
+        // n.setRecordBasis(source.getRecordBasis()); // not to copy, this it is set for the new instance explicitly
+        n.setSex(source.getSex());
+        n.setStoredUnder(source.getStoredUnder());
+        n.setTitleCache(source.getTitleCache(), n.isProtectedTitleCache());
+        source.getSources().forEach(s -> n.addSource(s));
+        source.getAnnotations().forEach(a -> n.addAnnotation(a));
+        source.getCredits().forEach(c -> n.addCredit(c));
+        source.getDerivationEvents().forEach(de -> n.addDerivationEvent(de));
+        source.getDerivationEvents().clear();
+        source.getDescriptions().forEach(d -> n.addDescription(d));
+        source.getDeterminations().forEach(det -> n.addDetermination(det));
+        source.getDeterminations().clear();
+        source.getExtensions().forEach(e -> n.addExtension(e));
+        source.getIdentifiers().forEach(i -> n.addIdentifier(i));
+        source.getMarkers().forEach(m -> n.addMarker(m));
+        source.getRights().forEach(r -> n.addRights(r));
+        n.addSources(source.getSources());
+        for(SpecimenTypeDesignation std :  source.getSpecimenTypeDesignations()) {
+            std.setTypeSpecimen(n);
+            n.addSpecimenTypeDesignation(std);
+         }
+        source.getSpecimenTypeDesignations().clear();
 
     }
 
@@ -139,12 +158,13 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
      */
     private boolean canConvert() {
 
-        if(du.getClass().equals(DerivedUnit.class)) {
+        if(source.getClass().equals(DerivedUnit.class)) {
             return true;
         }
-        if(du.getClass().equals(MediaSpecimen.class)){
-            MediaSpecimen ms = (MediaSpecimen)du;
-            return ms.getMediaSpecimen() == null;
+        if(source.getClass().equals(MediaSpecimen.class)){
+            MediaSpecimen ms = (MediaSpecimen)source;
+            Media media = ms.getMediaSpecimen();
+            return media == null;
         }
 
         return false;
