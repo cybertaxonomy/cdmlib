@@ -12,8 +12,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since Jun 23, 2017
  *
  */
-@Ignore
+@DataSet // the dataset cleans up the DerivedUnits created in the tests
 public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
@@ -36,6 +36,12 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
 
     @Test
     public void toMediaSpecimen_issue7114() throws DerivedUnitConversionException {
+
+        // NOTE:
+        // normally we would run this test as CdmIntegrationTest, but due to bug #7138
+        // this is not possible, so we use CdmTransactionalIntegrationTest as super class
+        // and stop the transaction at the beginning of the test
+        commit();
 
         assertEquals(0, service.list(null, null, null, null, null).size());
 
@@ -52,6 +58,12 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
 
     @Test
     public void toDerivedUnit_issue7114() throws DerivedUnitConversionException {
+
+        // NOTE:
+        // normally we would run this test as CdmIntegrationTest, but due to bug #7138
+        // this is not possible, so we use CdmTransactionalIntegrationTest as super class
+        // and stop the transaction at the beginning of the test
+        commit();
 
         assertEquals(0, service.list(null, null, null, null, null).size());
 
