@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
@@ -256,6 +257,29 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
             sb.append('{').append(targetUuid.toString()).append('}');
         }
         return sb.toString() ;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o instanceof CdmAuthority){
+            return toString().equals(((CdmAuthority)o).toString());
+        }
+        return false;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(this.permissionClass)
+                .append(this.property)
+                .append(this.operation)
+                .append(this.targetUuid)
+                .toHashCode();
     }
 
     /**
