@@ -152,16 +152,15 @@ public class WorkingSet extends IdentifiableEntity<IdentifiableEntityDefaultCach
         return taxonSubtreeFilter;
     }
 
-	//make public if needed
-    private void setTaxonSubtreeFilter(Set<TaxonNode> taxonSubtreeFilter) {
+    public void setTaxonSubtreeFilter(Set<TaxonNode> taxonSubtreeFilter) {
         this.taxonSubtreeFilter = taxonSubtreeFilter;
     }
 
-    public void  addTaxonSubtree(TaxonNode subtree) {
+    public void addTaxonSubtree(TaxonNode subtree) {
         this.taxonSubtreeFilter.add(subtree);
     }
 
-    public void  removeTaxonSubtree(TaxonNode subtree) {
+    public void removeTaxonSubtree(TaxonNode subtree) {
         this.taxonSubtreeFilter.remove(subtree);
     }
 
