@@ -18,7 +18,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -89,6 +88,21 @@ public class FirstDataInserter extends AbstractDataInserter {
             new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
             new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE).toString(),
             new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(CdmPermissionClass.COLLECTION, CREATE_READ_UPDATE_DELETE).toString(),
+    };
+
+    /**
+     * This group will in future replace the group Editor, see issue #7150
+     */
+    public static final String[] EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES = new String[]{
+            new CdmAuthority(CdmPermissionClass.REFERENCE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.TAXONNAME, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.TAXONBASE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ).toString(),
+            new CdmAuthority(CdmPermissionClass.COLLECTION, CREATE_READ).toString(),
     };
 
     public static final String[] PROJECT_MANAGER_GROUP_AUTHORITIES = new String[]{
@@ -205,9 +219,10 @@ public class FirstDataInserter extends AbstractDataInserter {
     private void checkDefaultGroups(){
 
         progressMonitor.subTask("Checking default groups");
-        checkGroup(Group.GROUP_EDITOR_UUID, "Editor", EDITOR_GROUP_AUTHORITIES);
-        checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, "ProjectManager", PROJECT_MANAGER_GROUP_AUTHORITIES);
-        checkGroup(Group.GROUP_ADMIN_UUID, "Admin", ADMIN_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_EDITOR_UUID, Group.GROUP_EDITOR_NAME, EDITOR_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID, Group.GROUP_EDITOR_EXTENDED_CREATE_NAME, EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES);
         progressMonitor.worked(1);
     }
 
@@ -223,7 +238,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             group.setUuid(groupUuid);
             logger.info("New Group '" + groupName + "' created");
         }
-        group.setName(groupName); // force name
+        group.setName(groupName); // force default name
 
         Set<GrantedAuthority> grantedAuthorities = group.getGrantedAuthorities();
 

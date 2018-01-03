@@ -45,6 +45,7 @@
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNameVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.ReferenceVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CollectionVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TeamOrPersonBaseVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.RegistrationVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.SpecimenOrObservationBaseVoter" />

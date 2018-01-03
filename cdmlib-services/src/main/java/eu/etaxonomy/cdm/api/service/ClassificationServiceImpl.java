@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -160,6 +161,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	cloneTaxon.setSec(reference);
 		String microReference = null;
 		List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
+		HHH_9751_Util.removeAllNull(originalChildNodes);
 
 		//add relation between taxa
 		if (relationshipType != null){
