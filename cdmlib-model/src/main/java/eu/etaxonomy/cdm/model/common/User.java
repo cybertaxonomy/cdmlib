@@ -125,7 +125,7 @@ public class User extends CdmBase implements UserDetails {
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
     @NotAudited
-    protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
+    protected Set<GrantedAuthority> grantedAuthorities = new HashSet<>();  //authorities of this user only
 
     @XmlElementWrapper(name = "Groups")
     @XmlElement(name = "Group")
@@ -135,7 +135,7 @@ public class User extends CdmBase implements UserDetails {
         @Cascade({CascadeType.REFRESH, CascadeType.SAVE_UPDATE,CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
     @IndexedEmbedded(depth = 1)
     @NotAudited
-    protected Set<Group> groups = new HashSet<Group>();
+    protected Set<Group> groups = new HashSet<>();
 
     @XmlElement(name = "Enabled")
     protected boolean enabled;
