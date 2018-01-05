@@ -65,9 +65,9 @@ public class NonViralNameParserImpl
 	final static boolean MAKE_NOT_EMPTY = false;
 
 	private final boolean authorIsAlwaysTeam = false;
-	private final boolean removeSpaceAfterDot = false;
+	private boolean removeSpaceAfterDot = false;
 
-	public static NonViralNameParserImpl NewInstance(){
+    public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
 	}
 
@@ -1525,10 +1525,18 @@ public class NonViralNameParserImpl
 		//hybrid relationships handled in hybrid formula and at end of fullNameParser
 	}
 
+
     /**
-     * @return the removeSpaceAfterDot
+     * If <code>true</code> author names are parsed such that spaces after the abbreviated
+     * firstname are removed (IPNI style). see #7094
      */
     public boolean isRemoveSpaceAfterDot() {
         return removeSpaceAfterDot;
+    }
+    /**
+     * @see #isRemoveSpaceAfterDot()
+     */
+    public void setRemoveSpaceAfterDot(boolean removeSpaceAfterDot) {
+        this.removeSpaceAfterDot = removeSpaceAfterDot;
     }
 }
