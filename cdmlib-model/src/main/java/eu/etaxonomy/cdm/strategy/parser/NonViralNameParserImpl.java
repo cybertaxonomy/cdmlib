@@ -65,7 +65,7 @@ public class NonViralNameParserImpl
 	final static boolean MAKE_NOT_EMPTY = false;
 
 	private final boolean authorIsAlwaysTeam = false;
-	private final boolean removeSpaceAfterDot = true;
+	private final boolean removeSpaceAfterDot = false;
 
 	public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
