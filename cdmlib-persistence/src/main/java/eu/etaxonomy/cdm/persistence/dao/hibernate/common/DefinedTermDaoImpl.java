@@ -729,7 +729,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
             query.setParameter("pattern", pattern);
 
         } else {
-            query = session.createQuery("from NamedArea where vocabulary in :vocs");
+            query = session.createQuery("FROM NamedArea WHERE vocabulary IN :vocs");
             query.setParameterList("vocs", vocs);
         }
         if (limit != null){
