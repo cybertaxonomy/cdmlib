@@ -45,7 +45,7 @@ public enum CdmLightExportTable {
     protected static final String PARENT_FK = "Parent_FK";
     protected static final String SEC_REFERENCE_FK = "SecReference_FK";
     protected static final String SEC_REFERENCE = "SecReference";
-
+    protected static final String IS_PRO_PARTE = "IsProParteSynonym";
     //Reference
     protected static final String REFERENCE_ID = "Reference_ID";
     protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
