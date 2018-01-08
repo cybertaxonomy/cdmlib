@@ -192,7 +192,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     }
 
     /**
-     * Returns "true" if the ProParte flag is set.
+     * Returns "true" if the <cod>partial</code> flag is set.
      * This indicates that the {@link name.TaxonName taxon name} used as <code>this</code>
      * {@link Synonym synonym} designated originally a real taxon which later has
      * been lumped together with another one. In this case the
