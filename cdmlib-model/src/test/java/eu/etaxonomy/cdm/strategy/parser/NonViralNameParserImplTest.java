@@ -370,8 +370,7 @@ public class NonViralNameParserImplTest {
         name = parser.parseFullName(fullNameString);
         assertFalse(name.hasProblem());
         assertNotNull(name.getCombinationAuthorship());
-        //removing space since #7094
-        assertEquals("H.Keng", name.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("H. Keng", name.getCombinationAuthorship().getNomenclaturalTitle());
 
         //name without combination  author  , only to check if above fix for #5618 works correctly
         fullNameString = "Gordonia moaensis (Vict.)";
@@ -566,16 +565,20 @@ public class NonViralNameParserImplTest {
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        //remove space since #7094
-        assertEquals(nameStr.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         name1 = parser.parseReferencedName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
+        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
+
         //remove space since #7094
+        parser.setRemoveSpaceAfterDot(true);
+        name1 = parser.parseReferencedName(nameStr);
         assertEquals(nameStr.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
+        parser.setRemoveSpaceAfterDot(false);
 
     }
 
@@ -2034,8 +2037,7 @@ public class NonViralNameParserImplTest {
                 + " in Mem. NY. Bot. Gard. 22: 75. 1972");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        //remove space since #7094
-        assertEquals( "W.R.Anderson", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "W.R. Anderson", combinationAuthor.getNomenclaturalTitle());
         nomRef = (Reference)name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("22", nomRef.getVolume());
@@ -2129,8 +2131,7 @@ public class NonViralNameParserImplTest {
                 + " in Phytologia 26 (6): 488-489, f. 1973");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        //remove space since #7094
-        assertEquals( "L.O.Williams", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "L.O. Williams", combinationAuthor.getNomenclaturalTitle());
         nomRef = (Reference)name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("26 (6)", nomRef.getVolume());

@@ -122,7 +122,7 @@ public class IntextReference extends VersionableEntity {
 	private int endPos;
 
 
-    private enum CDM_INTEXT_CLASS{
+    public enum CDM_INTEXT_CLASS{
         REFERENCE("reference"),
         TAXONNAME("name"),
         AGENT("agent"),

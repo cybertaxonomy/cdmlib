@@ -693,7 +693,12 @@ public class CdmLightClassificationExport
            csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, syn.getSec());
            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(syn.getSec());
-
+           if (syn.isProParte()) {
+        	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "1";
+           }else {
+        	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
+           }
+  
            state.getProcessor().put(table, syn, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling synonym " +
