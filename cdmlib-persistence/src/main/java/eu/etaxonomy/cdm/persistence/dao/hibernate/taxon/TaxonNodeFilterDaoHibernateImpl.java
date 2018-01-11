@@ -15,9 +15,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
@@ -33,6 +35,9 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
+
+    @Autowired
+    private IDefinedTermDao termDao;
 
     public TaxonNodeFilterDaoHibernateImpl() {
         super(TaxonNode.class);
@@ -86,8 +91,11 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         String classificationFilter = getClassificationFilter(filter);
         String taxonFilter = getTaxonFilter(filter);
         String rootNoteFilter = getRootNodeFilter(filter);
+        String rankMaxFilter = getRankMaxFilter(filter);
+        String rankMinFilter = getRankMinFilter(filter);
         String fullFilter = getFullFilter(subtreeFilter, taxonNodeFilter,
-                classificationFilter, taxonFilter, rootNoteFilter);
+                classificationFilter, taxonFilter,
+                rankMaxFilter, rankMinFilter, rootNoteFilter);
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
         String fullQuery = select + from + " WHERE " + fullFilter + groupBy;
@@ -116,13 +124,15 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
      * @param taxonNodeFilter
      * @param classificationFilter
      * @param taxonFilter
+     * @param rankMinFilter
+     * @param rankMaxFilter
      * @return
      */
     private String getFullFilter(String subtreeFilter, String taxonNodeFilter, String classificationFilter,
-            String taxonFilter, String rootNodeFilter) {
+            String taxonFilter, String rankMaxFilter, String rankMinFilter, String rootNodeFilter) {
         String result = " (1=1 ";
         result = CdmUtils.concat(") AND (", result, subtreeFilter, taxonNodeFilter,
-                classificationFilter, taxonFilter, rootNodeFilter) + ") ";
+                classificationFilter, taxonFilter, rankMaxFilter, rankMinFilter, rootNodeFilter) + ") ";
         return result;
     }
 
@@ -174,6 +184,23 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
+    private String getRankMaxFilter(TaxonNodeFilter filter) {
+        String result = "";
+        LogicFilter<Rank> rankMaxFilter = filter.getRankMax();
+        UUID rankUuid = rankMaxFilter.getUuid();
+        Rank rank = (Rank) termDao.load(rankUuid);
+        result = String.format("(tn.taxon.name.rank.orderIndex >= %s)", rank.getOrderIndex());
+        return result;
+    }
+
+    private String getRankMinFilter(TaxonNodeFilter filter) {
+        String result = "";
+        LogicFilter<Rank> rankMaxFilter = filter.getRankMin();
+        UUID rankUuid = rankMaxFilter.getUuid();
+        Rank rank = (Rank) termDao.load(rankUuid);
+        result = String.format("(tn.taxon.name.rank.orderIndex <= %s)", rank.getOrderIndex());
+        return result;
+    }
 
     private String getClassificationFilter(TaxonNodeFilter filter) {
         String result = "";

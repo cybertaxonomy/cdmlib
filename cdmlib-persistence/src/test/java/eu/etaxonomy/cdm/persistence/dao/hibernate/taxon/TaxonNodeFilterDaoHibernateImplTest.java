@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +15,9 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -56,14 +61,22 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
      */
     @Before
     public void setUp() throws Exception {
+        /*
+         * classification 1
+         *  - node1 (taxon1, Genus)
+         *   - node3 (taxon3, Species)
+         *    - node4 (taxon4, Subspecies)
+         *    - node5 (taxon5, Subspecies)
+         *  - node2 (taxon2, Family)
+         */
         classification1 = Classification.NewInstance("TestClassification");
         Reference citation = null;
         String microCitation = null;
-        taxon1 = Taxon.NewInstance(null, null);
-        taxon2 = Taxon.NewInstance(null, null);
-        taxon3 = Taxon.NewInstance(null, null);
-        taxon4 = Taxon.NewInstance(null, null);
-        taxon5 = Taxon.NewInstance(null, null);
+        taxon1 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.GENUS(), null, null, null, null, null, null, null, null), null);
+        taxon2 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.FAMILY(), null, null, null, null, null, null, null, null), null);
+        taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), null, null, null, null, null, null, null, null), null);
+        taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+        taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
         node1= taxonNodeDao.save(node1);
 
@@ -85,6 +98,36 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         classificationDao.save(classification1);
 
 
+    }
+
+    @Test
+    public void testListUuidsByRank() {
+        String message = "wrong number of nodes filtered";
+
+        TaxonNodeFilter filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.GENUS());
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.KINGDOM());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 3, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));
+        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.FAMILY(), Rank.FAMILY());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.VARIETY(), Rank.SPECIES());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 3, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertTrue(listUuid.contains(node5.getUuid()));
     }
 
     @Test
