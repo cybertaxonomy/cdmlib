@@ -371,7 +371,19 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //oldTaxonNode.delete();
         return result;
     }
-
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode( Set<UUID> oldTaxonNodeUuids,
+            UUID newAcceptedTaxonNodeUUIDs,
+            SynonymType synonymType,
+            Reference citation,
+            String citationMicroReference) {
+    	UpdateResult result = new UpdateResult();
+    	for (UUID nodeUuid: oldTaxonNodeUuids) {
+    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, citationMicroReference));
+    	}
+    	return result;
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -888,6 +900,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         monitorThread.start();
         return uuid;
     }
+
+	
 
 
 
