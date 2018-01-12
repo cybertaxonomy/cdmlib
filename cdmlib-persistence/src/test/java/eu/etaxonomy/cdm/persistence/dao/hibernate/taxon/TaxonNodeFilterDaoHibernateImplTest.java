@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -10,17 +12,29 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -38,6 +52,14 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @SpringBeanByType
     private ITaxonNodeFilterDao filterDao;
 
+    @SpringBeanByType
+    private IDefinedTermDao termDao;
+
+
+    private final UUID europeUuid = UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b");
+    private final UUID germanyUuid = UUID.fromString("7b7c2db5-aa44-4302-bdec-6556fd74b0b9");
+    private final UUID denmarkUuid = UUID.fromString("f818c97e-fd61-42fe-9d75-d433f8cb349c");
+    private final UUID franceUuid = UUID.fromString("41c5129a-3465-42cc-b016-59ab9ffad71a");
 
     private Classification classification1;
     private TaxonNode node1;
@@ -56,14 +78,32 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
      */
     @Before
     public void setUp() throws Exception {
+        /*
+         * classification 1
+         *  - node1 (taxon1, Genus, Europe)
+         *   - node3 (taxon3, Species, Germany)
+         *    - node4 (taxon4, Subspecies, Denmark)
+         *    - node5 (taxon5, Subspecies)
+         *  - node2 (taxon2, Family, France)
+         */
         classification1 = Classification.NewInstance("TestClassification");
         Reference citation = null;
         String microCitation = null;
-        taxon1 = Taxon.NewInstance(null, null);
-        taxon2 = Taxon.NewInstance(null, null);
-        taxon3 = Taxon.NewInstance(null, null);
-        taxon4 = Taxon.NewInstance(null, null);
-        taxon5 = Taxon.NewInstance(null, null);
+        taxon1 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.GENUS(), null, null, null, null, null, null, null, null), null);
+        taxon2 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.FAMILY(), null, null, null, null, null, null, null, null), null);
+        taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), null, null, null, null, null, null, null, null), null);
+        taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+        taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+
+        NamedArea europe = (NamedArea) termDao.load(europeUuid);
+        NamedArea germany = (NamedArea) termDao.load(germanyUuid);
+        NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
+        NamedArea france = (NamedArea) termDao.load(franceUuid);
+        TaxonDescription.NewInstance(taxon1).addElement(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon3).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon4).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon2).addElement(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE()));
+
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
         node1= taxonNodeDao.save(node1);
 
@@ -75,6 +115,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         taxonNodeDao.save(node4);
         node5 = node3.addChildTaxon(taxon5, citation, microCitation);
         node5 = taxonNodeDao.save(node5);
+
         //MergeResult result = taxonNodeDao.merge(node5, true);
         //node5 = (TaxonNode) result.getMergedEntity();
 
@@ -85,6 +126,75 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         classificationDao.save(classification1);
 
 
+    }
+
+    @Test
+    public void testListUuidsByAreas() {
+        String message = "wrong number of nodes filtered";
+
+        NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
+        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97")), NamedArea.class);
+        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(UUID.fromString("9444016a-b334-4772-8795-ed4019552087")), NamedArea.class);
+        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
+
+        TaxonNodeFilter filter = new TaxonNodeFilter(europe);
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 4, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));
+        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+
+        filter = new TaxonNodeFilter(germany);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(middleEurope);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(africa);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 0, listUuid.size());
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    })
+    public void testListUuidsByRank() {
+        String message = "wrong number of nodes filtered";
+
+        TaxonNodeFilter filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.GENUS());
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.KINGDOM());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 3, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));
+        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.FAMILY(), Rank.FAMILY());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.VARIETY(), Rank.SPECIES());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 3, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertTrue(listUuid.contains(node5.getUuid()));
+
+        filter = new TaxonNodeFilter(Rank.KINGDOM(), Rank.ORDER());
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 0, listUuid.size());
     }
 
     @Test
