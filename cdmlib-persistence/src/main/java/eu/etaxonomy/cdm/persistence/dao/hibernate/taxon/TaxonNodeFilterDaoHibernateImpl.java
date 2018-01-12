@@ -186,19 +186,23 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 
     private String getRankMaxFilter(TaxonNodeFilter filter) {
         String result = "";
-        LogicFilter<Rank> rankMaxFilter = filter.getRankMax();
-        UUID rankUuid = rankMaxFilter.getUuid();
-        Rank rank = (Rank) termDao.load(rankUuid);
-        result = String.format("(tn.taxon.name.rank.orderIndex >= %s)", rank.getOrderIndex());
+        LogicFilter<Rank> rankFilter = filter.getRankMax();
+        if(rankFilter!=null){
+            UUID rankUuid = rankFilter.getUuid();
+            Rank rank = (Rank) termDao.load(rankUuid);
+            result = String.format("(tn.taxon.name.rank.orderIndex >= %s)", rank.getOrderIndex());
+        }
         return result;
     }
 
     private String getRankMinFilter(TaxonNodeFilter filter) {
         String result = "";
-        LogicFilter<Rank> rankMaxFilter = filter.getRankMin();
-        UUID rankUuid = rankMaxFilter.getUuid();
-        Rank rank = (Rank) termDao.load(rankUuid);
-        result = String.format("(tn.taxon.name.rank.orderIndex <= %s)", rank.getOrderIndex());
+        LogicFilter<Rank> rankFilter = filter.getRankMin();
+        if(rankFilter!=null){
+            UUID rankUuid = rankFilter.getUuid();
+            Rank rank = (Rank) termDao.load(rankUuid);
+            result = String.format("(tn.taxon.name.rank.orderIndex <= %s)", rank.getOrderIndex());
+        }
         return result;
     }
 
