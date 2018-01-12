@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -419,6 +420,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
         Classification classification = null;
         List<TaxonNode> taxonNodes = new ArrayList<TaxonNode>(list);
+        
         for (TaxonNode treeNode:taxonNodes){
         	if (treeNode != null){
 
@@ -430,6 +432,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             		List<TaxonNode> children = new ArrayList<TaxonNode> ();
             		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
         			children.addAll(childNodesList);
+        			//To avoid NPE when child is also in list of taxonNodes, remove it from the list
+        			Iterator<TaxonNode> it = taxonNodes.iterator();
+        			for (TaxonNode child: children) {
+        				while (it.hasNext()) {
+        					if (it.next().equals(child)) {
+        						it.remove();
+        					}
+        				}
+        			}
         			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
         			boolean childHandling = (compare == 0)? true: false;
             		if (childHandling){
