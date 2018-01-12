@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -203,6 +204,44 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         registrationList = registrationDao.list( fullNullReferenceOptional, statusList, null, null,null);
         assertEquals("In total there should be 6 registration with status preparation", 6, registrationList.size());
 
+    }
+
+    @Test
+    public void testListWithSections() {
+        // test nomRef as section
+        Reference journal = ReferenceFactory.newJournal();
+        Reference section = ReferenceFactory.newSection();
+        section.setInReference(journal);
+        TaxonName nameInJournal = TaxonNameFactory.NewBotanicalInstance(null);
+        nameInJournal.setNomenclaturalReference(journal);
+        TaxonName nameInSection = TaxonNameFactory.NewBotanicalInstance(null);
+        nameInSection.setNomenclaturalReference(section);
+        SpecimenTypeDesignation desigInJournal = SpecimenTypeDesignation.NewInstance();
+        desigInJournal.setCitation(journal);
+        SpecimenTypeDesignation desigInSection = SpecimenTypeDesignation.NewInstance();
+        desigInSection.setCitation(section);
+
+        Registration registration1 = Registration.NewInstance();
+        registration1.setName(nameInSection);
+        registrationDao.save(registration1);
+
+        Registration registration2 = Registration.NewInstance();
+        registration2.setName(nameInJournal);
+        registrationDao.save(registration2);
+
+        Registration registration3 = Registration.NewInstance();
+        registration3.addTypeDesignation(desigInSection);
+        registrationDao.save(registration3);
+
+        Registration registration4 = Registration.NewInstance();
+        registration4.addTypeDesignation(desigInJournal);
+        registrationDao.save(registration4);
+
+        List journalRegistrationList = registrationDao.list( Optional.of(journal), null, null, null,null);
+        Assert.assertEquals(4, journalRegistrationList.size());
+
+        List sectionRegistrationList = registrationDao.list( Optional.of(section), null, null, null,null);
+        Assert.assertEquals(2, sectionRegistrationList.size());
     }
 
     /**
