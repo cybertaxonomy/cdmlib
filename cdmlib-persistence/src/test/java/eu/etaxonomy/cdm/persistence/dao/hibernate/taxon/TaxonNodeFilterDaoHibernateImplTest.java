@@ -91,6 +91,16 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), null, null, null, null, null, null, null, null), null);
         taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
         taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+
+        NamedArea europe = (NamedArea) termDao.load(europeUuid);
+        NamedArea germany = (NamedArea) termDao.load(germanyUuid);
+        NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
+        NamedArea france = (NamedArea) termDao.load(franceUuid);
+        TaxonDescription.NewInstance(taxon1).addElement(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon3).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon4).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon2).addElement(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE()));
+
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
         node1= taxonNodeDao.save(node1);
 
@@ -103,14 +113,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         node5 = node3.addChildTaxon(taxon5, citation, microCitation);
         node5 = taxonNodeDao.save(node5);
 
-        NamedArea europe = (NamedArea) termDao.load(europeUuid);
-        NamedArea germany = (NamedArea) termDao.load(germanyUuid);
-        NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
-        NamedArea france = (NamedArea) termDao.load(franceUuid);
-        TaxonDescription.NewInstance(taxon1).addElement(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon3).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon4).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon2).addElement(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE()));
         //MergeResult result = taxonNodeDao.merge(node5, true);
         //node5 = (TaxonNode) result.getMergedEntity();
 
