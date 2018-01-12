@@ -159,6 +159,7 @@ public class TaxonNodeFilter implements Serializable{
     public void reset(){
         subtrees = new ArrayList<>();
         resetArea();
+        resetRanks();
         resetDistributionStatus();
         resetTaxonNodes();
         resetClassifications();
@@ -183,6 +184,11 @@ public class TaxonNodeFilter implements Serializable{
 
     private void resetArea() {
         areaFilter = new ArrayList<>();
+    }
+
+    private void resetRanks() {
+        rankMin = null;
+        rankMax = null;
     }
 
 //*************************************
