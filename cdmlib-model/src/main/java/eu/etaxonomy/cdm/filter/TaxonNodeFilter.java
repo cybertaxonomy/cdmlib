@@ -19,6 +19,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -37,6 +38,8 @@ public class TaxonNodeFilter implements Serializable{
     private List<LogicFilter<TaxonNode>> taxonNodes = new ArrayList<>();
     private List<LogicFilter<Classification>> classifications = new ArrayList<>();
     private List<LogicFilter<Taxon>> taxa = new ArrayList<>();
+    private LogicFilter<Rank> rankMin = null;
+    private LogicFilter<Rank> rankMax = null;
 
     private List<LogicFilter<NamedArea>> areaFilter = new ArrayList<>();
 
@@ -76,6 +79,10 @@ public class TaxonNodeFilter implements Serializable{
         return new TaxonNodeFilter().orTaxon(taxon);
     }
 
+    public static TaxonNodeFilter NewRankInstance(Rank rankMin, Rank rankMax){
+        return new TaxonNodeFilter().orRank(rankMin, rankMax);
+    }
+
     public static TaxonNodeFilter NewInstance(Collection<UUID> classificationUuids,
             Collection<UUID> subtreeUuids, Collection<UUID> taxonNodeUuids,
             Collection<UUID> taxonUuids){
@@ -113,10 +120,26 @@ public class TaxonNodeFilter implements Serializable{
         subtrees.add(filter);
     }
 
+    public TaxonNodeFilter(Rank rankMin, Rank rankMax){
+        reset();
+        if(rankMin!=null){
+            this.rankMin = new LogicFilter<Rank>(rankMin);
+        }
+        if(rankMax!=null){
+            this.rankMax = new LogicFilter<Rank>(rankMax);
+        }
+    }
+
     public TaxonNodeFilter(Classification classification){
         reset();
         LogicFilter<Classification> filter = new LogicFilter<>(classification);
         classifications.add(filter);
+    }
+
+    public TaxonNodeFilter(NamedArea area){
+        reset();
+        LogicFilter<NamedArea> filter = new LogicFilter<>(area);
+        areaFilter.add(filter);
     }
 
     public TaxonNodeFilter(Taxon taxon){
@@ -136,6 +159,7 @@ public class TaxonNodeFilter implements Serializable{
     public void reset(){
         subtrees = new ArrayList<>();
         resetArea();
+        resetRanks();
         resetDistributionStatus();
         resetTaxonNodes();
         resetClassifications();
@@ -160,6 +184,11 @@ public class TaxonNodeFilter implements Serializable{
 
     private void resetArea() {
         areaFilter = new ArrayList<>();
+    }
+
+    private void resetRanks() {
+        rankMin = null;
+        rankMax = null;
     }
 
 //*************************************
@@ -228,6 +257,16 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    public TaxonNodeFilter orRank(Rank rankMin, Rank rankMax){
+        if(rankMin!=null){
+            this.rankMin = new LogicFilter<Rank>(rankMin);
+        }
+        if(rankMax!=null){
+            this.rankMax = new LogicFilter<>(rankMax);
+        }
+        return this;
+    }
+
     public TaxonNodeFilter orClassification(Classification classification){
         classifications.add( new LogicFilter<>(classification, Op.OR));
         return this;
@@ -244,18 +283,20 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
-    public TaxonNodeFilter set(NamedArea area){
-        resetArea();
-        areaFilter.add( new LogicFilter<>(area, Op.AND));
-        return this;
-    }
-
     public boolean isIncludeRootNodes() {
         return includeRootNodes;
     }
     public TaxonNodeFilter setIncludeRootNodes(boolean includeRootNodes) {
         this.includeRootNodes = includeRootNodes;
         return this;
+    }
+
+    public LogicFilter<Rank> getRankMax() {
+        return rankMax;
+    }
+
+    public LogicFilter<Rank> getRankMin() {
+        return rankMin;
     }
 
 }
