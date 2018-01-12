@@ -132,6 +132,12 @@ public class TaxonNodeFilter implements Serializable{
         classifications.add(filter);
     }
 
+    public TaxonNodeFilter(NamedArea area){
+        reset();
+        LogicFilter<NamedArea> filter = new LogicFilter<>(area);
+        areaFilter.add(filter);
+    }
+
     public TaxonNodeFilter(Taxon taxon){
         reset();
         LogicFilter<Taxon> filter = new LogicFilter<>(taxon);
