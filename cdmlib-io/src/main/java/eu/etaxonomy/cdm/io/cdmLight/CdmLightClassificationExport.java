@@ -208,6 +208,10 @@ public class CdmLightClassificationExport
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
         }else{
             Taxon taxon = taxonNode.getTaxon();
+            if (state.getConfig().isOnlyPublishedTaxa() && !taxon.isPublish()){
+                return;
+            }
+
              try{
                 TaxonName name = taxon.getName();
                 handleName(state, name);
@@ -681,7 +685,9 @@ public class CdmLightClassificationExport
      */
     private void handleSynonym(CdmLightExportState state, Synonym syn) {
        try {
-
+           if (!syn.isPublish() && state.getConfig().isOnlyPublishedTaxa()){
+               return;
+           }
            TaxonName name = syn.getName();
            handleName(state, name);
 
@@ -698,7 +704,7 @@ public class CdmLightClassificationExport
            }else {
         	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
            }
-  
+
            state.getProcessor().put(table, syn, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling synonym " +

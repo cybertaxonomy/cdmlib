@@ -48,9 +48,7 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
@@ -216,6 +214,7 @@ public class DwcaExportController
             @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
             @RequestParam(value = "withHigherClassification", defaultValue="false") Boolean withHigherClassification,
             @RequestParam(value = "includeHeader", defaultValue="false") Boolean includeHeader,
+            @RequestParam(value = "onlyPublishedTaxa", defaultValue="true") Boolean onlyPublishedTaxa,
 
 //          @RequestParam(value = "area", required = false) final UuidList areas,
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
@@ -277,7 +276,7 @@ public class DwcaExportController
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,
                                     doTypesAndSpecimen, doResourceRelations, doReferences,
-                                    withHigherClassification, includeHeader);
+                                    withHigherClassification, includeHeader, onlyPublishedTaxa);
                             performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
@@ -376,7 +375,8 @@ public class DwcaExportController
             Boolean doDescriptions, Boolean doImages,
             Boolean doTypesAndSpecimen, Boolean doResourceRelations,
             Boolean doReferences, Boolean withHigherClassification,
-            Boolean includeHeader) {
+            Boolean includeHeader,
+            Boolean onlyPublishedTaxa) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -400,6 +400,7 @@ public class DwcaExportController
         config.setDoResourceRelations(doResourceRelations);
         config.setWithHigherClassification(withHigherClassification);
         config.setHasHeaderLines(includeHeader);
+        config.setOnlyPublishedTaxa(onlyPublishedTaxa);
 
         config.setProgressMonitor(progressMonitor);
 
