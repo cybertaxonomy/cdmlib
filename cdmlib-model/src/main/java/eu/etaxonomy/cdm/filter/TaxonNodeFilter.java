@@ -247,6 +247,11 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    public TaxonNodeFilter andTaxonNode(TaxonNode taxonNode){
+        taxonNodes.add(new LogicFilter<>(taxonNode, Op.AND));
+        return this;
+    }
+
     public TaxonNodeFilter orTaxon(Taxon taxon){
         taxa.add( new LogicFilter<>(taxon, Op.OR));
         return this;
@@ -257,12 +262,32 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    public TaxonNodeFilter orArea(UUID uuid){
+        areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.OR));
+        return this;
+    }
+
+    public TaxonNodeFilter andArea(UUID uuid){
+        areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.AND));
+        return this;
+    }
+
     public TaxonNodeFilter orRank(Rank rankMin, Rank rankMax){
         if(rankMin!=null){
             this.rankMin = new LogicFilter<Rank>(rankMin);
         }
         if(rankMax!=null){
             this.rankMax = new LogicFilter<>(rankMax);
+        }
+        return this;
+    }
+
+    public TaxonNodeFilter andRank(Rank rankMin, Rank rankMax){
+        if(rankMin!=null){
+            this.rankMin = new LogicFilter<Rank>(rankMin, Op.AND);
+        }
+        if(rankMax!=null){
+            this.rankMax = new LogicFilter<>(rankMax, Op.AND);
         }
         return this;
     }
