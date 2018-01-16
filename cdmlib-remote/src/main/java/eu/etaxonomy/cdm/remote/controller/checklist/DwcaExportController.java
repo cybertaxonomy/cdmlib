@@ -214,7 +214,7 @@ public class DwcaExportController
             @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
             @RequestParam(value = "withHigherClassification", defaultValue="false") Boolean withHigherClassification,
             @RequestParam(value = "includeHeader", defaultValue="false") Boolean includeHeader,
-            @RequestParam(value = "onlyPublishedTaxa", defaultValue="true") Boolean onlyPublishedTaxa,
+//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,
 
 //          @RequestParam(value = "area", required = false) final UuidList areas,
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
@@ -229,6 +229,8 @@ public class DwcaExportController
         try{
             ModelAndView mv = new ModelAndView();
 
+            // replacement for commented RequestParam
+            Boolean includeUnpublished = false;
 
             final String origin = request.getRequestURL().append('?')
                     .append(CdmUtils.Nz(request.getQueryString())).toString()
@@ -276,7 +278,7 @@ public class DwcaExportController
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,
                                     doTypesAndSpecimen, doResourceRelations, doReferences,
-                                    withHigherClassification, includeHeader, onlyPublishedTaxa);
+                                    withHigherClassification, includeHeader, !includeUnpublished );
                             performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
