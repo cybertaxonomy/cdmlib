@@ -214,9 +214,12 @@ public class DwcaExportController
             @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
             @RequestParam(value = "withHigherClassification", defaultValue="false") Boolean withHigherClassification,
             @RequestParam(value = "includeHeader", defaultValue="false") Boolean includeHeader,
-//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,
+//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
 
-//          @RequestParam(value = "area", required = false) final UuidList areas,
+            @RequestParam(value = "area", required = false) final UuidList areaUuids,
+            @RequestParam(value = "minRank", required = false) final UUID minRank,
+            @RequestParam(value = "minRank", required = false) final UUID maxRank,
+
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
             final HttpServletResponse response,
@@ -273,12 +276,13 @@ public class DwcaExportController
                                     indexMonitorUuid);
 
                             TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance(
-                                    classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids);
+                                    classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids,
+                                    areaUuids, minRank, maxRank);
                             DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,
                                     doTypesAndSpecimen, doResourceRelations, doReferences,
-                                    withHigherClassification, includeHeader, !includeUnpublished );
+                                    withHigherClassification, includeHeader, includeUnpublished );
                             performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
@@ -378,7 +382,7 @@ public class DwcaExportController
             Boolean doTypesAndSpecimen, Boolean doResourceRelations,
             Boolean doReferences, Boolean withHigherClassification,
             Boolean includeHeader,
-            Boolean onlyPublishedTaxa) {
+            Boolean includeUnpublished) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -402,7 +406,7 @@ public class DwcaExportController
         config.setDoResourceRelations(doResourceRelations);
         config.setWithHigherClassification(withHigherClassification);
         config.setHasHeaderLines(includeHeader);
-        config.setOnlyPublishedTaxa(onlyPublishedTaxa);
+        config.setIncludeUnpublishedTaxa(includeUnpublished);
 
         config.setProgressMonitor(progressMonitor);
 

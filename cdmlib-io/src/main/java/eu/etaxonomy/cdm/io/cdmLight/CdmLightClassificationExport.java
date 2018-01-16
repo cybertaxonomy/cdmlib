@@ -208,7 +208,7 @@ public class CdmLightClassificationExport
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
         }else{
             Taxon taxon = taxonNode.getTaxon();
-            if (state.getConfig().isOnlyPublishedTaxa() && !taxon.isPublish()){
+            if (!state.getConfig().isIncludeUnpublishedTaxa() && !taxon.isPublish()){
                 return;
             }
 
@@ -685,7 +685,7 @@ public class CdmLightClassificationExport
      */
     private void handleSynonym(CdmLightExportState state, Synonym syn) {
        try {
-           if (!syn.isPublish() && state.getConfig().isOnlyPublishedTaxa()){
+           if (!syn.isPublish() && !state.getConfig().isIncludeUnpublishedTaxa()){
                return;
            }
            TaxonName name = syn.getName();

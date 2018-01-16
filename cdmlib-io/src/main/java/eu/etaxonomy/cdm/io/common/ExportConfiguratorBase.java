@@ -35,7 +35,7 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	private ICdmDataSource source;
 	private DEST destination;
 	protected IDatabase sourceReference;
-	protected boolean onlyPublishedTaxa;
+	protected boolean includeUnpublishedTaxa;
 
     protected Class<ICdmIO>[] ioClassList;
 
@@ -141,13 +141,13 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	}
 
 
-    public boolean isOnlyPublishedTaxa() {
-        return onlyPublishedTaxa;
+    public boolean isIncludeUnpublishedTaxa() {
+        return includeUnpublishedTaxa;
     }
 
 
-    public void setOnlyPublishedTaxa(boolean onlyPublishedTaxa) {
-        this.onlyPublishedTaxa = onlyPublishedTaxa;
+    public void setIncludeUnpublishedTaxa(boolean includeUnpublished) {
+        this.includeUnpublishedTaxa = includeUnpublished;
     }
 
 	/**

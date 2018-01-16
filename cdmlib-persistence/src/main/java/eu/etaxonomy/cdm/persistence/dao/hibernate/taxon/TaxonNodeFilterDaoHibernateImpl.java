@@ -39,6 +39,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 
     private static final String FEATURE_UUID = "9fc9d10c-ba50-49ee-b174-ce83fc3f80c6";
 
+    private static final String HQL_TRUE = " 1 "; //maybe we can/should use 'true' instead, needs to be checked for all DB types
+
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
 
@@ -100,9 +102,12 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         String rankMaxFilter = getRankMaxFilter(filter);
         String rankMinFilter = getRankMinFilter(filter);
         String areaFilter = getAreaFilter(filter);
+        String unpublishFilter = getUnpublishFilter(filter);
+
         String fullFilter = getFullFilter(subtreeFilter, taxonNodeFilter,
                 classificationFilter, taxonFilter,
-                rankMaxFilter, rankMinFilter, areaFilter, rootNodeFilter);
+                rankMaxFilter, rankMinFilter, areaFilter, rootNodeFilter,
+                unpublishFilter);
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
         String fullQuery = select + from + " WHERE " + fullFilter + groupBy;
@@ -112,11 +117,25 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 
     private String getFrom(TaxonNodeFilter filter){
         String from = " FROM TaxonNode tn ";
+        if (hasTaxonFilter(filter)){
+            from += " LEFT JOIN tn.taxon taxon ";  //LEFT to allow includeRootNode
+        }
         if(!filter.getAreaFilter().isEmpty()){
-            from += "inner join tn.taxon.descriptions descriptions inner join descriptions.descriptionElements "+DESCRIPTION_ELEMENTS+" ";
+            from += " INNER JOIN taxon.descriptions descriptions "
+                  + " INNER JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " ";
         }
         return from;
     }
+
+    /**
+     * @return
+     */
+    private boolean hasTaxonFilter(TaxonNodeFilter filter) {
+        boolean result = !filter.getAreaFilter().isEmpty()
+                || !filter.isIncludeUnpublished();
+        return result;
+    }
+
 
     private String getAreaFilter(TaxonNodeFilter filter) {
         String result = "";
@@ -162,6 +181,14 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
+    private String getUnpublishFilter(TaxonNodeFilter filter) {
+        String result = "";
+        if (!filter.isIncludeUnpublished()){
+            result = " ( taxon.publish = "+HQL_TRUE+" OR tn.parent IS NULL ) ";
+        }
+        return result;
+    }
+
 
     /**
      * @param subtreeFilter
@@ -174,10 +201,12 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
      * @return
      */
     private String getFullFilter(String subtreeFilter, String taxonNodeFilter, String classificationFilter,
-            String taxonFilter, String rankMaxFilter, String rankMinFilter, String areaFilter, String rootNodeFilter) {
+            String taxonFilter, String rankMaxFilter, String rankMinFilter, String areaFilter, String rootNodeFilter,
+            String unpublishFilter) {
         String result = " (1=1 ";
         result = CdmUtils.concat(") AND (", result, subtreeFilter, taxonNodeFilter,
-                classificationFilter, taxonFilter, rankMaxFilter, rankMinFilter, areaFilter, rootNodeFilter) + ") ";
+                classificationFilter, taxonFilter, rankMaxFilter, rankMinFilter, areaFilter, rootNodeFilter,
+                unpublishFilter) + ") ";
         return result;
     }
 

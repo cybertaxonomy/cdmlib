@@ -70,11 +70,13 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private TaxonNode node3;
     private TaxonNode node4;
     private TaxonNode node5;
+    private TaxonNode nodeUnpublished;
     private Taxon taxon1;
     private Taxon taxon2;
     private Taxon taxon3;
     private Taxon taxon4;
     private Taxon taxon5;
+    private Taxon taxonUnpublished;
 
     /**
      * @throws java.lang.Exception
@@ -84,7 +86,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         /*
          * classification 1
          *  - node1 (taxon1, Genus, Europe)
-         *   - node3 (taxon3, Species, Germany)
+         *   - node3 (taxon3, Species, Germany)  //if subspecies exists in Denmark this is not fully correct !!
          *    - node4 (taxon4, Subspecies, Denmark)
          *    - node5 (taxon5, Subspecies)
          *  - node2 (taxon2, Family, France)
@@ -97,6 +99,8 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), null, null, null, null, null, null, null, null), null);
         taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
         taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+        taxonUnpublished = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+        taxonUnpublished.setPublish(false);
 
         NamedArea europe = (NamedArea) termDao.load(europeUuid);
         NamedArea germany = (NamedArea) termDao.load(germanyUuid);
@@ -118,6 +122,8 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         taxonNodeDao.save(node4);
         node5 = node3.addChildTaxon(taxon5, citation, microCitation);
         node5 = taxonNodeDao.save(node5);
+        nodeUnpublished = node3.addChildTaxon(taxonUnpublished, citation, microCitation);
+        nodeUnpublished = taxonNodeDao.save(nodeUnpublished);
 
         //MergeResult result = taxonNodeDao.merge(node5, true);
         //node5 = (TaxonNode) result.getMergedEntity();
@@ -169,9 +175,12 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     })
     public void testListUuidsByRank() {
         String message = "wrong number of nodes filtered";
-
-        TaxonNodeFilter filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.GENUS());
+        TaxonNodeFilter filter = new TaxonNodeFilter();
         List<UUID> listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 5, listUuid.size());  //test start condition without rank filter
+
+        filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.GENUS());
+        listUuid = filterDao.listUuids(filter);
         assertEquals(message, 2, listUuid.size());
         Assert.assertTrue(listUuid.contains(node1.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
@@ -198,6 +207,18 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         filter = new TaxonNodeFilter(Rank.KINGDOM(), Rank.ORDER());
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
+
+        //reset
+        Rank nullRank = null;
+        filter.setRankMax(nullRank).setRankMin(nullRank);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals("Reseting the rank filters should work", 5, listUuid.size());
+
+        filter = new TaxonNodeFilter(Rank.KINGDOM(), Rank.ORDER());
+        UUID nullUuid = null;
+        filter.setRankMax(nullUuid).setRankMin(nullUuid);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals("Reseting the rank filters should work", 5, listUuid.size());
     }
 
     @Test
@@ -242,6 +263,24 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         filter = TaxonNodeFilter.NewSubtreeInstance(taxon1.getUuid());
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("A NON subtree uuid should not return a result", 0, listUuid.size());
+
+    }
+
+    @Test
+    public void testIncludeUnpublished(){
+        Classification classification = classificationDao.findByUuid(classification1.getUuid());
+        TaxonNodeFilter filter = new TaxonNodeFilter(classification.getRootNode());
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+
+        filter.setIncludeUnpublished(true);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 6 children including unpublished should be returned", 6, listUuid.size());
+
+
+        filter.setIncludeRootNodes(true);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 7 children including root node should be returned", 7, listUuid.size());
 
     }
 
@@ -338,6 +377,28 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("1 node should remain", 1, listUuid.size());
 
+        //New
+        filter = new TaxonNodeFilter(node1);  //4 children, see above
+        filter.orClassification(classification.getUuid());//4 children, see above
+
+        filter.setRankMax(Rank.uuidSpecies);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("3 children should be returned", 3, listUuid.size());
+
+        filter.setRankMin(Rank.uuidSpecies);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("Only species should be returned", 1, listUuid.size());
+
+        Rank nullRank = null;
+        filter.setRankMin(nullRank);
+        filter.setIncludeUnpublished(true);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("4 children should be returned, including unpublished", 4, listUuid.size());
+
+        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
+        filter.orArea(germany);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("1 child should be returned", 1, listUuid.size());
     }
 
     @Test

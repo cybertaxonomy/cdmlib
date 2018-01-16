@@ -46,6 +46,8 @@ public class TaxonNodeFilter implements Serializable{
 
     private boolean includeRootNodes = false;
 
+    private boolean includeUnpublished = false;
+
     //********************** FACTORY ***************************/
 
     public static TaxonNodeFilter NewTaxonNodeInstance(UUID taxonNodeUuid){
@@ -79,18 +81,20 @@ public class TaxonNodeFilter implements Serializable{
     }
 
     public static TaxonNodeFilter NewRankInstance(Rank rankMin, Rank rankMax){
-        return new TaxonNodeFilter().orRank(rankMin, rankMax);
+        return new TaxonNodeFilter().setRankMin(rankMin).setRankMax(rankMax);
     }
 
     public static TaxonNodeFilter NewInstance(Collection<UUID> classificationUuids,
             Collection<UUID> subtreeUuids, Collection<UUID> taxonNodeUuids,
-            Collection<UUID> taxonUuids){
+            Collection<UUID> taxonUuids, Collection<UUID> areaUuids,
+            UUID minRank, UUID maxRank){
 
-        TaxonNodeFilter result = new TaxonNodeFilter();
+        TaxonNodeFilter result = new TaxonNodeFilter().setRankMin(minRank).setRankMax(maxRank);
         classificationUuids = classificationUuids == null ? new ArrayList<>(): classificationUuids;
         subtreeUuids = subtreeUuids == null ? new ArrayList<>(): subtreeUuids;
         taxonNodeUuids = taxonNodeUuids == null ? new ArrayList<>(): taxonNodeUuids;
         taxonUuids = taxonUuids == null ? new ArrayList<>(): taxonUuids;
+        areaUuids = areaUuids == null ? new ArrayList<>(): areaUuids;
 
         for (UUID uuid : classificationUuids){
             result.orClassification(uuid);
@@ -104,6 +108,9 @@ public class TaxonNodeFilter implements Serializable{
         for (UUID uuid : taxonUuids){
             result.orTaxon(uuid);
         }
+        for (UUID uuid : areaUuids){
+            result.orArea(uuid);
+        }
         return result;
 
     }
@@ -114,6 +121,9 @@ public class TaxonNodeFilter implements Serializable{
         reset();
     }
 
+    /**
+     * Constructor for a given subtree represented by a {@link TaxonNode}
+     */
     public TaxonNodeFilter(TaxonNode node){
         reset();
         LogicFilter<TaxonNode> filter = new LogicFilter<>(node);
@@ -123,10 +133,10 @@ public class TaxonNodeFilter implements Serializable{
     public TaxonNodeFilter(Rank rankMin, Rank rankMax){
         reset();
         if(rankMin!=null){
-            this.rankMin = new LogicFilter<Rank>(rankMin);
+            this.rankMin = new LogicFilter<>(rankMin);
         }
         if(rankMax!=null){
-            this.rankMax = new LogicFilter<Rank>(rankMax);
+            this.rankMax = new LogicFilter<>(rankMax);
         }
     }
 
@@ -233,10 +243,18 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    /**
+     * Adds a single {@link TaxonNode} to the filter.<BR><BR>
+     * NOTE: this adds only the node to the filter, not it's children!
+     */
     public TaxonNodeFilter orTaxonNode(TaxonNode taxonNode){
         taxonNodes.add( new LogicFilter<>(taxonNode, Op.OR));
         return this;
     }
+    /**
+     * Adds a single {@link TaxonNode} to the filter.<BR><BR>
+     * NOTE: this adds only the node to the filter, not it's children!
+     */
     public TaxonNodeFilter orTaxonNode(UUID uuid){
         taxonNodes.add( new LogicFilter<>(TaxonNode.class, uuid, Op.OR));
         return this;
@@ -246,7 +264,6 @@ public class TaxonNodeFilter implements Serializable{
         taxonNodes.add( new LogicFilter<>(taxonNode, Op.NOT));
         return this;
     }
-
     public TaxonNodeFilter andTaxonNode(TaxonNode taxonNode){
         taxonNodes.add(new LogicFilter<>(taxonNode, Op.AND));
         return this;
@@ -266,29 +283,36 @@ public class TaxonNodeFilter implements Serializable{
         areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.OR));
         return this;
     }
+    public TaxonNodeFilter orArea(NamedArea area){
+        areaFilter.add( new LogicFilter<>(area, Op.OR));
+        return this;
+    }
 
     public TaxonNodeFilter andArea(UUID uuid){
         areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.AND));
         return this;
     }
-
-    public TaxonNodeFilter orRank(Rank rankMin, Rank rankMax){
-        if(rankMin!=null){
-            this.rankMin = new LogicFilter<Rank>(rankMin);
-        }
-        if(rankMax!=null){
-            this.rankMax = new LogicFilter<>(rankMax);
-        }
+    public TaxonNodeFilter andArea(NamedArea area){
+        areaFilter.add( new LogicFilter<>(area, Op.AND));
         return this;
     }
 
-    public TaxonNodeFilter andRank(Rank rankMin, Rank rankMax){
-        if(rankMin!=null){
-            this.rankMin = new LogicFilter<Rank>(rankMin, Op.AND);
-        }
-        if(rankMax!=null){
-            this.rankMax = new LogicFilter<>(rankMax, Op.AND);
-        }
+
+    public TaxonNodeFilter setRankMin(Rank rankMin){
+        this.rankMin = rankMin == null? null : new LogicFilter<>(rankMin, Op.AND);
+        return this;
+    }
+    public TaxonNodeFilter setRankMin(UUID rankMinUuid){
+        this.rankMin = rankMinUuid == null? null : new LogicFilter<>(Rank.class, rankMinUuid, Op.AND);
+        return this;
+    }
+
+    public TaxonNodeFilter setRankMax(Rank rankMax){
+        this.rankMax = rankMax == null? null : new LogicFilter<>(rankMax, Op.AND);
+        return this;
+    }
+    public TaxonNodeFilter setRankMax(UUID rankMaxUuid){
+        this.rankMax = rankMaxUuid == null? null : new LogicFilter<>(Rank.class, rankMaxUuid, Op.AND);
         return this;
     }
 
@@ -306,20 +330,36 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    public LogicFilter<Rank> getRankMax() {
+        return rankMax;
+    }
+    public LogicFilter<Rank> getRankMin() {
+        return rankMin;
+    }
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
+    }
+
+
+    /**
+     * If <code>true</code> the result will include the root node of
+     * a classification.
+     * Note: As a root node per se has no taxon all filters with filter
+     * on taxon related data have no effect for the root node. If the
+     * root node is returned only depends on the
+     * {@link TaxonNodeFilter#isIncludeRootNodes() includeRootNodes}
+     * parameter.
+     */
     public boolean isIncludeRootNodes() {
         return includeRootNodes;
     }
     public TaxonNodeFilter setIncludeRootNodes(boolean includeRootNodes) {
         this.includeRootNodes = includeRootNodes;
         return this;
-    }
-
-    public LogicFilter<Rank> getRankMax() {
-        return rankMax;
-    }
-
-    public LogicFilter<Rank> getRankMin() {
-        return rankMin;
     }
 
 }
