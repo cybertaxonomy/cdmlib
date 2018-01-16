@@ -62,7 +62,6 @@
         <prop key="/remoting/entityvalidation.service">httpEntityValidationService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
-        <prop key="/remoting/workingset.service">httpWorkingService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
         <prop key="/remoting/io.service">httpIOService</prop>
         <prop key="/remoting/test.service">httpTestService</prop>
