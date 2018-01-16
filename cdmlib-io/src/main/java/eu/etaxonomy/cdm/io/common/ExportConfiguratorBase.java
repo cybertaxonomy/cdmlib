@@ -35,7 +35,6 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	private ICdmDataSource source;
 	private DEST destination;
 	protected IDatabase sourceReference;
-	protected boolean includeUnpublishedTaxa;
 
     protected Class<ICdmIO>[] ioClassList;
 
@@ -140,15 +139,6 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	    this.target = target;
 	}
 
-
-    public boolean isIncludeUnpublishedTaxa() {
-        return includeUnpublishedTaxa;
-    }
-
-
-    public void setIncludeUnpublishedTaxa(boolean includeUnpublished) {
-        this.includeUnpublishedTaxa = includeUnpublished;
-    }
 
 	/**
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.

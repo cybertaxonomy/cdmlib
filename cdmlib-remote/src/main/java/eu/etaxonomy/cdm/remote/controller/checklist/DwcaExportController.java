@@ -278,11 +278,12 @@ public class DwcaExportController
                             TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance(
                                     classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids,
                                     areaUuids, minRank, maxRank);
+                            taxonNodeFilter.setIncludeUnpublished(includeUnpublished);
                             DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,
                                     doTypesAndSpecimen, doResourceRelations, doReferences,
-                                    withHigherClassification, includeHeader, includeUnpublished );
+                                    withHigherClassification, includeHeader);
                             performExport(cacheFile, monitor, config,
                                     downloadTokenValueId, origin, response);
                         }
@@ -381,8 +382,7 @@ public class DwcaExportController
             Boolean doDescriptions, Boolean doImages,
             Boolean doTypesAndSpecimen, Boolean doResourceRelations,
             Boolean doReferences, Boolean withHigherClassification,
-            Boolean includeHeader,
-            Boolean includeUnpublished) {
+            Boolean includeHeader) {
 
         if(cacheFile == null){
             String destination = System.getProperty("java.io.tmpdir");
@@ -406,7 +406,6 @@ public class DwcaExportController
         config.setDoResourceRelations(doResourceRelations);
         config.setWithHigherClassification(withHigherClassification);
         config.setHasHeaderLines(includeHeader);
-        config.setIncludeUnpublishedTaxa(includeUnpublished);
 
         config.setProgressMonitor(progressMonitor);
 

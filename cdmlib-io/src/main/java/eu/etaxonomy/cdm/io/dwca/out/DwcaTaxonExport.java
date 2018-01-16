@@ -110,7 +110,11 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, DwcaTaxExportFile file,
 	        Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		for (Synonym synonym :taxon.getSynonyms() ){
-			DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
+           if (isUnpublished(state.getConfig(), synonym)){
+               return;
+           }
+
+		    DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
 			boolean isProParte = synonym.isProParte();
 			boolean isPartial = synonym.isPartial();
