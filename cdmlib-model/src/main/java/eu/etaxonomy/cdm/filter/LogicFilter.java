@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  */
 public class LogicFilter<T extends CdmBase> implements Serializable{
 
+    private static final long serialVersionUID = 802334066143796153L;
+
     public enum Op{
         OR, AND, NOT;
 //      OR(" OR "), AND(" AND "), NOT(" NOT ");

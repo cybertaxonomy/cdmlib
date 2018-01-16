@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  *
- * Preliminary.
  * @author a.mueller
  *
  */
@@ -86,6 +85,7 @@ public class TaxonNodeFilter implements Serializable{
     public static TaxonNodeFilter NewInstance(Collection<UUID> classificationUuids,
             Collection<UUID> subtreeUuids, Collection<UUID> taxonNodeUuids,
             Collection<UUID> taxonUuids){
+
         TaxonNodeFilter result = new TaxonNodeFilter();
         classificationUuids = classificationUuids == null ? new ArrayList<>(): classificationUuids;
         subtreeUuids = subtreeUuids == null ? new ArrayList<>(): subtreeUuids;
@@ -158,7 +158,7 @@ public class TaxonNodeFilter implements Serializable{
 
     public void reset(){
         subtrees = new ArrayList<>();
-        resetArea();
+        resetAreas();
         resetRanks();
         resetDistributionStatus();
         resetTaxonNodes();
@@ -182,7 +182,7 @@ public class TaxonNodeFilter implements Serializable{
         taxa = new ArrayList<>();
     }
 
-    private void resetArea() {
+    private void resetAreas() {
         areaFilter = new ArrayList<>();
     }
 
@@ -296,8 +296,6 @@ public class TaxonNodeFilter implements Serializable{
         classifications.add( new LogicFilter<>(classification, Op.OR));
         return this;
     }
-
-
     public TaxonNodeFilter orClassification(UUID uuid){
         classifications.add( new LogicFilter<>(Classification.class, uuid, Op.OR));
         return this;

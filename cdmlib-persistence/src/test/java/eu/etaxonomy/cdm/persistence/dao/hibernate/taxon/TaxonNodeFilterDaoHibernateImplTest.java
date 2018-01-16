@@ -61,6 +61,9 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private final UUID denmarkUuid = UUID.fromString("f818c97e-fd61-42fe-9d75-d433f8cb349c");
     private final UUID franceUuid = UUID.fromString("41c5129a-3465-42cc-b016-59ab9ffad71a");
 
+    private final UUID middleEuropeUuid = UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97");
+    private final UUID africaUuid = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");
+
     private Classification classification1;
     private TaxonNode node1;
     private TaxonNode node2;
@@ -133,8 +136,8 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         String message = "wrong number of nodes filtered";
 
         NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
-        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97")), NamedArea.class);
-        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(UUID.fromString("9444016a-b334-4772-8795-ed4019552087")), NamedArea.class);
+        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
+        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
         NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
 
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);

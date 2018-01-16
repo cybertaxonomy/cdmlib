@@ -28,8 +28,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 
 /**
- * DAO to retrived taxon node uuids according to a {@link TaxonNodeFilter}.
- *
+ * DAO to retrieve taxon node uuids according to a {@link TaxonNodeFilter}.
  *
  * @author a.mueller
  */
@@ -287,7 +286,7 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     private void initializeSubtreeIndex(List<LogicFilter<TaxonNode>> subtreeFilter) {
         for (LogicFilter<TaxonNode> filter : subtreeFilter){
             if (filter.getTreeIndex() == null){
-                //TODO finde without loading, best be sending full list and returning treeindexes
+                //TODO finde without loading, best be sending full list and returning tree indexes
                 TaxonNode node = taxonNodeDao.findByUuid(filter.getUuid());
                 if (node != null){
                     filter.setTreeIndex(node.treeIndex());
