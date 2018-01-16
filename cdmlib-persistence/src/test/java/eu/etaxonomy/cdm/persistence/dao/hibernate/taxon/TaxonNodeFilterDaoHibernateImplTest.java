@@ -107,9 +107,9 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
         NamedArea france = (NamedArea) termDao.load(franceUuid);
         TaxonDescription.NewInstance(taxon1).addElement(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon3).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon4).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.NATIVE()));
         TaxonDescription.NewInstance(taxon2).addElement(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon3).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription.NewInstance(taxon4).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.ABSENT()));
 
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
         node1= taxonNodeDao.save(node1);
@@ -148,11 +148,11 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
         List<UUID> listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 4, listUuid.size());
+        assertEquals(message, 3, listUuid.size());
         Assert.assertTrue(listUuid.contains(node1.getUuid()));
         Assert.assertTrue(listUuid.contains(node2.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
-        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
         filter = new TaxonNodeFilter(germany);
         listUuid = filterDao.listUuids(filter);

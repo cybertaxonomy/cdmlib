@@ -40,6 +40,7 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     private static final String FEATURE_UUID = "9fc9d10c-ba50-49ee-b174-ce83fc3f80c6";
 
     private static final String HQL_TRUE = " 1 "; //maybe we can/should use 'true' instead, needs to be checked for all DB types
+    private static final String HQL_FALSE = " 0 "; //maybe we can/should use 'false' instead, needs to be checked for all DB types
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
@@ -145,8 +146,11 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         for (LogicFilter<NamedArea> singleFilter : areaFilter){
             areaIds = getChildAreasRecursively(singleFilter.getUuid());
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
-            result = String.format("(%s%s("+DESCRIPTION_ELEMENTS+".feature.uuid='"+FEATURE_UUID+"' AND "+DESCRIPTION_ELEMENTS+".area.id in (%s)))",
-                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds));
+            result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + FEATURE_UUID + "' "
+                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s)))"
+                    + " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = %s " ,
+                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds),
+                    HQL_FALSE);
             isFirst = false;
         }
         return result;
