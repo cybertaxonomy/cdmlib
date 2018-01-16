@@ -288,14 +288,16 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
-    public TaxonNodeFilter andArea(UUID uuid){
-        areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.AND));
-        return this;
-    }
-    public TaxonNodeFilter andArea(NamedArea area){
-        areaFilter.add( new LogicFilter<>(area, Op.AND));
-        return this;
-    }
+//And filter on areas makes sense only in very specific cases.
+//We remove it until it is really required
+//    public TaxonNodeFilter andArea(UUID uuid){
+//        areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.AND));
+//        return this;
+//    }
+//    public TaxonNodeFilter andArea(NamedArea area){
+//        areaFilter.add( new LogicFilter<>(area, Op.AND));
+//        return this;
+//    }
 
 
     public TaxonNodeFilter setRankMin(Rank rankMin){
