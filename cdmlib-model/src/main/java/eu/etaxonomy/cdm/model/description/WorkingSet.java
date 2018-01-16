@@ -151,8 +151,7 @@ public class WorkingSet extends AnnotatableEntity {
         return taxonSubtreeFilter;
     }
 
-	//make public if needed
-    private void setTaxonSubtreeFilter(Set<TaxonNode> taxonSubtreeFilter) {
+    public void setTaxonSubtreeFilter(Set<TaxonNode> taxonSubtreeFilter) {
         this.taxonSubtreeFilter = taxonSubtreeFilter;
     }
 
