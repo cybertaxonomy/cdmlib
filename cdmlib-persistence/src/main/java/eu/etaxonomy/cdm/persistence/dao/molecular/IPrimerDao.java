@@ -63,4 +63,12 @@ public interface IPrimerDao extends IAnnotatableDao<Primer>{
     public List<Primer> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
+
+    /**
+     * @param limitOfInitialElements
+     * @param pattern
+     * @return
+     */
+    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern);
+
 }
