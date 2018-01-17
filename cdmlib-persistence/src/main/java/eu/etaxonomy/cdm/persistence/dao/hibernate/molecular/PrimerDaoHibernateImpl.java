@@ -83,7 +83,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
 
         if ( pattern != null){
             queryString += " WHERE ";
-            queryString += " titleCache LIKE :pattern";
+            queryString += " label LIKE :pattern";
 
         }
 

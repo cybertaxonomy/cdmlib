@@ -18,4 +18,12 @@ public interface IWorkingSetDao extends IAnnotatableDao<WorkingSet> {
 	public Map<DescriptionBase,Set<DescriptionElementBase>> getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role);
+
+    /**
+     * @param limitOfInitialElements
+     * @param pattern
+     * @return
+     */
+    public List<UuidAndTitleCache<WorkingSet>> getWorkingSetUuidAndTitleCache(Integer limitOfInitialElements,
+            String pattern);
 }

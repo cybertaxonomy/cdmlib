@@ -39,4 +39,9 @@ public class WorkingSetService extends
 			Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role) {
 		return dao.getTaxonFeatureDescriptionElementMap(clazz, workingSetUuid, role);
 	}
+
+	@Override
+    public List<UuidAndTitleCache<WorkingSet>> getWorkingSetUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
+        return dao.getWorkingSetUuidAndTitleCache( limitOfInitialElements, pattern);
+    }
 }
