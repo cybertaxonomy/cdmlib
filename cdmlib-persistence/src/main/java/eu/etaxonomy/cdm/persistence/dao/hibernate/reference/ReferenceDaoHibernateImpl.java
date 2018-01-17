@@ -349,4 +349,31 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         return getUuidAndAbbrevTitleCache(query);
 
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType refType) {
+        Session session = getSession();
+        Reference ref = ReferenceFactory.newArticle();
+
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
+            +" as r where r.authorship.nomenclaturalTitle like :pattern  ");
+
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        pattern = pattern.replace("*", "%");
+        pattern = pattern.replace("?", "_");
+        query.setParameter("pattern", pattern);
+        return getUuidAndAbbrevTitleCache(query);
+
+    }
 }
