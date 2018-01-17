@@ -656,5 +656,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         }
         return new DefaultPagerImpl<MarkedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
     }
+
+
 }
 

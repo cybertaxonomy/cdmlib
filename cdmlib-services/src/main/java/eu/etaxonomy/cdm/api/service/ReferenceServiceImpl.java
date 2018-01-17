@@ -131,6 +131,14 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         return dao.getUuidAndAbbrevTitleCache(limit, pattern, inReferenceType);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IReferenceService#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType type) {
+        return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, pattern, null);
+    }
+
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type) {
         ReferenceType inReferenceType = null;

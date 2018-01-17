@@ -114,4 +114,13 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
     public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(String identifier, DefinedTerm identifierType,
         MatchMode matchmode, Integer limit);
 
+    /**
+     * @param limit
+     * @param pattern
+     * @param type
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
+            ReferenceType type);
+
 }
