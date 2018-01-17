@@ -52,4 +52,11 @@ public interface IPrimerService extends IAnnotatableService<Primer>{
     */
     Pager<Primer> findByLabel(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * @param limitOfInitialElements
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern);
 }

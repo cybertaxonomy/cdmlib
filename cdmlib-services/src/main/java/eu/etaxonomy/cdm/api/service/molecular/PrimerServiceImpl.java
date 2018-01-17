@@ -43,7 +43,10 @@ public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {
         return dao.getPrimerUuidAndTitleCache();
     }
-
+    @Override
+    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
+        return dao.getPrimerUuidAndTitleCache( limitOfInitialElements, pattern);
+    }
     @Override
     @Autowired
     protected void setDao(IPrimerDao dao) {
