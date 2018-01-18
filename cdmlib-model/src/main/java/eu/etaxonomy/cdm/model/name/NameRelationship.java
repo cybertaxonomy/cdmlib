@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.name;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -147,7 +146,6 @@ public class NameRelationship
 	 * @see   #getToName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
-	@Transient
 	public TaxonName getFromName(){
 		return this.getRelatedFrom();
 	}
@@ -166,7 +164,6 @@ public class NameRelationship
 	 * @see   #getFromName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
-	@Transient
 	public TaxonName getToName(){
 		return this.getRelatedTo();
 	}
