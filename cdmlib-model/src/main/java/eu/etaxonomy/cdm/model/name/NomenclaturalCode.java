@@ -191,26 +191,8 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		case ICVCN: case NonViral: case Fungi:
 			result = TaxonNameFactory.NewNameInstance(this, rank);
 			break;
-//		case ICZN:
-//			result = TaxonNameFactory.NewZoologicalInstance(rank);
-//			break;
-//		case ICNCP:
-//			result = TaxonNameFactory.NewCultivarInstance(rank);
-//			break;
-//		case ICNB:
-//			result = TaxonNameFactory.NewBacterialInstance(rank);
-//			break;
-//		case ICVCN:
-//			result = TaxonNameFactory.NewViralInstance(rank);
-//			break;
-//		case NonViral:
-//            result = TaxonNameFactory.NewNonViralInstance(rank);
-//            break;
-//		case Fungi:
-//            result = TaxonNameFactory.NewFungusInstance(rank);
-//            break;
         default:
-			logger.warn("Unknown nomenclatural code: " + this.getUuid());
+			logger.warn("Unhandled nomenclatural code: " + this.getUuid());
 			result = null;
 		}
 		return result;
