@@ -191,7 +191,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
             byte[] byt = data.get(key);
             System.out.println(key + ": " + new String(byt) );
         }
-//        System.out.println();
+//      System.out.println();
         //metadata
         byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
         Assert.assertNotNull("Metadata must not be null", metadata);
