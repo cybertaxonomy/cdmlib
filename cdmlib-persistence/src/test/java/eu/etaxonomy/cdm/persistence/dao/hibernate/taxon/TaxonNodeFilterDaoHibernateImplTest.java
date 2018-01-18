@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -140,33 +141,43 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @Test
     public void testListUuidsByAreas() {
         String message = "wrong number of nodes filtered";
+        System.out.println("start:" + new DateTime().toString());
 
         NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
         NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
         NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
         NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
 
+        System.out.println("filter1:" + new DateTime().toString());
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
         List<UUID> listUuid = filterDao.listUuids(filter);
+        System.out.println("assert:" + new DateTime().toString());
+
         assertEquals(message, 3, listUuid.size());
         Assert.assertTrue(listUuid.contains(node1.getUuid()));
         Assert.assertTrue(listUuid.contains(node2.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
         Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
+        System.out.println("filter2:" + new DateTime().toString());
         filter = new TaxonNodeFilter(germany);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
+        System.out.println("filter3:" + new DateTime().toString());
         filter = new TaxonNodeFilter(middleEurope);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
+        System.out.println("filter4:" + new DateTime().toString());
         filter = new TaxonNodeFilter(africa);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
+
+        System.out.println("end:" + new DateTime().toString());
+
     }
 
     @Test
