@@ -360,7 +360,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      *
      */
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this){
             return true;
         }
