@@ -87,29 +87,15 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
     public User getUpdatedBy(){
 		return this.updatedBy;
 	}
-
-	/**
-	 *
-	 * @param updatedBy    updatedBy
-	 */
 	@Override
     public void setUpdatedBy(User updatedBy){
 		this.updatedBy = updatedBy;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
     public DateTime getUpdated(){
 		return this.updated;
 	}
-
-	/**
-	 *
-	 * @param updated    updated
-	 */
 	@Override
     public void setUpdated(DateTime updated){
 		this.updated = updated;
