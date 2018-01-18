@@ -349,13 +349,15 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      *
      * @see java.lang.Object#equals(java.lang.Object)
      * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities},
-     * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}.
-     * <BR> See also https://dev.e-taxonomy.eu/redmine/issues/7155 and related tickets for discussion.
-     *
+     * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
      * for more information about equals and hashcode.
+     * <BR>
+     * See also https://dev.e-taxonomy.eu/redmine/issues/7155 and related tickets for discussion.
+     *
+     *
      */
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this){
             return true;
         }

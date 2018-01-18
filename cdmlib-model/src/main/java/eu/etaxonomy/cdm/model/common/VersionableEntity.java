@@ -45,7 +45,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * The version history is established as a linked list of the version objects in time.
  * If versioning via the linked list is used, updated/updatedBy is the same as created/createdBy (better NULL?).
  *
- * Versioning can be turned off and in this case this class provides updated/updatedBy to keep track of the latest change event.
+ * Versioning can be turned off and in this case this class provides updated/updatedBy to
+ * keep track of the latest change event.
  *
  * @author m.doering
  * @created 08-Nov-2007 13:07:01
@@ -101,7 +102,16 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 		this.updated = updated;
 	}
 
-
+	/**
+	 * {@inheritDoc}.
+	 * <BR><BR>
+	 * Override CdmBase implementation here to set the method final.
+	 * For discussion on final see {@link CdmBase#equals(Object)}.
+	 */
+	@Override
+    public final boolean equals(Object obj) {
+	    return super.equals(obj);
+	}
 
 //********************** CLONE *****************************************/
 
