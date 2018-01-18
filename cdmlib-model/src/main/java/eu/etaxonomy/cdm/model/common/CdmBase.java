@@ -336,7 +336,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     /**
      * Is <code>true</code> if UUID and created timestamp (is this really needed/make sense?)
      * is the same for the passed Object and this one.
-     * This method is final as subclasses should not override it.
+     * This method is final as subclasses should not override it
+     * (NOTE.
      * The contract should be the same for all persistable entities.
      * 2 instances are equal if they represent the same entity in a given
      * database.
@@ -374,7 +375,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         }
         boolean uuidEqual = objUuid.equals(this.getUuid());
         //TODO is this still needed?
-        boolean createdEqual = CdmUtils.nullSafeEqual(cdmObj.getCreated(), this.getCreated());
+//        boolean createdEqual = CdmUtils.nullSafeEqual(cdmObj.getCreated(), this.getCreated());
+        boolean createdEqual = true; //preliminary, to test im createdEqual is still needed #7201
         if (! uuidEqual || !createdEqual){
                 return false;
         }

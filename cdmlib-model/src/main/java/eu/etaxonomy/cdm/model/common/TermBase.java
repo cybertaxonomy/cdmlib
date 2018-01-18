@@ -254,20 +254,20 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null :repr.getDescription();
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null){
-            return false;
-        }
-        if (TermBase.class.isAssignableFrom(obj.getClass())){
-            TermBase dtb = (TermBase)obj;
-            if (dtb.getUuid().equals(this.getUuid())){
-                return true;
-            }
-        }
-        return false;
-    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == null){
+//            return false;
+//        }
+//        if (TermBase.class.isAssignableFrom(obj.getClass())){
+//            TermBase dtb = (TermBase)obj;
+//            if (dtb.getUuid().equals(this.getUuid())){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public String toString() {
