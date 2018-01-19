@@ -119,6 +119,10 @@
         the org.eclipse.pde.PluginNature for cdmlib-serivces  -->
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <goals>
+          <goal>bundle</goal>
+        </goals>
+        <versionRange>[1.0.0,)</versionRange>
       </pluginExecutionFilter>
       <action>
         <ignore />
