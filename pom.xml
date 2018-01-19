@@ -21,6 +21,7 @@
     <module>cdmlib-remote</module>
     <module>cdmlib-print</module>
     <module>cdmlib-remote-webapp</module>
+    <module>cdmlib-cache</module>
   </modules>
   <properties>    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
