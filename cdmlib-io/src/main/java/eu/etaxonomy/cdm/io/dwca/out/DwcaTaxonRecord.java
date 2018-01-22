@@ -306,10 +306,7 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
             String message = "Unhandled exception when writing taxon record: " + e.getMessage();
             state.getResult().addException(e, message);
         }
-
     }
-
-
 
 
     @Override
@@ -439,12 +436,14 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public void setAcceptedNameUsageId(UUID acceptedNameUsageId) {
 		this.acceptedNameUsageId = acceptedNameUsageId;
 	}
+
 	public UUID getParentNameUsageId() {
 		return parentNameUsageId;
 	}
 	public void setParentNameUsageId(UUID parentNameUsageId) {
 		this.parentNameUsageId = parentNameUsageId;
 	}
+
 	public UUID getOriginalNameUsageId() {
 		return originalNameUsageId;
 	}
@@ -455,7 +454,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public Object getNameAccordingToId() {
 		return nameAccordingToId;
 	}
-
 	public void setNameAccordingToId(UUID nameAccordingToId) {
 		this.nameAccordingToId = nameAccordingToId;
 	}
@@ -466,156 +464,182 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public void setNamePublishedInId(UUID namePublishedInId) {
 		this.namePublishedInId = namePublishedInId;
 	}
+
 	public UUID getTaxonConceptId() {
 		return taxonConceptId;
 	}
 	public void setTaxonConceptId(UUID taxonConceptId) {
 		this.taxonConceptId = taxonConceptId;
 	}
+
 	public String getScientificName() {
 		return scientificName;
 	}
 	public void setScientificName(String scientificName) {
 		this.scientificName = scientificName;
 	}
+
 	public String getAcceptedNameUsage() {
 		return acceptedNameUsage;
 	}
 	public void setAcceptedNameUsage(String acceptedNameUsage) {
 		this.acceptedNameUsage = acceptedNameUsage;
 	}
+
 	public String getParentNameUsage() {
 		return parentNameUsage;
 	}
 	public void setParentNameUsage(String parentNameUsage) {
 		this.parentNameUsage = parentNameUsage;
 	}
+
 	public String getOriginalNameUsage() {
 		return originalNameUsage;
 	}
 	public void setOriginalNameUsage(String originalNameUsage) {
 		this.originalNameUsage = originalNameUsage;
 	}
+
 	public String getNameAccordingTo() {
 		return nameAccordingTo;
 	}
 	public void setNameAccordingTo(String nameAccordingTo) {
 		this.nameAccordingTo = nameAccordingTo;
 	}
+
 	public String getNamePublishedIn() {
 		return namePublishedIn;
 	}
 	public void setNamePublishedIn(String namePublishedIn) {
 		this.namePublishedIn = namePublishedIn;
 	}
+
 	public String getHigherClassification() {
 		return higherClassification;
 	}
 	public void setHigherClassification(String higherClassification) {
 		this.higherClassification = higherClassification;
 	}
+
 	public Rank getTaxonRank() {
 		return taxonRank;
 	}
 	public void setTaxonRank(Rank taxonRank) {
 		this.taxonRank = taxonRank;
 	}
+
 	public String getVerbatimTaxonRank() {
 		return verbatimTaxonRank;
 	}
 	public void setVerbatimTaxonRank(String verbatimTaxonRank) {
 		this.verbatimTaxonRank = verbatimTaxonRank;
 	}
+
 	public String getScientificNameAuthorship() {
 		return scientificNameAuthorship;
 	}
 	public void setScientificNameAuthorship(String scientificNameAuthorship) {
 		this.scientificNameAuthorship = scientificNameAuthorship;
 	}
+
 	public String getVernacularName() {
 		return vernacularName;
 	}
 	public void setVernacularName(String vernacularName) {
 		this.vernacularName = vernacularName;
 	}
+
 	public NomenclaturalCode getNomenclaturalCode() {
 		return nomenclaturalCode;
 	}
 	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
 		this.nomenclaturalCode = nomenclaturalCode;
 	}
+
 	public String getTaxonomicStatus() {
 		return taxonomicStatus;
 	}
 	public void setTaxonomicStatus(String taxonomicStatus) {
 		this.taxonomicStatus = taxonomicStatus;
 	}
+
 	public NomenclaturalStatusType getNomenclaturalStatus() {
 		return nomenclaturalStatus;
 	}
 	public void setNomenclaturalStatus(NomenclaturalStatusType nomenclaturalStatus) {
 		this.nomenclaturalStatus = nomenclaturalStatus;
 	}
+
 	public String getTaxonRemarks() {
 		return taxonRemarks;
 	}
 	public void setTaxonRemarks(String taxonRemarks) {
 		this.taxonRemarks = taxonRemarks;
 	}
+
 	public DateTime getModified() {
 		return modified;
 	}
 	public void setModified(DateTime modified) {
 		this.modified = modified;
 	}
+
 	public Language getLanguage() {
 		return language;
 	}
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
+
 	public Set<Rights> getRights() {
 		return rights;
 	}
 	public void setRights(Set<Rights> rights) {
 		this.rights = rights;
 	}
+
 	public String getRightsHolder() {
 		return rightsHolder;
 	}
 	public void setRightsHolder(String rightsHolder) {
 		this.rightsHolder = rightsHolder;
 	}
+
 	public String getAccessRights() {
 		return accessRights;
 	}
 	public void setAccessRights(String accessRights) {
 		this.accessRights = accessRights;
 	}
+
 	public String getBibliographicCitation() {
 		return bibliographicCitation;
 	}
 	public void setBibliographicCitation(String bibliographicCitation) {
 		this.bibliographicCitation = bibliographicCitation;
 	}
+
 	public String getInformationWithheld() {
 		return informationWithheld;
 	}
 	public void setInformationWithheld(String informationWithheld) {
 		this.informationWithheld = informationWithheld;
 	}
+
 	public String getDatasetId() {
 		return datasetId.getId();
 	}
 	public void setDatasetId(Classification classification) {
 		this.datasetId.setId(classification);
 	}
+
 	public String getDatasetName() {
 		return datasetName;
 	}
 	public void setDatasetName(String datasetName) {
 		this.datasetName = datasetName;
 	}
+
 	public String getSource() {
 		return source;
 	}
@@ -623,11 +647,9 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 		this.source = source;
 	}
 
-
 	public String getKingdom() {
 		return kingdom;
 	}
-
 	public void setKingdom(String kingdom) {
 		this.kingdom = kingdom;
 	}
@@ -635,7 +657,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getPhylum() {
 		return phylum;
 	}
-
 	public void setPhylum(String phylum) {
 		this.phylum = phylum;
 	}
@@ -643,7 +664,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getClazz() {
 		return clazz;
 	}
-
 	public void setClazz(String clazz) {
 		this.clazz = clazz;
 	}
@@ -651,7 +671,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getOrder() {
 		return order;
 	}
-
 	public void setOrder(String order) {
 		this.order = order;
 	}
@@ -659,7 +678,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getFamily() {
 		return family;
 	}
-
 	public void setFamily(String family) {
 		this.family = family;
 	}
@@ -667,7 +685,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getGenus() {
 		return genus;
 	}
-
 	public void setGenus(String genus) {
 		this.genus = genus;
 	}
@@ -675,7 +692,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getSubgenus() {
 		return subgenus;
 	}
-
 	public void setSubgenus(String subgenus) {
 		this.subgenus = subgenus;
 	}
@@ -683,7 +699,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getSpecificEpithet() {
 		return specificEpithet;
 	}
-
 	public void setSpecificEpithet(String specificEpithet) {
 		this.specificEpithet = specificEpithet;
 	}
@@ -691,56 +706,31 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public String getInfraspecificEpithet() {
 		return infraspecificEpithet;
 	}
-
 	public void setInfraspecificEpithet(String infraspecificEpithet) {
 		this.infraspecificEpithet = infraspecificEpithet;
 	}
 
-	/**
-	 * @return the uninomial
-	 */
 	public String getUninomial() {
 		return uninomial;
 	}
-
-	/**
-	 * @param uninomial the uninomial to set
-	 */
 	public void setUninomial(String uninomial) {
 		this.uninomial = uninomial;
 	}
 
-	/**
-	 * @return the infraGenericEpithet
-	 */
 	public String getInfraGenericEpithet() {
 		return infraGenericEpithet;
 	}
-
-	/**
-	 * @param infraGenericEpithet the infraGenericEpithet to set
-	 */
 	public void setInfraGenericEpithet(String infraGenericEpithet) {
 		this.infraGenericEpithet = infraGenericEpithet;
 	}
 
-	/**
-	 * @param scientificNameId the scientificNameId to set
-	 */
 	public void setScientificNameId(DwcaId scientificNameId) {
 		this.scientificNameId = scientificNameId;
 	}
 
-	/**
-	 * @return the genusPart
-	 */
 	public String getGenusPart() {
 		return genusPart;
 	}
-
-	/**
-	 * @param genusPart the genusPart to set
-	 */
 	public void setGenusPart(String genusPart) {
 		this.genusPart = genusPart;
 	}

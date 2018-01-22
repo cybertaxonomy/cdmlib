@@ -214,7 +214,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	}
 
 	/**
-	 * Equals darwin core archive ignoreHeaderLines attribute
+	 * Equals darwin core archive ignoreHeaderLines attribute.
+	 * <code>true</code> by default.
 	 * @return
 	 */
 	public boolean isHasHeaderLines() {
