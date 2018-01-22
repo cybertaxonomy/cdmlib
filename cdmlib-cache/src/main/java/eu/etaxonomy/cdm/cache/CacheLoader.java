@@ -215,12 +215,21 @@ public class CacheLoader {
     }
 
     /**
-     * Puts the (Key,Value) pair of ({@link java.util.UUID}, {@link eu.etaxonomy.cdm.model.common.CdmBase}),
-     * in the cache corresponding to the given cache id
+     * Puts the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity}) in the
+     * cache.
      *
-     * @param cacheId
-     * @param uuid
+     * For in depth details on the mechanism see
+     * {@link #loadRecursive(CdmBase, List, boolean)} and
+     * {@link #getCdmBaseTypeFieldValue(CdmBase, CdmBase, String, List, boolean)}
+     *
      * @param cdmEntity
+     *            the entity to be put into the cache
+     * @param recursive
+     *            if <code>true</code>, the cache loader will load the whole
+     *            entity graph recursively into the cache
+     * @param update
+     *            all fields of the cached entity will be overwritten by setting
+     *            them to the value of the cdm entity being loaded
      */
     public CdmBase load(CdmBase cdmEntity, boolean recursive, boolean update) {
         if(cdmEntity == null) {
@@ -262,6 +271,24 @@ public class CacheLoader {
     }
 
 
+    /**
+     * Load the <code>cdmEntity</code> graph recursively into the cache and
+     * updates entity which are already in the cache depending on the value of
+     * <code>update</code>, for mor in depth details on this mechanism see
+     * {@link #getCdmBaseTypeFieldValue(CdmBase, CdmBase, String, List, boolean)}.
+     *
+     *
+     * @param cdmEntity
+     *            the entity to be loaded into the cache
+     * @param alreadyVisitedEntities
+     *            protocol list of entities already visited during loading an
+     *            entity graph recursively into the cache.
+     *
+     * @param update
+     *            all fields of the cached entity will be overwritten by setting
+     *            them to the value of the cdm entity being loaded
+     * @return
+     */
     private CdmBase loadRecursive(CdmBase cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
         CdmBase cachedCdmEntity = load(cdmEntity);
@@ -300,7 +327,29 @@ public class CacheLoader {
         return cachedCdmEntity;
     }
 
-
+    /**
+     * All field of the <code>cdmEntity</code> containing proxy objects will be
+     * set to the un-proxied field value. If <code>update</code> is enabled the
+     * value of the cached entity will be overwritten by the value of the
+     * <code>cdmEntity</code>. In case the cached field value contains a proxy
+     * object the value will aways be overwritten (Q: This might only occur in
+     * case of uninitialized proxies, since initialized proxies are expected to
+     * be replaces by the target entity.)
+     *
+     * @param cdmEntity
+     *            the entity to be loaded into the cache
+     * @param cachedCdmEntity
+     *            the entity which resides in the cache
+     * @param fieldName
+     *            the field name to operate on
+     * @param alreadyVisitedEntities
+     *            protocol list of entities already visited during loading an
+     *            entity graph recursively into the cache.
+     * @param update
+     *            all fields of the cached entity will be overwritten by setting
+     *            them to the value of the cdm entity being loaded
+     * @return
+     */
     private CdmBase getCdmBaseTypeFieldValue(CdmBase cdmEntity,
             CdmBase cachedCdmEntity,
             String fieldName,
