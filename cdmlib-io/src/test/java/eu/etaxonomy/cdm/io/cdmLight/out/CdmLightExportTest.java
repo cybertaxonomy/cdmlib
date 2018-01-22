@@ -269,13 +269,13 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                     count ++;
                 }
                 Assert.assertTrue("There should be 4 references", count == 5);
+                try{
                 stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
-                reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-                count = 0;
-                while ((line = reader.readLine()) != null) {
-                    count ++;
+                Assert.fail("There should not be a synonym table, because the only synonym is not public.");
+                }catch(NullPointerException e){
+
                 }
-                Assert.assertTrue("There should be 1 synonym", count == 2);
+
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
