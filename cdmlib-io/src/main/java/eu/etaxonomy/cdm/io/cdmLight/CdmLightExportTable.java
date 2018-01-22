@@ -273,7 +273,7 @@ public enum CdmLightExportTable {
         return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
     }
     final static String[] synonymColumns(){
-        return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
+        return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE, IS_PRO_PARTE};
     }
     final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,

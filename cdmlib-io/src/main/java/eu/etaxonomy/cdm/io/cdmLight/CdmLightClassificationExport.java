@@ -207,7 +207,7 @@ public class CdmLightClassificationExport
             state.getResult().addError ("There was a taxon node without a taxon: " + taxonNode.getUuid(), "handleTaxon");
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
         }else{
-            Taxon taxon = taxonNode.getTaxon();
+            Taxon taxon = HibernateProxyHelper.deproxy(taxonNode.getTaxon(), Taxon.class);
 
              try{
                 TaxonName name = taxon.getName();
