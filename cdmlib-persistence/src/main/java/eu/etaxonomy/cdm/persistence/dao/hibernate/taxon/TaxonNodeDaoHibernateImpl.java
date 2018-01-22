@@ -81,8 +81,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			Set<TaxonNode> nodes = taxon.getTaxonNodes();
 			//Hibernate.initialize(taxon.getTaxonNodes());
 			for (TaxonNode node:nodes) {
-			    System.out.println("Number of nodes: " + nodes.size());
-                node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+			    node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
 
 			    if (node.equals(persistentObject)){
 			        if (node.hasChildNodes()){
