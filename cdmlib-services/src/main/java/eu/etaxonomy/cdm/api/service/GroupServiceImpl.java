@@ -114,7 +114,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Group group = dao.findGroupByName(groupName);
         User user = userDao.findUserByUsername(username);
 
-        if(group != null || user != null){
+        if(group != null && user != null){
             if(group.removeMember(user)){
                 dao.update(group);
             }

@@ -47,7 +47,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * Note: All group related functionality has been refactored into a GroupService. The will be removed in a future version.
+ * Note: All group related functionality has been refactored into a GroupService.
+ * The will be removed in a future version.
  */
 @Service
 @Transactional(readOnly = true)
