@@ -51,6 +51,10 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     // removed since unused ########################
     // private final eu.etaxonomy.cdm.session.ICdmEntitySessionManager cdmEntitySessionManager;
 
+    /**
+     * permanent cache which is usually used to cache terms permanently
+     * FIXME rename to permanent cache
+     */
     private static CdmCacher cdmCacher;
 
     private final String cacheId;
@@ -136,6 +140,22 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         return cacheLoader.load(collection, true, update);
     }
 
+    /**
+     * Loads the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity}) graph recursively into the
+     * cache.
+     *
+     * For in depth details on the whole mechanism see
+     * {@link CacheLoader#load(CdmBase, boolean, boolean)},
+     * {@link CacheLoader#loadRecursive(CdmBase, List, boolean)} and
+     * {@link CacheLoader#getCdmBaseTypeFieldValue(CdmBase, CdmBase, String, List, boolean)}
+     *
+     * @param cdmEntity
+     *            the entity to be put into the cache
+     * @param update
+     *            all fields of the cached entity will be overwritten by setting
+     *            them to the value of the cdm entity being loaded
+     * @return
+     */
     public CdmBase load(CdmBase cdmEntity, boolean update) {
         return cacheLoader.load(cdmEntity, true, update);
     }
@@ -197,6 +217,9 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         }
     }
 
+    /**
+     * Puts the passed <code>cdmEntity</code> into the cache as long it does not yet exist in the caches.
+     */
     @Override
     public void put(CdmBase cdmEntity) {
 
