@@ -154,7 +154,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
 
         String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",";
-        System.out.println(coreStr);
+//        System.out.println(coreStr);
         Assert.assertTrue(coreStr.contains(expected));
 
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",,\"My sec ref\",\"Mill., The book of botany 3. 1804\",,\"Genus\",,\"species\",\"subspec\",\"subsp.\",,\"ICNAFP\",,,,,,,,,,\"DwcaExportTest Classification\",";
@@ -183,7 +183,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         config.setTarget(TARGET.EXPORT_DATA);
         config.setWithHigherClassification(true);
         ExportResult result = defaultExport.invoke(config);
-        System.out.println(result.createReport());
+//        System.out.println(result.createReport());
         ExportDataWrapper<?> exportData = result.getExportData();
         @SuppressWarnings("unchecked")
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();

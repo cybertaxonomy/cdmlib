@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy
+* European Distributed Institute of Taxonomy 
 * http://www.e-taxonomy.eu
-*
+* 
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,16 +28,16 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 public class TermMapping {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TermMapping.class);
-
+	
 	private static final String COMMENT = "//";
 
 	private UUID uuidCdmVoc;
 	private URI externalVoc;
 	private char separator = '\t'; //'\u0009';  //horizontal tab
-
-	private Map<UUID, String> mappingMap = new HashMap<>();
-
-
+	
+	private Map<UUID, String> mappingMap = new HashMap<UUID, String>();
+	
+	
 	public TermMapping(String filename) throws IOException{
 		readMapping(filename);
 	}
@@ -47,18 +47,18 @@ public class TermMapping {
 		String strResourceFileName = "mapping" + CdmUtils.getFolderSeperator() + filename;
 		InputStreamReader isr = CdmUtils.getUtf8ResourceReader(strResourceFileName);
 		CSVReader reader = new CSVReader(isr, separator);
-
+		
 		String [] nextLine = reader.readNext();
 		uuidCdmVoc = UUID.fromString(nextLine[0]);
 		externalVoc = URI.create(nextLine[1]);
-
+		
 		while ((nextLine = reader.readNext()) != null) {
 			// nextLine[] is an array of values from the line
 			if (nextLine.length == 0){
 				continue;
 			}
 			readMappingLine(nextLine);
-
+			
 		}
 	}
 
@@ -69,15 +69,15 @@ public class TermMapping {
 			mappingMap.put(uuidCdm, externalTerm);
 		}
 	}
-
+	
 	public String getTerm(UUID key){
 		return mappingMap.get(key);
 	}
-
+	
 	public URI getExternalVoc(){
 		return externalVoc;
 	}
-
+	
 	public UUID getCdmVoc(){
 		return uuidCdmVoc;
 	}
