@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -184,8 +185,14 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 while ((line = reader.readLine()) != null) {
                     count ++;
                 }
-                Assert.assertTrue("There should be 5 references", count == 6);
-
+                Assert.assertTrue("There should be 6 references", count == 7);
+                stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
+                reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+                count = 0;
+                while ((line = reader.readLine()) != null) {
+                    count ++;
+                }
+                Assert.assertTrue("There should be 1 synonym", count == 2);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -262,7 +269,13 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                     count ++;
                 }
                 Assert.assertTrue("There should be 4 references", count == 5);
-
+                stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
+                reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+                count = 0;
+                while ((line = reader.readLine()) != null) {
+                    count ++;
+                }
+                Assert.assertTrue("There should be 1 synonym", count == 2);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -313,7 +326,13 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid((Reference)speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
             Taxon species = Taxon.NewInstance(speciesName, sec1);
             setUuid(species,"9182e136-f2e2-4f9a-9010-3f35908fb5e0");
+            TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
 
+            setUuid(synonymName, "1584157b-5c43-4150-b271-95b2c99377b2");
+            Synonym  synonymUnpublished = Synonym.NewInstance(synonymName, sec1);
+            setUuid(synonymName, "a87c16b7-8299-4d56-a682-ce20973428ea");
+            synonymUnpublished.setPublish(false);
+            species.addHomotypicSynonym(synonymUnpublished);
             TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
             setUuid(node3, "a0c9733a-fe3a-42ce-8a92-000e27bfdfa3");
             nodesToSave.add(node3);
