@@ -153,7 +153,7 @@ public class ProxyUtils {
         return o;
     }
 
-    public static boolean isProxy(Object o) {
+    public static boolean isUninitializedProxy(Object o) {
         if(o != null && o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(hli.isUninitialized()) {

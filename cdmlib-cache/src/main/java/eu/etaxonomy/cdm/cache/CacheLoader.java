@@ -381,7 +381,7 @@ public class CacheLoader {
             Object cachedo = field.get(cachedCdmEntity);
             CdmBase cdmEntityInSubGraph = null;
 
-            if(update || ProxyUtils.isProxy(cachedo)) {
+            if(!ProxyUtils.isUninitializedProxy(o) && (update || ProxyUtils.isUninitializedProxy(cachedo))) {
                 // if we are in update mode we have to make the field of the cached entity
                 // up-to-date by setting it to the value of the cdm entity being loaded
                 //
@@ -394,7 +394,7 @@ public class CacheLoader {
 
             }
 
-            if(o != null && !ProxyUtils.isProxy(o)) {
+            if(o != null && !ProxyUtils.isUninitializedProxy(o)) {
                 if(CdmBase.class.isAssignableFrom(o.getClass())) {
                     logger.info("found initialised cdm entity '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
 
