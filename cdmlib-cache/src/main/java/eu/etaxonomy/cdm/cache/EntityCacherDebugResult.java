@@ -363,7 +363,7 @@ public class EntityCacherDebugResult {
             childCei.setField(field);
 
             if(o != null) {
-                boolean isProxy = ProxyUtils.isProxy(o);
+                boolean isProxy = ProxyUtils.isUninitializedProxy(o);
 
                 childCei.setProxy(isProxy);
                 if(!isProxy) {
