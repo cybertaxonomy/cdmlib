@@ -83,6 +83,10 @@ public class DwcaEmlRecord extends DwcaRecordBase {
     public void write(DwcaTaxExportState state, PrintWriter writer) {
         //not needed
 	}
+    @Override
+    protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
+        //not needed
+    }
 
 	public String getIdentifier() {
 		if (identifier == null){
@@ -297,4 +301,5 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	public void setReferences(List<Reference> references) {
 		this.references = references;
 	}
+
 }

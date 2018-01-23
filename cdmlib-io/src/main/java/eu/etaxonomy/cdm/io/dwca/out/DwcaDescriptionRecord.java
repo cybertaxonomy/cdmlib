@@ -79,11 +79,8 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 //	}
 
     @Override
-    public void write(DwcaTaxExportState state, PrintWriter writer) {
-        if(writer == null){
-            writeCsv(state);
-            return;
-        }
+    protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
+
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(description, writer, IS_NOT_FIRST, TermUri.DC_DESCRIPTION);
 		print(getFeature(type), writer, IS_NOT_FIRST, TermUri.DC_TYPE);

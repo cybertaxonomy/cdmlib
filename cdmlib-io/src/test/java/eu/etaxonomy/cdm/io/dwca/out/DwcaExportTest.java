@@ -83,7 +83,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
         for (String key : data.keySet()){
             byte[] byt = data.get(key);
-            System.out.println(key + ": " + new String(byt) );
+//            System.out.println(key + ": " + new String(byt) );
         }
 
         //metadata
@@ -121,7 +121,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID_SUBSPEC_NODE));
         config.setTarget(TARGET.EXPORT_DATA);
         ExportResult result = defaultExport.invoke(config);
-        System.out.println(result.createReport());
+//        System.out.println(result.createReport());
         ExportDataWrapper<?> exportData = result.getExportData();
         @SuppressWarnings("unchecked")
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
@@ -168,10 +168,15 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
+//        System.out.println(refStr);
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
         Assert.assertTrue(refStr.contains(expected));
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"Mill., The book of botany 3. 1804\",,\"Mill.\",\"1804\",,,,,,,";
         Assert.assertTrue(refStr.contains(expected));
+        //header
+        expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
+        Assert.assertTrue(refStr.contains(expected));
+
     }
 
     @Test
@@ -189,7 +194,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
         for (String key : data.keySet()){
             byte[] byt = data.get(key);
-            System.out.println(key + ": " + new String(byt) );
+//            System.out.println(key + ": " + new String(byt) );
         }
 //      System.out.println();
         //metadata
@@ -224,7 +229,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull("Core must not be null", core);
         String coreStr = new String(core);
         String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"3f52e136-f2e1-4f9a-9010-2f35908fbd39\",\"Genus species Mill.\",\"Species\",\"accepted\"";
-        System.out.println(coreStr);
+//        System.out.println(coreStr);
         Assert.assertTrue(coreStr.contains(expected));
         String expectedClassification = "\"Family|Genus|Genus species\"";
         Assert.assertTrue(coreStr.contains(expectedClassification));
@@ -235,6 +240,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
+
         expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
 //        System.out.println(refStr);
         Assert.assertTrue(refStr.contains(expected));
@@ -271,6 +277,45 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(coreStr.contains(expected));
 
         Assert.assertTrue(coreStr.contains(UUID_UNPUBLISHED_TAXON));
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    public void testNoHeader(){
+        createFullTestDataSet();
+        File destinationFolder = null;
+        DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
+        config.setTarget(TARGET.EXPORT_DATA);
+        config.setHasHeaderLines(false);
+        ExportResult result = defaultExport.invoke(config);
+
+        //core
+        ExportDataWrapper<?> exportData = result.getExportData();
+        @SuppressWarnings("unchecked")
+        Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
+        byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
+        Assert.assertNotNull("Core must not be null", core);
+        String coreStr = new String(core);
+        String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
+        Assert.assertTrue(coreStr.contains(expected));
+//        System.out.println(coreStr);
+        expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
+        Assert.assertFalse(coreStr.contains(expected));
+        expected = "coreid";
+        Assert.assertFalse(coreStr.startsWith(expected));
+
+        //reference
+        byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
+        Assert.assertNotNull("Reference must not be null", ref);
+        String refStr = new String(ref);
+        expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
+//        System.out.println(refStr);
+        Assert.assertTrue(refStr.contains(expected));
+        expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
+        Assert.assertFalse(refStr.contains(expected));
+        expected = "coreid";
+        Assert.assertFalse(refStr.startsWith(expected));
+
     }
 
     /**

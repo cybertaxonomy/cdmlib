@@ -129,11 +129,8 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
     }
 
     @Override
-    public void write(DwcaTaxExportState state, PrintWriter writer) {
-        if(writer == null){
-            writeCsv(state);
-            return;
-        }
+    protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
+
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		if (StringUtils.isNotBlank(locationIdString)){
 			print(locationIdString, writer, IS_NOT_FIRST, TermUri.DWC_LOCATION_ID);
