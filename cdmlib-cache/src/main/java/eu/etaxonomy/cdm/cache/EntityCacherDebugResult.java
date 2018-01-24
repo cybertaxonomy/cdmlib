@@ -16,10 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.apache.log4j.Logger;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
@@ -28,6 +24,9 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.api.cache.CdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * @author cmathew
@@ -165,11 +164,14 @@ public class EntityCacherDebugResult {
         if(notInCacheList.isEmpty()) {
             sb.append("No Entities found which are not in Cache.");
         } else {
-            sb.append("Not In Cache Entities,");
+            sb.append("Not In Cache Entities (");
+            sb.append(NotInCacheDetail.NOT_FOUND.getLabel() + ": " + NotInCacheDetail.NOT_FOUND.name() + ", ");
+            sb.append(NotInCacheDetail.COPY_ENTITY.getLabel() + ": " + NotInCacheDetail.COPY_ENTITY.name() + ")");
 
             for(CdmEntityInfo cei : notInCacheList) {
                 CdmBase cb = (CdmBase) cei.getObject();
-                Object cbParent = cei.getParent().getObject();
+                CdmEntityInfo parentCei = cei.getParent();
+                Object parentEntity = parentCei.getObject();
 
                 sb.append(System.getProperty("line.separator"));
 
@@ -177,17 +179,37 @@ public class EntityCacherDebugResult {
                 if(cei.getField() != null) {
                     fieldName = cei.getField().getName();
                 }
-                sb.append(" - "  + fieldName + ":" + cb.getUserFriendlyTypeName() + "/" + cb.getId());
-
-                if(cbParent instanceof CdmBase) {
-                    sb.append(" of entity " + ((CdmBase)cbParent).getUserFriendlyTypeName());
-                } else {
-                    sb.append(" of entity " + cbParent.getClass().getName());
+                sb.append(" - ");
+                if(cei.getNotInCacheDetail() != null){
+                    sb.append(cei.getNotInCacheDetail().getLabel());
                 }
+                sb.append(fieldName + "[" + cb.getUserFriendlyTypeName() + "#" + cb.getId() + "]");
+
+                String parentsPath = "";
+                while(parentCei != null){
+                    parentsPath += ".";
+                    parentsPath += parentCei.getField() != null? parentCei.getField().getName() : "";
+                    String id = "";
+                    if(parentCei.getObject() instanceof CdmBase){
+                        id = "#" + ((CdmBase)parentCei.getObject()).getId();
+                    }
+                    parentsPath += "[" + classLabel(parentCei.getObject()) + id + "]";
+                    parentCei = parentCei.getParent();
+                }
+
+                sb.append(parentsPath);
             }
         }
         sb.append(System.getProperty("line.separator"));
         return sb.toString();
+    }
+
+    private String classLabel(Object entity){
+        if(entity instanceof CdmBase) {
+            return ((CdmBase)entity).getUserFriendlyTypeName();
+        } else {
+            return entity.getClass().getName();
+        }
     }
 
     private String getCachesContainingEntity(CdmBase cdmEntity) {
@@ -293,8 +315,10 @@ public class EntityCacherDebugResult {
 
         if(cei.getObject() instanceof CdmBase) {
            CdmBase cb =  (CdmBase)cei.getObject();
+           cb = (CdmBase) ProxyUtils.deproxy(cb);
            cachedCdmEntityInSubGraph = cacher.getFromCache(cb);
            if(cachedCdmEntityInSubGraph != cb) {
+               cei.setNotInCacheDetail(cachedCdmEntityInSubGraph == null ? NotInCacheDetail.NOT_FOUND : NotInCacheDetail.COPY_ENTITY);
                // found a cdm entity which is not in cache - need to record this
                //logger.info("  - found entity not in cache " + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
                addEntityNotInCache(cei);
@@ -435,6 +459,7 @@ public class EntityCacherDebugResult {
         private Field field;
         private String label;
         private boolean isProxy;
+        private NotInCacheDetail notInCacheDetail = null;
 
         public CdmEntityInfo(Object object) {
             this.object = object;
@@ -502,7 +527,7 @@ public class EntityCacherDebugResult {
                 } else if(object instanceof Map) {
                     label = "[" + className + "] " + fieldName + " : " + String.valueOf(((Map)object).size());
                 } else if(object instanceof CdmBase) {
-                    label = getCachesContainingEntity((CdmBase)object) +  "[" + className + ",id" + ((CdmBase)object).getId() + "] " + fieldName + " : " + object.toString();
+                    label = getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] " + fieldName + " : " + object.toString();
                 } else {
                     label = "[" + className + "] " + fieldName + " : " + object.toString();
                 }
@@ -532,8 +557,38 @@ public class EntityCacherDebugResult {
             this.isProxy = isProxy;
         }
 
+        /**
+         * @return the notInCacheDetail
+         */
+        public NotInCacheDetail getNotInCacheDetail() {
+            return notInCacheDetail;
+        }
 
+        /**
+         * @param notInCacheDetail the notInCacheDetail to set
+         */
+        public void setNotInCacheDetail(NotInCacheDetail notInCacheDetail) {
+            this.notInCacheDetail = notInCacheDetail;
+        }
 
+    }
+
+    enum NotInCacheDetail {
+        NOT_FOUND("*"),
+        COPY_ENTITY("?");
+
+        private String label;
+
+        private NotInCacheDetail(String label){
+            this.label = label;
+        }
+
+        /**
+         * @return
+         */
+        public Object getLabel() {
+            return label;
+        }
     }
 
 }
