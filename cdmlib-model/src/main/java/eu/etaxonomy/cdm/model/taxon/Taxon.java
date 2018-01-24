@@ -706,7 +706,7 @@ public class Taxon
     }
 
     /**
-     * Returns the boolean value indicating whether <i>this</i> taxon is a misaplication
+     * Returns the boolean value indicating whether <i>this</i> taxon is a misapplication
      * (misapplied name) for at least one other taxon.
      */
     // TODO cache as for #hasTaxonomicChildren

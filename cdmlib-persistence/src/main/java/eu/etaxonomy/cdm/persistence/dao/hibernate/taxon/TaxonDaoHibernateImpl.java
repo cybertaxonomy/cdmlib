@@ -309,7 +309,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
             String hql = "";
-            Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
+            Set<NamedArea> areasExpanded = new HashSet<>();
             if(namedAreas != null && namedAreas.size() > 0){
                 // expand areas and restrict by distribution area
                 Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
@@ -317,7 +317,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             boolean doAreaRestriction = areasExpanded.size() > 0;
 
-            Set<UUID> namedAreasUuids = new HashSet<UUID>();
+            Set<UUID> namedAreasUuids = new HashSet<>();
             for (NamedArea area:areasExpanded){
                 namedAreasUuids.add(area.getUuid());
             }

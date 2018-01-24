@@ -109,7 +109,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 //********************************** CONSTRUCTOR *********************************/
 
-  	//for hibernate use only
+  	/**
+  	 * @deprecated for inner (hibernate) use only
+  	 */
   	@Deprecated
   	protected TaxonRelationshipType() {
 		super(TermType.TaxonRelationshipType);
@@ -139,9 +141,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -191,7 +190,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 	/**
 	 * Returns the taxon relationship type "is misapplied name for". This
-	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
+	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}
+	 * of the {@link TaxonRelationship#getFromTaxon() source taxon}
 	 * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
 	 * the {@link TaxonBase#getSec() concept reference} to denominate the same real taxon
 	 * as the one meant by the target {@link Taxon taxon}.<BR>

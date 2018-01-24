@@ -2233,19 +2233,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         orderHintsSynonyms.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
                         List<Synonym> synonyMsOfParent = dao.getSynonyms(parentTaxon, SynonymType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHintsSynonyms,propertyPaths);
-                        List<Synonym> synonymsOfTaxon= dao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHintsSynonyms,propertyPaths);
+                        List<Synonym> synonymsOfTaxon= dao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF(),
+                                null, null,orderHintsSynonyms,propertyPaths);
 
-                        List<TaxonRelationship> taxonRelListParent = null;
-                        List<TaxonRelationship> taxonRelListTaxon = null;
+                        List<TaxonRelationship> taxonRelListParent = new ArrayList<>();
+                        List<TaxonRelationship> taxonRelListTaxon = new ArrayList<>();
                         if (doWithMisappliedNames){
                             List<OrderHint> orderHintsMisapplied = new ArrayList<>();
                             orderHintsMisapplied.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
-                            taxonRelListParent = dao.getTaxonRelationships(parentTaxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
-                            taxonRelListTaxon = dao.getTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
+                            taxonRelListParent = dao.getTaxonRelationships(parentTaxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(),
+                                    null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
+                            taxonRelListTaxon = dao.getTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(),
+                                    null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
                         }
 
                         if (type.equals(SynonymType.INFERRED_EPITHET_OF())){
-
                             for (Synonym synonymRelationOfParent:synonyMsOfParent){
 
                                 inferredEpithet = createInferredEpithets(taxon,
@@ -2274,7 +2276,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                     inferredSynonyms.add(inferredEpithet);
                                     zooHashMap.put(inferredEpithet.getName().getUuid(), inferredEpithet.getName());
-                                     taxonNames.add(inferredEpithet.getName().getNameCache());
+                                    taxonNames.add(inferredEpithet.getName().getNameCache());
                                 }
                             }
 
@@ -2301,8 +2303,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }else if (type.equals(SynonymType.INFERRED_GENUS_OF())){
 
                         for (Synonym synonymRelationOfTaxon:synonymsOfTaxon){
-                            TaxonName synName;
-                            IZoologicalName inferredSynName;
 
                             inferredGenus = createInferredGenus(taxon,
                                     zooHashMap, taxonName, epithetOfTaxon,
@@ -2311,8 +2311,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             inferredSynonyms.add(inferredGenus);
                             zooHashMap.put(inferredGenus.getName().getUuid(), inferredGenus.getName());
                             taxonNames.add(inferredGenus.getName().getNameCache());
-
-
                         }
 
                         if (doWithMisappliedNames){
@@ -2397,7 +2395,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                  taxonNames.add(potentialCombination.getName().getNameCache());
 
                             }
-
 
                         }
 
@@ -2486,7 +2483,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     private Synonym createPotentialCombination(String idInSourceParent,
             IZoologicalName parentSynZooName, 	IZoologicalName zooSynName, String synParentGenus,
             String synParentInfragenericName, String synParentSpecificEpithet,
-            TaxonBase syn, Map<UUID, IZoologicalName> zooHashMap) {
+            TaxonBase<?> syn, Map<UUID, IZoologicalName> zooHashMap) {
         Synonym potentialCombination;
         Reference sourceReference;
         IZoologicalName inferredSynName;
@@ -2498,7 +2495,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon");
             //TODO:Remove
             if (!parentSynZooName.getTaxa().isEmpty()){
-                TaxonBase taxon = parentSynZooName.getTaxa().iterator().next();
+                TaxonBase<?> taxon = parentSynZooName.getTaxa().iterator().next();
 
                 sourceReference = taxon.getSec();
             }
@@ -2635,7 +2632,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Map<UUID, IZoologicalName> zooHashMap, IZoologicalName taxonName,
             String epithetOfTaxon, String infragenericEpithetOfTaxon,
             String infraspecificEpithetOfTaxon, List<String> taxonNames,
-            TaxonName parentName, TaxonBase syn) {
+            TaxonName parentName, TaxonBase<?> syn) {
 
         Synonym inferredEpithet;
         TaxonName synName;
@@ -2744,7 +2741,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * Returns the idInSource for a given Synonym.
      * @param syn
      */
-    private String getIdInSource(TaxonBase taxonBase) {
+    private String getIdInSource(TaxonBase<?> taxonBase) {
         String idInSource = null;
         Set<IdentifiableSource> sources = taxonBase.getSources();
         if (sources.size() == 1) {
@@ -2792,7 +2789,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames){
-        List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
+        List <Synonym> inferredSynonyms = new ArrayList<>();
 
         inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.INFERRED_EPITHET_OF(), doWithMisappliedNames));
         inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.INFERRED_GENUS_OF(), doWithMisappliedNames));
@@ -2976,7 +2973,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         //preliminary implementation
 
         Set<Taxon> taxa = new HashSet<>();
-        TaxonBase taxonBase = find(taxonUuid);
+        TaxonBase<?> taxonBase = find(taxonUuid);
         if (taxonBase == null){
             return new IncludedTaxaDTO();
         }else if (taxonBase.isInstanceOf(Taxon.class)){
@@ -3098,7 +3095,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
-        List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
+        List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false,
+                config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
 
@@ -3208,7 +3206,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
 			UUID acceptedTaxonUuid) {
-		TaxonBase base = this.load(synonymUUid);
+		TaxonBase<?> base = this.load(synonymUUid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(acceptedTaxonUuid);
 		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
