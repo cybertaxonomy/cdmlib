@@ -156,7 +156,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
      *            them to the value of the cdm entity being loaded
      * @return
      */
-    public CdmBase load(CdmBase cdmEntity, boolean update) {
+    public <T extends CdmBase> T load(T cdmEntity, boolean update) {
         return cacheLoader.load(cdmEntity, true, update);
     }
 
@@ -269,7 +269,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     @Override
-    public CdmBase getFromCache(CdmBase cdmBase) {
+    public <T extends CdmBase> T getFromCache(T cdmBase) {
 
         CdmEntityCacheKey cacheId = generateKey((CdmBase)ProxyUtils.deproxy(cdmBase));
         // first try this cache
@@ -280,7 +280,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             cachedCdmEntity = cdmCacher.getFromCache(cdmBase.getUuid());
         }
 
-        return cachedCdmEntity;
+        return (T) cachedCdmEntity;
     }
 
     public CdmBase getFromCache(CdmBase cdmBase, Class<? extends CdmBase> clazz) {
@@ -330,7 +330,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     @Override
-    public CdmBase load(CdmBase cdmEntity) {
+    public <T extends CdmBase> T load(T cdmEntity) {
         return load(cdmEntity, true);
     }
 

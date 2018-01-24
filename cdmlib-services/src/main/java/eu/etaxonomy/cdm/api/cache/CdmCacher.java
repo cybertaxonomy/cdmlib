@@ -155,8 +155,8 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     }
 
     @Override
-    public CdmBase getFromCache(CdmBase cdmBase) {
-        return getFromCache(cdmBase.getUuid());
+    public <T extends CdmBase> T getFromCache(T cdmBase) {
+        return (T) getFromCache(cdmBase.getUuid());
     }
 
 
@@ -168,7 +168,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     }
 
     @Override
-    public abstract CdmBase load(CdmBase cdmEntity);
+    public abstract <T extends CdmBase> T load(T cdmEntity);
 
 
     @Override

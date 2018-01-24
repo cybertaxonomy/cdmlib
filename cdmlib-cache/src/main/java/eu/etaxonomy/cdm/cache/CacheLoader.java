@@ -231,13 +231,13 @@ public class CacheLoader {
      *            all fields of the cached entity will be overwritten by setting
      *            them to the value of the cdm entity being loaded
      */
-    public CdmBase load(CdmBase cdmEntity, boolean recursive, boolean update) {
+    public <T extends CdmBase> T load(T cdmEntity, boolean recursive, boolean update) {
         if(cdmEntity == null) {
             return null;
         }
 
         // start by looking up the cdm entity in the cache
-        CdmBase cachedCdmEntity = cdmCacher.getFromCache(cdmEntity);
+        T cachedCdmEntity = cdmCacher.getFromCache(cdmEntity);
 
         if(cachedCdmEntity != null) {
             // if cdm entity was found in cache then
@@ -259,7 +259,7 @@ public class CacheLoader {
         } else {
             loadedCdmBase = load(cdmEntity);
         }
-        return loadedCdmBase;
+        return (T) loadedCdmBase;
 
     }
 

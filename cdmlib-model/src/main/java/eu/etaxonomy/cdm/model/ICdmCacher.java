@@ -26,7 +26,7 @@ public interface ICdmCacher {
      *
      * @return the cached version of the passed entity or <code>null</code>
      */
-    public CdmBase getFromCache(CdmBase cdmBase);
+    public <T extends CdmBase> T getFromCache(T cdmBase);
 
     /**
      * Puts the passed <code>cdmEntity</code> into the cache as long it does not
@@ -45,7 +45,7 @@ public interface ICdmCacher {
      * @param cdmEntity
      * @return
      */
-    public CdmBase load(CdmBase cdmEntity);
+    public <T extends CdmBase> T load(T cdmEntity);
 
     /**
      *

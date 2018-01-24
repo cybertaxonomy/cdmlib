@@ -42,9 +42,9 @@ public class CdmTermCacher extends CdmCacher {
     }
 
     @Override
-    public CdmBase load(CdmBase cdmEntity) {
+    public <T extends CdmBase> T load(T cdmEntity) {
 
-        CdmBase cachedCdmEntity = getFromCache(cdmEntity);
+        T cachedCdmEntity = getFromCache(cdmEntity);
         if(cachedCdmEntity == null && isCachable(cdmEntity)) {
             put(cdmEntity);
            cachedCdmEntity = cdmEntity;
