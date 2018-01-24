@@ -215,14 +215,15 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * @param config
 	 */
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvTaxRecordRedlist record, CsvTaxExportConfiguratorRedlist config) {
-		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
-		for (Taxon misappliedName : misappliedNames ){
+		Set<TaxonRelationship> misappliedNameRels = taxon.getMisappliedNameRelations();
+		for (TaxonRelationship misappliedNameRel : misappliedNameRels ){
 //			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
-			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
+			Taxon misappliedName = misappliedNameRel.getFromTaxon();
 			INonViralName name = misappliedName.getName();
 
 			if (! this.recordExists(misappliedName)){
-				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config);
+				handleTaxonBase(record, misappliedName, name, taxon, classification,
+				        misappliedNameRel.getType(), false, false, config);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
@@ -292,7 +293,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
-			}
+			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
+                status = "proParteMisapplied";
+            }
 			if (isProParte){
 				status = "proParteSynonym";
 			}else if (isPartial){

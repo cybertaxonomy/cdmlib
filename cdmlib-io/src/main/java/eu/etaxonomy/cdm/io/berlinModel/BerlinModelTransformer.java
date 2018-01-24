@@ -368,6 +368,7 @@ public class BerlinModelTransformer {
 	public static int TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF = 102;
 	public static int TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF = 103;
 	public static int TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF = 104;
+	public static int TAX_REL_IS_PRO_PARTE_MISAPPLIED_NAME_OF = 110;  //does not really exist but as only used in BM export which is not in use anymore it serves as a placeholder for consistency
 
 
 
@@ -1083,7 +1084,8 @@ public class BerlinModelTransformer {
 			RelationshipTermBase<?> type = rel.getType();
 			if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {return TAX_REL_IS_INCLUDED_IN;
 			}else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {return TAX_REL_IS_MISAPPLIED_NAME_OF;
-			}else if (type.equals(SynonymType.SYNONYM_OF())) {return TAX_REL_IS_SYNONYM_OF;
+			}else if (type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())) {return TAX_REL_IS_PRO_PARTE_MISAPPLIED_NAME_OF;
+            }else if (type.equals(SynonymType.SYNONYM_OF())) {return TAX_REL_IS_SYNONYM_OF;
 			}else if (type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HOMOTYPIC_SYNONYM_OF;
 			}else if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HETEROTYPIC_SYNONYM_OF;
 			}else if (type.equals(TaxonRelationshipType.CONGRUENT_TO())) {return 11;

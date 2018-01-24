@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * Mapps taxon concept relationships, taxon name relationships and taxon interactions
@@ -98,7 +97,7 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
                 IdentifiableEntity<?> subject = rel.getFromTaxon();
                 IdentifiableEntity<?> object = rel.getToTaxon();
 
-                if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) ){
+                if (rel.getType().isAnyMisappliedName()){
                     //misapplied names are handled in core (tax)
                     continue;
                 }

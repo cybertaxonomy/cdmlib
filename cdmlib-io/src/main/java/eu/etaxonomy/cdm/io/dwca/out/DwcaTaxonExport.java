@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
@@ -137,10 +138,11 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 	private void handleMisapplication(DwcaTaxExportState state, Taxon taxon,
 	        DwcaTaxExportFile file, Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
-		for (Taxon misappliedName : misappliedNames ){
+
+	    Set<TaxonRelationship> misappliedNamesRels = taxon.getMisappliedNameRelations();
+		for (TaxonRelationship misappliedNameRel : misappliedNamesRels ){
 			DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
-			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
+			Taxon misappliedName = misappliedNameRel.getFromTaxon();
 			TaxonName name = misappliedName.getName();
 			//????
 			Taxon parent = null;
@@ -148,7 +150,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 			if (! state.recordExists(file, misappliedName)){
 				handleTaxonBase(state, record, misappliedName, name, taxon, parent, basionym, classification,
-				        relType, false, false);
+				        misappliedNameRel.getType(), false, false);
 				PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
 				state.addExistingRecord(file, misappliedName);
@@ -378,7 +380,9 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
-			}
+			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
+                status = "proParteMisapplied";
+            }
 			if (isProParte){
 				status = "proParteSynonym";
 			}else if (isPartial){

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -216,7 +217,7 @@ public class QueryFactory {
      * @param entitiy
      * @return
      */
-    public Query newEntityIdsQuery(String idFieldName, List<? extends CdmBase> entities){
+    public Query newEntityIdsQuery(String idFieldName, Collection<? extends CdmBase> entities){
         Builder idInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
             for(CdmBase entity : entities){

@@ -571,7 +571,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             // filter by includeRelationships
             for (TaxonRelationshipEdge relationshipEdgeFilter : includeRelationships) {
-                if ( relationshipEdgeFilter.getTaxonRelationshipType().equals(taxRel.getType()) ) {
+                if ( relationshipEdgeFilter.getTaxonRelationshipTypes().equals(taxRel.getType()) ) {
                     if (relationshipEdgeFilter.getDirections().contains(Direction.relatedTo) && !taxa.contains(taxRel.getToTaxon())) {
                         if(logger.isDebugEnabled()){
                             logger.debug(maxDepth + ": " + taxon.getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxRel.getToTaxon().getTitleCache());
@@ -947,12 +947,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 configRelTaxon.setDeleteConceptRelationships(true);
 
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
-                    if (config.isDeleteMisappliedNamesAndInvalidDesignations()){
-                        if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) || taxRel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
-                            if (taxon.equals(taxRel.getToTaxon())){
-                                this.deleteTaxon(taxRel.getFromTaxon().getUuid(), config, classificationUuid);
-                            }
-                        }
+                    if (config.isDeleteMisappliedNamesAndInvalidDesignations()
+                            && taxRel.getType().isMisappliedNameOrInvalidDesignation()
+                            && taxon.equals(taxRel.getToTaxon())){
+                        this.deleteTaxon(taxRel.getFromTaxon().getUuid(), config, classificationUuid);
                     } else if (config.isDeleteConceptRelationships() && taxRel.getType().isConceptRelationship()){
 
                         if (taxon.equals(taxRel.getToTaxon()) && isDeletable(taxRel.getFromTaxon().getUuid(), configRelTaxon).isOk()){
@@ -1596,7 +1594,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         Builder joinFromQueryBuilder = new Builder();
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
-        joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
+        joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getTaxonRelationshipTypes()), Occur.MUST);
+
         Query joinQuery = taxonBaseQueryFactory.newJoinQuery(TaxonRelationship.class, fromField, false, joinFromQueryBuilder.build(), toField, null, ScoreMode.Max);
 
         if(sortFields == null){
@@ -1803,7 +1802,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             // a related Taxon A.
             //
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
-                    new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
+                    new TaxonRelationshipEdge(TaxonRelationshipType.allMisappliedNameTypes(), Direction.relatedTo),
                     queryString, classification, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
@@ -2925,7 +2924,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     message = "The taxon can't be deleted as long as it belongs to a taxon node.";
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
-                    if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
+                    if (!config.isDeleteMisappliedNamesAndInvalidDesignations() &&
+                            (((TaxonRelationship)ref).getType().isMisappliedNameOrInvalidDesignation())){
                         message = "The taxon can't be deleted as long as it has misapplied names or invalid designations.";
                     } else{
                         message = "The taxon can't be deleted as long as it belongs to a taxon node.";

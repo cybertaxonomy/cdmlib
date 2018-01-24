@@ -662,6 +662,7 @@ public class Taxon
      * @param microcitation			the string with the details describing the exact localisation within the reference
      * @return
      * @see    	   					#getMisappliedNames()
+     * @see                         #addProParteMisappliedName(Taxon, Reference, String)
      * @see    	   					#addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
      * @see    	   					#addTaxonRelation(TaxonRelationship)
      * @see    	   					#getTaxonRelations()
@@ -681,6 +682,29 @@ public class Taxon
 //			}
 //		}
 //	}
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+     * "pro parte misapplied name for") instance where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (misapplied name) taxon involved in the created relationship.
+     *
+     * @param misappliedNameTaxon   the taxon which plays the target role in the new taxon relationship
+     * @param citation              the reference source for the new taxon relationship
+     * @param microcitation         the string with the details describing the exact localisation within the reference
+     * @return
+     * @see                         #addMisappliedName(Taxon, Reference, String)
+     * @see                         #getMisappliedNames()
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addProParteMisappliedName(Taxon proPartemisappliedNameTaxon, Reference citation, String microcitation) {
+        return proPartemisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    }
 
     /**
      * TODO update documentation
@@ -716,14 +740,16 @@ public class Taxon
     }
 
     /**
-     * Counts the number of misaplied names relationships where this taxon represents the
-     * misaplied name for another taxon.
+     * Counts the number of misapplied name relationships (including pro parte misapplied
+     * names) where this taxon represents the
+     * misapplied name for another taxon.
      * @return
      */
     private int computeMisapliedNameRelations(){
         int count = 0;
         for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+            if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())
+                    || rel.getType().equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
                 count++;
             }
         }
@@ -799,40 +825,70 @@ public class Taxon
      * @see  #getTaxonRelations()
      * @see  #getRelationsToThisTaxon()
      * @see  #addMisappliedName(Taxon, Reference, String)
+     * @param includeNonCongruent if <code>true</code> also those taxa are returned that are related
+     * via a non congruent relationship like {@link TaxonRelationshipType#PRO_PARTE_MISAPPLIED_NAME_FOR()
+     * pro parte misapplied name}
      */
     @Transient
-    public Set<Taxon> getMisappliedNames(){
+    public Set<Taxon> getMisappliedNames(boolean includeNonCongruent){
         Set<Taxon> taxa = new HashSet<>();
         Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
         for (TaxonRelationship rel: rels){
-            TaxonRelationshipType tt = rel.getType();
-            TaxonRelationshipType incl = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-            if (tt.equals(incl)){
+            TaxonRelationshipType relType = rel.getType();
+            if ( (includeNonCongruent && relType.isAnyMisappliedName())
+                    || relType.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
                 taxa.add(rel.getFromTaxon());
             }
         }
         return taxa;
     }
+
+    /**
+     * Returns the set of misapplied name relationships in which this taxon
+     * plays the role of the correctly accepted taxon (target). A misapplied name is a taxon the
+     * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of which has been erroneously used
+     * by its {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
+     * as the one meant by <i>this</i> ("accepted/correct") taxon.
+     */
+    @Transient
+    public Set<TaxonRelationship> getMisappliedNameRelations(){
+        Set<TaxonRelationship> result = new HashSet<>();
+        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+        for (TaxonRelationship rel: rels){
+            TaxonRelationshipType relType = rel.getType();
+            if (relType.isAnyMisappliedName()){
+                result.add(rel);
+            }
+        }
+        return result;
+    }
+
     /**
      * Returns the set of taxa playing the target role in {@link TaxonRelationship taxon relationships}
-     * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
+     * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for"
+     * or "pro parte misapplied name for") where
      * <i>this</i> taxon plays the source role. A misapplied name is a taxon the
      * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of which has been erroneously used
      * by its {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
      * as the one meant by <i>this</i> ("accepted/correct") taxon.
+
+     * @param includeNonCongruent if <code>true</code> also those taxa are returned that are related
+     * via a non congruent relationship like {@link TaxonRelationshipType#PRO_PARTE_MISAPPLIED_NAME_FOR()
+     * pro parte misapplied name}
      *
      * @see  #getTaxonRelations()
      * @see  #getRelationsToThisTaxon()
      * @see  #addMisappliedName(Taxon, Reference, String)
+     * @see  #addProParteMisappliedName(Taxon, Reference, String)
      */
     @Transient
-    public Set<Taxon> getTaxonForMisappliedName(){
+    public Set<Taxon> getTaxaForMisappliedName(boolean includeNonCongruent){
         Set<Taxon> taxa = new HashSet<>();
         Set<TaxonRelationship> rels = this.getRelationsFromThisTaxon();
         for (TaxonRelationship rel: rels){
-            TaxonRelationshipType tt = rel.getType();
-            TaxonRelationshipType incl = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-            if (tt.equals(incl)){
+            TaxonRelationshipType relType = rel.getType();
+            if ( (includeNonCongruent && relType.isAnyMisappliedName())
+                    || relType.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
                 taxa.add(rel.getToTaxon());
             }
         }

@@ -368,7 +368,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             if (doIncludeMisappliedNames ){
                 subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
-                subMisappliedNames.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                Set<TaxonRelationshipType> relTypeSet = new HashSet<>();
+                relTypeSet.add(TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                relTypeSet.add(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR());
+                subMisappliedNames.setParameterList("rTypeSet", relTypeSet);
                 if(doAreaRestriction){
                     subMisappliedNames.setParameterList("namedAreasUuids", namedAreasUuids);
                 }
@@ -1445,7 +1448,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
            String doSearchFieldWhere = "%s." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 
-           String doRelationshipTypeComparison = " rtype = :rType ";
+           String doRelationshipTypeComparison = " rtype in (:rTypeSet) ";
 
         String taxonSubselect = null;
         String synonymSubselect = null;

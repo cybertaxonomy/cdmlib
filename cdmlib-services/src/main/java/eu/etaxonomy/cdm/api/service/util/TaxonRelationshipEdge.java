@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.api.service.util;
 
+import java.util.Set;
+
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
@@ -27,6 +29,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  */
 public class TaxonRelationshipEdge extends AbstractRelationshipEdge<TaxonRelationshipType> {
+
+    public TaxonRelationshipEdge(Set<TaxonRelationshipType> taxonRelationshipTypes, Direction ... direction) {
+        super(taxonRelationshipTypes, direction);
+    }
 
     public TaxonRelationshipEdge(TaxonRelationshipType taxonRelationshipType, Direction ... direction) {
         super(taxonRelationshipType, direction);
