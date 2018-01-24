@@ -215,8 +215,12 @@ public class CacheLoader {
     }
 
     /**
-     * Puts the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity}) in the
+     * Loads the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity}) in the
      * cache.
+     * <p>
+     * <b>WARNING: Recursive updating of the cached entity will not take place
+     * in case there is a cached entity which is the same object as
+     * <code>cdmEntity</code>.</b>
      *
      * For in depth details on the mechanism see
      * {@link #loadRecursive(CdmBase, List, boolean)} and

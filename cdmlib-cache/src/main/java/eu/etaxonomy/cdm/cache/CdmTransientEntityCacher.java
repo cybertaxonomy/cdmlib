@@ -219,6 +219,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     /**
      * Puts the passed <code>cdmEntity</code> into the cache as long it does not yet exist in the caches.
+     * <p>
+     * The adjacent <b>ENTITY GRAPH WILL NOT BE LOADED RECURSIVELY</b>
      */
     @Override
     public void put(CdmBase cdmEntity) {
