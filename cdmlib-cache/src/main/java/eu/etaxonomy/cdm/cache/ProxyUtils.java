@@ -133,7 +133,10 @@ public class ProxyUtils {
         }
     }
 
-
+    /**
+     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+     * otherwise <code>o</code> is returned.
+     */
     public static Object deproxy(Object o) {
         if(o != null && o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
