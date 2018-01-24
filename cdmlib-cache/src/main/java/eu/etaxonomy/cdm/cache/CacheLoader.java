@@ -103,11 +103,11 @@ public class CacheLoader {
 
 
         if(isRecursiveEnabled && recursive) {
-            logger.info("---- starting recursive load for cdm entity map");
+            logger.debug("---- starting recursive load for cdm entity map");
             List<Object> alreadyVisitedEntities = new ArrayList<Object>();
             Map<T,T> cachedMap = load(map, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
-            logger.info("---- ending recursive load for cdm entity map \n");
+            logger.debug("---- ending recursive load for cdm entity map \n");
             return cachedMap;
         } else {
             return load(map, null, update);
@@ -155,11 +155,11 @@ public class CacheLoader {
 
         Collection<T> loadedCollection;
         if(isRecursiveEnabled && recursive) {
-            logger.info("---- starting recursive load for cdm entity collection");
+            logger.debug("---- starting recursive load for cdm entity collection");
             List<Object> alreadyVisitedEntities = new ArrayList<Object>();
             Collection<T> cachedCollection = load(collection, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
-            logger.info("---- ending recursive load for cdm entity collection \n");
+            logger.debug("---- ending recursive load for cdm entity collection \n");
             loadedCollection = cachedCollection;
         } else {
             loadedCollection = load(collection, null, update);
@@ -241,7 +241,7 @@ public class CacheLoader {
 
         if(cachedCdmEntity != null) {
             // if cdm entity was found in cache then
-            logger.info(" - object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + " already exists");
+            logger.debug(" - object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + " already exists");
             // .. return if the cached and input objects are identical, else (this is a newly loaded object so) continue
             if(cachedCdmEntity == cdmEntity) {
                 return cachedCdmEntity;
@@ -250,11 +250,11 @@ public class CacheLoader {
 
         CdmBase loadedCdmBase;
         if(isRecursiveEnabled && recursive) {
-            logger.info("---- starting recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
+            logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
             List<Object> alreadyVisitedEntities = new ArrayList<Object>();
             CdmBase cb =  loadRecursive(cdmEntity, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
-            logger.info("---- ending recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + "\n");
+            logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + "\n");
             loadedCdmBase =  cb;
         } else {
             loadedCdmBase = load(cdmEntity);
@@ -265,7 +265,7 @@ public class CacheLoader {
 
 
     protected CdmBase load(CdmBase cdmEntity) {
-        logger.info("loading object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
+        logger.debug("loading object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
         cdmCacher.put((CdmBase)ProxyUtils.deproxy(cdmEntity));
         return cdmCacher.getFromCache(cdmEntity);
     }
@@ -312,10 +312,10 @@ public class CacheLoader {
                 if(cdmEntityInSubGraph != null) {
                     //checkForIdenticalCdmEntity(alreadyVisitedEntities, cdmEntityInSubGraph);
                     if(!checkForIdenticalCdmEntity(alreadyVisitedEntities, cdmEntityInSubGraph)) {
-                        logger.info("recursive loading object of type " + cdmEntityInSubGraph.getClass().getName() + " with id " + cdmEntityInSubGraph.getId());
+                        logger.debug("recursive loading object of type " + cdmEntityInSubGraph.getClass().getName() + " with id " + cdmEntityInSubGraph.getId());
                         loadRecursive(cdmEntityInSubGraph, alreadyVisitedEntities, update);
                     } else {
-                        logger.info("object of type " + cdmEntityInSubGraph.getClass().getName() + " with id " + cdmEntityInSubGraph.getId() + " already visited");
+                        logger.debug("object of type " + cdmEntityInSubGraph.getClass().getName() + " with id " + cdmEntityInSubGraph.getId() + " already visited");
                     }
                 }
             }
@@ -396,7 +396,7 @@ public class CacheLoader {
 
             if(o != null && !ProxyUtils.isUninitializedProxy(o)) {
                 if(CdmBase.class.isAssignableFrom(o.getClass())) {
-                    logger.info("found initialised cdm entity '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
+                    logger.debug("found initialised cdm entity '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
 
                     cdmEntityInSubGraph  = (CdmBase)o;
                     CdmBase cachedCdmEntityInSubGraph = cdmCacher.getFromCache(cdmEntityInSubGraph);
@@ -407,7 +407,7 @@ public class CacheLoader {
                             // the field has been already initialised, cached and
                             // is not the same as the one in the cache, in which case we set the value
                             // of the field to the one found in the cache
-                            logger.info("setting cached + real value to '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
+                            logger.debug("setting cached + real value to '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
                             field.set(cachedCdmEntity, cachedCdmEntityInSubGraph);
                             field.set(cdmEntity, cachedCdmEntityInSubGraph);
                         } else {
