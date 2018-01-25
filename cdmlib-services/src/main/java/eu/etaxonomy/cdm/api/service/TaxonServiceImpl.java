@@ -2923,7 +2923,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
                     message = "The taxon can't be deleted as long as it belongs to a taxon node.";
                 }
-                if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
+                if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonRelationship)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() &&
                             (((TaxonRelationship)ref).getType().isMisappliedNameOrInvalidDesignation())){
                         message = "The taxon can't be deleted as long as it has misapplied names or invalid designations.";
