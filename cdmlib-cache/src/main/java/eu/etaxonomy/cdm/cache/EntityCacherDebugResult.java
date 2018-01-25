@@ -171,7 +171,10 @@ public class EntityCacherDebugResult {
             for(CdmEntityInfo cei : notInCacheList) {
                 CdmBase cb = (CdmBase) cei.getObject();
                 CdmEntityInfo parentCei = cei.getParent();
-                Object parentEntity = parentCei.getObject();
+                Object parentEntity = null;
+                if(parentCei != null){
+                    parentEntity = parentCei.getObject();
+                }
 
                 sb.append(System.getProperty("line.separator"));
 
