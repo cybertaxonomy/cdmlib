@@ -414,7 +414,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
 
-        return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -451,7 +451,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
-        return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -473,7 +473,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
-        return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -605,7 +605,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             results = dao.getSynonyms(taxon, type, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-        return new DefaultPagerImpl<Synonym>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -650,7 +650,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator){
 
-        List<UuidAndTitleCache<IdentifiableEntity>> results = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+        List<UuidAndTitleCache<IdentifiableEntity>> results = new ArrayList<>();
 
 
         if (configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoNamesWithoutTaxa() || configurator.isDoTaxaByCommonNames()){
@@ -671,7 +671,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         long numberTaxaResults = 0L;
 
 
-        List<String> propertyPath = new ArrayList<String>();
+        List<String> propertyPath = new ArrayList<>();
         if(configurator.getTaxonPropertyPath() != null){
             propertyPath.addAll(configurator.getTaxonPropertyPath());
         }
@@ -967,7 +967,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //    	TaxonDescription
             if (config.isDeleteDescriptions()){
                 Set<TaxonDescription> descriptions = taxon.getDescriptions();
-                List<TaxonDescription> removeDescriptions = new ArrayList<TaxonDescription>();
+                List<TaxonDescription> removeDescriptions = new ArrayList<>();
                 for (TaxonDescription desc: descriptions){
                     //TODO use description delete configurator ?
                     //FIXME check if description is ALWAYS deletable
@@ -1023,7 +1023,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     	result.addException(new Exception("The taxon can not be deleted because it is not used in defined classification."));
                     }
                 } else if (config.isDeleteInAllClassifications()){
-                    List<TaxonNode> nodesList = new ArrayList<TaxonNode>();
+                    List<TaxonNode> nodesList = new ArrayList<>();
                     nodesList.addAll(taxon.getTaxonNodes());
                     for (ITaxonTreeNode treeNode: nodesList){
                         TaxonNode taxonNode = (TaxonNode) treeNode;
@@ -1466,7 +1466,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
 
     @Override
@@ -1496,7 +1496,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
 
     /**
@@ -1637,11 +1637,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<NamedArea> namedAreaList = null;
         List<PresenceAbsenceTerm>distributionStatusList = null;
         if(namedAreas != null){
-            namedAreaList = new ArrayList<NamedArea>(namedAreas.size());
+            namedAreaList = new ArrayList<>(namedAreas.size());
             namedAreaList.addAll(namedAreas);
         }
         if(distributionStatus != null){
-            distributionStatusList = new ArrayList<PresenceAbsenceTerm>(distributionStatus.size());
+            distributionStatusList = new ArrayList<>(distributionStatus.size());
             distributionStatusList.addAll(distributionStatus);
         }
 
@@ -1666,7 +1666,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         boolean addDistributionFilter = namedAreas != null && namedAreas.size() > 0;
 
-        List<LuceneSearch> luceneSearches = new ArrayList<LuceneSearch>();
+        List<LuceneSearch> luceneSearches = new ArrayList<>();
         Map<CdmBaseType, String> idFieldMap = new HashMap<>();
 
         /*
@@ -1893,7 +1893,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
 
     /**
@@ -2014,7 +2014,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
 
     }
 
@@ -2050,7 +2050,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
 
     }
 
@@ -2202,7 +2202,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         String genusOfTaxon = taxonName.getGenusOrUninomial();
         Set<TaxonNode> nodes = taxon.getTaxonNodes();
-        List<String> taxonNames = new ArrayList<String>();
+        List<String> taxonNames = new ArrayList<>();
 
         for (TaxonNode node: nodes){
            // Map<String, String> synonymsGenus = new HashMap<>(); // Changed this to be able to store the idInSource to a genusName
@@ -2225,7 +2225,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         Synonym inferredGenus = null;
                         Synonym potentialCombination = null;
 
-                        List<String> propertyPaths = new ArrayList<String>();
+                        List<String> propertyPaths = new ArrayList<>();
                         propertyPaths.add("synonym");
                         propertyPaths.add("synonym.name");
                         List<OrderHint> orderHintsSynonyms = new ArrayList<>();
@@ -3125,7 +3125,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
-		return new DefaultPagerImpl<IdentifiedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
 	}
 
 	@Override
@@ -3153,7 +3153,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
             }
         }
-        return new DefaultPagerImpl<MarkedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
     }
 
     @Override
