@@ -296,7 +296,7 @@ public class CacheLoader {
     private CdmBase loadRecursive(CdmBase cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
         CdmBase cdmEntityDeproxied = (CdmBase)ProxyUtils.deproxyOrNull(cdmEntity);
-        if(cdmEntity == null){
+        if(cdmEntityDeproxied == null){
             return cdmEntity;
         } else {
             cdmEntity = cdmEntityDeproxied;
