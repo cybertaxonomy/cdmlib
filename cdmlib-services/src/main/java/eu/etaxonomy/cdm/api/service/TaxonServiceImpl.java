@@ -2928,7 +2928,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             (((TaxonRelationship)ref).getType().isMisappliedNameOrInvalidDesignation())){
                         message = "The taxon can't be deleted as long as it has misapplied names or invalid designations.";
                     } else{
-                        message = "The taxon can't be deleted as long as it belongs to a taxon node.";
+                        message = "The taxon can't be deleted as long as it belongs to taxon relationship.";
                     }
                 }
                 if (ref instanceof PolytomousKeyNode){
