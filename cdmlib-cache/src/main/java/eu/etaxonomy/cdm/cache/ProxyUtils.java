@@ -156,6 +156,29 @@ public class ProxyUtils {
         return o;
     }
 
+    /**
+     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+     * otherwise <code>null</code> is returned.
+     */
+    public static Object deproxyOrNull(Object o) {
+        if(o != null && o instanceof HibernateProxy) {
+            LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
+            if(!hli.isUninitialized()) {
+                return hli.getImplementation();
+
+            }
+        }
+
+        if(o != null && o instanceof PersistentCollection) {
+            PersistentCollection pc = ((PersistentCollection)o);
+            if(pc.wasInitialized()) {
+                return  ProxyUtils.getObject(pc);
+
+            }
+        }
+        return null;
+    }
+
     public static boolean isUninitializedProxy(Object o) {
         if(o != null && o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();

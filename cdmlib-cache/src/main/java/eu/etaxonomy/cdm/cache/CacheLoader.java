@@ -278,7 +278,7 @@ public class CacheLoader {
     /**
      * Load the <code>cdmEntity</code> graph recursively into the cache and
      * updates entity which are already in the cache depending on the value of
-     * <code>update</code>, for mor in depth details on this mechanism see
+     * <code>update</code>, for more in depth details on this mechanism see
      * {@link #getCdmBaseTypeFieldValue(CdmBase, CdmBase, String, List, boolean)}.
      *
      *
@@ -295,8 +295,14 @@ public class CacheLoader {
      */
     private CdmBase loadRecursive(CdmBase cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
-        CdmBase cachedCdmEntity = load(cdmEntity);
+        CdmBase cdmEntityDeproxied = (CdmBase)ProxyUtils.deproxyOrNull(cdmEntity);
+        if(cdmEntity == null){
+            return cdmEntity;
+        } else {
+            cdmEntity = cdmEntityDeproxied;
+        }
 
+        CdmBase cachedCdmEntity = load(cdmEntity);
 
         // we want to recursive through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
