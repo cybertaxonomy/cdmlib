@@ -295,20 +295,13 @@ public class CacheLoader {
      */
     private CdmBase loadRecursive(CdmBase cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
-        CdmBase cdmEntityDeproxied = (CdmBase)ProxyUtils.deproxyOrNull(cdmEntity);
-        if(cdmEntityDeproxied == null){
-            return cdmEntity;
-        } else {
-            cdmEntity = cdmEntityDeproxied;
-        }
-
         CdmBase cachedCdmEntity = load(cdmEntity);
 
         // we want to recursive through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
 
         // start by getting the fields from the cdm entity
-        String className = cdmEntity.getClass().getName();
+        String className = ProxyUtils.deproxy(cdmEntity).getClass().getName();
         CdmModelFieldPropertyFromClass cmgmfc = getFromCdmlibModelCache(className);
         if(cmgmfc != null) {
             alreadyVisitedEntities.add(cdmEntity);
@@ -381,7 +374,7 @@ public class CacheLoader {
 
             if(field == null) {
                 throw new CdmClientCacheException("Field '" + fieldName
-                        + "' not found when searching in class '" + clazz.getName() + "' and its supercalsses");
+                        + "' not found when searching in class '" + clazz.getName() + "' and its superclasses");
             }
             field.setAccessible(true);
             Object o = field.get(cdmEntity);
