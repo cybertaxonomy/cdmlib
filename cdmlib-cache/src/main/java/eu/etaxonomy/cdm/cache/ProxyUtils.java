@@ -165,7 +165,8 @@ public class ProxyUtils {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(!hli.isUninitialized()) {
                 return hli.getImplementation();
-
+            } else {
+                return null;
             }
         }
 
@@ -173,10 +174,11 @@ public class ProxyUtils {
             PersistentCollection pc = ((PersistentCollection)o);
             if(pc.wasInitialized()) {
                 return  ProxyUtils.getObject(pc);
-
+            } else {
+                return null;
             }
         }
-        return null;
+        return o;
     }
 
     public static boolean isUninitializedProxy(Object o) {
