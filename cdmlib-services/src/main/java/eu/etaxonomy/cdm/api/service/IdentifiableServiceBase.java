@@ -76,7 +76,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			results = dao.getRights(t, pageSize, pageNumber,propertyPaths);
 		}
 
-		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
@@ -84,12 +84,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
 
-		 List<IdentifiableSource> results = new ArrayList<IdentifiableSource>();
+		 List<IdentifiableSource> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			 results = dao.getSources(t, pageSize, pageNumber,propertyPaths);
 		 }
 
-		 return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
+		 return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 
@@ -123,8 +123,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	/*
 	 * TODO - Migrated from CommonServiceBase
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
 	@Transactional(readOnly = true)
 	@Override
@@ -161,12 +159,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-		 List<T> results = new ArrayList<T>();
+		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 
-		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+		  return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Transactional(readOnly = true)
@@ -180,7 +178,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-		 List<T> results = new ArrayList<T>();
+		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
@@ -192,14 +190,14 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 		long numberOfResults = dao.countTitleCache(clazz, queryString, matchMode);
 
-		 List<T> results = new ArrayList<T>();
+		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findTitleCache(clazz, queryString, pageSize, pageNumber, orderHints, matchMode);
 		 }
 		 long r = 0;
 		 r += numberOfResults;
 
-		  return new DefaultPagerImpl<T>(pageNumber, r , pageSize, results);
+		  return new DefaultPagerImpl<>(pageNumber, r , pageSize, results);
 	}
 
 	@Transactional(readOnly = true)
@@ -207,7 +205,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 long numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 
-		 List<T> results = new ArrayList<T>();
+		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
@@ -225,12 +223,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(clazz,queryString);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
@@ -253,7 +251,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		int worked = 0;
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
-			ArrayList<OrderHint> orderHints = new ArrayList<OrderHint>();
+			ArrayList<OrderHint> orderHints = new ArrayList<>();
 			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
 
 
@@ -261,7 +259,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
 			switchOnOldAutoInitializer(oldAutoInit);
 
-			List<T> entitiesToUpdate = new ArrayList<T>();
+			List<T> entitiesToUpdate = new ArrayList<>();
 			for (T entity : list){
 				HibernateProxyHelper.deproxy(entity, clazz);
 				if (entity.isProtectedTitleCache() == false){
@@ -306,7 +304,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	protected Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> switchOfAutoinitializer() {
 		HibernateBeanInitializer initializer = (HibernateBeanInitializer)this.appContext.getBean("defaultBeanInitializer");
 		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInitializers = initializer.getBeanAutoInitializers();
-		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> map = new HashMap<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>>();
+		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> map = new HashMap<>();
 		initializer.setBeanAutoInitializers(map);
 		return oldAutoInitializers;
 	}
@@ -337,7 +335,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				return;
 			}
 		}
-
 
 		//define the correct cache strategy
 		IIdentifiableEntityCacheStrategy entityCacheStrategy = cacheStrategy;
@@ -378,7 +375,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
                 	System.out.println("entity: " + entity.getTitleCache());
                 }
             }
-
 		}else if (entity instanceof Reference){
 			Reference ref = (Reference) entity;
 			if (!ref.isProtectedAbbrevTitleCache()){
@@ -436,7 +432,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				entitiesToUpdate.add(entity);
 			}
 		}
-
 	}
 
 
@@ -474,7 +469,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		if (matchStrategy == null){
 			matchStrategy = DefaultMatchStrategy.NewInstance(matchableClass);
 		}
-		List<T> nextGroup = new ArrayList<T>();
+		List<T> nextGroup = new ArrayList<>();
 
 		int result = 0;
 //		double countTotal = count(clazz);
@@ -522,7 +517,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	}
 
 	private List<T> getPages(Class<? extends T> clazz, DeduplicateState dedupState, List<OrderHint> orderHints) {
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		for (int pageNo = dedupState.startPage; pageNo < dedupState.startPage + dedupState.nPages; pageNo++){
 			List<T> objectList = listByTitle(clazz, null, null, null, dedupState.pageSize, pageNo, orderHints, null);
 			result.addAll(objectList);
@@ -536,7 +531,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	private int handleLastGroup(List<T> group, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
 		int result = 0;
 		int size = group.size();
-		Set<Integer> exclude = new HashSet<Integer>();  //set to collect all objects, that have been merged already
+		Set<Integer> exclude = new HashSet<>();  //set to collect all objects, that have been merged already
 		for (int i = 0; i < size - 1; i++){
 			if (exclude.contains(i)){
 				continue;
@@ -590,21 +585,21 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			Integer pageNumber,	List<String> propertyPaths) {
 
 		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
-        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
         	daoResults = dao.findByIdentifier(clazz, identifier, identifierType,
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
 
-        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
-		return new DefaultPagerImpl<IdentifiedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
 	}
 
 	@Override
@@ -614,18 +609,18 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
             boolean includeEntity, List<String> propertyPaths, Integer limit) {
 
         Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
-        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByIdentifier(clazz, identifier, identifierType,
                     matchmode, includeEntity, limit, 0, propertyPaths);
         }
 
-        List<IdentifiedEntityDTO<S>> result = new ArrayList<IdentifiedEntityDTO<S>>();
+        List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             if (includeEntity){
-                result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+                result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
             }else{
-                result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+                result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
             }
         }
         return result;
@@ -649,12 +644,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         List<MarkedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             if (includeEntity){
-                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
+                result.add(new MarkedEntityDTO<>((MarkerType)daoObj[0], (Boolean)daoObj[1], (S)daoObj[2]));
             }else{
-                result.add(new MarkedEntityDTO<S>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
+                result.add(new MarkedEntityDTO<>((MarkerType)daoObj[0], (Boolean)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
             }
         }
-        return new DefaultPagerImpl<MarkedEntityDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
     }
 
 
