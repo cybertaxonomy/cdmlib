@@ -39,7 +39,8 @@ public enum CdmPermissionClass {
     GROUP,
     LANGUAGESTRING,
     GATHERINGEVENT,
-    HOMOTYPICALGROUP;
+    HOMOTYPICALGROUP,
+    WORKINGSET;
 
 
     /**
