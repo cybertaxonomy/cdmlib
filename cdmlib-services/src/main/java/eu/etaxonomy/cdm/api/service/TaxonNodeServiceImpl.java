@@ -122,7 +122,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(ITaxonTreeNode child) {
         UUID uuid = child.getUuid();
         int id = child.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<TaxonNode>(uuid, id, null);
+        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
         return getParentUuidAndTitleCache(uuidAndTitleCache);
     }
 
@@ -157,7 +157,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
         UUID uuid = parent.getUuid();
         int id = parent.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<TaxonNode>(uuid, id, null);
+        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
         return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
     }
 
@@ -237,7 +237,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         Classification classification = oldTaxonNode.getClassification();
         Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.find(newAcceptedTaxonNode.getTaxon().getUuid());
-        newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon, Taxon.class);
+        newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon);
         // Move oldTaxon to newTaxon
         //TaxonName synonymName = oldTaxon.getName();
         TaxonName newSynonymName = CdmBase.deproxy(oldTaxon.getName());
@@ -254,8 +254,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         // Move Synonym Relations to new Taxon
-        Synonym newSynonym = newAcceptedTaxon.addSynonymName(newSynonymName, citation, citationMicroReference,
-                synonymType);
+        newAcceptedTaxon.addSynonymName(newSynonymName, citation, citationMicroReference, synonymType);
          // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
         List<Synonym> synonymsInHomotypicalGroup = null;
@@ -298,7 +297,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
-        	List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+        	List<TaxonNode> childNodes = new ArrayList<>();
         	for (TaxonNode childNode : oldTaxonNode.getChildNodes()){
         		childNodes.add(childNode);
         	}
@@ -308,7 +307,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
         //Move Taxon RelationShips to new Taxon
-        Set<TaxonRelationship> obsoleteTaxonRelationships = new HashSet<TaxonRelationship>();
         for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
             Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
             Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
@@ -417,10 +415,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	config = new TaxonDeletionConfigurator();
         }
         DeleteResult result = new DeleteResult();
-        List<UUID> deletedUUIDs = new ArrayList<UUID>();
         Classification classification = null;
-        List<TaxonNode> taxonNodes = new ArrayList<TaxonNode>(list);
-        
+        List<TaxonNode> taxonNodes = new ArrayList<>(list);
+
         for (TaxonNode treeNode:taxonNodes){
         	if (treeNode != null){
 
@@ -540,7 +537,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config) {
-        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
+        List<TaxonNode> nodes = new ArrayList<>();
         for(UUID nodeUuid : nodeUuids) {
             nodes.add(dao.load(nodeUuid));
         }
@@ -653,8 +650,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType){
         UpdateResult result = new UpdateResult();
 
-        TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent(), TaxonNode.class);
-        TaxonNode oldParent = HibernateProxyHelper.deproxy(taxonNode.getParent(), TaxonNode.class);
+        TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent());
+        TaxonNode oldParent = HibernateProxyHelper.deproxy(taxonNode.getParent());
         Integer sortIndex = -1;
         if (movingType == 0){
             sortIndex = 0;
@@ -708,7 +705,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                     agentUuid, rankUuid, relTypeUuid, PagerUtils.startFor(pageSize, pageIndex), PagerUtils.limitFor(pageSize), propertyPaths);
         }
 
-        Pager<TaxonNodeAgentRelation> pager = new DefaultPagerImpl<TaxonNodeAgentRelation>(pageIndex, count, pageSize, records);
+        Pager<TaxonNodeAgentRelation> pager = new DefaultPagerImpl<>(pageIndex, count, pageSize, records);
         return pager;
     }
 
@@ -772,7 +769,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType){
         UpdateResult result = new UpdateResult();
         TaxonNode node = dao.load(taxonNodeUUID);
-        TeamOrPersonBase agent = (TeamOrPersonBase) agentService.load(agentUUID);
+        TeamOrPersonBase<?> agent = (TeamOrPersonBase<?>) agentService.load(agentUUID);
         node.addAgentRelation(relationshipType, agent);
         try{
             dao.merge(node, true);
@@ -911,10 +908,5 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         monitorThread.start();
         return uuid;
     }
-
-	
-
-
-
 
 }
