@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,8 +25,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.Point;
 
 /**
  * This class represents atomized postal addresses.
@@ -36,9 +36,8 @@ import eu.etaxonomy.cdm.model.location.Country;
  * <li> Address according to the TCS
  * <li> Address according to the ABCD schema
  * </ul>
- * 
+ *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:09
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -58,11 +57,11 @@ public class Address extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = 682106303069088972L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Address.class);
-	
+
 	public static Address NewInstance(){
 		return new Address();
 	}
-	
+
     public static Address NewInstance(Country country,
 			String locality, String pobox, String postcode,
 			String region, String street, Point location) {
@@ -71,9 +70,9 @@ public class Address extends VersionableEntity implements Cloneable{
 	}
 
     private Address(){
-    	
+
     }
-    
+
 	private Address(Country country, String locality, Point location,
 			String pobox, String postcode, String region, String street) {
 		super();
@@ -88,32 +87,32 @@ public class Address extends VersionableEntity implements Cloneable{
 
 	@XmlElement(name = "POBox")
 	private String pobox;
-    
+
     @XmlElement(name = "Street")
 	private String street;
-    
+
     @XmlElement(name = "Postcode")
 	private String postcode;
-    
+
     @XmlElement(name = "Locality", required = true)
 	private String locality;
-    
+
     @XmlElement(name = "Region")
 	private String region;
-    
+
     @XmlElement(name = "Country")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private Country country;
-    
+
     @XmlElement(name = "Location")
 	private Point location;
-	
+
 	/**
 	 * Returns the {@link Country country} involved in <i>this</i> postal address.
-	 * 
-	 * @return	the country 
+	 *
+	 * @return	the country
 	 */
 	public Country getCountry(){
 		return this.country;
@@ -129,7 +128,7 @@ public class Address extends VersionableEntity implements Cloneable{
 	/**
 	 * Returns the geophysical {@link Point location} (coordinates) of <i>this</i> postal address.
 	 * The location can be useful for instance to visualize the address on a map.
-	 * 
+	 *
 	 * @return  the point corresponding to <i>this</i> address
 	 * @see		eu.etaxonomy.cdm.model.location.Point
 	 */
@@ -148,8 +147,8 @@ public class Address extends VersionableEntity implements Cloneable{
 	/**
 	 * Returns a string corresponding to the post office box
 	 * involved in <i>this</i> postal address.
-	 * 
-	 * @return	the post office box string 
+	 *
+	 * @return	the post office box string
 	 */
 	public String getPobox(){
 		return this.pobox;
@@ -165,8 +164,8 @@ public class Address extends VersionableEntity implements Cloneable{
 	/**
 	 * Returns the street name and number involved in <i>this</i> postal address.
 	 * Street numbers are part of the street string.
-	 * 
-	 * @return	the string composed of street name and number  
+	 *
+	 * @return	the string composed of street name and number
 	 */
 	public String getStreet(){
 		return this.street;
@@ -181,7 +180,7 @@ public class Address extends VersionableEntity implements Cloneable{
 
 	/**
 	 * Returns the post code number involved in <i>this</i> postal address.
-	 * 
+	 *
 	 * @return	the post code number string
 	 */
 	public String getPostcode(){
@@ -197,7 +196,7 @@ public class Address extends VersionableEntity implements Cloneable{
 
 	/**
 	 * Returns the town (possibly with locality or suburb) involved in <i>this</i> postal address.
-	 * 
+	 *
 	 * @return  the string representing a town
 	 */
 	public String getLocality(){
@@ -208,12 +207,12 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see			#getLocality()
 	 */
 	public void setLocality(String locality){
-		this.locality = locality == "" ? null: locality;		
+		this.locality = locality == "" ? null: locality;
 	}
 
 	/**
 	 * Returns the region or state involved in <i>this</i> postal address.
-	 * 
+	 *
 	 * @return  the string representing a region or a state
 	 */
 	public String getRegion(){
@@ -226,9 +225,9 @@ public class Address extends VersionableEntity implements Cloneable{
 	public void setRegion(String region){
 		this.region = region == "" ? null: region;
 	}
-	
+
 //************************ CLONE ************************ //
-	/** 
+	/**
 	 * Clones this Address.
 	 * Set fields for nextVersion, previousVersion, updated, updatedBy and createdBy are set to <tt>null</tt>
 	 * The id is set to 0.
@@ -239,11 +238,11 @@ public class Address extends VersionableEntity implements Cloneable{
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Address result = (Address)super.clone();
-		
+
 		//no changes to: -
 		return result;
 	}
 
-	
+
 
 }

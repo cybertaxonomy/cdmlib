@@ -73,33 +73,33 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "EmailAddress")
 	@ElementCollection(fetch = FetchType.LAZY)
 	@Column(name = "contact_emailaddresses_element")
-	private List<String> emailAddresses;
+	private List<String> emailAddresses = new ArrayList<>();
 
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key
-	private final List<String> urls = new ArrayList<String>();
+	private final List<String> urls = new ArrayList<>();
 
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_phonenumbers_element")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-	private List<String> phoneNumbers;
+	private List<String> phoneNumbers = new ArrayList<>();
 
 	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
 	@XmlElement(name = "FaxNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_faxnumbers_element")
-	private List<String> faxNumbers;
+	private List<String> faxNumbers = new ArrayList<>();
 
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	protected Set<Address> addresses = new HashSet<Address>();
+	protected Set<Address> addresses = new HashSet<>();
 
 	public static Contact NewInstance() {
 		return new Contact();
@@ -168,13 +168,14 @@ public class Contact implements Serializable, Cloneable {
 		return result;
 	}
 
-
+// ************************ CONSTRUCTOR **************************/
 	/**
 	 * Class constructor.
 	 */
 	public Contact() {
 	}
 
+// ************************ MERGE /MATCH ***************************/
 
 	public void merge(Contact contact2) throws MergeException{
 		if (contact2 != null){
@@ -185,7 +186,7 @@ public class Contact implements Serializable, Cloneable {
 			for (Address address : contact2.getAddresses()){
 				try {
 					if (this.addresses == null){
-						this.addresses = new HashSet<Address>();
+						this.addresses = new HashSet<>();
 					}
 					this.addresses.add((Address)address.clone());
 				} catch (CloneNotSupportedException e) {
@@ -253,7 +254,7 @@ public class Contact implements Serializable, Cloneable {
 	 */
 	public List<String> getEmailAddresses(){
 		if(this.emailAddresses == null) {
-			this.emailAddresses = new ArrayList<String>();
+			this.emailAddresses = new ArrayList<>();
 		}
 		return this.emailAddresses;
 	}
@@ -322,7 +323,7 @@ public class Contact implements Serializable, Cloneable {
 	 */
 	public List<String> getPhoneNumbers(){
 		if(this.phoneNumbers == null) {
-			this.phoneNumbers = new ArrayList<String>();
+			this.phoneNumbers = new ArrayList<>();
 		}
 		return this.phoneNumbers;
 	}
@@ -350,7 +351,7 @@ public class Contact implements Serializable, Cloneable {
 	 */
 	public List<String> getFaxNumbers(){
 		if(this.faxNumbers == null) {
-			this.faxNumbers = new ArrayList<String>();
+			this.faxNumbers = new ArrayList<>();
 		}
 		return this.faxNumbers;
 	}
@@ -385,7 +386,7 @@ public class Contact implements Serializable, Cloneable {
 	public Object clone() {
 		try{
 			Contact result = (Contact) super.clone();
-			result.addresses = new HashSet<Address>();
+			result.addresses = new HashSet<>();
 			for (Address adr : this.addresses){
 				result.addAddress((Address)adr.clone());
 			}

@@ -50,7 +50,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return new DefaultMatchStrategy(matchClazz);
 	}
 
-//	protected Map<String, MatchMode> matchModeMap = new HashMap<String, MatchMode>();
 	protected MatchMode defaultMatchMode = MatchMode.EQUAL;
 	protected MatchMode defaultCollectionMatchMode = MatchMode.IGNORE;
 	protected MatchMode defaultMatchMatchMode = MatchMode.MATCH;
