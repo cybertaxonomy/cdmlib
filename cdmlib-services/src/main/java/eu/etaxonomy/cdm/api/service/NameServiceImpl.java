@@ -395,7 +395,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
-      /**
+
+    public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths){
+        return typeDesignationDao.load(id, propertyPaths);
+    }
+
+    public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths){
+        return typeDesignationDao.load(uuid, propertyPaths);
+    }
+
+    /**
      * FIXME Candidate for harmonization
      * homotypicalGroupService.list
      */
