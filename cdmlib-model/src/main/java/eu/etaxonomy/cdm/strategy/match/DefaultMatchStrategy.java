@@ -31,8 +31,12 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 
@@ -303,7 +307,23 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		    if ( ((TimePeriod)object).isEmpty()){
 		        return null;
 		    }
-		}
+		}else if (object instanceof Contact){
+            if ( ((Contact)object).isEmpty()){
+                return null;
+            }
+        }else if (object instanceof Point){
+            if ( ((Point)object).isEmpty()){
+                return null;
+            }
+        }else if (object instanceof SequenceString){
+            if ( ((SequenceString)object).isEmpty()){
+                return null;
+            }
+        }else if (object instanceof LSID){
+            if ( ((LSID)object).isEmpty()){
+                return null;
+            }
+        }
 		return HibernateProxyHelper.deproxy(object);
 	}
 

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.agent;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -204,8 +206,24 @@ public class Contact implements Serializable, Cloneable {
 		}
 	}
 
+    /**
+     * True, if no contact data exists in any of the lists (email, phone, ...).
+     */
+    @Transient
+    public boolean isEmpty(){
+        if (isEmpty(emailAddresses) && isEmpty(faxNumbers) && isEmpty(phoneNumbers)
+                && isEmpty(urls) && isEmpty(addresses)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
-	/**
+    private boolean isEmpty(Collection<? extends Object> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    /**
 	 * Returns the set of postal {@link Address addresses} belonging to <i>this</i> contact.
 	 * A {@link Person person} or an {@link Institution institution} cannot have more than one contact,
 	 * but a contact may include several postal addresses.

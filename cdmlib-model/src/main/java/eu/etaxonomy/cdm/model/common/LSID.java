@@ -160,8 +160,25 @@ public class LSID implements Serializable {
 			return false;
 		}
 	}
-	
-	
+
+    /**
+     * <code>true</code>, if all of the LSID parts are
+     * empty or <code>null</code>.
+     */
+    @Transient
+    public boolean isEmpty(){
+        if (isEmpty(authority) && isEmpty(lsid) &&
+                isEmpty(namespace) && isEmpty(object) &&
+                isEmpty(revision)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
 	/**
 	 * return the string representation
 	 * @return String

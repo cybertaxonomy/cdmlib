@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -111,6 +112,20 @@ public class SequenceString implements Cloneable, Serializable{
 			this.length = length;
 		}
 	}
+
+
+    /**
+     * <code>true</code>, if none of the attributes (string, length) is set.
+     */
+    @Transient
+    public boolean isEmpty(){
+        if ((string == null || string.isEmpty())
+                && length == null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 
 	// ********************* CLONE ********************/

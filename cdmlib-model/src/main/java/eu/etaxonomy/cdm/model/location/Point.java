@@ -554,6 +554,19 @@ public class Point implements Cloneable, Serializable {
 
     }
 
+    /**
+     * <code>true</code>, if none of the attributes (lat, long, errRadius, refSys) is set.
+     */
+    @Transient
+    public boolean isEmpty(){
+        if (errorRadius == null && latitude == null && longitude == null
+                && referenceSystem == null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 // ******************** GETTER / SETTER ********************************
 
     public ReferenceSystem getReferenceSystem(){
