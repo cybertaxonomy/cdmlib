@@ -89,27 +89,9 @@
   </licenses>
   <organization>
     <name>EDIT</name>
-    <url>http://www.e-taxonomy.eu/</url>
+    <url>https://cybertaxonomy.eu/</url>
   </organization>
   <developers>
-    <developer>
-      <!-- your SVN account id please! -->
-      <id>ben.clark</id>
-      <name>
-                Ben Clark
-            </name>
-      <email>b.clark [at] kew.org</email>
-      <organization>
-                Royal Botanic Gardens, Kew
-            </organization>
-      <organizationUrl>http://www.kew.org/computing/</organizationUrl>
-      <timezone>0</timezone>
-      <roles>
-        <role>Architect</role>
-        <role>Java Developer</role>
-      </roles>
-      <url />
-    </developer>
     <developer>
       <!-- your SVN account id please! -->
       <id>a.kohlbecker</id>
@@ -126,23 +108,6 @@
         <role>Architect</role>
         <role>Java Developer</role>
         <role>Release Manager</role>
-      </roles>
-      <url />
-    </developer>
-    <developer>
-      <!-- your SVN account id please! -->
-      <id>c.mathew</id>
-      <name>
-                Cherian Mathew 
-            </name>
-      <email>c.mathew [at] bgbm.org</email>
-      <organization>
-                Botanical Garden Botanical Museum Berlin
-            </organization>
-      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Java Developer</role>
       </roles>
       <url />
     </developer>
@@ -179,6 +144,23 @@
         <role>Architect</role>
         <role>Java Developer</role>
         <role>Release Manager</role>
+      </roles>
+      <url />
+    </developer>
+	   <developer>
+      <!-- your SVN account id please! -->
+      <id>p.plitzner</id>
+      <name>
+               Patrick Plitzner
+            </name>
+      <email>p.plitzner [at] bgbm.org</email>
+      <organization>
+                Botanical Garden Botanical Museum Berlin
+            </organization>
+      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Java Developer</role>
       </roles>
       <url />
     </developer>
