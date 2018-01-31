@@ -48,9 +48,7 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
@@ -216,8 +214,12 @@ public class DwcaExportController
             @RequestParam(value = "doReferences", defaultValue="true") Boolean doReferences,
             @RequestParam(value = "withHigherClassification", defaultValue="false") Boolean withHigherClassification,
             @RequestParam(value = "includeHeader", defaultValue="false") Boolean includeHeader,
+//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
 
-//          @RequestParam(value = "area", required = false) final UuidList areas,
+            @RequestParam(value = "area", required = false) final UuidList areaUuids,
+            @RequestParam(value = "minRank", required = false) final UUID minRank,
+            @RequestParam(value = "minRank", required = false) final UUID maxRank,
+
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
             final HttpServletResponse response,
@@ -230,6 +232,8 @@ public class DwcaExportController
         try{
             ModelAndView mv = new ModelAndView();
 
+            // replacement for commented RequestParam
+            Boolean includeUnpublished = false;
 
             final String origin = request.getRequestURL().append('?')
                     .append(CdmUtils.Nz(request.getQueryString())).toString()
@@ -272,7 +276,9 @@ public class DwcaExportController
                                     indexMonitorUuid);
 
                             TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance(
-                                    classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids);
+                                    classificationUuids, subtreeUuids, taxonNodeUuids, taxonUuids,
+                                    areaUuids, minRank, maxRank);
+                            taxonNodeFilter.setIncludeUnpublished(includeUnpublished);
                             DwcaTaxExportConfigurator config = setDwcaTaxExportConfigurator(
                                     cacheFile, monitor, taxonNodeFilter, doSynonyms, doMisapplieds,
                                     doVernaculars, doDistributions, doDescriptions, doImages,

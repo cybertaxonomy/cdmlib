@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -153,4 +155,44 @@ public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWo
 			throw new RuntimeException(e);
 		}
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<WorkingSet>> getWorkingSetUuidAndTitleCache(Integer limitOfInitialElements,
+            String pattern) {
+        Session session = getSession();
+
+        String queryString = "SELECT uuid, id, label FROM WorkingSet ";
+
+        if ( pattern != null){
+            queryString += " WHERE ";
+            queryString += " label LIKE :pattern";
+
+        }
+
+        Query query;
+        query = session.createQuery(queryString);
+
+
+        if (limitOfInitialElements != null){
+            query.setMaxResults(limitOfInitialElements);
+        }
+        if (pattern != null){
+              pattern = pattern.replace("*", "%");
+              pattern = pattern.replace("?", "_");
+              pattern = pattern + "%";
+              query.setParameter("pattern", pattern);
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        List<UuidAndTitleCache<WorkingSet>> list = new ArrayList<>();
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<WorkingSet>(WorkingSet.class, (UUID) object[0],(Integer)object[1], (String)object[2]));
+        }
+
+        return list;
+    }
 }

@@ -93,11 +93,8 @@ public class DwcaImageRecord extends DwcaRecordBase{
 //	}
 
     @Override
-    public void write(DwcaTaxExportState state, PrintWriter writer) {
-        if(writer == null){
-            writeCsv(state);
-            return;
-        }
+    protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
+
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(identifier, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
 		print(title, writer, IS_NOT_FIRST, TermUri.DC_TITLE);

@@ -9,21 +9,16 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
-import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
@@ -232,57 +227,6 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 		return result;
 	}
 
-    @Override
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern){
-        return getUuidAndTitleCache(type, limit, pattern);
-    }
 
-
-    @Override
-    public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
-        Session session = getSession();
-        Query query = null;
-        if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() +" where titleCache like :pattern");
-            pattern = pattern.replace("*", "%");
-            pattern = pattern.replace("?", "_");
-            pattern = pattern + "%";
-            query.setParameter("pattern", pattern);
-        } else {
-            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() );
-        }
-        if (limit != null){
-           query.setMaxResults(limit);
-        }
-        return getUuidAndTitleCache(query);
-    }
-
-
-    @Override
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
-        return getUuidAndTitleCache(type, null, null);
-    }
-
-    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
-        List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
-
-        List<Object[]> result = query.list();
-
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2]));
-        }
-        return list;
-    }
-
-    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
-        List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
-
-        List<Object[]> result = query.list();
-
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[2]));
-        }
-        return list;
-    }
 
 }

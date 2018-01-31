@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:44
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -555,6 +554,19 @@ public class Point implements Cloneable, Serializable {
 
     }
 
+    /**
+     * <code>true</code>, if none of the attributes (lat, long, errRadius, refSys) is set.
+     */
+    @Transient
+    public boolean isEmpty(){
+        if (errorRadius == null && latitude == null && longitude == null
+                && referenceSystem == null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 // ******************** GETTER / SETTER ********************************
 
     public ReferenceSystem getReferenceSystem(){
@@ -626,9 +638,6 @@ public class Point implements Cloneable, Serializable {
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString(){
         String result = "";

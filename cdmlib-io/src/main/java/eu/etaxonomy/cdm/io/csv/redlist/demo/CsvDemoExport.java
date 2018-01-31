@@ -548,7 +548,9 @@ public class CsvDemoExport extends CsvDemoBase {
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
-			}
+			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
+                status = "proParteMisapplied";
+            }
 			if (isProParte){
 				status = "proParteSynonym";
 			}else if (isPartial){

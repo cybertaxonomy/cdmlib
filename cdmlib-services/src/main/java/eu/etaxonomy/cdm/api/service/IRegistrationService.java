@@ -12,14 +12,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.dao.DataAccessException;
-
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -91,6 +88,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @throws DataAccessException
      */
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
+            String identifierFilterPattern, String taxonNameFilterPattern,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
 

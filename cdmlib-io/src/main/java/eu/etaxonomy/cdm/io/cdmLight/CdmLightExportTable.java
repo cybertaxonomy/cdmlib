@@ -45,7 +45,7 @@ public enum CdmLightExportTable {
     protected static final String PARENT_FK = "Parent_FK";
     protected static final String SEC_REFERENCE_FK = "SecReference_FK";
     protected static final String SEC_REFERENCE = "SecReference";
-
+    protected static final String IS_PRO_PARTE = "IsProParteSynonym";
     //Reference
     protected static final String REFERENCE_ID = "Reference_ID";
     protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
@@ -273,7 +273,7 @@ public enum CdmLightExportTable {
         return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
     }
     final static String[] synonymColumns(){
-        return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE};
+        return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SEC_REFERENCE_FK, SEC_REFERENCE, IS_PRO_PARTE};
     }
     final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,

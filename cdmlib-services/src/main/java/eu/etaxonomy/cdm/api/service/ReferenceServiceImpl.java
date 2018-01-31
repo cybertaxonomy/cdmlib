@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,13 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
@@ -127,12 +131,43 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         return dao.getUuidAndAbbrevTitleCache(limit, pattern, inReferenceType);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IReferenceService#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType type) {
+        return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, pattern, null);
+    }
+
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type) {
         ReferenceType inReferenceType = null;
         inReferenceType = getInReferenceType(type);
         return dao.getUuidAndTitleCache(limit, pattern, inReferenceType);
     }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(
+            String identifier, DefinedTerm identifierType, MatchMode matchmode,
+            Integer limit) {
+
+        Integer numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,
+                    matchmode,  limit);
+        }
+
+        List<IdentifiedEntityDTO<Reference>> result = new ArrayList<IdentifiedEntityDTO<Reference>>();
+        for (Object[] daoObj : daoResults){
+            result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+
+        }
+        return result;
+    }
+
 
     private ReferenceType getInReferenceType(ReferenceType type){
         ReferenceType inReferenceType = null;

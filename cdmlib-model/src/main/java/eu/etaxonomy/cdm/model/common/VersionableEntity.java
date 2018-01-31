@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
@@ -33,7 +32,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -47,7 +45,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * The version history is established as a linked list of the version objects in time.
  * If versioning via the linked list is used, updated/updatedBy is the same as created/createdBy (better NULL?).
  *
- * Versioning can be turned off and in this case this class provides updated/updatedBy to keep track of the latest change event.
+ * Versioning can be turned off and in this case this class provides updated/updatedBy to
+ * keep track of the latest change event.
  *
  * @author m.doering
  * @created 08-Nov-2007 13:07:01
@@ -89,67 +88,30 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
     public User getUpdatedBy(){
 		return this.updatedBy;
 	}
-
-	/**
-	 *
-	 * @param updatedBy    updatedBy
-	 */
 	@Override
     public void setUpdatedBy(User updatedBy){
 		this.updatedBy = updatedBy;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
     public DateTime getUpdated(){
 		return this.updated;
 	}
-
-	/**
-	 *
-	 * @param updated    updated
-	 */
 	@Override
     public void setUpdated(DateTime updated){
 		this.updated = updated;
 	}
 
 	/**
-	 * Is true if UUID and created timestamp are the same for the passed Object and this one.
-	 * @see eu.etaxonomy.cdm.model.common.CdmBase#equals(java.lang.Object)
-	 * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities}
-	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
-	 * for more information about equals and hashcode.
+	 * {@inheritDoc}.
+	 * <BR><BR>
+	 * Override CdmBase implementation here to set the method final.
+	 * For discussion on final see {@link CdmBase#equals(Object)}.
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == this){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (!CdmBase.class.isAssignableFrom(obj.getClass())){
-			return false;
-		}
-		ICdmBase cdmObj = (ICdmBase)obj;
-		boolean uuidEqual;
-		UUID objUuid = cdmObj.getUuid();
-		if (objUuid == null){
-			throw new NullPointerException("CdmBase is missing UUID");
-		}
-		uuidEqual = objUuid.equals(this.getUuid());
-		//TODO is this still needed?
-		boolean createdEqual = CdmUtils.nullSafeEqual(cdmObj.getCreated(), this.getCreated());
-		if (! uuidEqual || !createdEqual){
-				return false;
-		}
-		return true;
+    public final boolean equals(Object obj) {
+	    return super.equals(obj);
 	}
-
 
 //********************** CLONE *****************************************/
 

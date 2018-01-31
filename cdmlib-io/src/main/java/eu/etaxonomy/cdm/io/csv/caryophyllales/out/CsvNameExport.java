@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 
@@ -715,7 +714,7 @@ public class CsvNameExport extends CsvNameExportBase {
             Taxon relatedTaxon = null;
             StringBuffer nameString = new StringBuffer();
             for (TaxonRelationship rel : relations){
-                if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+                if (rel.getType().isAnyMisappliedName()){
                     relatedTaxon = rel.getFromTaxon();
                     Reference secRef = relatedTaxon.getSec();
                     String appendedPhrase = "";

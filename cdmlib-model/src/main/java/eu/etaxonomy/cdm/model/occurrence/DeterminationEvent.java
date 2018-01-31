@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -106,7 +105,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<Reference> setOfReferences = new HashSet<Reference>();
+	private Set<Reference> setOfReferences = new HashSet<>();
 
 
 
@@ -250,7 +249,5 @@ public class DeterminationEvent extends EventBase {
 			return null;
 		}
 	}
-
-
 
 }

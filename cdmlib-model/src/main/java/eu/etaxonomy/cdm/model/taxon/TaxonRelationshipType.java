@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -64,6 +66,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
+	private static final UUID uuidProParteMisappliedNameFor = UUID.fromString("b59b4bd2-11ff-45d1-bae2-146efdeee206");
 	private static final UUID uuidInvalidDesignationFor = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
 
 	private static final UUID uuidContradiction = UUID.fromString("a8f03491-2ad6-4fae-a04c-2a4c117a2e9b");
@@ -109,7 +112,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 //********************************** CONSTRUCTOR *********************************/
 
-  	//for hibernate use only
+  	/**
+  	 * @deprecated for inner (hibernate) use only
+  	 */
   	@Deprecated
   	protected TaxonRelationshipType() {
 		super(TermType.TaxonRelationshipType);
@@ -139,9 +144,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -156,19 +158,60 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         }
 	}
 
+    /**
+     * <code>true</code> if this relationship type is {@link #isAnyMisappliedName()
+     * any of the misapplied name relationship types} or an
+     * {@link #INVALID_DESIGNATION_FOR() invalid designation}
+     *
+     * @see #isAnyMisappliedName()()
+     */
+	public boolean isMisappliedNameOrInvalidDesignation(){
+        if (this.isAnyMisappliedName()){
+            return true;
+        }else if (this.equals(INVALID_DESIGNATION_FOR())){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <code>true</code> if this relationship type is any
+     * of the misapplied name relationships such as
+     * {@link #MISAPPLIED_NAME_FOR()} or {@link #PRO_PARTE_MISAPPLIED_NAME_FOR()}
+     *
+     * @see #isMisappliedNameOrInvalidDesignation()
+     */
+    public boolean isAnyMisappliedName(){
+        return (allMisappliedNameTypes().contains(this));
+    }
+
+    /**
+     * Returns a list of all misapplied name relationship
+     * types such as "misapplied name for" and
+     * "pro parte misapplied name for".
+     *
+     * @see #MISAPPLIED_NAME_FOR()
+     * @see #PRO_PARTE_MISAPPLIED_NAME_FOR()
+     */
+    public static Set<TaxonRelationshipType> allMisappliedNameTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(MISAPPLIED_NAME_FOR());
+        result.add(PRO_PARTE_MISAPPLIED_NAME_FOR());
+        return result;
+    }
+
+
 
 	/**
-	 * Returns true, if this relationship type is not a <i>misapplied name for<i>
+	 * Returns <code>true</code>, if this relationship type is not a <i>misapplied name for<i>
 	 * and also no <i>taxonomically included in</i> relationship.<BR>
 	 * It assumes that all other relationships are concept relationships.
 	 * @return
 	 */
 	public boolean isConceptRelationship(){
-		if (this.equals(MISAPPLIED_NAME_FOR())){
+		if (this.isMisappliedNameOrInvalidDesignation()){
 			return false;
-		}else if (this.equals(INVALID_DESIGNATION_FOR())){
-            return false;
-		}else if (this.equals(TAXONOMICALLY_INCLUDED_IN())){
+        }else if (this.equals(TAXONOMICALLY_INCLUDED_IN())){
 			return false;
 		}
 		return true;
@@ -191,7 +234,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 	/**
 	 * Returns the taxon relationship type "is misapplied name for". This
-	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
+	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}
+	 * of the {@link TaxonRelationship#getFromTaxon() source taxon}
 	 * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
 	 * the {@link TaxonBase#getSec() concept reference} to denominate the same real taxon
 	 * as the one meant by the target {@link Taxon taxon}.<BR>
@@ -200,6 +244,23 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType MISAPPLIED_NAME_FOR(){
 		return getTermByUuid(uuidMisappliedNameFor);
 	}
+    /**
+     * Returns the taxon relationship type "is pro parte misapplied name for". This
+     * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the
+     * {@link TaxonRelationship#getFromTaxon() source taxon}
+     * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
+     * the {@link TaxonBase#getSec() concept reference} to (partly) denominate the same real taxon
+     * as the one meant by the target {@link Taxon taxon}. Additionaly another real taxon
+     * is (partly) demoninated by the given name in the concept reference. Therefore it is called
+     * pro parte. <BR>
+     * This type is neither symmetric nor transitive.
+     *
+     * @see #MISAPPLIED_NAME_FOR()
+     */
+    public static final TaxonRelationshipType PRO_PARTE_MISAPPLIED_NAME_FOR(){
+        return getTermByUuid(uuidProParteMisappliedNameFor);
+    }
+
 	/**
 	 * Returns the taxon relationship type "is invalid designation for". This
 	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}

@@ -101,6 +101,10 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 
         for (int i = 1; i <= teamMembers.size() && i < etAlPosition; i++){
             Person teamMember = teamMembers.get(i-1);
+            if(teamMember == null){
+                // this can happen in UIs in the process of adding new members
+                continue;
+            }
             String concat = concatString(team, teamMembers, i);
             result += concat + teamMember.getTitleCache();
         }

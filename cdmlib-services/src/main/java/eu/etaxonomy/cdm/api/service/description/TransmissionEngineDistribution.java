@@ -825,7 +825,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
    }
 
 
-    // TODO merge with CdmApplicationDefaultConfiguration#startTransaction() into common base class
+    // TODO merge with CdmRepository#startTransaction() into common base class
     public TransactionStatus startTransaction(Boolean readOnly) {
 
         DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
@@ -851,7 +851,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         return txStatus;
     }
 
-    // TODO merge with CdmApplicationDefaultConfiguration#startTransaction() into common base class
+    // TODO merge with CdmRepository#startTransaction() into common base class
     public void commitTransaction(TransactionStatus txStatus){
         logger.debug("commiting transaction ...");
         transactionManager.commit(txStatus);

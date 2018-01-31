@@ -207,7 +207,8 @@ public class CdmLightClassificationExport
             state.getResult().addError ("There was a taxon node without a taxon: " + taxonNode.getUuid(), "handleTaxon");
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
         }else{
-            Taxon taxon = taxonNode.getTaxon();
+            Taxon taxon = HibernateProxyHelper.deproxy(taxonNode.getTaxon(), Taxon.class);
+
              try{
                 TaxonName name = taxon.getName();
                 handleName(state, name);
@@ -677,29 +678,37 @@ public class CdmLightClassificationExport
 
     /**
      * @param state
-     * @param syn
+     * @param synonym
      */
-    private void handleSynonym(CdmLightExportState state, Synonym syn) {
+    private void handleSynonym(CdmLightExportState state, Synonym synonym) {
        try {
-
-           TaxonName name = syn.getName();
+           if (isUnpublished(state.getConfig(), synonym)){
+               return;
+           }
+           TaxonName name = synonym.getName();
            handleName(state, name);
 
            CdmLightExportTable table = CdmLightExportTable.SYNONYM;
            String[] csvLine = new String[table.getSize()];
 
-           csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, syn);
-           csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, syn.getAcceptedTaxon());
+           csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, synonym);
+           csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, synonym.getAcceptedTaxon());
            csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
-           csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, syn.getSec());
-           csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(syn.getSec());
+           csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
+           csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(synonym.getSec());
+           if (synonym.isProParte()) {
+        	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "1";
+           }else {
+        	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
+           }
 
-           state.getProcessor().put(table, syn, csvLine);
+           state.getProcessor().put(table, synonym, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling synonym " +
-                    cdmBaseStr(syn) + ": " + e.getMessage());
+                    cdmBaseStr(synonym) + ": " + e.getMessage());
         }
     }
+
 
     /**
      * @param state

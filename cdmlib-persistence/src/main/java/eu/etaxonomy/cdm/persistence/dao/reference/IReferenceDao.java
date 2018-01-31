@@ -10,12 +10,14 @@ package eu.etaxonomy.cdm.persistence.dao.reference;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -84,6 +86,25 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
      * @return
      */
     List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType);
+
+    /**
+     * @param identifier
+     * @param identifierType
+     * @param matchmode
+     * @param limit
+     * @return
+     */
+    List<Object[]> findByIdentifierAbbrev(String identifier, DefinedTermBase identifierType, MatchMode matchmode,
+            Integer limit);
+
+    /**
+     * @param limit
+     * @param pattern
+     * @param refType
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
+            ReferenceType refType);
 
 
 }

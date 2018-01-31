@@ -71,4 +71,44 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         return findByParam(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
+
+        Session session = getSession();
+
+        String queryString = "SELECT uuid, id, label FROM Prime ";
+
+        if ( pattern != null){
+            queryString += " WHERE ";
+            queryString += " label LIKE :pattern";
+
+        }
+
+        Query query;
+        query = session.createQuery(queryString);
+
+
+        if (limitOfInitialElements != null){
+            query.setMaxResults(limitOfInitialElements);
+        }
+        if (pattern != null){
+              pattern = pattern.replace("*", "%");
+              pattern = pattern.replace("?", "_");
+              pattern = pattern + "%";
+              query.setParameter("pattern", pattern);
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        List<UuidAndTitleCache<Primer>> list = new ArrayList<>();
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0],(Integer)object[1], (String)object[2]));
+        }
+
+        return list;
+    }
+
 }

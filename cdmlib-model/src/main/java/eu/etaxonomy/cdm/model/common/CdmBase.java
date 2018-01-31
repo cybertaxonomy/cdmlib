@@ -59,6 +59,8 @@ import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
@@ -332,11 +334,30 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 // ************* Object overrides *************************/
 
     /**
-     * Is true if UUID is the same for the passed Object and this one.
-     * @see java.lang.Object#equals(java.lang.Object)
-     * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities}
+     * Is <code>true</code> if UUID and created timestamp (is this really needed/make sense?)
+     * is the same for the passed Object and this one.
+     * This method is final as subclasses should not override it.<BR>
+     *
+     * The contract should be the same for all persistable entities.
+     * 2 instances are equal if they represent the same entity in a given
+     * database.<BR>
+     * NOTE: currently the method is only final in {@link VersionableEntity#equals(Object)}.
+     * For discussion see #7202.
+     * <BR><BR>
+     *
+     * If one wants to compare 2 CdmBase entities content wise you may use e.g. a
+     * {@link IMatchStrategy match strategy} and make sure
+     * {@link IMatchable matching} is implemented for the respective CdmBase subclass.
+     * You may adapt your match strategy to your own needs.
+     *
+     * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities},
      * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
      * for more information about equals and hashcode.
+     * <BR>
+     * See also https://dev.e-taxonomy.eu/redmine/issues/7155 and related tickets for discussion.
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     *
      */
     @Override
     public boolean equals(Object obj) {
@@ -350,13 +371,20 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
             return false;
         }
         ICdmBase cdmObj = (ICdmBase)obj;
-        boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
-        boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());
+        UUID objUuid = cdmObj.getUuid();
+        if (objUuid == null){
+            throw new NullPointerException("CdmBase is missing UUID");
+        }
+        boolean uuidEqual = objUuid.equals(this.getUuid());
+        //TODO is this still needed?
+//        boolean createdEqual = CdmUtils.nullSafeEqual(cdmObj.getCreated(), this.getCreated());
+        boolean createdEqual = true; //preliminary, to test im createdEqual is still needed #7201
         if (! uuidEqual || !createdEqual){
                 return false;
         }
         return true;
     }
+
 
 
     /** Overrides {@link java.lang.Object#hashCode()}

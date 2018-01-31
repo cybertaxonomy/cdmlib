@@ -26,6 +26,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.UuidAndTitleCacheTaxonComparator;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -307,7 +309,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
             String hql = "";
-            Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
+            Set<NamedArea> areasExpanded = new HashSet<>();
             if(namedAreas != null && namedAreas.size() > 0){
                 // expand areas and restrict by distribution area
                 Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
@@ -315,7 +317,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             boolean doAreaRestriction = areasExpanded.size() > 0;
 
-            Set<UUID> namedAreasUuids = new HashSet<UUID>();
+            Set<UUID> namedAreasUuids = new HashSet<>();
             for (NamedArea area:areasExpanded){
                 namedAreasUuids.add(area.getUuid());
             }
@@ -366,7 +368,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
             if (doIncludeMisappliedNames ){
                 subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
-                subMisappliedNames.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                Set<TaxonRelationshipType> relTypeSet = new HashSet<>();
+                relTypeSet.add(TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                relTypeSet.add(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR());
+                subMisappliedNames.setParameterList("rTypeSet", relTypeSet);
                 if(doAreaRestriction){
                     subMisappliedNames.setParameterList("namedAreasUuids", namedAreasUuids);
                 }
@@ -1443,7 +1448,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
            String doSearchFieldWhere = "%s." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
 
-           String doRelationshipTypeComparison = " rtype = :rType ";
+           String doRelationshipTypeComparison = " rtype in (:rTypeSet) ";
 
         String taxonSubselect = null;
         String synonymSubselect = null;
@@ -1852,6 +1857,43 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
+    }
+
+    @Override
+    public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern){
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery("select taxonBase.uuid, taxonBase.id, taxonBase.titleCache, taxonBase.name.rank from TaxonBase as taxonBase where taxonBase.titleCache like :pattern");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+            } else {
+            query = session.createQuery("select uuid, id, titleCache, taxonBase.name.rank from TaxonBase "  );
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+
+        return getUuidAndTitleCache(query);
+    }
+
+    @Override
+    protected List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Query query){
+        List<UuidAndTitleCache<TaxonBase>> list = new ArrayList<UuidAndTitleCache<TaxonBase>>();
+
+        List<Object[]> result = query.list();
+        if (result != null && !result.isEmpty()){
+            if (result.iterator().next().length == 4){
+                Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
+            }
+        }
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<TaxonBase>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        }
+        return list;
     }
 
 

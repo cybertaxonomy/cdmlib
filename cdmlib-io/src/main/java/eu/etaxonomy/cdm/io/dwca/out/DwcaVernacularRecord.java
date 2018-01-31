@@ -96,11 +96,8 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 
 
     @Override
-    public void write(DwcaTaxExportState state, PrintWriter writer) {
-        if(writer == null){
-            writeCsv(state);
-            return;
-        }
+    protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
+
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 
 		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);

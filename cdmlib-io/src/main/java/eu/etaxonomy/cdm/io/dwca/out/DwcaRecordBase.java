@@ -61,7 +61,22 @@ public abstract class DwcaRecordBase {
 	protected Map<String, URI> knownFields = new HashMap<>();
 	protected Set<TermUri> knownTermFields = new HashSet<>();
 
-	public abstract void write(DwcaTaxExportState state, PrintWriter writer);
+	protected abstract void doWrite(DwcaTaxExportState state, PrintWriter writer);
+
+	public void write(DwcaTaxExportState state, PrintWriter writer){
+	    if(writer == null){
+            writeCsv(state);
+            return;
+        }
+        if (this.count == 1 && state.getConfig().isHasHeaderLines() & this.isWritingHeader == false){
+            this.isWritingHeader = true;
+            write(state, writer);
+            this.isWritingHeader = false;
+        }
+	    doWrite(state, writer);
+	}
+
+
 	public void writeCsv(DwcaTaxExportState state){
 	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!");
 	}
@@ -70,6 +85,7 @@ public abstract class DwcaRecordBase {
 	protected abstract void registerKnownFields();
 
 	protected int count;
+	protected boolean isWritingHeader; //should better be moved in state
 	private DwcaMetaDataRecord metaDataRecord;
 	protected DwcaTaxExportConfigurator config;
 
@@ -87,7 +103,6 @@ public abstract class DwcaRecordBase {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 	public Integer getId() {
 		return id;
 	}
@@ -95,7 +110,6 @@ public abstract class DwcaRecordBase {
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
-
 	public UUID getUuid() {
 		return uuid;
 	}
@@ -203,6 +217,10 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
+        if (isWritingHeader == true){
+            printHeader(writer, addSeparator, fieldKey, defaultValue);
+            return;
+        }
 		if (count == 1 && addSeparator == IS_NOT_FIRST){
 			registerFieldKey(URI.create(fieldKey), defaultValue);
 		}
@@ -225,7 +243,24 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, Set<Rights> rights) {
+	/**
+     * @param writer
+     * @param addSeparator
+     * @param fieldKey
+     */
+    private void printHeader(PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
+        if (StringUtils.isBlank(defaultValue)){
+            String strToPrint = addSeparator ? config.getFieldsTerminatedBy() : "";
+            int pos = fieldKey.lastIndexOf("/");
+            if (pos != -1){
+                fieldKey = fieldKey.substring(pos + 1);
+            }
+            strToPrint += fieldKey ;
+            writer.print(strToPrint);
+        }
+    }
+
+    protected void line(DwcaTaxExportState state, String[] csvLine, DwcaTaxExportFile table, TermUri termUri, Set<Rights> rights) {
         String rightsStr = getRights(rights);
         if (rights != null){ line(state, csvLine, table, termUri, rightsStr);}
     }

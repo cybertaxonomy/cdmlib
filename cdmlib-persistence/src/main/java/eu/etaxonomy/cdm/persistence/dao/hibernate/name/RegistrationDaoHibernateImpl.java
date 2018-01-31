@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
 
@@ -113,18 +114,26 @@ public class RegistrationDaoHibernateImpl
         String where = " WHERE (1=1) ";
         String orderBy = isCount ? "" : " ORDER BY r.id ";
 
+        ReferenceType refTypeParameter = null;
+
         if (reference == null){
             //do nothing
         }else if (reference.isPresent()){
-           where += " AND ((n IS NOT NULL AND n.nomenclaturalReference =:ref)"
-                    + "     OR desig.citation =:ref "
-                    + ")";
+           from += "   LEFT JOIN n.nomenclaturalReference nomRef "
+                   + " LEFT JOIN desig.citation desigRef ";
+           where += " AND ("
+                   + "     nomRef =:ref "
+                   + "     OR (nomRef.type =:refType AND nomRef.inReference =:ref) "
+                   + "     OR desigRef =:ref "
+                   + "     OR (desigRef.type =:refType AND desigRef.inReference =:ref)"
+                   + ")";
+           refTypeParameter = ReferenceType.Section;
         }else{  //ref is null
-            where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
-                    + "     OR (n IS NOT NULL AND r.name.nomenclaturalReference IS NULL ) "
-                    + "     OR (size(r.typeDesignations) > 0 AND desig.citation IS NULL )"
-                    + ") "
-                    ;
+           where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
+                   + "     OR (n IS NOT NULL AND r.name.nomenclaturalReference IS NULL ) "
+                   + "     OR (size(r.typeDesignations) > 0 AND desig.citation IS NULL )"
+                   + ") "
+                   ;
         }
         boolean hasStatus = includedStatus != null && !includedStatus.isEmpty();
         if (hasStatus){
@@ -135,6 +144,9 @@ public class RegistrationDaoHibernateImpl
         Query query = getSession().createQuery(hql);
         if (reference != null && reference.isPresent()){
             query.setParameter("ref", reference.get());
+        }
+        if(refTypeParameter != null){
+            query.setParameter("refType", refTypeParameter);
         }
         if (hasStatus){
             query.setParameterList("status", includedStatus);

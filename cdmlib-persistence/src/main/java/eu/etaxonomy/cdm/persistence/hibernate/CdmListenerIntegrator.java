@@ -12,6 +12,10 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 /**
+ * NOTE: This class could be replaces by a HibernateSpringIntegrator as suggested in
+ * https://stackoverflow.com/questions/16019820/using-hibernate-4s-integrator-pattern-and-springs-dependency-injection#16045272
+ * this would allow for flexible and extensible configuration via the spring application context.
+ *
  * @author a.mueller
  * @created 30.03.2013
  *

@@ -164,7 +164,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	public List<Person> getTeamMembers(){
 		if(teamMembers == null) {
-			this.teamMembers = new ArrayList<Person>();
+			this.teamMembers = new ArrayList<>();
 		}
 		return this.teamMembers;
 	}
@@ -353,7 +353,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	public Object clone() {
 		try{
 			Team result = (Team)super.clone();
-			result.teamMembers = new ArrayList<Person>();
+			result.teamMembers = new ArrayList<>();
 			for (Person teamMember: this.teamMembers){
 				result.addTeamMember(teamMember);
 			}

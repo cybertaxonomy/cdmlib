@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxExportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -171,6 +172,16 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
             }
         }
         return node.getUuid();
+    }
+
+
+    /**
+     * <code>true</code> if neither synonym has state publish nor
+     * taxon node filter includes unpublished taxa.
+     */
+    protected boolean isUnpublished(CONFIG config, Synonym synonym) {
+        return ! (synonym.isPublish()
+                || config.getTaxonNodeFilter().isIncludeUnpublished());
     }
 
 }

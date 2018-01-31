@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -237,6 +238,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
             typeDesignation.removeType();
+            if (!typeDesignation.getRegistrations().isEmpty()){
+                for(Object reg: typeDesignation.getRegistrations()){
+                    if (reg instanceof Registration){
+                        ((Registration)reg).removeTypeDesignation(typeDesignation);
+                    }
+                }
+            }
             typeDesignationDao.delete(typeDesignation);
         }
     }
@@ -387,7 +395,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
-      /**
+
+    public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths){
+        return typeDesignationDao.load(id, propertyPaths);
+    }
+
+    public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths){
+        return typeDesignationDao.load(uuid, propertyPaths);
+    }
+
+    /**
      * FIXME Candidate for harmonization
      * homotypicalGroupService.list
      */

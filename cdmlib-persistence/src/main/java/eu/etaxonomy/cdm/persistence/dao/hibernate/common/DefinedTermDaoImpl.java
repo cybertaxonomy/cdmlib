@@ -717,14 +717,19 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs");
+            if (vocs != null & !vocs.isEmpty()){
+                query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs");
+                query.setParameterList("vocs", vocs);
+            }else{
+                query = session.createQuery("from NamedArea where titleCache like :pattern ");
+            }
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
-            query.setParameterList("vocs", vocs);
+
         } else {
-            query = session.createQuery("from NamedArea where vocabulary in :vocs");
+            query = session.createQuery("FROM NamedArea WHERE vocabulary IN :vocs");
             query.setParameterList("vocs", vocs);
         }
         if (limit != null){

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.lucene.index.CorruptIndexException;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
@@ -39,12 +38,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public interface INameService extends IIdentifiableEntityService<TaxonName> {
 
@@ -114,6 +111,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonName> {
 	 * @return
 	 */
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
+
+    public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths);
+
+    public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths);
 
 	/**
 	 * Returns all NonViralNames with a name cache that matches the given string

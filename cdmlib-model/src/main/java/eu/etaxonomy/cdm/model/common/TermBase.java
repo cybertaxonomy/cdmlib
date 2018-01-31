@@ -255,23 +255,10 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         return (repr == null) ? null :repr.getDescription();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null){
-            return false;
-        }
-        if (TermBase.class.isAssignableFrom(obj.getClass())){
-            TermBase dtb = (TermBase)obj;
-            if (dtb.getUuid().equals(this.getUuid())){
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public String toString() {
-        //TODO eliminate nasty LazyInitializationException loggings
+        //TODO eliminate nasty LazyInitializationException logging
         try {
             return super.toString();
         } catch (LazyInitializationException e) {

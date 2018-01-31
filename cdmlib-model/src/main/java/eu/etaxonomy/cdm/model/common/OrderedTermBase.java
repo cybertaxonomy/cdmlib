@@ -202,22 +202,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
         }
     }
 
-    @Override
-    public boolean equals(Object object){
-        if(this == object) {
-            return true;
-        }
-        if((object == null) || (!OrderedTermBase.class.isAssignableFrom(object.getClass()))) {
-            return false;
-        }else{
-            OrderedTermBase<?> orderedTermBase = (OrderedTermBase<?>)object;
-            if (orderedTermBase.getUuid().equals(this.getUuid())){
-                return true;
-            }else{
-                return false;
-            }
-        }
-    }
 
     @SuppressWarnings("unchecked")
     @Transient

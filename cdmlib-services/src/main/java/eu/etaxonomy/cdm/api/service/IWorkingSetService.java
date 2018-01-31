@@ -29,6 +29,13 @@ public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
 
 	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID workingSetUuid, DescriptiveSystemRole role);
 
+    /**
+     * @param limitOfInitialElements
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<WorkingSet>> getWorkingSetUuidAndTitleCache(Integer limitOfInitialElements, String pattern);
+
 
 
 }

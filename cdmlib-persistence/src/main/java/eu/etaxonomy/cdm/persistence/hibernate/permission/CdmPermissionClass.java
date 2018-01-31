@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
-import eu.etaxonomy.cdm.model.CdmBaseType;
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -28,9 +29,19 @@ public enum CdmPermissionClass {
     CLASSIFICATION,
     REFERENCE,
     TAXONNAME,
+    NAMERELATIONSHIP,
     TEAMORPERSONBASE,
     REGISTRATION,
-    SPECIMENOROBSERVATIONBASE;
+    SPECIMENOROBSERVATIONBASE,
+    SPECIMENTYPEDESIGNATION,
+    COLLECTION,
+    GRANTEDAUTHORITYIMPL,
+    GROUP,
+    LANGUAGESTRING,
+    GATHERINGEVENT,
+    HOMOTYPICALGROUP,
+    WORKINGSET;
+
 
     /**
      * return the appropriate CdmPermissionClass for the given Object
@@ -42,8 +53,6 @@ public enum CdmPermissionClass {
         return CdmPermissionClass.getValueOf(o.getClass());
     }
 
-
-
     /**
      * return the appropriate CdmPermissionClass for the given Object
      *
@@ -52,16 +61,30 @@ public enum CdmPermissionClass {
      */
     public static CdmPermissionClass getValueOf(Class o){
 
+        CdmPermissionClass permissionClass = _valueOf(o);
+        if(permissionClass == null) {
+            Logger.getLogger(CdmPermissionClass.class).error("Permission class support for " + o + " not implemented");
+        }
+        return permissionClass;
+
+    }
+
+
+
+    /**
+     * @param o
+     * @return
+     */
+    protected static CdmPermissionClass _valueOf(Class o) {
         try{
             String normalizedName = o.getSimpleName().toUpperCase();
             return CdmPermissionClass.valueOf(normalizedName);
         } catch(IllegalArgumentException e){
             if (CdmBase.class.isAssignableFrom(o)){
-                return getValueOf(o.getSuperclass());
+                return _valueOf(o.getSuperclass());
             }
 
         }
-
         return null;
     }
 }

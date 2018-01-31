@@ -10,29 +10,43 @@ import java.util.UUID;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 
 /**
- * DAO to retrived taxon node uuids according to a {@link TaxonNodeFilter}.
- *
+ * DAO to retrieve taxon node uuids according to a {@link TaxonNodeFilter}.
  *
  * @author a.mueller
  */
 @Repository
 public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode> implements ITaxonNodeFilterDao {
 
+    private static final String DESCRIPTION_ELEMENTS = "descriptionElements";
+
+    private static final String FEATURE_UUID = "9fc9d10c-ba50-49ee-b174-ce83fc3f80c6";
+
+    private static final String HQL_TRUE = " 1 "; //maybe we can/should use 'true' instead, needs to be checked for all DB types
+    private static final String HQL_FALSE = " 0 "; //maybe we can/should use 'false' instead, needs to be checked for all DB types
+
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
+
+    @Autowired
+    private IDefinedTermDao termDao;
 
     public TaxonNodeFilterDaoHibernateImpl() {
         super(TaxonNode.class);
@@ -80,19 +94,80 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     //maybe we will later want to have ordering included
     private String query(TaxonNodeFilter filter, String selectPart){
         String select = " SELECT " + selectPart;
-        String from = " FROM TaxonNode tn ";
+        String from = getFrom(filter);
         String subtreeFilter = getSubtreeFilter(filter);
         String taxonNodeFilter = getTaxonNodeFilter(filter);
         String classificationFilter = getClassificationFilter(filter);
         String taxonFilter = getTaxonFilter(filter);
-        String rootNoteFilter = getRootNodeFilter(filter);
+        String rootNodeFilter = getRootNodeFilter(filter);
+        String rankMaxFilter = getRankMaxFilter(filter);
+        String rankMinFilter = getRankMinFilter(filter);
+        String areaFilter = getAreaFilter(filter);
+        String unpublishFilter = getUnpublishFilter(filter);
+
         String fullFilter = getFullFilter(subtreeFilter, taxonNodeFilter,
-                classificationFilter, taxonFilter, rootNoteFilter);
+                classificationFilter, taxonFilter,
+                rankMaxFilter, rankMinFilter, areaFilter, rootNodeFilter,
+                unpublishFilter);
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
         String fullQuery = select + from + " WHERE " + fullFilter + groupBy;
         return fullQuery;
 
+    }
+
+    private String getFrom(TaxonNodeFilter filter){
+        String from = " FROM TaxonNode tn ";
+        if (hasTaxonFilter(filter)){
+            from += " LEFT JOIN tn.taxon taxon ";  //LEFT to allow includeRootNode
+        }
+        if(!filter.getAreaFilter().isEmpty()){
+            from += " INNER JOIN taxon.descriptions descriptions "
+                  + " INNER JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " ";
+        }
+        return from;
+    }
+
+    /**
+     * @return
+     */
+    private boolean hasTaxonFilter(TaxonNodeFilter filter) {
+        boolean result = !filter.getAreaFilter().isEmpty()
+                || !filter.isIncludeUnpublished();
+        return result;
+    }
+
+
+    private String getAreaFilter(TaxonNodeFilter filter) {
+        String result = "";
+        List<LogicFilter<NamedArea>> areaFilter = filter.getAreaFilter();
+        boolean isFirst = true;
+        List<Integer> areaIds = new ArrayList<>();
+        for (LogicFilter<NamedArea> singleFilter : areaFilter){
+            areaIds = getChildAreasRecursively(singleFilter.getUuid());
+            String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
+            result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + FEATURE_UUID + "' "
+                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s)))"
+                    + " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = %s " ,
+                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds),
+                    HQL_FALSE);
+            isFirst = false;
+        }
+        return result;
+    }
+
+    private List<Integer> getChildAreasRecursively(UUID uuid){
+        List<Integer> areaIds = new ArrayList<>();
+        NamedArea area = HibernateProxyHelper.deproxy(termDao.load(uuid), NamedArea.class);
+        areaIds.add(area.getId());
+        String queryStr = String.format("SELECT includes.uuid FROM DefinedTermBase t inner join t.includes includes WHERE t.uuid = '%s'",
+                area.getUuid().toString());
+        Query query = getSession().createQuery(queryStr);
+        List<UUID> childAreas = castToUuidList(query.list());
+        for (UUID childArea : childAreas) {
+            areaIds.addAll(getChildAreasRecursively(childArea));
+        }
+        return areaIds;
     }
 
 
@@ -110,19 +185,32 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
+    private String getUnpublishFilter(TaxonNodeFilter filter) {
+        String result = "";
+        if (!filter.isIncludeUnpublished()){
+            result = " ( taxon.publish = "+HQL_TRUE+" OR tn.parent IS NULL ) ";
+        }
+        return result;
+    }
+
 
     /**
      * @param subtreeFilter
      * @param taxonNodeFilter
      * @param classificationFilter
      * @param taxonFilter
+     * @param rankMinFilter
+     * @param rankMaxFilter
+     * @param rootNodeFilter
      * @return
      */
     private String getFullFilter(String subtreeFilter, String taxonNodeFilter, String classificationFilter,
-            String taxonFilter, String rootNodeFilter) {
+            String taxonFilter, String rankMaxFilter, String rankMinFilter, String areaFilter, String rootNodeFilter,
+            String unpublishFilter) {
         String result = " (1=1 ";
         result = CdmUtils.concat(") AND (", result, subtreeFilter, taxonNodeFilter,
-                classificationFilter, taxonFilter, rootNodeFilter) + ") ";
+                classificationFilter, taxonFilter, rankMaxFilter, rankMinFilter, areaFilter, rootNodeFilter,
+                unpublishFilter) + ") ";
         return result;
     }
 
@@ -174,6 +262,27 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
+    private String getRankMaxFilter(TaxonNodeFilter filter) {
+        String result = "";
+        LogicFilter<Rank> rankFilter = filter.getRankMax();
+        if(rankFilter!=null){
+            UUID rankUuid = rankFilter.getUuid();
+            Rank rank = (Rank) termDao.load(rankUuid);
+            result = String.format("(tn.taxon.name.rank.orderIndex >= %s)", rank.getOrderIndex());
+        }
+        return result;
+    }
+
+    private String getRankMinFilter(TaxonNodeFilter filter) {
+        String result = "";
+        LogicFilter<Rank> rankFilter = filter.getRankMin();
+        if(rankFilter!=null){
+            UUID rankUuid = rankFilter.getUuid();
+            Rank rank = (Rank) termDao.load(rankUuid);
+            result = String.format("(tn.taxon.name.rank.orderIndex <= %s)", rank.getOrderIndex());
+        }
+        return result;
+    }
 
     private String getClassificationFilter(TaxonNodeFilter filter) {
         String result = "";
@@ -210,7 +319,7 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     private void initializeSubtreeIndex(List<LogicFilter<TaxonNode>> subtreeFilter) {
         for (LogicFilter<TaxonNode> filter : subtreeFilter){
             if (filter.getTreeIndex() == null){
-                //TODO finde without loading, best be sending full list and returning treeindexes
+                //TODO finde without loading, best be sending full list and returning tree indexes
                 TaxonNode node = taxonNodeDao.findByUuid(filter.getUuid());
                 if (node != null){
                     filter.setTreeIndex(node.treeIndex());

@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.api.service.util;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -23,21 +25,28 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  */
 public class AbstractRelationshipEdge<T extends RelationshipTermBase> {
 
-    private T taxonRelationshipType;
+    private Set<T> taxonRelationshipTypes;
     private EnumSet<Direction> directions;
 
     public AbstractRelationshipEdge(T taxonRelationshipType, Direction ... direction) {
         super();
-        this.taxonRelationshipType = taxonRelationshipType;
+        this.taxonRelationshipTypes = new HashSet<>();
+        this.taxonRelationshipTypes.add(taxonRelationshipType);
         directions = EnumSet.copyOf(Arrays.asList(direction));
     }
 
-    public T getTaxonRelationshipType() {
-        return taxonRelationshipType;
+    public AbstractRelationshipEdge(Set<T> taxonRelationshipTypes, Direction ... direction) {
+        super();
+        this.taxonRelationshipTypes = taxonRelationshipTypes;
+        directions = EnumSet.copyOf(Arrays.asList(direction));
     }
 
-    public void setTaxonRelationshipType(T taxonRelationshipType) {
-        this.taxonRelationshipType = taxonRelationshipType;
+    public Set<T> getTaxonRelationshipTypes() {
+        return taxonRelationshipTypes;
+    }
+
+    public void setTaxonRelationshipTypes(Set<T> taxonRelationshipTypes) {
+        this.taxonRelationshipTypes = taxonRelationshipTypes;
     }
 
     public EnumSet<Direction> getDirections() {

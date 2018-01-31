@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -29,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class DaoBase {
+
+    final static Logger logger = Logger.getLogger(DaoBase.class);
 
     @Autowired
     private SessionFactory factory;
@@ -44,6 +47,7 @@ public abstract class DaoBase {
         try {
             session = factory.getCurrentSession();
         } catch (HibernateException e) {
+            logger.error("Opening new session in turn of a HibernateException: " + e.getMessage());
             session = factory.openSession();
         }
         return session;

@@ -26,13 +26,39 @@ public class TaxonNameFactory {
  // *************** FACTORY METHODS ********************************/
 
 
-//    /**
-//     * @param code
-//     * @return
-//     */
-//    public static Class<? extends IdentifiableEntity> NewNameInstance(NomenclaturalCode code) {
-//        code.getNewTaxonNameInstance(rank)
-//    }
+    /**
+     * Create a new {@link TaxonName} instance depending on {@link NomenclaturalCode code} and
+     * {@link Rank rank}. Creates a new {@link HomotypicalGroup homotypical group}.
+     *
+     * @param code the nomenclatural code, must not be <code>null</code>
+     * @param rank the rank
+     * @return the new name
+     * @see #NewNameInstance(NomenclaturalCode, Rank, HomotypicalGroup)
+     * @throws NullPointerException if code is <code>null</code>
+     */
+    public static TaxonName NewNameInstance(NomenclaturalCode code, Rank rank) {
+        return NewNameInstance(code, rank, null);
+    }
+    /**
+     * Create a new {@link TaxonName} instance depending on {@link NomenclaturalCode code}
+     * {@link Rank rank} and {@link HomotypicalGroup homotypical group}.
+     *
+     * @param code the nomenclatural code, must not be <code>null</code>
+     * @param rank the rank
+     * @param homotypicalGroup the homotypical group
+     * @return the new name
+     * @see #NewNameInstance(NomenclaturalCode, Rank)
+     * @throws NullPointerException if code is <code>null</code>
+     */
+    public static TaxonName NewNameInstance(NomenclaturalCode code, Rank rank,
+            HomotypicalGroup homotypicalGroup) throws NullPointerException {
+        if (code == null){
+            throw new NullPointerException("NomenclaturalCode must not be null");
+        }
+        return TaxonName.NewInstance(code, rank, homotypicalGroup);
+    }
+
+
 
     /**
      * Creates a new non viral taxon name instance

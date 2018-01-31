@@ -38,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
@@ -47,7 +46,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * Note: All group related functionality has been refactored into a GroupService. The will be removed in a future version.
+ * Note: All group related functionality has been refactored into a GroupService.
+ * The will be removed in a future version.
  */
 @Service
 @Transactional(readOnly = true)
@@ -251,139 +251,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void addGroupAuthority(String groupName, GrantedAuthority authority) {
-        Assert.hasText(groupName);
-        Assert.notNull(authority);
-
-        Group group = groupDao.findGroupByName(groupName);
-        if(group.getGrantedAuthorities().add(authority)) {
-            groupDao.update(group);
-        }
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void addUserToGroup(String username, String groupName) {
-        Assert.hasText(username);
-        Assert.hasText(groupName);
-
-        Group group = groupDao.findGroupByName(groupName);
-        User user = dao.findUserByUsername(username);
-
-        if(group.addMember(user)) {
-            groupDao.update(group);
-            userCache.removeUserFromCache(user.getUsername());
-        }
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void createGroup(String groupName, List<GrantedAuthority> authorities) {
-        Assert.hasText(groupName);
-        Assert.notNull(authorities);
-
-        Group group = Group.NewInstance(groupName);
-
-        for(GrantedAuthority authority : authorities) {
-            group.getGrantedAuthorities().add(authority);
-        }
-
-        groupDao.save(group);
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void deleteGroup(String groupName) {
-        Assert.hasText(groupName);
-
-        Group group = groupDao.findGroupByName(groupName);
-        groupDao.delete(group);
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public List<String> findAllGroups() {
-        return groupDao.listNames(null,null);
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public List<GrantedAuthority> findGroupAuthorities(String groupName) {
-        Assert.hasText(groupName);
-        Group group = groupDao.findGroupByName(groupName);
-
-        return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public List<String> findUsersInGroup(String groupName) {
-        Assert.hasText(groupName);
-        Group group = groupDao.findGroupByName(groupName);
-
-        List<String> users = groupDao.listMembers(group, null, null);
-
-        return users;
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void removeGroupAuthority(String groupName,	GrantedAuthority authority) {
-        Assert.hasText(groupName);
-        Assert.notNull(authority);
-
-        Group group = groupDao.findGroupByName(groupName);
-
-        if(group.getGrantedAuthorities().remove(authority)) {
-            groupDao.update(group);
-        }
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void removeUserFromGroup(String username, String groupName) {
-        Assert.hasText(username);
-        Assert.hasText(groupName);
-
-        Group group = groupDao.findGroupByName(groupName);
-        User user = dao.findUserByUsername(username);
-
-        if(group.removeMember(user)) {
-            groupDao.update(group);
-            userCache.removeUserFromCache(user.getUsername());
-        }
-    }
-
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void renameGroup(String oldName, String newName) {
-        Assert.hasText(oldName);
-        Assert.hasText(newName);
-
-        Group group = groupDao.findGroupByName(oldName);
-
-        group.setName(newName);
-        groupDao.update(group);
-    }
 
     @Override
     @Transactional(readOnly=false)

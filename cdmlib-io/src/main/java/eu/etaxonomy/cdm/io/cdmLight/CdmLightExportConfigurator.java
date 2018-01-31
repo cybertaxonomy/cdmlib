@@ -20,7 +20,8 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @date 15.03.2017
  *
  */
-public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightExportState, IExportTransformer, File>{
+public class CdmLightExportConfigurator
+        extends ExportConfiguratorBase<CdmLightExportState, IExportTransformer, File>{
 
     private static final long serialVersionUID = -1562074221435082060L;
 
@@ -52,30 +53,35 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
     public void setEncoding(String encoding) {
         this.csvIOConfig.setEncoding(encoding);
     }
+
     public String getLinesTerminatedBy() {
         return csvIOConfig.getLinesTerminatedBy();
     }
     public void setLinesTerminatedBy(String linesTerminatedBy) {
         this.csvIOConfig.setLinesTerminatedBy(linesTerminatedBy);
     }
+
     public String getFieldsEnclosedBy() {
         return  csvIOConfig.getFieldsEnclosedBy();
     }
     public void setFieldsEnclosedBy(String fieldsEnclosedBy) {
         this.csvIOConfig.setFieldsEnclosedBy(fieldsEnclosedBy);
     }
+
     public boolean isHasHeaderLines() {
         return  csvIOConfig.isHasHeaderLines();
     }
     public void setHasHeaderLines(boolean hasHeaderLines) {
         this.csvIOConfig.setHasHeaderLines(hasHeaderLines);
     }
+
     public String getFieldsTerminatedBy() {
         return  csvIOConfig.getFieldsTerminatedBy();
     }
     public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
         this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -83,6 +89,7 @@ public class CdmLightExportConfigurator extends ExportConfiguratorBase<CdmLightE
     public CdmLightExportState getNewState() {
         return new CdmLightExportState(this);
     }
+
     /**
      * {@inheritDoc}
      */

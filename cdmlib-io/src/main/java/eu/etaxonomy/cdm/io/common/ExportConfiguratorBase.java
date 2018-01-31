@@ -35,7 +35,8 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	private ICdmDataSource source;
 	private DEST destination;
 	protected IDatabase sourceReference;
-	protected Class<ICdmIO>[] ioClassList;
+
+    protected Class<ICdmIO>[] ioClassList;
 
 	 private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
 
@@ -137,6 +138,7 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	public void setTarget(TARGET target) {
 	    this.target = target;
 	}
+
 
 	/**
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.

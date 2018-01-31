@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,12 +69,11 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Assert.notNull(groupUUID);
 
         Group group = dao.findByUuid(UUID.fromString(groupUUID));
-        for (User user : group.getMembers()){
-            group.removeMember(user);
+        Iterator<User> it = group.getMembers().iterator();
+        while (it.hasNext()){
+            it.remove();
         }
-        if(group != null){
-            dao.delete(group);
-        }
+        dao.delete(group);
 
     }
 
@@ -98,7 +98,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Group group = dao.findGroupByName(groupName);
         User user = userDao.findUserByUsername(username);
 
-        if(group != null || user != null){
+        if(group != null && user != null){
             if(group.addMember(user)) {
                 dao.update(group);
             }
@@ -114,7 +114,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Group group = dao.findGroupByName(groupName);
         User user = userDao.findUserByUsername(username);
 
-        if(group != null || user != null){
+        if(group != null && user != null){
             if(group.removeMember(user)){
                 dao.update(group);
             }
@@ -127,10 +127,10 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Group group = dao.findGroupByName(groupName);
 
         if (group != null){
-            return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
+            return new ArrayList<>(group.getGrantedAuthorities());
         }
 
-        return new ArrayList<GrantedAuthority>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -186,7 +186,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
          long numberOfResults = dao.countByName(queryString, matchmode, criteria);
 
-         List<Group> results = new ArrayList<Group>();
+         List<Group> results = new ArrayList<>();
          if(numberOfResults > 0) {
                 results = dao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }

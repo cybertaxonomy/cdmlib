@@ -35,7 +35,7 @@ public class EntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> {
      */
     @Override
     public String toString() {
-        return "(" + cdmEntity.getTitleCache() + "; " + cdmEntity.cdmUuid +  ")";
+        return "(" + cdmEntity.getTitleCache() + "; " + cdmEntity.getUuid() +  ")";
     }
 
 
