@@ -12,9 +12,9 @@
   <name>CDM Persistence</name>
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-persistence.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-persistence.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-persistence/</url>
   </scm>
   <build>
     <plugins>

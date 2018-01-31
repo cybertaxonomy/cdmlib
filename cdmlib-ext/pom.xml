@@ -15,9 +15,9 @@
   <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-extern/</url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-ext.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-ext.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-ext/</url>
   </scm>
 
   <dependencies>

@@ -21,15 +21,9 @@
   <!-- Revert this back to "war" before committing -->
   <packaging>jar</packaging>
   <scm>
-    <connection>
-      scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
-    </connection>
-    <developerConnection>
-      scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
-    </developerConnection>
-    <url>
-      http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
-    </url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-remote.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-remote.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-remote/</url>
   </scm>
 
   <dependencies>

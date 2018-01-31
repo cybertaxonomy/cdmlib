@@ -15,9 +15,9 @@
   <name>CDM Commons</name>
   <description>EDIT CDM library - Commons</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-commons/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-commons/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-commons/</url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-commons.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-commons.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-commons/</url>
   </scm>
   
   <dependencies>

@@ -16,17 +16,10 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
   <scm>
-    <connection>
-      scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
-    </connection>
-    <developerConnection>
-      scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
-    </developerConnection>
-    <url>
-      http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
-    </url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-remote-webapp.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-remote-webapp.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-remote-webapp/</url>
   </scm>
 
   <profiles>
