@@ -258,8 +258,15 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * Returns the string representing the given name or forename
 	 * (for instance "John") of <i>this</i> person.
 	 * This is the part of his name which is not shared with other
-	 * family members. Actually it may be just initials (for instance "G.&nbsp;Jr."),
-	 * all forenames in full or a combination of expanded names and initials.
+	 * family members. <BR>
+	 * Pure initials should be stored in {@link #getInitials() initials}
+	 * A combination of expanded names and initials maybe stored here.
+	 * <BR> In user interfaces (UI) this field should better be called
+	 * "Other/given names" according to {@link https://www.w3.org/International/questions/qa-personal-names.en#fielddesign }.
+	 *
+	 * @see #getInitials()
+	 * @see #getLastname()
+	 * @see https://www.w3.org/International/questions/qa-personal-names.en#fielddesign
 	 */
 	public String getFirstname(){
 		return this.firstname;
@@ -294,6 +301,13 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * (for instance "Smith") of <i>this</i> person.
 	 * This is the part of his name which is common to (all) other
 	 * members of his family, as distinct from the given name or forename.
+	 *
+     * <BR> In user interfaces (UI) this field should better be called
+     * "Family name" according to {@link https://www.w3.org/International/questions/qa-personal-names.en#fielddesign }.
+     *
+     * @see #getInitials()
+     * @see #getLastname()
+     * @see https://www.w3.org/International/questions/qa-personal-names.en#fielddesign
 	 */
 	public String getLastname(){
 		return this.lastname;
