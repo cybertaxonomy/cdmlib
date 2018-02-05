@@ -1206,7 +1206,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         int classificationId = classification.getId();
         // StringBuffer excludeUuids = new StringBuffer();
 
-         String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
+         String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache, taxon.name.rank FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
          if (pattern != null){
              if (pattern.equals("?")){
                  limit = null;
@@ -1239,7 +1239,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
              return null;
          }else{
              List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<UuidAndTitleCache<TaxonNode>>(result.size());
-
+             if (result != null && !result.isEmpty()){
+                 if (result.iterator().next().length == 4){
+                     Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
+                 }
+             }
              for (Object object : result){
 
                  Object[] objectArray = (Object[]) object;
