@@ -510,7 +510,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             }
 
         }
-
       return result;
     }
 

@@ -23,6 +23,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
@@ -85,6 +86,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private INameService nameService;
+
+    @Autowired
+    private IReferenceService refService;
 
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
@@ -782,7 +786,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
        // IProgressMonitor monitor = config.getMonitor();
@@ -792,6 +796,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         TaxonNode subTree = load(config.getSubtreeUuid());
         TreeIndex subTreeIndex = null;
+        Reference newSec = null;
+        if (config.getNewSecundum() != null){
+            newSec = refService.load(config.getNewSecundum().getUuid());
+        }
         if (subTree != null){
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             Long count = dao.countChildrenOf(subTree, subTree.getClassification(), true);
@@ -818,12 +826,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //Reference ref = config.getNewSecundum();
         if (config.isIncludeAcceptedTaxa()){
             monitor.subTask("Update Accepted Taxa");
-            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
+
+            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
             result.addUpdatedObjects(updatedTaxa);
         }
         if (config.isIncludeSynonyms()){
            monitor.subTask("Update Synonyms");
-           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, config.getNewSecundum(), config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
            result.addUpdatedObjects(updatedSynonyms);
         }
 
@@ -894,6 +903,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
+    @Transactional
     public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
