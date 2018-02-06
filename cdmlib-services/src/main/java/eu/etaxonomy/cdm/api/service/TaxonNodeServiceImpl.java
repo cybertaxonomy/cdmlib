@@ -23,7 +23,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
@@ -786,7 +785,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
        // IProgressMonitor monitor = config.getMonitor();
