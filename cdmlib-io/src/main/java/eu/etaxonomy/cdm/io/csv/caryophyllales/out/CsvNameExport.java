@@ -770,6 +770,7 @@ public class CsvNameExport extends CsvNameExportBase {
 
                         nameRecord.put("relatedName", relNameString);
                         nameRecord.put("nameRelType", NameRelationshipType.ORTHOGRAPHIC_VARIANT().getTitleCache());
+                        return;
                     }
                     if (secRef == null){
                         nameString.append("<misapplied>" +"\u201C" + createTaggedNameString(relatedTaxon.getName(), false) + "\u201D " + appendedPhrase);
