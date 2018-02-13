@@ -21,8 +21,12 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
+import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -42,10 +46,8 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -64,6 +66,11 @@ public class CsvNameExport extends CsvNameExportBase {
 
     @Autowired
     IEditGeoService geoService;
+
+    HashMap<UUID, HashMap<String,String>> familyMap = new HashMap();
+    HashMap<UUID, HashMap<String,String>> genusMap = new HashMap();
+
+    List<HashMap<String,String>> nameRecords = new ArrayList<>();
 
     public CsvNameExport() {
         super();
@@ -139,6 +146,13 @@ public class CsvNameExport extends CsvNameExportBase {
     }
 
     @Override
+    public long countSteps(CsvNameExportState state) {
+        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
+        return taxonNodeService.count(filter);
+    }
+
+
+    @Override
     protected boolean doCheck(CsvNameExportState state) {
         boolean result = true;
         logger.warn("No check implemented for " + this.ioName);
@@ -152,85 +166,106 @@ public class CsvNameExport extends CsvNameExportBase {
 
 
     public List<HashMap<String,String>> getRecordsForPrintPub(CsvNameExportState state){
-        List<String> propertyPaths = new ArrayList<String>();
-        propertyPaths.add("childNodes");
-        txStatus = startTransaction();
-        Classification classification = getClassificationService().load(state.getConfig().getClassificationUUID());
-        TaxonNode rootNode;
-        if (classification != null){
-            rootNode = classification.getRootNode();
-        }else{
-            List<Classification> classifications = getClassificationService().list(Classification.class, 10, 0, null, null);
-            if (classifications.isEmpty()){
-                return null;
+//        List<String> propertyPaths = new ArrayList<String>();
+//        propertyPaths.add("childNodes");
+//        txStatus = startTransaction();
+//        Classification classification = getClassificationService().load(state.getConfig().getClassificationUUID());
+//        TaxonNode rootNode;
+//        if (classification != null){
+//            rootNode = classification.getRootNode();
+//        }else{
+//            List<Classification> classifications = getClassificationService().list(Classification.class, 10, 0, null, null);
+//            if (classifications.isEmpty()){
+//                return null;
+//            }
+//            classification = classifications.get(0);
+//            rootNode = classification.getRootNode();
+//        }
+//        rootNode = getTaxonNodeService().load(rootNode.getUuid(), propertyPaths);
+//        Set<UUID> childrenUuids = new HashSet<UUID>();
+//
+//
+//        rootNode = CdmBase.deproxy(rootNode);
+//        rootNode.removeNullValueFromChildren();
+//        for (TaxonNode child: rootNode.getChildNodes()){
+//            child = CdmBase.deproxy(child);
+//            childrenUuids.add(child.getUuid());
+//        }
+//        Set<UUID> parentsNodesUUID = new HashSet<UUID>(childrenUuids);
+//        childrenUuids.clear();
+//        List<TaxonNode> childrenNodes = new ArrayList<TaxonNode>();
+//
+//        findChildren(state, childrenUuids, parentsNodesUUID);
+
+        IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+         @SuppressWarnings("unchecked")
+        TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
+          = TaxonNodeOutStreamPartitioner.NewInstance(
+                this, state, state.getConfig().getTaxonNodeFilter(),
+                100, monitor, null);
+
+
+            monitor.subTask("Start partitioning");
+//            List<HashMap<String,String>> nameRecords = new ArrayList<>();
+            TaxonNode node = partitioner.next();
+            while (node != null){
+              HashMap<String, String> nameRecord = createNewRecord(node, state);
+              if (nameRecord != null){
+                  nameRecords.add(nameRecord);
+              }
+              node = partitioner.next();
             }
-            classification = classifications.get(0);
-            rootNode = classification.getRootNode();
-        }
-        rootNode = getTaxonNodeService().load(rootNode.getUuid(), propertyPaths);
-        Set<UUID> childrenUuids = new HashSet<UUID>();
 
 
-        rootNode = CdmBase.deproxy(rootNode);
-        rootNode.removeNullValueFromChildren();
-        for (TaxonNode child: rootNode.getChildNodes()){
-            child = CdmBase.deproxy(child);
-            childrenUuids.add(child.getUuid());
-        }
-        Set<UUID> parentsNodesUUID = new HashSet<UUID>(childrenUuids);
-        childrenUuids.clear();
-        List<TaxonNode> childrenNodes = new ArrayList<TaxonNode>();
-
-        findChildren(state, childrenUuids, parentsNodesUUID);
 
 
-        List<HashMap<String,String>> nameRecords = new ArrayList<>();
-
-        childrenNodes = getTaxonNodeService().find(childrenUuids);
-        for(TaxonNode genusNode : childrenNodes)   {
-            nameRecords.add(createNewRecord(genusNode, state));
-            refreshTransaction();
-        }
+//        List<HashMap<String,String>> nameRecords = new ArrayList<>();
+//
+//        childrenNodes = getTaxonNodeService().find(childrenUuids);
+//        for(TaxonNode genusNode : childrenNodes)   {
+//            nameRecords.add(createNewRecord(genusNode, state));
+//            refreshTransaction();
+//        }
 
         return nameRecords;
 
     }
 
-    /**
-     * @param state
-     * @param childrenUuids
-     * @param parentsNodesUUID
-     * @param familyNode
-     */
-    private void findChildren(CsvNameExportState state, Set<UUID> childrenUuids, Set<UUID> parentsNodesUUID) {
-        TaxonName name;
-        List<TaxonNode> familyNodes = getTaxonNodeService().find(parentsNodesUUID);
-        parentsNodesUUID =new HashSet<>();
-        for (TaxonNode familyNode: familyNodes){
-            familyNode = CdmBase.deproxy(familyNode);
-            familyNode.removeNullValueFromChildren();
-            for (TaxonNode child: familyNode.getChildNodes()){
-                child = CdmBase.deproxy(child);
-                Taxon taxon = CdmBase.deproxy(child.getTaxon());
-                if (taxon != null){
-                    name = CdmBase.deproxy(taxon.getName());
-                    if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
-                        childrenUuids.add(child.getUuid());
-                        if (child.hasChildNodes()){
-                            parentsNodesUUID.add(child.getUuid());
-                        }
-                    }else{
-                        parentsNodesUUID.add(child.getUuid());
-                    }
-                }
-            }
-            //refreshTransaction();
-            if (!parentsNodesUUID.isEmpty()){
-                findChildren(state, childrenUuids, parentsNodesUUID);
-            }
-        }
-
-    }
+//    /**
+//     * @param state
+//     * @param childrenUuids
+//     * @param parentsNodesUUID
+//     * @param familyNode
+//     */
+//    private void findChildren(CsvNameExportState state, Set<UUID> childrenUuids, Set<UUID> parentsNodesUUID) {
+//        TaxonName name;
+//        List<TaxonNode> familyNodes = getTaxonNodeService().find(parentsNodesUUID);
+//        parentsNodesUUID =new HashSet<>();
+//        for (TaxonNode familyNode: familyNodes){
+//            familyNode = CdmBase.deproxy(familyNode);
+//            familyNode.removeNullValueFromChildren();
+//            for (TaxonNode child: familyNode.getChildNodes()){
+//                child = CdmBase.deproxy(child);
+//                Taxon taxon = CdmBase.deproxy(child.getTaxon());
+//                if (taxon != null){
+//                    name = CdmBase.deproxy(taxon.getName());
+//                    if (child.getTaxon().getName().getRank().isLower(state.getConfig().getRank()) ) {
+//                        childrenUuids.add(child.getUuid());
+//                        if (child.hasChildNodes()){
+//                            parentsNodesUUID.add(child.getUuid());
+//                        }
+//                    }else{
+//                        parentsNodesUUID.add(child.getUuid());
+//                    }
+//                }
+//            }
+//            //refreshTransaction();
+//            if (!parentsNodesUUID.isEmpty()){
+//                findChildren(state, childrenUuids, parentsNodesUUID);
+//            }
+//        }
+//
+//    }
 
 
 
@@ -247,17 +282,18 @@ public class CsvNameExport extends CsvNameExportBase {
         boolean isInvalidRel = false;
         for (NameRelationship nameRel: nameRelations){
            // NameRelationship nameRel = nameRelations.iterator().next();
-            IBotanicalName fromName = CdmBase.deproxy(nameRel.getFromName());
-
-            nameRel = CdmBase.deproxy(nameRel);
-            nameRelType = nameRel.getType().getTitleCache();
-            String relatedNameString = "";
-            if (fromName.equals(synonymName)){
-                relatedName = nameRel.getToName();
-            }else{
-                relatedName = nameRel.getFromName();
-            }
             if (!nameRel.getType().equals(NameRelationshipType.BASIONYM())){
+                IBotanicalName fromName = CdmBase.deproxy(nameRel.getFromName());
+
+                nameRel = CdmBase.deproxy(nameRel);
+                nameRelType = nameRel.getType().getTitleCache();
+                String relatedNameString = "";
+                if (fromName.equals(synonymName)){
+                    relatedName = nameRel.getToName();
+                }else{
+                    relatedName = nameRel.getFromName();
+                }
+
                 isInvalidRel = getStatus(relatedName);
                 relatedNameString = createTaggedNameString(relatedName, isInvalidRel&&isInvalid);
 
@@ -357,30 +393,30 @@ public class CsvNameExport extends CsvNameExportBase {
 
 
 
-    private List<TaxonNode> getGenusNodes (UUID classificationUUID){
-        Classification classification = getClassificationService().load(classificationUUID);
-        TaxonNode rootNode = classification.getRootNode();
-        rootNode = getTaxonNodeService().load(rootNode.getUuid());
-        Set<UUID> childrenUuids = new HashSet<>();
-
-        for (TaxonNode child: rootNode.getChildNodes()){
-            child = CdmBase.deproxy(child);
-            childrenUuids.add(child.getUuid());
-        }
-
-        List<TaxonNode> familyNodes = getTaxonNodeService().find(childrenUuids);
-        childrenUuids.clear();
-        List<TaxonNode> genusNodes = new ArrayList<>();
-        for (TaxonNode familyNode: familyNodes){
-            for (TaxonNode child: familyNode.getChildNodes()){
-                child = CdmBase.deproxy(child);
-                childrenUuids.add(child.getUuid());
-            }
-
-            genusNodes = getTaxonNodeService().find(childrenUuids);
-        }
-        return genusNodes;
-    }
+//    private List<TaxonNode> getGenusNodes (UUID classificationUUID){
+//        Classification classification = getClassificationService().load(classificationUUID);
+//        TaxonNode rootNode = classification.getRootNode();
+//        rootNode = getTaxonNodeService().load(rootNode.getUuid());
+//        Set<UUID> childrenUuids = new HashSet<>();
+//
+//        for (TaxonNode child: rootNode.getChildNodes()){
+//            child = CdmBase.deproxy(child);
+//            childrenUuids.add(child.getUuid());
+//        }
+//
+//        List<TaxonNode> familyNodes = getTaxonNodeService().find(childrenUuids);
+//        childrenUuids.clear();
+//        List<TaxonNode> genusNodes = new ArrayList<>();
+//        for (TaxonNode familyNode: familyNodes){
+//            for (TaxonNode child: familyNode.getChildNodes()){
+//                child = CdmBase.deproxy(child);
+//                childrenUuids.add(child.getUuid());
+//            }
+//
+//            genusNodes = getTaxonNodeService().find(childrenUuids);
+//        }
+//        return genusNodes;
+//    }
 
     private TaxonNode getHigherNode(TaxonNode node, Rank rank){
 
@@ -475,6 +511,9 @@ public class CsvNameExport extends CsvNameExportBase {
     private HashMap<String, String> createNewRecord(TaxonNode childNode, CsvNameExportState state){
         HashMap<String, String> nameRecord = new HashMap<>();
         nameRecord.put("classification", childNode.getClassification().getTitleCache());
+        if (!childNode.getTaxon().getName().getRank().isLower(Rank.GENUS())){
+            return null;
+        }
         TaxonNode familyNode = getHigherNode(childNode, Rank.FAMILY());
         Taxon taxon;
         String nameString;
@@ -487,42 +526,47 @@ public class CsvNameExport extends CsvNameExportBase {
             familyNode = CdmBase.deproxy(familyNode);
             familyNode.getTaxon().setProtectedTitleCache(true);
             nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
+            if (familyMap.get(familyNode.getTaxon().getUuid()) != null){
+                nameRecord.putAll(familyMap.get(familyNode.getTaxon().getUuid()));
+            }else{
+                taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid());
+                taxon = CdmBase.deproxy(taxon);
+                name = CdmBase.deproxy(taxon.getName());
+                nameRecord.put("familyName", name.getNameCache());
+                extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
+                familyMap.put(familyNode.getTaxon().getUuid(), nameRecord);
+            }
 
-            taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid());
-            taxon = CdmBase.deproxy(taxon);
-            //if publish flag is set
-
-            //  if (taxon.isPublish()){
-            name = CdmBase.deproxy(taxon.getName());
-            nameRecord.put("familyName", name.getNameCache());
-            extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
         }
         TaxonNode genusNode = getHigherNode(childNode, Rank.GENUS());
         if (genusNode!= null){
             genusNode = CdmBase.deproxy(genusNode);
             genusNode.getTaxon().setProtectedTitleCache(true);
             nameRecord.put("genusTaxon", genusNode.getTaxon().getTitleCache());
-
-            taxon = (Taxon)getTaxonService().load(genusNode.getTaxon().getUuid());
-            taxon = CdmBase.deproxy(taxon);
-            //if publish flag is set
-
-            //  if (taxon.isPublish()){
-            name = CdmBase.deproxy(taxon.getName());
-            if (name.getNameCache() != null){
-                nameRecord.put("genusName", name.getNameCache());
+            if (genusMap.get(genusNode.getTaxon().getUuid()) != null){
+                nameRecord.putAll(genusMap.get(genusNode.getTaxon().getUuid()));
             }else{
-                nameRecord.put("genusName", name.getGenusOrUninomial());
+                taxon = (Taxon)getTaxonService().load(genusNode.getTaxon().getUuid());
+                taxon = CdmBase.deproxy(taxon);
+                name = CdmBase.deproxy(taxon.getName());
+                if (name.getNameCache() != null){
+                    nameRecord.put("genusName", name.getNameCache());
+                }else{
+                    nameRecord.put("genusName", name.getGenusOrUninomial());
+                }
+                extractDescriptions(nameRecord, taxon,getNotesFeature(state), "descriptionsGen", state);
+                genusMap.put(genusNode.getTaxon().getUuid(), nameRecord);
             }
-            extractDescriptions(nameRecord, taxon,getNotesFeature(state), "descriptionsGen", state);
+
+
         }else{
             nameRecord.put("genusTaxon", null);
             nameRecord.put("genusName", null);
             nameRecord.put("descriptionsGen", null);
         }
 
-        taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
-        taxon = CdmBase.deproxy(taxon);
+//        taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
+        taxon = CdmBase.deproxy(childNode.getTaxon());
         //  if (taxon.isPublish()){
 
         INonViralName nonViralName = taxon.getName();
@@ -537,7 +581,7 @@ public class CsvNameExport extends CsvNameExportBase {
 
         getTaxonRelations(nameRecord, taxon);
 
-        name = CdmBase.deproxy(getNameService().load(taxon.getName().getUuid()));
+        name = CdmBase.deproxy(taxon.getName());
         nameRecord.put("childName",nameString);
         nameRecord.put("nameId", String.valueOf(name.getId()));
         nameRecord.put("nameCache", name.getNameCache());
@@ -721,12 +765,18 @@ public class CsvNameExport extends CsvNameExportBase {
                     if (relatedTaxon.getAppendedPhrase() != null){
                         appendedPhrase = relatedTaxon.getAppendedPhrase();
                     }
+                    if (appendedPhrase.equals("sphalm.")){
+                        String relNameString  = createTaggedNameString(relatedTaxon.getName(), getStatus(relatedTaxon.getName()));
+
+                        nameRecord.put("relatedName", relNameString);
+                        nameRecord.put("nameRelType", NameRelationshipType.ORTHOGRAPHIC_VARIANT().getTitleCache());
+                    }
                     if (secRef == null){
-                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase);
+                        nameString.append("<misapplied>" +"\u201C" + createTaggedNameString(relatedTaxon.getName(), false) + "\u201D " + appendedPhrase);
                     } else if (secRef.getAuthorship() == null){
-                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase + " sensu " + secRef.getTitleCache());
+                        nameString.append("<misapplied>"+"\u201C" + createTaggedNameString(relatedTaxon.getName(), false) + "\u201D " + appendedPhrase + " sensu " + secRef.getTitleCache());
                     } else {
-                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase + " sensu " + secRef.getAuthorship().getNomenclaturalTitle());
+                        nameString.append("<misapplied>\"" + createTaggedNameString(relatedTaxon.getName(), false) + "\" " + appendedPhrase + " sensu " + secRef.getAuthorship().getFullTitle());
                     }
 
                 }

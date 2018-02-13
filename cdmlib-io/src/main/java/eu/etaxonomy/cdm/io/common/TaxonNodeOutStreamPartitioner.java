@@ -164,9 +164,11 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
-            List<String> propertyPaths = null;
+            List<String> propertyPaths = new ArrayList<String>();
+            propertyPaths.add("taxon");
+            propertyPaths.add("taxon.name");
             partition = repository.getTaxonNodeService().loadByIds(partList, propertyPaths);
-            monitor.worked(partition.size() * 1);
+            monitor.worked(partition.size());
             currentPartition++;
             monitor.subTask(String.format("Writing partition %d/%d", currentPartition, (totalCount / partitionSize) +1 ));
         }

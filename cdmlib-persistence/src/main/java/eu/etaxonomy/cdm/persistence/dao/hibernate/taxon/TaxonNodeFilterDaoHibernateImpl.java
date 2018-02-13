@@ -292,7 +292,7 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
             String uuid = singleFilter.getUuid().toString();
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(tn.classification.uuid = '%s'))", result, op, uuid);
-//            System.out.println(result);
+            System.out.println(result);
             isFirst = false;
         }
         return result;
