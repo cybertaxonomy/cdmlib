@@ -26,10 +26,38 @@ public class TaxonNodeByRankAndNameComparator implements Serializable, Comparato
 	@Override
     public int compare(TaxonNode node1, TaxonNode node2) {
 
+	    boolean node1Excluded = node1.isExcluded();
+	    boolean node2Excluded = node2.isExcluded();
+	    boolean node1Unplaced = node1.isUnplaced();
+	    boolean node2Unplaced = node2.isUnplaced();
+
 
 		if (node1.getUuid().equals(node2.getUuid())){
 			return 0;
 		}
+		//They should both be put to the end (first unplaced then excluded)
+		if (node2Excluded && !node1Excluded){
+		    return -1;
+		}
+		if (node2Unplaced && !(node1Unplaced || node1Excluded)){
+		    return -1;
+		}
+
+		if (node1Excluded && !node2Excluded){
+            return 1;
+        }
+        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
+            return 1;
+        }
+
+        if (node1Unplaced && node2Excluded){
+            return -1;
+        }
+        if (node2Unplaced && node1Excluded){
+            return 1;
+        }
+
+
 		TaxonBase<?> taxon1 = node1.getTaxon();
 		TaxonBase<?> taxon2 = node2.getTaxon();
 

@@ -47,7 +47,7 @@ public abstract class DaoBase {
         try {
             session = factory.getCurrentSession();
         } catch (HibernateException e) {
-            logger.error("Opening new session in turn of a HibernateException: " + e.getMessage());
+            logger.error("Opening new session in turn of a HibernateException", e);
             session = factory.openSession();
         }
         return session;

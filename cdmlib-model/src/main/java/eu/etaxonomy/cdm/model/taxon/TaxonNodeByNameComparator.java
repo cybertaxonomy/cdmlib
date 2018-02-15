@@ -101,13 +101,13 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
                 INonViralName nonViralName = name;
                 if (nonViralName.getGenusOrUninomial() != null){
                     titleCache = nonViralName.getGenusOrUninomial();
-                    if (name.isSpecies() && nonViralName.getSpecificEpithet() != null){
+                    if ((name.isSpecies() || name.isInfraSpecific()) && nonViralName.getSpecificEpithet() != null){
                         titleCache = titleCache + " " + nonViralName.getSpecificEpithet();
                     }
                 	if (name.isInfraSpecific() && nonViralName.getSpecificEpithet() != null
                 			&& nonViralName.getInfraSpecificEpithet() != null){
                 		if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
-                		titleCache = titleCache + " " + nonViralName.getInfraSpecificEpithet();
+                		    titleCache = titleCache + " " + nonViralName.getInfraSpecificEpithet();
                 		if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
                 			titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
                 		}

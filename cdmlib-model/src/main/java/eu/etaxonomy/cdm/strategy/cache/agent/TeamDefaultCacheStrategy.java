@@ -81,6 +81,10 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		List<Person> teamMembers = team.getTeamMembers();
 		int i = 0;
 		for (Person teamMember : teamMembers){
+			if(teamMember == null){
+                // this can happen in UIs in the process of adding new members
+			    continue;
+			}
 			i++;
 			String concat = concatString(team, teamMembers, i);
 			result += concat + teamMember.getNomenclaturalTitle();
@@ -124,6 +128,10 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 
 		int i = 0;
 		for (Person teamMember : teamMembers){
+		    if(teamMember == null){
+                // this can happen in UIs in the process of adding new members
+                continue;
+            }
 			i++;
 			String concat = concatString(team, teamMembers, i);
 			result += concat + teamMember.getFullTitle();

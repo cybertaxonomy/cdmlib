@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>4.13.0</version>
+    <version>4.14.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -20,9 +20,9 @@
   -->
   <packaging>bundle</packaging>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-service/</url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-service.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-service.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-service/</url>
   </scm>
   <build>
     <plugins>

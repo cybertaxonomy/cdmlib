@@ -492,6 +492,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param queryStr
      * @return
      */
+    @SuppressWarnings("unchecked")
     private <T extends TaxonBase<?>> Set<T> setSecundum(Reference newSec, boolean emptyDetail, String queryStr) {
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
@@ -499,13 +500,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         MergeResult mergeResult;
         Set<T> result = new HashSet<>();
         for (T taxonBase : synonymList){
-            taxonBase = (T) taxonDao.load(taxonBase.getUuid());
-
-            taxonBase.setSec(newSec);
-            if (emptyDetail){
-                taxonBase.setSecMicroReference(null);
+            if (taxonBase != null){
+                taxonBase = (T) taxonDao.load(taxonBase.getUuid());
+                taxonBase.setSec(newSec);
+                if (emptyDetail){
+                    taxonBase.setSecMicroReference(null);
+                }
+               result.add(taxonBase);
             }
-           result.add(taxonBase);
 
         }
       return result;

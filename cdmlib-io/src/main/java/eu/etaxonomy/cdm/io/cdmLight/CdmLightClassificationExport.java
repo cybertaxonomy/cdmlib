@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
@@ -100,6 +101,13 @@ public class CdmLightClassificationExport
         this.ioName = this.getClass().getSimpleName();
 
     }
+
+    @Override
+    public long countSteps(CdmLightExportState state) {
+        TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
+        return taxonNodeService.count(filter);
+    }
+
 
     /**
      * {@inheritDoc}

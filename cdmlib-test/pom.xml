@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>4.13.0</version>
+    <version>4.14.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -12,9 +12,9 @@
   <name>CDM Integration Tests</name>
   <description>EDIT CDM library integration test layer. Some base classes and resources for CDM Library integration testing</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-test/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-test/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-test/</url>
+    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-test.git</connection>
+    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-test.git</developerConnection>
+    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-test/</url>
   </scm>
   <build>
     <plugins>

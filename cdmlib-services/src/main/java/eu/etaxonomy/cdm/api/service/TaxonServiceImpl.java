@@ -314,11 +314,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     @Transactional(readOnly = false)
     public UpdateResult changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference citation, String microcitation){
-        UpdateResult result = new UpdateResult();
         // Get name from synonym
         if (synonym == null){
             return null;
         }
+
+        UpdateResult result = new UpdateResult();
+
         TaxonName synonymName = synonym.getName();
 
       /*  // remove synonym from taxon

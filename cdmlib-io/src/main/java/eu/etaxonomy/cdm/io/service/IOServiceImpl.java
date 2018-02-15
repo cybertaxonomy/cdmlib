@@ -88,7 +88,7 @@ public class IOServiceImpl implements IIOService {
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
+        monitorThread.setPriority(2);
         monitorThread.start();
         return uuid;
     }

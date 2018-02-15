@@ -52,6 +52,10 @@ public interface ICdmBase {
 	 */
 	public void setCreated(DateTime created);
 
+	/**
+	 * @return The {@link User} who was authenticated when the entity was created.
+	 * Can be <code>null</code> if the entity has been created without any user authentication present.
+	 */
 	public User getCreatedBy();
 
 	public void setCreatedBy(User createdBy);
