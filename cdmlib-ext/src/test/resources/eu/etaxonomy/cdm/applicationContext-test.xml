@@ -16,41 +16,7 @@
 	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
-
-    <!--
-    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-            TermsDataSet-with_auditing_info.cdmlib-services.xml has different IDs than TermsDataSet-with_auditing_info.xml
-            which is used in persistence !!
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml"/>
-        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
-        <property name="omit" value="false"/>
-    </bean>
-    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-        <property name="omit" value="true"/>
-    </bean>
-    -->
-
-     <bean id="hibernateProperties"
-            class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-            <property name="properties">
-                <props>
-                    <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
-                    <prop key="hibernate.show_sql">false</prop>
-                    <prop key="hibernate.format_sql">false</prop>
-                    <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
-                    <!-- TODO trying to use a managed session context
-                    <prop key="hibernate.current_session_context_class">managed</prop>
-                    -->
-                    <prop key="hibernate.search.default.indexBase">./target/index</prop>
-                    <!--  hibernate.search.default.exclusive_index_use=false
-                          locks must not only be released after application shutdown in test environment -->
-                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
-                    <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
-                        due to which it is not possible to use batch updates, so we need to disable
-                        hibernate batching when using hsqldb in the app context: -->
-                    <prop key="hibernate.jdbc.batch_size">0</prop>
-                </props>
-            </property>
-    </bean>
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
 
 </beans>
