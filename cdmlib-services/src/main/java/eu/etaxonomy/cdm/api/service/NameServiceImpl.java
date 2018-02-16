@@ -194,7 +194,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     }
 
     @Override
-    @Transactional(readOnly = false)
+
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
     	if(typeDesignation!=null && typeDesignation.getId()!=0){
     		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
@@ -225,6 +225,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
 
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
         TypeDesignationBase typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
@@ -235,6 +236,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      * @param name
      * @param typeDesignation
      */
+    @Transactional
     private void removeSingleDesignation(TaxonName name, TypeDesignationBase typeDesignation) {
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
