@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * This class represents measurement units such as "centimeter" or "degree
- * Celsius".
+ * celsius".
  *
  * @author m.doering
  * @created 08-Nov-2007 13:06:34
@@ -92,24 +92,16 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 		return new MeasurementUnit(term, label, labelAbbrev);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
 	}
 
-
-
 	@Override
 	protected void setDefaultTerms(TermVocabulary<MeasurementUnit> termVocabulary) {
-		termMap = new HashMap<UUID, MeasurementUnit>();
+		termMap = new HashMap<>();
 		for (MeasurementUnit term : termVocabulary.getTerms()) {
 			termMap.put(term.getUuid(), term);
 		}
 	}
-
-
 }
