@@ -109,7 +109,7 @@ public class User extends CdmBase implements UserDetails {
     protected String username;
 
     /**
-     * a salted, MD5 encoded hash of the plaintext password
+     * a salted, MD5 encoded hash of the plain text password
      */
     @XmlElement(name = "Password")
     @NotAudited
@@ -175,7 +175,7 @@ public class User extends CdmBase implements UserDetails {
      */
     //FIXME made public as preliminary solution to #4053 (Transient field User.authorities not refreshed on reloading entity)
     public void initAuthorities() {
-        authorities = new HashSet<GrantedAuthority>();
+        authorities = new HashSet<>();
         authorities.addAll(grantedAuthorities);
         for(Group group : groups) {
             authorities.addAll(group.getGrantedAuthorities());
