@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 /**
- * This class may hold all prefrences data for a CDM database.
+ * This class may hold all preferences data for a CDM database.
  * E.g. one may store what the default nomenclatural code is,
  * or which default formatter (cache strategy) to use for a
  * certain class.
