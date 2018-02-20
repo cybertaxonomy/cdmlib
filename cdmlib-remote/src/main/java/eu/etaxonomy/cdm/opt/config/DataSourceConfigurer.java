@@ -40,6 +40,7 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
@@ -94,8 +95,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     /**
      * key for the spring environment to the datasource bean id aka instance name
+     * @deprecated use CdmConfigurationKeys.CDM_DATA_SOURCE_ID instead
      */
-    public static final String CDM_DATA_SOURCE_ID = "cdm.dataSource.id";
+    @Deprecated
+    public static final String CDM_DATA_SOURCE_ID = CdmConfigurationKeys.CDM_DATA_SOURCE_ID;
 
     /**
      * Attribute to configure the name of the data source as set as bean name in the datasources.xml.

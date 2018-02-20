@@ -1530,7 +1530,12 @@
         <groupId>ojdbc</groupId>
         <artifactId>ojdbc</artifactId>
         <version>14</version>
-    </dependency>   -->      
-    </dependencies>
+        </dependency>   -->      
+      <dependency>
+        <groupId>com.taskadapter</groupId>
+        <artifactId>redmine-java-api</artifactId>
+        <version>3.1.0</version>
+      </dependency>
+    </dependencies>    
   </dependencyManagement>
 </project>
