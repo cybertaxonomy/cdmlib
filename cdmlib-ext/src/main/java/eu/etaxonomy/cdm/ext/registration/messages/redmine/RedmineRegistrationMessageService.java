@@ -416,8 +416,9 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
         Issue issue = findIssue(registration);
         issue.setPriorityId(getPreferenceAsInt(RedminePreferenceKey.ISSUE_PRIORITIY_INACTIVE_ID));
-        // issue.setAssigneeId(null); // the redmine api will not reset the assigne id when the json value null is submitted
-        // it must be set to the empty string though: ""
+        // issue.setAssigneeId(null); // the redmine api will not reset the assignee id when the json value null is submitted
+        // it must be set to the empty string though: "", see https://github.com/taskadapter/redmine-java-api/issues/306
+        // see RedmineTransportAccessor
         try {
         RedmineTransportAccessor transport = new RedmineTransportAccessor(redmineManager());
         URI uri = new URI(getPreference(RedminePreferenceKey.REDMINE_URL)
