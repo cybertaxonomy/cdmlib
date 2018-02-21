@@ -729,7 +729,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         String queryString = "FROM SpecimenTypeDesignation designations WHERE designations.typeSpecimen = :specimen";
 
         if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
+            queryString += " ORDER BY ";
             String orderStr = "";
             for(OrderHint orderHint : orderHints){
                 if(orderStr.length() > 0){
@@ -752,7 +752,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             query.setMaxResults(limit);
         }
 
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<SpecimenTypeDesignation> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
