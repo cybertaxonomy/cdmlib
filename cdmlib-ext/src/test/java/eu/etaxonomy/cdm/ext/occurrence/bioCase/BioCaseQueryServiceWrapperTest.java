@@ -59,7 +59,9 @@ public class BioCaseQueryServiceWrapperTest {
                         break;
                     }
                     if(line!=null){
-                        System.out.println(line);
+                        if(logger.isTraceEnabled()){
+                            System.out.println(line);
+                        }
                         String recordAttr = "recordCount=\"";
                         int index = line.indexOf(recordAttr);
                         if(index>-1){
@@ -108,7 +110,9 @@ public class BioCaseQueryServiceWrapperTest {
                         break;
                     }
                     if(line!=null){
-                        System.out.println(line);
+                        if(logger.isTraceEnabled()){
+                            System.out.println(line);
+                        }
                         String recordAttr = "recordCount=\"";
                         int index = line.indexOf(recordAttr);
                         if(index>-1){
@@ -145,7 +149,9 @@ public class BioCaseQueryServiceWrapperTest {
                         break;
                     }
                     if(line!=null){
-                        System.out.println(line);
+                        if(logger.isTraceEnabled()){
+                            System.out.println(line);
+                        }
                         String recordAttr = "recordCount=\"";
                         int index = line.indexOf(recordAttr);
                         if(index>-1){
