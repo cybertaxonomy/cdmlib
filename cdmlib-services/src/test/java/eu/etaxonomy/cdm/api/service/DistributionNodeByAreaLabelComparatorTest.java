@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public class DistributionNodeByAreaLabelComparatorTest extends TermTestBase {
 
-    private static DistributionNodeByAreaLabelComparator comparator;
+    private static DistributionNodeByAreaLabelComparator comparator = new DistributionNodeByAreaLabelComparator();
 
 
     @Test
