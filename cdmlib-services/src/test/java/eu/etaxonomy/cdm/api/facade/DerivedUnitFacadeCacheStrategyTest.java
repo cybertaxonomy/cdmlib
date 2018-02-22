@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import java.io.FileNotFoundException;
-
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,14 +35,14 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @date 03.06.2010
  *
  */
-public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
+public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
 
@@ -96,15 +94,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
 //****************************** SET UP *****************************************/
 
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@BeforeClass
-//	public static void setUpBeforeClass() throws Exception {
-//		// FIXME maybe this will cause problems in other tests
-//		// INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
-//		new DefaultTermInitializer().initialize();
-//	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -214,6 +203,4 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
         Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
     }
 
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {}
 }

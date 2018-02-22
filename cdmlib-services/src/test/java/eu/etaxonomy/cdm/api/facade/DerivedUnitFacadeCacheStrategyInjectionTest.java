@@ -120,15 +120,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 
 //****************************** SET UP *****************************************/
 
-//     /**
-//      * @throws java.lang.Exception
-//      */
-//     @BeforeClass
-//     public static void setUpBeforeClass() throws Exception {
-//         // FIXME maybe this will cause problems in other tests
-//         // INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
-//         new DefaultTermInitializer().initialize();
-//     }
 
 	/**
 	 * @throws java.lang.Exception
