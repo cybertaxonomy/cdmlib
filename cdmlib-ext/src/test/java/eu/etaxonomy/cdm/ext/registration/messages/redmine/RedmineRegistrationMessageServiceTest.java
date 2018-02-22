@@ -7,9 +7,11 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.ext.registration.messages.redmine;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -198,6 +200,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
             String messageText1 = "hey submitter how is life in a test environment?";
             messageService.postMessage(reg, messageText1, curator, submitter);
             issue = messageService.findIssue(reg);
+            assertTrue(issue.isPrivateIssue());
             redmineCurator = messageService.findUser(curator);
             redmineSubmitter = messageService.findUser(submitter);
             assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());

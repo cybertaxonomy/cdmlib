@@ -479,6 +479,8 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
         issue.setAssigneeId(redmineSubmitter.getId());
 
+        issue.setPrivateIssue(true);
+
         CustomField customFieldIdentifier = CustomFieldFactory.create(getPreferenceAsInt(RedminePreferenceKey.CUSTOM_FIELD_IDENTIFIER_ID));
         customFieldIdentifier.setValue(registration.getIdentifier());
         issue.addCustomField(customFieldIdentifier);
