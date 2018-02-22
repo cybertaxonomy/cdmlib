@@ -985,9 +985,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
         groups.add(new Grouping("name.genusOrUninomial", "genus", "n", SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
-        System.out.println("count\tname.genuOrUninomial");
-        for(Object[] result : results) {
-            System.out.println(result[0] + "\t" + result[1]);
+        if(logger.isTraceEnabled()){
+            System.out.println("count\tname.genuOrUninomial");
+            for(Object[] result : results) {
+                System.out.println(result[0] + "\t" + result[1]);
+            }
         }
     }
 
@@ -998,9 +1000,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
         groups.add(new Grouping("class", "class",null, SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
-        System.out.println("count\tclass");
-        for(Object[] result : results) {
-            System.out.println(result[0] + "\t" + result[1]);
+        if(logger.isTraceEnabled()){
+            System.out.println("count\tclass");
+            for(Object[] result : results) {
+                System.out.println(result[0] + "\t" + result[1]);
+            }
         }
     }
 
@@ -1011,9 +1015,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
 
         List<TaxonBase> results = taxonDao.list(null, null, orderHints);
-        System.out.println("native SQL order");
-        for(TaxonBase<?> result : results) {
-            System.out.println(result.getTitleCache());
+        if(logger.isTraceEnabled()){
+            System.out.println("native SQL order");
+            for(TaxonBase<?> result : results) {
+                System.out.println(result.getTitleCache());
+            }
         }
     }
 
@@ -1024,9 +1030,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         groups.add(new GroupByCount("count",null));
         groups.add(new GroupByDate("created", "dateGroup", SortOrder.ASCENDING, GroupByDate.Resolution.MONTH));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
-        System.out.println("count\tyear\tmonth");
-        for(Object[] result : results) {
-            System.out.println(result[0] + "\t" + result[1] + "\t" + result[2]);
+        if(logger.isTraceEnabled()){
+            System.out.println("count\tyear\tmonth");
+            for(Object[] result : results) {
+                System.out.println(result[0] + "\t" + result[1] + "\t" + result[2]);
+            }
         }
     }
 
