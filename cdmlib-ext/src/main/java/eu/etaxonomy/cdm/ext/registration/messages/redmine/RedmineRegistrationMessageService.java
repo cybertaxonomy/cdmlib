@@ -154,6 +154,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
     }
 
 
+    @Override
     public void postMessage(Registration registration, String message, User fromUser, User toUser)  throws ExternalServiceException {
 
         Issue issue = findIssue(registration);
@@ -186,6 +187,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
     }
 
+    @Override
     @Transactional(readOnly=true) // allow the users being loaded from the session
     public List<Message> listMessages(Registration registration)  throws ExternalServiceException {
 
@@ -287,6 +289,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
      * @return
      * @throws ExternalServiceException
      */
+    @Override
     public List<Message> listActiveMessagesFor(Registration registration, User user) throws ExternalServiceException {
         return listMessages(registration, user);
     }
@@ -298,6 +301,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
      * @return
      * @throws ExternalServiceException
      */
+    @Override
     public int countActiveMessagesFor(Registration registration, User user) throws ExternalServiceException {
 
         return listMessages(registration, user).size();
@@ -402,6 +406,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         }
     }
 
+    @Override
     public void updateIssueStatus(Registration registration) throws ExternalServiceException {
 
         Issue issue = findIssue(registration);
@@ -414,6 +419,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         }
     }
 
+    @Override
     public void inactivateMessages(Registration registration) throws ExternalServiceException {
 
         Issue issue = findIssue(registration);
@@ -433,6 +439,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
     }
 
+    @Override
     public void activateMessagesFor(Registration registration, User user) throws ExternalServiceException {
 
         com.taskadapter.redmineapi.bean.User redmineUser = findUser(user);
