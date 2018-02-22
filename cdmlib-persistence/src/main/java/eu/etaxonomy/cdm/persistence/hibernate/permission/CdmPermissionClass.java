@@ -46,6 +46,7 @@ public enum CdmPermissionClass {
     MEDIA,
     MEDIAREPRESENTATION,
     MEDIAREPRESENTATIONPART,
+    REPRESENTATION
     ;
 
 
