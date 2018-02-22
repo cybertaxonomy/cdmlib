@@ -25,7 +25,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,10 +43,11 @@ import com.taskadapter.redmineapi.bean.UserFactory;
 import com.taskadapter.redmineapi.bean.WatcherFactory;
 import com.taskadapter.redmineapi.internal.ResultsWrapper;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.config.ApplicationConfiguration;
 import eu.etaxonomy.cdm.api.config.ApplicationConfigurationFile;
 import eu.etaxonomy.cdm.api.config.CdmConfigurationFileNames;
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.ext.common.ExternalServiceException;
 import eu.etaxonomy.cdm.ext.registration.messages.IRegistrationMessageService;
 import eu.etaxonomy.cdm.ext.registration.messages.Message;
@@ -78,8 +78,10 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
     ApplicationConfiguration appConfig;
 
     @Autowired
-    @Qualifier("cdmRepository")
-    ICdmRepository api;
+    IUserService userService;
+
+    @Autowired
+    ITermService termService;
 
     static final String PROPERTIES_FILE_NAME = CdmConfigurationFileNames.SERVICES_EXTERNAL;
 
@@ -269,7 +271,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
             // primarily users are synchronized via the redmine user id which is stored in the
             // user.person extensions, but login names are also kept in sync so we can use
             // the login to load the users, this way it is more direct and thus faster:
-            UserDetails userDetails = api.getUserService().loadUserByUsername(login);
+            UserDetails userDetails = userService.loadUserByUsername(login);
             if(userDetails != null){
                 userMap.put(redmineUserID, (User)userDetails);
             }
@@ -340,7 +342,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
             }
 
             Extension.NewInstance(person, Integer.toString(redmineUser.getId()), registrationMessageRedmineUserIDExtendsionType());
-            api.getUserService().saveOrUpdate(user);
+            userService.saveOrUpdate(user);
         } catch (RedmineException e) {
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
@@ -375,7 +377,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
     protected com.taskadapter.redmineapi.bean.User findUser(User user) throws ExternalServiceException {
 
-        User submitterReloaded = api.getUserService().load(user.getUuid(), Arrays.asList("person.extensions.$"));
+        User submitterReloaded = userService.load(user.getUuid(), Arrays.asList("person.extensions.$"));
         Person person = HibernateProxyHelper.deproxyOrNull(submitterReloaded.getPerson());
 
         if(person == null){
@@ -527,11 +529,11 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
     private ExtensionType registrationMessageRedmineUserIDExtendsionType(){
 
-        ExtensionType extType = (ExtensionType) api.getTermService().load(EXTTYPE_REGMESG_REDMINEUID_UUID);
+        ExtensionType extType = (ExtensionType) termService.load(EXTTYPE_REGMESG_REDMINEUID_UUID);
         if(extType == null){
             extType = ExtensionType.NewInstance("RegistrationMessageService RedmineUserID", "RegistrationMessageService RedmineUserID", "RegMesg_RedmineUID");
             extType.setUuid(EXTTYPE_REGMESG_REDMINEUID_UUID);
-            api.getTermService().save(extType);
+            termService.save(extType);
         }
         return extType;
     }

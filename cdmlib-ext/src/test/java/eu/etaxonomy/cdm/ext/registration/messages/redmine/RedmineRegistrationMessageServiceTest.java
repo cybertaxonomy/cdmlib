@@ -15,16 +15,20 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.bean.Issue;
 
-import eu.etaxonomy.cdm.api.application.CdmRepository;
+import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IRegistrationService;
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.ext.common.ExternalServiceException;
 import eu.etaxonomy.cdm.ext.registration.messages.Message;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -57,8 +61,20 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
     private static final int REGISTRATION_ID = 5000;
 
-    @SpringBeanByName
-    private CdmRepository cdmRepository;
+    @SpringBeanByType
+    IUserService userService;
+
+    @SpringBeanByType
+    ITermService termService;
+
+    @SpringBeanByType
+    IReferenceService referenceService;
+
+    @SpringBeanByType
+    IRegistrationService registrationService;
+
+    @SpringBeanByType
+    INameService nameService;
 
     @SpringBeanByType
     private RedmineRegistrationMessageService messageService;
@@ -69,12 +85,26 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
             "USERACCOUNT",
             "HIBERNATE_SEQUENCES"};
 
+    @Before
+    public void cleanupRedmine() throws RedmineException{
+
+        nameService.getSession().clear();
+
+        for(com.taskadapter.redmineapi.bean.User user: messageService.redmineManager().getUserManager().getUsers()){
+            if(user.getLogin().equals(SUBMITTER) || user.getLogin().equals(CURATOR)){
+                messageService.redmineManager().getUserManager().deleteUser(user.getId());
+            }
+        }
+//                for(Object issue: messageService.redmineManager().getIssueManager().getIssues(null)){
+//                    ...
+//                }
+    }
 
     @Test
     @DataSet
     public void testCreateUser() throws RedmineException, ExternalServiceException{
 
-        User submitter = (User) cdmRepository.getUserService().loadUserByUsername(SUBMITTER);
+        User submitter = (User) userService.loadUserByUsername(SUBMITTER);
 
         com.taskadapter.redmineapi.bean.User createdUser = null;
         try {
@@ -84,7 +114,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
             assertEquals(submitter.getUsername(), createdUser.getLogin());
             assertNotNull(createdUser.getId());
 
-            User submitterReloaded = cdmRepository.getUserService().load(submitter.getUuid(), Arrays.asList("person.extensions.$"));
+            User submitterReloaded = userService.load(submitter.getUuid(), Arrays.asList("person.extensions.$"));
             assertEquals(1, submitterReloaded.getPerson().getExtensions().size());
             Extension extension = submitterReloaded.getPerson().getExtensions().iterator().next();
             assertEquals(RedmineRegistrationMessageService.EXTTYPE_REGMESG_REDMINEUID_UUID, extension.getType().getUuid());
@@ -111,17 +141,18 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
         Issue issue = null;
 
-        User submitter = (User) cdmRepository.getUserService().loadUserByUsername(SUBMITTER);
+        User submitter = (User) userService.loadUserByUsername(SUBMITTER);
 
-        User curator = (User) cdmRepository.getUserService().loadUserByUsername(CURATOR);
-        if(!(submitter.getEmailAddress().equals("submitter@localhost") &&  curator.getEmailAddress().equals("curator@localhost"))){
-            throw new AssertionError("Email adresses must be '" + SUBMITTER + EMAIL_DOMAIN + "' and '" + CURATOR + EMAIL_DOMAIN + "',"
-                    + " for futher information please refer to https://dev.e-taxonomy.eu/redmine/issues/7280");
-        }
-
+        User curator = (User) userService.loadUserByUsername(CURATOR);
         try {
 
-            Registration reg = cdmRepository.getRegistrationService().load(REGISTRATION_ID, Arrays.asList("$"));
+            if(!(submitter.getEmailAddress().equals(SUBMITTER + EMAIL_DOMAIN) &&  curator.getEmailAddress().equals(CURATOR + EMAIL_DOMAIN ))){
+                throw new AssertionError("Email adresses must be '" + SUBMITTER + EMAIL_DOMAIN + "' and '" + CURATOR + EMAIL_DOMAIN + "',"
+                        + " for futher information please refer to https://dev.e-taxonomy.eu/redmine/issues/7280");
+            }
+
+
+            Registration reg = registrationService.load(REGISTRATION_ID, Arrays.asList("$"));
             issue = messageService.createIssue(reg);
             reg.setStatus(RegistrationStatus.READY);
             messageService.updateIssueStatus(reg);
@@ -146,11 +177,11 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
     @DataSet
     public void testMessageWorkflow() throws RedmineException, ExternalServiceException{
 
-        User submitter = (User) cdmRepository.getUserService().loadUserByUsername(SUBMITTER);
+        User submitter = (User) userService.loadUserByUsername(SUBMITTER);
 
-        User curator = (User) cdmRepository.getUserService().loadUserByUsername(CURATOR);
+        User curator = (User) userService.loadUserByUsername(CURATOR);
 
-        Registration reg = cdmRepository.getRegistrationService().load(REGISTRATION_ID, Arrays.asList("$"));
+        Registration reg = registrationService.load(REGISTRATION_ID, Arrays.asList("$"));
 
         assertNotNull(reg.getIdentifier());
         assertNotNull(reg.getSubmitter());
@@ -251,23 +282,23 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         User curator = User.NewInstance("Curator", CURATOR, "geheim");
         curator.setEmailAddress(CURATOR + EMAIL_DOMAIN);
 
-        submitter = cdmRepository.getUserService().save(submitter);
-        cdmRepository.getUserService().save(curator);
+        submitter = userService.save(submitter);
+        userService.save(curator);
 
         Team team = Team.NewTitledInstance("Novis, Braidwood & Kilroy", "Novis, Braidwood & Kilroy");
         Reference nomRef = ReferenceFactory.newArticle();
-        nomRef = cdmRepository.getReferenceService().save(nomRef);
+        nomRef = referenceService.save(nomRef);
 
         nomRef.setAuthorship(team);
         nomRef.setTitle("P.M. Novis, J. Braidwood & C. Kilroy, Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64");
         TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Planothidium", null,  "victori", null, null, nomRef, "11-45", null);
-        name = cdmRepository.getNameService().save(name);
+        name = nameService.save(name);
 
         Registration reg = Registration.NewInstance();
         reg.setName(name);
         reg.setSubmitter(submitter);
         reg.setIdentifier("http://phycotest.com/10815");
-        reg = cdmRepository.getRegistrationService().save(reg);
+        reg = registrationService.save(reg);
 
 
         //printDataSetWithNull(System.err, includeTableNames_create);
