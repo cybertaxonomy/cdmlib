@@ -63,7 +63,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
     private static final String SUBMITTER = "submitter";
 
-    private static final String EMAIL_DOMAIN = "@edit-test.bgbm.fu-berlin.de";
+    private static final String EMAIL_DOMAIN = "@localhost.bgbm.fu-berlin.de";
 
 
     private static final int REGISTRATION_ID = 5000;
