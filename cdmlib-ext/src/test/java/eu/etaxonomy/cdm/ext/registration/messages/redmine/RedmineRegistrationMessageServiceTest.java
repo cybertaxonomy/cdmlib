@@ -172,7 +172,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         issue = messageService.createIssue(reg);
         reg.setStatus(RegistrationStatus.READY);
         messageService.updateIssueStatus(reg);
-        issue = messageService.findIssue(reg);
+        issue = messageService.findIssue(reg, false);
         assertEquals("ready", issue.getStatusName());
 
 
@@ -202,7 +202,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         // post a message, this will create an issue and will add a comment
         String messageText1 = "hey submitter how is life in a test environment?";
         messageService.postMessage(reg, messageText1, curator, submitter);
-        issue = messageService.findIssue(reg);
+        issue = messageService.findIssue(reg, false);
         assertTrue(issue.isPrivateIssue());
         redmineCurator = messageService.findUser(curator);
         redmineSubmitter = messageService.findUser(submitter);
@@ -213,7 +213,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         // 2. post a message back to curator
         String messageText2 = "pretty boring in here. It is horrible. If you know a way out of here, please help!";
         messageService.postMessage(reg, messageText2, submitter, curator);
-        issue = messageService.findIssue(reg);
+        issue = messageService.findIssue(reg, false);
         assertEquals(redmineCurator.getId(), issue.getAssigneeId());
         assertEquals(1, messageService.countActiveMessagesFor(reg, curator));
         assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
@@ -221,14 +221,14 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         // 3. post a message back submitter
         String messageText3 = "Dear Submitter, the only solution it to end this test, hold on, just a millisec ...";
         messageService.postMessage(reg, messageText3, curator, submitter);
-        issue = messageService.findIssue(reg);
+        issue = messageService.findIssue(reg, false);
         assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
         assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
         assertEquals(2, messageService.countActiveMessagesFor(reg, submitter));
 
         // 4. inactivate messages
         messageService.inactivateMessages(reg);
-        issue = messageService.findIssue(reg);
+        issue = messageService.findIssue(reg, false);
         assertNull(issue.getAssigneeName());
         assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
         assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
@@ -239,7 +239,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         // 5. registration becomes rejected
         reg.setStatus(RegistrationStatus.REJECTED);
         messageService.updateIssueStatus(reg);
-        issue = messageService.findIssue(reg);
+        issue = messageService.findIssue(reg, false);
         assertEquals("rejected", issue.getStatusName());
 
         // 6. check all the messages in this issue

@@ -157,7 +157,11 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
     @Override
     public void postMessage(Registration registration, String message, User fromUser, User toUser)  throws ExternalServiceException {
 
-        Issue issue = findIssue(registration);
+
+        String methodName = ">>> postMessage";
+        Long start = startTimer(methodName);
+
+        Issue issue = findIssue(registration, true);
 
         if(issue == null){
             issue = createIssue(registration);
@@ -166,7 +170,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
             issue.setPriorityId(getPreferenceAsInt(RedminePreferenceKey.ISSUE_PRIORITIY_ACTIVE_ID));
         }
 
-        issue = activateIssueFor(registration, toUser);
+        activateIssueFor(registration, toUser, issue);
 
         com.taskadapter.redmineapi.bean.User redmineFromUser = findUser(fromUser);
         if(redmineFromUser == null){
@@ -203,6 +207,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
 
+        logTime(start, methodName);
 
     }
 
@@ -221,9 +226,13 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
      * @throws ExternalServiceException
      */
     protected List<Message> listMessages(Registration registration, User toUser) throws ExternalServiceException {
+
+        String methodName = "listMessages";
+        Long start = startTimer(methodName);
+
         ArrayList<Message> messages = new ArrayList<>();
 
-        Issue issue = findIssue(registration);
+        Issue issue = findIssue(registration, false);
         Map<Integer, User> userMap = new HashMap<>();
 
         if(issue == null){
@@ -268,6 +277,8 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
                 return o1.getId().compareTo(o2.getId());
             }
         });
+
+        logTime(start, methodName);
 
         return messages;
     }
@@ -334,6 +345,9 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
      */
     protected com.taskadapter.redmineapi.bean.User createUser(User user) throws ExternalServiceException{
 
+        String methodName = "createUser";
+        Long start = startTimer(methodName);
+
         com.taskadapter.redmineapi.bean.User redmineUser = UserFactory.create();
         redmineUser.setLogin(user.getUsername());
         redmineUser.setMail(user.getEmailAddress());
@@ -366,6 +380,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
             Extension.NewInstance(person, Integer.toString(redmineUser.getId()), registrationMessageRedmineUserIDExtendsionType());
             userService.saveOrUpdate(user);
+            logTime(start, methodName);
         } catch (RedmineException e) {
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
@@ -400,6 +415,9 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
     protected com.taskadapter.redmineapi.bean.User findUser(User user) throws ExternalServiceException {
 
+        String methodName = "findUser";
+        Long start = startTimer(methodName);
+
         User submitterReloaded = userService.load(user.getUuid(), Arrays.asList("person.extensions.$"));
         Person person = HibernateProxyHelper.deproxyOrNull(submitterReloaded.getPerson());
 
@@ -419,7 +437,10 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         }
 
         try {
-            return redmineManager().getUserManager().getUserById(Integer.valueOf(exts.iterator().next()));
+            com.taskadapter.redmineapi.bean.User redmineUser = redmineManager().getUserManager().getUserById(Integer.valueOf(exts.iterator().next()));
+
+            logTime(start, methodName);
+            return redmineUser;
         } catch (RedmineException e) {
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
@@ -428,11 +449,15 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
     @Override
     public void updateIssueStatus(Registration registration) throws ExternalServiceException {
 
-        Issue issue = findIssue(registration);
+        String methodName = "updatedIsseStatus";
+        Long start = startTimer(methodName);
+
+        Issue issue = findIssue(registration, false);
         issue.setStatusId(statusIdFrom(registration.getStatus()));
 
         try {
             redmineManager().getIssueManager().update(issue);
+            logTime(start, methodName);
         } catch (RedmineException e) {
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
@@ -441,7 +466,10 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
     @Override
     public void inactivateMessages(Registration registration) throws ExternalServiceException {
 
-        Issue issue = findIssue(registration);
+        String methodName = ">>> inactivateMessages";
+        Long start = startTimer(methodName);
+
+        Issue issue = findIssue(registration, false);
         issue.setPriorityId(getPreferenceAsInt(RedminePreferenceKey.ISSUE_PRIORITIY_INACTIVE_ID));
         // issue.setAssigneeId(null); // the redmine api will not reset the assignee id when the json value null is submitted
         // it must be set to the empty string though: "", see https://github.com/taskadapter/redmine-java-api/issues/306
@@ -456,39 +484,91 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
 
+        logTime(start, methodName);
+
+    }
+
+    /**
+     * @param start
+     */
+    protected void logTime(Long start, String methodName) {
+        if(start != null){
+            logger.debug("time elapsed for " + methodName + "() " + (System.currentTimeMillis() - start) + "ms");
+        }
+    }
+
+    /**
+     * @param start
+     * @return
+     */
+    protected Long startTimer(String methodName) {
+        Long start = null;
+        if(logger.isDebugEnabled()){
+            logger.debug("timer start for " + methodName + "()" );
+            start = System.currentTimeMillis();
+        }
+        return start;
     }
 
     @Override
     public void activateMessagesFor(Registration registration, User user) throws ExternalServiceException {
 
-        activateIssueFor(registration, user);
+        activateIssueFor(registration, user, null);
 
     }
 
     /**
      * @param registration
      * @param user
+     * @param issueToUpdate this issue should include the watchers already. <b>The issue will not be saved </b> at the end of this method if this parameter is passed.
      * @throws ExternalServiceException
      */
-    protected Issue activateIssueFor(Registration registration, User user) throws ExternalServiceException {
+    protected Issue activateIssueFor(Registration registration, User user, Issue issueToUpdate) throws ExternalServiceException {
+
+        String methodName = "activateIssueFor";
+        Long start = startTimer(methodName);
+
         com.taskadapter.redmineapi.bean.User redmineUser = findUser(user);
         if(redmineUser == null){
             redmineUser = createUser(user);
         }
-        Issue issue = findIssue(registration);
-        issue.setPriorityId(getPreferenceAsInt(RedminePreferenceKey.ISSUE_PRIORITIY_ACTIVE_ID));
-        issue.setAssigneeId(redmineUser.getId());
-        issue.addWatchers(Arrays.asList(WatcherFactory.create(redmineUser.getId())));
+        Issue issue;
+        if(issueToUpdate == null){
+            issue = findIssue(registration, true);
+        } else {
+            issue = issueToUpdate;
 
-        try {
-            redmineManager().getIssueManager().update(issue);
-        } catch (RedmineException e) {
-            throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
+        boolean needsUpdate = false;
+        if(issue.getPriorityId() == null || issue.getPriorityId() != getPreferenceAsInt(RedminePreferenceKey.ISSUE_PRIORITIY_ACTIVE_ID)){
+            issue.setPriorityId(getPreferenceAsInt(RedminePreferenceKey.ISSUE_PRIORITIY_ACTIVE_ID));
+            needsUpdate = true;
+        }
+        if(issue.getAssigneeId() == null || issue.getAssigneeId() != redmineUser.getId()) {
+            issue.setAssigneeId(redmineUser.getId());
+            needsUpdate = true;
+        }
+        if(!issue.getWatchers().contains(redmineUser.getId())){
+            issue.addWatchers(Arrays.asList(WatcherFactory.create(redmineUser.getId())));
+            needsUpdate = true;
+        }
+
+        if(needsUpdate && issueToUpdate == null){
+            try {
+                redmineManager().getIssueManager().update(issue);
+            } catch (RedmineException e) {
+                throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
+            }
+        }
+        logTime(start, methodName);
         return issue;
     }
 
     protected Issue createIssue(Registration registration) throws ExternalServiceException {
+
+
+        String methodName = "createIssue";
+        Long start = startTimer(methodName);
 
         com.taskadapter.redmineapi.bean.User redmineSubmitter = findUser(registration.getSubmitter());
         if(redmineSubmitter == null){
@@ -508,6 +588,8 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
         issue.setAssigneeId(redmineSubmitter.getId());
 
+        issue.addWatchers(Arrays.asList(WatcherFactory.create(redmineSubmitter.getId())));
+
         issue.setPrivateIssue(true);
 
         CustomField customFieldIdentifier = CustomFieldFactory.create(getPreferenceAsInt(RedminePreferenceKey.CUSTOM_FIELD_IDENTIFIER_ID));
@@ -519,7 +601,9 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         issue.addCustomField(customFieldSubmitter);
 
         try {
-            return redmineManager().getIssueManager().createIssue(issue);
+            issue = redmineManager().getIssueManager().createIssue(issue);
+            logTime(start, methodName);
+            return issue;
         } catch (RedmineException e) {
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), e);
         }
@@ -546,7 +630,10 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         }
     }
 
-    protected Issue findIssue(Registration registration) throws ExternalServiceException {
+    protected Issue findIssue(Registration registration, boolean withWathchers) throws ExternalServiceException {
+
+        String methodName = "findIssue";
+        Long start = startTimer(methodName);
 
         Map<String, String>params = new HashMap<>();
         params.put("status_id", "*"); // * to get open and closed issues
@@ -557,7 +644,14 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
                 return null;
             }
             if(issues.getResults().size() == 1){
-                return redmineManager().getIssueManager().getIssueById(issues.getResults().get(0).getId(), Include.journals);
+                Issue issue;
+                if(withWathchers){
+                    issue = redmineManager().getIssueManager().getIssueById(issues.getResults().get(0).getId(), Include.journals, Include.watchers);
+                } else {
+                    issue = redmineManager().getIssueManager().getIssueById(issues.getResults().get(0).getId(), Include.journals);
+                }
+                logTime(start, methodName);
+                return issue;
             }
             throw new ExternalServiceException(getPreference(RedminePreferenceKey.REDMINE_URL), "Multiple Issues found for " + registration.getIdentifier() );
         } catch (RedmineException e) {
