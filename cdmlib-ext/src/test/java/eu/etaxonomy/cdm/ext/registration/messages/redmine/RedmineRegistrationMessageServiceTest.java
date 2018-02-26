@@ -15,7 +15,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,13 +27,16 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.internal.ResultsWrapper;
 
+import eu.etaxonomy.cdm.SpringProxyBeanHelper;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.ext.common.ExternalServiceException;
+import eu.etaxonomy.cdm.ext.registration.messages.IRegistrationMessageService;
 import eu.etaxonomy.cdm.ext.registration.messages.Message;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Extension;
@@ -78,8 +83,14 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
     @SpringBeanByType
     INameService nameService;
 
-    @SpringBeanByType
     private RedmineRegistrationMessageService messageService;
+
+    @SpringBeanByType
+    public void setIRegistrationMessageService(IRegistrationMessageService messageService) throws Exception {
+
+        this.messageService = SpringProxyBeanHelper.getTargetObject(messageService, RedmineRegistrationMessageService.class);
+
+    }
 
 
     private final String[] includeTableNames_create = new String[]{
@@ -97,9 +108,19 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
                 messageService.redmineManager().getUserManager().deleteUser(user.getId());
             }
         }
-//                for(Object issue: messageService.redmineManager().getIssueManager().getIssues(null)){
-//                    ...
-//                }
+        Map<String,String> params = new HashMap<>();
+        params.put("offset", "0");
+        params.put("limit", "100");
+        params.put("status_id", "*"); // * to get open and closed issues
+       while(true){
+           ResultsWrapper<Issue> result = messageService.redmineManager().getIssueManager().getIssues(params);
+           if(result.getResultsNumber() == 0){
+               break;
+           }
+           for(Issue issue : result.getResults()){
+               messageService.redmineManager().getIssueManager().deleteIssue(issue.getId());
+           }
+       }
     }
 
     @Test
@@ -109,25 +130,19 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         User submitter = (User) userService.loadUserByUsername(SUBMITTER);
 
         com.taskadapter.redmineapi.bean.User createdUser = null;
-        try {
-            createdUser = messageService.createUser(submitter);
 
-            assertNotNull(createdUser);
-            assertEquals(submitter.getUsername(), createdUser.getLogin());
-            assertNotNull(createdUser.getId());
+        createdUser = messageService.createUser(submitter);
 
-            User submitterReloaded = userService.load(submitter.getUuid(), Arrays.asList("person.extensions.$"));
-            assertEquals(1, submitterReloaded.getPerson().getExtensions().size());
-            Extension extension = submitterReloaded.getPerson().getExtensions().iterator().next();
-            assertEquals(RedmineRegistrationMessageService.EXTTYPE_REGMESG_REDMINEUID_UUID, extension.getType().getUuid());
-            assertEquals(createdUser.getId(), Integer.valueOf(extension.getValue()));
+        assertNotNull(createdUser);
+        assertEquals(submitter.getUsername(), createdUser.getLogin());
+        assertNotNull(createdUser.getId());
 
-        } finally {
-            if (createdUser != null) {
-                messageService.redmineManager().getUserManager().deleteUser(createdUser.getId());
-            }
-            rollback();
-        }
+        User submitterReloaded = userService.load(submitter.getUuid(), Arrays.asList("person.extensions.$"));
+        assertEquals(1, submitterReloaded.getPerson().getExtensions().size());
+        Extension extension = submitterReloaded.getPerson().getExtensions().iterator().next();
+        assertEquals(RedmineRegistrationMessageService.EXTTYPE_REGMESG_REDMINEUID_UUID, extension.getType().getUuid());
+        assertEquals(createdUser.getId(), Integer.valueOf(extension.getValue()));
+
     }
 
     /**
@@ -146,32 +161,20 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         User submitter = (User) userService.loadUserByUsername(SUBMITTER);
 
         User curator = (User) userService.loadUserByUsername(CURATOR);
-        try {
 
-            if(!(submitter.getEmailAddress().equals(SUBMITTER + EMAIL_DOMAIN) &&  curator.getEmailAddress().equals(CURATOR + EMAIL_DOMAIN ))){
-                throw new AssertionError("Email adresses must be '" + SUBMITTER + EMAIL_DOMAIN + "' and '" + CURATOR + EMAIL_DOMAIN + "',"
-                        + " for futher information please refer to https://dev.e-taxonomy.eu/redmine/issues/7280");
-            }
-
-
-            Registration reg = registrationService.load(REGISTRATION_ID, Arrays.asList("$"));
-            issue = messageService.createIssue(reg);
-            reg.setStatus(RegistrationStatus.READY);
-            messageService.updateIssueStatus(reg);
-            issue = messageService.findIssue(reg);
-            assertEquals("ready", issue.getStatusName());
-        } finally {
-            if (issue != null) {
-                try {
-                    messageService.redmineManager().getIssueManager().deleteIssue(issue.getId());
-                } catch (Exception e) { /* IGNORE*/ }
-            }
-            try {
-                com.taskadapter.redmineapi.bean.User redmineSubmitter = messageService.findUser(submitter);
-                messageService.redmineManager().getUserManager().deleteUser(redmineSubmitter.getId());
-
-            } catch (Exception e) { /* IGNORE*/ }
+        if(!(submitter.getEmailAddress().equals(SUBMITTER + EMAIL_DOMAIN) &&  curator.getEmailAddress().equals(CURATOR + EMAIL_DOMAIN ))){
+            throw new AssertionError("Email adresses must be '" + SUBMITTER + EMAIL_DOMAIN + "' and '" + CURATOR + EMAIL_DOMAIN + "',"
+                    + " for futher information please refer to https://dev.e-taxonomy.eu/redmine/issues/7280");
         }
+
+
+        Registration reg = registrationService.load(REGISTRATION_ID, Arrays.asList("$"));
+        issue = messageService.createIssue(reg);
+        reg.setStatus(RegistrationStatus.READY);
+        messageService.updateIssueStatus(reg);
+        issue = messageService.findIssue(reg);
+        assertEquals("ready", issue.getStatusName());
+
 
     }
 
@@ -192,82 +195,64 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         com.taskadapter.redmineapi.bean.User redmineCurator = null;
         com.taskadapter.redmineapi.bean.User redmineSubmitter = null;
 
-        try {
-            assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
-            assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
 
-            // post a message, this will create an issue and will add a comment
-            String messageText1 = "hey submitter how is life in a test environment?";
-            messageService.postMessage(reg, messageText1, curator, submitter);
-            issue = messageService.findIssue(reg);
-            assertTrue(issue.isPrivateIssue());
-            redmineCurator = messageService.findUser(curator);
-            redmineSubmitter = messageService.findUser(submitter);
-            assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
+        assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
+        assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
 
-            assertEquals(1, messageService.countActiveMessagesFor(reg, submitter));
+        // post a message, this will create an issue and will add a comment
+        String messageText1 = "hey submitter how is life in a test environment?";
+        messageService.postMessage(reg, messageText1, curator, submitter);
+        issue = messageService.findIssue(reg);
+        assertTrue(issue.isPrivateIssue());
+        redmineCurator = messageService.findUser(curator);
+        redmineSubmitter = messageService.findUser(submitter);
+        assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
 
-            // 2. post a message back to curator
-            String messageText2 = "pretty boring in here. It is horrible. If you know a way out of here, please help!";
-            messageService.postMessage(reg, messageText2, submitter, curator);
-            issue = messageService.findIssue(reg);
-            assertEquals(redmineCurator.getId(), issue.getAssigneeId());
-            assertEquals(1, messageService.countActiveMessagesFor(reg, curator));
-            assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
+        assertEquals(1, messageService.countActiveMessagesFor(reg, submitter));
 
-            // 3. post a message back submitter
-            String messageText3 = "Dear Submitter, the only solution it to end this test, hold on, just a millisec ...";
-            messageService.postMessage(reg, messageText3, curator, submitter);
-            issue = messageService.findIssue(reg);
-            assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
-            assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
-            assertEquals(2, messageService.countActiveMessagesFor(reg, submitter));
+        // 2. post a message back to curator
+        String messageText2 = "pretty boring in here. It is horrible. If you know a way out of here, please help!";
+        messageService.postMessage(reg, messageText2, submitter, curator);
+        issue = messageService.findIssue(reg);
+        assertEquals(redmineCurator.getId(), issue.getAssigneeId());
+        assertEquals(1, messageService.countActiveMessagesFor(reg, curator));
+        assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
 
-            // 4. inactivate messages
-            messageService.inactivateMessages(reg);
-            issue = messageService.findIssue(reg);
-            assertNull(issue.getAssigneeName());
-            assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
-            assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
+        // 3. post a message back submitter
+        String messageText3 = "Dear Submitter, the only solution it to end this test, hold on, just a millisec ...";
+        messageService.postMessage(reg, messageText3, curator, submitter);
+        issue = messageService.findIssue(reg);
+        assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
+        assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
+        assertEquals(2, messageService.countActiveMessagesFor(reg, submitter));
 
-            List<Message> messages = messageService.listMessages(reg);
-            assertEquals(3, messages.size());
+        // 4. inactivate messages
+        messageService.inactivateMessages(reg);
+        issue = messageService.findIssue(reg);
+        assertNull(issue.getAssigneeName());
+        assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
+        assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
 
-            // 5. registration becomes rejected
-            reg.setStatus(RegistrationStatus.REJECTED);
-            messageService.updateIssueStatus(reg);
-            issue = messageService.findIssue(reg);
-            assertEquals("rejected", issue.getStatusName());
+        List<Message> messages = messageService.listMessages(reg);
+        assertEquals(3, messages.size());
 
-            // 6. check all the messages in this issue
-            assertEquals(messageText1, messages.get(0).getText());
-            assertEquals(curator, messages.get(0).getFrom());
+        // 5. registration becomes rejected
+        reg.setStatus(RegistrationStatus.REJECTED);
+        messageService.updateIssueStatus(reg);
+        issue = messageService.findIssue(reg);
+        assertEquals("rejected", issue.getStatusName());
 
-            assertEquals(messageText2, messages.get(1).getText());
-            assertEquals(submitter, messages.get(1).getFrom());
+        // 6. check all the messages in this issue
+        assertEquals(messageText1, messages.get(0).getText());
+        assertEquals(curator, messages.get(0).getFrom());
 
-            assertEquals(messageText3, messages.get(2).getText());
-            assertEquals(curator, messages.get(2).getFrom());
+        assertEquals(messageText2, messages.get(1).getText());
+        assertEquals(submitter, messages.get(1).getFrom());
 
-        } finally {
-            try {
-                if (issue != null) {
-                    messageService.redmineManager().getIssueManager().deleteIssue(issue.getId());
-                }
-                if(redmineCurator != null){
-                    messageService.redmineManager().getUserManager().deleteUser(redmineCurator.getId());
-                } else {
-                    redmineCurator = messageService.findUser(curator);
-                    messageService.redmineManager().getUserManager().deleteUser(redmineCurator.getId());
-                }
-                if(redmineSubmitter != null){
-                    messageService.redmineManager().getUserManager().deleteUser(redmineSubmitter.getId());
-                } else {
-                    redmineSubmitter = messageService.findUser(submitter);
-                    messageService.redmineManager().getUserManager().deleteUser(redmineSubmitter.getId());
-                }
-            } catch (Exception e) { /* IGNORE*/ }
-        }
+        assertEquals(messageText3, messages.get(2).getText());
+        assertEquals(curator, messages.get(2).getFrom());
+
+
     }
 
 
