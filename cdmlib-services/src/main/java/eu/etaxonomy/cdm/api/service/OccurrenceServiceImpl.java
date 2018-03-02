@@ -1225,7 +1225,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     derivativesToDelete.add(unit);
                 }
                 for (DerivedUnit unit:derivativesToDelete){
-                    delete(unit, config);
+                    deleteResult.includeResult(delete(unit, config));
                 }
             }
         }

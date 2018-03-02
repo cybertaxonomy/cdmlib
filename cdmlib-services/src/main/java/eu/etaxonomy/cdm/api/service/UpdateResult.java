@@ -184,6 +184,8 @@ public class UpdateResult implements Serializable{
         this.setMaxStatus(includedResult.getStatus());
         this.addExceptions(includedResult.getExceptions());
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
+        //also add cdm entity of included result to updatet objects
+        this.getUpdatedObjects().add(includedResult.getCdmEntity());
     }
 
     public boolean isOk(){
