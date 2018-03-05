@@ -1874,7 +1874,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
             } else {
-            query = session.createQuery("select uuid, id, titleCache, taxonBase.name.rank from TaxonBase "  );
+            query = session.createQuery("select taxonBase.uuid, taxonBase.id, taxonBase.titleCache, taxonBase.name.rank from TaxonBase as taxonBase"  );
         }
         if (limit != null){
            query.setMaxResults(limit);
