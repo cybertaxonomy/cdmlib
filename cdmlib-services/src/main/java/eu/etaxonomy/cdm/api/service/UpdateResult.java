@@ -122,8 +122,8 @@ public class UpdateResult implements Serializable{
         return updatedObjects;
     }
     public void addUpdatedObject(CdmBase relatedObject) {
-        this.updatedObjects.add(relatedObject);
-    }
+            this.updatedObjects.add(relatedObject);
+        }
     public void addUpdatedObjects(Set<? extends CdmBase> updatedObjects) {
         this.updatedObjects.addAll(updatedObjects);
     }
@@ -184,8 +184,10 @@ public class UpdateResult implements Serializable{
         this.setMaxStatus(includedResult.getStatus());
         this.addExceptions(includedResult.getExceptions());
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
-        //also add cdm entity of included result to updatet objects
-        this.getUpdatedObjects().add(includedResult.getCdmEntity());
+        //also add cdm entity of included result to updated objects
+        if(includedResult.getCdmEntity()!=null){
+            this.getUpdatedObjects().add(includedResult.getCdmEntity());
+        }
     }
 
     public boolean isOk(){
