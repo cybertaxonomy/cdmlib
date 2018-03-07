@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -645,7 +646,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Classification classification = classificationService.load(classificationUuid);
 
         List<TaxonNode> expectedChildTaxonNodes = classification.getChildNodes();
-        List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsUuidAndTitleCache(classification.getRootNode());
+        List<TaxonNodeDto> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsUuidAndTitleCache(classification.getRootNode());
         assertNotNull("child UuidAndTitleCache list is null", childNodesUuidAndTitleCache);
 
         compareChildren(expectedChildTaxonNodes, childNodesUuidAndTitleCache);
@@ -671,14 +672,14 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertEquals("Taxon Nodes do not match. ", expectedClassificationParent, taxonNodeService.load(classificationParent.getUuid()));
     }
 
-    private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache){
+    private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<TaxonNodeDto> childNodesUuidAndTitleCache){
         assertEquals("Number of children does not match", expectedChildTaxonNodes.size(), childNodesUuidAndTitleCache.size());
         UuidAndTitleCache<TaxonNode> foundMatch = null;
         for (TaxonNode taxonNode : expectedChildTaxonNodes) {
             foundMatch = null;
             for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
                 if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
-                    String titleCache = taxonNode.getTaxon().getTitleCache();
+                    String titleCache = taxonNode.getTaxon().getName().getTitleCache();
                     if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
                         foundMatch = uuidAndTitleCache;
                         break;
