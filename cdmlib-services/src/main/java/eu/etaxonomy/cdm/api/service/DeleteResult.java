@@ -29,7 +29,7 @@ public class DeleteResult extends UpdateResult{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 
-	
+
 
 	private final List<Exception> exceptions = new ArrayList<Exception>();
 
@@ -44,10 +44,10 @@ public class DeleteResult extends UpdateResult{
 //		protected ICdmEntityDao<CdmBase> dao;
 //	}
 
-	
+
 
 //***************************** GETTER /SETTER /ADDER *************************/
-	
+
 
 
 	/**
@@ -65,16 +65,22 @@ public class DeleteResult extends UpdateResult{
 	}
 
 
+	@Override
+	public void includeResult(UpdateResult includedResult){
+
+        this.setMaxStatus(includedResult.getStatus());
+        this.addExceptions(includedResult.getExceptions());
+        this.addUpdatedObjects(includedResult.getUpdatedObjects());
+
+    }
 
 
 
-	
-
-	
 
 
 
-	
+
+
 
 
 }
