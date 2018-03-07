@@ -42,7 +42,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 //	@Test
 //	@DataSet("TermsDataSet.xml")
 //	public void testFirstPass() {
-//		Map<UUID, DefinedTermBase> persistedTerms = new HashMap<UUID, DefinedTermBase>();
+//		Map<UUID, DefinedTermBase> persistedTerms = new HashMap<>();
 //		persistentTermInitializer.firstPass(VocabularyEnum.Rank, persistedTerms);
 //	}
 
