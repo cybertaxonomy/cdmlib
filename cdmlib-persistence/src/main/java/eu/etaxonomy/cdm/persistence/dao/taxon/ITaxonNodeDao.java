@@ -52,7 +52,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return a list of UuidAndTitleCache objects that represent children of the
      * parent
      */
-    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
     /**
      * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
@@ -152,5 +152,11 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa);
+
+    /**
+     * @param parent
+     * @return
+     */
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
 
 }

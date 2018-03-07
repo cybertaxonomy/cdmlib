@@ -54,7 +54,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return a list of UuidAndTitleCache objects that represent children of the
 	 * parent
 	 */
-	public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
 	/**
      * Retrieves a list of {@link UuidAndTitleCache} objects that have a matchin titleCache
@@ -85,7 +85,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return a list of UuidAndTitleCache objects that represent children of the
      * parent
      */
-	public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
+	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 
 	/**
      *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
@@ -313,6 +313,19 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
     UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
+
+
+    /**
+     * @param parent
+     * @return
+     */
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+
+    /**
+     * @param parent
+     * @return
+     */
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
 
 
 

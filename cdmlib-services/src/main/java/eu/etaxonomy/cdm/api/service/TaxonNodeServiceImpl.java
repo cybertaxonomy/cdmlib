@@ -141,9 +141,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent) {
+        return dao.listChildNodesAsTaxonNodeDto(parent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
+
 
     /**
      * {@inheritDoc}
@@ -157,7 +166,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent) {
+        UUID uuid = parent.getUuid();
+        int id = parent.getId();
+        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        return listChildNodesAsTaxonNodeDto(uuidAndTitleCache);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
         UUID uuid = parent.getUuid();
         int id = parent.getId();
         UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
