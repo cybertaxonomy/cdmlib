@@ -26,6 +26,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -36,6 +37,9 @@ public abstract class DaoBase {
     @Autowired
     private SessionFactory factory;
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.factory = sessionFactory;
     }
@@ -45,6 +49,7 @@ public abstract class DaoBase {
     protected Session getSession(){
         Session session ;
         try {
+
             session = factory.getCurrentSession();
         } catch (HibernateException e) {
             logger.error("Opening new session in turn of a HibernateException", e);

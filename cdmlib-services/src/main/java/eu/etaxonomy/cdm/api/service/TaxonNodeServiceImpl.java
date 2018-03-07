@@ -114,7 +114,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             Comparator<TaxonNode> comparator = sortMode.newComparator();
         	Collections.sort(childNodes, comparator);
         }
-        defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
+//        defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
 
@@ -141,7 +141,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
 
@@ -157,7 +157,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
+    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
         UUID uuid = parent.getUuid();
         int id = parent.getId();
         UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
@@ -587,7 +587,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	       parent.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference());
     	   }
     	}else{
-    	    deleteTaxonNodes(node.getChildNodes(), config);
+    	    result.includeResult(deleteTaxonNodes(node.getChildNodes(), config));
     	}
 
     	if (taxon != null){
@@ -615,6 +615,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			    parent.removeChild(index);
 			}
     		if (!dao.delete(node, config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)).equals(null)){
+    			result.addDeletedObject(node);
     			return result;
     		} else {
     			result.setError();

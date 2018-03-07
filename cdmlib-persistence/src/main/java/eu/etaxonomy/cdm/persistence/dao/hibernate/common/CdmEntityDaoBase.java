@@ -440,7 +440,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
 
         Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
-
         @SuppressWarnings("unchecked")
 		List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);

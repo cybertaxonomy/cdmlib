@@ -41,13 +41,13 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 
     public UuidAndTitleCache(UUID uuid, Integer id, String titleCache, String abbrevTitleCache) {
         this.uuid = uuid;
-        this.titleCache = titleCache;
+        this.setTitleCache(titleCache);
         this.id = id;
         this.abbrevTitleCache = abbrevTitleCache;
     }
     public UuidAndTitleCache(UUID uuid, Integer id, String titleCache) {
         this.uuid = uuid;
-        this.titleCache = titleCache;
+        this.setTitleCache(titleCache);
         this.id = id;
         this.abbrevTitleCache = null;
     }
@@ -111,8 +111,11 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 
     @Override
     public String toString() {
-        return "UuidAndTitleCache [type= " + type + ", uuid= " + uuid + ", id=" + id + ", titleCache= " + titleCache
+        return "UuidAndTitleCache [type= " + type + ", uuid= " + uuid + ", id=" + id + ", titleCache= " + getTitleCache()
                 + ", isOrphaned=" + isOrphaned + ", abbrevTitleCache= " + abbrevTitleCache +"]";
+    }
+    public void setTitleCache(String titleCache) {
+        this.titleCache = titleCache;
     }
 
 

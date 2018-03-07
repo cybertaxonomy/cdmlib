@@ -96,6 +96,8 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         }
         if (dao.delete(node) == null){
             result.setAbort();
+        }else{
+            result.addDeletedObject(node);
         }
         if (parent != null){
             dao.saveOrUpdate(parent);

@@ -445,9 +445,7 @@ public class GbifJsonOccurrenceParser {
                                 try {
                                     uri = new URI(mediaRecord.getString("identifier"));
                                     imageInf = ImageInfo.NewInstance(uri, 0);
-
                                 } catch (URISyntaxException |IOException | HttpException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                                // media.addIdentifier(mediaRecord.getString("identifier"), null);

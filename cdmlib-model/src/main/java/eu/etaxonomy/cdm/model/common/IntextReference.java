@@ -192,7 +192,7 @@ public class IntextReference extends VersionableEntity {
    }
 
 
-    private CDM_INTEXT_CLASS myClass(){
+    public CDM_INTEXT_CLASS myClass(){
         if (agent != null){
             return CDM_INTEXT_CLASS.AGENT;
         }else if (media != null){

@@ -230,7 +230,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 state.getDataHolder().reset();
 
                 Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix());
-
+                if (config.getNomenclaturalCode() != null){
+                    state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().getKey());
+                }
                 prepareCollectors(state, unitsList, abcdFieldGetter);
 
 
@@ -382,7 +384,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (handleAssociatedUnits){
                         importAssociatedUnits(state, item, derivedUnitFacade);
                     }
+
                     state.getReport().addAlreadyExistingSpecimen(SpecimenImportUtility.getUnitID(derivedUnit, config), derivedUnit);
+
                     return;
                 }
             }

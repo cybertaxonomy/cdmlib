@@ -1268,7 +1268,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
                 DeleteResult descriptionDelete = descriptionService.isDeletable(specimenDescription.getUuid(), null);
                 if (descriptionDelete.isOk()){
-                    descriptionService.delete(specimenDescription);
+                    deleteResult.includeResult(descriptionService.delete(specimenDescription));
                 }
             }
             // check for amplification
@@ -1294,7 +1294,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             deleteResult.addUpdatedObject(specimenOrObservationBase);
                         }
                         // if derivationEvent has no derivates anymore, delete it
-                        eventService.delete(derivationEvent);
+                        deleteResult.includeResult(eventService.delete(derivationEvent));
                     }
                 }
                 else{
@@ -1309,7 +1309,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (event != null){
                 DeleteResult result = eventService.isDeletable(event.getUuid(), null);
                 if (result.isOk()){
-                    eventService.delete(event);
+                    deleteResult.includeResult( eventService.delete(event));
                 }
             }
 

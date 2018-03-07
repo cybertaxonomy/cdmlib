@@ -464,7 +464,7 @@ public class DescriptionServiceImpl
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
     		dao.delete(description);
-
+    		deleteResult.addDeletedObject(taxDescription);
             deleteResult.addUpdatedObject(tax);
             deleteResult.setCdmEntity(tax);
     	}
@@ -679,6 +679,7 @@ public class DescriptionServiceImpl
                        }
                    }
                     dao.delete(description);
+
                 }else{
                     dao.saveOrUpdate(description);
                     result.addUpdatedObject(description);

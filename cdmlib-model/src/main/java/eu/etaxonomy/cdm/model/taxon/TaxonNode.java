@@ -324,6 +324,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected void setParent(TaxonNode parent) {
         this.parent = parent;
+//        this.treeIndex = parent.treeIndex() +
     }
 
     // *************** Excluded Note ***************

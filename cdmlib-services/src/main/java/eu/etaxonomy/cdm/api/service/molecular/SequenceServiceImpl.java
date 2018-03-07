@@ -117,6 +117,7 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
             deleteSingleRead(singleReadAlignment.getSingleRead(), sequence);
         }
         dao.delete(sequence);
+        deleteResult.addDeletedObject(sequence);
         return deleteResult;
     }
 
@@ -144,10 +145,12 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
             }
             for (SingleRead singleReadToDelete : toDelete) {
                 singleReadDao.delete(singleReadToDelete);
+                deleteResult.addDeletedObject(singleReadToDelete);
             }
         }
         else{
             singleReadDao.delete(singleRead);
+            deleteResult.addDeletedObject(singleRead);
         }
         deleteResult.setStatus(Status.OK);
         return deleteResult;

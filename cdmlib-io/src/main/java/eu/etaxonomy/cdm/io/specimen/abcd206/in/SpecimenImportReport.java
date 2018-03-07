@@ -74,7 +74,9 @@ public class SpecimenImportReport {
             children = new ArrayList<UnitIdSpecimen>();
         }
         if(child!=null){
-            children.add(new UnitIdSpecimen(SpecimenImportUtility.getUnitID(child, config), child));
+            if (!alreadyExistingSpecimens.contains(child)){
+                children.add(new UnitIdSpecimen(SpecimenImportUtility.getUnitID(child, config), child));
+            }
         }
         derivateMap.put(parentUnitIdSpecimen, children);
     }
@@ -90,7 +92,7 @@ public class SpecimenImportReport {
     }
 
     public void addAlreadyExistingSpecimen(String unitId, DerivedUnit derivedUnit){
-        alreadyExistingSpecimens.add(new UnitIdSpecimen(unitId, derivedUnit));
+       alreadyExistingSpecimens.add(new UnitIdSpecimen(unitId, derivedUnit));
     }
 
     public void addException(String message, Exception e) {

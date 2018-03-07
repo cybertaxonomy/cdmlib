@@ -18,7 +18,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -29,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 11.05.2009
  */
 public class TaxonExcelImportState
-            extends ExcelImportState<ExcelImportConfiguratorBase, NormalExplicitRow>{
+            extends ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>{
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImportState.class);
@@ -38,7 +40,22 @@ public class TaxonExcelImportState
 	private Set<String> authors = new HashSet<String>();
 
 	private Map<String, TaxonBase> taxonMap= new HashMap<String, TaxonBase>();
-	private Map<String, TeamOrPersonBase> authorMap= new HashMap<String, TeamOrPersonBase>();
+	/**
+     * @return the taxonMap
+     */
+    public Map<String, TaxonBase> getTaxonMap() {
+        return taxonMap;
+    }
+
+    /**
+     * @param taxonMap the taxonMap to set
+     */
+    public void setTaxonMap(Map<String, TaxonBase> taxonMap) {
+        this.taxonMap = taxonMap;
+    }
+
+    private Map<String, TeamOrPersonBase> authorMap= new HashMap<String, TeamOrPersonBase>();
+	private Map<String, TaxonName> nameMap;
 	private Map<String, Reference> referenceMap= new HashMap<String, Reference>();
 	private Taxon parent;
 	private Classification classification;
@@ -110,6 +127,26 @@ public class TaxonExcelImportState
 
     public void putReference(String key, Reference reference) {
         this.referenceMap.put(key, reference);
+    }
+
+    public Map<String, TaxonName> getNameMap() {
+        return nameMap;
+    }
+
+    public void setNameMap(Map<String, TaxonName> nameMap) {
+        this.nameMap = nameMap;
+    }
+
+    /**
+     * @param name
+     * @param name2
+     */
+    public void putName(String titleCache, TaxonName name) {
+        if (nameMap == null){
+            nameMap = new HashMap<String, TaxonName>();
+        }
+
+        nameMap.put(titleCache, name);
     }
 
 

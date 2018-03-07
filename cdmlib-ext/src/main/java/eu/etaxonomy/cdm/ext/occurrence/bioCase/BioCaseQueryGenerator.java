@@ -244,7 +244,7 @@ public class BioCaseQueryGenerator {
 
         elSearch.addContent(elCount);
         elCount.addContent(FALSE);
-
+        System.out.println(document.toString());
         return document;
     }
 

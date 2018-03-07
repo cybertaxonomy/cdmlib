@@ -54,7 +54,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return a list of UuidAndTitleCache objects that represent children of the
 	 * parent
 	 */
-	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+	public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
 	/**
      * Retrieves a list of {@link UuidAndTitleCache} objects that have a matchin titleCache
@@ -85,7 +85,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return a list of UuidAndTitleCache objects that represent children of the
      * parent
      */
-	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
+	public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 
 	/**
      *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
@@ -118,7 +118,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 *
 	 */
 	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference) ;
-	
+
 	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
 	 * All data associated with the former taxa are moved to the newly accepted taxon.
@@ -134,7 +134,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
 			SynonymType synonymType, Reference citation, String citationMicroReference);
 
-	
+
 	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
@@ -314,6 +314,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
 
-	
+
 
 }

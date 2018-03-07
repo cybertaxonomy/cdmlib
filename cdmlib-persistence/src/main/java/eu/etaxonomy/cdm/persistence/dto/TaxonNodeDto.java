@@ -21,12 +21,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @date Jun 13, 2016
  *
  */
-public class TaxonNodeDto {
+public class TaxonNodeDto extends UuidAndTitleCache<TaxonNode> {
 
-    /**
-     * The TaxonNode uuid
-     */
-    private final UUID uuid;
 
     /**
      * count of the direct taxonomic children
@@ -37,17 +33,14 @@ public class TaxonNodeDto {
     /**
      * The UUID of the associated secundum reference
      */
-    private final UUID secUuid;
+    private UUID secUuid = null;
 
     /**
      * The uuid of the associated Taxon entity
      */
-    private final UUID taxonUuid;
+    private UUID taxonUuid = null;
 
-    /**
-     * the titleCache of the associated TaxonName entity
-     */
-    private final String titleCache;
+
 
     /**
      * the taggedTitle of the associated TaxonName entity
@@ -71,45 +64,53 @@ public class TaxonNodeDto {
 
     private final TaxonStatus status;
 
+    private final UUID classificationUUID;
+
+    private final String treeIndex;
+
     /**
      * @param taxonNode
      */
     public TaxonNodeDto(TaxonNode taxonNode) {
-        uuid = taxonNode.getUuid();
-        taxonomicChildrenCount = taxonNode.getCountChildren();
+        super(taxonNode.getUuid(),null);
         Taxon taxon = taxonNode.getTaxon();
-        secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
-        taxonUuid = taxon.getUuid();
-        titleCache = taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache();
+        if (taxon != null){
+            setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
+            secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
+            taxonUuid = taxon.getUuid();
+        }
+        taxonomicChildrenCount = taxonNode.getCountChildren();
+
+
         taggedTitle = taxon.getName() != null? taxon.getName().getTaggedName() : taxon.getTaggedTitle();
         unplaced = taxonNode.isUnplaced();
         excluded = taxonNode.isExcluded();
         rankLabel = taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getLabel() : null;
         status = TaxonStatus.Accepted;
+        classificationUUID = taxonNode.getClassification().getUuid();
+        treeIndex = taxonNode.treeIndex();
     }
 
     /**
      * @param taxonNode
      */
     public TaxonNodeDto(Synonym synonym, boolean isHomotypic) {
-        uuid = null;
+        super(null, synonym.getName().getTitleCache());
+
         taxonomicChildrenCount = 0;
         secUuid = synonym.getSec().getUuid();
         taxonUuid = synonym.getUuid();
-        titleCache = synonym.getName().getTitleCache();
+//        setTitleCache(synonym.getName().getTitleCache());
         taggedTitle = synonym.getName().getTaggedName();
         unplaced = false;
         excluded = false;
         rankLabel = synonym.getName().getRank().getLabel();
         status = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
+        classificationUUID = null;
+        treeIndex = null;
     }
 
-    /**
-     * @return the uuid
-     */
-    public UUID getUuid() {
-        return uuid;
-    }
+
 
     /**
      * @return the taxonomicChildrenCount
@@ -132,12 +133,6 @@ public class TaxonNodeDto {
         return taxonUuid;
     }
 
-    /**
-     * @return the titleCache
-     */
-    public String getTitleCache() {
-        return titleCache;
-    }
 
     /**
      * @return the taggedTitle
@@ -172,6 +167,14 @@ public class TaxonNodeDto {
      */
     public TaxonStatus getStatus() {
         return status;
+    }
+
+    public UUID getClassificationUUID() {
+        return classificationUUID;
+    }
+
+    public String getTreeIndex() {
+        return treeIndex;
     }
 
 

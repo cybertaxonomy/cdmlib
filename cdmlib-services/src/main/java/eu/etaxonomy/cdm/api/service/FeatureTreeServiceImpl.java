@@ -155,6 +155,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         tree.setRoot(null);
         if (result.isOk()){
           dao.delete(tree);
+          result.addDeletedObject(tree);
         }
         return result;
 

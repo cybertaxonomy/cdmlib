@@ -86,12 +86,14 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	         }
 
 	         dao.delete(node);
+	         result.addDeletedObject(node);
 	         if(parent!=null){
 	             result.addUpdatedObject(parent);
 	         }
 	         if (config.isDeleteElement()){
                  feature = node.getFeature();
                  termService.delete(feature.getUuid());
+                 result.addDeletedObject(feature);
              }
 	     }
 	     return result;

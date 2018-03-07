@@ -32,11 +32,13 @@ public class DeleteResult extends UpdateResult{
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 
 
-	private final List<Exception> exceptions = new ArrayList<>();
 
-	private final Set<CdmBase> relatedObjects = new HashSet<>();
+	private final List<Exception> exceptions = new ArrayList();
 
-//	private Set<PersistPair> objectsToDelete = new HashSet<>();
+	private final Set<CdmBase> relatedObjects = new HashSet();
+
+	private Set<CdmBase> deletedObjects = new HashSet();
+
 //
 //	private Set<PersistPair> objectsToSave = new HashSet<>();
 
@@ -71,8 +73,19 @@ public class DeleteResult extends UpdateResult{
         this.setMaxStatus(includedResult.getStatus());
         this.addExceptions(includedResult.getExceptions());
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
+        if (includedResult instanceof DeleteResult){
+            this.addDeletedObjects(((DeleteResult)includedResult).getDeletedObjects());
+        }
 
     }
-
+    public Set<CdmBase> getDeletedObjects() {
+        return deletedObjects;
+    }
+    public void addDeletedObjects(Set<CdmBase> deletedObjects) {
+        this.deletedObjects.addAll(deletedObjects);
+    }
+    public void addDeletedObject(CdmBase deletedObject) {
+        this.deletedObjects.add(deletedObject);
+    }
 
 }

@@ -165,6 +165,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             }
             if (result.isOk()){
                 dao.delete(media);
+                result.addDeletedObject(media);
             }
 
         }

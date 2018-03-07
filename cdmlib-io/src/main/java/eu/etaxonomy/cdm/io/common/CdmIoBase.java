@@ -16,8 +16,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -116,16 +114,16 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
         return 1;
     }
 
-    @Autowired
-    private SessionFactory sessionFactory;
+//    @Autowired
+//    private SessionFactory sessionFactory;
 
-    /**
-     * flush the current session
-     */
-    //TODO move into super class CdmApplicationDefaultConfiguration#flush() ?
-    public void flush() {
-        sessionFactory.getCurrentSession().flush();
-    }
+//    /**
+//     * flush the current session
+//     */
+//    //TODO move into super class CdmApplicationDefaultConfiguration#flush() ?
+//    public void flush() {
+//        sessionFactory.getCurrentSession().flush();
+//    }
 
     @Override
     //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(), remove duplicate

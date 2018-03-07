@@ -271,7 +271,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                problem = true;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
+	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")  || state.getDataHolder().getNomenclatureCode().toString().contains("ICNAFP")) {
 	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;

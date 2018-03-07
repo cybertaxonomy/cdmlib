@@ -32,6 +32,7 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
 	ShowCollectingAreasInGeneralSection(UUID.fromString("578a1195-64ce-4dfb-9be9-6f2823288678"), "ShowCollectingAreaInGeneralSection", "model.editor.SCAGS"),
 	ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "ShowTaxonAssociations", "model.editor.STA"),
 	ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "ShowLifeForm", "model.editor.SLF"),
+	AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "model.editor.distribution.area.terms"),
 	//import
 	AbcdImportConfig(UUID.fromString("65380375-d041-458c-8275-c36cdc1f34df"), "AbcdImportConfig", "model.import.ABCD"),
 	BioCaseProvider(UUID.fromString("bd22c85c-f4e8-4771-ae7b-5750868762c4"), "BioCaseProvider", "model.import.BP"),

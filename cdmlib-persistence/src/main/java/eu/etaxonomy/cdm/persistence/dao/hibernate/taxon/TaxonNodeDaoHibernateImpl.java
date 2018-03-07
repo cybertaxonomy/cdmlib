@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
@@ -139,17 +140,17 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
-        String queryString = "select tn.uuid, tn.id, tx.titleCache from TaxonNode tn INNER JOIN tn.taxon as tx where tn.parent.id = :parentId";
+    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+        String queryString = "select tn from TaxonNode tn INNER JOIN tn.taxon as tx where tn.parent.uuid = :parentId";
         Query query =  getSession().createQuery(queryString);
-        query.setParameter("parentId", parent.getId());
-        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
+        query.setParameter("parentId", parent.getUuid());
+        List<TaxonNodeDto> list = new ArrayList<>();
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<TaxonNode> result = query.list();
 
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        for(TaxonNode object : result){
+            list.add(new TaxonNodeDto(object));
         }
         return list;
     }

@@ -159,6 +159,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 			saveOrUpdate(base);
 
 			dao.delete(base);
+			result.addDeletedObject(base);
 
 		}
 

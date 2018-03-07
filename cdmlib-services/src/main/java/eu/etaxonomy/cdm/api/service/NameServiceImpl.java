@@ -173,8 +173,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
 
             try{
-            UUID nameUuid = dao.delete(name);
-
+                UUID nameUuid = dao.delete(name);
+                result.addDeletedObject(name);
             }catch(Exception e){
                 result.addException(e);
                 result.setError();
@@ -219,6 +219,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
                 removeSingleDesignation(singleName, typeDesignation);
             }
         }
+        result.addDeletedObject(typeDesignation);
         result.addUpdatedObject(name);
         return result;
     }
@@ -249,6 +250,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
                 }
             }
             typeDesignationDao.delete(typeDesignation);
+
         }
     }
 

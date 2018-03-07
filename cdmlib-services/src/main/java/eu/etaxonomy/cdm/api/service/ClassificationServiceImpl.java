@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.EntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
@@ -683,11 +684,13 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
         if (!classification.hasChildNodes()){
             dao.delete(classification);
+            result.addDeletedObject(classification);
         }
         if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE) ){
             TaxonNode root = classification.getRootNode();
-            taxonNodeDao.delete(root, true);
+            result.includeResult(taxonNodeService.deleteTaxonNode(root, config));
             dao.delete(classification);
+            result.addDeletedObject(classification);
         }
 
 

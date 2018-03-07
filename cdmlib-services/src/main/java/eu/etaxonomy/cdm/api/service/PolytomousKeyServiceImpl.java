@@ -177,6 +177,8 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
     	    try{
     	        if (resultRoot.isOk()){
     	            dao.delete(key);
+    	            result.addDeletedObject(key);
+    	            result.includeResult(resultRoot);
     	        }
     	    }catch(Exception e){
                 result.addException(e);
