@@ -509,7 +509,6 @@ public class TaxonName
 
     //Author team and year of the subgenus name
     @XmlElement(name = "SubGenusAuthorship")
-    @CacheUpdate("nameCache")
     @Field
     private String subGenusAuthorship;
 
