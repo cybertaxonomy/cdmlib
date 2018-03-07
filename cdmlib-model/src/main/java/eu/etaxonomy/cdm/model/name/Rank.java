@@ -137,6 +137,13 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
     private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
 
+    //additional (not yet in csv files, but used in single databases)
+    //https://dev.e-taxonomy.eu/redmine/issues/7285
+    public static final UUID uuidCohort = UUID.fromString("3e4dc2fa-79e8-4ee7-b7d8-4c02a18fe555");  //edaphobase
+    public static final UUID uuidHyporder = UUID.fromString("2a1bdf1f-80fc-4846-b4d7-edcbf664f270");  //edaphobase
+
+
+
     private static Map<String, UUID> idInVocMap = null;
     private static Map<String, UUID> labelMap = null;
 
