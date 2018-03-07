@@ -678,7 +678,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
             foundMatch = null;
             for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
                 if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
-                    String titleCache = taxonNode.getTaxon().getName().getTitleCache();
+                    String titleCache = taxonNode.getTaxon().getTitleCache();
                     if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
                         foundMatch = uuidAndTitleCache;
                         break;
