@@ -2285,6 +2285,7 @@ public class NonViralNameParserImplTest {
         //or even better IV. 111 (Heft 36), but this is currently not implemented
         assertEquals("111 (Heft 36)", ref.getInReference().getVolume());
 
+        //journal with commata at pos 4
         nameStr = "Bufonia kotschyana subsp. densa Chrtek & Krisa in Acta Univ.Carol., Biol. 43(2): 105. 1999";
         name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
