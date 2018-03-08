@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public enum CdmPermissionClass {
     ALL,
+    CDMMETADATA,
     CLASSIFICATION,
     COLLECTION,
     DESCRIPTIONBASE,
@@ -31,23 +33,22 @@ public enum CdmPermissionClass {
     GROUP,
     HOMOTYPICALGROUP,
     LANGUAGESTRING,
+    MEDIA,
+    MEDIAREPRESENTATION,
+    MEDIAREPRESENTATIONPART,
+    NAMEDAREA,
     NAMERELATIONSHIP,
     SPECIMENOROBSERVATIONBASE,
     SPECIMENTYPEDESIGNATION,
-    REGISTRATION,
     REFERENCE,
+    REGISTRATION,
+    REPRESENTATION,
     TAXONBASE,
     TAXONNAME,
     TAXONNODE,
     TEAMORPERSONBASE,
     USER,
     WORKINGSET,
-    NAMEDAREA,
-    MEDIA,
-    MEDIAREPRESENTATION,
-    MEDIAREPRESENTATIONPART,
-    REPRESENTATION,
-    CDMMETADATA
     ;
 
 
