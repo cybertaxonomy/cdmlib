@@ -108,7 +108,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidZooNotAvailable = UUID.fromString("6d9ed462-b761-4da3-9304-4749e883d4eb");
 	private static final UUID uuidZooInvalid = UUID.fromString("2bef7039-c129-410b-815e-2a1f7249127b");
 	private static final UUID uuidZooSuppressed = UUID.fromString("a61602c7-fbd4-4eb4-98a2-44919db8920b");
-
+	private static final UUID uuidZooOblitum = UUID.fromString("6a6f7a88-991f-4f76-8ce9-4110839fae8b");
 
 
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev, Language language) {
@@ -801,6 +801,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final  NomenclaturalStatusType ZOO_SUPPRESSED (){
 		return getTermByUuid(uuidZooSuppressed);
 	}
+
+	public static final  NomenclaturalStatusType ZOO_OBLITUM (){
+        return getTermByUuid(uuidZooOblitum);
+    }
+
+
 
 	//TODO further Zoological status
 
