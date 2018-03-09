@@ -28,11 +28,11 @@ The CDM complies with international data standards, such as conventional geograp
 	
 	* {{{http://www.cate-project.org/} CATE Project}}, a web application to create consensus taxonomies
 	
-	* {{{http://wp5.e-taxonomy.eu/taxeditor} EDIT Taxonomic Editor}}, a desktop application to edit CDM data
+	* {{{https://cybertaxonomy.eu/taxeditor} EDIT Taxonomic Editor}}, a desktop application to edit CDM data
 	
-	* {{{http://wp5.e-taxonomy.eu/cdm-server} CDM Community Server}}, a central datastore to host versionable CDM data
+	* {{{https://cybertaxonomy.eu/cdm-server} CDM Community Server}}, a central datastore to host versionable CDM data
 	
-	* {{{http://wp5.e-taxonomy.eu/portal} CDM Dataportal}}, web portal software to publish taxonomic data hosted on a CDM Community Server
+	* {{{https://cybertaxonomy.eu/portal} CDM Dataportal}}, web portal software to publish taxonomic data hosted on a CDM Community Server
 	
-	* {{{http://wp5.e-taxonomy.eu/printpublisher} CDM Print Publisher}}, a set of tools to generate printer ready documents out of the CDM Community Store
+	* {{{https://cybertaxonomy.eu/printpublisher} CDM Print Publisher}}, a set of tools to generate printer ready documents out of the CDM Community Store
 	

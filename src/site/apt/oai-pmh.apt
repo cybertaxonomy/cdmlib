@@ -42,16 +42,16 @@ OAI-PMH
 
 * OAI-PMH Registry
 
-  Those CDM DataStores willing to expose their data via the OAI-PMH interface can register at an {{{http://wp5.e-taxonomy.eu/registry/oai/providers.php }OAI-PMH provider registry}}. The registry process can be triggered from the administrative overview page of the CDM Servers, which is usually available at http://my.server.name:8080/ .
+  Those CDM DataStores willing to expose their data via the OAI-PMH interface can register at an {{{https://cybertaxonomy.eu/registry/oai/providers.php }OAI-PMH provider registry}}. The registry process can be triggered from the administrative overview page of the CDM Servers, which is usually available at http://my.server.name:8080/ .
 
   
 [images/cdm-server-oai-pmh.png] CDM Server Screenshot
 
 
-  This overview page shows a table listing all CDM Community Stores which are exposed by this specific CDM Community Server. CDM Community Stores which are not yet registered offer a <Request for registration> link. Clicking this link allows sending an email to the EDIT OAI-PMH provider registration service. Once a server has been registered this link is being replaced by a text indicating the registration state and the CDM Community Store is listed by the {{{http://wp5.e-taxonomy.eu/registry/oai/providers.php OAI-PMH }provider registry}} with according metadata. This list is returned in XML if not specified differently, whereas the data structure is defined by the {{{http://wp5.e-taxonomy.eu/registry/oai/1.0/providers.xsd}}} XML schema. The OAI-PMH provider registry is a simple RESTful web service, all parameters are provided as URL parameters added to the base URL:
+  This overview page shows a table listing all CDM Community Stores which are exposed by this specific CDM Community Server. CDM Community Stores which are not yet registered offer a <Request for registration> link. Clicking this link allows sending an email to the EDIT OAI-PMH provider registration service. Once a server has been registered this link is being replaced by a text indicating the registration state and the CDM Community Store is listed by the {{{http://cybertaxonomy.eu/registry/oai/providers.php OAI-PMH }provider registry}} with according metadata. This list is returned in XML if not specified differently, whereas the data structure is defined by the {{{https://cybertaxonomy.eu/registry/oai/1.0/providers.xsd}}} XML schema. The OAI-PMH provider registry is a simple RESTful web service, all parameters are provided as URL parameters added to the base URL:
 
-   * <<find=<baseURL> >> : Search for an entry in the list of providers which matches the specified <baseURL>. Example: {{http://wp5.e-taxonomy.eu/registry/oai/providers.php?find=http%3a%2f%2fsome.cdmserver.com%3a8080%2fcdmStoreName providers.php?find=http://some.cdmserver.com:8080/cdmStoreName}}
+   * <<find=<baseURL> >> : Search for an entry in the list of providers which matches the specified <baseURL>. Example: {{http://cybertaxonomy.eu/registry/oai/providers.php?find=http%3a%2f%2fsome.cdmserver.com%3a8080%2fcdmStoreName providers.php?find=http://some.cdmserver.com:8080/cdmStoreName}}
    
-   * <<format=<fomat name> >> : Send the response data in a specific format. Valid format names are: <<json>> (application/json), <<xml>> (application/xml). Xml is being used as default format. Example: {{http://wp5.e-taxonomy.eu/registry/oai/providers.php?format=json providers.php?format=json}}
+   * <<format=<fomat name> >> : Send the response data in a specific format. Valid format names are: <<json>> (application/json), <<xml>> (application/xml). Xml is being used as default format. Example: {{http://cybertaxonomy.eu/registry/oai/providers.php?format=json providers.php?format=json}}
    
    * <<callback=<jsonp callback> >> : This parameter allows specifying a JSONP callback, for an explanation of this feature please refer to {{http://www.ibm.com/developerworks/library/wa-aj-jsonp1/}}
