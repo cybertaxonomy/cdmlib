@@ -37,7 +37,9 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	private Integer id;
 	private String titleCache;
 	private String abbrevTitleCache;
-	private boolean isOrphaned;
+
+
+    private boolean isOrphaned;
 
     public UuidAndTitleCache(UUID uuid, Integer id, String titleCache, String abbrevTitleCache) {
         this.uuid = uuid;
@@ -72,25 +74,17 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
         this( uuid, null, titleCache);
 	}
 
-	/**
-	 * @return the titleCache
-	 */
+
 	public String getTitleCache() {
 		return titleCache;
 	}
 
 
-    /**
-     * @return the titleCache
-     */
     public String getAbbrevTitleCache() {
         return abbrevTitleCache;
     }
 
 
-	/**
-	 * @return the uuid
-	 */
 	public UUID getUuid() {
 		return uuid;
 	}
@@ -107,15 +101,23 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 		return this.isOrphaned;
 	}
 
+    public void setAbbrevTitleCache(String abbrevTitleCache) {
+        this.abbrevTitleCache = abbrevTitleCache;
+    }
+    public void setTitleCache(String titleCache) {
+        this.titleCache = titleCache;
+    }
+
+    public void setType(Class<T> type) {
+        this.type = type;
+    }
+
 //************************** toString **********************************/
 
     @Override
     public String toString() {
         return "UuidAndTitleCache [type= " + type + ", uuid= " + uuid + ", id=" + id + ", titleCache= " + getTitleCache()
                 + ", isOrphaned=" + isOrphaned + ", abbrevTitleCache= " + abbrevTitleCache +"]";
-    }
-    public void setTitleCache(String titleCache) {
-        this.titleCache = titleCache;
     }
 
 

@@ -590,6 +590,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addException(new Exception("The Taxon was already deleted."));
 
         }
+
+
     	TaxonNode parent = HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class);
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
