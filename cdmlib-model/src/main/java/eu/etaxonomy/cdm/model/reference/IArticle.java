@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
@@ -51,4 +52,10 @@ public interface IArticle extends ISection, IVolumeReference{
 	 */
 	public void setInJournal(IJournal journal);
 
+	   /**
+     * @return
+     */
+    public DOI getDoi();
+
+    public void setDoi(DOI doi);
 }
