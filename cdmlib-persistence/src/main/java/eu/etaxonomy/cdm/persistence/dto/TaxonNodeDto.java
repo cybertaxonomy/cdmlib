@@ -69,6 +69,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     private final UUID classificationUUID;
 
+
+
     private final UUID parentUUID;
 
     private final String treeIndex;

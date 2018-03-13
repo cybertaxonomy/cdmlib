@@ -688,11 +688,12 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             return result;
         }
         if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
-            TaxonNode root = classification.getRootNode();
-            result.includeResult(taxonNodeService.deleteTaxonNode(root, config));
+//            TaxonNode root = classification.getRootNode();
+//            result.includeResult(taxonNodeService.deleteTaxonNode(HibernateProxyHelper.deproxy(root), config));
+//            result.addDeletedObject(classification);
             dao.delete(classification);
             result.addDeletedObject(classification);
-
+            return result;
         }
 
 

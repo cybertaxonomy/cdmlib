@@ -621,19 +621,26 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	}
     	}
     	result.setCdmEntity(node);
-    	boolean success = taxon.removeTaxonNode(node);
+    	boolean success = true;
+    	if (taxon != null){
+    	    success = taxon.removeTaxonNode(node);
+    	    taxonService.saveOrUpdate(taxon);
+    	}
     	dao.saveOrUpdate(parent);
-    	taxonService.saveOrUpdate(taxon);
+
     	result.addUpdatedObject(parent);
 
     	if (success){
 			result.setStatus(Status.OK);
-			parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
-			int index = parent.getChildNodes().indexOf(node);
-			if (index > -1){
-			    parent.removeChild(index);
+			if (parent != null){
+    			parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
+    			int index = parent.getChildNodes().indexOf(node);
+    			if (index > -1){
+    			    parent.removeChild(index);
+    			}
 			}
     		if (!dao.delete(node, config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)).equals(null)){
+    		    result.getUpdatedObjects().remove(node);
     			result.addDeletedObject(node);
     			return result;
     		} else {
