@@ -146,6 +146,13 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
             return 1;
         }else {
             if (skipVocabularyCheck){
+                String errorStr = "The term %s (ID: %s) is not attached to any vocabulary. This should not happen. "
+                        + "Please add the term to an vocabulary";
+                if (this.getVocabulary() == null){
+                    throw new IllegalStateException(String.format(errorStr, this.getLabel(), String.valueOf(this.getId())));
+                }else if (orderedTermLocal.vocabulary == null){
+                    throw new IllegalStateException(String.format(errorStr, orderedTermLocal.getLabel(), String.valueOf(orderedTermLocal.getId())));
+                }
                 return this.getVocabulary().getUuid().compareTo(orderedTermLocal.vocabulary.getUuid());
             }else{
                 return 0;
