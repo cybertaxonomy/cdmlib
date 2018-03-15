@@ -116,16 +116,16 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
 
     private String createSortableTitleCache(TaxonNodeDto taxonNode) {
 
-        String titleCache = null;
+
         String nameTitleCache= taxonNode.getTitleCache();
 
         if (nameTitleCache == null){
             if (logger.isTraceEnabled()){logger.trace("titleCache still null, using taxonNode id");}
-            titleCache = String.valueOf(taxonNode.getId());
+            nameTitleCache = String.valueOf(taxonNode.getId());
         }
-        if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + titleCache);}
+        if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + nameTitleCache);}
 //            System.out.println(titleCache);
-        return titleCache;
+        return nameTitleCache;
     }
 
 
