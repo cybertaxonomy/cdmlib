@@ -18,14 +18,16 @@ public class ExternalServiceException extends Exception {
 
     private static final long serialVersionUID = -7609872610682674127L;
 
+    String problem = "";
     String externalService;
 
     /**
      * @param message
      * @param cause
      */
-    public ExternalServiceException(String externalService, String message, Throwable cause) {
-        super(message, cause);
+    public ExternalServiceException(String externalService, String problem, Throwable cause) {
+        super(cause);
+        this.problem = problem;
         this.externalService = externalService;
     }
 
@@ -34,6 +36,7 @@ public class ExternalServiceException extends Exception {
      */
     public ExternalServiceException(String externalService, Throwable cause) {
         super(cause);
+        problem = cause.getMessage();
         this.externalService = externalService;
     }
 
@@ -41,8 +44,8 @@ public class ExternalServiceException extends Exception {
      * @param preference
      * @param message
      */
-    public ExternalServiceException(String externalService, String message) {
-        super(message);
+    public ExternalServiceException(String externalService, String problem) {
+        this.problem = problem;
         this.externalService = externalService;
     }
 
@@ -51,7 +54,7 @@ public class ExternalServiceException extends Exception {
      */
     @Override
     public String getMessage() {
-        return externalService + ": " + super.getMessage();
+        return externalService + ": " + problem;
     }
 
     /**
@@ -59,8 +62,23 @@ public class ExternalServiceException extends Exception {
      */
     @Override
     public String getLocalizedMessage() {
-        return externalService + ": " + super.getLocalizedMessage();
+        return getMessage();
     }
+
+    /**
+     * @return the problem
+     */
+    public String getProblem() {
+        return problem;
+    }
+
+    /**
+     * @return the externalService
+     */
+    public String getExternalService() {
+        return externalService;
+    }
+
 
 
 
