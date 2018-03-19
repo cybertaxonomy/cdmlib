@@ -207,6 +207,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         redmineCurator = messageService.findUser(curator);
         redmineSubmitter = messageService.findUser(submitter);
         assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
+        assertEquals(redmineCurator.getId(), Integer.valueOf(issue.getCustomFieldByName("Curator").getValue()));
 
         assertEquals(1, messageService.countActiveMessagesFor(reg, submitter));
 

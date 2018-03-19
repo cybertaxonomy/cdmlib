@@ -178,7 +178,11 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         }
         if(!registration.getSubmitter().equals(fromUser)){
             // it the sender is not the submitter it must me the curator then
-            CustomField customFieldCurator = CustomFieldFactory.create(getPreferenceAsInt(RedminePreferenceKey.CUSTOM_FIELD_CURATOR_ID));
+            int customFieldId = getPreferenceAsInt(RedminePreferenceKey.CUSTOM_FIELD_CURATOR_ID);
+            CustomField customFieldCurator = issue.getCustomFieldById(customFieldId);
+            if(customFieldCurator == null){
+                customFieldCurator = CustomFieldFactory.create(customFieldId);
+            }
             customFieldCurator.setValue(Integer.toString(redmineFromUser.getId()));
             issue.addCustomField(customFieldCurator);
         }
