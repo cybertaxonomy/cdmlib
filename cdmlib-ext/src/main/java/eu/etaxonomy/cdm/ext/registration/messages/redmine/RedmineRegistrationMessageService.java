@@ -176,6 +176,12 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
         if(redmineFromUser == null){
             redmineFromUser = createUser(fromUser);
         }
+        if(!registration.getSubmitter().equals(fromUser)){
+            // it the sender is not the submitter it must me the curator then
+            CustomField customFieldCurator = CustomFieldFactory.create(getPreferenceAsInt(RedminePreferenceKey.CUSTOM_FIELD_CURATOR_ID));
+            customFieldCurator.setValue(Integer.toString(redmineFromUser.getId()));
+            issue.addCustomField(customFieldCurator);
+        }
 
         // set issue public, otherwise adding a note on behalf of a contributor will fail
         issue.setPrivateIssue(false);
