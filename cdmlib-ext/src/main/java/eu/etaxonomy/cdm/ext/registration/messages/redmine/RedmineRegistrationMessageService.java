@@ -647,6 +647,7 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
         Map<String, String>params = new HashMap<>();
         params.put("status_id", "*"); // * to get open and closed issues
+        params.put("project_id", getPreference(RedminePreferenceKey.PROJECT_ID)); // needed to make the custom field filter being respected, see https://www.redmine.org/issues/28383
         params.put("cf_"+ getPreference(RedminePreferenceKey.CUSTOM_FIELD_IDENTIFIER_ID), registration.getIdentifier());
         try {
             ResultsWrapper<Issue> issues = redmineManager().getIssueManager().getIssues(params);

@@ -66,7 +66,8 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
     private static final String EMAIL_DOMAIN = "@localhost.bgbm.fu-berlin.de";
 
 
-    private static final int REGISTRATION_ID = 5000;
+    private static final int REGISTRATION_1_ID = 5000;
+    private static final int REGISTRATION_2_ID = 5001;
 
     @SpringBeanByType
     IUserService userService;
@@ -168,7 +169,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         }
 
 
-        Registration reg = registrationService.load(REGISTRATION_ID, Arrays.asList("$"));
+        Registration reg = registrationService.load(REGISTRATION_1_ID, Arrays.asList("$"));
         issue = messageService.createIssue(reg);
         reg.setStatus(RegistrationStatus.READY);
         messageService.updateIssueStatus(reg);
@@ -186,61 +187,70 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
         User curator = (User) userService.loadUserByUsername(CURATOR);
 
-        Registration reg = registrationService.load(REGISTRATION_ID, Arrays.asList("$"));
+        Registration reg1 = registrationService.load(REGISTRATION_1_ID, Arrays.asList("$"));
 
-        assertNotNull(reg.getIdentifier());
-        assertNotNull(reg.getSubmitter());
+        assertNotNull(reg1.getIdentifier());
+        assertNotNull(reg1.getSubmitter());
+
+        Registration reg2 = registrationService.load(REGISTRATION_2_ID, Arrays.asList("$"));
+        assertNotNull(reg2.getIdentifier());
+        assertNotNull(reg2.getSubmitter());
 
         Issue issue = null;
         com.taskadapter.redmineapi.bean.User redmineCurator = null;
         com.taskadapter.redmineapi.bean.User redmineSubmitter = null;
 
-
-        assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
-        assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
+        assertEquals(0, messageService.countActiveMessagesFor(reg1, curator));
+        assertEquals(0, messageService.countActiveMessagesFor(reg1, submitter));
 
         // post a message, this will create an issue and will add a comment
         String messageText1 = "hey submitter how is life in a test environment?";
-        messageService.postMessage(reg, messageText1, curator, submitter);
-        issue = messageService.findIssue(reg, false);
+        messageService.postMessage(reg1, messageText1, curator, submitter);
+        issue = messageService.findIssue(reg1, false);
         assertTrue(issue.isPrivateIssue());
         redmineCurator = messageService.findUser(curator);
         redmineSubmitter = messageService.findUser(submitter);
         assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
         assertEquals(redmineCurator.getId(), Integer.valueOf(issue.getCustomFieldByName("Curator").getValue()));
 
-        assertEquals(1, messageService.countActiveMessagesFor(reg, submitter));
+        assertEquals(1, messageService.countActiveMessagesFor(reg1, submitter));
+
+        // now post a message for another registration
+        String messageText0 = "hey submitter this registration is so excellent that I am in complete admiration of your work.";
+        messageService.postMessage(reg2, messageText0, curator, submitter);
+        issue = messageService.findIssue(reg2, false);
+        assertEquals(reg2.getIdentifier(), issue.getCustomFieldById(1).getValue());
 
         // 2. post a message back to curator
         String messageText2 = "pretty boring in here. It is horrible. If you know a way out of here, please help!";
-        messageService.postMessage(reg, messageText2, submitter, curator);
-        issue = messageService.findIssue(reg, false);
+        messageService.postMessage(reg1, messageText2, submitter, curator);
+        issue = messageService.findIssue(reg1, false);
         assertEquals(redmineCurator.getId(), issue.getAssigneeId());
-        assertEquals(1, messageService.countActiveMessagesFor(reg, curator));
-        assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
+        assertEquals(1, messageService.countActiveMessagesFor(reg1, curator));
+        assertEquals(0, messageService.countActiveMessagesFor(reg1, submitter));
 
         // 3. post a message back submitter
         String messageText3 = "Dear Submitter, the only solution it to end this test, hold on, just a millisec ...";
-        messageService.postMessage(reg, messageText3, curator, submitter);
-        issue = messageService.findIssue(reg, false);
+        messageService.postMessage(reg1, messageText3, curator, submitter);
+        issue = messageService.findIssue(reg1, false);
         assertEquals(redmineSubmitter.getId(), issue.getAssigneeId());
-        assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
-        assertEquals(2, messageService.countActiveMessagesFor(reg, submitter));
+        assertEquals(0, messageService.countActiveMessagesFor(reg1, curator));
+        assertEquals(2, messageService.countActiveMessagesFor(reg1, submitter));
 
         // 4. inactivate messages
-        messageService.inactivateMessages(reg);
-        issue = messageService.findIssue(reg, false);
+        messageService.inactivateMessages(reg1);
+        issue = messageService.findIssue(reg1, false);
         assertNull(issue.getAssigneeName());
-        assertEquals(0, messageService.countActiveMessagesFor(reg, curator));
-        assertEquals(0, messageService.countActiveMessagesFor(reg, submitter));
+        assertEquals(0, messageService.countActiveMessagesFor(reg1, curator));
+        assertEquals(0, messageService.countActiveMessagesFor(reg1, submitter));
 
-        List<Message> messages = messageService.listMessages(reg);
+        List<Message> messages = messageService.listMessages(reg1);
         assertEquals(3, messages.size());
 
         // 5. registration becomes rejected
-        reg.setStatus(RegistrationStatus.REJECTED);
-        messageService.updateIssueStatus(reg);
-        issue = messageService.findIssue(reg, false);
+        reg1.setStatus(RegistrationStatus.REJECTED);
+        messageService.updateIssueStatus(reg1);
+        issue = messageService.findIssue(reg1, false);
         assertEquals("rejected", issue.getStatusName());
 
         // 6. check all the messages in this issue
@@ -262,7 +272,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
      * {@inheritDoc}
      */
     @Override
-    //@Test
+//    @Test
     public void createTestDataSet() throws FileNotFoundException {
 
         User submitter = User.NewInstance("Submitter", SUBMITTER, "geheim");
@@ -274,14 +284,22 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         submitter = userService.save(submitter);
         userService.save(curator);
 
+
         Team team = Team.NewTitledInstance("Novis, Braidwood & Kilroy", "Novis, Braidwood & Kilroy");
         Reference nomRef = ReferenceFactory.newArticle();
         nomRef = referenceService.save(nomRef);
-
         nomRef.setAuthorship(team);
         nomRef.setTitle("P.M. Novis, J. Braidwood & C. Kilroy, Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64");
         TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Planothidium", null,  "victori", null, null, nomRef, "11-45", null);
         name = nameService.save(name);
+
+        Team team2 = Team.NewTitledInstance("H.U.Ling & Seppelt", "H.U.Ling & Seppelt");
+        Reference nomRef2 = ReferenceFactory.newArticle();
+        nomRef2 = referenceService.save(nomRef2);
+        nomRef2.setAuthorship(team2);
+        nomRef2.setTitle("H.U.Ling & Seppelt in Algol. Stud. 89");
+        TaxonName name2 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Apodochloris", null,  "irregularis", null, null, nomRef2, "55", null);
+        name2 = nameService.save(name2);
 
         Registration reg = Registration.NewInstance();
         reg.setName(name);
@@ -289,6 +307,12 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         reg.setIdentifier("http://phycotest.com/10815");
         reg = registrationService.save(reg);
 
+
+        Registration reg2 = Registration.NewInstance();
+        reg2.setName(name2);
+        reg2.setSubmitter(submitter);
+        reg2.setIdentifier("http://phycotest.com/10999");
+        reg2 = registrationService.save(reg2);
 
         //printDataSetWithNull(System.err, includeTableNames_create);
 
