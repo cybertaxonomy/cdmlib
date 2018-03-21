@@ -39,6 +39,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     Registration regREJECTED;
 
     String prep_ready = EnumSet.of(RegistrationStatus.PREPARATION,RegistrationStatus.READY).toString().replaceAll("[\\s\\]\\[]", "");
+    String prep = EnumSet.of(RegistrationStatus.PREPARATION,RegistrationStatus.READY).toString().replaceAll("[\\s\\]\\[]", "");
 
     Authentication auth;
 
@@ -88,6 +89,35 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
                 regREJECTED,
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
+    }
+
+    /**
+     * see https://dev.e-taxonomy.eu/redmine/issues/7323
+     */
+    @Test
+    public void issue7323() {
+
+        Registration regGranted = Registration.NewInstance();
+        regGranted.setStatus(RegistrationStatus.PREPARATION);
+
+        Registration regRequired = Registration.NewInstance();
+        regRequired.setStatus(RegistrationStatus.PREPARATION);
+
+
+        Authentication auth = authentication(
+                new CdmAuthority(regGranted, prep, EnumSet.of(CRUD.UPDATE))
+                );
+        int vote = voter.vote(auth,
+                regRequired,
+                // the attributes to test for
+                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regRequired.getUuid())));
+        assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
+
+        vote = voter.vote(auth,
+                regGranted,
+                // the attributes to test for
+                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regGranted.getUuid())));
+        assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
 }

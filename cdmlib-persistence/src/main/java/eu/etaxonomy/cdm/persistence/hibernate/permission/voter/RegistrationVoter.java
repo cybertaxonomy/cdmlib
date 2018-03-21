@@ -44,15 +44,26 @@ public class RegistrationVoter extends CdmPermissionVoter {
      * {@inheritDoc}
      */
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority cdmAuthority, Object object, Collection<ConfigAttribute> attributes, ValidationResult validationResult) {
+    protected Integer furtherVotingDescisions(CdmAuthority cdmAuthority, Object object, Collection<ConfigAttribute> attributes, ValidationResult vr) {
 
         // we only need to implement the case where a property is contained in the authority
         // the other case is covered by the CdmPermissionVoter
         if(cdmAuthority.hasProperty() && object instanceof Registration){
 
             RegistrationStatus status = ((Registration)object).getStatus();
-            if(cdmAuthority.getProperty().contains(status.name())){
-                return ACCESS_GRANTED;
+            vr.isPropertyMatch = cdmAuthority.getProperty().contains(status.name());
+            logger.debug("property is matching");
+
+            if(vr.isPropertyMatch){
+                if(vr.isIgnoreUuidMatch){
+                    logger.debug("ignoring the uuid match result");
+                    return ACCESS_GRANTED;
+                }
+                if(vr.isUuidMatch){
+                    return ACCESS_GRANTED;
+                } else {
+                    return ACCESS_DENIED;
+                }
             } else {
                 return ACCESS_DENIED;
             }

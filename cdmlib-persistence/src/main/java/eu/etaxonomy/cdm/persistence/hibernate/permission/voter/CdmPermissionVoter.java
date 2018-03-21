@@ -20,8 +20,8 @@ import org.springframework.security.core.GrantedAuthority;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
@@ -120,6 +120,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
                 vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(cdmBase.getUuid());
+                vr.isIgnoreUuidMatch = !auth.hasTargetUuid();
 
                 // first of all, always allow deleting orphan entities
                 if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(cdmBase)) {
@@ -127,7 +128,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 }
 
                 if(!auth.hasProperty()){
-                    if ( !auth.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
+                    if ( vr.isIgnoreUuidMatch && vr.isClassMatch && vr.isPermissionMatch){
                         logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
                         return ACCESS_GRANTED;
                     }
@@ -215,10 +216,17 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
      * to {@link CdmPermissionVoter#furtherVotingDescisions(CdmAuthority, Object, Collection, ValidationResult)}
      *
      * @author andreas kohlbecker
-     * @date Sep 5, 2012
+     * @since Sep 5, 2012
      *
      */
     protected class ValidationResult {
+
+        /**
+         * ignore the result of the uuid match test completely
+         * this flag becomes true when the authority given to
+         * an authentication has no uuid part
+         */
+        public boolean isIgnoreUuidMatch;
         boolean isPermissionMatch = false;
         boolean isPropertyMatch = false;
         boolean isUuidMatch = false;
