@@ -1571,4 +1571,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return countByTitle(config);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid) {
+        return dao.getFieldUnitsForGatheringEvent(gatheringEventUuid, null, null, null, null);
+    }
+
 }

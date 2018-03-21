@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -621,5 +622,12 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return an unordered list of all child derivatives
      */
     public List<DerivedUnit> getAllChildDerivatives(UUID specimenUuid);
+
+    /**
+     * Returns all {@link FieldUnit}s that are referencing this {@link GatheringEvent}
+     * @param gatheringEventUuid the {@link UUID} of the gathering event
+     * @return a list of field units referencing the gathering event
+     */
+    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
 
 }

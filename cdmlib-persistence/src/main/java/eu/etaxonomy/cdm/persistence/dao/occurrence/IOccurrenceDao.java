@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -341,4 +342,16 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return collection of specimen with the given type
      */
     public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     *
+     * Returns all {@link FieldUnit}s that are referencing this {@link GatheringEvent}
+     * @param gatheringEventUuid the {@link UUID} of the gathering event
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a list of field units referencing the gathering event
+     */
+    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

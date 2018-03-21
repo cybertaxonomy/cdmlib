@@ -1172,6 +1172,14 @@ public class DerivedUnitConverterTest extends Assert {
             return null;
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid) {
+            return null;
+        }
+
     }
 
 
