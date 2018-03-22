@@ -11,11 +11,7 @@
   <artifactId>cdmlib-test</artifactId>
   <name>CDM Integration Tests</name>
   <description>EDIT CDM library integration test layer. Some base classes and resources for CDM Library integration testing</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-test.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-test.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-test/</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>

@@ -14,11 +14,6 @@
   <version>4.15.0-SNAPSHOT</version>
   <name>CDM Entity Cache</name>
   <description>CDM Entity Cache</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-cache.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-cache.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-cache/</url>
-  </scm>
   <build>
     <plugins>
     </plugins>

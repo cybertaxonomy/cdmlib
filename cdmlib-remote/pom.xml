@@ -20,11 +20,6 @@
     the common data model via webservices in the wider sense</description>
   <!-- Revert this back to "war" before committing -->
   <packaging>jar</packaging>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-remote.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-remote.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-remote/</url>
-  </scm>
 
   <dependencies>
     <dependency>

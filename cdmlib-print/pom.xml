@@ -12,13 +12,7 @@
   <packaging>jar</packaging>
   <name>CDM Print Publisher</name>
   <description>EDIT CDM Print Publishing Framework</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-print.git
-    </connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-print.git
-    </developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-print</url>
-  </scm>
+
   <developers>
     <developer>
       <!-- your SVN account id please! -->

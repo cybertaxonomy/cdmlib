@@ -19,11 +19,7 @@
        see https://dev.e-taxonomy.eu/redmine/issues/5302 and https://dev.e-taxonomy.eu/redmine/issues/6695 
   -->
   <packaging>bundle</packaging>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-service.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-service.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-service/</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>

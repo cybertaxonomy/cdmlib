@@ -9,11 +9,7 @@
   <artifactId>cdmlib-model</artifactId>
   <name>CDM Domain Model</name>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-model.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-model.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-model/</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>
