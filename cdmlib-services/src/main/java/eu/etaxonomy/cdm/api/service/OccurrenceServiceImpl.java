@@ -1457,6 +1457,21 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
+            /*TODO: #6484 Neither isRetrieveIndirectlyAssociatedSpecimens() nor the AssignmentStatus
+             * is currently reflected in the HQL query. So using these in the count method will
+             * significantly slow down this method as we have to retreive the entities instead of
+             * the just the amount.
+             */
+            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens() || !occurrenceConfig.getAssignmentStatus().equals(AssignmentStatus.ALL_SPECIMENS)){
+                List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
+                occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
+                        occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                        occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+                occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
+                return occurrences.size();
+            }
+
             return dao.countOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
@@ -1465,7 +1480,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         else{
             return dao.countByTitle(config.getTitleSearchString());
         }
-
     }
 
     @Override
@@ -1489,42 +1503,49 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
-            //filter out (un-)assigned specimens
-            if(taxon==null && taxonName==null){
-                AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
-                List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
-                if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
-                    for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
-                        Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase, null, null, null, null);
-                        if(!associatedTaxa.isEmpty()){
-                            specimenWithAssociations.add(specimenOrObservationBase);
-                        }
-                    }
-                }
-                if(assignmentStatus.equals(AssignmentStatus.UNASSIGNED_SPECIMENS)){
-                    occurrences.removeAll(specimenWithAssociations);
-                }
-                if(assignmentStatus.equals(AssignmentStatus.ASSIGNED_SPECIMENS)){
-                    occurrences = new ArrayList<>(specimenWithAssociations);
-                }
-            }
-            // indirectly associated specimens
-            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
-                List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<>(occurrences);
-                for (SpecimenOrObservationBase specimen : occurrences) {
-                    List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
-                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
-                        if(!occurrences.contains(specimenOrObservationBase)){
-                            indirectlyAssociatedOccurrences.add(specimenOrObservationBase);
-                        }
-                    }
-                }
-                occurrences = indirectlyAssociatedOccurrences;
-            }
+            occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
             return new DefaultPagerImpl<SpecimenOrObservationBase>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
         }
         return super.findByTitle(config);
+    }
+
+    private List<SpecimenOrObservationBase> filterOccurencesByAssignmentAndHierarchy(
+            FindOccurrencesConfigurator occurrenceConfig, List<SpecimenOrObservationBase> occurrences, Taxon taxon,
+            TaxonName taxonName) {
+        //filter out (un-)assigned specimens
+        if(taxon==null && taxonName==null){
+            AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
+            List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
+            if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
+                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
+                    Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase, null, null, null, null);
+                    if(!associatedTaxa.isEmpty()){
+                        specimenWithAssociations.add(specimenOrObservationBase);
+                    }
+                }
+            }
+            if(assignmentStatus.equals(AssignmentStatus.UNASSIGNED_SPECIMENS)){
+                occurrences.removeAll(specimenWithAssociations);
+            }
+            if(assignmentStatus.equals(AssignmentStatus.ASSIGNED_SPECIMENS)){
+                occurrences = new ArrayList<>(specimenWithAssociations);
+            }
+        }
+        // indirectly associated specimens
+        if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+            List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<>(occurrences);
+            for (SpecimenOrObservationBase specimen : occurrences) {
+                List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
+                for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
+                    if(!occurrences.contains(specimenOrObservationBase)){
+                        indirectlyAssociatedOccurrences.add(specimenOrObservationBase);
+                    }
+                }
+            }
+            occurrences = indirectlyAssociatedOccurrences;
+        }
+        return occurrences;
     }
 
     @Override
