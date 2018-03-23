@@ -220,12 +220,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		String code = "";
 		if(facade.getCollection() != null){
 			code = facade.getCollection().getCode();
-			if (CdmUtils.isEmpty(code)){
+			if (isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
 				if (institution != null){
 					code = institution.getCode();
 				}
-				if (CdmUtils.isEmpty(code)){
+				if (isBlank(code)){
 					Collection superCollection = facade.getCollection().getSuperCollection();
 					if (superCollection != null){
 						code = superCollection.getCode();
