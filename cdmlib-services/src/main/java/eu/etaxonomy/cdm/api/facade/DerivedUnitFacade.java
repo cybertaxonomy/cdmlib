@@ -2581,7 +2581,7 @@ public class DerivedUnitFacade {
 	 * @param text text representation of distance
 	 * @return the formatted distance string
 	 */
-	private String distanceString(Number min, Number max, String text, String unit) {
+	public static String distanceString(Number min, Number max, String text, String unit) {
 		if (StringUtils.isNotBlank(text)){
 			return text;
 		}else{
