@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 
 /**
  * @author pplitzner
@@ -27,22 +28,8 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     private UUID associatedTaxonNameUuid;
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
-    public static enum AssignmentStatus{
-        ALL_SPECIMENS,
-        ASSIGNED_SPECIMENS,
-        UNASSIGNED_SPECIMENS
-    }
-    private AssignmentStatus assignmentStatus = AssignmentStatus.ALL_SPECIMENS;
 
-    /**
-     * Enum to indicate if the retrieved specimens are associated to a taxon. Default is <code>ALL_SPECIMEN</code>.<br>
-     * <br>
-     * <b>Note:</b>This status is <b>ignored</b> if the configurator has either a name
-     * or a taxon set via {@link #setAssociatedTaxonNameUuid(UUID)} or
-     * {@link #setAssociatedTaxonUuid(UUID)}
-     *
-     * @param associatedWithTaxon
-     */
+    private AssignmentStatus assignmentStatus = AssignmentStatus.ALL_SPECIMENS;
 
     public void setAssignmentStatus(AssignmentStatus assignmentStatus) {
         this.assignmentStatus = assignmentStatus;
