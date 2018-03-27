@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package unitils;
+package org.unitils;
 
 import java.io.IOException;
 import java.io.InputStream;
