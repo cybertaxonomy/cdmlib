@@ -97,7 +97,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
 
     @Override
-    @Test
+    // @Test
     public void createTestDataSet() throws FileNotFoundException {
         // 1. create person and a reference
         Person person = Person.NewTitledInstance("Hallo you");

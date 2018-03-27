@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.unitils.AlternativeUnitilsJUnit4TestClassRunner;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -49,7 +50,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import unitils.AlternativeUnitilsJUnit4TestClassRunner;
 
 /**
  * @author a.kohlbecker
