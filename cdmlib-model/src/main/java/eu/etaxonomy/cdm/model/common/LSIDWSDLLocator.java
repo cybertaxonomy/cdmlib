@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.common;
 
@@ -26,23 +26,23 @@ import com.ibm.wsdl.util.StringUtils;
 
 /**
  * WSDLLocator based almost totally upon WSIFWSDLLocatorImpl by Owen Burroughs
- * Created primarily because locating the required wsdl documents in the classpath 
+ * Created primarily because locating the required wsdl documents in the classpath
  * seems like a safer thing than using a file path and relying on users remembering to
  * copy the correct wsdl files into the correct places.
- * 
+ *
  * @author ben.clark
  * @author Owen Burroughs
  */
 public class LSIDWSDLLocator implements WSDLLocator {
 	private static Log log = LogFactory.getLog(LSIDWSDLLocator.class);
-	
+
 	 private Reader baseReader = null;
 	 private Reader importReader = null;
 	 private String contextURI = null;
 	 private String wsdlLocation = null;
 	 private String documentBase = null;
 	 private String importBase = null;
-	 private ClassLoader loader = null; 
+	 private ClassLoader loader = null;
 
 	 public LSIDWSDLLocator(String ctxt, String wsdlURI, ClassLoader cl) {
 		contextURI = ctxt;
@@ -68,18 +68,20 @@ public class LSIDWSDLLocator implements WSDLLocator {
 				if (loader != null) {
 					InputStream in = null;
 					try {
-						if (contextURL != null)
-							url = new URL(contextURL, wsdlLocation);
-						else {
-							if (wsdlLocation.indexOf(":") == -1)
-								url = new URL("file", null, wsdlLocation);
-							else
-								url = new URL(wsdlLocation);
+						if (contextURL != null) {
+                            url = new URL(contextURL, wsdlLocation);
+                        } else {
+							if (wsdlLocation.indexOf(":") == -1) {
+                                url = new URL("file", null, wsdlLocation);
+                            } else {
+                                url = new URL(wsdlLocation);
+                            }
 						}
 						String wsdlRelativeLocation = url.getPath();
-						if (wsdlRelativeLocation.startsWith("/"))
-							wsdlRelativeLocation = wsdlRelativeLocation
+						if (wsdlRelativeLocation.startsWith("/")) {
+                            wsdlRelativeLocation = wsdlRelativeLocation
 									.substring(1);
+                        }
 						in = loader
 								.getResourceAsStream(wsdlRelativeLocation);
 						baseReader = new InputStreamReader(in);
@@ -91,8 +93,9 @@ public class LSIDWSDLLocator implements WSDLLocator {
 					baseReader = new InputStreamReader(StringUtils
 							.getContentAsInputStream(url));
 				}
-				if (url != null)
-					documentBase = url.toString();
+				if (url != null) {
+                    documentBase = url.toString();
+                }
 			} catch (Exception e) {
 				documentBase = wsdlLocation;
 			}
@@ -104,13 +107,14 @@ public class LSIDWSDLLocator implements WSDLLocator {
 	/**
 	 * @see javax.wsdl.xml.WSDLLocator#getBaseURI()
 	 */
-	public String getBaseURI() {
-		return documentBase; 
+	@Override
+    public String getBaseURI() {
+		return documentBase;
 	}
 
 	/**
 	 * used to read imports as a document is parsed
-	 * 
+	 *
 	 * @see javax.wsdl.xml.WSDLLocator#getImportReader(String, String)
 	 */
 	public Reader getImportReader(String base, String relativeLocation) {
@@ -223,7 +227,7 @@ public class LSIDWSDLLocator implements WSDLLocator {
 
 		return importReader;
 	}
-	
+
 	/**
 	 * Resolve a path when the relative location begins with ..
 	 */
@@ -253,47 +257,54 @@ public class LSIDWSDLLocator implements WSDLLocator {
 				break;
 			}
 		}
-		if (found + 1 < dd)
-			return null;
+		if (found + 1 < dd) {
+            return null;
+        }
 		return sb2.toString() + sb.toString();
 	}
 
 	/**
 	 * @see javax.wsdl.xml.WSDLLocator#getLatestImportURI()
 	 */
-	public String getLatestImportURI() {
-		return importBase; 
+	@Override
+    public String getLatestImportURI() {
+		return importBase;
 	}
 
 	/**
 	 * @see javax.wsdl.xml.WSDLLocator#getBaseInputSource()
 	 */
-	public InputSource getBaseInputSource() {
+	@Override
+    public InputSource getBaseInputSource() {
 		return new InputSource(getBaseReader());
 	}
 
 	/**
 	 * @see javax.wsdl.xml.WSDLLocator#getImportInputSource(String, String)
 	 */
-	public InputSource getImportInputSource(String arg0, String arg1) {
+	@Override
+    public InputSource getImportInputSource(String arg0, String arg1) {
 		return new InputSource(getImportReader(arg0, arg1));
 	}
 
-	public void close() {
-		if (baseReader != null)
-			try {
+	@Override
+    public void close() {
+		if (baseReader != null) {
+            try {
 				baseReader.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		if (importReader != null)
-			try {
+        }
+		if (importReader != null) {
+            try {
 				importReader.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+        }
 	}
 
 }

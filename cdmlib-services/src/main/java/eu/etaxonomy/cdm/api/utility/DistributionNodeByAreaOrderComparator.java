@@ -27,6 +27,10 @@ public class DistributionNodeByAreaOrderComparator implements Comparator<TreeNod
 
     @Override
     public int compare(TreeNode<Set<Distribution>, NamedArea> node1, TreeNode<Set<Distribution>, NamedArea> node2) {
+        if (node1.equals(node2)){
+            return 0;
+        }
+
         NamedArea area1 = node1.getNodeId();
         NamedArea area2 = node2.getNodeId();
         if (area1 == null && area2 == null){

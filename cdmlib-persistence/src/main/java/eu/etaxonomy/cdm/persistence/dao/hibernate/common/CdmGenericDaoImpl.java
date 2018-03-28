@@ -83,7 +83,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 
 	private Set<Class<? extends CdmBase>> allCdmClasses = null;
-	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<>();
+	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<Class<? extends CdmBase>, Set<ReferenceHolder>>();
 
 
 	protected class ReferenceHolder{
@@ -109,8 +109,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
       if (limit != null){
           criteria.setMaxResults(limit);
       }
-      //criteria.setReadOnly(true);
-        @SuppressWarnings("unchecked")
+
         List<CdmBase> result = criteria.list();
         return result;
 	}
@@ -120,13 +119,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         Session session = super.getSession();
         Query queryCount = session.createQuery("SELECT count(this) FROM "+ clazz.getSimpleName() + " this WHERE this." + propertyName +" = :referencedObject").setEntity("referencedObject", referencedCdmBase);
 
+        @SuppressWarnings("unchecked")
         Integer result =((Number)queryCount.uniqueResult()).intValue();
         return result;
     }
 
 	@Override
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz,
-	        String propertyName, CdmBase item, Integer limit){
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit){
 		Session session = super.getSession();
 		String thisClassStr = itemClass.getSimpleName();
 		String otherClassStr = clazz.getSimpleName();
@@ -194,13 +193,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 
 			Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
-			Integer count = getReferencingObjectsCount(referencedCdmBase);
+			//Integer count = getReferencingObjectsCount(referencedCdmBase);
 			for (ReferenceHolder refHolder: holderSet){
-			    if (count > 100000) {
-                    handleReferenceHolder(referencedCdmBase, result, refHolder, true);
-                }else{
+//			    if (count > 100000) {
+//                    handleReferenceHolder(referencedCdmBase, result, refHolder, true);
+//                }else{
                     handleReferenceHolder(referencedCdmBase, result, refHolder, false);
-                }
+//                }
 			}
 			return result;
 		} catch (Exception e) {
@@ -489,6 +488,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		SessionImpl session = (SessionImpl) getSession();
+		if (cdmBase1 == null){
+		    throw new MergeException("The merge target is already deleted in DB.");
+		}
+		if (cdmBase2 == null){
+		    throw new MergeException("The merge candidate is already deleted in DB.");
+		}
 		DeduplicationHelper helper = new DeduplicationHelper(session, this);
 		helper.merge(cdmBase1, cdmBase2, mergeStrategy);
 	}

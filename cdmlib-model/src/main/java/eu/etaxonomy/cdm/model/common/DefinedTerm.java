@@ -169,6 +169,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
         return getTermByUuid(uuidWfoNameIdentifier);
     }
 
+    public static DefinedTerm WFO_NAME_IDENTIFIER(){
+        return getTermByUuid(uuidWfoNameIdentifier);
+    }
+
 
 	@Override
 	public void resetTerms() {

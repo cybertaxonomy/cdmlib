@@ -50,14 +50,14 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 
 	@XmlElementWrapper(name = "Markers", nillable = true)
 	@XmlElement(name = "Marker")
-	@OneToMany(fetch=FetchType.LAZY)
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
 	protected Set<Marker> markers = new HashSet<Marker>();
 
 	@XmlElementWrapper(name = "Annotations", nillable = true)
 	@XmlElement(name = "Annotation")
-    @OneToMany(fetch=FetchType.LAZY)
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
 	protected Set<Annotation> annotations = new HashSet<Annotation>();

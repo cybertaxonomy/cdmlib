@@ -44,7 +44,10 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
@@ -824,7 +827,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     			+ "	) as accFamName,tb.DTYPE, tb.id as TaxonID ,tb.titleCache taxonTitle,  tnb.rank_id as RankID, tnb.id as NameID,"
     			+ " tnb.namecache as name, tnb.titleCache as nameAuthor, tnb.fullTitleCache nameAndNomRef,"
     			+ "	r.titleCache as nomRef, r.abbrevTitle nomRefAbbrevTitle, r.title nomRefTitle, r.datepublished_start nomRefPublishedStart, r.datepublished_end nomRefPublishedEnd, r.pages nomRefPages, inRef.abbrevTitle inRefAbbrevTitle,tnb.nomenclaturalmicroreference as detail,"
-    			+ "	nameType.namecache nameType, nameType.titleCache nameTypeAuthor, nameType.fullTitleCache nameTypeFullTitle, nameTypeRef.titleCache nameTypeRef, inRef.seriespart as inRefSeries, inRef.datepublished_start inRefPublishedStart, inRef.datepublished_end inRefPublishedEnd, inRef.volume as inRefVolume"
+    			+ "	nameType.namecache nameType, nameType.titleCache nameTypeAuthor, nameType.fullTitleCache nameTypeFullTitle, nameTypeRef.titleCache nameTypeRef, "
+    			+ " inRef.seriespart as inRefSeries, inRef.datepublished_start inRefPublishedStart, inRef.datepublished_end inRefPublishedEnd, inRef.volume as inRefVolume"
     			+ " FROM TaxonBase tb"
     			+ " LEFT OUTER JOIN TaxonName tnb ON tb.name_id = tnb.id"
     			+ "	LEFT OUTER JOIN Reference r ON tnb.nomenclaturalreference_id = r.id"
@@ -841,16 +845,49 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
     	SQLQuery query = getSession().createSQLQuery(sql);
     	List result = query.list();
-    	 //Delimiter used in CSV file
+
+    	String hqlQueryStringSelect = "SELECT * ";
+
+    	String hqlQueryStringFrom = "FROM TaxonBase taxonBase LEFT OUTER JOIN taxonBase.name as tnb LEFT OUTER JOIN  tnb.nomenclaturalReference as nomRef LEFT OUTER JOIN taxonBase.taxonNodes as node LEFT OUTER JOIN tnb.typeDesignations as type "
+    	        + "LEFT OUTER JOIN type.typifiedNames as nameType LEFT OUTER JOIN nameType.nomenclaturalReference as nameTypeRef LEFT OUTER JOIN nomRef.inReference as inRef LEFT OUTER JOIN taxonBase.acceptedTaxon as accTaxon "
+    	        + "LEFT OUTER JOIN accTaxon.taxonNodes as accTaxonNodes";
+
+
+    	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
+    	List hqlResult = hqlQuery.list();
 
 
 		List<HashMap<String,String>> nameRecords = new ArrayList();
 		HashMap<String,String> nameRecord = new HashMap<String,String>();
-		for(Object object : result)
+		Taxon accTaxon = null;
+		Synonym syn = null;
+		TaxonNode familyNode = null;
+		for(Object object : hqlResult)
          {
 			Object[] row = (Object[])object;
 			nameRecord = new HashMap<String,String>();
-			nameRecord.put("famName",(String)row[0]);
+			TaxonBase taxonBase = (TaxonBase)row[0];
+			if (taxonBase instanceof Taxon){
+			    accTaxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+			} else{
+			    nameRecord.put("famName", "");
+			    syn = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
+			    accTaxon = syn.getAcceptedTaxon();
+			}
+			Set<TaxonNode> nodes = accTaxon.getTaxonNodes();
+            if (nodes.size() == 1){
+                TaxonNode node = nodes.iterator().next();
+                familyNode = node.getAncestorOfRank(Rank.FAMILY());
+
+            }
+
+             nameRecord.put("famName",familyNode.getTaxon().getName().getNameCache());
+             nameRecord.put("accFamName","");
+
+
+			//nameRecord.put("famName",(String)row[0]);
+
+
 			nameRecord.put("accFamName",(String)row[1]);
 
 			nameRecord.put("DTYPE",(String)row[2]);
