@@ -499,6 +499,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 // find synonyms
                 if (synonyms.size()>0){
                     query.setParameterList("synonyms", synonyms);
+                }else if (!doTaxa && !doCommonNames && !doIncludeMisappliedNames){
+                    return null;
                 }
             }
 
