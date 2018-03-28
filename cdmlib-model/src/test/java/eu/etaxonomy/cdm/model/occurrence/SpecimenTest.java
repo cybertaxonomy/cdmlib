@@ -350,10 +350,10 @@ public class SpecimenTest {
 //		assertEquals(media, specimenClone.getMedia().iterator().next());  #3597
 //		assertEquals(right, specimenClone.getRights().iterator().next()); #5762
 		assertTrue("Rights must contain 1 rights object", specimenClone.getRights().size() == 1);
-        assertFalse("Rights must be coloned", specimenClone.getRights().iterator().next().equals(right));
+  	    assertTrue("Rights must not be cloned", specimenClone.getRights().iterator().next().equals(right));
 
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));
-		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
+		assertEquals(source.getId(), ((OriginalSourceBase<?>)specimenClone.getSources().iterator().next()).getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
 	}

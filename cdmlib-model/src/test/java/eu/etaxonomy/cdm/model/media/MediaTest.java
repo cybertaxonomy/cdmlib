@@ -137,7 +137,7 @@ public class MediaTest {
 //            #5762
 //            Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
             Assert.assertTrue("Rights must contain 1 rights object", mediaClone.getRights().size() == 1);
-            Assert.assertFalse("Rights must be coloned", mediaClone.getRights().iterator().next().equals(rights1));
+            Assert.assertTrue("Rights must not be cloned", mediaClone.getRights().iterator().next().equals(rights1));
 
             Assert.assertTrue("Clone must have a default language title", mediaClone.getAllTitles().containsKey(Language.DEFAULT()));
             Assert.assertSame("Title.language must be the same", languageString2.getLanguage(), mediaClone.getAllTitles().get(Language.DEFAULT()).getLanguage() );

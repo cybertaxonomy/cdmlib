@@ -156,7 +156,7 @@ public class TaxonBaseTest extends EntityTestBase {
 		freeT.setSec(secRef);
 		freeT.setName(test);
 		Taxon clone = (Taxon)freeT.clone();
-		assertNull(clone.getSec());
+		assertSame(freeT.getSec(), clone.getSec());
 		assertSame(freeT.getName(), clone.getName());
 	}
 
