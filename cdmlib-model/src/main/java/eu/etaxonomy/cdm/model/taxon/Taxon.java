@@ -690,7 +690,7 @@ public class Taxon
      * The taxon relationship will also be added to the set of taxon
      * relationships to the other (pro parte misapplied name) taxon involved in the created relationship.
      *
-     * @param proPartemisappliedNameTaxon   the taxon which plays the source role in the new taxon relationship
+     * @param proParteMisappliedNameTaxon   the taxon which plays the source role in the new taxon relationship
      * @param citation              the reference source for the new taxon relationship
      * @param microcitation         the string with the details describing the exact localisation within the reference
      * @return
@@ -702,8 +702,78 @@ public class Taxon
      * @see                         #getRelationsFromThisTaxon()
      * @see                         #getRelationsToThisTaxon()
      */
-    public TaxonRelationship addProParteMisappliedName(Taxon proPartemisappliedNameTaxon, Reference citation, String microcitation) {
-        return proPartemisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    public TaxonRelationship addProParteMisappliedName(Taxon proParteMisappliedNameTaxon, Reference citation, String microcitation) {
+        return proParteMisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    }
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+     * "partial misapplied name for") instance where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (pro parte misapplied name) taxon involved in the created relationship.
+     *
+     * @param partialMisappliedNameTaxon   the taxon which plays the source role in the new taxon relationship
+     * @param citation              the reference source for the new taxon relationship
+     * @param microcitation         the string with the details describing the exact localization within the reference
+     * @return
+     * @see                         #addMisappliedName(Taxon, Reference, String)
+     * @see                         #addProParteMisappliedName(Taxon, Reference, String)
+     * @see                         #getMisappliedNames()
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addPartialMisappliedName(Taxon partialMisappliedNameTaxon, Reference citation, String microcitation) {
+        return partialMisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    }
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+     * "pro parte synonym for") instance where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (pro parte synonym) taxon involved in the created relationship.
+     *
+     * @param proParteTaxon         the taxon which plays the source role in the new taxon relationship
+     * @param citation              the reference source for the new taxon relationship
+     * @param microcitation         the string with the details describing the exact localisation within the reference
+     * @return
+     * @see                         #getMisappliedNames()
+     * @see                         #addProParteMisappliedName(Taxon, Reference, String)
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addProparteSynonym(Taxon proParteTaxon, Reference citation, String microcitation) {
+        return proParteTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR(), citation, microcitation);
+    }
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} instance with
+     * {@link TaxonRelationshipType taxon relationship type} {@link TaxonRelationshipType#PARTIAL_SYNONYM_FOR()
+     * partial synonym for} where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (partial synonym) taxon involved in the created relationship.
+     *
+     * @param partialTaxon         the taxon which plays the source role in the new taxon relationship
+     * @param citation             the reference source for the new taxon relationship
+     * @param microcitation        the string with the details describing the exact localisation within the reference
+     * @return
+     * @see                         #addProparteSynonym(Taxon, Reference, String)
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addPartialSynonym(Taxon partialTaxon, Reference citation, String microcitation) {
+        return partialTaxon.addTaxonRelation(this, TaxonRelationshipType.PARTIAL_SYNONYM_FOR(), citation, microcitation);
     }
 
     /**
