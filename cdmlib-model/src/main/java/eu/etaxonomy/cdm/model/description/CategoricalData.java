@@ -224,12 +224,13 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * All existing state data are removed.
      * @return
      */
-    @Transient
     public List<StateData> setStateDataOnly(List<State> states){
-        this.stateData.clear();
-        for (State state : states){
-            StateData stateDate = StateData.NewInstance(state);
-            this.stateData.add(stateDate);
+        List<StateData> stateDataList = new ArrayList<>(getStateData());
+        for (StateData stateData : stateDataList) {
+            removeStateData(stateData);
+        }
+        for (State state : states) {
+            addStateData(state);
         }
         return this.stateData;
     }
