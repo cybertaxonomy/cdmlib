@@ -488,12 +488,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		SessionImpl session = (SessionImpl) getSession();
-		if (cdmBase1 == null){
-		    throw new MergeException("The merge target is already deleted in DB.");
-		}
-		if (cdmBase2 == null){
-		    throw new MergeException("The merge candidate is already deleted in DB.");
-		}
+
 		DeduplicationHelper helper = new DeduplicationHelper(session, this);
 		helper.merge(cdmBase1, cdmBase2, mergeStrategy);
 	}

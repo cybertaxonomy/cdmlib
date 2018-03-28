@@ -603,7 +603,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertEquals("Taxon description must have article1 as source", taxDesc.getSources().iterator().next().getCitation(),article1);
 
 		//test exceptions
-		testMergeExceptions(name1, name2, taxon1, zooName1);
+		try{
+		    testMergeExceptions(name1, name2, taxon1, zooName1);
+		    Assert.fail();
+		}catch(MergeException e){
+
+		}
 
 
 		//FIXME TO BE IMPLEMENTED
