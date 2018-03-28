@@ -66,7 +66,14 @@ public abstract class DaoBase {
 
         @Override
         public int compare(OrderHint o1, OrderHint o2) {
-            return o1.getPropertyName().compareTo(o2.getPropertyName());
+            if (o1.equals(o2)){
+                return 0;
+            }
+            int result = o1.getPropertyName().compareTo(o2.getPropertyName());
+            if (result == 0){
+                result = o1.toString().compareTo(o2.toString());
+            }
+            return result;
         }
 
     }
