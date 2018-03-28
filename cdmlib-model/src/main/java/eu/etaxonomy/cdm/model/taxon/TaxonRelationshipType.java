@@ -251,7 +251,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
      * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
      * the {@link TaxonBase#getSec() concept reference} to (partly) denominate the same real taxon
      * as the one meant by the target {@link Taxon taxon}. Additionaly another real taxon
-     * is (partly) demoninated by the given name in the concept reference. Therefore it is called
+     * is (partly) denominated by the given name in the concept reference. Therefore it is called
      * pro parte. <BR>
      * This type is neither symmetric nor transitive.
      *

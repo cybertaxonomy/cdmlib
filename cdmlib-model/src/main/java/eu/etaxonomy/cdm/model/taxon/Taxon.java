@@ -657,7 +657,7 @@ public class Taxon
      * The taxon relationship will also be added to the set of taxon
      * relationships to the other (misapplied name) taxon involved in the created relationship.
      *
-     * @param misappliedNameTaxon	the taxon which plays the target role in the new taxon relationship
+     * @param misappliedNameTaxon	the taxon which plays the source role in the new taxon relationship
      * @param citation				the reference source for the new taxon relationship
      * @param microcitation			the string with the details describing the exact localisation within the reference
      * @return
@@ -688,9 +688,9 @@ public class Taxon
      * "pro parte misapplied name for") instance where <i>this</i> taxon plays the target role
      * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
      * The taxon relationship will also be added to the set of taxon
-     * relationships to the other (misapplied name) taxon involved in the created relationship.
+     * relationships to the other (pro parte misapplied name) taxon involved in the created relationship.
      *
-     * @param misappliedNameTaxon   the taxon which plays the target role in the new taxon relationship
+     * @param proPartemisappliedNameTaxon   the taxon which plays the source role in the new taxon relationship
      * @param citation              the reference source for the new taxon relationship
      * @param microcitation         the string with the details describing the exact localisation within the reference
      * @return
