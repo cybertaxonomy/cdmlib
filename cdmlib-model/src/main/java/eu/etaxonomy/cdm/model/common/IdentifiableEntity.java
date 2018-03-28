@@ -609,11 +609,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             result.addSource(newSource);
         }
 
-        //Rights
+        //Rights  - reusable since #5762
         result.rights = new HashSet<>();
-        for(Rights rights : getRights()) {
-            Rights newRights = (Rights)rights.clone();
-            result.addRights(newRights);
+        for(Rights right : getRights()) {
+            result.addRights(right);
         }
 
 
