@@ -3400,6 +3400,37 @@ public class TaxonName
         return result;
     }
 
+//************************ isType ***********************************************/
+
+    /**
+     * @return
+     */
+    @Override
+    public boolean isNonViral() {
+        return nameType.isNonViral();
+    }
+
+    @Override
+    public boolean isZoological(){
+        return nameType.isZoological();
+    }
+    @Override
+    public boolean isBotanical() {
+        return nameType.isBotanical();
+    }
+    @Override
+    public boolean isCultivar() {
+        return nameType.isCultivar();
+    }
+    @Override
+    public boolean isBacterial() {
+        return nameType.isBacterial();
+    }
+    @Override
+    public boolean isViral() {
+        return nameType.isViral();
+    }
+
 
 //*********************** CLONE ********************************************************/
 
@@ -3445,7 +3476,7 @@ public class TaxonName
             }
 
 
-            //To Relations
+            //to relations
             result.relationsToThisName = new HashSet<>();
             for (NameRelationship toRelationship : getRelationsToThisName()){
                 NameRelationship newRelationship = (NameRelationship)toRelationship.clone();
@@ -3453,7 +3484,7 @@ public class TaxonName
                 result.relationsToThisName.add(newRelationship);
             }
 
-            //From Relations
+            //from relations
             result.relationsFromThisName = new HashSet<>();
             for (NameRelationship fromRelationship : getRelationsFromThisName()){
                 NameRelationship newRelationship = (NameRelationship)fromRelationship.clone();
@@ -3476,7 +3507,7 @@ public class TaxonName
 
 
             //HybridChildRelations
-            result.hybridChildRelations = new HashSet<HybridRelationship>();
+            result.hybridChildRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridChildRelations()){
                 HybridRelationship newChildRelationship = (HybridRelationship)hybridRelationship.clone();
                 newChildRelationship.setRelatedTo(result);
@@ -3484,7 +3515,7 @@ public class TaxonName
             }
 
             //HybridParentRelations
-            result.hybridParentRelations = new HashSet<HybridRelationship>();
+            result.hybridParentRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridParentRelations()){
                 HybridRelationship newParentRelationship = (HybridRelationship)hybridRelationship.clone();
                 newParentRelationship.setRelatedFrom(result);
@@ -3521,34 +3552,6 @@ public class TaxonName
 
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public boolean isNonViral() {
-        return nameType.isNonViral();
-    }
-
-    @Override
-    public boolean isZoological(){
-        return nameType.isZoological();
-    }
-    @Override
-    public boolean isBotanical() {
-        return nameType.isBotanical();
-    }
-    @Override
-    public boolean isCultivar() {
-        return nameType.isCultivar();
-    }
-    @Override
-    public boolean isBacterial() {
-        return nameType.isBacterial();
-    }
-    @Override
-    public boolean isViral() {
-        return nameType.isViral();
-    }
 
 }
 

@@ -87,8 +87,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("portal_taxon")
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
-public class TaxonPortalController extends TaxonController
-{
+public class TaxonPortalController extends TaxonController{
 
     public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
 

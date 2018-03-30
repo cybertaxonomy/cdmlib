@@ -79,7 +79,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
-    private List<StateData> stateData = new ArrayList<StateData>();
+    private List<StateData> stateData = new ArrayList<>();
 
     @XmlElement(name = "UnknownData")
     private final Boolean unknownData = false;

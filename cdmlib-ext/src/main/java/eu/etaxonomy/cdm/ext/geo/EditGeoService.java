@@ -315,7 +315,7 @@ public class EditGeoService implements IEditGeoService {
             List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
             Set<UUID> namedAreaUuids) throws IOException {
 
-        Set<NamedArea> areas = new HashSet<NamedArea>();
+        Set<NamedArea> areas = new HashSet<>();
 
         if(areaVocabularyUuid != null){
             TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
@@ -326,7 +326,7 @@ public class EditGeoService implements IEditGeoService {
         }
         if(namedAreaUuids != null && !namedAreaUuids.isEmpty()){
             for(DefinedTermBase<?> dtb : termDao.list(namedAreaUuids, null, null, null, null)){
-                areas.add((NamedArea)dtb);
+                areas.add((NamedArea)CdmBase.deproxy(dtb));
             }
         }
 

@@ -1800,10 +1800,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	//same without doubtful
     	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, true));
     	Assert.assertEquals(1, dto.getIncludedTaxa().size());
-
-
-
-
     }
 
     @Test
