@@ -143,4 +143,14 @@ public class Character extends Feature {
         this.structure = structure;
         this.property = property;
     }
+
+ // ****************** GETTER / SETTER *********************************************/
+
+    public FeatureNode getStructure() {
+        return structure;
+    }
+
+    public FeatureNode getProperty() {
+        return property;
+    }
 }
