@@ -1,19 +1,34 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
@@ -21,6 +36,14 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 @Transactional(readOnly = false)
 public class WorkingSetService extends
 		AnnotatableServiceBase<WorkingSet, IWorkingSetDao> implements IWorkingSetService {
+
+    private static Logger logger = Logger.getLogger(WorkingSetService.class);
+
+    @Autowired
+    private IOccurrenceService occurrenceService;
+
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
 
 	@Override
 	@Autowired
@@ -44,4 +67,71 @@ public class WorkingSetService extends
     public List<UuidAndTitleCache<WorkingSet>> getWorkingSetUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
         return dao.getWorkingSetUuidAndTitleCache( limitOfInitialElements, pattern);
     }
+
+	@Override
+	public Collection<RowWrapperDTO> getRowWrapper(WorkingSet workingSet) {
+	    return workingSet.getDescriptions().stream()
+	            .map(description->createRowWrapper(null, description, workingSet))
+	            .collect(Collectors.toList());
+	}
+
+    @Override
+    public Collection<RowWrapperDTO> loadSpecimens(WorkingSet workingSet){
+        List<RowWrapperDTO> specimenCache = new ArrayList<>();
+        //set filter parameters
+        TaxonNodeFilter filter = TaxonNodeFilter.NewRankInstance(workingSet.getMinRank(), workingSet.getMaxRank());
+        workingSet.getGeoFilter().forEach(area -> filter.orArea(area.getUuid()));
+        workingSet.getTaxonSubtreeFilter().forEach(node -> filter.orSubtree(node));
+        filter.setIncludeUnpublished(true);
+
+        List<UUID> filteredNodes = taxonNodeService.uuidList(filter);
+        for (UUID uuid : filteredNodes) {
+            //TODO implement occurrence service for taxon nodes
+            // let it return UuidAndTitleCache
+            TaxonNode taxonNode = taxonNodeService.load(uuid);
+            Taxon taxon = taxonNode.getTaxon();
+            if(taxon!=null){
+                FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+                config.setAssociatedTaxonUuid(taxon.getUuid());
+                List<SpecimenOrObservationBase> specimensForTaxon = occurrenceService.findByTitle(config).getRecords();
+                specimensForTaxon.forEach(specimen -> specimenCache.add(createRowWrapper(specimen, null, workingSet)));
+            }
+        }
+        return specimenCache;
+    }
+
+	private RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptionBase description, WorkingSet workingSet){
+	    if(description!=null){
+	        specimen = description.getDescribedSpecimenOrObservation();
+	    }
+        TaxonNode taxonNode = null;
+        FieldUnit fieldUnit = null;
+        String identifier = null;
+        NamedArea country = null;
+        //supplemental information
+        if(specimen!=null){
+            Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(specimen, null, null, null, null);
+            if(associatedTaxa!=null){
+                //FIXME: what about multiple associated taxa
+                Set<TaxonNode> taxonSubtreeFilter = workingSet.getTaxonSubtreeFilter();
+                if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
+                    taxonNode = ((Taxon) associatedTaxa.iterator().next()).getTaxonNode(taxonSubtreeFilter.iterator().next().getClassification());
+                }
+            }
+            Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(specimen.getUuid());
+            if(fieldUnits.size()!=1){
+                logger.error("More than one or no field unit found for specimen"); //$NON-NLS-1$
+            }
+            else{
+                fieldUnit = fieldUnits.iterator().next();
+            }
+            if(specimen instanceof DerivedUnit){
+                identifier = occurrenceService.getMostSignificantIdentifier(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
+            }
+            if(fieldUnit!=null && fieldUnit.getGatheringEvent()!=null){
+                country = fieldUnit.getGatheringEvent().getCountry();
+            }
+        }
+        return new RowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
+	}
 }
