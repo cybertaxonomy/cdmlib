@@ -172,6 +172,6 @@ public class WorkingSetService extends
                 country = fieldUnit.getGatheringEvent().getCountry();
             }
         }
-        return new RowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
+        return new RowWrapperDTO(description, specimen, taxonNode, fieldUnit, identifier, country);
 	}
 }

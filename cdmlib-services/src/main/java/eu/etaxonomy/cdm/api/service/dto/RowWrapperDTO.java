@@ -46,8 +46,8 @@ public class RowWrapperDTO implements Serializable {
     private NamedArea country;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
 
-    public RowWrapperDTO(DescriptionBase description, TaxonNode taxonNode, FieldUnit fieldUnit, String identifier,
-            NamedArea country) {
+    public RowWrapperDTO(DescriptionBase description, SpecimenOrObservationBase specimen, TaxonNode taxonNode, FieldUnit fieldUnit, String identifier,
+                NamedArea country) {
         this.taxonNode = taxonNode;
         this.fieldUnit = fieldUnit;
         this.identifier = identifier;
@@ -55,6 +55,9 @@ public class RowWrapperDTO implements Serializable {
         this.featureToElementMap = new HashMap<>();
         if(description!=null){
             setDescription(description);
+        }
+        else if(specimen!=null){
+            this.specimen = specimen;
         }
     }
 
