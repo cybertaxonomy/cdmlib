@@ -262,9 +262,8 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
             //states
             result.stateData = new ArrayList<StateData>();
             for (StateData stateData : getStateData()){
-                //TODO do we need to clone here?
-                //StateData newState = (StateData)stateData.clone();
-                result.stateData.add(stateData);
+                StateData newState = (StateData)stateData.clone();
+                result.addStateData(newState);
             }
 
             return result;
