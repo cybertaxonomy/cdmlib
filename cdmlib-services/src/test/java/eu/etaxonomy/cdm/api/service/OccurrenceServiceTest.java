@@ -33,19 +33,13 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.Country;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -54,15 +48,11 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
-import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -102,83 +92,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionService descriptionService;
-
-    @Test
-    public void testGetNonCascadedAssociatedElements() {
-        // Collection
-        Collection collection = Collection.NewInstance();
-        Collection subCollection = Collection.NewInstance();
-        subCollection.setSuperCollection(collection);
-
-        Institution institution = Institution.NewInstance();
-        institution
-                .addType(DefinedTerm.NewInstitutionTypeInstance("Research and teaching", "botanical garden", "BGBM"));
-        collection.setInstitute(institution);
-
-        // Source
-        Reference article = ReferenceFactory.newArticle(getReference(), Person.NewInstance(), "title", "pages",
-                "series", "volume", TimePeriod.NewInstance(2014));
-        IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(article, "microCitation");
-
-        // FieldUnit
-        FieldUnit fieldUnit = FieldUnit.NewInstance();
-        Person primaryCollector = Person.NewInstance();
-        primaryCollector.setLifespan(TimePeriod.NewInstance(2014));
-        fieldUnit.setPrimaryCollector(primaryCollector);
-        fieldUnit.addSource(source);
-
-        // GatheringEvent
-        GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-        fieldUnit.setGatheringEvent(gatheringEvent);
-        gatheringEvent.putLocality(Language.ENGLISH(), "locality");
-        gatheringEvent.setExactLocation(Point.NewInstance(22.4, -34.2,
-                ReferenceSystem.NewInstance("MyReferenceSystem", "label", "labelAbbrev"), 33));
-        gatheringEvent.setCountry(Country.GERMANY());
-        gatheringEvent.addCollectingArea(NamedArea.EUROPE());
-
-        // Derived Unit
-        MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
-        mediaSpecimen.setCollection(collection);
-        TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        mediaSpecimen.setStoredUnder(storedUnder);
-        PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
-        preservation.setMedium(DefinedTerm.NewDnaMarkerInstance("medium", "medium", "medium"));// dummy
-                                                                                               // defined
-                                                                                               // term
-        mediaSpecimen.setPreservation(preservation);
-
-        // DerivationEvent
-        DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
-        event.addOriginal(fieldUnit);
-        event.addDerivative(mediaSpecimen);
-
-        // SpecOrObservationBase
-        fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
-        fieldUnit.setLifeStage(DefinedTerm.NewStageInstance("Live stage", "stage", null));
-        fieldUnit.setKindOfUnit(DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null));
-        fieldUnit.putDefinition(Language.ENGLISH(), "definition");
-
-        // Determination
-        DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(getTaxon(), mediaSpecimen);
-        determinationEvent.setModifier(DefinedTerm.NewModifierInstance("modifierDescription", "modifierLabel",
-                "mofifierLabelAbbrev"));
-        determinationEvent.setPreferredFlag(true);
-        Reference reference = getReference();
-        determinationEvent.addReference(reference);
-
-        /*
-         * NonCascaded SOOB - sex (FEMALE) - stage (Live stage) - kindOfUnit
-         * (Kind of unit) GatheringEvent - country (GERMANY) - collectingArea
-         * (EUROPE) DerivedUnit - storedUnder (botanical name) DerivedUnit->
-         * Collection -> institiute - type (botanical garden)
-         */
-
-        assertEquals("Incorrect number of non cascaded CDM entities", 9, occurrenceService
-                .getNonCascadedAssociatedElements(fieldUnit).size());
-        assertEquals("Incorrect number of non cascaded CDM entities", 9, occurrenceService
-                .getNonCascadedAssociatedElements(mediaSpecimen).size());
-
-    }
 
     private Reference getReference() {
         Reference result = ReferenceFactory.newGeneric();

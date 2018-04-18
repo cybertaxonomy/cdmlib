@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -409,13 +408,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a DTO with all the assembled information
      */
     public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
-
-    /**
-     * Returns a collection of {@link ICdmBase}s that are not persisted via cascading when saving the given specimen (mostly DefinedTerms).
-     * @param specimen the specimen that is checked for non-cascaded elements.
-     * @return collection of non-cascaded element associated with the specimen
-     */
-    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>

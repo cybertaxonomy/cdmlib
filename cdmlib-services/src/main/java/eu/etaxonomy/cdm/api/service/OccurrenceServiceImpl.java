@@ -985,53 +985,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return result;
     }
 
-    @Override
-    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen) {
-        // potential fields that are not persisted cascadingly
-        /*
-         * SOOB
-        -DescriptionBase
-        -determinations
-        --modifier TERM
-        -kindOfUnit TERM
-        -lifeStage TERM
-        -sex TERM
-
-        FieldUnit
-        -GatheringEvent
-        --Country TERM
-        --CollectingAreas TERM
-
-        DerivedUnit
-        -collection
-        --institute
-        ---types TERM
-        -preservationMethod
-        --medium TERM
-        -storedUnder CDM TaxonName
-         */
-
-        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<>();
-
-        //Choose the correct entry point to traverse the graph (FieldUnit or DerivedUnit)
-
-        // FieldUnit
-        if (specimen.isInstanceOf(FieldUnit.class)) {
-            nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(HibernateProxyHelper.deproxy(specimen, FieldUnit.class)));
-        }
-        // DerivedUnit
-        else if (specimen.isInstanceOf(DerivedUnit.class)) {
-            DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(specimen, DerivedUnit.class);
-            if (derivedUnit.getDerivedFrom() != null) {
-                Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit, null);
-                for (FieldUnit fieldUnit : fieldUnits) {
-                    nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(fieldUnit));
-                }
-            }
-        }
-        return nonCascadedCdmEntities;
-    }
-
     private Collection<ICdmBase> getFieldUnitNonCascadedAssociatedElements(FieldUnit fieldUnit) {
         // get non cascaded element on SpecimenOrObservationBase level
         Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(fieldUnit);
