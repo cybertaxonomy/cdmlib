@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
@@ -42,9 +43,17 @@ public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
      * Returns a collection of {@link RowWrapperDTO} objects for the given {@link WorkingSet}.<br>
      * A RowWrapper represents on row in the character matrix.
      * @param workingSet the working set for which the row wrapper objects should be fetched
-     * @return a collection of row wrapper objects
+     * @param the progress monitor
+     * @return a list of row wrapper objects
      */
-    public Collection<RowWrapperDTO> getRowWrapper(WorkingSet workingSet);
+    public Collection<RowWrapperDTO> getRowWrapper(WorkingSet workingSet, IProgressMonitor monitor);
+
+    /**
+     * Monitored invocation of {@link IWorkingSetService#getRowWrapper(WorkingSet, IProgressMonitor)}
+     * @param workingSet the working set for which getRowWrapper() is invoked
+     * @return the uuid of the monitor
+     */
+    public UUID monitGetRowWrapper(WorkingSet workingSet);
 
     /**
      * Loads all avaliable specimens wrapped in a {@link RowWrapperDTO} object for

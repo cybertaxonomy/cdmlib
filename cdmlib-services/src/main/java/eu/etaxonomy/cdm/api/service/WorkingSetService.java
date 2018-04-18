@@ -1,12 +1,12 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -45,6 +48,9 @@ public class WorkingSetService extends
     @Autowired
     private ITaxonNodeService taxonNodeService;
 
+    @Autowired
+    private IProgressMonitorService progressMonitorService;
+
 	@Override
 	@Autowired
 	protected void setDao(IWorkingSetDao dao) {
@@ -68,11 +74,34 @@ public class WorkingSetService extends
         return dao.getWorkingSetUuidAndTitleCache( limitOfInitialElements, pattern);
     }
 
+
+    @Override
+    @Transactional
+    public UUID monitGetRowWrapper(WorkingSet workingSet) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                return getRowWrapper(workingSet, monitor);
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
 	@Override
-	public Collection<RowWrapperDTO> getRowWrapper(WorkingSet workingSet) {
-	    return workingSet.getDescriptions().stream()
-	            .map(description->createRowWrapper(null, description, workingSet))
-	            .collect(Collectors.toList());
+	public ArrayList<RowWrapperDTO> getRowWrapper(WorkingSet workingSet, IProgressMonitor monitor) {
+	    ArrayList<RowWrapperDTO> wrappers = new ArrayList<>();
+	    Set<DescriptionBase> descriptions = workingSet.getDescriptions();
+	    for (DescriptionBase description : descriptions) {
+            if(monitor.isCanceled()){
+                return new ArrayList<>();
+            }
+            wrappers.add(createRowWrapper(null, description, workingSet));
+            monitor.worked(1);
+        }
+	    return wrappers;
 	}
 
     @Override
