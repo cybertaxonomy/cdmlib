@@ -906,7 +906,7 @@ public class DerivedUnitConverterTest extends Assert {
          * {@inheritDoc}
          */
         @Override
-        public Collection<FieldUnit> getFieldUnits(UUID specimenUuid) {
+        public Collection<FieldUnit> getFieldUnits(UUID specimenUuid, List<String> propertyPaths) {
 
             return null;
         }

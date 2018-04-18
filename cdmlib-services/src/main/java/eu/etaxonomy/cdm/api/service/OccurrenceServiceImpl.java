@@ -376,7 +376,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Set<UUID> fieldUnitUuids = new HashSet<>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
-            for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid())) {
+            for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid(), null)) {
                 fieldUnitUuids.add(fieldUnit.getUuid());
             }
         }
@@ -548,7 +548,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         preservedSpecimenDTO.setPreferredStableUri(derivedUnit.getPreferredStableUri());
 
         // citation
-        Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
+        Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit, null);
         if (fieldUnits.size() == 1) {
             preservedSpecimenDTO.setCitation(fieldUnits.iterator().next().getTitleCache());
         }
@@ -852,12 +852,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid) {
+    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid, List<String> propertyPaths) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
         // FIXME: use HQL queries to increase performance
-        SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid);
+        SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid, propertyPaths);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<>();
 
@@ -865,21 +865,21 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
         }
         else if(specimen.isInstanceOf(DerivedUnit.class)){
-            fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class)));
+            fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class), propertyPaths));
         }
         return fieldUnits;
     }
 
-    private Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
+    private Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit, List<String> propertyPaths) {
         Collection<FieldUnit> fieldUnits = new HashSet<>();
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null && !originals.isEmpty()) {
             for (SpecimenOrObservationBase<?> original : originals) {
                 if (original.isInstanceOf(FieldUnit.class)) {
-                    fieldUnits.add(HibernateProxyHelper.deproxy(original, FieldUnit.class));
+                    fieldUnits.add((FieldUnit) load(original.getUuid(), propertyPaths));
                 }
                 else if(original.isInstanceOf(DerivedUnit.class)){
-                    fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(original, DerivedUnit.class)));
+                    fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(original, DerivedUnit.class), propertyPaths));
                 }
             }
         }
@@ -1023,7 +1023,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         else if (specimen.isInstanceOf(DerivedUnit.class)) {
             DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(specimen, DerivedUnit.class);
             if (derivedUnit.getDerivedFrom() != null) {
-                Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
+                Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit, null);
                 for (FieldUnit fieldUnit : fieldUnits) {
                     nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(fieldUnit));
                 }
@@ -1321,7 +1321,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return dao.listIndividualsAssociations(specimen, null, null, null, null);
+        return dao.listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths);
     }
 
     @Override
@@ -1349,10 +1349,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){
                 if(determinationEvent.getTaxon()!=null){
-                    associatedTaxa.add(determinationEvent.getTaxon());
+                    associatedTaxa.add(taxonService.load(determinationEvent.getTaxon().getUuid(), propertyPaths));
                 }
                 if(determinationEvent.getTaxonName()!=null){
-                    associatedTaxa.addAll((Collection)determinationEvent.getTaxonName().getTaxonBases());
+                    Collection<TaxonBase> taxonBases = determinationEvent.getTaxonName().getTaxonBases();
+                    for (TaxonBase taxonBase : taxonBases) {
+                        associatedTaxa.add(taxonService.load(taxonBase.getUuid(), propertyPaths));
+                    }
                 }
             }
         }
@@ -1367,7 +1370,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(typeDesignation.getTypeSpecimen().equals(specimen)){
                 Set<TaxonName> typifiedNames = typeDesignation.getTypifiedNames();
                 for (TaxonName taxonName : typifiedNames) {
-                    associatedTaxa.addAll(taxonName.getTaxa());
+                    Set<Taxon> taxa = taxonName.getTaxa();
+                    for (Taxon taxon : taxa) {
+                        associatedTaxa.add(taxonService.load(taxon.getUuid(), propertyPaths));
+                    }
                 }
             }
         }
@@ -1378,11 +1384,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
-        for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
+        for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, null, null, null, null)) {
             if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
                 if(taxonDescription.getTaxon()!=null){
-                    associatedTaxa.add(taxonDescription.getTaxon());
+                    associatedTaxa.add(taxonService.load(taxonDescription.getTaxon().getUuid(), propertyPaths));
                 }
             }
         }
@@ -1551,7 +1557,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen){
         List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<>();
-        Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid());
+        Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid(), null);
         if(fieldUnits.isEmpty()){
             allHierarchyDerivatives.add(specimen);
             allHierarchyDerivatives.addAll(getAllChildDerivatives(specimen));

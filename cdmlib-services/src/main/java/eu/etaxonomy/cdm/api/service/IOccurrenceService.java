@@ -318,10 +318,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     /**
      * Retrieves all {@link FieldUnit}s for the {@link SpecimenOrObservationBase} with the given {@link UUID}.<br>
      * @param specimenUuid the UUID of the specimen
+     * @param propertyPaths the property path
      * @return either a collection of FieldUnits this specimen was derived from, the FieldUnit itself
      * if this was a FieldUnit or an empty collection if no FieldUnits were found
      */
-    public Collection<FieldUnit> getFieldUnits(UUID specimenUuid);
+    public Collection<FieldUnit> getFieldUnits(UUID specimenUuid, List<String> propertyPaths);
 
     /**
      * @param clazz

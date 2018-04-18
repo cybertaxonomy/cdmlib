@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,7 @@ public class WorkingSetService extends
 
 	@Override
 	public ArrayList<RowWrapperDTO> getRowWrapper(WorkingSet workingSet, IProgressMonitor monitor) {
+	    monitor.beginTask("Load row wrapper", workingSet.getDescriptions().size());
 	    ArrayList<RowWrapperDTO> wrappers = new ArrayList<>();
 	    Set<DescriptionBase> descriptions = workingSet.getDescriptions();
 	    for (DescriptionBase description : descriptions) {
@@ -139,15 +141,24 @@ public class WorkingSetService extends
         NamedArea country = null;
         //supplemental information
         if(specimen!=null){
-            Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(specimen, null, null, null, null);
+            Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(specimen, null, null, null,
+                    Arrays.asList(new String[]{
+                            "taxonNodes",
+                            "taxonNodes.classification",
+                            }));
             if(associatedTaxa!=null){
                 //FIXME: what about multiple associated taxa
                 Set<TaxonNode> taxonSubtreeFilter = workingSet.getTaxonSubtreeFilter();
                 if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
-                    taxonNode = ((Taxon) associatedTaxa.iterator().next()).getTaxonNode(taxonSubtreeFilter.iterator().next().getClassification());
+                    Taxon taxon = HibernateProxyHelper.deproxy(associatedTaxa.iterator().next(), Taxon.class);
+                    taxonNode = taxon.getTaxonNode(taxonSubtreeFilter.iterator().next().getClassification());
                 }
             }
-            Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(specimen.getUuid());
+            Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(specimen.getUuid(),
+                    Arrays.asList(new String[]{
+                            "gatheringEvent",
+                            "gatheringEvent.country"
+                            }));
             if(fieldUnits.size()!=1){
                 logger.error("More than one or no field unit found for specimen"); //$NON-NLS-1$
             }

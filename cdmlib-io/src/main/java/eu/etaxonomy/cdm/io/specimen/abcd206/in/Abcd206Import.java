@@ -321,7 +321,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
-                        java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
+                        java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid(), null);
                         //ignore field unit if associated unit has more than one
                         if(associatedFieldUnits.size()>1){
                             state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
@@ -804,7 +804,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                     DerivedUnit associatedUnit = state.getDerivedUnitBase();
                                     FieldUnit associatedFieldUnit = null;
-                                    java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
+                                    java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid(), null);
                                     //ignore field unit if associated unit has more than one
                                     if(associatedFieldUnits.size()>1){
                                         state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
