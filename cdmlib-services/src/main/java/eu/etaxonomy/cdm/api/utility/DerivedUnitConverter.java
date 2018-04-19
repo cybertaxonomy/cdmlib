@@ -110,7 +110,7 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
             throw new DerivedUnitConversionException("Error during intantiation of " + targetType.getName(), e);
         }
 
-        logger.error("convertion of " + source.instanceToString() + "<--" + specimenTypeDesignation.instanceToString()
+        logger.debug("convertion of " + source.instanceToString() + "<--" + specimenTypeDesignation.instanceToString()
                 + " to "
                 + newSpecimenTypeDesignation.getTypeSpecimen().instanceToString() +  "<--" + newSpecimenTypeDesignation.instanceToString() );
         return newSpecimenTypeDesignation;
