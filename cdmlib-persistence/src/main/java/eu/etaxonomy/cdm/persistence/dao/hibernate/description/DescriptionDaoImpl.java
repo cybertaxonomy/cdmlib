@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -692,6 +693,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
 
     @Override
+    public List<Integer> getIndividualAssociationSpecimenIDs(UUID taxonUuid,
+            Set<Feature> features, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths){
+        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, IndividualsAssociation.class, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
+        @SuppressWarnings("unchecked")
+        List<Integer> results = query.list();
+        return results;
+    }
+
+    @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(
             UUID taxonUuid, Set<Feature> features,
             Class<T> type, Integer pageSize,
@@ -699,7 +710,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
 //        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
-        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, false);
+        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, "de");
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
         @SuppressWarnings("unchecked")
@@ -716,30 +727,15 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
             UUID taxonUuid, Set<Feature> features, Class<T> type) {
 
-        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, null, null, true);
+        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, null, null, "count(de)");
 
         return (Long)query.uniqueResult();
     }
 
-    /**
-     * @param taxon
-     * @param features
-     * @param type
-     * @param pageSize
-     * @param pageNumber
-     * @return
-     */
     private <T extends DescriptionElementBase> Query prepareGetDescriptionElementForTaxon(UUID taxonUuid,
-            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, boolean asCountQuery) {
+            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, String selectString) {
 
-        String listOrCount;
-        if(asCountQuery){
-            listOrCount = "count(de)";
-        } else {
-            listOrCount = "de";
-        }
-
-        String queryString = "SELECT " + listOrCount + " FROM DescriptionElementBase AS de" +
+        String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
                 " LEFT JOIN de.inDescription AS d" +
                 " LEFT JOIN d.taxon AS t" +
                 " WHERE d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid ";

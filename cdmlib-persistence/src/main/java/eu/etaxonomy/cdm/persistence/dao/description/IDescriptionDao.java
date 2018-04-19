@@ -267,6 +267,19 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
             Integer pageNumber, List<String> propertyPaths);
 
     /**
+     * Return a list of ids of the specimens attached to a taxon via IndividualsAssociations
+     * @param taxonUuid
+     * @param features
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    public List<Integer> getIndividualAssociationSpecimenIDs(UUID taxonUuid,
+            Set<Feature> features, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths);
+
+    /**
      * @param taxon
      * @param features
      *            Restrict the results to those description elements which are
