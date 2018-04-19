@@ -173,9 +173,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 		this.typeSpecimen = typeSpecimen;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
-	 */
 	@Override
     @Transient
 	public boolean isLectoType() {
