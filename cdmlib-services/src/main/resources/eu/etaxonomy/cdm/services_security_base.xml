@@ -70,8 +70,5 @@
     <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter">
         <property name="runAsAuthenticationProvider" ref="runAsAuthenticationProvider"/>
     </bean>
-    
-    <!--  only needed as long as DerivedUnit and MediaSpecimen, ... are different classes -->
-    <bean id="derivedUnitConverterFactory" class="eu.etaxonomy.cdm.api.utility.DerivedUnitConverterFactory" />
 
 </beans>

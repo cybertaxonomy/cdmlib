@@ -11,10 +11,13 @@ package eu.etaxonomy.cdm.api.utility;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
@@ -30,34 +33,54 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
     private DerivedUnit source;
 
-    IOccurrenceService service;
+    private SpecimenTypeDesignation specimenTypeDesignation;
+
+    private SpecimenTypeDesignation newSpecimenTypeDesignation;
+
+    private static final Logger logger = Logger.getLogger(DerivedUnitConverter.class);
 
     /**
      * @param specimenTypeDesignation
      */
-    protected DerivedUnitConverter(DerivedUnit derivedUnit, IOccurrenceService service) {
-        if(derivedUnit == null){
+    public DerivedUnitConverter(DerivedUnit source) throws Exception {
+        if(source == null){
             throw new NullPointerException();
         }
-        this.service = service;
-        this.source = HibernateProxyHelper.deproxy(derivedUnit, DerivedUnit.class);
-
+        this.source = HibernateProxyHelper.deproxy(source, DerivedUnit.class);
+        if(source.getSpecimenTypeDesignations().size() == 1){
+            specimenTypeDesignation = source.getSpecimenTypeDesignations().iterator().next();
+        } else if (source.getSpecimenDescriptions().size() > 1){
+            throw new Exception("can not convert derived unit with multipe type designations");
+        }
     }
 
     /**
-     * converts the <code>source</code> <code>DerivedUnit</code> this converter has been created for into a <code>DerivedUnit</code> of the type <code>TARGET</code>.
-     * If the <code>source</code> instance was persisted the target instance will also be written into data base and the source is deleted from there.
+     * @param specimenTypeDesignation
+     */
+    public DerivedUnitConverter(SpecimenTypeDesignation specimenTypeDesignation) {
+        if(specimenTypeDesignation == null){
+            throw new NullPointerException();
+        }
+        this.specimenTypeDesignation = HibernateProxyHelper.deproxy(specimenTypeDesignation);
+        this.source = HibernateProxyHelper.deproxy(specimenTypeDesignation.getTypeSpecimen(), DerivedUnit.class);
+    }
+
+    /**
+     * converts the <code>source</code> <code>DerivedUnit</code> this converter has been created
+     * for into a <code>DerivedUnit</code> of the type <code>TARGET</code>.
+     * If the <code>source</code> instance was persisted the target instance will also be written
+     * into data base and the source is deleted from there.
      *
      * @param targetType
      * @param recordBasis
      * @throws DerivedUnitConversionException
      */
     @SuppressWarnings("unchecked")
-    public TARGET convertTo(Class<TARGET> targetType, SpecimenOrObservationType recordBasis) throws DerivedUnitConversionException {
+    public SpecimenTypeDesignation convertTo(Class<TARGET> targetType, SpecimenOrObservationType recordBasis) throws DerivedUnitConversionException {
 
         if(source.getClass().equals(targetType)){
             // nothing to do
-            return (TARGET) source;
+            return specimenTypeDesignation;
         }
 
         if(!isSuppoprtedType(targetType)){
@@ -87,13 +110,10 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
             throw new DerivedUnitConversionException("Error during intantiation of " + targetType.getName(), e);
         }
 
-
-        if(source.getId() > 0){
-            service.merge(newInstance);
-            service.delete(source);
-        }
-
-        return newInstance;
+        logger.error("convertion of " + source.instanceToString() + "<--" + specimenTypeDesignation.instanceToString()
+                + " to "
+                + newSpecimenTypeDesignation.getTypeSpecimen().instanceToString() +  "<--" + newSpecimenTypeDesignation.instanceToString() );
+        return newSpecimenTypeDesignation;
 
     }
 
@@ -139,11 +159,17 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         source.getMarkers().forEach(m -> n.addMarker(m));
         source.getRights().forEach(r -> n.addRights(r));
         n.addSources(source.getSources());
-        for(SpecimenTypeDesignation std :  source.getSpecimenTypeDesignations()) {
-            std.setTypeSpecimen(n);
-            n.addSpecimenTypeDesignation(std);
-         }
-        source.getSpecimenTypeDesignations().clear();
+        // need to clone the SpecimenTypeDesignation, since the SpecimenTypeDesignations are being deleted by the hibernate delete cascade
+        newSpecimenTypeDesignation = (SpecimenTypeDesignation) specimenTypeDesignation.clone();
+        for(Registration reg : specimenTypeDesignation.getRegistrations()){
+            reg.removeTypeDesignation(specimenTypeDesignation);
+            reg.addTypeDesignation(newSpecimenTypeDesignation);
+        }
+        for(TaxonName name : specimenTypeDesignation.getTypifiedNames()){
+            name.addTypeDesignation(newSpecimenTypeDesignation, false);
+            name.removeTypeDesignation(specimenTypeDesignation);
+        }
+        n.addSpecimenTypeDesignation(newSpecimenTypeDesignation);
 
     }
 
@@ -170,6 +196,16 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         }
 
         return false;
+    }
+
+    /**
+     * Returns the derived unit which was the source entity for the conversion.
+     * You may want to delete this entity after the conversion if this makes sense
+     * in the context of the actual use case. By this you can
+     * avoid orphan derived units and type designations.
+     */
+    public DerivedUnit oldDerivedUnit(){
+        return source;
     }
 
 }
