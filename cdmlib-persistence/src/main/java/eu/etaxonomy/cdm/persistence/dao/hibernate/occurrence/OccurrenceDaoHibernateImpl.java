@@ -19,6 +19,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -569,31 +571,63 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> clazz,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Set<SpecimenOrObservationBase> setOfAll = new HashSet<SpecimenOrObservationBase>();
 
+        Criteria criteria = null;
+        if(clazz == null) {
+            criteria = getSession().createCriteria(type, "specimen");
+        } else {
+            criteria = getSession().createCriteria(clazz, "specimen");
+        }
+
+        Disjunction determinationOr = Restrictions.disjunction();
+
         // A Taxon may be referenced by the DeterminationEvent of the SpecimenOrObservationBase
-        List<SpecimenOrObservationBase> byDetermination = list(type, associatedTaxon, null, 0, null, null);
-        setOfAll.addAll(byDetermination);
+        Criteria determinationsCriteria = criteria.createCriteria("determinations");
+
+        determinationOr.add(Restrictions.eq("taxon", associatedTaxon));
         //check also for synonyms
         for (Synonym synonym : associatedTaxon.getSynonyms()) {
-            setOfAll.addAll(list(type, synonym, null, 0, null, null));
-        }
-        //check also for name determinations
-        setOfAll.addAll(list(type, associatedTaxon.getName(), null, 0, null, null));
-        for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
-            setOfAll.addAll(list(type, synonymName, null, 0, null, null));
+            determinationOr.add(Restrictions.eq("taxon", synonym));
         }
 
+        //check also for name determinations
+        determinationOr.add(Restrictions.eq("taxonName", associatedTaxon.getName()));
+        for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
+            determinationOr.add(Restrictions.eq("taxonName", synonymName));
+        }
+
+        determinationsCriteria.add(determinationOr);
+
+        if(limit != null) {
+            if(start != null) {
+                criteria.setFirstResult(start);
+            } else {
+                criteria.setFirstResult(0);
+            }
+            criteria.setMaxResults(limit);
+        }
+
+        addOrder(criteria,orderHints);
+
+        @SuppressWarnings("unchecked")
+        List<SpecimenOrObservationBase> detResults = criteria.list();
+        defaultBeanInitializer.initializeAll(detResults, propertyPaths);
+        setOfAll.addAll(detResults);
 
         // The IndividualsAssociation elements in a TaxonDescription contain DerivedUnits
-        List<IndividualsAssociation> byIndividualsAssociation = descriptionDao.getDescriptionElementForTaxon(
-                associatedTaxon.getUuid(), null, IndividualsAssociation.class, null, 0, null);
-        for(IndividualsAssociation individualsAssociation : byIndividualsAssociation){
-            setOfAll.add(individualsAssociation.getAssociatedSpecimenOrObservation());
-        }
+        Criteria descriptionElementCriteria = getSession().createCriteria(DescriptionElementBase.class);
+        Criteria inDescriptionCriteria = descriptionElementCriteria.createCriteria("inDescription").add(Restrictions.eqOrIsNull("class", "TaxonDescription"));
+        Criteria taxonCriteria = inDescriptionCriteria.createCriteria("taxon");
+        taxonCriteria.add(Restrictions.eq("uuid", associatedTaxon.getUuid()));
+        descriptionElementCriteria.setProjection(Projections.property("associatedSpecimenOrObservation"));
+
+
+        setOfAll.addAll(descriptionElementCriteria.list());
+
 
         // SpecimenTypeDesignations may be associated with the TaxonName.
         List<SpecimenTypeDesignation> bySpecimenTypeDesignation = taxonNameDao.getTypeDesignations(associatedTaxon.getName(),
@@ -620,8 +654,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             " from SpecimenOrObservationBase sob" +
             " where sob in (:setOfAll)";
 
-        if(type != null && !type.equals(SpecimenOrObservationBase.class)){
-            queryString += " and sob.class = :type";
+        if(clazz != null && !clazz.equals(SpecimenOrObservationBase.class)){
+            queryString += " and sob.class = :type ";
         }
 
         if(orderHints != null && orderHints.size() > 0){
@@ -639,8 +673,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         Query query = getSession().createQuery(queryString);
         query.setParameterList("setOfAll", setOfAll);
 
-        if(type != null && !type.equals(SpecimenOrObservationBase.class)){
-            query.setParameter("type", type.getSimpleName());
+        if(clazz != null && !clazz.equals(SpecimenOrObservationBase.class)){
+            query.setParameter("type", clazz.getSimpleName());
         }
 
         if(limit != null) {
