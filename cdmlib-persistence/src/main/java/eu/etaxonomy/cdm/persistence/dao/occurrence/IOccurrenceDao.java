@@ -134,6 +134,27 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * @see IOccurrenceDao#findOccurrences(Class, String, String, SpecimenOrObservationType, Taxon, TaxonName, MatchMode, Integer, Integer, List, List)
+     * @param clazz
+     * @param queryString
+     * @param significantIdentifier
+     * @param type
+     * @param determinedAs
+     * @param associatedTaxonName
+     * @param matchmode
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
+            Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
+            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            List<OrderHint> orderHints);
+
+    /**
      * Returns the number of specimens that match the given parameters
      * <b>Note:</b> Specifying a taxon will already check the name of this
      * taxon, its synonymy and the synonym names for determinations of the
@@ -277,6 +298,19 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 */
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
 			Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * @see IOccurrenceDao#listByAssociatedTaxon(Class, Taxon, Integer, Integer, List, List)
+	 * @param type
+	 * @param associatedTaxon
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
+	        Integer limit, Integer start, List<OrderHint> orderHints);
 
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>

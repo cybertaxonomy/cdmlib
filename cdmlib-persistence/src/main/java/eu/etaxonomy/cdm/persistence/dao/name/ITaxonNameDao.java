@@ -147,6 +147,17 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 			List<String> propertyPaths);
 
 	/**
+	 * Return a list ids of specimens that are type specimens for the given name
+	 * @param name
+	 * @param status
+	 * @param pageSize
+	 * @param pageNumber
+	 * @return
+	 */
+	public List<Integer> getTypeSpecimenIdsForTaxonName(TaxonName name,
+	        TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber);
+
+	/**
 	 * Return a List of types related to this name, optionally filtered by type
 	 * designation status
 	 *

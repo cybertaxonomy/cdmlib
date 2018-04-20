@@ -1373,6 +1373,29 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
+            FindOccurrencesConfigurator config){
+        List<UuidAndTitleCache<SpecimenOrObservationBase>> occurrences = new ArrayList<>();
+        Taxon taxon = null;
+        if(config.getAssociatedTaxonUuid()!=null){
+            TaxonBase taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
+            if(taxonBase.isInstanceOf(Taxon.class)){
+                taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+            }
+        }
+        TaxonName taxonName = null;
+        if(config.getAssociatedTaxonNameUuid()!=null){
+            taxonName = nameService.load(config.getAssociatedTaxonNameUuid());
+        }
+        occurrences.addAll(dao.findOccurrencesUuidAndTitleCache(config.getClazz(),
+                config.getTitleSearchString(), config.getSignificantIdentifier(),
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
+                config.getOrderHints()));
+
+        return new DefaultPagerImpl<UuidAndTitleCache<SpecimenOrObservationBase>>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+    }
+
+    @Override
     public Pager<SpecimenOrObservationBase> findByTitle(
             IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
         if (config instanceof FindOccurrencesConfigurator) {

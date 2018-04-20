@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -360,13 +361,45 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
+    public List<Integer> getTypeSpecimenIdsForTaxonName(TaxonName name,
+            TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber){
+        Query query = getTypeDesignationQuery("designation.typeSpecimen.id", name, SpecimenTypeDesignation.class, status);
+
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+        return query.list();
+    }
+
+    @Override
     public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonName name,
                 Class<T> type,
                 TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
                 List<String> propertyPaths){
         checkNotInPriorView("getTypeDesignations(TaxonName name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
+
+        Query query = getTypeDesignationQuery("designation", name, type, status);
+
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+        return defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
+    }
+
+    private <T extends TypeDesignationBase> Query getTypeDesignationQuery(String select, TaxonName name,
+            Class<T> type, TypeDesignationStatusBase status){
         Query query = null;
-        String queryString = "select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name";
+        String queryString = "select "+select+" from TypeDesignationBase designation join designation.typifiedNames name where name = :name";
 
         if(status != null) {
             queryString +=  " and designation.typeStatus = :status";
@@ -385,18 +418,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         query.setParameter("name",name);
-
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-        return defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
+        return query;
     }
-
 
     public List<TaxonName> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
         checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");

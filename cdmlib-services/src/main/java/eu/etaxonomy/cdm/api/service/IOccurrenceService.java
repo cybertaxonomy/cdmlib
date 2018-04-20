@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.hibernate.search.spatial.impl.Rectangle;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
@@ -622,5 +623,16 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a list of field units referencing the gathering event
      */
     public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
+
+
+    /**
+     * Returns a list of {@link UuidAndTitleCache} for the specimens found with the
+     * given configurator
+     * @param config the configurator for the search
+     * @return a list of UuidAndTitleCache object
+     */
+    @Transactional(readOnly = true)
+    public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
+            FindOccurrencesConfigurator config);
 
 }
