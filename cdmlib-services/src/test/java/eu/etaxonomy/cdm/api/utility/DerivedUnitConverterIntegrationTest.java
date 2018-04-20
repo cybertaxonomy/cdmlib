@@ -113,6 +113,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
                 "derivedFrom.originals.*",
                 "derivedFrom.originals.derivationEvents",
                 "specimenTypeDesignations.typifiedNames.typeDesignations",
+                "specimenTypeDesignations.typifiedNames.homotypicalGroup",
                 "specimenTypeDesignations.annotations",
                 "specimenTypeDesignations.markers",
                 "specimenTypeDesignations.registrations",
