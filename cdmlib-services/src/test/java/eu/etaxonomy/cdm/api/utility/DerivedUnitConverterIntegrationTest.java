@@ -123,7 +123,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
                 "derivedFrom.originals.gatheringEvent.actor.teamMembers",
                 "derivedFrom.originals.derivationEvents.derivatives" }));
         SpecimenTypeDesignation specimenTypeDesignation = du.getSpecimenTypeDesignations().iterator().next();
-        DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<DerivedUnit>(specimenTypeDesignation);
+        DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<>(specimenTypeDesignation);
         SpecimenTypeDesignation newSpecimenTypeDesignation = duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.HumanObservation);
         DerivedUnit target = newSpecimenTypeDesignation.getTypeSpecimen();
 

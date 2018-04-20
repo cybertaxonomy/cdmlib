@@ -2526,7 +2526,7 @@ public class TaxonName
      */
     private void checkHomotypicalGroup(TypeDesignationBase typeDesignation) {
         if(typeDesignation.getTypifiedNames().size() > 0){
-            Set<HomotypicalGroup> groups = new HashSet<HomotypicalGroup>();
+            Set<HomotypicalGroup> groups = new HashSet<>();
             Set<TaxonName> names = typeDesignation.getTypifiedNames();
             for (TaxonName taxonName: names){
                 groups.add(taxonName.getHomotypicalGroup());
@@ -3498,7 +3498,6 @@ public class TaxonName
                 TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
                 this.removeTypeDesignation(newDesignation);
                 result.addTypeDesignation(newDesignation, false);
-//                result.typeDesignations.add(newDesignation);
             }
 
             //homotypicalGroup
