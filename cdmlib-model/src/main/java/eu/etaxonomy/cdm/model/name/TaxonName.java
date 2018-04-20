@@ -3496,8 +3496,9 @@ public class TaxonName
             result.typeDesignations = new HashSet<>();
             for (TypeDesignationBase<?> typeDesignation : getTypeDesignations()){
                 TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
-                result.typeDesignations.add(newDesignation);
-                newDesignation.addTypifiedName(result);
+                this.removeTypeDesignation(newDesignation);
+                result.addTypeDesignation(newDesignation, false);
+//                result.typeDesignations.add(newDesignation);
             }
 
             //homotypicalGroup
