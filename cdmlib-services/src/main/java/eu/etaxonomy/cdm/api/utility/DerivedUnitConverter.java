@@ -163,10 +163,8 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         newSpecimenTypeDesignation = (SpecimenTypeDesignation) specimenTypeDesignation.clone();
         for(Registration reg : specimenTypeDesignation.getRegistrations()){
             reg.removeTypeDesignation(specimenTypeDesignation);
-            reg.addTypeDesignation(newSpecimenTypeDesignation);
         }
         for(TaxonName name : specimenTypeDesignation.getTypifiedNames()){
-            name.addTypeDesignation(newSpecimenTypeDesignation, false);
             name.removeTypeDesignation(specimenTypeDesignation);
         }
         n.addSpecimenTypeDesignation(newSpecimenTypeDesignation);
