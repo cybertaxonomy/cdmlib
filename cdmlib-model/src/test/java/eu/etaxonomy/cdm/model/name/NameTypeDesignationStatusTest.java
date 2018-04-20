@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.babadshanjan
- * @created 24.03.2009
+ * @since 24.03.2009
  */
 public class NameTypeDesignationStatusTest extends EntityTestBase {
 	@SuppressWarnings("unused")

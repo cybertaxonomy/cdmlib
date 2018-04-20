@@ -56,7 +56,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDesignationStatus> implements ITypeDesignation, Cloneable {
+public class SpecimenTypeDesignation
+        extends TypeDesignationBase<SpecimenTypeDesignationStatus>
+        implements ITypeDesignation, Cloneable {
 	private static final long serialVersionUID = 6481627446997275007L;
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 

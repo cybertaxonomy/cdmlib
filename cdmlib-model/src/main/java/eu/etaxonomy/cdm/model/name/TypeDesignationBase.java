@@ -244,7 +244,11 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * Clones <i>this</i> type designation. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> type designation by
      * modifying only some of the attributes.<BR>
-     * CAUTION: the typifiedNames set is not cloned but empty after cloning as the typified
+     * CAUTION: the typifiedNames set is also cloned by adding the new type designation
+     * to the typifiedNames of the original type designation. If this is unwanted
+     * th
+     *
+     * not cloned but empty after cloning as the typified
      * names is considered to be the not owning part of a bidirectional relationship.
      * This may be changed in future.
      *
@@ -255,13 +259,18 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        TypeDesignationBase result = (TypeDesignationBase)super.clone();
+        TypeDesignationBase<?> result = (TypeDesignationBase<?>)super.clone();
 
+        //typified names
         result.typifiedNames = new HashSet<>();
-//		for (TaxonName taxonName : getTypifiedNames()){
-//			result.typifiedNames.add(taxonName);
-//		}
-
+		for (TaxonName taxonName : getTypifiedNames()){
+		    taxonName.addTypeDesignation(result, false);
+		}
+		//registrations
+		result.registrations = new HashSet<>();
+		for (Registration registration : registrations){
+		    registration.addTypeDesignation(result);
+		}
 
         //no changes to: notDesignated, typeStatus, homotypicalGroup
         return result;
