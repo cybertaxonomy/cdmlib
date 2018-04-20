@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
@@ -100,15 +101,16 @@ public class WorkingSetService extends
             if(monitor.isCanceled()){
                 return new ArrayList<>();
             }
-            wrappers.add(createRowWrapper(null, description, workingSet));
+            wrappers.add(createRowWrapper(null, description, null, workingSet));
             monitor.worked(1);
         }
 	    return wrappers;
 	}
 
     @Override
-    public Collection<RowWrapperDTO> loadSpecimens(WorkingSet workingSet){
-        List<RowWrapperDTO> specimenCache = new ArrayList<>();
+    public Collection<SpecimenNodeWrapper> loadSpecimens(WorkingSet workingSet){
+
+        List<SpecimenNodeWrapper> specimenCache = new ArrayList<>();
         //set filter parameters
         TaxonNodeFilter filter = TaxonNodeFilter.NewRankInstance(workingSet.getMinRank(), workingSet.getMaxRank());
         workingSet.getGeoFilter().forEach(area -> filter.orArea(area.getUuid()));
@@ -124,34 +126,47 @@ public class WorkingSetService extends
             if(taxon!=null){
                 FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
                 config.setAssociatedTaxonUuid(taxon.getUuid());
-                List<SpecimenOrObservationBase> specimensForTaxon = occurrenceService.findByTitle(config).getRecords();
-                specimensForTaxon.forEach(specimen -> specimenCache.add(createRowWrapper(specimen, null, workingSet)));
+                List<UuidAndTitleCache<SpecimenOrObservationBase>> list = occurrenceService.findByTitleUuidAndTitleCache(config).getRecords();
+                list.forEach(uuidAndTitleCache ->{
+                    specimenCache.add(new SpecimenNodeWrapper(uuidAndTitleCache, taxonNode));
+                });
             }
         }
         return specimenCache;
     }
 
-	private RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptionBase description, WorkingSet workingSet){
+    @Override
+    public RowWrapperDTO createRowWrapper(DescriptionBase description, WorkingSet workingSet){
+        return createRowWrapper(null, description, null, workingSet);
+    }
+
+    @Override
+    public RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, WorkingSet workingSet){
+        return createRowWrapper(specimen, null, null, workingSet);
+    }
+
+	private RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptionBase description, TaxonNode taxonNode, WorkingSet workingSet){
 	    if(description!=null){
 	        specimen = description.getDescribedSpecimenOrObservation();
 	    }
-        TaxonNode taxonNode = null;
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;
         //supplemental information
         if(specimen!=null){
-            Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(specimen, null, null, null,
-                    Arrays.asList(new String[]{
-                            "taxonNodes",
-                            "taxonNodes.classification",
-                            }));
-            if(associatedTaxa!=null){
-                //FIXME: what about multiple associated taxa
-                Set<TaxonNode> taxonSubtreeFilter = workingSet.getTaxonSubtreeFilter();
-                if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
-                    Taxon taxon = HibernateProxyHelper.deproxy(associatedTaxa.iterator().next(), Taxon.class);
-                    taxonNode = taxon.getTaxonNode(taxonSubtreeFilter.iterator().next().getClassification());
+            if(taxonNode==null){
+                Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(specimen, null, null, null,
+                        Arrays.asList(new String[]{
+                                "taxonNodes",
+                                "taxonNodes.classification",
+                        }));
+                if(associatedTaxa!=null){
+                    //FIXME: what about multiple associated taxa
+                    Set<TaxonNode> taxonSubtreeFilter = workingSet.getTaxonSubtreeFilter();
+                    if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
+                        Taxon taxon = HibernateProxyHelper.deproxy(associatedTaxa.iterator().next(), Taxon.class);
+                        taxonNode = taxon.getTaxonNode(taxonSubtreeFilter.iterator().next().getClassification());
+                    }
                 }
             }
             Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(specimen.getUuid(),

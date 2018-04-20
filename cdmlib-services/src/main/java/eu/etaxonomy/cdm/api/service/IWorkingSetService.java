@@ -7,12 +7,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
@@ -56,12 +58,28 @@ public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
     public UUID monitGetRowWrapper(WorkingSet workingSet);
 
     /**
-     * Loads all avaliable specimens wrapped in a {@link RowWrapperDTO} object for
+     * Loads all avaliable specimens wrapped in a {@link SpecimenNodeWrapper} object for
      * a given {@link WorkingSet} according to the filters set in the working set
      * @param workingSet the working set for which the specimens should be fetched
-     * @return a collection of wrapper objects containing the specimen
+     * @return a collection of wrapper objects
      */
-    public Collection<RowWrapperDTO> loadSpecimens(WorkingSet workingSet);
+    public Collection<SpecimenNodeWrapper> loadSpecimens(WorkingSet workingSet);
 
+    /**
+     * Creates a row wrapper object for the given specimen
+     * @param specimen
+     * @param workingSet
+     * @return
+     */
+    public RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, WorkingSet workingSet);
+
+    /**
+     * Creates a row wrapper object for the given description
+     * @param specimen
+     * @param description
+     * @param workingSet
+     * @return
+     */
+    public RowWrapperDTO createRowWrapper(DescriptionBase description, WorkingSet workingSet);
 
 }
