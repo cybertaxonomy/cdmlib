@@ -25,8 +25,8 @@ public class TaxonNameVoter extends CdmPermissionVoter {
 
     @Override
     public boolean isOrpahn(CdmBase object) {
-        // we always return true here to allow deleting the reference
-        return true;
+        // taxon names never are orphan
+        return false;
     }
 
 }
