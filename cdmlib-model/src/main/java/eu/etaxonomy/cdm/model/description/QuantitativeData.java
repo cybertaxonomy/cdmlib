@@ -60,8 +60,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * the SDD schema.
  *
  * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:46
+ * @since 08-Nov-2007 13:06:46
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "QuantitativeData", propOrder = {
@@ -89,7 +88,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="quantitativeData", orphanRemoval=true)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@NotEmpty(groups = Level2.class)
-	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
+	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
 
 //see #4471
 //	@Column(precision = 20, scale = 10)

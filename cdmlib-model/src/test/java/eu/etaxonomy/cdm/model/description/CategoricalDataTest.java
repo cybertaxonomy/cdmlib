@@ -114,7 +114,7 @@ public class CategoricalDataTest {
     }
 
     @Test
-    public void testCloneCategorialData(){
+    public void testClone(){
         CategoricalData clone = (CategoricalData)categorialData.clone();
         assertNotSame(clone, categorialData);
         assertEquals(1, clone.getStateData().size());

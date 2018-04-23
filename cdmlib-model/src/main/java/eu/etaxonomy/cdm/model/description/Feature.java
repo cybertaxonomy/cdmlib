@@ -978,7 +978,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	public static final Feature INDIVIDUALS_ASSOCIATION(){
 		Feature individuals_association =  getTermByUuid(uuidIndividualsAssociation);
-		Set<Feature> generalizationOf = new HashSet<Feature>();
+		Set<Feature> generalizationOf = new HashSet<>();
 		generalizationOf.add(SPECIMEN());
 		generalizationOf.add(OBSERVATION());
 		individuals_association.setGeneralizationOf(generalizationOf);

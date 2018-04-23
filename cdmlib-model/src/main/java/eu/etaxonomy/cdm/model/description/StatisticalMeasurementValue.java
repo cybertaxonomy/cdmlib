@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * to the SDD schema.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:54
+ * @since 08-Nov-2007 13:06:54
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StatisticalMeasureValue")
@@ -67,7 +67,7 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
-	private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
+	private Set<DefinedTerm> modifiers = new HashSet<>();
 
 	@XmlElement(name = "StatisticalMeasureType")
 	@XmlIDREF
