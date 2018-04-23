@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.kohlbecker
- \* @since 25.08.2010
+ * @since 25.08.2010
  */
 public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 	

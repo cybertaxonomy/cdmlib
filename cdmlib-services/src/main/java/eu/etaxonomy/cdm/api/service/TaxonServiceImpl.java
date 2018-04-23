@@ -132,7 +132,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.kohlbecker
- \* @since 10.09.2010
+ * @since 10.09.2010
  */
 @Service
 @Transactional(readOnly = true)

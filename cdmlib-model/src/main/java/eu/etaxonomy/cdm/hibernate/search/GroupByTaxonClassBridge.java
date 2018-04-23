@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * </pre>
  *
  * @author a.kohlbecker
- \* @since Oct 4, 2012
+ * @since Oct 4, 2012
  *
  */
 public class GroupByTaxonClassBridge extends AbstractClassBridge{

@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author l.morris
- \* @since 14 Nov 2012
+ * @since 14 Nov 2012
  *
  */
 public class SDDImportExportTest extends CdmTransactionalIntegrationTest {

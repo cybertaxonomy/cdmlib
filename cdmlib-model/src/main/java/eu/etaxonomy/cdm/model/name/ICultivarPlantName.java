@@ -17,7 +17,7 @@ package eu.etaxonomy.cdm.model.name;
  * ABCD schema.
  *
  * @author a.mueller
- \* @since 26.01.2017
+ * @since 26.01.2017
  *
  */
 public interface ICultivarPlantName extends IBotanicalName {

@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * an object.
  *
  * @author a.mueller
- \* @since 04.05.2017
+ * @since 04.05.2017
  *
  * @deprecated This class is still experimental. It may be changed
  * or even deleted in future without notice.

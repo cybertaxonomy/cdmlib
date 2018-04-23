@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author k.luther
- \* @since 15.07.2016
+ * @since 15.07.2016
  *
  */
 @Component

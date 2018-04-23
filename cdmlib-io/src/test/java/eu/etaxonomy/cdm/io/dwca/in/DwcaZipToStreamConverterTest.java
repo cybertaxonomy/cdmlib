@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.io.stream.StreamItem;
 
 /**
  * @author a.mueller
- \* @since 17.10.2011
+ * @since 17.10.2011
  *
  */
 public class DwcaZipToStreamConverterTest {

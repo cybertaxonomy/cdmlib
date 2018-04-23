@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author p.kelbert
  * @created 29.10.2008
- \* @since 13 mars 2013
+ * @since 13 mars 2013
  *
  */
 @Component

@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 
 /**
  * @author a.mueller
- \* @since 30.10.2017
+ * @since 30.10.2017
  */
 public class MediaExcelImportState
         extends ExcelImportState<MediaExcelImportConfigurator, ExcelRowBase>{

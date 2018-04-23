@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author a.mueller
- \* @since 19.02.2015
+ * @since 19.02.2015
  *
  */
 @Component

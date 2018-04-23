@@ -13,7 +13,7 @@ import java.util.UUID;
 
 /**
  * @author a.mueller
- \* @since 23.05.2011
+ * @since 23.05.2011
  *
  */
 public class MatchingTaxonConfigurator {

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 
 /**
  * @author a.mueller
- \* @since 20.04.2011
+ * @since 20.04.2011
  *
  */
 public class DwcaResourceRelationRecord extends DwcaRecordBase {

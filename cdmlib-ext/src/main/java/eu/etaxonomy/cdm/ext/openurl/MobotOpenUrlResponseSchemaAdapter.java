@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.kohlbecker
- \* @since 25.08.2010
+ * @since 25.08.2010
  */
 public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Reference>{
 

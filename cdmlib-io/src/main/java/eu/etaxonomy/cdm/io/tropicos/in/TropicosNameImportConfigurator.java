@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- \* @since 15.11.2017
+ * @since 15.11.2017
  */
 public class TropicosNameImportConfigurator extends CsvImportConfiguratorBase {
 

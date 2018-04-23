@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * @author a.mueller
- \* @since 12.05.2017
+ * @since 12.05.2017
  *
  */
 public enum RisRecordType {

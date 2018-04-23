@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 /**
  * @author cmathew
- \* @since 14 Oct 2015
+ * @since 14 Oct 2015
  *
  */
 @Service

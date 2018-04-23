@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner
- \* @since Mar 4, 2015
+ * @since Mar 4, 2015
  *
  */
 public class AbcdGgbnParser {

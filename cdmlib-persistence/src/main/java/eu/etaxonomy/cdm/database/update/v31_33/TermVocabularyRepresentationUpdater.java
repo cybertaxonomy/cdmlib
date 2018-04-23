@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 
 /**
  * @author a.mueller
- \* @since 15.12.2013
+ * @since 15.12.2013
  */
 public class TermVocabularyRepresentationUpdater
             extends SchemaUpdaterStepBase{

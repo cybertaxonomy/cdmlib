@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
  *
  * @author andreas kohlbecker
- \* @since Sep 4, 2012
+ * @since Sep 4, 2012
  *
  */
 public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase> {

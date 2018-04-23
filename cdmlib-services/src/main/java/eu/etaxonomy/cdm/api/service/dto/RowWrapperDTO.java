@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author pplitzner
- \* @since 16.04.2018
+ * @since 16.04.2018
  *
  */
 public class RowWrapperDTO implements Serializable {

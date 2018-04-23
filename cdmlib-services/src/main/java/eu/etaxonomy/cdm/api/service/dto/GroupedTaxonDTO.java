@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  * @author a.mueller
- \* @since 05.07.2016
+ * @since 05.07.2016
  *
  */
 public class GroupedTaxonDTO {

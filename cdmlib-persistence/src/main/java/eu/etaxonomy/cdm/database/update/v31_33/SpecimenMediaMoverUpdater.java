@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
  * @author a.mueller
- \* @since 15.12.2013
+ * @since 15.12.2013
  */
 public class SpecimenMediaMoverUpdater
             extends SchemaUpdaterStepBase{

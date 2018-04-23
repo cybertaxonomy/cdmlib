@@ -16,7 +16,7 @@ import org.joda.time.DateTime;
 
 /**
  * @author a.mueller
- \* @since 2014-05-20
+ * @since 2014-05-20
  *
  */
 public class IncludedTaxaDTO {

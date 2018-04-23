@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- \* @since 12.08.2011
+ * @since 12.08.2011
  *
  */
 public class GeoServiceAreaTest {

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 /**
  * @author a.kohlbecker
- \* @since 24.06.2009
+ * @since 24.06.2009
  *
  */
 public interface ITaxonNodeComparator<T> {

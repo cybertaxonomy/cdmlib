@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 /**
  * @author a.mueller
- \* @since 05.07.2016
+ * @since 05.07.2016
  *
  * Comparator for tree indexes.
  * Compares the tree indexes node by node, sorted by node number.

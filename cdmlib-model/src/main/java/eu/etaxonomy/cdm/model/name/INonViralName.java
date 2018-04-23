@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.mueller
- \* @since 21.01.2017
+ * @since 21.01.2017
  *
  */
 public interface INonViralName extends ITaxonNameBase{

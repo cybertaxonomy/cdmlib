@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- \* @since Sep 18, 2013
+ * @since Sep 18, 2013
  *
  */
 public interface ILuceneIndexToolProvider {

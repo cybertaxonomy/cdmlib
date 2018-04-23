@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
- \* @since 16.06.2010
+ * @since 16.06.2010
  *
  */
 public class TaxonXDataHolder {

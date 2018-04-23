@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 
 /**
  * @author pplitzner
- \* @since Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public class AbcdTransformer extends InputTransformerBase{

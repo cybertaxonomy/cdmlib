@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther
- \* @since 18.03.2010
+ * @since 18.03.2010
  *
  */
 public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Comparator<TaxonNodeDto> {

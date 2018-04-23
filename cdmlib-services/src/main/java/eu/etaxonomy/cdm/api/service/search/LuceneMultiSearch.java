@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * Internally a {@link MultiReader} is being used.
  *
  * @author Andreas Kohlbecker
- \* @since Dec 21, 2011
+ * @since Dec 21, 2011
  *
  */
 public class LuceneMultiSearch extends LuceneSearch {

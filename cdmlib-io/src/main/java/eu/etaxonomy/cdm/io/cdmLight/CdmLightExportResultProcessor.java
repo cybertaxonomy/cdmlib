@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * @author k.luther
- \* @since 16.03.2017
+ * @since 16.03.2017
  *
  */
 public class CdmLightExportResultProcessor {

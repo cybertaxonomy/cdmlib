@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.kohlbecker
- \* @since 25.03.2009
+ * @since 25.03.2009
  *
  */
 public interface IBeanInitializer {

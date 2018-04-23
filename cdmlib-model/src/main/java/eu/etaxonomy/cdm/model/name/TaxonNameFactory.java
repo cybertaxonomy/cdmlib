@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
- \* @since 30.01.2017
+ * @since 30.01.2017
  *
  */
 public class TaxonNameFactory {

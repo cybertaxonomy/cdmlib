@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 
 /**
  * @author a.mueller
- \* @since 03.08.2011
+ * @since 03.08.2011
  *
  */
 public class WriterDataHolder {

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author k.luther
- \* @since 15.07.2016
+ * @since 15.07.2016
  *
  */
 public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigurator<GbifImportState, InputStream>, GbifImportState> {

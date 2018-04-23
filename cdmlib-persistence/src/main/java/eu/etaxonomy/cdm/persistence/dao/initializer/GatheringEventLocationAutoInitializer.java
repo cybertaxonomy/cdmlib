@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
  * @author a.kohlbecker
- \* @since 30.07.2010
+ * @since 30.07.2010
  *
  * @TODO only necessary since Point is not subclass of CdmBase
  */

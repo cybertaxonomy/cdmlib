@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author k.luther
- \* @since 19.02.2018
+ * @since 19.02.2018
  *
  */
 public class TaxonListImport extends TaxonExcelImportBase {

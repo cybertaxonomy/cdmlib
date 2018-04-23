@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- \* @since 18.04.2011
+ * @since 18.04.2011
  *
  */
 public abstract class DwcaDataExportBase extends DwcaExportBase{

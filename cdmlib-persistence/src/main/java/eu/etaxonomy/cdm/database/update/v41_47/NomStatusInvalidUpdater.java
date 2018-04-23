@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * #6340
  *
  * @author a.mueller
- \* @since 05.06.2017
+ * @since 05.06.2017
  *
  */
 public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{

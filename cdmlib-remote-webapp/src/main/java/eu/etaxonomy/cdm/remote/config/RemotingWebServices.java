@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * @author a.kohlbecker
- \* @since Feb 25, 2016
+ * @since Feb 25, 2016
  *
  */
 

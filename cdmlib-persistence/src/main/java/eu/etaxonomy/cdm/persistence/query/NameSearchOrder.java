@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.query;
 
 /**
  * @author a.mueller
- \* @since 02.12.2016
+ * @since 02.12.2016
  *
  */
 public enum NameSearchOrder {

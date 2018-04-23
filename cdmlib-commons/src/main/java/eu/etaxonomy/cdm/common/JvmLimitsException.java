@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.common;
 
 /**
  * @author a.kohlbecker
- \* @since Jul 4, 2016
+ * @since Jul 4, 2016
  *
  */
 public class JvmLimitsException extends Exception {

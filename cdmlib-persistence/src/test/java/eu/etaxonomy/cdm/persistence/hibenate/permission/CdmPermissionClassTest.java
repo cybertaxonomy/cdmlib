@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
  * @author a.kohlbecker
- \* @since Feb 25, 2014
+ * @since Feb 25, 2014
  *
  */
 public class CdmPermissionClassTest {

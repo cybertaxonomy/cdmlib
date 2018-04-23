@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
  * @author a.kohlbecker
- \* @since Jan 29, 2014
+ * @since Jan 29, 2014
  *
  */
 public class DistributionInfoDTO {

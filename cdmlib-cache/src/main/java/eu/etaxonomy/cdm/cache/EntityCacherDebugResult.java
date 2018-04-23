@@ -30,7 +30,7 @@ import net.sf.ehcache.Element;
 
 /**
  * @author cmathew
- \* @since 9 Feb 2015
+ * @since 9 Feb 2015
  *
  */
 public class EntityCacherDebugResult {

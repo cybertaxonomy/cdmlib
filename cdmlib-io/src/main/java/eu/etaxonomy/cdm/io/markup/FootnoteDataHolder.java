@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Data holder class for footnotes. Maybe preliminary.
  * @author a.mueller
- \* @since 28.07.2011
+ * @since 28.07.2011
  */
 public class FootnoteDataHolder {
 	public String ref;

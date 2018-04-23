@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
  * Wrapper class which hold the list of associated units and
  * the parameters of the association.
  * @author pplitzner
- \* @since Jun 24, 2015
+ * @since Jun 24, 2015
  *
  */
 public class UnitAssociationWrapper {

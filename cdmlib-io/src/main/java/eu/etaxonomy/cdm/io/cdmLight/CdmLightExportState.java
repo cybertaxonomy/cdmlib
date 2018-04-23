@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author k.luther
- \* @since 15.03.2017
+ * @since 15.03.2017
  *
  */
 public class CdmLightExportState

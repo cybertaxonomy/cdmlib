@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 
 /**
  * @author a.kohlbecker
- \* @since Feb 4, 2014
+ * @since Feb 4, 2014
  *
  */
 public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrationTestWithSecurity {

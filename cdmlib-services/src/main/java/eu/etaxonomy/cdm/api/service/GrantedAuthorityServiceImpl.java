@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 
 /**
  * @author andreas kohlbecker
- \* @since Sep 13, 2012
+ * @since Sep 13, 2012
  *
  */
 @Service

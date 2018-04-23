@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author a.mueller
- \* @since 20.04.2011
+ * @since 20.04.2011
  *
  */
 public class DwcaTypesRecord extends DwcaRecordBase {

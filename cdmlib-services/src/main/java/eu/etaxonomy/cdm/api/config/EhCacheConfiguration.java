@@ -24,7 +24,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 /**
  *
  * @author a.kohlbecker
- \* @since Feb 1, 2017
+ * @since Feb 1, 2017
  *
  */
 @Configuration

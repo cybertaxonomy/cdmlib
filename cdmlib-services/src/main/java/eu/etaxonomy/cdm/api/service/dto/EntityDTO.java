@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * DTO for any CdmBase.
  *
  * @author a.mueller
- \* @since 2016-09-21
+ * @since 2016-09-21
  *
  */
 //might extend CdmBase in future, when a default formatter is available for all CdmBase classes

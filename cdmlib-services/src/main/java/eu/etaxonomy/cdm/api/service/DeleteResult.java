@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * This class represents the result of a delete action.
  *
  * @author a.mueller
- \* @since 04.01.2012
+ * @since 04.01.2012
  *
  */
 public class DeleteResult extends UpdateResult{

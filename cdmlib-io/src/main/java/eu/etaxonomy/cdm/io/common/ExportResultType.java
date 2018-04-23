@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.common;
 
 /**
  * @author k.luther
- \* @since 17.03.2017
+ * @since 17.03.2017
  *
  */
 public enum ExportResultType {

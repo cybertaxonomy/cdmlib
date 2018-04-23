@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 
 /**
  * @author k.luther
- \* @since 08.07.2016
+ * @since 08.07.2016
  *
  */
 @Component

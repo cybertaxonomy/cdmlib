@@ -88,7 +88,7 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  *
  * @author Anton Güntsch (author of original Transmission Engine Occurrence version 14 written in Visual Basic)
  * @author Andreas Kohlbecker (2013, porting Transmission Engine Occurrence to Java)
- \* @since Feb 22, 2013
+ * @since Feb 22, 2013
  */
 @Service
 public class TransmissionEngineDistribution { //TODO extends IoBase?

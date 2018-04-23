@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author cmathew
- \* @since 19 Feb 2015
+ * @since 19 Feb 2015
  *
  */
 public interface ICdmCacher {

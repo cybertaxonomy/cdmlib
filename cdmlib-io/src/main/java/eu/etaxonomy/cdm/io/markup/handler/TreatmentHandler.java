@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.common.ImportHandlerBase;
 /**
  * Sax2 handler for the MarkupImport publication element
  * @author a.mueller
- \* @since 28.06.2011
+ * @since 28.06.2011
  *
  */
 public class TreatmentHandler extends ImportHandlerBase{

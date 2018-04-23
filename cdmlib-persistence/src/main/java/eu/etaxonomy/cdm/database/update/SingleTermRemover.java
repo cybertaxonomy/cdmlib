@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * Does also not handle AUD tables
  *
  * @author a.mueller
- \* @since 06.09.2013
+ * @since 06.09.2013
  *
  */
 public class SingleTermRemover

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 
 /**
  * @author a.kohlbecker
- \* @since Jul 31, 2014
+ * @since Jul 31, 2014
  *
  */
 public class CdmTypeScannerTest {

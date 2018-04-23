@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- \* @since 14.09.2017
+ * @since 14.09.2017
  *
  */
 public class RegistrationTest {

@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.kohlbecker
- \* @since 30.07.2010
+ * @since 30.07.2010
  *
  */
 public class TaxonNodeAutoInitializer extends AutoPropertyInitializer<TaxonNode> {

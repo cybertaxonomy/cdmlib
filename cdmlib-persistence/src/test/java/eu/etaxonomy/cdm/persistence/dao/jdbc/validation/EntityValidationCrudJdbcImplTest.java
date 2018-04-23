@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * @author ayco_holleman
- \* @since 20 jan. 2015
+ * @since 20 jan. 2015
  *
  */
 @Ignore

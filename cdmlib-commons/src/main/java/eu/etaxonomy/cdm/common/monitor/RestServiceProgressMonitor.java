@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.common.monitor;
 
 /**
  * @author Andreas Kohlbecker
- \* @since Jul 16, 2012
+ * @since Jul 16, 2012
  *
  */
 public class RestServiceProgressMonitor extends DefaultProgressMonitor implements IRestServiceProgressMonitor {

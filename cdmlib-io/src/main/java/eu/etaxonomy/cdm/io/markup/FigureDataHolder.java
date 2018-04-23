@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Data holder class for figures. Maybe preliminary.
  * @author a.mueller
- \* @since 28.07.2011
+ * @since 28.07.2011
  */
 public class FigureDataHolder {
 	public String ref;

@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author cmathew
- \* @since 24 Jun 2015
+ * @since 24 Jun 2015
  *
  */
 public class CdmEntityIdentifier implements Serializable {

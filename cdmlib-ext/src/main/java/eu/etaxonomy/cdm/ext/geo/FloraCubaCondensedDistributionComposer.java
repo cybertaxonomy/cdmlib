@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
- \* @since Apr 05, 2016
+ * @since Apr 05, 2016
  *
  */
 public class FloraCubaCondensedDistributionComposer extends CondensedDistributionComposerBase {

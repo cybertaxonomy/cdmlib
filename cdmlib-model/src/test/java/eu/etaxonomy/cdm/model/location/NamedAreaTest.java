@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea.NamedAreaNode;
 
 /**
  * @author a.mueller
- \* @since 26.05.2011
+ * @since 26.05.2011
  *
  */
 public class NamedAreaTest {

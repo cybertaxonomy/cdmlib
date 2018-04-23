@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author k.luther
- \* @since 08.07.2016
+ * @since 08.07.2016
  *
  */
 public class SortIndexUpdaterConfigurator

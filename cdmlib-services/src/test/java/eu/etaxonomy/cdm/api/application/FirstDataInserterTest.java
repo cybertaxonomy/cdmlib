@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * test for the {@link FirstDataInserter}
  *
  * @author a.kohlbecker
- \* @since Oct 12, 2012
+ * @since Oct 12, 2012
  *
  */
 @DataSet

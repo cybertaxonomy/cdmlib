@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 /**
  * @author k.luther
- \* @since 21.03.2017
+ * @since 21.03.2017
  *
  */
 public class TypeComparator implements Comparator<TypeDesignationBase> {

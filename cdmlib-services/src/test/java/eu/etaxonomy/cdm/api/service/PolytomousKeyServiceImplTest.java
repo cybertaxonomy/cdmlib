@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- \* @since 23.08.2011
+ * @since 23.08.2011
  *
  */
 @Ignore

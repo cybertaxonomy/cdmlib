@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- \* @since 06.04.2017
+ * @since 06.04.2017
  *
  */
 public class ExcelDistributionUpdateConfigurator extends ExcelImportConfiguratorBase{

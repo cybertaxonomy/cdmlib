@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.common;
 
 /**
  * @author a.mueller
- \* @since 14.03.2017
+ * @since 14.03.2017
  *
  */
 public abstract class SimpleImport<CONFIG extends ImportConfiguratorBase, SOURCE extends Object>

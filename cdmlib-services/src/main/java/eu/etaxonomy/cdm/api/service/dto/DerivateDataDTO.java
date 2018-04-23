@@ -15,7 +15,7 @@ import java.util.UUID;
 
 /**
  * @author pplitzner
- \* @since Mar 26, 2015
+ * @since Mar 26, 2015
  *
  */
 public class DerivateDataDTO {

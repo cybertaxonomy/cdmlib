@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * It is not meant to define rights and roles which are only handled via the
  * {@link GrantedAuthority granted authorities}.
  * @author a.mueller
- \* @since 29.05.2015
+ * @since 29.05.2015
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNodeAgentRelation", propOrder = {

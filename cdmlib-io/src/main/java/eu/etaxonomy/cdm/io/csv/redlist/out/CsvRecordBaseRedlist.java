@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
  * @author a.mueller
- \* @since 20.04.2011
+ * @since 20.04.2011
  *
  */
 /**

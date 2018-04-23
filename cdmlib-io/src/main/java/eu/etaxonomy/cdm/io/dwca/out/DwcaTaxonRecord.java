@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
- \* @since 18.04.2011
+ * @since 18.04.2011
  *
  */
 public class DwcaTaxonRecord extends DwcaRecordBase{

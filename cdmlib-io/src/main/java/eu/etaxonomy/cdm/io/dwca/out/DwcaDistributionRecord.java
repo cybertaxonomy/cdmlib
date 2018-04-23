@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
- \* @since 20.04.2011
+ * @since 20.04.2011
  *
  */
 public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaRecord{

@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.dao.IMethodCache;
 
 /**
  * @author a.kohlbecker
- \* @since 26.03.2009
+ * @since 26.03.2009
  *
  */
 public abstract class AbstractBeanInitializer implements IBeanInitializer{

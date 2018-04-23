@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * @author a.kohlbecker
- \* @since Feb 22, 2016
+ * @since Feb 22, 2016
  *
  */
 //@EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly

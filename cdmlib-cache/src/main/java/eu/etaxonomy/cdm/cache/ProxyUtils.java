@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.PersistentMultiLanguageText;
 
 /**
  * @author cmathew
- \* @since 17 Feb 2015
+ * @since 17 Feb 2015
  *
  */
 public class ProxyUtils {

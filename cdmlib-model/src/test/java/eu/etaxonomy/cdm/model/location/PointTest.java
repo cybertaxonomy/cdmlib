@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.location.Point.Sexagesimal;
 
 /**
  * @author a.mueller
- \* @since 04.06.2010
+ * @since 04.06.2010
  *
  */
 public class PointTest {

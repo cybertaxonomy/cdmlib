@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * @see ITermService#delete(eu.etaxonomy.cdm.common.DefinedTermBase)
  * 
  * @author a.mueller
- \* @since 09.11.2011
+ * @since 09.11.2011
  *
  */
 public class TermDeletionConfigurator extends DeleteConfiguratorBase {

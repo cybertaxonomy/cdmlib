@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.config;
 
 /**
  * @author a.kohlbecker
- \* @since Feb 22, 2016
+ * @since Feb 22, 2016
  *
  */
 public enum SwaggerGroupsConfig {

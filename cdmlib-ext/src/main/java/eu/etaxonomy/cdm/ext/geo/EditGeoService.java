@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 
 /**
  * @author a.kohlbecker
- \* @since 18.06.2009
+ * @since 18.06.2009
  *
  */
 @Service

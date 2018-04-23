@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * Thread class to be used to run monitored jobs
  *
  * @author cmathew
- \* @since 22 Oct 2015
+ * @since 22 Oct 2015
  *
  */
 public abstract class RemotingProgressMonitorThread extends Thread {

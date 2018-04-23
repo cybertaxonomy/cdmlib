@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  *
  * @author a.kohlbecker
- \* @since Oct 12, 2012
+ * @since Oct 12, 2012
  *
  */
 //@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671

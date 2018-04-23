@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * The mapping is unidirectional.
  *
  * @author a.mueller
- \* @since 15.08.2011
+ * @since 15.08.2011
  *
  */
 public interface IGeoServiceAreaMapping {

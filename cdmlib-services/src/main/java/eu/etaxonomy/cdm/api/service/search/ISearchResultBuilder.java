@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  * Interface for Builder classes which create {@link SearchResult} instances, from a list of LuceneSearch {@link TopDocs}.
  *
  * @author Andreas Kohlbecker
- \* @since Jan 6, 2012
+ * @since Jan 6, 2012
  *
  */
 public interface ISearchResultBuilder {

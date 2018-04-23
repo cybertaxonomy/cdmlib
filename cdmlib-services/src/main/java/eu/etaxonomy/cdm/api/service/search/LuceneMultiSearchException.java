@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.search;
 
 /**
  * @author a.kohlbecker
- \* @since Sep 10, 2013
+ * @since Sep 10, 2013
  *
  */
 @SuppressWarnings("serial")

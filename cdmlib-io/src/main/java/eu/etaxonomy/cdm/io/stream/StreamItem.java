@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.mueller
- \* @since 23.11.2011
+ * @since 23.11.2011
  *
  */
 public class StreamItem implements IConverterInput<StreamItem> {

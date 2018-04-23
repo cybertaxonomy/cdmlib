@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * registered in the <code>propertiesMetdata</code>
  *
  * @author Andreas Kohlbecker
- \* @since Dec 19, 2011
+ * @since Dec 19, 2011
  *
  */
 public class DescriptionBaseClassBridge extends AbstractClassBridge {

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * Base class for {@link CsvImportBase csv import} configuration.
  *
  * @author a.mueller
- \* @since 08.07.2017
+ * @since 08.07.2017
 
  */
 public abstract class CsvImportConfiguratorBase

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.stream;
 
 /**
  * @author a.mueller
- \* @since 23.11.2011
+ * @since 23.11.2011
  *
  */
 public interface IReader<TYPE extends Object> extends IConverterOutput<IReader<TYPE>>{

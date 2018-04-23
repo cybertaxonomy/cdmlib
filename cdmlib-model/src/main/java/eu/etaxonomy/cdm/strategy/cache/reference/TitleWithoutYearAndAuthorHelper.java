@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * @author a.mueller
- \* @since 25.05.2016
+ * @since 25.05.2016
  *
  */
 public class TitleWithoutYearAndAuthorHelper {

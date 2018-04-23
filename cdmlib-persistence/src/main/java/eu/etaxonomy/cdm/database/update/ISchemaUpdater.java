@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @see ITermUpdaterStep
  *
  * @author a.mueller
- \* @since 09.2010
+ * @since 09.2010
  */
 public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 

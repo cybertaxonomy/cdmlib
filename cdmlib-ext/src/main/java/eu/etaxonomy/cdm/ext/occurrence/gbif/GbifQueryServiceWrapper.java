@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * This service provides access to GBIF web service API.<br>
  * It sends a {@link GbifQuery} via HTTP GET
  * @author pplitzner
- \* @since 13.09.2013
+ * @since 13.09.2013
  *
  */
 public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{

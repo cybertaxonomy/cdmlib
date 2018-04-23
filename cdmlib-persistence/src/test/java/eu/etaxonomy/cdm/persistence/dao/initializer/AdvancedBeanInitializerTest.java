@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- \* @since 16.11.2015
+ * @since 16.11.2015
  */
 public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest {
 

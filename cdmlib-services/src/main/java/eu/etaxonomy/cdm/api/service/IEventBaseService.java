@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 
 /**
  * @author a.kohlbecker
- \* @since Jan 9, 2013
+ * @since Jan 9, 2013
  *
  */
 public interface IEventBaseService extends IAnnotatableService<EventBase> {

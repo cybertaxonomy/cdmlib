@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.RankClass;
 /**
  * Creates a new term if a term with the same given uuid does not exist yet
  * @author a.mueller
- \* @since 10.09.2010
+ * @since 10.09.2010
  *
  */
 public class SingleTermUpdater extends SchemaUpdaterStepBase {

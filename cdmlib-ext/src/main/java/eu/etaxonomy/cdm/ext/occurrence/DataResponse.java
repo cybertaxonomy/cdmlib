@@ -12,7 +12,7 @@ import java.net.URI;
 
 /**
  * @author k.luther
- \* @since 21.02.2017
+ * @since 21.02.2017
  *
  */
 public class DataResponse {

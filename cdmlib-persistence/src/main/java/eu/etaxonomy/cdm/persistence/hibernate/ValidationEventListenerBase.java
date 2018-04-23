@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 
 /**
  * @author a.mueller
- \* @since 13.02.2015
+ * @since 13.02.2015
  *
  */
 @SuppressWarnings("serial")

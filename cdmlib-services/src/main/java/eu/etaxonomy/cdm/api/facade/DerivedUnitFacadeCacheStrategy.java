@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- \* @since 03.06.2010
+ * @since 03.06.2010
  *
  */
 public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnit> {

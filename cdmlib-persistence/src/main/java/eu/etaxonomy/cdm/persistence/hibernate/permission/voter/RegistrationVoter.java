@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 
 /**
  * @author a.kohlbecker
- \* @since Feb 24, 2014
+ * @since Feb 24, 2014
  *
  */
 public class RegistrationVoter extends CdmPermissionVoter {

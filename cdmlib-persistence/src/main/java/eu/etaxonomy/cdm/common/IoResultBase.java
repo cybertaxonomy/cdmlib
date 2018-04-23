@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author a.mueller
- \* @since 24.03.2017
+ * @since 24.03.2017
  *
  */
 public abstract class IoResultBase implements Serializable{

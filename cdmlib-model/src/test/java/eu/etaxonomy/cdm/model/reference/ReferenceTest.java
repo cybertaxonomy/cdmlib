@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- \* @since 02.03.2017
+ * @since 02.03.2017
  *
  */
 public class ReferenceTest {

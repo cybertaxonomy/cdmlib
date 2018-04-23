@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
  *
  * @author a.kohlbecker
- \* @since Feb 23, 2016
+ * @since Feb 23, 2016
  *
  */
 //TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to

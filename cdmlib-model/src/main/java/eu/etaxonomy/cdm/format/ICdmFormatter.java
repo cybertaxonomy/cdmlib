@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.format;
  * How the the string is built can be configured
  * by using the {@link FormatKey} enum.<br>
  * @author pplitzner
- \* @since Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public interface ICdmFormatter {

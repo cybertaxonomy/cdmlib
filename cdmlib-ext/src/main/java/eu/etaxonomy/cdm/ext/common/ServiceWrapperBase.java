@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- \* @since 24.08.2010
+ * @since 24.08.2010
  *
  */
 public class ServiceWrapperBase<T extends CdmBase> {

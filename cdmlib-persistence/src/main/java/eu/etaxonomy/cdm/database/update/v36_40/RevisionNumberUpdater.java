@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * Not needed anymore as long as we gave up bidirectionality #5743
  *
  * @author a.mueller
- \* @since 25.04.2016
+ * @since 25.04.2016
  */
 public class RevisionNumberUpdater extends SchemaUpdaterStepBase{
 

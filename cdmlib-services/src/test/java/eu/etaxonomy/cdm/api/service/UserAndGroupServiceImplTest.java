@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 /**
  * @author a.kohlbecker
- \* @since Feb 4, 2014
+ * @since Feb 4, 2014
  *
  */
 @DataSet(value="SecurityTest.xml")

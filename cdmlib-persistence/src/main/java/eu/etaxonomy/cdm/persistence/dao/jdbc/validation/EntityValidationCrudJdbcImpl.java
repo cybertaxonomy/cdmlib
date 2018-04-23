@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 
 /**
  * @author ayco_holleman
- \* @since 16 jan. 2015
+ * @since 16 jan. 2015
  *
  */
 @Repository

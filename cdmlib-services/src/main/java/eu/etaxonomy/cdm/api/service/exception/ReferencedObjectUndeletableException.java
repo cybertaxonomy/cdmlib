@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.api.service.exception;
  * Exception that is thrown when an object that is to be deleted within a deleteXXX
  * method can not be deleted due to other objects referencing the given object.
  * @author a.mueller
- \* @since 12.10.2011
+ * @since 12.10.2011
  *
  */
 public class ReferencedObjectUndeletableException extends DataChangeNoRollbackException {

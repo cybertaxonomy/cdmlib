@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.api.service.config;
  * This class enables to set configuration to the createHierarchy service in classification service.
  *
  * @author a.oppermann
- \* @since 26.01.2015
+ * @since 26.01.2015
  *
  */
 public class CreateHierarchyForClassificationConfigurator {

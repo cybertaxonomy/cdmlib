@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.common.media;
 
 /**
  * @author a.kohlbecker
- \* @since 27.11.2009
+ * @since 27.11.2009
  *
  */
 public enum MimeType {

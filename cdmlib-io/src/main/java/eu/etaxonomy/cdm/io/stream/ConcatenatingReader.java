@@ -13,7 +13,7 @@ import java.util.Queue;
 
 /**
  * @author a.mueller
- \* @since 19.03.2012
+ * @since 19.03.2012
  *
  */
 public class ConcatenatingReader<TYPE> implements IReader<TYPE> {

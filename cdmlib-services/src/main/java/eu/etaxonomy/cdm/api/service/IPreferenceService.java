@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * STATE: UNDER CONSTRUCTION
  *
  * @author a.mueller
- \* @since 03.06.2016
+ * @since 03.06.2016
  */
 public interface IPreferenceService {
 

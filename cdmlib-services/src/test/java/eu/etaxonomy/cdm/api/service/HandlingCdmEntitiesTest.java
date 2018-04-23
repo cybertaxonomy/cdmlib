@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * This test class tries to describe how hibernate works with objects (save, update, merge).
  *
  * @author cmathew
- \* @since 17 Sep 2014
+ * @since 17 Sep 2014
  *
  */
 

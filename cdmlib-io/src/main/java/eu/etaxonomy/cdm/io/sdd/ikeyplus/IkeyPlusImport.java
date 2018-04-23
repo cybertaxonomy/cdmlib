@@ -43,7 +43,7 @@ import fr.lis.ikeyplus.utils.Utils;
 
 /**
  * @author andreas
- \* @since Sep 18, 2012
+ * @since Sep 18, 2012
  *
  */
 @Component

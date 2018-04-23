@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
- \* @since 02.05.2011
+ * @since 02.05.2011
  *
  */
 public class DwcaTaxExportTransformer extends ExportTransformerBase {

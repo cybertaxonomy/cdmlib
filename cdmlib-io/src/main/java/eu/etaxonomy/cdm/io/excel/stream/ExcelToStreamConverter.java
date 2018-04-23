@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  * This class transforms excel archive in to a InputStream.
  *
  * @author a.oppermann
- \* @since 16.05.2013
+ * @since 16.05.2013
  *
  */
 public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {

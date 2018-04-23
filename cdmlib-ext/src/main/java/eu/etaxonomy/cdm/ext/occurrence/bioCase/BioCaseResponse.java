@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.ext.occurrence.DataResponse;
  * Additionally it holds the {@link URI} to query the Biocase data set web service which
  * holds the endpoint URL of the original record and the {@link BiocaseDataSetProtocol}
  * @author k.luther
- \* @since 21.02.2017
+ * @since 21.02.2017
  *
  */
 

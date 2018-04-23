@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 
 /**
  * @author andreas kohlbecker
- \* @since Sep 13, 2012
+ * @since Sep 13, 2012
  *
  */
 public interface IGrantedAuthorityService extends IService<GrantedAuthorityImpl> {

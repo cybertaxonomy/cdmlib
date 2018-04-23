@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
  * @author Andreas Kohlbecker
- \* @since Jun 4, 2012
+ * @since Jun 4, 2012
  *
  */
 public class DefinedTermBaseClassBridge extends AbstractClassBridge implements ParameterizedBridge {

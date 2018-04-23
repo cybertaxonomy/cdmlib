@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author admin.ayco.holleman
- \* @since 11 feb. 2015
+ * @since 11 feb. 2015
  *
  */
 public class BatchValidatorTest extends CdmTransactionalIntegrationTest {

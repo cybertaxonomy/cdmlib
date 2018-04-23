@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.oppermann
- \* @since 08.05.2013
+ * @since 08.05.2013
  */
 @Component
 public class ExcelStreamImport

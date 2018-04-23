@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
  * @see INameService#delete(eu.etaxonomy.cdm.model.name.TaxonName)
  * 
  * @author a.mueller
- \* @since 19.09.2011
+ * @since 19.09.2011
  *
  */
 public class NameDeletionConfigurator  extends DeleteConfiguratorBase {

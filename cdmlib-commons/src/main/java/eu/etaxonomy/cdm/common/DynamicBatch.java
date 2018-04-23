@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * DynamicBatch: a JVM resources aware batch manager.
  *
  * @author a.kohlbecker
- \* @since Jul 4, 2016
+ * @since Jul 4, 2016
  *
  */
 public class DynamicBatch {

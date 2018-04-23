@@ -13,7 +13,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- \* @since 15.09.2016
+ * @since 15.09.2016
  *
  */
 public class DefaultProgressMonitorTest {

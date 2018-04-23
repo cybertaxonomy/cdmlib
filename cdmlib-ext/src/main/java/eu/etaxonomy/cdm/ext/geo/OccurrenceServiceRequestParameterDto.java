@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 
 /**
  * @author pplitzner
- \* @since Apr 9, 2015
+ * @since Apr 9, 2015
  *
  */
 public class OccurrenceServiceRequestParameterDto {

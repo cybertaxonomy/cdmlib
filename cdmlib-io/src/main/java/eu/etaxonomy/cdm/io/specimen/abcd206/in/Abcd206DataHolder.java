@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenDataHolder;
 
 /**
  * @author a.mueller
- \* @since 16.06.2010
+ * @since 16.06.2010
  *
  */
 public class Abcd206DataHolder extends SpecimenDataHolder{

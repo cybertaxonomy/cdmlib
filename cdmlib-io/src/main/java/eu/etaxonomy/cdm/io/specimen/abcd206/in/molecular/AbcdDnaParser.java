@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 
 /**
  * @author pplitzner
- \* @since 15.06.2015
+ * @since 15.06.2015
  *
  */
 public class AbcdDnaParser {

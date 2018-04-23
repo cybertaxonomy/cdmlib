@@ -18,7 +18,7 @@ import org.apache.lucene.search.DocIdSetIterator;
  * Helper class, for printing out information on {@link DocIdSet}s
  *
  * @author a.kohlbecker
- \* @since Sep 24, 2013
+ * @since Sep 24, 2013
  *
  */
 public class DocIdBitSetPrinter {

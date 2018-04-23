@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * NOTE 2: TODO It was observed that the last line was not imported.
  *
  * @author a.mueller
- \* @since 25.03.2017
+ * @since 25.03.2017
  */
 @Component
 public class IdentifierImport

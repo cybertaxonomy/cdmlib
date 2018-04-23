@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * Test class for {@link DerivedUnitFacade}
  * @author a.mueller
- \* @since 17.05.2010
+ * @since 17.05.2010
  */
 
 public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {

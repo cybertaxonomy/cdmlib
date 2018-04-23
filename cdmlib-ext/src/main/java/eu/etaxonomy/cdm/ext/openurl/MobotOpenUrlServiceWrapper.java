@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * </ul>
  *
  * @author a.kohlbecker
- \* @since 24.08.2010
+ * @since 24.08.2010
  *
  */
 public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlReference> {

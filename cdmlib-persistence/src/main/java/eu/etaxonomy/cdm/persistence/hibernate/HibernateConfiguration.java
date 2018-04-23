@@ -16,7 +16,7 @@ import org.hibernate.envers.boot.internal.EnversIntegrator;
 
 /**
  * @author a.mueller
- \* @since 03.08.2017
+ * @since 03.08.2017
  *
  */
 public class HibernateConfiguration implements Serializable{

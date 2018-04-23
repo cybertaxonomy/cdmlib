@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author Andreas Kohlbecker
- \* @since Jan 6, 2012
+ * @since Jan 6, 2012
  *
  */
 public class SearchResultBuilder implements ISearchResultBuilder {

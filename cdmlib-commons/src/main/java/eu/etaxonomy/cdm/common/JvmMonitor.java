@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.kohlbecker
- \* @since Jul 1, 2016
+ * @since Jul 1, 2016
  *
  */
 public class JvmMonitor {

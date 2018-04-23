@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  * For more details see {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
  *
  * @author a.kohlbecker
- \* @since Feb 22, 2016
+ * @since Feb 22, 2016
  *
  */
 

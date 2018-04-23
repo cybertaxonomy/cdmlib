@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.config;
 
 /**
  * @author k.luther
- \* @since 03.11.2015
+ * @since 03.11.2015
  *
  */
 public class NodeDeletionConfigurator extends DeleteConfiguratorBase {

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  * </ul>
  *
  * @author a.kohlbecker
- \* @since Dec 7, 2012
+ * @since Dec 7, 2012
  *
  *
  * @param <T> a sub class of ({@link RelationshipTermBase})

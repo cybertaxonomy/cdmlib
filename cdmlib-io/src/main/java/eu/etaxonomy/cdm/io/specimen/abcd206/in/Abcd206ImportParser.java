@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author k.luther
- \* @since 26.01.2017
+ * @since 26.01.2017
  *
  */
 public class Abcd206ImportParser {

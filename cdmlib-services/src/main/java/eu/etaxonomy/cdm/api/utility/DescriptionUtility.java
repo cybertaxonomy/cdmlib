@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 /**
  * @author a.kohlbecker
- \* @since Apr 18, 2013
+ * @since Apr 18, 2013
  *
  */
 public class DescriptionUtility {

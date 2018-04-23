@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.common.DOI;
 
 /**
  * @author a.mueller
- \* @since Sep 05, 2013
+ * @since Sep 05, 2013
  *
  */
 public class DoiBridge implements StringBridge {

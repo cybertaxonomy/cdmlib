@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * <code>ACCESS_GRANTED</code> can not revoke this decision again.
  *
  * @author a.kohlbecker
- \* @since Oct 11, 2013
+ * @since Oct 11, 2013
  *
  */
 public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {

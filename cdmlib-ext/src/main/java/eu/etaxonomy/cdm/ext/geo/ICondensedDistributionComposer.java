@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
  * @author a.kohlbecker
- \* @since Jun 24, 2015
+ * @since Jun 24, 2015
  *
  */
 public interface ICondensedDistributionComposer {

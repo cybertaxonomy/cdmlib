@@ -15,7 +15,7 @@ import org.hibernate.envers.tools.Pair;
 
 /**
  * @author pplitzner
- \* @since Mar 27, 2015
+ * @since Mar 27, 2015
  *
  */
 public abstract class DerivateDTO {

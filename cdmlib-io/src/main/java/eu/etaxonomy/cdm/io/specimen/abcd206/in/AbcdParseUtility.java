@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner
- \* @since 16.06.2015
+ * @since 16.06.2015
  *
  */
 public class AbcdParseUtility {

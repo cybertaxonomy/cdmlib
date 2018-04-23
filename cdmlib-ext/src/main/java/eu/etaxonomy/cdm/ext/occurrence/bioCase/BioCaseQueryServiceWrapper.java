@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * This service provides access to BioCASe providers.<br>
  * It sends a {@link OccurenceQuery} via HTTP POST to a given provider
  * @author pplitzner
- \* @since 13.09.2013
+ * @since 13.09.2013
  *
  */
 

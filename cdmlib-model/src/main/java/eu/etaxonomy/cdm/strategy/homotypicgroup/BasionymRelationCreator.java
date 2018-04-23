@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * The base class, package and even the module may change in future.
  *
  * @author a.mueller
- \* @since 22.04.2017
+ * @since 22.04.2017
  *
  */
 public class BasionymRelationCreator extends StrategyBase {

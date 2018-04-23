@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author pplitzner
- \* @since Mar 26, 2015
+ * @since Mar 26, 2015
  *
  */
 public class PreservedSpecimenDTO extends DerivateDTO{

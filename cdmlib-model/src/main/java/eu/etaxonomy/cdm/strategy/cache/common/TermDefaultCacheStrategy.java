@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
  * @author a.mueller
- \* @since 19.05.2010
+ * @since 19.05.2010
  *
  */
 public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEntityDefaultCacheStrategy<T> implements IIdentifiableEntityCacheStrategy<T> {

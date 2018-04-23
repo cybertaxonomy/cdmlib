@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.common.media;
 
 /**
  * @author k.luther
- \* @since 27.11.2009
+ * @since 27.11.2009
  *
  */
 public class AudioInfo extends MediaInfo {

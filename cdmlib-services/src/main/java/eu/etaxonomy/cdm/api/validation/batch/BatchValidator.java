@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.validation.Level3;
 /**
  * @author ayco_holleman
  * @author a.mueller
- \* @since 27 jan. 2015
+ * @since 27 jan. 2015
  *
  */
 @Component("batchValidator")

@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 /**
  * @author a.kohlbecker
- \* @since 23.03.2009
+ * @since 23.03.2009
  *
  * @param <T>
  */

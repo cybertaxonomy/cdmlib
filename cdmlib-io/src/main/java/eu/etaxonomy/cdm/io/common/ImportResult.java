@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author cmathew
- \* @since 5 Aug 2015
+ * @since 5 Aug 2015
  *
  */
 public class ImportResult extends IoResultBase implements Serializable {

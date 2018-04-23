@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author cmathew
- \* @since 31 Jul 2015
+ * @since 31 Jul 2015
  *
  */
 public interface IExportData extends Serializable {

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 
 /**
  * @author a.mueller
- \* @since 09.01.2015
+ * @since 09.01.2015
  *
  */
 public interface IEntityValidationCrud {

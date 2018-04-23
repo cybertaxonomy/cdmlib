@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
  * @see also class <code>eu.etaxonomy.cdm.remote.controller.util.PagerParameter</code>
  *
  * @author a.kohlbecker
- \* @since Dec 10, 2012
+ * @since Dec 10, 2012
  *
  */
 public class PagerUtils {

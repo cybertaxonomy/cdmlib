@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.kohlbecker
- \* @since Jun 13, 2016
+ * @since Jun 13, 2016
  *
  */
 public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {

@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.mueller
- \* @since 10.03.2012
+ * @since 10.03.2012
  *
  */
 public interface INamespace {

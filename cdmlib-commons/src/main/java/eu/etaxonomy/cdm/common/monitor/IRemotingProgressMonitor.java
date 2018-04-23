@@ -16,7 +16,7 @@ import java.util.List;
  * remoting (spring httpinvoker)
  *
  * @author cmathew
- \* @since 14 Oct 2015
+ * @since 14 Oct 2015
  *
  */
 public interface IRemotingProgressMonitor extends IRestServiceProgressMonitor {

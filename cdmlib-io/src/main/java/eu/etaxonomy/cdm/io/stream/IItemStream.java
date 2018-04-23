@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.oppermann
- \* @since 14.05.2013
+ * @since 14.05.2013
  *
  */
 public interface IItemStream extends INamespaceReader<StreamItem>{

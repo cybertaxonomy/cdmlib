@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author ayco_holleman
- \* @since 28 jan. 2015
+ * @since 28 jan. 2015
  *
  */
 class BatchValidationUtil {

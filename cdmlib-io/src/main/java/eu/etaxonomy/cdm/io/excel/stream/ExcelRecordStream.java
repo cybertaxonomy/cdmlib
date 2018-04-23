@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.oppermann
- \* @since 16.05.2013
+ * @since 16.05.2013
  *
  */
 public class ExcelRecordStream  implements IItemStream{

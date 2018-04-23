@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * context.
  * 
  * @author a.kohlbecker
- \* @since 24.06.2009
+ * @since 24.06.2009
  */
 public abstract class AbstractStringComparator<T extends Object> implements Comparator<T> {
 

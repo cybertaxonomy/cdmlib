@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 
 /**
  * @author a.mueller
- \* @since 09.08.2013
+ * @since 09.08.2013
  *
  */
 public class TreeIndexUpdater

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
- \* @since 15.06.2016
+ * @since 15.06.2016
  *
  */
 @Ignore

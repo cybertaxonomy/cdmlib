@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * defined by the ordered {@link NamedArea} vocabulary.
  *
  * @author a.mueller
- \* @since 04.04.2016
+ * @since 04.04.2016
  *
  */
 public class DistributionNodeByAreaOrderComparator implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{

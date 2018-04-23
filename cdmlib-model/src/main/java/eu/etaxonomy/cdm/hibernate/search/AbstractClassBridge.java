@@ -9,7 +9,7 @@ import org.hibernate.search.bridge.LuceneOptions;
  * {@link LuceneOptions} for id and for search fields.
  *
  * @author a.kohlbecker
- \* @since Sep 24, 2012
+ * @since Sep 24, 2012
  *
  */
 public abstract class AbstractClassBridge implements FieldBridge {

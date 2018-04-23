@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.print.out.mediawiki;
 
 /**
  * @author l.morris
- \* @since Sep 19, 2013
+ * @since Sep 19, 2013
  *
  */
 public class WikiPage {

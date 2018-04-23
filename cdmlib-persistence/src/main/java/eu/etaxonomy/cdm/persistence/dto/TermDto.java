@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author andreas
- \* @since Mar 25, 2015
+ * @since Mar 25, 2015
  *
  */
 public class TermDto {

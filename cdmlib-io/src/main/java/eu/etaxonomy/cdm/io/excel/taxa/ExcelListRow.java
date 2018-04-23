@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 
 /**
  * @author k.luther
- \* @since 21.02.2018
+ * @since 21.02.2018
  *
  */
 public class ExcelListRow extends ExcelRowBase {

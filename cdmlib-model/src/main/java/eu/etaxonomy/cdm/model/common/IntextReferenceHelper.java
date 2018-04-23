@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.common;
  * Utility class to handle {@link IntextReference}s
  *
  * @author a.mueller
- \* @since 10.03.2017
+ * @since 10.03.2017
  *
  */
 public final class IntextReferenceHelper {

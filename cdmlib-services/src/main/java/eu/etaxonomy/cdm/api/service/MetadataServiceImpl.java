@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
  * Provides metadata information corresponding ti the underlying CDM Datasource.
  *
  * @author cmathew
- \* @since 20 Nov 2015
+ * @since 20 Nov 2015
  *
  */
 @Service

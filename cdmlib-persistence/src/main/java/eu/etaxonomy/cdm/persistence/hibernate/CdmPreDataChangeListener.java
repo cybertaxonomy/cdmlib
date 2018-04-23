@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author cmathew
- \* @since 7 Jul 2015
+ * @since 7 Jul 2015
  *
  */
 public class CdmPreDataChangeListener

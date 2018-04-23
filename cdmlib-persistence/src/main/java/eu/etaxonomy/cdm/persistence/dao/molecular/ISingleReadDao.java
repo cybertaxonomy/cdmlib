@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
  * @author pplitzner
- \* @since 11.03.2014
+ * @since 11.03.2014
  *
  */
 public interface ISingleReadDao extends IAnnotatableDao<SingleRead>{
