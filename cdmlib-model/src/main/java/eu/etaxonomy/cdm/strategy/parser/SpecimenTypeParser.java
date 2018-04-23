@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @date 25.07.2011
+ \* @since 25.07.2011
  */
 public class SpecimenTypeParser {
 

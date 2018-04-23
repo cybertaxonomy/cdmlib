@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author pplitzner
- * @date 31.03.2014
+ \* @since 31.03.2014
  *
  */
 public class AmplificationServiceTest  extends CdmTransactionalIntegrationTest {

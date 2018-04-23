@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.kohlbecker
- * @date Feb 24, 2014
+ \* @since Feb 24, 2014
  *
  */
 public class ReferenceVoter extends CdmPermissionVoter {

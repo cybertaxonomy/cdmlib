@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author k.luther
- * @date 15.03.2017
+ \* @since 15.03.2017
  */
 @Component
 public class CdmLightClassificationExport

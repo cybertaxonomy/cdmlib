@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
 /**
  * @author pplitzner
- * @date 20.05.2014
+ \* @since 20.05.2014
  *
  */
 public class GbifQueryServiceWrapperTest {

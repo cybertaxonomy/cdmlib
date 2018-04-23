@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 
 /**
  * @author a.kohlbecker
- * @date 20.10.2010
+ * @since 20.10.2010
  *
  */
 public class PointBeanProcessor extends AbstractBeanProcessor<Point> {

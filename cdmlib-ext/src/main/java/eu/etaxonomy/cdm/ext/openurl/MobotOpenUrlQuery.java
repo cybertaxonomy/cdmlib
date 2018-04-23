@@ -12,7 +12,7 @@ import java.net.URI;
 
 /**
  * @author a.kohlbecker
- * @date 17.12.2010
+ \* @since 17.12.2010
  * 
  */
 public class MobotOpenUrlQuery {

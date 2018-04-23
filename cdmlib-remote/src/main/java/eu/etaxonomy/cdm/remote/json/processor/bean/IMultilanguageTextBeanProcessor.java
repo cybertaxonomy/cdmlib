@@ -24,7 +24,7 @@ import java.util.List;
  * For reference implementations, please see {@link StateDataBeanProcessor} or {@link DescriptionElementBeanProcessor}.
  *
  * @author a.kohlbecker
- * @date Dec 4, 2013
+ * @since Dec 4, 2013
  *
  */
 public interface IMultilanguageTextBeanProcessor {

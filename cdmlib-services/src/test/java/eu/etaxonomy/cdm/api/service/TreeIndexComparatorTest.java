@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.TreeIndexComparator;
 
 /**
  * @author a.mueller
- * @date 12.09.2016
+ \* @since 12.09.2016
  *
  */
 public class TreeIndexComparatorTest {

@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author a.kohlbecker
- * @date Feb 24, 2014
+ \* @since Feb 24, 2014
  *
  */
 public class TaxonNameVoter extends CdmPermissionVoter {

@@ -6,7 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
  * This utility class helps finding security related exceptions in Throwables
  *
  * @author a.kohlbecker
- * @date Feb 11, 2014
+ \* @since Feb 11, 2014
  *
  */
 public class SecurityExceptionUtils {

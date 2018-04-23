@@ -19,7 +19,7 @@ import org.hibernate.LazyInitializationException;
  * https://hibernate.atlassian.net/browse/HHH-9751
  *
  * @author a.kohlbecker
- * @date Jun 13, 2016
+ \* @since Jun 13, 2016
  *
  */
 public class HHH_9751_Util {

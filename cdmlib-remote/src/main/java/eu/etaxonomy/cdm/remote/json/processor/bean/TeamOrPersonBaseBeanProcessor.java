@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.kohlbecker
- * @date 20.10.2010
+ * @since 20.10.2010
  *
  */
 public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrPersonBase> {

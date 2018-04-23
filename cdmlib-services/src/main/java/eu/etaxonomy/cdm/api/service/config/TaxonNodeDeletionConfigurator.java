@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
  * @see ITaxonNodeService#delete(eu.etaxonomy.cdm.model.taxon.TaxonNode)
  *
  * @author a.mueller
- * @date 09.11.2011
+ \* @since 09.11.2011
  *
  */
 public class TaxonNodeDeletionConfigurator extends NodeDeletionConfigurator {

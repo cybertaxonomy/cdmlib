@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
- * @date 03.06.2010
+ \* @since 03.06.2010
  */
 
 public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {

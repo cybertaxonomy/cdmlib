@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther/a.kohlbecker
- * @date 09.03.2018
+ \* @since 09.03.2018
  *
  */
 public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{

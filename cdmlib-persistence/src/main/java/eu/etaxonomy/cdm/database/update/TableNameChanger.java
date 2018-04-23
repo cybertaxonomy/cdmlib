@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- * @date 16.09.2010
+ \* @since 16.09.2010
  *
  */
 public class TableNameChanger

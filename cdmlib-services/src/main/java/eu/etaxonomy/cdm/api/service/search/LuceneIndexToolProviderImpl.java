@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.kohlbecker
- * @date Sep 18, 2013
+ \* @since Sep 18, 2013
  *
  */
 @Component

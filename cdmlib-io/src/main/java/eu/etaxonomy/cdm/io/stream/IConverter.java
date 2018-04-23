@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * Supports mapping of input to output and identifier identification.
  *
  * @author a.mueller
- * @date 23.11.2011
+ \* @since 23.11.2011
  *
  */
 public interface IConverter<IN extends IConverterInput, OUT extends IConverterOutput, SOURCE_ID extends Object> {

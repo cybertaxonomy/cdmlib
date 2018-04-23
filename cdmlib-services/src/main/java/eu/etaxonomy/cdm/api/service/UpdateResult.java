@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
  * This class represents the result of an update action.
  *
  * @author k.luther
- * @date 11.02.2015
+ \* @since 11.02.2015
  *
  */
 public class UpdateResult implements Serializable{

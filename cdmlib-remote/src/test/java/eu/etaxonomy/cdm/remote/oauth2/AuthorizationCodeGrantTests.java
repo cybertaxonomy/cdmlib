@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.remote.server.ServerRunning;
 
 /**
  * @author a.kohlbecker
- * @date Jan 17, 2017
+ * @since Jan 17, 2017
  *
  */
 public class AuthorizationCodeGrantTests {

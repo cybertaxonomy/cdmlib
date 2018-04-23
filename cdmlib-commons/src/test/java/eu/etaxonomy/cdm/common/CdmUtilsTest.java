@@ -24,6 +24,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author a.mueller
+ * @since 22.01.2008
+ *
+ */
 public class CdmUtilsTest {
 	private static final Logger logger = Logger.getLogger(CdmUtilsTest.class);
 

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @date 23.11.2011
+ \* @since 23.11.2011
  */
 @Transactional(TransactionMode.ROLLBACK)
 public class DwcaImportIntegrationTest  extends CdmTransactionalIntegrationTest{

@@ -81,7 +81,7 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
  * if not found search in a second step in the environment variables of the OS, see:{@link #findProperty(String, boolean)}.
  *
  * @author a.kohlbecker
- * @date 04.02.2011
+ * @since 04.02.2011
  *
  */
 @Configuration

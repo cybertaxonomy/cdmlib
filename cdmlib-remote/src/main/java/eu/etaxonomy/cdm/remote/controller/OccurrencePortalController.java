@@ -37,7 +37,7 @@ import io.swagger.annotations.Api;
  * TODO write controller documentation
  *
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @since 24.03.2009
  */
 @Controller
 @Api("portal_occurrence")

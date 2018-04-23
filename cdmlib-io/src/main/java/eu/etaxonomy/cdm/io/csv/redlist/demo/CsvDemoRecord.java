@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.oppermann
- * @date 18.10.2012
+ \* @since 18.10.2012
  *
  */
 public class CsvDemoRecord extends CsvDemoRecordBase{

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * Creates empty root nodes for each classification. Replacing MN tables for classification root nodes.
  * For single use in {@link SchemaUpdater_33_331}
  * @author a.mueller
- * @date 15.12.2013
+ \* @since 15.12.2013
  */
 public class ClassificationRootNodeUpdater extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(ClassificationRootNodeUpdater.class);

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * Base class for delete configurators.
  * @author a.mueller
- * @date 04.01.2012
+ \* @since 04.01.2012
  *
  */
 public abstract class DeleteConfiguratorBase implements Serializable {

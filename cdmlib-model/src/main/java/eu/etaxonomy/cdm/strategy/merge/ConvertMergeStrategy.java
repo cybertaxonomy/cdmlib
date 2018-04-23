@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * @author k.luther
- * @date 27.08.2015
+ \* @since 27.08.2015
  *
  */
 public class ConvertMergeStrategy extends DefaultMergeStrategy {

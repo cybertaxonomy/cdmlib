@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 /**
  * Generates the query URL string for GBIF queries.
  * @author pplitzner
- * @date 13.09.2013
+ \* @since 13.09.2013
  *
  */
 public class GbifQueryGenerator {

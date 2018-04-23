@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @date 27.04.2011
+ \* @since 27.04.2011
  *
  */
 public enum TermUri {

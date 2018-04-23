@@ -19,7 +19,7 @@ import net.sf.json.processors.JsonBeanProcessor;
 
 /**
  * @author a.kohlbecker
- * @date 29.07.2010
+ * @since 29.07.2010
  *
  * @deprecated use the eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto instead for all classification web service endpoints
  */

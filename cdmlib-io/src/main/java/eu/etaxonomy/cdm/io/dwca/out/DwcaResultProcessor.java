@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * @author a.mueller
- * @date 25.06.2017
+ \* @since 25.06.2017
  *
  */
 public class DwcaResultProcessor {

@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 
 /**
  * @author a.kohlbecker
- * @date 09.06.2009
+ * @since 09.06.2009
  *
  */
 public class NameRelationshipBeanProcessor extends AbstractCdmBeanProcessor<NameRelationship> {

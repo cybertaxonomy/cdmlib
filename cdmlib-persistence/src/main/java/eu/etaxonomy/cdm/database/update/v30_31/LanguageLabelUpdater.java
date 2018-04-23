@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
  * @author a.mueller
- * @date 15.12.2010
+ \* @since 15.12.2010
  */
 public class LanguageLabelUpdater extends SchemaUpdaterStepBase{
 

@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ \* @since Nov 30, 2015
  *
  */
 public class SingleReadFormatter extends AbstractCdmFormatter {

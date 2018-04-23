@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.common;
 
 /**
  * @author a.kohlbecker
- * @date Jan 31, 2014
+ \* @since Jan 31, 2014
  *
  */
 public interface IPublishable {

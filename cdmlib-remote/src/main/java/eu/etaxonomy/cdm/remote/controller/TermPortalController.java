@@ -18,7 +18,7 @@ import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
- * @date Dec 1, 2016
+ * @since Dec 1, 2016
  *
  */
 @Controller

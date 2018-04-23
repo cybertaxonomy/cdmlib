@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.User;
 
 /**
  * @author a.kohlbecker
- * @date Oct 11, 2016
+ * @since Oct 11, 2016
  *
  */
 @Controller

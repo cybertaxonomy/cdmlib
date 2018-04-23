@@ -127,7 +127,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * Not needed anymore as long as we gave up bidirectionality #5743
  *
  * @author a.mueller
- * @date 25.04.2016
+ \* @since 25.04.2016
  */
 public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
 	private static final Logger logger = Logger.getLogger(ReferencedObjTypeUpdater.class);

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 
 /**
  * @author a.mueller
- * @date 20.04.2011
+ \* @since 20.04.2011
  *
  */
 public class DwcaImageRecord extends DwcaRecordBase{

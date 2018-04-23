@@ -32,7 +32,7 @@ import io.swagger.annotations.Api;
 /**
  *
  * @author a.kohlbecker
- * @date Jun 13, 2016
+ * @since Jun 13, 2016
  *
  */
 @Controller

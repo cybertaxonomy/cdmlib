@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.ext.geo;
 
 /**
  * @author a.kohlbecker
- * @date Jun 24, 2015
+ \* @since Jun 24, 2015
  *
  */
 public enum CondensedDistributionRecipe {

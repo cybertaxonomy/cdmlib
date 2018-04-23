@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- * @date 31.05.2010
+ \* @since 31.05.2010
  *
  */
 public class TeamTest {

@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
  * layer remotely (like the Taxonomic Editor)
  *
  * @author cmathew
- * @date 26 Jun 2015
+ \* @since 26 Jun 2015
  *
  */
 public interface ITestService {

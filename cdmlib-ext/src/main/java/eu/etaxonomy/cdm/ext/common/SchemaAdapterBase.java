@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- * @date 24.08.2010
+ \* @since 24.08.2010
  *
  */
 public abstract class SchemaAdapterBase<T extends CdmBase> {

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 /**
  * @author a.kohlbecker
- * @date Jun 24, 2013
+ * @since Jun 24, 2013
  *
  */
 @Controller

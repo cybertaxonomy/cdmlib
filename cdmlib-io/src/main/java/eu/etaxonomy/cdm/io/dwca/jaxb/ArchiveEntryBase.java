@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author a.mueller
- * @date 17.10.2011
+ \* @since 17.10.2011
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

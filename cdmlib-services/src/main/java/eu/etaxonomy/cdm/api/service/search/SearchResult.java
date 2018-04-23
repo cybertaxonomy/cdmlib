@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * TODO class description
  *
  * @author Andreas Kohlbecker
- * @date Jan 6, 2012
+ \* @since Jan 6, 2012
  *
  */
 public class SearchResult<T extends CdmBase> extends DocumentSearchResult {

@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * this test can be deleted or adapted and moved to cdmlib-model.
  *
  * @author a.mueller
- * @date 03.06.2010
+ \* @since 03.06.2010
  *
  */
 public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactionalIntegrationTest {

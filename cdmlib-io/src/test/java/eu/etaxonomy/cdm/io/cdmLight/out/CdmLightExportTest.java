@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author k.luther
- * @date 17.01.2018
+ \* @since 17.01.2018
  *
  */
 public class CdmLightExportTest extends CdmTransactionalIntegrationTest{

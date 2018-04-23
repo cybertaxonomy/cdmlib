@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.dto.common;
 
 /**
  * @author a.mueller
- * @date 25.11.2016
+ * @since 25.11.2016
  *
  */
 public class StringResultDTO {

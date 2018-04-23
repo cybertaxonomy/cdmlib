@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * Enumeration of all abstract CDM base types. Each provides a set of all sub types.
  * @author a.kohlbecker
- * @date Sep 28, 2012
+ \* @since Sep 28, 2012
  *
  */
 public enum CdmBaseType {

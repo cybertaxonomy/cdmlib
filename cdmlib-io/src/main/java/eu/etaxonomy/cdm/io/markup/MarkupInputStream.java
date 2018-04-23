@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @date 29.06.2011
+ \* @since 29.06.2011
  *
  */
 public class MarkupInputStream  {

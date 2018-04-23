@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * (gathering event) it derives from.<BR>
  *
  * @author a.mueller
- * @date 14.05.2010
+ \* @since 14.05.2010
  */
 public class DerivedUnitFacade {
 	private static final String METER = "m";

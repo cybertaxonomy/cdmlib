@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * @author a.mueller
- * @date 04.10.2016
+ \* @since 04.10.2016
  *
  */
 public class CdmPreDataChangeListenerTest /*extends CdmIntegrationTest*/ {

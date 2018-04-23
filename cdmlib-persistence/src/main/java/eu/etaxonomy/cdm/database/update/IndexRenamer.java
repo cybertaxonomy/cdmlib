@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- * @date 15.06.2017
+ \* @since 15.06.2017
  *
  */
 public class IndexRenamer extends SchemaUpdaterStepBase {

@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- * @date Dec 4, 2013
+ * @since Dec 4, 2013
  *
  */
 public abstract class AbstractModifiableThingBeanProcessor<T extends CdmBase> extends AbstractCdmBeanProcessor<T> implements IMultilanguageTextBeanProcessor{

@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 
 /**
  * @author l.morris
- * @date 27 Mar 2012
+ * @since 27 Mar 2012
  *
  */
 public abstract class AbstractIdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * #6226
  *
  * @author a.mueller
- * @date 05.06.2017
+ \* @since 05.06.2017
  *
  */
 public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{

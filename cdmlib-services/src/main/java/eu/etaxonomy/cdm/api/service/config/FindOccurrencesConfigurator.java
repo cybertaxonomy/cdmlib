@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 
 /**
  * @author pplitzner
- * @date Apr 13, 2015
+ \* @since Apr 13, 2015
  *
  */
 public class FindOccurrencesConfigurator extends IdentifiableServiceConfiguratorImpl<SpecimenOrObservationBase>{

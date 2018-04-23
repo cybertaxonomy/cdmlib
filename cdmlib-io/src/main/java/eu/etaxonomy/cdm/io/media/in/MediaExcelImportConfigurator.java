@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
- * @date 30.10.2017
+ \* @since 30.10.2017
  *
  */
 public class MediaExcelImportConfigurator

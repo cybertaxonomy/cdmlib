@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.RankClass;
 
 /**
  * @author a.mueller
- * @date 15.12.2013
+ \* @since 15.12.2013
  */
 public class RankClassUpdater extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(RankClassUpdater.class);

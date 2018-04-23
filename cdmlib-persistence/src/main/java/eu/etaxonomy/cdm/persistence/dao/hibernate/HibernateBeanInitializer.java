@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 
 /**
  * @author a.kohlbecker
- * @date 25.03.2009
+ \* @since 25.03.2009
  *
  */
 //@Component("defaultBeanInitializer")

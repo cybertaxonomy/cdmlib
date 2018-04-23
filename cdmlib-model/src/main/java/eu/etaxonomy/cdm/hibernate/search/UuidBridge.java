@@ -15,7 +15,7 @@ import org.hibernate.search.bridge.StringBridge;
 
 /**
  * @author andreas
- * @date Jun 19, 2012
+ \* @since Jun 19, 2012
  *
  */
 public class UuidBridge implements StringBridge {

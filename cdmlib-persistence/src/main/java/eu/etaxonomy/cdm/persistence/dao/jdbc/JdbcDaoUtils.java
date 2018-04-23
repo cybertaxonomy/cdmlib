@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author ayco_holleman
- * @date 20 jan. 2015
+ \* @since 20 jan. 2015
  *
  */
 public class JdbcDaoUtils {

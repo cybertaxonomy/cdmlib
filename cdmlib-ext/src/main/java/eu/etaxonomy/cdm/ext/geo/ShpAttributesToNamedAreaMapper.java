@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  *
  *
  * @author a.kohlbecker
- * @date Oct 18, 2013
+ \* @since Oct 18, 2013
  *
  */
 public class ShpAttributesToNamedAreaMapper {

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 
 /**
  * @author pplitzner
- * @date 11.03.2014
+ \* @since 11.03.2014
  *
  */
 public interface ISequenceService extends IAnnotatableService<Sequence>{

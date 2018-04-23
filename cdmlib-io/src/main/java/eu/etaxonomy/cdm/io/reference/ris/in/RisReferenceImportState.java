@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author a.mueller
- * @date 11.05.2017
+ \* @since 11.05.2017
  *
  */
 public class RisReferenceImportState

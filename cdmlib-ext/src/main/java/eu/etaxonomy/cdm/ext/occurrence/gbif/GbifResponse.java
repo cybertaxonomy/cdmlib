@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * Additionally it holds the {@link URI} to query the GBIF data set web service which
  * holds the endpoint URL of the original record and the {@link GbifDataSetProtocol}
  * @author pplitzner
- * @date 27.05.2014
+ \* @since 27.05.2014
  *
  */
 public class GbifResponse extends DataResponse {

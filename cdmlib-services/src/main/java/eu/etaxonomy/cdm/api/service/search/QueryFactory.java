@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  *
  *
  * @author a.kohlbecker
- * @date Sep 14, 2012
+ \* @since Sep 14, 2012
  *
  */
 public class QueryFactory {

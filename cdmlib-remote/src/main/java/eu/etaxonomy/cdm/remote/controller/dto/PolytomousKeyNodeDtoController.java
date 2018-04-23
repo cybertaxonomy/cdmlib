@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author l.morris
- * @date Feb 21, 2013
+ * @since Feb 21, 2013
  *
  */
 @Controller

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.common.events;
 
 /**
  * @author a.mueller
- * @date 24.06.2011
+ \* @since 24.06.2011
  *
  */
 public class IoProblemEvent extends IoEventBase {

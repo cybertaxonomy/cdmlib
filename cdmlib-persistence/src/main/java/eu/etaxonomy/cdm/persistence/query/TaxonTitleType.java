@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.query;
 
 /**
  * @author a.mueller
- * @date 03.12.2016
+ \* @since 03.12.2016
  *
  */
 public enum TaxonTitleType {

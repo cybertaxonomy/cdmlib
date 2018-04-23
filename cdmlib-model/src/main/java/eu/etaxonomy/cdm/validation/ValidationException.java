@@ -13,7 +13,7 @@ import javax.validation.ConstraintViolation;
 /**
  *
  * @author ayco_holleman
- * @date 15 jan. 2015
+ \* @since 15 jan. 2015
  *
  */
 public class ValidationException extends Exception {

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
- * @date 18.04.2011
+ \* @since 18.04.2011
  *
  */
 public abstract class DwcaExportBase

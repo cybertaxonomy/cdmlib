@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
  * BBOX=minx(minlongitute),miny(minlatitute),maxx(maxlongitute),max(maxlatitute): Bounding box corners (lower left, upper right)
  *
  * @author a.kohlbecker
- * @date Apr 26, 2013
+ * @since Apr 26, 2013
  *
  */
 public class RectanglePropertyEditor extends PropertyEditorSupport {

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.kohlbecker
- * @date 18.07.2011
+ \* @since 18.07.2011
  *
  */
 public class TaxonNodeDtoByNameComparatorTest {

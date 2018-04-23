@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.kohlbecker
- * @date 06.04.2009
+ * @since 06.04.2009
  *
  */
 public class HttpStatusMessage {

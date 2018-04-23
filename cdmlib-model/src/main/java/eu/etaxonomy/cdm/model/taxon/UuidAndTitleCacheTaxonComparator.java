@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author k.luther
- * @date 06.12.2017
+ \* @since 06.12.2017
  *
  */
 public class UuidAndTitleCacheTaxonComparator implements Serializable, Comparator<Object[]>{

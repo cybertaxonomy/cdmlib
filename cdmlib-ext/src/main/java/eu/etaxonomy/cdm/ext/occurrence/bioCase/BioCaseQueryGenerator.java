@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 /**
  * Generates an XML query according to the BioCASe protocol.
  * @author pplitzner
- * @date 13.09.2013
+ \* @since 13.09.2013
  *
  */
 public class BioCaseQueryGenerator {

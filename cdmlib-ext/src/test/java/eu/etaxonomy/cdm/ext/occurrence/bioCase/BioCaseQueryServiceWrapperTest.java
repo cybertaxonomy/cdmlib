@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
 /**
  * @author pplitzner
- * @date 16.09.2013
+ \* @since 16.09.2013
  *
  */
 public class BioCaseQueryServiceWrapperTest {

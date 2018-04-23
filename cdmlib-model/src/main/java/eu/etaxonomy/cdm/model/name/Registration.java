@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * the same citation and citation detail.
  *
  * @author a.mueller
- * @date 13.03.2017
+ \* @since 13.03.2017
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)

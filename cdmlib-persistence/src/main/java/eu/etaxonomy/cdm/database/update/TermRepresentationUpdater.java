@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * Class for updating term representations.
  * @author a.mueller
- * @date 27.09.2011
+ \* @since 27.09.2011
  *
  */
 public class TermRepresentationUpdater

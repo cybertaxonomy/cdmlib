@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author a.kohlbecker
- * @date Feb 22, 2016
+ \* @since Feb 22, 2016
  *
  */
 public class WebServiceTestBase extends Assert {

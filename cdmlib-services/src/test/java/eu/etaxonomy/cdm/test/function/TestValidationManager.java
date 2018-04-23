@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @date 23.01.2015
+ \* @since 23.01.2015
  *
  */
 public class TestValidationManager {

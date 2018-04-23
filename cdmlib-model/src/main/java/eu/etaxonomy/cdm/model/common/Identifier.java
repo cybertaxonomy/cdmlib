@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * @author a.mueller
- * @date 2014-06-30
+ \* @since 2014-06-30
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)

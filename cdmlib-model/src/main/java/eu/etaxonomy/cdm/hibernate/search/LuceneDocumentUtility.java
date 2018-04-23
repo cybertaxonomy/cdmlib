@@ -15,7 +15,7 @@ import org.apache.lucene.index.DocValuesType;
 
 /**
  * @author a.kohlbecker
- * @date Nov 27, 2015
+ \* @since Nov 27, 2015
  *
  */
 public class LuceneDocumentUtility {

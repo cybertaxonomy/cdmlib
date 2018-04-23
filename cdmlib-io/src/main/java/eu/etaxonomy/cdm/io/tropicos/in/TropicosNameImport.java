@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @date 15.11.2017
+ \* @since 15.11.2017
  */
 @Component
 public class TropicosNameImport<STATE extends TropicosNameImportState>

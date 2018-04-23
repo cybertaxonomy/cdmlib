@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author Andreas Kohlbecker
- * @date Dec 15, 2011
+ \* @since Dec 15, 2011
  *
  */
 @Component

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * 5. AbbrevLabel of the {@link Representation representation} (@link {@link Representation#getAbbreviatedLabel()})<BR>
  *
  * @author a.mueller
- * @date 14.03.2017
+ \* @since 14.03.2017
  */
 @Component
 public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImportConfigurator, File>{

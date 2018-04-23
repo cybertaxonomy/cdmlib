@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
- * @date 07.06.2010
+ \* @since 07.06.2010
  *
  */
 public class CoordinateConverter {

@@ -20,7 +20,7 @@ import io.swagger.annotations.Api;
  * TODO write controller documentation
  *
  * @author a.kohlbecker
- * @date 23.06.2009
+ * @since 23.06.2009
  *
  */
 @Controller

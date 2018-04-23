@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 /**
  * @author k.luther
- * @date 07.02.2018
+ \* @since 07.02.2018
  *
  */
 public class OrderedTermComparator <T extends DefinedTermBase<?>> implements Comparator<T>{

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
  * Details on ordering are explained at http://dev.e-taxonomy.eu/trac/ticket/3338<BR>
  *
  * @author k.luther
- * @date 20.03.2017
+ \* @since 20.03.2017
  *
  */
 public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Serializable{

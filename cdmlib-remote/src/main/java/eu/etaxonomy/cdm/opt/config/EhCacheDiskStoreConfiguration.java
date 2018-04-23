@@ -20,7 +20,7 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 
 /**
  * @author a.kohlbecker
- * @date Feb 1, 2017
+ * @since Feb 1, 2017
  *
  */
 @Configuration

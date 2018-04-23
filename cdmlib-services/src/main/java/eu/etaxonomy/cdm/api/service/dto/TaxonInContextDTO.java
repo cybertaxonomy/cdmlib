@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 
 /**
  * @author a.mueller
- * @date 21.09.2016
+ \* @since 21.09.2016
  *
  */
 public class TaxonInContextDTO {

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
  * https://dev.e-taxonomy.eu/redmine/issues/6363
  *
  * @author a.mueller
- * @date 11.03.2017
+ \* @since 11.03.2017
  *
  */
 public class NameMustFollowCodeValidator implements

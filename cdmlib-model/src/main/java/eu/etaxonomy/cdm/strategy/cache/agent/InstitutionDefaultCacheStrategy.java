@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * TODO This is a preliminary implementation to have at least one default cache strategy.
  * Maybe it will need improvement later on.
  * @author a.mueller
- * @date 07.04.2010
+ \* @since 07.04.2010
  *
  */
 public class InstitutionDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Institution> {

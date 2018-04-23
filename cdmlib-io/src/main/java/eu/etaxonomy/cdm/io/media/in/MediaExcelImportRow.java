@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Data holder class for Media taxon imports
  * @author a.mueller
- * @date 02.11.2017
+ \* @since 02.11.2017
  *
  */
 public class MediaExcelImportRow {

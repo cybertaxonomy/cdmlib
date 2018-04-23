@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  * TODO write controller documentation
  *
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @since 24.03.2009
  */
 @Controller
 @Api("description")

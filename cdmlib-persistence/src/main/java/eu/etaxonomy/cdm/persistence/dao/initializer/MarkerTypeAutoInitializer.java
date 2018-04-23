@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 
 /**
  * @author a.kohlbecker
- * @date 30.07.2010
+ \* @since 30.07.2010
  *
  */
 public class MarkerTypeAutoInitializer extends AutoPropertyInitializer<Marker> {

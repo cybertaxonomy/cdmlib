@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author cmathew
- * @date 30 Sep 2015
+ \* @since 30 Sep 2015
  *
  */
 public class NewEntityListenerTest implements NewEntityListener {

@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * @author a.kohlbecker
- * @date Dec 7, 2015
+ \* @since Dec 7, 2015
  *
  */
 public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMonitor {

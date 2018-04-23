@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author k.luther
- * @date 08.06.2016
+ \* @since 08.06.2016
  *
  */
 public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implements Comparator<T> {

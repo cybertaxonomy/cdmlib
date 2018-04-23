@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller, a.oppermann
- * @date 18.10.2012
+ \* @since 18.10.2012
  *
  */
 public abstract class CsvExportBaseRedlist

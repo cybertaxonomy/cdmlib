@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @date 03.06.2016
+ \* @since 03.06.2016
  *
  */
 public class PreferenceSubject {

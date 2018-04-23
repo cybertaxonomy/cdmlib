@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 
 /**
  * @author a.kohlbecker
- * @date 24.03.2011
+ \* @since 24.03.2011
  *
  */
 @Service

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @date 14.03.2017
+ \* @since 14.03.2017
  *
  */
 public class RepresentationCsvImportConfigurator

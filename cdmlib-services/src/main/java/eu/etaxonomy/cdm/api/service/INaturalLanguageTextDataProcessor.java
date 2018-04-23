@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 
 /**
  * @author a.kohlbecker
- * @date 13.10.2010
+ \* @since 13.10.2010
  *
  */
 public interface INaturalLanguageTextDataProcessor {

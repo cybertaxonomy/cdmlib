@@ -51,7 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @date Sep 19, 2013
+ \* @since Sep 19, 2013
  * Class use to create connection to a mediawiki API and create pages, upload images, ...
  * 
  * TODO upload via URL <br>

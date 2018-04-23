@@ -15,7 +15,7 @@ import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
- * @date Nov 21, 2013
+ * @since Nov 21, 2013
  *
  */
 public class DefaultBeanProcessor extends AbstractBeanProcessor {

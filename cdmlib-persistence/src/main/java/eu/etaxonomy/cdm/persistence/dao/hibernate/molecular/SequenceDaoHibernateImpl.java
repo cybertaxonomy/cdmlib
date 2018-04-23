@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
 
 /**
  * @author pplitzner
- * @date 11.03.2014
+ \* @since 11.03.2014
  *
  */
 @Repository

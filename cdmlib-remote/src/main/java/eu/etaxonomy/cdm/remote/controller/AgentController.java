@@ -65,7 +65,7 @@ import io.swagger.annotations.Api;
  * </blockquote>
  *
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @since 24.03.2009
  */
 @Controller
 @Api(value = "agent")

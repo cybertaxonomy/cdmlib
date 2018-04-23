@@ -18,7 +18,7 @@ import org.apache.lucene.index.IndexableField;
 
 /**
  * @author Andreas Kohlbecker
- * @date Jan 6, 2012
+ * @since Jan 6, 2012
  *
  */
 public class LuceneDocumentBeanProcessor extends AbstractBeanProcessor<Document> {

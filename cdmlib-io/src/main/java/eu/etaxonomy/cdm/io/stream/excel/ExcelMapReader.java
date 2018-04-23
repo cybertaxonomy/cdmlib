@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
  * @author a.oppermann
- * @date 24.05.2013
+ \* @since 24.05.2013
  *
  */
 public class ExcelMapReader extends ObservableBase implements IItemStream {

@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author k.luther
- * @date 10.03.2016
+ \* @since 10.03.2016
  *
  */
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {

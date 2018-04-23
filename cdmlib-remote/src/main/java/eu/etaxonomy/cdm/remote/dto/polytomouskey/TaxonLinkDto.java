@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author l.morris
- * @date Feb 22, 2013
+ * @since Feb 22, 2013
  *
  */
 public class TaxonLinkDto extends AbstractLinkDto {

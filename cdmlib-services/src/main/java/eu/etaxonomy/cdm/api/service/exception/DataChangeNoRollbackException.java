@@ -20,7 +20,7 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
  * as RuntimeException leads to rollback when using {@link DefaultTransactionAttribute#rollbackOn(Throwable)}
  * which is used by spring as default transaction attribute.
  * @author a.mueller
- * @date 13.10.2011
+ \* @since 13.10.2011
  *
  */
 public class DataChangeNoRollbackException extends Exception {

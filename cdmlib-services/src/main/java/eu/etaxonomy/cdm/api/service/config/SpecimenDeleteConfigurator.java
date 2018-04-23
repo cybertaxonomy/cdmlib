@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 
 /**
  * @author pplitzner
- * @date Nov 10, 2014
+ \* @since Nov 10, 2014
  *
  */
 public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {

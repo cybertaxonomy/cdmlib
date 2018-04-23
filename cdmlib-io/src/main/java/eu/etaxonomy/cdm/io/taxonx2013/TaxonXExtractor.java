@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author pkelbert
- * @date 2 avr. 2013
+ \* @since 2 avr. 2013
  *
  */
 public class TaxonXExtractor {

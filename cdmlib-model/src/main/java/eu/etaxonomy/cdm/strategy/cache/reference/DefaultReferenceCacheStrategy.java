@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference)}
  *
  * @author a.mueller
- * @date 25.05.2016
+ \* @since 25.05.2016
  *
  */
 public class DefaultReferenceCacheStrategy extends StrategyBase implements INomenclaturalReferenceCacheStrategy{

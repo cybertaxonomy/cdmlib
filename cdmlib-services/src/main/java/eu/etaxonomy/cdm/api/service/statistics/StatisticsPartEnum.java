@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.statistics;
 
 /**
  * @author a.mueller
- * @date 21.09.2012
+ \* @since 21.09.2012
  *
  */
 public enum StatisticsPartEnum {

@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * @author k.luther
- * @date 15.07.2016
+ \* @since 15.07.2016
  *
  */
 public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase<CONFIG,STATE>, InputStream>

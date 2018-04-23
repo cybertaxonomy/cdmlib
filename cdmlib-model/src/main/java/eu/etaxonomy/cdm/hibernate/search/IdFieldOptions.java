@@ -24,7 +24,7 @@ import org.hibernate.search.bridge.LuceneOptions;
  * <li>Boost = 1.0f (neutral default boost)</li>
  *
  * @author andreas
- * @date Sep 24, 2012
+ \* @since Sep 24, 2012
  *
  */
 public class IdFieldOptions implements LuceneOptions {

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 
 /**
  * @author a.kohlbecker
- * @date 30.06.2009
+ * @since 30.06.2009
  * @deprecated use TermBasePropertyEditor instead
  */
 @Deprecated

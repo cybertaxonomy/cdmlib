@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * @author a.kohlbecker
- * @date Jan 24, 2013
+ * @since Jan 24, 2013
  *
  */
 public class ControllerUtils {

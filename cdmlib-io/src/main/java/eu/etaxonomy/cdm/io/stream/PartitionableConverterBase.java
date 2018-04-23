@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
- * @date 23.11.2011
+ \* @since 23.11.2011
  *
  * FIXME URI
  */

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 /**
  * Updates the field Person.initials from Person.firstname.
  * @author a.mueller
- * @date 21.05.2017
+ \* @since 21.05.2017
  *
  */
 public class InitialsUpdater extends SchemaUpdaterStepBase{

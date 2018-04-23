@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  * @author l.morris
- * @date Jan 25, 2013
+ * @since Jan 25, 2013
  *
  */
 public abstract class AbstractLinkDto {

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * Gathers information about the ABCD import and presents them in a suitable way.
  * @author pplitzner
- * @date Jan 23, 2015
+ \* @since Jan 23, 2015
  *
  */
 public class SpecimenImportReport {

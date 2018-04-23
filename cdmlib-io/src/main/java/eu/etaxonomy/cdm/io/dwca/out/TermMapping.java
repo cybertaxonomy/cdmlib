@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
- * @date 03.05.2011
+ \* @since 03.05.2011
  *
  */
 public class TermMapping {

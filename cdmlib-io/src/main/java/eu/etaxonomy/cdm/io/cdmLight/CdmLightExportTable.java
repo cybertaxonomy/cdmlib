@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
  * An enumeration with each instance representing a table type in the Output Model.
  *
  * @author a.mueller
- * @date 15.03.2017
+ \* @since 15.03.2017
  */
 public enum CdmLightExportTable {
     METADATA("Metadata", metaDataColumns()),

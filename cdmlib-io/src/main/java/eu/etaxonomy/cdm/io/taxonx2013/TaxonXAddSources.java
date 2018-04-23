@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author pkelbert
- * @date 20 déc. 2013
+ \* @since 20 déc. 2013
  *
  */
 public class TaxonXAddSources {

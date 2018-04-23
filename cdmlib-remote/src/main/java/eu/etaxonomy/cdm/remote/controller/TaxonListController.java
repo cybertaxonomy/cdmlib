@@ -77,7 +77,7 @@ import io.swagger.annotations.Api;
  * TODO write controller documentation
  *
  * @author a.kohlbecker
- * @date 20.03.2009
+ * @since 20.03.2009
  */
 @Controller
 @Api("taxon")

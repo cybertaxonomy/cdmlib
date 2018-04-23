@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.format.occurrences;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ \* @since Nov 30, 2015
  *
  */
 public class DefaultCdmFormatter extends AbstractCdmFormatter {

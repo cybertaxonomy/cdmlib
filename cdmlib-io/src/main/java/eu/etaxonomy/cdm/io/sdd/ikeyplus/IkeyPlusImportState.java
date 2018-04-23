@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author andreas
- * @date Sep 18, 2012
+ \* @since Sep 18, 2012
  *
  */
 public class IkeyPlusImportState extends ImportStateBase<IkeyPlusImportConfigurator,IkeyPlusImport> {

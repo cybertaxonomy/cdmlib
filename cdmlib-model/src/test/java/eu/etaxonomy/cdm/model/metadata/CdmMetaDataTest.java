@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * @author e.-m.lee
- * @date 09.03.2010
+ \* @since 09.03.2010
  *
  */
 public class CdmMetaDataTest {

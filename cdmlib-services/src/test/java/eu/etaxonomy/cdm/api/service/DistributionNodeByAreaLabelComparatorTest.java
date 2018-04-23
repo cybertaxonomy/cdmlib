@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
- * @date 10.03.2017
+ \* @since 10.03.2017
  *
  */
 public class DistributionNodeByAreaLabelComparatorTest extends TermTestBase {

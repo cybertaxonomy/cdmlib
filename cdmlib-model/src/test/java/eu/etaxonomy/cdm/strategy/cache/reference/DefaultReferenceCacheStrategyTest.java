@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * Copy of {@link ArticleDefaultCacheStrategyTest} to test the {@link DefaultReferenceCacheStrategy}.
  *
  * @author a.mueller
- * @date 25.05.2016
+ \* @since 25.05.2016
  *
  */
 public class DefaultReferenceCacheStrategyTest {

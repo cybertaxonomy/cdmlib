@@ -19,7 +19,7 @@ import io.swagger.annotations.Api;
 /**
  *
  * @author a.kohlbecker
- * @date 26.08.2014
+ * @since 26.08.2014
  */
 @Controller
 @Api("portal_taxon")

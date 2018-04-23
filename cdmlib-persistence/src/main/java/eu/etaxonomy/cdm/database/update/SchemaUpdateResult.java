@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.common.IoResultBase;
 
 /**
  * @author a.mueller
- * @date 04.06.2017
+ \* @since 04.06.2017
  *
  */
 public class SchemaUpdateResult extends IoResultBase{

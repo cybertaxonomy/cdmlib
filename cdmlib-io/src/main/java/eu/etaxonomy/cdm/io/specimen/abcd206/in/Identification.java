@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 /**
  * @author pplitzner
- * @date Sep 16, 2014
+ \* @since Sep 16, 2014
  *
  */
 public class Identification {

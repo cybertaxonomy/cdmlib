@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.validation;
 
 /**
  * @author a.mueller
- * @date 17.02.2015
+ \* @since 17.02.2015
  * Status: in work
  */
 public enum EntityValidationStatus {

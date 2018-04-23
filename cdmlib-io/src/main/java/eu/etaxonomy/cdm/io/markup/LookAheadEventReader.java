@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @date 28.06.2011
+ \* @since 28.06.2011
  */
 public class LookAheadEventReader implements XMLEventReader {
 	private static final Logger logger = Logger.getLogger(LookAheadEventReader.class);

@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author k.luther
  * @param <CONFIG>
- * @date 15.07.2016
+ \* @since 15.07.2016
  *
  */
 public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase>

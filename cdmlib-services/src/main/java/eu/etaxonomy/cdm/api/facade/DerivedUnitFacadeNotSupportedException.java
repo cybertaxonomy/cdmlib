@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * @see MethodNotSupportedByDerivedUnitTypeException
  * 
  * @author a.mueller
- * @date 17.05.2010
+ \* @since 17.05.2010
  *
  */
 public class DerivedUnitFacadeNotSupportedException extends Exception {

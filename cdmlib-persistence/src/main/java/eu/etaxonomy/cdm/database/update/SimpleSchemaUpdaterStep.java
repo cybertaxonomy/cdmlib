@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * This class represents one step in a schema update.
  * @author a.mueller
- * @date 13.09.2010
+ \* @since 13.09.2010
  *
  */
 public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {

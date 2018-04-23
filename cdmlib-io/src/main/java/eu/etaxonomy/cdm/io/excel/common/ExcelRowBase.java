@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * Base class for data holder classes for excel or similar imports.
  *
  * @author a.mueller
- * @date 13.07.2011
+ \* @since 13.07.2011
  */
 public abstract class ExcelRowBase {
 	@SuppressWarnings("unused")

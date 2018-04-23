@@ -40,7 +40,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 /**
  * For now this is a test if we can improve performance for bean initializing
  * @author a.mueller
- * @date 2013-10-25
+ \* @since 2013-10-25
  *
  */
 public class AdvancedBeanInitializer extends HibernateBeanInitializer {

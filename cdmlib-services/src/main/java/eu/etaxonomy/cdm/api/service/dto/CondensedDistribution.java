@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * @author a.kohlbecker
- * @date Jun 25, 2015
+ \* @since Jun 25, 2015
  *
  */
 public class CondensedDistribution {

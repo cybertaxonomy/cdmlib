@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * This voter always returns {@link #ACCESS_GRANTED}.
  * It is needed as default voter when using the {@link UnanimousBased}
  * @author andreas kohlbecker
- * @date Sep 4, 2012
+ \* @since Sep 4, 2012
  *
  */
 public class GrantAlwaysVoter extends CdmPermissionVoter {

@@ -30,7 +30,7 @@ import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
- * @date 22.07.2010
+ * @since 22.07.2010
  *
  */
 @Controller

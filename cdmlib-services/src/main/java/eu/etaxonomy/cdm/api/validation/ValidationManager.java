@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
  * This bean
  *
  * @author a.mueller
- * @date 09.01.2015
+ \* @since 09.01.2015
  *
  */
 @Component

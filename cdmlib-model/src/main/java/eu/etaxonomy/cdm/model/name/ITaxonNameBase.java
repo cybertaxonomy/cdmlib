@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  * instances of any other class
  *
  * @author a.mueller
- * @date 21.01.2017
+ \* @since 21.01.2017
  *
  */
 public interface ITaxonNameBase

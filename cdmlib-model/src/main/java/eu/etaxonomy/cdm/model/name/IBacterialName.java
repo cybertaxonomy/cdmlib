@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.name;
  * <P>
  * This class corresponds to: NameBacterial according to the ABCD schema.
  * @author a.mueller
- * @date 26.01.2017
+ \* @since 26.01.2017
  *
  */
 public interface IBacterialName extends INonViralName {

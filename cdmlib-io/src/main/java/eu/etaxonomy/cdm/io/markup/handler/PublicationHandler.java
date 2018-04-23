@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.XmlImportBase;
 /**
  * Sax2 handler for the MarkupImport publication element
  * @author a.mueller
- * @date 28.06.2011
+ \* @since 28.06.2011
  *
  */
 public class PublicationHandler extends ImportHandlerBase{

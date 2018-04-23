@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @date 30.10.2017
+ \* @since 30.10.2017
  */
 @Component
 public class MediaExcelImport

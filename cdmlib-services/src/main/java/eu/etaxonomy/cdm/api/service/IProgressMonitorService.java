@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
  * Service interface to manage progress monitors
  *
  * @author cmathew
- * @date 14 Oct 2015
+ \* @since 14 Oct 2015
  *
  */
 public interface IProgressMonitorService {

@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 
 /**
  * @author a.mueller
- * @date 14.03.2017
+ \* @since 14.03.2017
  *
  */
 public abstract class SimpleImportConfiguratorBase<SOURCE extends Object>

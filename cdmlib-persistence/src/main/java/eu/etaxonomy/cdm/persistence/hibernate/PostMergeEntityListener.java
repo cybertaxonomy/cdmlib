@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author cmathew
- * @date 23 Sep 2015
+ \* @since 23 Sep 2015
  *
  */
 public class PostMergeEntityListener implements MergeEventListener {

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
- * @date 18.04.2011
+ \* @since 18.04.2011
  *
  */
 public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRecord{

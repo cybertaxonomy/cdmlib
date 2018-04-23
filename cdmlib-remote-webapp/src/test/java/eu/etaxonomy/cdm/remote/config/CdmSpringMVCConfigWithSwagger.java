@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Profile;
  * web application argument
  *
  * @author a.kohlbecker
- * @date Feb 22, 2016
+ \* @since Feb 22, 2016
  *
  */
 @Profile("swagger")

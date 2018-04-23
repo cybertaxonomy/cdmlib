@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @date 22.11.2011
+ \* @since 22.11.2011
  *
  */
 public class CategoricalDataTest {

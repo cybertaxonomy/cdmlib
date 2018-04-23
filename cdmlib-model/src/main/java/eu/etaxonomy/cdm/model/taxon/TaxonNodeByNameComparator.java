@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 /**
  * Comparator that compares two TaxonNode instances by the titleCache of their referenced names.
  * @author a.kohlbecker
- * @date 24.06.2009
+ \* @since 24.06.2009
  *
  */
 public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNode> implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {

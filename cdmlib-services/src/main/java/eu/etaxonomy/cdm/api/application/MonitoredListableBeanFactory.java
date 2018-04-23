@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * @author a.mueller
- * @date 29.09.2011
+ \* @since 29.09.2011
  *
  */
 public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {

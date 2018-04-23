@@ -99,7 +99,7 @@ public class OAuth2ServerConfiguration {
 
     /**
      * @author a.kohlbecker
-     * @date Oct 6, 2016
+     * @since Oct 6, 2016
      *
      */
     @Configuration

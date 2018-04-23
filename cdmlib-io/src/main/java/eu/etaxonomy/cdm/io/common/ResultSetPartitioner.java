@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 16.02.2010
+ * @since 16.02.2010
  */
 public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	private static final Logger logger = Logger.getLogger(ResultSetPartitioner.class);

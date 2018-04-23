@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 /**
  * @author a.kohlbecker
- * @date 24.03.2011
+ * @since 24.03.2011
  *
  */
 @Controller

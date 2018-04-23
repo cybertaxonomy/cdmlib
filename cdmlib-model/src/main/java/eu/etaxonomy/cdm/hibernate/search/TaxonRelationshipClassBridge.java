@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  *
  *
  * @author a.kohlbecker
- * @date Sep 24, 2013
+ \* @since Sep 24, 2013
  *
  */
 public class TaxonRelationshipClassBridge extends AbstractClassBridge {

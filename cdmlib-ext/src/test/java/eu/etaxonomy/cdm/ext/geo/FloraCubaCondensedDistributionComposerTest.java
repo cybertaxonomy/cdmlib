@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 /**
  * Tests for {@link FloraCubaCondensedDistributionComposerOld}
  * @author a.mueller
- * @date 07.04.2016
+ \* @since 07.04.2016
  *
  */
 @Ignore

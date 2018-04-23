@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * <pre>
  *
  * @author a.kohlbecker
- * @date Oct 9, 2013
+ \* @since Oct 9, 2013
  *
  */
 public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
