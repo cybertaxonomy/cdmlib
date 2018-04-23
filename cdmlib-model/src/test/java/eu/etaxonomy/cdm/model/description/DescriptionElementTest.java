@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -26,29 +25,22 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 /**
  * @author k.luther
- * @created 11.04.2011
- * @version 1.0
+ * @since 11.04.2011
  */
 public class DescriptionElementTest {
 @SuppressWarnings("unused")
 private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 
-
-	private CategoricalData categorialData;
 	private IndividualsAssociation indAssociation;
 	private QuantitativeData quantData;
 	private Taxon taxon;
@@ -56,8 +48,10 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
+		if (Language.DEFAULT() == null){
+		    DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		    vocabularyStore.initialize();
+		}
 	}
 
 	/**
@@ -65,17 +59,6 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 	 */
 	@Before
 	public void setUp() throws Exception {
-		categorialData = CategoricalData.NewInstance();
-		Media media = Media.NewInstance(null, 1000, "jpeg", null);
-		categorialData.addMedia(media);
-
-		DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown);
-		Reference citation = ReferenceFactory.newArticle();
-		citation.setTitle("Test");
-		source.setCitation(citation);
-		categorialData.addSource(source );
-		StateData state = StateData.NewInstance();
-		categorialData.addStateData(state);
 
 		indAssociation = IndividualsAssociation.NewInstance();
 
@@ -106,14 +89,6 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 	}
 
 /* ************************** TESTS **********************************************************/
-	@Test
-	public void testCloneCategorialData(){
-		CategoricalData clone = (CategoricalData)categorialData.clone();
-		assertEquals(clone.getStateData().size(),categorialData.getStateData().size() );
-		assertSame(clone.getStateData().get(0), categorialData.getStateData().get(0));
-		assertNotSame(clone, categorialData);
-
-	}
 
 	@Test
 	public void testCloneIndividualAssociation(){
