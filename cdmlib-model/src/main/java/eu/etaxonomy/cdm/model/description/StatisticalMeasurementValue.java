@@ -208,9 +208,9 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 			StatisticalMeasurementValue result = (StatisticalMeasurementValue)super.clone();
 
 			//modifiers
-			result.modifiers = new HashSet<DefinedTerm>();
+			result.modifiers = new HashSet<>();
 			for (DefinedTerm modifier : getModifiers()){
-				result.modifiers.add(modifier);
+				result.addModifier(modifier);
 			}
 
 			return result;

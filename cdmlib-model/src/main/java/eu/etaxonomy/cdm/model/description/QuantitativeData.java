@@ -558,11 +558,10 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 			QuantitativeData result = (QuantitativeData)super.clone();
 
 			//states
-			result.statisticalValues = new HashSet<StatisticalMeasurementValue>();
+			result.statisticalValues = new HashSet<>();
 			for (StatisticalMeasurementValue data : getStatisticalValues()){
-				//TODO do we need to clone here?
 				StatisticalMeasurementValue newData = (StatisticalMeasurementValue)data.clone();
-				result.statisticalValues.add(newData);
+				result.addStatisticalValue(newData);
 			}
 
 			return result;
