@@ -6,13 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author pplitzner

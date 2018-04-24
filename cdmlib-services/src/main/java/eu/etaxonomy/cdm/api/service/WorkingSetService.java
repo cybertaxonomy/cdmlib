@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
-import eu.etaxonomy.cdm.api.service.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
@@ -35,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
+import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 @Service
@@ -118,21 +117,25 @@ public class WorkingSetService extends
         filter.setIncludeUnpublished(true);
 
         List<UUID> filteredNodes = taxonNodeService.uuidList(filter);
-        for (UUID uuid : filteredNodes) {
-            //TODO implement occurrence service for taxon nodes
-            // let it return UuidAndTitleCache
-            TaxonNode taxonNode = taxonNodeService.load(uuid);
-            Taxon taxon = taxonNode.getTaxon();
-            if(taxon!=null){
-                FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
-                config.setAssociatedTaxonUuid(taxon.getUuid());
-                List<UuidAndTitleCache<SpecimenOrObservationBase>> list = occurrenceService.findByTitleUuidAndTitleCache(config).getRecords();
-                list.forEach(uuidAndTitleCache ->{
-                    specimenCache.add(new SpecimenNodeWrapper(uuidAndTitleCache, taxonNode));
-                });
-            }
-        }
-        return specimenCache;
+        return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null, null);
+//        for (UUID uuid : filteredNodes) {
+//            //TODO implement occurrence service for taxon nodes
+//            // let it return UuidAndTitleCache
+//            TaxonNode taxonNode = taxonNodeService.load(uuid);
+//            Taxon taxon = taxonNode.getTaxon();
+//            if(taxon!=null){
+//                FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+//                config.setAssociatedTaxonUuid(taxon.getUuid());
+////                List<UuidAndTitleCache<SpecimenOrObservationBase>> list = occurrenceService.findByTitleUuidAndTitleCache(config).getRecords();
+//                List<SpecimenOrObservationBase> list =
+//                        occurrenceService.pageByAssociatedTaxon(SpecimenOrObservationBase.class,
+//                                null, taxon, null, null, null, null, null).getRecords();
+//                list.forEach(specimen ->{
+//                    specimenCache.add(new SpecimenNodeWrapper(new UuidAndTitleCache<>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache()), taxonNode));
+//                });
+//            }
+//        }
+//        return specimenCache;
     }
 
     @Override

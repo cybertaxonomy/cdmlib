@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -589,6 +591,49 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         return results;
     }
 
+
+    @Override
+    public List<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start, List<OrderHint> orderHints){
+
+        String queryString = "SELECT "
+                + "de.associatedSpecimenOrObservation.uuid, "
+                + "de.associatedSpecimenOrObservation.id, "
+                + "de.associatedSpecimenOrObservation.titleCache, "
+                + "tn "
+                + " FROM DescriptionElementBase AS de" +
+                " LEFT JOIN de.inDescription AS d" +
+                " LEFT JOIN d.taxon AS t" +
+                " JOIN t.taxonNodes AS tn" +
+                " WHERE d.class = 'TaxonDescription' "
+                + "AND tn.uuid in (:taxonNodeUuids) "
+                ;
+
+        Query query = getSession().createQuery(queryString);
+
+        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List<SpecimenNodeWrapper> list = new ArrayList<>();
+        List<Object[]> result = query.list();
+        for(Object[] object : result){
+            list.add(new SpecimenNodeWrapper(
+                    new UuidAndTitleCache<SpecimenOrObservationBase>(
+                            (UUID) object[0],
+                            (Integer) object[1],
+                            (String) object[2]),
+                    (TaxonNode)object[3]));
+        }
+        return list;
+    }
 
     @Override
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> clazz, Taxon associatedTaxon,
