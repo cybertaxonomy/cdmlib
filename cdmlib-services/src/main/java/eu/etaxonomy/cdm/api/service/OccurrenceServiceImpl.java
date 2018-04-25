@@ -360,8 +360,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints) {
-        return dao.listUuidAndTitleCacheByAssociatedTaxon(taxonNodeUuids, limit, start, orderHints);
+            Integer limit, Integer start) {
+        return dao.listUuidAndTitleCacheByAssociatedTaxon(taxonNodeUuids, limit, start);
         }
 
     @Override

@@ -327,12 +327,11 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param taxonNodeUuids a list of {@link UUID}s of the taxon nodes
      * @param limit
      * @param start
-     * @param orderHints
      * @return a collection of {@link SpecimenNodeWrapper} containing the {@link TaxonNode}
      * and the corresponding {@link UuidAndTitleCache}  object for the specimen found for this taxon node
      */
 	public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints);
+            Integer limit, Integer start);
 
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>

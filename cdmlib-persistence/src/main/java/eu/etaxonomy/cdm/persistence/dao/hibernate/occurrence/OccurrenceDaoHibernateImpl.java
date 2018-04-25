@@ -591,8 +591,35 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         return results;
     }
 
+    private List<SpecimenNodeWrapper> querySpecimen(
+            Query query, List<UUID> taxonNodeUuids,
+            Integer limit, Integer start){
+        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List<SpecimenNodeWrapper> list = new ArrayList<>();
+        List<Object[]> result = query.list();
+        for(Object[] object : result){
+            list.add(new SpecimenNodeWrapper(
+                    new UuidAndTitleCache<SpecimenOrObservationBase>(
+                            (UUID) object[0],
+                            (Integer) object[1],
+                            (String) object[2]),
+                    (TaxonNode)object[3]));
+        }
+        return list;
+    }
+
     private List<SpecimenNodeWrapper> queryIndividualAssociatedSpecimen(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHintss){
+            Integer limit, Integer start){
         String queryString =  "SELECT "
                 + "de.associatedSpecimenOrObservation.uuid, "
                 + "de.associatedSpecimenOrObservation.id, "
@@ -606,33 +633,11 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 + "AND tn.uuid in (:taxonNodeUuids) "
                 ;
         Query query = getSession().createQuery(queryString);
-
-        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
-
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
-
-        List<SpecimenNodeWrapper> list = new ArrayList<>();
-        List<Object[]> result = query.list();
-        for(Object[] object : result){
-            list.add(new SpecimenNodeWrapper(
-                    new UuidAndTitleCache<SpecimenOrObservationBase>(
-                            (UUID) object[0],
-                            (Integer) object[1],
-                            (String) object[2]),
-                    (TaxonNode)object[3]));
-        }
-        return list;
+        return querySpecimen(query, taxonNodeUuids, limit, start);
     }
 
     private List<SpecimenNodeWrapper> queryTypeSpecimen(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints){
+            Integer limit, Integer start){
         String queryString =  "SELECT "
                 + "td.typeSpecimen.uuid, "
                 + "td.typeSpecimen.id, "
@@ -645,33 +650,11 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
         Query query = getSession().createQuery(queryString);
-
-        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
-
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
-
-        List<SpecimenNodeWrapper> list = new ArrayList<>();
-        List<Object[]> result = query.list();
-        for(Object[] object : result){
-            list.add(new SpecimenNodeWrapper(
-                    new UuidAndTitleCache<SpecimenOrObservationBase>(
-                            (UUID) object[0],
-                            (Integer) object[1],
-                            (String) object[2]),
-                    (TaxonNode)object[3]));
-        }
-        return list;
+        return querySpecimen(query, taxonNodeUuids, limit, start);
     }
 
     private List<SpecimenNodeWrapper> queryTaxonDeterminations(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints){
+            Integer limit, Integer start){
         String queryString =  "SELECT "
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
@@ -683,33 +666,11 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
         Query query = getSession().createQuery(queryString);
-
-        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
-
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
-
-        List<SpecimenNodeWrapper> list = new ArrayList<>();
-        List<Object[]> result = query.list();
-        for(Object[] object : result){
-            list.add(new SpecimenNodeWrapper(
-                    new UuidAndTitleCache<SpecimenOrObservationBase>(
-                            (UUID) object[0],
-                            (Integer) object[1],
-                            (String) object[2]),
-                    (TaxonNode)object[3]));
-        }
-        return list;
+        return querySpecimen(query, taxonNodeUuids, limit, start);
     }
 
     private List<SpecimenNodeWrapper> queryTaxonNameDeterminations(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints){
+            Integer limit, Integer start){
         String queryString =  "SELECT "
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
@@ -722,40 +683,18 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
         Query query = getSession().createQuery(queryString);
-
-        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
-
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
-
-        List<SpecimenNodeWrapper> list = new ArrayList<>();
-        List<Object[]> result = query.list();
-        for(Object[] object : result){
-            list.add(new SpecimenNodeWrapper(
-                    new UuidAndTitleCache<SpecimenOrObservationBase>(
-                            (UUID) object[0],
-                            (Integer) object[1],
-                            (String) object[2]),
-                    (TaxonNode)object[3]));
-        }
-        return list;
+        return querySpecimen(query, taxonNodeUuids, limit, start);
     }
 
     @Override
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints){
+            Integer limit, Integer start){
 
         Collection<SpecimenNodeWrapper> wrappers = new HashSet<>();
-        wrappers.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start, orderHints));
-        wrappers.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start, orderHints));
-        wrappers.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start, orderHints));
-        wrappers.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start, orderHints));
+        wrappers.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
+        wrappers.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
+        wrappers.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
+        wrappers.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
 
         return wrappers;
     }

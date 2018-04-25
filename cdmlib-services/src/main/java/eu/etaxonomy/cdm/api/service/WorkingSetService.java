@@ -115,7 +115,7 @@ public class WorkingSetService extends
         filter.setIncludeUnpublished(true);
 
         List<UUID> filteredNodes = taxonNodeService.uuidList(filter);
-        return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null, null);
+        return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
     }
 
     @Override

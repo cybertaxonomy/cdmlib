@@ -1201,7 +1201,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
         config.setAssociatedTaxonUuid(taxonUuid);
         Collection<SpecimenNodeWrapper> specimens = occurrenceService
-                .listUuidAndTitleCacheByAssociatedTaxon(Collections.singletonList(taxonNodeUuid), null, null, null);
+                .listUuidAndTitleCacheByAssociatedTaxon(Collections.singletonList(taxonNodeUuid), null, null);
         List<UUID> uuidList = specimens.stream().map(specimen ->
         specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
         assertTrue(uuidList.contains(derivedUnitDeterminationNameUuid));
