@@ -108,8 +108,6 @@ public class WorkingSetService extends
 
     @Override
     public Collection<SpecimenNodeWrapper> loadSpecimens(WorkingSet workingSet){
-
-        List<SpecimenNodeWrapper> specimenCache = new ArrayList<>();
         //set filter parameters
         TaxonNodeFilter filter = TaxonNodeFilter.NewRankInstance(workingSet.getMinRank(), workingSet.getMaxRank());
         workingSet.getGeoFilter().forEach(area -> filter.orArea(area.getUuid()));
@@ -118,24 +116,6 @@ public class WorkingSetService extends
 
         List<UUID> filteredNodes = taxonNodeService.uuidList(filter);
         return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null, null);
-//        for (UUID uuid : filteredNodes) {
-//            //TODO implement occurrence service for taxon nodes
-//            // let it return UuidAndTitleCache
-//            TaxonNode taxonNode = taxonNodeService.load(uuid);
-//            Taxon taxon = taxonNode.getTaxon();
-//            if(taxon!=null){
-//                FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
-//                config.setAssociatedTaxonUuid(taxon.getUuid());
-////                List<UuidAndTitleCache<SpecimenOrObservationBase>> list = occurrenceService.findByTitleUuidAndTitleCache(config).getRecords();
-//                List<SpecimenOrObservationBase> list =
-//                        occurrenceService.pageByAssociatedTaxon(SpecimenOrObservationBase.class,
-//                                null, taxon, null, null, null, null, null).getRecords();
-//                list.forEach(specimen ->{
-//                    specimenCache.add(new SpecimenNodeWrapper(new UuidAndTitleCache<>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache()), taxonNode));
-//                });
-//            }
-//        }
-//        return specimenCache;
     }
 
     @Override

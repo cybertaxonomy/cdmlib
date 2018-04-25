@@ -591,24 +591,20 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         return results;
     }
 
-
-    @Override
-    public List<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start, List<OrderHint> orderHints){
-
-        String queryString = "SELECT "
+    private List<SpecimenNodeWrapper> queryIndividualAssociatedSpecimen(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start, List<OrderHint> orderHintss){
+        String queryString =  "SELECT "
                 + "de.associatedSpecimenOrObservation.uuid, "
                 + "de.associatedSpecimenOrObservation.id, "
                 + "de.associatedSpecimenOrObservation.titleCache, "
                 + "tn "
-                + " FROM DescriptionElementBase AS de" +
-                " LEFT JOIN de.inDescription AS d" +
-                " LEFT JOIN d.taxon AS t" +
-                " JOIN t.taxonNodes AS tn" +
-                " WHERE d.class = 'TaxonDescription' "
+                + "FROM DescriptionElementBase AS de "
+                + "LEFT JOIN de.inDescription AS d "
+                + "LEFT JOIN d.taxon AS t "
+                + "JOIN t.taxonNodes AS tn "
+                + "WHERE d.class = 'TaxonDescription' "
                 + "AND tn.uuid in (:taxonNodeUuids) "
                 ;
-
         Query query = getSession().createQuery(queryString);
 
         query.setParameterList("taxonNodeUuids", taxonNodeUuids);
@@ -632,6 +628,135 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                             (String) object[2]),
                     (TaxonNode)object[3]));
         }
+        return list;
+    }
+
+    private List<SpecimenNodeWrapper> queryTypeSpecimen(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start, List<OrderHint> orderHints){
+        String queryString =  "SELECT "
+                + "td.typeSpecimen.uuid, "
+                + "td.typeSpecimen.id, "
+                + "td.typeSpecimen.titleCache, "
+                + "tn "
+                + "FROM SpecimenTypeDesignation AS td "
+                + "LEFT JOIN td.typifiedNames AS tn "
+                + "LEFT JOIN tn.taxonBases AS t "
+                + "JOIN t.taxonNodes AS tn "
+                + "WHERE tn.uuid in (:taxonNodeUuids) "
+                ;
+        Query query = getSession().createQuery(queryString);
+
+        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List<SpecimenNodeWrapper> list = new ArrayList<>();
+        List<Object[]> result = query.list();
+        for(Object[] object : result){
+            list.add(new SpecimenNodeWrapper(
+                    new UuidAndTitleCache<SpecimenOrObservationBase>(
+                            (UUID) object[0],
+                            (Integer) object[1],
+                            (String) object[2]),
+                    (TaxonNode)object[3]));
+        }
+        return list;
+    }
+
+    private List<SpecimenNodeWrapper> queryTaxonDeterminations(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start, List<OrderHint> orderHints){
+        String queryString =  "SELECT "
+                + "det.identifiedUnit.uuid, "
+                + "det.identifiedUnit.id, "
+                + "det.identifiedUnit.titleCache, "
+                + "tn "
+                + "FROM DeterminationEvent AS det "
+                + "LEFT JOIN det.taxon AS t "
+                + "JOIN t.taxonNodes AS tn "
+                + "WHERE tn.uuid in (:taxonNodeUuids) "
+                ;
+        Query query = getSession().createQuery(queryString);
+
+        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List<SpecimenNodeWrapper> list = new ArrayList<>();
+        List<Object[]> result = query.list();
+        for(Object[] object : result){
+            list.add(new SpecimenNodeWrapper(
+                    new UuidAndTitleCache<SpecimenOrObservationBase>(
+                            (UUID) object[0],
+                            (Integer) object[1],
+                            (String) object[2]),
+                    (TaxonNode)object[3]));
+        }
+        return list;
+    }
+
+    private List<SpecimenNodeWrapper> queryTaxonNameDeterminations(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start, List<OrderHint> orderHints){
+        String queryString =  "SELECT "
+                + "det.identifiedUnit.uuid, "
+                + "det.identifiedUnit.id, "
+                + "det.identifiedUnit.titleCache, "
+                + "tn "
+                + "FROM DeterminationEvent AS det "
+                + "LEFT JOIN det.taxonName AS n "
+                + "LEFT JOIN n.taxonBases AS t "
+                + "JOIN t.taxonNodes AS tn "
+                + "WHERE tn.uuid in (:taxonNodeUuids) "
+                ;
+        Query query = getSession().createQuery(queryString);
+
+        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List<SpecimenNodeWrapper> list = new ArrayList<>();
+        List<Object[]> result = query.list();
+        for(Object[] object : result){
+            list.add(new SpecimenNodeWrapper(
+                    new UuidAndTitleCache<SpecimenOrObservationBase>(
+                            (UUID) object[0],
+                            (Integer) object[1],
+                            (String) object[2]),
+                    (TaxonNode)object[3]));
+        }
+        return list;
+    }
+
+    @Override
+    public List<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start, List<OrderHint> orderHints){
+
+        List<SpecimenNodeWrapper> list = new ArrayList<>();
+        list.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start, orderHints));
+        list.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start, orderHints));
+        list.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start, orderHints));
+        list.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start, orderHints));
+
         return list;
     }
 

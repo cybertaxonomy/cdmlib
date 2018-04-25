@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -313,6 +314,23 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
 	        Integer limit, Integer start, List<OrderHint> orderHints);
 
+    /**
+     * The method will search for specimen associated with the taxon nodes.<br>
+     * It will search for 3 possible association types:
+     * : <br>
+     *  - via IndividualAssociations of the taxon<br>
+     *  - via TypeDesignations of the taxon name<br>
+     *  - via Determinations of the taxon or taxon name<br>
+     *  <br>
+     *  (more are covered in
+     * {@link IOccurrenceDao#findOccurrences(Class, String, String, SpecimenOrObservationType, Taxon, TaxonName, MatchMode, Integer, Integer, List, List)}
+     * @param taxonNodeUuids a list of {@link UUID}s of the taxon nodes
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @return a list of {@link SpecimenNodeWrapper} containing the {@link TaxonNode}
+     * and the corresponding {@link UuidAndTitleCache}  object for the specimen found for this taxon node
+     */
 	public List<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start, List<OrderHint> orderHints);
 
