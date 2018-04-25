@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
+import javax.persistence.Transient;
 import javax.validation.GroupSequence;
 import javax.validation.groups.Default;
 
@@ -67,9 +68,14 @@ public interface ICdmBase {
     public boolean isInstanceOf(Class<? extends CdmBase> clazz);
 
     /**
+     * Reports the persistend state of the cdm entity. If this method returns <code>true</code> it does not
+     * necessarily mean that there is a database record already but
+     * maybe the object was only saved to a persistence session, which still needs to be flushed to the storage engine.
+     *
      * @return if and only if the instance has been saved to the persistent storage.
      * For new and un-persisted entities this method returns false.
      */
+    @Transient
     public boolean isPersited();
 
 }
