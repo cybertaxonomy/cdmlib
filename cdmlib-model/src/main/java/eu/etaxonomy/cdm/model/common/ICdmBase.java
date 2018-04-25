@@ -66,4 +66,10 @@ public interface ICdmBase {
      */
     public boolean isInstanceOf(Class<? extends CdmBase> clazz);
 
+    /**
+     * @return if and only if the instance has been saved to the persistent storage.
+     * For new and un-persisted entities this method returns false.
+     */
+    public boolean isPersited();
+
 }
