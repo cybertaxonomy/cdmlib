@@ -274,11 +274,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param limit
      * @param start
      * @param orderHints
-     * @return a list of {@link SpecimenNodeWrapper} containing the
+     * @return a collection of {@link SpecimenNodeWrapper} containing the
      *         {@link TaxonNode} and the corresponding {@link UuidAndTitleCache}
      *         object for the specimen found for this taxon node
      */
-    public List<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
+    public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start, List<OrderHint> orderHints);
 
 

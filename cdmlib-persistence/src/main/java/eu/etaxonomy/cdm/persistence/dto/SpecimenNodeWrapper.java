@@ -36,4 +36,44 @@ public class SpecimenNodeWrapper implements Serializable{
         return taxonNode;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((taxonNode == null) ? 0 : taxonNode.hashCode());
+        result = prime * result + ((uuidAndTitleCache == null) ? 0 : uuidAndTitleCache.getUuid().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SpecimenNodeWrapper other = (SpecimenNodeWrapper) obj;
+        if (taxonNode == null) {
+            if (other.taxonNode != null) {
+                return false;
+            }
+        } else if (!taxonNode.equals(other.taxonNode)) {
+            return false;
+        }
+        if (uuidAndTitleCache == null) {
+            if (other.uuidAndTitleCache != null) {
+                return false;
+            }
+        } else if (!uuidAndTitleCache.getUuid().equals(other.uuidAndTitleCache.getUuid())) {
+            return false;
+        }
+        return true;
+    }
+
+
+
 }

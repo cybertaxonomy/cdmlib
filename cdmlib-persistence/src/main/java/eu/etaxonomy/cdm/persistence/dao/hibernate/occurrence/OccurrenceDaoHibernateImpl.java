@@ -748,16 +748,16 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public List<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
+    public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start, List<OrderHint> orderHints){
 
-        List<SpecimenNodeWrapper> list = new ArrayList<>();
-        list.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start, orderHints));
-        list.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start, orderHints));
-        list.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start, orderHints));
-        list.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start, orderHints));
+        Collection<SpecimenNodeWrapper> wrappers = new HashSet<>();
+        wrappers.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start, orderHints));
+        wrappers.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start, orderHints));
+        wrappers.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start, orderHints));
+        wrappers.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start, orderHints));
 
-        return list;
+        return wrappers;
     }
 
     @Override

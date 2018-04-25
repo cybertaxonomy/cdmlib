@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -1181,22 +1182,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //UUIDS
         UUID derivedUnitDeterminationTaxonUuid = UUID.fromString("941b8b22-1925-4b91-8ff8-97114499bb22");
         UUID derivedUnitDeterminationNameUuid = UUID.fromString("0cdc7a57-6f55-45c8-b3e5-523748c381e7");
-
-        UUID derivedUnitDeterminationSynonymUuid = UUID.fromString("8eb94a7d-c802-49a7-bc10-c26de20a52c2");
         UUID derivedUnitDeterminationSynonymNameUuid = UUID.fromString("d940a940-8caf-4a52-b1d8-ba4aad7ddae2");
-
         UUID derivedUnitDeterminationOrphanNameUuid = UUID.fromString("587b7297-7d59-4f59-8ef3-c7a559cadeca");
-
         UUID tissueUuidNoAssociationUuid = UUID.fromString("93e94260-5107-4b2c-9ce4-da9e1a4e7cb9");
         UUID dnaSampleUuidIndividualsAssociationUuid = UUID.fromString("1fb53903-c9b9-4078-8297-5b86aec7fe21");
         UUID fossilTypeDesignationUuid = UUID.fromString("42ec8dcf-a923-4256-bbd5-b0d10f4de5e2");
-
         UUID taxonUuid = UUID.fromString("07cc47a5-1a63-46a1-8366-0d59d2b90d5b");
-        UUID synoymUuid = UUID.fromString("c16bcd9b-7d18-4fb5-af60-f9ef14c1d3a9");
-
-        UUID taxonNameUuid = UUID.fromString("e59b95c0-9ad6-48be-af62-a982ba72b917");
-        UUID synonymNameUuid = UUID.fromString("39f04b2a-b8bd-46e8-9102-ab665c64ec8e");
-        UUID orphanNameUuid = UUID.fromString("d8e56365-3ad9-4b0e-88bf-acaaab223a9b");
 
         /*
          * search for taxon node
@@ -1209,7 +1200,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
          */
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
         config.setAssociatedTaxonUuid(taxonUuid);
-        List<SpecimenNodeWrapper> specimens = occurrenceService
+        Collection<SpecimenNodeWrapper> specimens = occurrenceService
                 .listUuidAndTitleCacheByAssociatedTaxon(Collections.singletonList(taxonNodeUuid), null, null, null);
         List<UUID> uuidList = specimens.stream().map(specimen ->
         specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
