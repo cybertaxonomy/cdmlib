@@ -26,6 +26,7 @@ import java.sql.Statement;
 import org.apache.http.MethodNotSupportedException;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 
@@ -488,6 +489,40 @@ public class Source {
     	}else{
         	return mUrl;
     	}
+    }
+
+    public static void main(String[] arg){
+        Source source = EDAPHOBASE8();
+        ResultSet a = source.getResultSet("SELECT count(*) FROM tax_taxon");
+        try {
+            a.next();
+            long size = a.getLong(1);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
+
+    private static Source EDAPHOBASE8(){
+        String dbms = Source.POSTGRESQL9;  //TODO 10
+        String strServer = "130.133.70.26";  //BGBM-PESISQL
+        String strDB = "cdm_edapho";
+        int port = 5432; // 5433;
+        String userName = "postgres";
+        return  makeSource(dbms, strServer, strDB, port, userName, null);
+    }
+
+    private static Source makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd ){
+        //establish connection
+        Source source = null;
+        source = new Source(dbms, strServer, strDB);
+        source.setPort(port);
+
+        pwd = AccountStore.readOrStorePassword(dbms, strServer, userName, pwd);
+        source.setUserAndPwd(userName, pwd);
+        // write pwd to account store
+        return source;
     }
 
 
