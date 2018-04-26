@@ -59,6 +59,8 @@ import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
@@ -330,6 +332,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      }
 
     @Override
+    @XmlTransient
+    @Transient
     public boolean isPersited() {
         return id != 0;
     }
