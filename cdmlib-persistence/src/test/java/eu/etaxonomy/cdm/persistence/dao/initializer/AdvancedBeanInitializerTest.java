@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -264,7 +265,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         assertTrue(Hibernate.isInitialized(taxon.getName()));
         TaxonName name = taxon.getName();
         // the TitleAndNameCacheAutoInitializer must not intitialize the nomenclaturalReference
-        // since the authorship is nonly taken from the combinationAutors field
+        // since the authorship is only taken from the combinationAutors field
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference()));
     }
 
@@ -278,23 +279,28 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
         deacivatedAutoIntitializers = clearAutoinitializers();
         // load bean with autoinitializers deactivated
+        factory.getCurrentSession().setFlushMode(FlushMode.MANUAL); // TODO this is only needed due to #7377 and should be removed otherwise
         Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalReference.authorship"));
-        assertTrue(Hibernate.isInitialized(taxon.getName()));
+        assertTrue(Hibernate.isInitialized(taxon.getName())); // name
         TaxonName name = taxon.getName();
-        assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
-        assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
+        assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference())); // nomenclaturalReference
+        assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship())); // authorship
         Team team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
 
-        // FIXME: the below assertion fails, this is not citical but an inconsistency
-        // members should not intitialized since they where not included in the property path
-        // assertFalse("members should not intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
+        // FIXME : the below assertion fail due to #7377 if the session flushmode is AUTO, this is not critical but an inconsistency.
+        //    In AdvancedBeanInitializer.bulkLoadLazyBeans(BeanInitNode node) the query.list()
+        //    with "QueryImpl( SELECT c FROM TeamOrPersonBase as c  WHERE c.id IN (:idSet) )" triggers an autoFlush.
+        //    In turn of the autoflush the team.titleCache is generated which causes the teamMembers to be initialized
+        //
+        // members should not initialized since they where not included in the property path
+        assertFalse("members should not intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
 
         // activate the teamAutoInitializer again
         AutoPropertyInitializer<CdmBase> teamAutoInitializer = deacivatedAutoIntitializers.get(Team.class);
         deacivatedAutoIntitializers.remove(teamAutoInitializer);
         defaultBeanInitializer.getBeanAutoInitializers().put(Team.class, teamAutoInitializer);
 
-        taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("$"));
+        taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalReference.authorship"));
 
         team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
         assertTrue("members should have been intitialized by the ", Hibernate.isInitialized(team.getTeamMembers()));
