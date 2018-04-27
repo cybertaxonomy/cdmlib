@@ -53,7 +53,9 @@
        <property name="beanAutoInitializers">
            <map>
                <!-- 
-                  IMPORTANT!!!! Adapt the AdvancedBeanInitializerTest after modifying this map    
+                  IMPORTANT!!!! 
+                    1. Keys must be the abstract base classes which correspond to the data base tables 
+                    2. Adapt the AdvancedBeanInitializerTest after modifying this map  
                -->
                <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleAndNameCacheAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.Annotation"  value-ref="annotationTypeAutoInitializer" />
@@ -62,7 +64,7 @@
                <entry key="eu.etaxonomy.cdm.model.common.TermBase"  value-ref="termBaseAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.media.Media"  value-ref="mediaAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase"  value-ref="typeDesignationAutoInitializer" />
-               <entry key="eu.etaxonomy.cdm.model.agent.Team"  value-ref="teamAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase"  value-ref="teamAutoInitializer" />
            </map>
        </property>
     </bean>

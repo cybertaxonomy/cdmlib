@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * Initializes the the teamMembers of a Team
@@ -19,21 +20,24 @@ import eu.etaxonomy.cdm.model.agent.Team;
  * @since 30.07.2010
  *
  */
-public class TeamAutoInitializer extends AutoPropertyInitializer<Team> {
+public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBase> {
 
 
     @Override
-    public void initialize(Team bean) {
-            Hibernate.initialize(bean.getTeamMembers());
+    public void initialize(TeamOrPersonBase bean) {
+        if(bean instanceof Team) {
+            Hibernate.initialize(((Team)bean).getTeamMembers());
+        }
     }
 
     @Override
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
 
         String result = "";
-        if (Team.class.isAssignableFrom(clazz)){
-            result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
-        }
+        // no point differentiating here on subtypes of TeamOrPersonBase since the
+        // actual type of the un-itialized Team is not yet known at this point to
+        // the AdvancedBeanInitializer in bulkLoadLazyBeans()
+        result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
 
         return result;
     }
