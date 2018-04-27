@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -296,9 +297,9 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         assertFalse("members should not intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
 
         // activate the teamAutoInitializer again
-        AutoPropertyInitializer<CdmBase> teamAutoInitializer = deacivatedAutoIntitializers.get(Team.class);
+        AutoPropertyInitializer<CdmBase> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
         deacivatedAutoIntitializers.remove(teamAutoInitializer);
-        defaultBeanInitializer.getBeanAutoInitializers().put(Team.class, teamAutoInitializer);
+        defaultBeanInitializer.getBeanAutoInitializers().put(TeamOrPersonBase.class, teamAutoInitializer);
 
         taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalReference.authorship"));
 
