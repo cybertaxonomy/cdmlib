@@ -44,13 +44,17 @@
     <bean id="termBaseAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TermBaseAutoInitializer"></bean>
     <bean id="mediaAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.MediaAutoInitializer"></bean>
     <bean id="typeDesignationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TypeDesignationAutoInitializer"></bean>
+    <bean id="teamAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TeamAutoInitializer"></bean>
 
-    
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer">
     <!--
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">
-     -->    <property name="beanAutoInitializers">
+    -->
+       <property name="beanAutoInitializers">
            <map>
+               <!-- 
+                  IMPORTANT!!!! Adapt the AdvancedBeanInitializerTest after modifying this map    
+               -->
                <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleAndNameCacheAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.Annotation"  value-ref="annotationTypeAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.Marker"  value-ref="markerTypeAutoInitializer" />
@@ -58,6 +62,7 @@
                <entry key="eu.etaxonomy.cdm.model.common.TermBase"  value-ref="termBaseAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.media.Media"  value-ref="mediaAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase"  value-ref="typeDesignationAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.agent.Team"  value-ref="teamAutoInitializer" />
            </map>
        </property>
     </bean>
