@@ -216,20 +216,26 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
+	/**
+	 * @param type
+	 * @return
+	 */
+	@Transient
+	protected boolean isRelationshipType(NameRelationshipType type) {
+	    if (type == null){
+	        throw new IllegalStateException("NameRelationships have not been initialized yet. Please initialize DefinedTerms first");
+	    }
+	    return this.equals(type);
+	}
+
 	@Transient
 	public boolean isBasionymRelation(){
-		if (BASIONYM() == null){
-			throw new IllegalStateException("NameRelationships have not been initialized yet. Please initialize DefinedTerms first");
-		}
-		return this.equals(BASIONYM());
+        return isRelationshipType(BASIONYM());
 	}
 
 	@Transient
 	public boolean isReplacedSynonymRelation(){
-		if (REPLACED_SYNONYM() == null){
-			throw new IllegalStateException("NameRelationships have not been initialized yet. Please initialize DefinedTerms first");
-		}
-		return this.equals(REPLACED_SYNONYM());
+        return isRelationshipType(REPLACED_SYNONYM());
 	}
 
 

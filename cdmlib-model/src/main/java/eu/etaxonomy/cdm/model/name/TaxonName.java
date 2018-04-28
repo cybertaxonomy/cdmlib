@@ -67,14 +67,12 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -1781,6 +1779,16 @@ public class TaxonName
         }
     }
 
+    public void removeRelationWithTaxonName(TaxonName otherTaxonName, Direction direction, NameRelationshipType type) {
+
+        for(NameRelationship nameRelationship : relationsWithThisName(direction)) {
+            if (direction.equals(Direction.relatedFrom) && nameRelationship.getToName().equals(otherTaxonName) ||
+                    direction.equals(Direction.relatedTo) && nameRelationship.getFromName().equals(otherTaxonName)) {
+                this.removeNameRelationship(nameRelationship);
+            }
+        }
+    }
+
 
     /**
      * If relation is of type NameRelationship, addNameRelationship is called;
@@ -2035,10 +2043,30 @@ public class TaxonName
     @Override
     @Transient
     public Set<TaxonName> getBasionyms(){
+
+        return getRelatedNames(Direction.relatedTo, NameRelationshipType.BASIONYM());
+    }
+
+    /**
+     *
+     * @param direction
+     * @param type
+     * @return
+     */
+    public Set<TaxonName> getRelatedNames(Direction direction, NameRelationshipType type) {
+
+        return getRelatedNames(relationsWithThisName(direction), NameRelationshipType.BASIONYM());
+    }
+
+    /**
+     * @param rels
+     * @param type
+     * @return
+     */
+    private Set<TaxonName> getRelatedNames(Set<NameRelationship> rels, NameRelationshipType type) {
         Set<TaxonName> result = new HashSet<>();
-        Set<NameRelationship> rels = this.getRelationsToThisName();
         for (NameRelationship rel : rels){
-            if (rel.getType()!= null && rel.getType().isBasionymRelation()){
+            if (rel.getType()!= null && rel.getType().isRelationshipType(type)){
                 TaxonName basionym = rel.getFromName();
                 result.add(basionym);
             }
@@ -2091,15 +2119,8 @@ public class TaxonName
     @Override
     @Transient
     public Set<TaxonName> getReplacedSynonyms(){
-        Set<TaxonName> result = new HashSet<>();
-        Set<NameRelationship> rels = this.getRelationsToThisName();
-        for (NameRelationship rel : rels){
-            if (rel.getType().isReplacedSynonymRelation()){
-                TaxonName replacedSynonym = rel.getFromName();
-                result.add(replacedSynonym);
-            }
-        }
-        return result;
+
+        return getRelatedNames(Direction.relatedTo, NameRelationshipType.REPLACED_SYNONYM());
     }
 
     /**
@@ -2133,9 +2154,24 @@ public class TaxonName
      */
     @Override
     public void removeBasionyms(){
+        removeNameRelations(Direction.relatedTo, NameRelationshipType.BASIONYM());
+    }
+
+
+    /**
+     * Removes all {@link NameRelationship relationships} of the given <code>type</code> from the set of
+     * relations in the specified <code>direction</code> direction wich are related from or to this
+     * <i>this</i> taxon name. The same relationship will be removed from the set of
+     * reverse relations of the other taxon name.
+     *
+     * @param direction
+     * @param type
+     */
+    public void removeNameRelations(Direction direction, NameRelationshipType type) {
+        Set<NameRelationship> relationsWithThisName = relationsWithThisName(direction);
         Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
-        for (NameRelationship nameRelation : this.getRelationsToThisName()){
-            if (nameRelation.getType().isBasionymRelation()){
+        for (NameRelationship nameRelation : relationsWithThisName){
+            if (nameRelation.getType().isRelationshipType(type)){
                 removeRelations.add(nameRelation);
             }
         }
@@ -2144,6 +2180,22 @@ public class TaxonName
         // relations in a second step.
         for (NameRelationship relation : removeRelations){
             this.removeNameRelationship(relation);
+        }
+    }
+
+
+    /**
+     * @param direction
+     * @return
+     */
+    protected Set<NameRelationship> relationsWithThisName(Direction direction) {
+
+        switch(direction) {
+            case relatedTo:
+                return this.getRelationsToThisName();
+            case relatedFrom:
+                return this.getRelationsFromThisName();
+            default: throw new RuntimeException("invalid Direction:" + direction);
         }
     }
 
