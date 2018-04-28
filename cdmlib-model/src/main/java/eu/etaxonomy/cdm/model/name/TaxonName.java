@@ -2172,7 +2172,7 @@ public class TaxonName
      */
     public void removeNameRelations(Direction direction, NameRelationshipType type) {
         Set<NameRelationship> relationsWithThisName = relationsWithThisName(direction);
-        Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
+        Set<NameRelationship> removeRelations = new HashSet<>();
         for (NameRelationship nameRelation : relationsWithThisName){
             if (nameRelation.getType().isRelationshipType(type)){
                 removeRelations.add(nameRelation);
