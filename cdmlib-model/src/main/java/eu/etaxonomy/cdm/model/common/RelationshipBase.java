@@ -130,10 +130,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
         return this.getRelatedFrom() == null || this.getRelatedTo() == null;
     }
 
- /*   public Set getDeletedObjects(){
-        return this.deletedObjects;
-    }
-*/
 // TODO
 //	UUID toUuid;
 //	UUID fromUuid;
