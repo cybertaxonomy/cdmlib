@@ -1784,10 +1784,13 @@ public class TaxonName
 
     public void removeRelationWithTaxonName(TaxonName otherTaxonName, Direction direction, NameRelationshipType type) {
 
-        for(NameRelationship nameRelationship : relationsWithThisName(direction)) {
+        Set<NameRelationship> tmpRels = new HashSet<>(relationsWithThisName(direction));
+        for(NameRelationship nameRelationship : tmpRels) {
             if (direction.equals(Direction.relatedFrom) && nameRelationship.getToName().equals(otherTaxonName) ||
                     direction.equals(Direction.relatedTo) && nameRelationship.getFromName().equals(otherTaxonName)) {
-                this.removeNameRelationship(nameRelationship);
+                if (type == null || type.equals(nameRelationship.getType())){
+                    this.removeNameRelationship(nameRelationship);
+                }
             }
         }
     }
