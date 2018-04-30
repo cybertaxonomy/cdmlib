@@ -121,41 +121,37 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 * @param partitionedIO
 	 */
 	public void doPartition(IPartitionedIO<STATE> partitionedIO, STATE state) {
-		int i = 0;
-	    try{
+		try{
 			profiler.startTx();
 			TransactionStatus txStatus = getTransaction(partitionSize, partitionedIO);
 
-			i = 1;
 			state.makeTransactionalSourceReference(partitionedIO.getReferenceService());
 
 			profiler.startRs();
 			ResultSet rs = makePartitionResultSet();
-            i = 2;
+
 			profiler.startRelObjects();
 			this.relatedObjects = partitionedIO.getRelatedObjectsForPartition(rs, state);
-            i = 3;
-            state.setRelatedObjects(relatedObjects);
-            i = 4;
+			state.setRelatedObjects(relatedObjects);
+
 			profiler.startRs2();
 			partitionResultSet = makePartitionResultSet();
-            i = 5;
+
 			profiler.startDoPartition();
 			partitionedIO.doPartition(this, state);
-            i = 6;
+
 			profiler.startDoCommit();
 			partitionedIO.commitTransaction(txStatus);
 			state.resetTransactionalSourceReference();
-            i = 7;
+
 			profiler.end();
 			state.setRelatedObjects(null);
-            i = 8;
+
 			logger.info("Saved " + getCurrentNumberOfRows() + " " + partitionedIO.getPluralString() );
 			profiler.print();
 		}catch(Exception e){
-			String message = "Exception (%s) occurred at position " + i + " while handling import partition for %s.";
-			message = String.format(message, e.getMessage(), partitionedIO.getPluralString());
-			e.printStackTrace();
+			String message = "Exception (%s) occurred while handling import partition for %s.";
+			message = String.format(message, e.getLocalizedMessage(), partitionedIO.getPluralString());
 			throw new RuntimeException(message, e);
 		}
 	}
