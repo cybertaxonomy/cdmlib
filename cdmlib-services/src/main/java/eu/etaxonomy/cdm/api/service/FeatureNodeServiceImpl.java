@@ -103,7 +103,6 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild){
 	     UpdateResult result = new UpdateResult();
 	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
-	     save(childNode);
 	     node.addChild(childNode);
 	     result.addUpdatedObject(node);
 	     return result;
@@ -153,11 +152,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
             targetNode.addChild(movedNode, position);
         }
         result.addUpdatedObject(targetNode);
-        saveOrUpdate(targetNode);
-        saveOrUpdate(movedNode);
         if(parent!=null){
             result.addUpdatedObject(parent);
-            saveOrUpdate(parent);
         }
         result.setCdmEntity(targetNode.getFeatureTree());
         return result;
