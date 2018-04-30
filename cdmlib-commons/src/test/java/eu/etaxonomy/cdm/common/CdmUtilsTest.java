@@ -18,10 +18,8 @@ import java.io.InputStream;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -32,13 +30,6 @@ import org.junit.Test;
 public class CdmUtilsTest {
 	private static final Logger logger = Logger.getLogger(CdmUtilsTest.class);
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -114,6 +105,50 @@ public class CdmUtilsTest {
         str2 = "A nyfffe er";
         Assert.assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
 
+    }
+
+    /**
+     * This test can be used for functional testing of any task but should
+     * never be committed when failing.
+     */
+    @Test
+    public void testSomething(){
+       String MCL = "MCL[0-9]{1,3}(\\-[0-9]{1,4}(\\-[0-9]{1,4}(\\-[0-9]{1,3}(\\-[0-9]{1,3})?)?)?)?";
+//        String MCL = "a{1,3}";
+        String filter = "Acc "+MCL;
+
+       String notes = "Acc: 0x is Hieracium djimilense subsp. neotericum Zahn MCL293-3140-00-630";
+       String result;
+       if (notes.matches("Acc:.*")){
+           if (notes.matches("Acc: .*\\$$") || (notes.matches("Acc: .*"+MCL))){
+               result = null;
+           }else if (notes.matches("Acc: .*(\\$|"+MCL+")\\s*\\{.*\\}")){
+               notes = notes.substring(notes.indexOf("{")+1, notes.length()-1);
+               result = notes;
+           }else if (notes.matches("Acc: .*(\\$|"+MCL+")\\s*\\[.*\\]")){
+               notes = notes.substring(notes.indexOf("[")+1, notes.length()-1);
+               result = notes;
+           }else{
+               logger.warn("Namenote: " + notes);
+               result = notes;
+           }
+       }else if (notes.matches("Syn:.*")){
+           if (notes.matches("Syn: .*\\$$") || (notes.matches("Syn: .*"+MCL))){
+               result = null;
+           }else if (notes.matches("Syn: .*(\\$|"+MCL+")\\s*\\{.*\\}")){
+               notes = notes.substring(notes.indexOf("{")+1, notes.length()-1);
+               result = notes;
+           }else if (notes.matches("Syn: .*(\\$|"+MCL+")\\s*\\[.*\\]")){
+               notes = notes.substring(notes.indexOf("[")+1, notes.length()-1);
+               result = notes;
+           }else{
+               logger.warn("Namenote: " + notes);
+               result = notes;
+           }
+       }else{
+           result = notes;
+       }
+       System.out.println(result);
     }
 
 }
