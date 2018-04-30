@@ -328,6 +328,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 */
         // Create a taxon with synonym name
         Taxon fromTaxon = Taxon.NewInstance(synonymName, null);
+        save(fromTaxon);
         fromTaxon.setAppendedPhrase(synonym.getAppendedPhrase());
 
         // Add taxon relation

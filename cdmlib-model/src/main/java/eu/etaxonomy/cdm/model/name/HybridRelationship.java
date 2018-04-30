@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -71,14 +69,14 @@ public class HybridRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedTo;
 
     @XmlElement(name = "Type")

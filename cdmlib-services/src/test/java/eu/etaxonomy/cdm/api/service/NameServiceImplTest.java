@@ -112,6 +112,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
 //		nameWithBasionym.addBasionym(name1);
         nameService.save(name1);
+        nameService.save(nameWithBasionym);
         commitAndStartNewTransaction(tableNames);
 
 
@@ -155,6 +156,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
         name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
         nameService.save(name1);
+        nameService.save(nameWithBasionym);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
 
@@ -191,6 +193,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
         name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
         nameService.save(name1);
+        nameService.save(nameWithBasionym);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
 
@@ -227,6 +230,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
         basionym.addRelationshipToName(name1,nameRelType , null, null, null);
         nameService.save(name1);
+        nameService.save(basionym);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
         config.setIgnoreHasBasionym(false);
@@ -270,15 +274,15 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
         name1.addHybridParent(parent, relType, null);
         nameService.save(name1);
+        nameService.save(parent);
         commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
         Assert.assertEquals("'Parent' should be a parent in a hybrid relation.", 1,parent.getHybridParentRelations().size());
-//		printDataSet(System.out, tableNames);
 
         //parent
 
-         name1 = nameService.find(name1.getUuid());
-         DeleteResult result = nameService.delete(name1);
-         if (result.isError()){
+        name1 = nameService.find(name1.getUuid());
+        DeleteResult result = nameService.delete(name1);
+        if (result.isError()){
             Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + result.getExceptions().iterator().next().getMessage());
         }
         commitAndStartNewTransaction(tableNames);
@@ -291,6 +295,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.addHybridChild(child, relType, null);
         nameService.save(name1);
+        nameService.save(child);
         commitAndStartNewTransaction(tableNames);
 
 

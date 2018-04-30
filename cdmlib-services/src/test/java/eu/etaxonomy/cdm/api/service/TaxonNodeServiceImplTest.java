@@ -146,12 +146,16 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		//nameRelations
 
-		t1.getName().addRelationshipFromName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
+		TaxonName relatedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		t1.getName().addRelationshipFromName(relatedName, NameRelationshipType.ALTERNATIVE_NAME(), null );
 
 		//taxonRelations
-		t1.addTaxonRelation(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
+		Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
+		t1.addTaxonRelation(relatedTaxon, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		Synonym synonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
-		UUID uuidSynonym = taxonService.save(synonym).getUuid();
+		taxonService.save(t1);
+		taxonService.save(relatedTaxon);
+		nameService.save(relatedName);
 
 		t1.addHomotypicSynonym(synonym);
 		taxonService.saveOrUpdate(t1);
@@ -234,11 +238,13 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		polKeyService.save(polKey);
 
 		//nameRelations
-		t1.getName().addRelationshipFromName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
+		TaxonName relatedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+		t1.getName().addRelationshipFromName(relatedName, NameRelationshipType.ALTERNATIVE_NAME(), null );
 		TaxonName name1 = t1.getName();
 		UUID name1UUID = name1.getUuid();
 		//taxonRelations
-		t1.addTaxonRelation(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
+		Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
+		t1.addTaxonRelation(relatedTaxon, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		Synonym t1HomotypSynonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
 
 		t1.addHomotypicSynonym(t1HomotypSynonym);
@@ -250,7 +256,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue("taxon 2 must have no descriptions", t2.getDescriptions().size() == 0);
 
 		//save
-		UUID uuidSynonym = taxonService.save(t1HomotypSynonym).getUuid();
+		taxonService.save(t1HomotypSynonym);
+		taxonService.save(relatedTaxon);
+		nameService.save(relatedName);
 
 		//do it
 		DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode

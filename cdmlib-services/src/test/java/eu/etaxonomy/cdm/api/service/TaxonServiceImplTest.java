@@ -1409,6 +1409,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(taxonName);
         TaxonName fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
+        nameService.save(fromName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(true);
@@ -1775,6 +1776,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     	service.saveOrUpdate(c1Species);
        	service.saveOrUpdate(c2Species);
+       	service.save(c4Species);
 
     	//Tests
        	//default starting at species 1
@@ -1988,12 +1990,13 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             missName.setSpecificEpithet("lupium");
             missName.setCombinationAuthorship(deCandolle);
             missName.setUuid(SPECIES5_NAME_UUID);
-            Taxon misappliedName = Taxon.NewInstance(missName, sec);
-            childTaxon2.addMisappliedName(misappliedName, citationRef, "125");
+            Taxon misappliedNameTaxon = Taxon.NewInstance(missName, sec);
+            childTaxon2.addMisappliedName(misappliedNameTaxon, citationRef, "125");
             taxDesc = getTestDescription(descrIndex++);
            // taxDesc.setUuid(DESCRIPTION2_UUID);
             genusTaxon.addDescription(taxDesc);
             service.saveOrUpdate(genusTaxon);
+            service.save(misappliedNameTaxon);
 
             return genusTaxon;
         }

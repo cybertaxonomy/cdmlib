@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -63,7 +61,7 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     private Taxon relatedFrom;
 
@@ -71,7 +69,7 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//  @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     private Taxon relatedTo;
 
