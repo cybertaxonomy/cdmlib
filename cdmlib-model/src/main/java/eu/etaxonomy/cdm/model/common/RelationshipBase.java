@@ -130,25 +130,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
         return this.getRelatedFrom() == null || this.getRelatedTo() == null;
     }
 
-// TODO
-//	UUID toUuid;
-//	UUID fromUuid;
-//
-//	@Transient
-//	public UUID getToUuidCache(){
-//		return relationTo.getUuid();
-//	}
-//	protected void setToUuid(UUID uuid){
-//		toUuid = uuid;
-//	}
-//
-//	public UUID getFromUuid(){
-//		return relationTo.getUuid();
-//	}
-//	protected void setFromUuid(UUID uuid){
-//		fromUuid = uuid;
-//	}
-
 
 //*********************** CLONE ********************************************************/
 
