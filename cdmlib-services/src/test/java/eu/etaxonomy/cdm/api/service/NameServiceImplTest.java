@@ -84,7 +84,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testSetVocabularyDao() {
-//		Assert.assertNotNull(( (NameServiceImpl)nameService).vocabularyDao);
+//        Assert.assertNotNull(( (NameServiceImpl)nameService.vocabularyDao);
     }
 
     /**
@@ -96,27 +96,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getAllNames(int, int)}.
-     */
-    @Test
-    public void testGetAllNames() {
-        logger.warn("Not yet implemented");
-    }
-
-
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
-    @Test
-    public void testGenerateTitleCache() {
-        logger.warn("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameWithNameRelations() {
@@ -159,11 +138,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
-
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameConfiguratorWithNameRelations() {
@@ -205,9 +179,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     public void testDeleteTaxonNameConfiguratorWithNameRelationsAll() {
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
@@ -244,9 +215,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     public void testDeleteTaxonNameConfiguratorWithHasBasionym() {
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
@@ -287,10 +255,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         }
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
    // @Ignore //currently does not run in suite
     public void testDeleteTaxonNameWithHybridRelations() {
@@ -348,9 +312,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNull("Name should not be in database anymore",name1);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameInConcept() {
@@ -365,7 +326,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         taxonService.save(taxon);
         commitAndStartNewTransaction(tableNames);
-
 
         DeleteResult result = nameService.delete(name1);
 
@@ -382,8 +342,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameBase =nameService.find(name1.getUuid());
 
 
-
-
         result = nameService.delete(nameBase); //should throw no exception
         if (result.isError()){
         	Assert.fail("Delete should throw NO error ");
@@ -395,9 +353,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Taxon should still be in database",taxon);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameAsStoredUnder() {
@@ -433,13 +388,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",specimen);
 
-        	occurrenceService.delete(specimen); //this is to better run this test in the test suit
+        occurrenceService.delete(specimen); //this is to better run this test in the test suit
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     @Ignore //currently does not run in suite
     public void testDeleteTaxonNameInSource() {
@@ -495,11 +447,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
-
     public void testDeleteTaxonNameAsType() {
         final String[] tableNames = new String[]{"TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase"};
 
@@ -538,12 +486,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
-
     public void testDeleteTaxonName() {
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonName_TypeDesignationBase"};
 
@@ -614,9 +557,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-     */
     @Test
     public void testDeleteTaxonNameWithTypeInHomotypicalGroup() {
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonName_TypeDesignationBase"};
@@ -916,16 +856,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /**
-     * @return
-     */
     private Rank getSpeciesRank() {
         return (Rank)termService.find(Rank.uuidSpecies);
     }
 
-    /**
-     * @return
-     */
     private Rank getGenusRank() {
         return (Rank)termService.find(Rank.uuidGenus);
     }
@@ -934,10 +868,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 
 }

@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author n.hoffmann
- * @created Dec 16, 2010
+ * @since Dec 16, 2010
  */
 //@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
@@ -134,10 +134,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHomotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
 
-		//
 		//TODO
-
-//		printDataSet(System.err, new String [] {"TaxonNode"});
 
 		// descriptions
 		t1 = node1.getTaxon();
@@ -157,18 +154,15 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		UUID uuidSynonym = taxonService.save(synonym).getUuid();
 
 		t1.addHomotypicSynonym(synonym);
-		UUID uuidT1 = taxonService.saveOrUpdate(t1);
-		t1 = null;
-		t1 =(Taxon) taxonService.load(uuidT1);
+		taxonService.saveOrUpdate(t1);
+		t1 =(Taxon) taxonService.load(t1.getUuid());
 		t1 = HibernateProxyHelper.deproxy(t1);
 		TaxonName nameT1 = t1.getName();
-		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
 		assertEquals(2, t1.getDescriptions().size());
 		Assert.assertTrue(t2.getSynonyms().isEmpty());
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		assertEquals(2,t1.getSynonyms().size());
-		UUID synUUID = null;
 		DeleteResult result;
 
 		t4 = node4.getTaxon();
@@ -270,7 +264,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertNotNull("Old taxon should not have been deleted as it is referenced by key node", taxonService.find(t1Uuid));
 		assertNull("Old taxon node should not exist anymore", taxonNodeService.find(node1Uuid));
 
-		t1HomotypSynonym = (Synonym)taxonService.find(uuidSynonym);
+		t1HomotypSynonym = (Synonym)taxonService.find(t1HomotypSynonym.getUuid());
 		assertNotNull(t1HomotypSynonym);
 
 		keyNode.setTaxon(null);
@@ -293,7 +287,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		name1 = nameService.find(name1UUID);
 		assertNotNull("taxon name 1 should still exist", name1);
 		assertEquals("... but being used for the new synonym only as taxon 1 is deleted", 1, name1.getTaxonBases().size());
-		t1HomotypSynonym = (Synonym)taxonService.find(uuidSynonym);
+		t1HomotypSynonym = (Synonym)taxonService.find(t1HomotypSynonym.getUuid());
 		assertNotNull(t1HomotypSynonym);
 
 		Synonym newSynonym =(Synonym) name1.getTaxonBases().iterator().next();
@@ -489,8 +483,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		treeNodes.add(node1);
 		treeNodes.add(node2);
 
-		DeleteResult result = taxonNodeService.deleteTaxonNodes(treeNodes, null);
-
+		taxonNodeService.deleteTaxonNodes(treeNodes, null);
 
 		newNode = taxonNodeService.load(uuidNewNode);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -689,20 +682,20 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
             compareChildren(taxonNode.getChildNodes(), taxonNodeService.listChildNodesAsUuidAndTitleCache(foundMatch));
         }
     }
-
-    private UuidAndTitleCache<TaxonNode> findMatchingUuidAndTitleCache(List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache,
-            UuidAndTitleCache<TaxonNode> foundMatch, TaxonNode taxonNode) {
-        for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
-            if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
-                String titleCache = taxonNode.getTaxon().getTitleCache();
-                if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
-                    foundMatch = uuidAndTitleCache;
-                    break;
-                }
-            }
-        }
-        return foundMatch;
-    }
+//
+//    private UuidAndTitleCache<TaxonNode> findMatchingUuidAndTitleCache(List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache,
+//            UuidAndTitleCache<TaxonNode> foundMatch, TaxonNode taxonNode) {
+//        for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
+//            if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
+//                String titleCache = taxonNode.getTaxon().getTitleCache();
+//                if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
+//                    foundMatch = uuidAndTitleCache;
+//                    break;
+//                }
+//            }
+//        }
+//        return foundMatch;
+//    }
 
     @Test
     @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")

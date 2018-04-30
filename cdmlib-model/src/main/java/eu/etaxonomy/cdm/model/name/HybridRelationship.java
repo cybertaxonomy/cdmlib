@@ -55,8 +55,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
-	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
+public class HybridRelationship
+        extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>
+        implements Comparable<HybridRelationship>{
+
+    private static final long serialVersionUID = -78515930138896939L;
+    private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
