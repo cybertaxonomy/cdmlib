@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
  * 
  * @author n.hoffmann
  * @author l.morris
- * @created Apr 6, 2010
+ * @since Apr 6, 2010
  * @version 1.0
  */
 public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {

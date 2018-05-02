@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @created 04.03.2016
+ * @since 04.03.2016
  */
 public class HomotypicGroupTaxonComparatorTest {
     @SuppressWarnings("unused")

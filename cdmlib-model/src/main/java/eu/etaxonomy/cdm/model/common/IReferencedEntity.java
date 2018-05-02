@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:30
+ * @since 08-Nov-2007 13:06:30
  */
 public interface IReferencedEntity {
 

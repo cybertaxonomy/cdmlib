@@ -45,7 +45,7 @@ import net.sf.json.JsonConfig;
  * may be accessed directly without the detour via http.
  *
  * @author n.hoffmann
- * @created Jul 16, 2010
+ * @since Jul 16, 2010
  */
 @Component
 public class LocalXMLEntityFactory extends XmlEntityFactoryBase {

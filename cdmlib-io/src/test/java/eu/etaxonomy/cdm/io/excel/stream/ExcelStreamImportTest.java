@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created 24.05.2013
+ * @since 24.05.2013
  */
 public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	@SuppressWarnings("unused")

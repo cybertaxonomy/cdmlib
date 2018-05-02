@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.mueller
- * @created 23.10.2008
+ * @since 23.10.2008
  */
 public class TdwgAreaTest {
 	@SuppressWarnings("unused")

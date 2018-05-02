@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  *  become a CLOB.
  *
  * @author a.mueller
- * @created 03.07.2013
+ * @since 03.07.2013
  */
 @Entity
 public final class CdmPreference implements Serializable {

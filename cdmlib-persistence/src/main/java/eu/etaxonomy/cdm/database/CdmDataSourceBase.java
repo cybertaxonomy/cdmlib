@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * @author a.mueller
- * @created 18.12.2008
+ * @since 18.12.2008
  */
 abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 

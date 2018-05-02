@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * the SDD schema.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:15
+ * @since 08-Nov-2007 13:06:15
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CategoricalData", propOrder = {

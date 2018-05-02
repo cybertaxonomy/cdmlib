@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  * @version 1.0
  */
 public class SpecimenSynthesysExcelImportState extends ImportStateBase<SpecimenSynthesysExcelImportConfigurator, CdmImportBase>{

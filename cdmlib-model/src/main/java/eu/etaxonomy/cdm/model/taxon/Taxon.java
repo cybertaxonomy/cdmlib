@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  * and between ("synonym") taxa and ("accepted/correct") taxa on the other.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:56
+ * @since 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Taxon", propOrder = {

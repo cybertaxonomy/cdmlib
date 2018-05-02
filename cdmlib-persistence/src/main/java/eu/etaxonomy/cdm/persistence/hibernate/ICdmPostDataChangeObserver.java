@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
  * 
  * 
  * @author n.hoffmann
- * @created 17.03.2009
+ * @since 17.03.2009
  */
 public interface ICdmPostDataChangeObserver {
 	

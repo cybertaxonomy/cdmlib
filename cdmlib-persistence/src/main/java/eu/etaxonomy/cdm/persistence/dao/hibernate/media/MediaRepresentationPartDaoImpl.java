@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationPartDao;
 
 /**
  * @author a.babadshanjan
- * @created 08.09.2008
+ * @since 08.09.2008
  */
 @Repository
 public class MediaRepresentationPartDaoImpl extends CdmEntityDaoBase<MediaRepresentationPart>

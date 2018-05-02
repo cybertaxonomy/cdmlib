@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.ICdmPostDataChangeObserver;
  * Objects implementing this class should hold a conversation. 
  * 
  * @author n.hoffmann
- * @created 17.03.2009
+ * @since 17.03.2009
  * @version 1.0
  */
 public interface IConversationEnabled extends ICdmPostDataChangeObserver {

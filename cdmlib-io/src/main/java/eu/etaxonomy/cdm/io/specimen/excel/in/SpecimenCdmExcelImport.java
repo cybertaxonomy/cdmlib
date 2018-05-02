@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 10.05.2011
+ * @since 10.05.2011
  */
 @Component
 public class SpecimenCdmExcelImport

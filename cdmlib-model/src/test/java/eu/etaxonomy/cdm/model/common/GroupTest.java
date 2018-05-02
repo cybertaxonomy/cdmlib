@@ -18,7 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 /**
  * @author n.hoffmann
- * @created Mar 9, 2011
+ * @since Mar 9, 2011
  * @version 1.0
  */
 public class GroupTest {

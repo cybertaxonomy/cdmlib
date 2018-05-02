@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.events;
 /**
  * Interface for all IO events
  * @author a.mueller
- * @created 23.06.2011
+ * @since 23.06.2011
  */
 public interface IIoEvent {
 	

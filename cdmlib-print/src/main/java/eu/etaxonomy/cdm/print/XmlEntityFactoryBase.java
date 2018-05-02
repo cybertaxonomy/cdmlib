@@ -24,7 +24,7 @@ import org.jdom.input.SAXBuilder;
  * @see IXMLEntityFactory
  * 
  * @author n.hoffmann
- * @created Jul 16, 2010
+ * @since Jul 16, 2010
  * @version 1.0
  */
 public abstract class XmlEntityFactoryBase implements IXMLEntityFactory {

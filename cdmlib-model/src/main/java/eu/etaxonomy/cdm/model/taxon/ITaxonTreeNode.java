@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author n.hoffmann
- * @created Sep 18, 2009
+ * @since Sep 18, 2009
  */
 public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableEntity {
 

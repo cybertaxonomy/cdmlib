@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @see http://dev.e-taxonomy.eu/redmine/issues/6000
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:44
+ * @since 08-Nov-2007 13:06:44
  * @author a.mueller
  */
 @XmlAccessorType(XmlAccessType.FIELD)

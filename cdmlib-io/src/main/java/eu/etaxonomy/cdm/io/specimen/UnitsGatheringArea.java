@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author p.kelbert
- * @created 20.10.2008
+ * @since 20.10.2008
  */
 public class UnitsGatheringArea {
     private static final Logger logger = Logger.getLogger(UnitsGatheringArea.class);

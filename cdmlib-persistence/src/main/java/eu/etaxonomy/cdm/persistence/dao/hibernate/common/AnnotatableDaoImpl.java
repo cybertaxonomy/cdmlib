@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
  * @author n.hoffmann
- * @created 24.09.2008
+ * @since 24.09.2008
  */
 public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
         extends VersionableDaoBase<T>

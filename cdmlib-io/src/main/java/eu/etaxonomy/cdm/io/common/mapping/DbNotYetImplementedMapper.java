@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * This mapper does not change any import object, but keeps the information that a database
  * attribute needs to be mapped but is not yet mapped.
  * @author a.mueller
- * @created 25.02.2010
+ * @since 25.02.2010
  * @version 1.0
  */
 public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {

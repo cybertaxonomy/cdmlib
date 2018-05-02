@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author n.hoffmann
- * @created 24.09.2008
+ * @since 24.09.2008
  * @version 1.0
  */
 public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionableDao<T>{

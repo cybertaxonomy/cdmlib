@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:07:00
+ * @since 08-Nov-2007 13:07:00
  * @updated 05-Dec-2008 23:00:05
  * @updated 14-Jul-2013 move parser methods to TimePeriodParser
  */

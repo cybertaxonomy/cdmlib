@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author p.kelbert
- * @created 29.10.2008
+ * @since 29.10.2008
  * @version 1.0
  */
 public class SpecimenSynthesysExcelImportConfigurator extends ImportConfiguratorBase<SpecimenSynthesysExcelImportState, URI> implements IImportConfigurator {

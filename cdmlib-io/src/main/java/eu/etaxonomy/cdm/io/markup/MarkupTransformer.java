@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author a.mueller
- * @created 01.03.2010
+ * @since 01.03.2010
  */
 public class MarkupTransformer extends InputTransformerBase {
     private static final long serialVersionUID = -3910080152461421047L;

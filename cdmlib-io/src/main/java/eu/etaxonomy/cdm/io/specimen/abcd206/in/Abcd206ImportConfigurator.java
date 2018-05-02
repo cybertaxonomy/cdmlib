@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author p.kelbert
- * @created 20.10.2008
+ * @since 20.10.2008
  */
 public class Abcd206ImportConfigurator
         extends SpecimenImportConfiguratorBase<Abcd206ImportConfigurator, Abcd206ImportState, InputStream>

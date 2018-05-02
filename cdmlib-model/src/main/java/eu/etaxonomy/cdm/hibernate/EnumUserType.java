@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  * User type for IEnumTerm
  * Partly copied from http://stackoverflow.com/questions/9839553/hibernate-map-enum-to-varchar
  * @author a.mueller
- * @created 15-07-2013
+ * @since 15-07-2013
  */
 public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implements UserType, ParameterizedType {
 	private static final long serialVersionUID = 4641078915907621907L;

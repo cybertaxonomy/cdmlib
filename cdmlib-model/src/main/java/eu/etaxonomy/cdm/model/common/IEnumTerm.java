@@ -9,7 +9,7 @@ package eu.etaxonomy.cdm.model.common;
  * To be used by enumerated terms.
  *
  * @author a.mueller
- * @created 15-Jul-2013
+ * @since 15-Jul-2013
  *
  */
 public interface IEnumTerm<T extends IEnumTerm<T>>

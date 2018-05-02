@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 
 /**
  * @author n.hoffman
- * @created 08.04.2009
+ * @since 08.04.2009
  * @version 1.0
  */
 public interface ILocationService extends IService<DefinedTermBase> {

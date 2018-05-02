@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * This is an interface to tag all those classes which can be merged via an 
  * <code>eu.etaxonomy.cdm.strategy.merge.IMergeStrategy</code>.
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  * @version 1.0
  */
 public interface IMergable extends ICdmBase{

@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 30.10.2008
+ * @since 30.10.2008
  * @version 1.0
  */
 public class IEndnotePlaceholderClass implements ITcsXmlPlaceholderClass {

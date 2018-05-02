@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 public class DbOriginalNameMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{

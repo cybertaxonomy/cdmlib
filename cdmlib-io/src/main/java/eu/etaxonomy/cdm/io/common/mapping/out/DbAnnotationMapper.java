@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * Maps all Annotations belonging to an AnnotatableEntity to a DB field, using <code>separator</code>
  * as separator. If annotationPrefix is not <code>null</code>, only Annotations with the given prefix are used.
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  */
 public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")

@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
  * use partOf relation and BreadthFirst. Default iterator order should therefore
  * be BreadthFirst (not DepthFirst)
  * @author m.doering
- * @created 08-Nov-2007 13:06:19
+ * @since 08-Nov-2007 13:06:19
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTermBase", propOrder = {

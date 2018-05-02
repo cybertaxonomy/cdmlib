@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 /**
  * Formatter for {@link TimePeriod} instances.
  * @author a.mueller
- * @created 14-Jul-2013 (formerly inner class in TimePeriod)
+ * @since 14-Jul-2013 (formerly inner class in TimePeriod)
  *
  */
 public class TimePeriodPartialFormatter extends DateTimeFormatter{

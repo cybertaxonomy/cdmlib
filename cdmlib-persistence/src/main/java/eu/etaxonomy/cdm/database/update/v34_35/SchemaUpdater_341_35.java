@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
- * @created Mar 01, 2015
+ * @since Mar 01, 2015
  */
 public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 

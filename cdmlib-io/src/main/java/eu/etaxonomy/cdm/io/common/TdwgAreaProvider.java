@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * general solution for terms.
  * 
  * @author a.mueller
- * @created 11.6.2013
+ * @since 11.6.2013
  *
  */
 @Deprecated

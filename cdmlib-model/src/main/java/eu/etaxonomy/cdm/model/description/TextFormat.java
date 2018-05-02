@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * (like "xml schema namespace", "rdf", or any other format).
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:59
+ * @since 08-Nov-2007 13:06:59
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TextFormat")

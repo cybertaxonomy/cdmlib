@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * A common interface for all identification keys.
  * @author a.mueller
- * @created 22.07.2009
+ * @since 22.07.2009
  */
 public interface IIdentificationKey {
 	

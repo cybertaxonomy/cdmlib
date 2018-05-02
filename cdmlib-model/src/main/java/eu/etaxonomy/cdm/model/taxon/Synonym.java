@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
  *  on the other.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:55
+ * @since 08-Nov-2007 13:06:55
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Synonym", propOrder = {

@@ -20,7 +20,7 @@ import net.sf.json.JsonConfig;
 
 /**
  * @author n.hoffmann
- * @created Apr 9, 2010
+ * @since Apr 9, 2010
  * @version 1.0
  */
 public class TaxonNodeBeanProcessor extends AbstractCdmBeanProcessor<TaxonNode> {

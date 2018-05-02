@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 23.11.2011
+ * @since 23.11.2011
  */
 public abstract class StreamImportStateBase<CONFIG extends StreamImportConfiguratorBase, IO extends StreamImportBase>
             extends ImportStateBase<CONFIG, IO>{

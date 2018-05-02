@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * <BR>
  *
  * @author a.mueller
- * @created 2013-07-05
+ * @since 2013-07-05
  *
  * @see Amplification
  */

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * Writes the SDD XML file.
  *
  * @author h.fradin
- * @created 10.12.2008
+ * @since 10.12.2008
  * @version 1.0
  */
 

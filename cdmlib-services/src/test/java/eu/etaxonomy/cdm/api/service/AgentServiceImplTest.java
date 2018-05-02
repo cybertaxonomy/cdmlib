@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @created 2015-04-01
+ * @since 2015-04-01
  */
 public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 

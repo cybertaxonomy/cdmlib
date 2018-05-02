@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
- * @created 01.09.2008
+ * @since 01.09.2008
  */
 public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
 

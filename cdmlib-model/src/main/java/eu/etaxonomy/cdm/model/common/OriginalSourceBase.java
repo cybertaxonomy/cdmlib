@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:22
+ * @since 08-Nov-2007 13:06:22
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)

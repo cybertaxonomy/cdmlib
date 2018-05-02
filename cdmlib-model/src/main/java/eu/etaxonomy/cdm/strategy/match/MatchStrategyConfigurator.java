@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * This class defines the MatchStrategies that will be used by the ParseHandler.
  *
  * @author n.hoffmann
- * @created Jan 22, 2010
+ * @since Jan 22, 2010
  */
 public class MatchStrategyConfigurator {
 

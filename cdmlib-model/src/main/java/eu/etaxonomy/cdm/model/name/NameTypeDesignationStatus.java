@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * The terms in this class define the status of a {@link NameTypeDesignation name type designation}.
  *
  * @author a.babadshanjan
- * @created 20.03.2009
+ * @since 20.03.2009
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameTypeDesignationStatus")

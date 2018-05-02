@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * {@link #getBarcodeSequencePart() barcode sequence}, ...).
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:51
+ * @since 08-Nov-2007 13:06:51
  * @author a.mueller
  * @updated 11-Jul-2013
  */

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  * @version 1.0
  */
 public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExcelImportConfigurator, SpecimenRow>{

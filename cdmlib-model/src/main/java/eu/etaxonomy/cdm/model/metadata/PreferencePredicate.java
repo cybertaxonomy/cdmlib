@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
- * @created 2013-09-09
+ * @since 2013-09-09
  *
  */
 public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{

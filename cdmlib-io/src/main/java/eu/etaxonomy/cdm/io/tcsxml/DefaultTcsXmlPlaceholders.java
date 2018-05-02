@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 30.10.2008
+ * @since 30.10.2008
  * @version 1.0
  */
 public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {

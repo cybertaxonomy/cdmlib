@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * <BR> In the CDM we currently store phylogenetic trees only as media. This may change in future.
  *
  * @author m.doering
- * @created 08-Nov-2007
+ * @since 08-Nov-2007
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PhylogeneticTree", propOrder = {

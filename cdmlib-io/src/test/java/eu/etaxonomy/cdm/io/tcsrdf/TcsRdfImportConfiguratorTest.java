@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created 29.01.2009
+ * @since 29.01.2009
  * @version 1.0
  */
 public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTest {

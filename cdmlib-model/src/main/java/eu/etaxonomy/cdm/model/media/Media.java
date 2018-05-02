@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * (2) an formatted text can have a text/html or an application/pdf representation.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:34
+ * @since 08-Nov-2007 13:06:34
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Media", propOrder = {

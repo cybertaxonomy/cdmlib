@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 26.11.2008
+ * @since 26.11.2008
  */
 public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
     @SuppressWarnings("unused")

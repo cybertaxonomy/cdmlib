@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * {@link SingleRead sequence reading}.
  *
  * @author a.mueller
- * @created 2013-07-08
+ * @since 2013-07-08
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

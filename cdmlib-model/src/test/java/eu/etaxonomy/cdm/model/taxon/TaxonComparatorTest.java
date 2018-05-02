@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @created 11.06.2008
+ * @since 11.06.2008
  */
 public class TaxonComparatorTest {
     private static final Logger logger = Logger.getLogger(TaxonComparatorTest.class);

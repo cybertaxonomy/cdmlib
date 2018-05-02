@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * as creators of pictures or field collectors or administrators of collections.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:57
+ * @since 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AgentBase", propOrder = {

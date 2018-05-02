@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
- * @created 21.09.2009
+ * @since 21.09.2009
  */
 public class TaxonBaseDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")

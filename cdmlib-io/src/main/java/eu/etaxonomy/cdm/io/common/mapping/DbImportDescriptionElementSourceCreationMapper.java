@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * This mapper creates an description element source that is added to the according description element.
  * It adds the reference and the microReference.
  * @author a.mueller
- * @created 11.03.2010
+ * @since 11.03.2010
  * @version 1.0
  */
 public class DbImportDescriptionElementSourceCreationMapper extends DbImportObjectCreationMapperBase<DescriptionElementSource, DbImportStateBase<?,?>> {

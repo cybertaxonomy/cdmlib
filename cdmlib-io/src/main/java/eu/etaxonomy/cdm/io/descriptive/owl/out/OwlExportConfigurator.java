@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 /**
  * @author a.mueller
- * @created 18.04.2011
+ * @since 18.04.2011
  */
 public class OwlExportConfigurator extends XmlExportConfiguratorBase<OwlExportState> {
 

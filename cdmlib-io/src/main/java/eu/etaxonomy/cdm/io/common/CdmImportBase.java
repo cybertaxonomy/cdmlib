@@ -82,7 +82,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
- * @created 01.07.2008
+ * @since 01.07.2008
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
             extends CdmIoBase<STATE, ImportResult>

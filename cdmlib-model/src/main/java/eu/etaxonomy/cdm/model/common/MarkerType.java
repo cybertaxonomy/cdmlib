@@ -29,7 +29,7 @@ import org.hibernate.search.annotations.Field;
  * Marker types similar to dynamically defined attributes. These  content types
  * like "IS_DOUBTFUL", "COMPLETE"  or specific local flags.
  * @author m.doering
- * @created 08-Nov-2007 13:06:33
+ * @since 08-Nov-2007 13:06:33
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MarkerType")

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends CdmAttributeMapperBase {

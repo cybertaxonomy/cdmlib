@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * This class is an default exporter class that is a spring bean and therefore it knows all other IO classes that are beans
  *
  * @author a.mueller
- * @created 20.06.2008
+ * @since 20.06.2008
  */
 
 @Component("defaultExport")

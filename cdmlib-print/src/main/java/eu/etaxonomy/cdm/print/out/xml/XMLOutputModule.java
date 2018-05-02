@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  * Simple output module that writes the harvested xml data to disk without further processing. 
  * 
  * @author n.hoffmann
- * @created Apr 8, 2010
+ * @since Apr 8, 2010
  * @version 1.0
  */
 public class XMLOutputModule extends PublishOutputModuleBase{

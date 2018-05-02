@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * schema.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:24
+ * @since 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {

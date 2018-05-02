@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author p.kelbert
  * @author p.plitzner
- * @created 20.10.2008
+ * @since 20.10.2008
  */
 @Component
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {

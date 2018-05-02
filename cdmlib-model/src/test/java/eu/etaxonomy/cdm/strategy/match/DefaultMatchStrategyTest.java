@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @created 03.08.2009
+ * @since 03.08.2009
  */
 public class DefaultMatchStrategyTest {
 	@SuppressWarnings("unused")

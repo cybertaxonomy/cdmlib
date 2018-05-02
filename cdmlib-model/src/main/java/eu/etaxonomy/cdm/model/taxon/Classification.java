@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- * @created 31.03.2009
+ * @since 31.03.2009
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {

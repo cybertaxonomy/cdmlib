@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.babadshanjan
- * @created 12.09.2008
+ * @since 12.09.2008
  */
 public interface ILanguageStringDao extends ILanguageStringBaseDao<LanguageString> {
 

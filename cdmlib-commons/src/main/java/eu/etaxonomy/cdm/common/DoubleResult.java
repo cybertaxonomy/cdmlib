@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 /**
  * An instance of this class represents an method result that contains 2 variables. The variables may be typified.
  * @author a.mueller
- * @created 30.10.2008
+ * @since 30.10.2008
  * @version 1.0
  */
 public class DoubleResult<S extends Object, T extends Object> {

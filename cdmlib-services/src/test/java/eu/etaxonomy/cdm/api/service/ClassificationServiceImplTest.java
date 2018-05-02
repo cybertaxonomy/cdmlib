@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author n.hoffmann
- * @created Sep 22, 2009
+ * @since Sep 22, 2009
  */
 public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTest{
 

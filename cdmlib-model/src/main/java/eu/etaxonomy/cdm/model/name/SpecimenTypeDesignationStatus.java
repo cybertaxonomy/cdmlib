@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:07:00
+ * @since 08-Nov-2007 13:07:00
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignationStatus")

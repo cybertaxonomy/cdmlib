@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 /**
  * @author n.hoffmann
- * @created Sep 14, 2009
+ * @since Sep 14, 2009
  * @version 1.0
  */
 public class IllegalAncestryException extends RuntimeException {

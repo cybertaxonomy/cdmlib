@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 /**
  * Controlled vocabulary to differentiate categories of areas
  * @author m.doering
- * @created 08-Nov-2007 13:06:37
+ * @since 08-Nov-2007 13:06:37
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NamedAreaType")

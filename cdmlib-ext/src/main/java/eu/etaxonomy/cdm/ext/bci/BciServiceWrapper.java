@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
 * This service allows to query the Biodiversity collection index {@link http://www.biodiversitycollectionsindex.org}
 * @author a.mueller
-* @created Aug 16, 2010
+* @since Aug 16, 2010
 * @version 1.0
  *
  */

@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:10
+ * @since 08-Nov-2007 13:06:10
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Annotation", propOrder = {

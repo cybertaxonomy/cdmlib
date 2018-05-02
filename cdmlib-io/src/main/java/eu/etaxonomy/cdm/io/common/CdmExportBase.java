@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
- * @created 01.07.2008
+ * @since 01.07.2008
  */
 public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE, TRANSFORM, DEST>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer, DEST extends Object>
             extends CdmIoBase<STATE, ExportResult>

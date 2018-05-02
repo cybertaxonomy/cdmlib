@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
  * @author n.hoffmann
- * @created Aug 5, 2010
+ * @since Aug 5, 2010
  * @version 1.0
  */
 public interface IFeatureNodeService extends IVersionableService<FeatureNode>{

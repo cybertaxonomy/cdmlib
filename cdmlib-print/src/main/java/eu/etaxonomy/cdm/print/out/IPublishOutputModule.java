@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  *
  * @see {@link PublishOutputModuleBase}
  * @author n.hoffmann
- * @created Apr 8, 2010
+ * @since Apr 8, 2010
  * @version 1.0
  */
 public interface IPublishOutputModule {

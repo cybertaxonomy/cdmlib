@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  * extending this class.
  * 
  * @author n.hoffmann
- * @created Apr 20, 2010
+ * @since Apr 20, 2010
  * @version 1.0
  */
 public abstract class PublishOutputModuleBase implements IPublishOutputModule {

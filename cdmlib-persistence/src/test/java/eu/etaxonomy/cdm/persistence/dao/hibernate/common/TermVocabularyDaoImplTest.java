@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.babadshanjan
- * @created 10.02.2009
+ * @since 10.02.2009
  */
 public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")

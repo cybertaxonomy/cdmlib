@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public class EndnoteImportState
             extends ImportStateBase<EndnoteImportConfigurator, EndNoteImportBase>{

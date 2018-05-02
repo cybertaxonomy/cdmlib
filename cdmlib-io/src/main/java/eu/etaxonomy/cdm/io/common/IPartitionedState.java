@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * This class represents all (import(?)) states used with an ResultSetPartitioner
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  */
 public interface IPartitionedState {
 

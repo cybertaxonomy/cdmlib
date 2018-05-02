@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * A DNA Quality describes the quality of a {@link SpecimenOrObservationType#DnaSample}
  *
  * @author a.mueller
- * @created 18-Oct-2014
+ * @since 18-Oct-2014
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaQuality", propOrder = {

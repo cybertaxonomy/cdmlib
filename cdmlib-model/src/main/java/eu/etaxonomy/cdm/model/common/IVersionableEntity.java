@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
 
 /**
  * @author n.hoffmann
- * @created Sep 15, 2010
+ * @since Sep 15, 2010
  * @version 1.0
  */
 public interface IVersionableEntity extends ICdmBase {

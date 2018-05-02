@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 
 /**
  * @author a.mueller
- * @created 12.11.2008
+ * @since 12.11.2008
  * @version 1.0
  */
 public class ImportWrapper {

@@ -14,7 +14,7 @@ import org.jdom.Element;
 
 /**
  * @author a.mueller
- * @created 24.03.2009
+ * @since 24.03.2009
  * @version 1.0
  */
 public interface IXmlMapper {

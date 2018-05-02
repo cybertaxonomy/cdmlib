@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
- * @created 15.03.2010
+ * @since 15.03.2010
  */
 public class InputTransformerBase implements IInputTransformer, Serializable {
     private static final long serialVersionUID = 1824180329524647957L;

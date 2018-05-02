@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * @author a.mueller
- * @created 18.12.2008
+ * @since 18.12.2008
  */
 public class CdmDataSourceTest {
 	private static final Logger logger = Logger.getLogger(CdmDataSourceTest.class);

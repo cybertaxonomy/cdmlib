@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * @author a.oppermann
- * @created 20.09.2012
+ * @since 20.09.2012
  *
  */
 @Controller

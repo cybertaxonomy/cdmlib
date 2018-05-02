@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 02.04.2009
+ * @since 02.04.2009
  * @version 1.0
  */
 // Not in use yet

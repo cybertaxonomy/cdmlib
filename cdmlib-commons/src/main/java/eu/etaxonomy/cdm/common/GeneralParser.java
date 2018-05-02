@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 2013-Aug-02
+ * @since 2013-Aug-02
  *
  */
 public class GeneralParser {

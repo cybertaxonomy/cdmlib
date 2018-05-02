@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * flexible way. Application developers (and even users) can define their own
  * "flags" as a MarkerType.
  * @author m.doering
- * @created 08-Nov-2007 13:06:33
+ * @since 08-Nov-2007 13:06:33
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 /**
  * @author a.mueller
- * @created 29.07.2008
+ * @since 29.07.2008
  */
 
 public class CdmTextElementMapper extends CdmSingleAttributeRDFMapperBase {

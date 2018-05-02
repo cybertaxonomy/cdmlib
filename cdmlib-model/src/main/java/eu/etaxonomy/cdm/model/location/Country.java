@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
  * http://www.davros.org/misc/iso3166.txt
  * @author m.doering
- * @created 08-Nov-2007 13:07:02
+ * @since 08-Nov-2007 13:07:02
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Country", propOrder = {

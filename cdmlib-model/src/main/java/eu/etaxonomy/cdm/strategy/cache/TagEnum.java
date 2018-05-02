@@ -17,7 +17,7 @@ package eu.etaxonomy.cdm.strategy.cache;
  *
  * @author a.kohlbecker
  * @version 1.0
- * @created 13.12.2007 12:04:15
+ * @since 13.12.2007 12:04:15
  *
  */
 public enum TagEnum {

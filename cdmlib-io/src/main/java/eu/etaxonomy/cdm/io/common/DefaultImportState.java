@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author a.mueller
- * @created 23.06.2009
+ * @since 23.06.2009
  * @version 1.0
  */
 public class DefaultImportState<CONFIG extends ImportConfiguratorBase> extends ImportStateBase<CONFIG, CdmImportBase> {

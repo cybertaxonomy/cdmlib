@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:18
+ * @since 08-Nov-2007 13:06:18
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Contact", propOrder = {

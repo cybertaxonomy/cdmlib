@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author ben.clark
- * @created 22.12.2009
+ * @since 22.12.2009
  */
 public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")

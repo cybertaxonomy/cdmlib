@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:23
+ * @since 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OrderedTermBase", propOrder = {

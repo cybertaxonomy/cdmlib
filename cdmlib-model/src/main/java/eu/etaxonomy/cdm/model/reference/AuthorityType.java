@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * The type of authority for an externally loaded entity.
  *
  * @author a.mueller
- * @created 21.09.2017
+ * @since 21.09.2017
  */
 
 @XmlEnum

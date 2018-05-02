@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
 
 /**
  * @author a.mueller
- * @created 08.06.2009
+ * @since 08.06.2009
  */
 public class ExtensionTypeTest {
 	@SuppressWarnings("unused")

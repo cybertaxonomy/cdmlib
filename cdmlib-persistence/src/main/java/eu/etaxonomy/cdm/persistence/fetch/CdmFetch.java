@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 30.04.2008
+ * @since 30.04.2008
  * @version 1.0
  */
 public class CdmFetch {

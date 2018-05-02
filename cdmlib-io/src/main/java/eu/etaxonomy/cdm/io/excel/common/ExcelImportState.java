@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
         extends ImportStateBase<CONFIG, ExcelImportBase>{

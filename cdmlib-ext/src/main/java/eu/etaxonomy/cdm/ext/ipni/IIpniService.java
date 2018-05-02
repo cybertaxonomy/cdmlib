@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 * Interface for queying IPNI via webservice ({@link http://www.uk.ipni.org/}).
 * Services are available for the plant name index, the autor index and the publication index.
 * @author a.mueller
-* @created Aug 16, 2010
+* @since Aug 16, 2010
  */
 public interface IIpniService {
 

@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * emptied.
  *
  * @author a.mueller
- * @created 24.08.2010
+ * @since 24.08.2010
  */
 public class ResultSetProxy implements ResultSet {
 	@SuppressWarnings("unused")

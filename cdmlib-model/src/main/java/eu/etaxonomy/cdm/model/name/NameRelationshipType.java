@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:38
+ * @since 08-Nov-2007 13:06:38
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationshipType")

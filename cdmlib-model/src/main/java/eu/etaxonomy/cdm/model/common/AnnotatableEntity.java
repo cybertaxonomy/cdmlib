@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * Abstract superclass implementing human annotations and machine markers to be assigned to CDM objects.
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:10
+ * @since 08-Nov-2007 13:06:10
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AnnotatableEntity", propOrder = {

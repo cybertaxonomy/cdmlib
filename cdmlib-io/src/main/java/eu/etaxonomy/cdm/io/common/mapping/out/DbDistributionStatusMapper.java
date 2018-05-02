@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
  * Maps distribution to a database foreign key or cache field.
  * Requires according transformer implementation.
  * @author a.mueller
- * @created 06.02.2012
+ * @since 06.02.2012
  */
 public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")

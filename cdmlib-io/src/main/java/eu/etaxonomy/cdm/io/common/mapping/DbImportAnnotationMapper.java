@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * TODO maybe this class should not inherit from DbSingleAttributeImportMapperBase
  * as it does not map to a single attribute
  * @author a.mueller
- * @created 01.03.2010
+ * @since 01.03.2010
  * @version 1.0
  */
 public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{

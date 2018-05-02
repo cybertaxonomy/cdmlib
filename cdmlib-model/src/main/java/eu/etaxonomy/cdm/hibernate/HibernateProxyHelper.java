@@ -18,7 +18,7 @@ import org.hibernate.proxy.HibernateProxy;
 
 /**
  * @author a.mueller
- * @created 03.03.2009
+ * @since 03.03.2009
  */
 public class HibernateProxyHelper {
 	@SuppressWarnings("unused")

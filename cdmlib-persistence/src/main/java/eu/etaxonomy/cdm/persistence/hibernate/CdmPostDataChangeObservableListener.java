@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * TODO Manage this class via Spring
  *
  * @author n.hoffmann
- * @created 24.03.2009
+ * @since 24.03.2009
  */
 public class CdmPostDataChangeObservableListener implements
 		  PostDeleteEventListener

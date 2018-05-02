@@ -56,7 +56,7 @@ import javassist.compiler.ast.Keyword;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:42
+ * @since 08-Nov-2007 13:06:42
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {

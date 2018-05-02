@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase>
         extends IoStateBase<CONFIG, IO, ImportResult> {

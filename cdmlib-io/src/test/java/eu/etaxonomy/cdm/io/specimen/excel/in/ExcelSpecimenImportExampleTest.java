@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @created 10.05.2011
+ * @since 10.05.2011
  */
 public class ExcelSpecimenImportExampleTest extends
 		CdmTransactionalIntegrationTest {

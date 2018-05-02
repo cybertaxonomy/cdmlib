@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * The determination process is performed by an identification software.
  *
  * @author h.fradin
- * @created 13.08.2009
+ * @since 13.08.2009
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)

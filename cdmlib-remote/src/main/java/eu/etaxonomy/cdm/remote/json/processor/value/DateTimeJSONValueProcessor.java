@@ -19,7 +19,7 @@ import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * @author n.hoffmann
- * @created 24.07.2008
+ * @since 24.07.2008
  * @version 1.0
  */
 public class DateTimeJSONValueProcessor implements JsonValueProcessor {

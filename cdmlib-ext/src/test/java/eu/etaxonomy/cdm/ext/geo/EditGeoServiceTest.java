@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created 08.10.2008
+ * @since 08.10.2008
  */
 public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);

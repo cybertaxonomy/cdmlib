@@ -96,7 +96,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 04.08.2008
+ * @since 04.08.2008
  */
 public abstract class MarkupImportBase  {
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);

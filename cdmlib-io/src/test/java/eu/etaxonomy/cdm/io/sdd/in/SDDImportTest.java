@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author b.clark
- * @created 20.01.2009
+ * @since 20.01.2009
  * @version 1.0
  */
 

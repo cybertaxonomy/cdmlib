@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  *
  * @author n.hoffmann
- * @created Apr 8, 2010
+ * @since Apr 8, 2010
  *
  * @deprecated only used by cdmlib-print in an unorthodox way to get cdm entities as xml
  */

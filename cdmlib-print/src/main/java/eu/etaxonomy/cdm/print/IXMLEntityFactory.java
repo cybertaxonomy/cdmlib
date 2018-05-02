@@ -18,7 +18,7 @@ import org.jdom.Element;
  * This interface provides a simplified interface to the API offered by the cdmlib-remote project.
  * 
  * @author n.hoffmann
- * @created Jul 16, 2010
+ * @since Jul 16, 2010
  * @version 1.0
  */
 public interface IXMLEntityFactory {

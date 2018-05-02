@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author a.babadshanjan
- * @created 07.11.2008
+ * @since 07.11.2008
  */
 public interface IStatisticalMeasurementValueDao extends ICdmEntityDao<StatisticalMeasurementValue> {
 

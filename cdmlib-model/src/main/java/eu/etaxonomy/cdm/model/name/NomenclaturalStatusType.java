@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * </ul>
  *
  * @author a.mueller
- * @created 10.07.2008
+ * @since 10.07.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NomenclaturalStatusType")

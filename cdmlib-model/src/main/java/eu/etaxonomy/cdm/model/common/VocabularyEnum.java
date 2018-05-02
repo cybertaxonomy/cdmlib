@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author n.hoffmann
- * @created 03.06.2009
+ * @since 03.06.2009
  **/
 public enum VocabularyEnum {
 

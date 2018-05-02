@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
- * @created 20.03.2008
+ * @since 20.03.2008
  */
 public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>>
         extends ExportConfiguratorBase<STATE, IExportTransformer, File>

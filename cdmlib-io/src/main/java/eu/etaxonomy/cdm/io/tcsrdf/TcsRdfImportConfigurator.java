@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @created 29.05.2008
+ * @since 29.05.2008
  */
 public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState, URI> implements IImportConfigurator {
 

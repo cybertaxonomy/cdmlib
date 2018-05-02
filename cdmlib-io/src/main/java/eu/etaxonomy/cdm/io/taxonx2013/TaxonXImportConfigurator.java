@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author p.kelber
- * @created 2012
+ * @since 2012
  */
 public class TaxonXImportConfigurator
     extends ImportConfiguratorBase<TaxonXImportState, URI>{

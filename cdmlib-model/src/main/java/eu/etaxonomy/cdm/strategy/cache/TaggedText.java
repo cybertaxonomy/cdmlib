@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * @author a.kohlbecker
  * @author  m.doering
  * @version 1.0
- * @created 11.12.2007 12:11:19
+ * @since 11.12.2007 12:11:19
  *
  */
 public class TaggedText implements Serializable{

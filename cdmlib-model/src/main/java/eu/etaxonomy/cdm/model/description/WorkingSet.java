@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * dependencies.
  *
  * @author h.fradin
- * @created 12.08.2009
+ * @since 12.08.2009
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)

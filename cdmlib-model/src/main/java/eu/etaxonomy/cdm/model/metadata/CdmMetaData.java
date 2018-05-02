@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.mueller
- * @created 07.09.2009
+ * @since 07.09.2009
  */
 @Entity
 public class CdmMetaData extends CdmBase{

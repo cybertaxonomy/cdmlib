@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * This class corresponds to CharacterStateDataType according to the SDD schema.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:53
+ * @since 08-Nov-2007 13:06:53
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created Aug 07, 2014
+ * @since Aug 07, 2014
  */
 //@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{

@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
- * @created 20.10.2008
+ * @since 20.10.2008
  */
 public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends SpecimenImportStateBase>
         extends CdmImportBase<CONFIG, STATE> {

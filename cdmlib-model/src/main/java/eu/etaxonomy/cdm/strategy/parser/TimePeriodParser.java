@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 /**
  * Class for parsing all types of date string to TimePeriod
  * @author a.mueller
- * @created 14-Jul-2013
+ * @since 14-Jul-2013
  */
 public class TimePeriodParser {
 	private static final Logger logger = Logger.getLogger(TimePeriodParser.class);

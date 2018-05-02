@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
  * @see		NameTypeDesignation
  * @see		SpecimenTypeDesignation
  * @author  a.mueller
- * @created 07.08.2008
+ * @since 07.08.2008
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {

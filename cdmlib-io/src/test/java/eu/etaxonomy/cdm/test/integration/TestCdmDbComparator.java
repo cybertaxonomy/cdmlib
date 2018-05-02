@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.babadshanjan
- * @created 15.09.2008
+ * @since 15.09.2008
  */
 public class TestCdmDbComparator {
 

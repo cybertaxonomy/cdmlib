@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- * @created 23.04.2008
+ * @since 23.04.2008
  * @version 1.0
  */
 public class MarkerTypeTest {

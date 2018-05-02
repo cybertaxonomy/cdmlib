@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * described with numerical values (like for instance weights or temperature).
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:54
+ * @since 08-Nov-2007 13:06:54
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StatisticalMeasure")

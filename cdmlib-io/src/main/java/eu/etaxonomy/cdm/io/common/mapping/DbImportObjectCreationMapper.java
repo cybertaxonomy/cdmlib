@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 public class DbImportObjectCreationMapper<ANNOTATABLE extends AnnotatableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<ANNOTATABLE, STATE> {

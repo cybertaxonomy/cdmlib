@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.oppermann
- * @created 17.10.2012
+ * @since 17.10.2012
  */
 public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<CsvTaxExportStateRedlist> {
 

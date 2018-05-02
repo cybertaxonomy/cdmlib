@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created Aug 16, 2010
+ * @since Aug 16, 2010
  *
  * TODO the whole ipni service should be refactored to use UriUtils. I did this for the queryService method only because we ran into timeout
  * problems in tests. UriUtils handles these problems already.

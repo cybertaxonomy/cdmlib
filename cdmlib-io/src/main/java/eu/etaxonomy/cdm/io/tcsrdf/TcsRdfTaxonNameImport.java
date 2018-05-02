@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @created 29.05.2008
+ * @since 29.05.2008
  */
 @Component
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {

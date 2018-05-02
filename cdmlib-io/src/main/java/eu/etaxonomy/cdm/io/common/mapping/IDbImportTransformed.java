@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 /**
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  * @version 1.0
  */
 public interface IDbImportTransformed {

@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 
 /**
  * @author a.mueller
- * @created 20.06.2008
+ * @since 20.06.2008
  */
 
 public interface ICdmIO<STATE extends IoStateBase> extends  IIoObservable {

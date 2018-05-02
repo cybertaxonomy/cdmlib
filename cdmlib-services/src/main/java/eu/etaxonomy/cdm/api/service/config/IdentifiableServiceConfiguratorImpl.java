@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.babadshanjan
  * @author n.hoffmann
- * @created 03.03.2009
+ * @since 03.03.2009
  * @version 1.1
  */
 public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity> implements IIdentifiableEntityServiceConfigurator<T>{

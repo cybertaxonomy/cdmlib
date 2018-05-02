@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * sources such as the citation in a book.
  * In future they may come further source types. 
  * @author a.mueller
- * @created 15.05.2013
+ * @since 15.05.2013
  */
 @XmlEnum
 public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Serializable{

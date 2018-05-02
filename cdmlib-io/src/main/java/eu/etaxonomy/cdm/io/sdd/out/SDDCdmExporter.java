@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author h.fradin (from a.babadshanjan)
- * @created 10.12.2008
+ * @since 10.12.2008
  */
 @Component("sddCdmExporter")
 public class SDDCdmExporter

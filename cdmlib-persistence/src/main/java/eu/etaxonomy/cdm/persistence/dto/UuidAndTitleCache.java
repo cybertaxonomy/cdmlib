@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * @author n.hoffmann
- * @created Aug 14, 2009
+ * @since Aug 14, 2009
  * @version 1.0
  */
 

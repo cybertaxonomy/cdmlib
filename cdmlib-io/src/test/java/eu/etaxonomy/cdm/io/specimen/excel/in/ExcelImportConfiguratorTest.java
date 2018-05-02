@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created 29.01.2009
+ * @since 29.01.2009
  * @version 1.0
  */
 //@Ignore("Test class is just a copy of the ABCD import test. It still needs to be adapted")

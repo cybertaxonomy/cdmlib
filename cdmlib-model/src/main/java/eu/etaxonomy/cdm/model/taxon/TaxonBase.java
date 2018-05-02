@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:56
+ * @since 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonBase", propOrder = {

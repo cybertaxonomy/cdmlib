@@ -23,7 +23,7 @@ import org.hibernate.envers.Audited;
 
 /**
  * @author a.mueller
- * @created 2013-06-19
+ * @since 2013-06-19
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

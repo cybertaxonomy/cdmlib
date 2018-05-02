@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
 
 /**
  * @author n.hoffmann
- * @created Apr 23, 2010
+ * @since Apr 23, 2010
  * @version 1.0
  */
 public class OdfOutputModuleTest {

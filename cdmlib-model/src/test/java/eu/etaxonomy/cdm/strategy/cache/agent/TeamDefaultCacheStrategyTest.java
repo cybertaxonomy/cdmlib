@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 
 /**
  * @author a.mueller
- * @created 29.09.2009
+ * @since 29.09.2009
  */
 public class TeamDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")

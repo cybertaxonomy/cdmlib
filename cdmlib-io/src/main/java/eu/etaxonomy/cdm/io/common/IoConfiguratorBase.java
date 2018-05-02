@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 /**
  * Base class for all import/export configurators.
  * @author a.babadshanjan
- * @created 16.11.2008
+ * @since 16.11.2008
  */
 public abstract class IoConfiguratorBase extends ObservableBase implements IIoConfigurator, IIoObservable{
 

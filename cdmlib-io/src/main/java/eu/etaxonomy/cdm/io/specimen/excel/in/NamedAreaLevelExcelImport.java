@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author a.mueller
- * @created 15.05.2010
+ * @since 15.05.2010
  */
 @Component
 public class NamedAreaLevelExcelImport

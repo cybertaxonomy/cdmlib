@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 
 /**
  * @author a.mueller
- * @created 23.11.2011
+ * @since 23.11.2011
  */
 public abstract class DwcaDataImportStateBase<CONFIG extends DwcaDataImportConfiguratorBase>
         extends StreamImportStateBase<CONFIG, StreamImportBase>{

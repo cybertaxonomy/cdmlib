@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * A single enumeration must only contain DefinedTerm instances of one kind
  * (this means a subclass of DefinedTerm).
  * @author m.doering
- * @created 08-Nov-2007 13:06:23
+ * @since 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {

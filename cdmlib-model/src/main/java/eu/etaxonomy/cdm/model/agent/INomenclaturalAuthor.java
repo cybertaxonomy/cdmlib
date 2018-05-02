@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.model.agent;
 * 
 * @author a.mueller
 * @version 1.0
-* @created 17-APR-2008
+* @since 17-APR-2008
 */
 public interface INomenclaturalAuthor {
 

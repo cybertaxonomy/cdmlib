@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 
 /**
  * @author a.mueller
- * @created 2013-09-09
+ * @since 2013-09-09
  */
 @Repository
 public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao  {

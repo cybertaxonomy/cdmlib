@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
- * @created 02.02.2009
+ * @since 02.02.2009
  */
 public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
 

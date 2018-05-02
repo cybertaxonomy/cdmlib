@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * Interface providing methods for nomenclatural references.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:29
+ * @since 08-Nov-2007 13:06:29
  */
 public interface INomenclaturalReference  extends IReference{
 

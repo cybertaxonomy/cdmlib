@@ -32,7 +32,7 @@ import org.hibernate.envers.Audited;
  * No further functionality is added.
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:32
+ * @since 08-Nov-2007 13:06:32
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageString")

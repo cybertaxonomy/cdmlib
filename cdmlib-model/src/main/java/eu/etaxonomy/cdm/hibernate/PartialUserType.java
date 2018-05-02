@@ -28,7 +28,7 @@ import org.joda.time.Partial;
  * This is a preliminary implementation that fulfills the needs of CDM but does not fully store a Partial.
  * Only year, month and day is stored
  * @author a.mueller
- * @created 11.11.2008
+ * @since 11.11.2008
  * @version 2.0
  */
 public class PartialUserType extends AbstractUserType implements UserType /* extends AbstractSingleColumnUserType<Partial, String, ColumnMapper<Partial,String>> implements UserType */ {

@@ -13,7 +13,7 @@ import javax.persistence.Transient;
  * replacing fully {@link DefinedTermBase defined terms}.
  * 
  * @author a.mueller
- * @created 14-Jul-1913
+ * @since 14-Jul-1913
  */
 public interface ISimpleTerm<T extends ISimpleTerm> {
 

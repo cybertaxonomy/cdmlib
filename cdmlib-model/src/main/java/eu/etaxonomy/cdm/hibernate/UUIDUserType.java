@@ -25,7 +25,7 @@ import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
 /**
  * @author a.mueller
- * @created 22.07.2008
+ * @since 22.07.2008
  * @version 2.0
  */
 public class UUIDUserType  extends AbstractUserType implements UserType {

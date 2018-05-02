@@ -83,7 +83,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 /**
  * type figures are observations with at least a figure object in media
  * @author m.doering
- * @created 08-Nov-2007 13:06:41
+ * @since 08-Nov-2007 13:06:41
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {

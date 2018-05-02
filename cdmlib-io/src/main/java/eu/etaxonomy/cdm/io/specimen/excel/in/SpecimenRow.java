@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 08.04.2011
+ * @since 08.04.2011
  * @version 1.0
  */
 public class SpecimenRow extends ExcelRowBase{

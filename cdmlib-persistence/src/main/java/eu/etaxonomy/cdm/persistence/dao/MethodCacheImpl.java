@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author n.hoffmann
- * @created Mar 11, 2010
+ * @since Mar 11, 2010
  * @version 1.0
  */
 @Component
@@ -118,7 +118,7 @@ public class MethodCacheImpl implements IMethodCache {
 	/**
 	 * 
 	 * @author n.hoffmann
-	 * @created Mar 11, 2010
+	 * @since Mar 11, 2010
 	 * @version 1.0
 	 */
 	private static class MethodDescriptor{

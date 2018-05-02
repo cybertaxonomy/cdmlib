@@ -40,7 +40,7 @@ import eu.etaxonomy.remote.dto.rdf.Rdf;
  * 
  * @author b.clarke,c.mathew
  * @version 1.0.0
- * @created 25-Nov-2012
+ * @since 25-Nov-2012
  */
 
 public class RdfView extends AbstractView {

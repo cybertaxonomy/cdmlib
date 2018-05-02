@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.print;
 
 /**
  * @author n.hoffmann
- * @created Apr 26, 2010
+ * @since Apr 26, 2010
  * @version 1.0
  */
 public interface IXMLElements {

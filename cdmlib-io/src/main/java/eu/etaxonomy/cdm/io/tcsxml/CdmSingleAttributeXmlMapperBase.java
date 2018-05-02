@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
 /**
  * @author a.mueller
- * @created 29.07.2008
+ * @since 29.07.2008
  * @version 1.0
  */
 

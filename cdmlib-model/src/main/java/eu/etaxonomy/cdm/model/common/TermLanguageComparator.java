@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 14.05.2008
+ * @since 14.05.2008
  * @version 1.0
  */
 public class TermLanguageComparator<T extends TermBase> implements Comparator<T> {

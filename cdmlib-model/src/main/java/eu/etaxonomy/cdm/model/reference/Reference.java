@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:47
+ * @since 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {

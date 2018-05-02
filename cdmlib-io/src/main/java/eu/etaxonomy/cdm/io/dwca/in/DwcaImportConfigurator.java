@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 
 /**
  * @author a.mueller
- * @created 05.05.2011
+ * @since 05.05.2011
  */
 public class DwcaImportConfigurator
         extends DwcaDataImportConfiguratorBase<DwcaImportState>

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 02-Jul-2010 13:06:43
+ * @since 02-Jul-2010 13:06:43
  *
  */
 public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImportState<CacheUpdaterConfigurator>, Object> implements IImportConfigurator{

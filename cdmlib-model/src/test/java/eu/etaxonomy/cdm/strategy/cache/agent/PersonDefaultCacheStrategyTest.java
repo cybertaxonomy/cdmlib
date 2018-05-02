@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * @author a.mueller
- * @created 29.09.2009
+ * @since 29.09.2009
  */
 public class PersonDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")

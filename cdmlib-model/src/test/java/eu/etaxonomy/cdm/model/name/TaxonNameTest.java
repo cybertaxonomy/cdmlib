@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
  * @author a.mueller
- * @created 28.06.2008
+ * @since 28.06.2008
  */
 public class TaxonNameTest {
 	private static final Logger logger = Logger.getLogger(TaxonNameTest.class);

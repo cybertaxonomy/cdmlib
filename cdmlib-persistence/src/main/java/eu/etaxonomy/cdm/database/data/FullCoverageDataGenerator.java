@@ -142,7 +142,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * depend on general parameter than concrete data values.
  *
  * @author a.mueller
- * @created 3013-12-02
+ * @since 3013-12-02
  *
  *
  */

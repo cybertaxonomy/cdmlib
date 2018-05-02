@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
  * while the latest approaches use other techniques.
  *
  * @author a.mueller
- * @created 2013-07-11
+ * @since 2013-07-11
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

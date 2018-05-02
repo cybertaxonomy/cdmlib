@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @created 18.04.2011
+ * @since 18.04.2011
  */
 public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator>{
 

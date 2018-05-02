@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * UNDER CONSTRUCTION
  *
  * @author a.mueller
- * @created 2013-09-09
+ * @since 2013-09-09
  *
  */
 public enum PreferenceSubjectEnum implements IEnumTerm<PreferenceSubjectEnum>{

@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
- * @created 04.08.2008
+ * @since 04.08.2008
  */
 public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfigurator, TcsXmlImportState> {
     private static final long serialVersionUID = -2169244092211698392L;

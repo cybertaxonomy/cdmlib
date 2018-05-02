@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:46
+ * @since 08-Nov-2007 13:06:46
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rank")

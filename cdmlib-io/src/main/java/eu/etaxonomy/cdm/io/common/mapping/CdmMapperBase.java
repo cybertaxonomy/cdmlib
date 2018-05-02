@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 /**
  * The most general mapper class for all cdm mappers.
  * @author a.mueller
- * @created 12.01.2012
+ * @since 12.01.2012
  */
 public abstract class CdmMapperBase {
 	@SuppressWarnings("unused")

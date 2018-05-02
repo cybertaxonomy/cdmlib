@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.ObjectChangeMapper;
 
 /**
  * @author a.mueller
- * @created 27.07.2008
+ * @since 27.07.2008
  * @version 1.0
  */
 public class CdmIoMapping {

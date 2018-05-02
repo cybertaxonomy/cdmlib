@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  * @param <CDM_BASE>
  * @param <STATE>
  */

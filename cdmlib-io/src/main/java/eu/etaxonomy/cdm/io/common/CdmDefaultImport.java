@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- * @created 29.01.2009
+ * @since 29.01.2009
  */
 public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultIOBase<IImportConfigurator> implements ICdmImporter<T> {
 	@SuppressWarnings("unused")

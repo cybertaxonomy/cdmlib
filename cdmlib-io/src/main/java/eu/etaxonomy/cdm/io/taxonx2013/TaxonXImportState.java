@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author p.kelbert
- * @created 2012
+ * @since 2012
  */
 public class TaxonXImportState
         extends  ImportStateBase<TaxonXImportConfigurator, CdmImportBase<TaxonXImportConfigurator , TaxonXImportState >>{

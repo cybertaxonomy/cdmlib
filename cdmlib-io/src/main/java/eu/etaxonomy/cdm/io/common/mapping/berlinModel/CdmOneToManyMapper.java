@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 20.03.2008
+ * @since 20.03.2008
  * @version 1.0
  */
 public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends MultipleAttributeMapperBase<SINGLE_MAPPER> {

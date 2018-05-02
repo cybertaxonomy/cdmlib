@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.print.out.odf;
 
 /**
  * @author n.hoffmann
- * @created Apr 29, 2010
+ * @since Apr 29, 2010
  * @version 1.0
  */
 public interface IStyleNames {

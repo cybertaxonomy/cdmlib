@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  */
 public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM, Source>, TRANSFORM extends IExportTransformer>
         extends CdmDbExportMapping<STATE, CONFIG, TRANSFORM> {

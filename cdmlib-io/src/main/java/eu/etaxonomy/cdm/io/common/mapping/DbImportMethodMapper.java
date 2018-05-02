@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial

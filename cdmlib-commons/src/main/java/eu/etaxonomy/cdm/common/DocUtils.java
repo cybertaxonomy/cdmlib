@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.ReaderFactory;
  * The utility class which provides methods relating to documentation.
  *
  * @author c.mathew
- * @created 01-Aug-2012
+ * @since 01-Aug-2012
  */
 
 public class DocUtils {

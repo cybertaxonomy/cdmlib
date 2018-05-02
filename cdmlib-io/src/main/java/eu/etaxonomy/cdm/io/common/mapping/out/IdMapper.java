@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * Adds a single value to the mapping which represents the id of the mapped object
  *
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  */
 public class IdMapper
         extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>

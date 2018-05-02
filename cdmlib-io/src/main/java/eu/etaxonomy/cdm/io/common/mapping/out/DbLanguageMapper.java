@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 /**
  * Maps a language to a database key or cache field.
  * @author a.mueller
- * @created 06.02.2012
+ * @since 06.02.2012
  */
 public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbLanguageMapper.class);

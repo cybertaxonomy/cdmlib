@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * All aspects of the process are defined here.
  * 
  * @author n.hoffmann
- * @created Aug 3, 2010
+ * @since Aug 3, 2010
  * @version 1.0
  */
 public class PublishConfigurator implements Serializable {

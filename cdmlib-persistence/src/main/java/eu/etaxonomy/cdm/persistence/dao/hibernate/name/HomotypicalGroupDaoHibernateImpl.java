@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 
 /**
  * @author a.babadshanjan
- * @created 24.09.2008
+ * @since 24.09.2008
  */
 @Repository
 public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<HomotypicalGroup> implements IHomotypicalGroupDao {

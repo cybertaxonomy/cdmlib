@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:28
+ * @since 08-Nov-2007 13:06:28
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ImageFile", propOrder = {

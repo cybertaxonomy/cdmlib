@@ -19,7 +19,7 @@ import org.jdom.xpath.XPath;
 
 /**
  * @author n.hoffmann
- * @created Apr 9, 2010
+ * @since Apr 9, 2010
  * @version 1.0
  */
 public class XMLHelper {

@@ -23,7 +23,7 @@ import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 
 /**
  * @author n.hoffmann
- * @created Apr 29, 2010
+ * @since Apr 29, 2010
  * @version 1.0
  */
 public class StylesFactory implements IStyleNames{

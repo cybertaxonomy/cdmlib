@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 
 /**
  * @author a.babadshanjan
- * @created 13.01.2009
+ * @since 13.01.2009
  * @version 1.0
  */
 public class NormalExplicitRow extends ExcelRowBase {

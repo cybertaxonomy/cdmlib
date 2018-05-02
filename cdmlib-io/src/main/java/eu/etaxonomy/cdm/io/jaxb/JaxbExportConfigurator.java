@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.babadshanjan
- * @created 03.09.2008
+ * @since 03.09.2008
  */
 public class JaxbExportConfigurator
         extends ExportConfiguratorBase<JaxbExportState, IExportTransformer, File>

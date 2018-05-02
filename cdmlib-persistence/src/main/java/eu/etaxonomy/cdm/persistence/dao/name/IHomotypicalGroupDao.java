@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author a.babadshanjan
- * @created 24.09.2008
+ * @since 24.09.2008
  */
 public interface IHomotypicalGroupDao extends ICdmEntityDao<HomotypicalGroup> {
 	

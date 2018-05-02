@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 
 /**
  * @author a.babadshanjan
- * @created 05.09.2008
+ * @since 05.09.2008
  */
 @Repository(value="refEntDao")
 public class ReferencedEntityDaoImpl<T extends ReferencedEntityBase> extends CdmEntityDaoBase<T> 

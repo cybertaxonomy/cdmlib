@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
- * @created 20.03.2008
+ * @since 20.03.2008
  */
 public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE>, CONFIG extends DbImportConfiguratorBase<STATE>>
             extends CdmImportBase<CONFIG, STATE>

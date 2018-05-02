@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author n.hoffmann
- * @created Jan 27, 2010
+ * @since Jan 27, 2010
  * @version 1.0
  */
 public class ImagesUtility {

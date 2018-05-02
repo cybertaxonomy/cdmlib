@@ -134,7 +134,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * the only node linking the child node.
  *
  * @author a.mueller
- * @created 13-Oct-2010
+ * @since 13-Oct-2010
  *
  */
 @SuppressWarnings("serial")

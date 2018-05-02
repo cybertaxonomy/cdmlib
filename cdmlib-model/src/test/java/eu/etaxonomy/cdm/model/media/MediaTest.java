@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.mueller
- * @created 05.08.2009
+ * @since 05.08.2009
  */
 public class MediaTest {
     @SuppressWarnings("unused")

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common.events;
 /**
  * Base class for all IO events. 
  * @author a.mueller
- * @created 24.06.2011
+ * @since 24.06.2011
  */
 public abstract class IoEventBase implements IIoEvent {
 

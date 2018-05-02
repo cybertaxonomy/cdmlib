@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 
 /**
  * @author n.hoffmann
- * @created Aug 5, 2010
+ * @since Aug 5, 2010
  * @version 1.0
  */
 @Service

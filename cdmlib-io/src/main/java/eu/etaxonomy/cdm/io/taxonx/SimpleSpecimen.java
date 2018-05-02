@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
  * @author a.mueller
- * @created 23.10.2008
+ * @since 23.10.2008
  * @version 1.0
  */
 public class SimpleSpecimen {

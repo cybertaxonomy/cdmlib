@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * This can be either {@link #Forward} or {@link #Reverse}.
  * 
  * @author a.mueller
- * @created 2013-07-11
+ * @since 2013-07-11
  */
 public enum SequenceDirection implements IKeyTerm {
 	Forward("e611de24-09bf-468f-b6ee-e34124022912", "Forward", "FWD"), 

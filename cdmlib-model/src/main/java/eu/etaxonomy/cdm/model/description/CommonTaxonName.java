@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:17
+ * @since 08-Nov-2007 13:06:17
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CommonTaxonName", propOrder = {

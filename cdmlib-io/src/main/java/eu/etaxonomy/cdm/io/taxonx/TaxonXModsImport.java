@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 29.07.2008
+ * @since 29.07.2008
  */
 @Component
 public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{

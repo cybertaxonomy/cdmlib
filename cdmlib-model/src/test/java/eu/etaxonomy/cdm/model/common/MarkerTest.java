@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
- * @created 22.04.2008
+ * @since 22.04.2008
  * @version 1.0
  */
 public class MarkerTest extends EntityTestBase {

@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  */
 public interface IMatchStrategy {
 

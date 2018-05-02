@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  *  Object creation mapper which creates a extensions.
  *  
  * @author a.mueller
- * @created 11.03.2010
+ * @since 11.03.2010
  * @version 1.0
  */
 public class DbImportExtensionCreationMapper extends DbImportSupplementCreationMapperBase<Extension, IdentifiableEntity, DbImportStateBase<?, ?>, ExtensionType > {

@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- * @created 02.03.2009
+ * @since 02.03.2009
  */
 public class DefaultTermInitializerTest {
 	@SuppressWarnings("unused")

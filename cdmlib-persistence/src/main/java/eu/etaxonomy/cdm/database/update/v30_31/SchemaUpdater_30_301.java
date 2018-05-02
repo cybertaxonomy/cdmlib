@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_31_33;
 /**
  * This updater adds the parent_id column to PolytomousKeyNode_AUD
  * @author a.mueller
- * @created 19.04.2011
+ * @since 19.04.2011
  */
 public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 

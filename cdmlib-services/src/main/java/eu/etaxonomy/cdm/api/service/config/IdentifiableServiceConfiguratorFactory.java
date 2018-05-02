@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 
 /**
  * @author a.babadshanjan
- * @created 03.03.2009
+ * @since 03.03.2009
  * @version 1.0
  */
 public class IdentifiableServiceConfiguratorFactory{

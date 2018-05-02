@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * </ul>
  *
  * @author a.mueller
- * @created 19.05.2008
+ * @since 19.05.2008
  */
 
 @XmlType(name = "NomenclaturalCode")

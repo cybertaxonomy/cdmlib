@@ -32,7 +32,7 @@ import org.hibernate.envers.Audited;
  * Extension instances.
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:23
+ * @since 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Extension", propOrder = {

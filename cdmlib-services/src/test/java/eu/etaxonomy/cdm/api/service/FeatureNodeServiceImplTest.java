@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created 2013-09-28
+ * @since 2013-09-28
  */
 public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 

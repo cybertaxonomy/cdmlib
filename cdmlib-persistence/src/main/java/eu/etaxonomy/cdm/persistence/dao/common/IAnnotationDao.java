@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
- * @created 12.09.2008
+ * @since 12.09.2008
  */
 public interface IAnnotationDao extends ILanguageStringBaseDao<Annotation> {
 	

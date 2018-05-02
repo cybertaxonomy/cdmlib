@@ -119,7 +119,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:57
+ * @since 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonName", propOrder = {

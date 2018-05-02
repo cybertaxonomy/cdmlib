@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
  * transform former classes to general classes with enums as their types.
  *
  * @author a.mueller
- * @created 27.06.2013
+ * @since 27.06.2013
  */
 @XmlEnum
 public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservationType>{

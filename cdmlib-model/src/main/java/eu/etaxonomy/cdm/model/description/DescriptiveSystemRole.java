@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * Compare SDD: .../CharacterTree/DesignedFor/Role
  * 
  * @author a.mueller
- * @created 04-Mar-2011
+ * @since 04-Mar-2011
  */
 @XmlEnum
 public enum DescriptiveSystemRole {

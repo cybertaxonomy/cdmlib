@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 01.07.2008
+ * @since 01.07.2008
  */
 public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResultBase>
 	    extends CdmRepository

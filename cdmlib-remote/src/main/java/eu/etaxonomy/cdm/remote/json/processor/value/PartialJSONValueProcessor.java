@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.hibernate.PartialUserType;
 /**
  * Partial time as four digit year, two digit month of year, and two digit day of month (yyyy-MM-dd).
  * @author a.kohlbecker
- * @created 20.01.2008
+ * @since 20.01.2008
  * @version 1.0
  */
 public class PartialJSONValueProcessor implements JsonValueProcessor {

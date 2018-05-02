@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.molecular.Cloning;
  * in the underlying databases.
  *
  * @author a.mueller
- * @created 2013-07-08
+ * @since 2013-07-08
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * The originalSource representing that taxon as it was found in IPNI would contain IPNI as the reference, the IPNI id of the taxon and the name of the taxon exactly as it was used in IPNI.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:27
+ * @since 08-Nov-2007 13:06:27
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableEntity", propOrder = {

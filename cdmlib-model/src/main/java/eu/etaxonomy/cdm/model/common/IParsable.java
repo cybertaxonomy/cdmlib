@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author a.mueller
- * @created 21.05.2008
+ * @since 21.05.2008
  * @version 1.0
  */
 public interface IParsable {

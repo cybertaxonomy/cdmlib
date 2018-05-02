@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * Maps distribution to a database foreign key or cache field.
  * Requires according transformer implementation.
  * @author a.mueller
- * @created 06.02.2012
+ * @since 06.02.2012
  */
 public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbSingleSourceMapper.class);

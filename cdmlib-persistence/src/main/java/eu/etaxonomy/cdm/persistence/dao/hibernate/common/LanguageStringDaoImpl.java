@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 
 /**
  * @author a.babadshanjan
- * @created 12.09.2008
+ * @since 12.09.2008
  */
 @Repository
 public class LanguageStringDaoImpl 

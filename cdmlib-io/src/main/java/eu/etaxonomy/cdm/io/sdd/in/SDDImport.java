@@ -92,7 +92,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author h.fradin
- * @created 24.10.2008
+ * @since 24.10.2008
  */
 @Component("sddImport")
 public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {

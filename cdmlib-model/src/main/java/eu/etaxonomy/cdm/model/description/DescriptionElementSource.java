@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * to create a new ful {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}.
  *
  * @author a.mueller
- * @created 18.09.2009
+ * @since 18.09.2009
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
 	    "nameUsedInSource"

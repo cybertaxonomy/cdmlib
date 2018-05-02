@@ -20,7 +20,7 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
 /**
  * @author a.mueller
- * @created 04.03.2009
+ * @since 04.03.2009
  */
 public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeEventListener {
     private static final long serialVersionUID = -5511287200489449838L;

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * Details on ordering are explained at http://dev.e-taxonomy.eu/trac/ticket/3338<BR>
  *
  * @author a.mueller
- * @created 02.03.2016
+ * @since 02.03.2016
  */
 public class HomotypicGroupTaxonComparator extends TaxonComparator {
     private static final long serialVersionUID = -5088210641256430878L;

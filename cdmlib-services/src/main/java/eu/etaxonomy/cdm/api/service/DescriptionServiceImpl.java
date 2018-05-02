@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- * @created 24.06.2008
+ * @since 24.06.2008
  * @version 1.0
  */
 /**

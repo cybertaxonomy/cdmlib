@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:24
+ * @since 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionElementBase", propOrder = {

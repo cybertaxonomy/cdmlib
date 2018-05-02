@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
- * @created 30.05.2012
+ * @since 30.05.2012
  *
  */
 public class MarkupFeatureImport extends MarkupImportBase {

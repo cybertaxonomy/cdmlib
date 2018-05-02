@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 
 /**
  * @author a.babadshanjan
- * @created 10.09.2008
+ * @since 10.09.2008
  */
 @Repository
 public class RepresentationDaoImpl 

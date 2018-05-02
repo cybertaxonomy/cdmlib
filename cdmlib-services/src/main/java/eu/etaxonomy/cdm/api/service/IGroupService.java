@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * Service for {@link Group user groups}
  *
  * @author n.hoffmann
- * @created Mar 9, 2011
+ * @since Mar 9, 2011
  */
 public interface IGroupService extends IService<Group>, GroupManager{
 

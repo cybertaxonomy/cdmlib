@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  *
  * @author n.hoffmann
- * @created 24.03.2009
+ * @since 24.03.2009
  */
 public class CdmDataChangeEvent extends AbstractEvent{
     private static final long serialVersionUID = 9113025682352080372L;
@@ -39,7 +39,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
      * The event types currently implemented
      *
      * @author n.hoffmann
-     * @created 25.03.2009
+     * @since 25.03.2009
      * @version 1.0
      */
     public enum EventType {

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
- * @created 11.03.2010
+ * @since 11.03.2010
  */
 public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT extends DescriptionElementBase, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<ELEMENT, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportDescriptionElementCreationMapperBase.class);

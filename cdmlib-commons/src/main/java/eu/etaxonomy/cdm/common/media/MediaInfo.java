@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 /**
  *
  * @author n.hoffmann
- * @created 13.11.2008
+ * @since 13.11.2008
  */
 public abstract class MediaInfo {
 	@SuppressWarnings("unused")

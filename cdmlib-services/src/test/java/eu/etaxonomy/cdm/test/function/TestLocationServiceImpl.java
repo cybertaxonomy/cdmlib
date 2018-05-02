@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * but it should be annotate with @Ignore when running the project a s junit suite in eclipse
  *
  * @author n.hoffman
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 @Ignore

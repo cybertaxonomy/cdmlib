@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author AM
- * @created 09.06.2008
+ * @since 09.06.2008
  * @version 1.0
  */
 public enum H2Mode {

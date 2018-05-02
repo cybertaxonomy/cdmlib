@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.IIdentificationKey;
  * A read-only interface to allow querying across all IIdentificationKey instances, regardless of type
  * @author ben.clark
  * @version 1.0
- * @created 21-Dec-2009 13:48:10
+ * @since 21-Dec-2009 13:48:10
  */
 public interface IIdentificationKeyDao {
 

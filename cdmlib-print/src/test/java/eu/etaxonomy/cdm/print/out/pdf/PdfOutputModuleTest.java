@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * @author n.hoffmann
- * @created Jan 11, 2011
+ * @since Jan 11, 2011
  * @version 1.0
  */
  @Ignore

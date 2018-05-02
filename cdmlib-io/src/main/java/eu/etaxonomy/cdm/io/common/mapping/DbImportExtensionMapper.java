@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * TODO maybe this class should not inherit from DbSingleAttributeImportMapperBase
  * as it does not map to a single attribute
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  */
 public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
         implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{

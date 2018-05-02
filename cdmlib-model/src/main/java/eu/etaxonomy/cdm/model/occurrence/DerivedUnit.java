@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * Type figures are derived units with at least a figure object in media
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:52
+ * @since 08-Nov-2007 13:06:52
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

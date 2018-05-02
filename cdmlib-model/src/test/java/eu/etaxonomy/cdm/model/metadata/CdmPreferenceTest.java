@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- * @created 2013-07-03
+ * @since 2013-07-03
  *
  */
 public class CdmPreferenceTest {

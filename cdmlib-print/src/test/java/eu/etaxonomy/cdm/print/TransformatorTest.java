@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.print.out.odf.OdfOutputModuleTest;
 
 /**
  * @author n.hoffmann
- * @created Apr 20, 2010
+ * @since Apr 20, 2010
  * @version 1.0
  */
 public class TransformatorTest {

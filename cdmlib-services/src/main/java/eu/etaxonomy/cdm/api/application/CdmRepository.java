@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  * on the cdm by which you can access everything important for client development.
  *
  * @author a.mueller
- * @created 21.05.2008
+ * @since 21.05.2008
  */
 @Component
 public class CdmRepository implements ICdmRepository, ApplicationContextAware {

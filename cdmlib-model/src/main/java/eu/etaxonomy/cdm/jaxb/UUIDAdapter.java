@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 23.07.2008
+ * @since 23.07.2008
  * @version 1.0
  */
 

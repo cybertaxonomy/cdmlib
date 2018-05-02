@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 30.05.2012
+ * @since 30.05.2012
  *
  */
 public class MarkupSpecimenImport extends MarkupImportBase  {

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * related objects for a partition. If once all import states implement IPartitionedState this class
  * can be integrated into ImportStateBase
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  */
 public class RelatedObjectsHelper {
 	@SuppressWarnings("unused")
