@@ -812,7 +812,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly=false)
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
         IProgressMonitor monitor = config.getMonitor();
@@ -842,7 +842,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail()) :0;
-//          Long count = dao.countChildrenOf(subTree, subTree.getClassification(), true);
             monitor.beginTask("Update Secundum Reference", count);
         }
 
@@ -868,15 +867,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly=false)
     public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
             boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
-       // IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        monitor.beginTask("Update publish flag", 100);
+        TreeIndex subTreeIndex = null;
+
         if (subtreeUuid == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
@@ -889,20 +888,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
+        }else{
+            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
+            count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa):0;
+            monitor.beginTask("Update publish flag", count);
         }
-        TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
 
 
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
             Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
-//            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
-//            taxonService.saveOrUpdate(updatedSynonyms);
             result.addUpdatedObjects(updatedSynonyms);
         }
         monitor.done();

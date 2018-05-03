@@ -163,8 +163,22 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
     public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
+
+    /**
+     * @param subTreeIndex
+     * @param includeSharedTaxa
+     * @param includeSharedTaxa2
+     * @return
+     */
+    public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa);
     public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa, IProgressMonitor monitor);
 
+    /**
+     * @param subTreeIndex
+     * @param includeSharedTaxa
+     * @return
+     */
+    public int countPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa);
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor);
 
@@ -173,6 +187,9 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return
      */
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+
+
+
 
 
 }

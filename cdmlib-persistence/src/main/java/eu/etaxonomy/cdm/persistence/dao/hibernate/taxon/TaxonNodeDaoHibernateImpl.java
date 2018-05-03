@@ -478,7 +478,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             queryStr += " AND t.sec IS NULL ";
         }
         return countResult(queryStr);
-
     }
     /**
      * @param queryStr
@@ -581,7 +580,30 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return result;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa) {
+        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        queryStr += " AND t.publish != :publish ";
+        Query query = getSession().createQuery(queryStr);
+        query.setBoolean("publish", publish);
+        return ((Long)query.uniqueResult()).intValue();
+//        return countResult(queryStr);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int countPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa) {
+        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        queryStr += " AND syn.publish != :publish ";
+        Query query = getSession().createQuery(queryStr);
+        query.setBoolean("publish", publish);
+        return ((Long)query.uniqueResult()).intValue();
+//      return countResult(queryStr);
+    }
     /**
      * {@inheritDoc}
      */
@@ -589,6 +611,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor) {
         String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        queryStr += " AND t.publish != :publish ";
         return setPublish(publish, queryStr, monitor);
     }
 
@@ -599,6 +622,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor) {
         String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        queryStr += " AND syn.publish != :publish ";
         return setPublish(publish, queryStr, monitor);
     }
 
@@ -611,6 +635,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
+        query.setBoolean("publish", publish);
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
@@ -681,6 +706,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         return queryStr;
     }
+
 
 
 
