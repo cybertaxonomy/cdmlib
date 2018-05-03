@@ -942,7 +942,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
 //        config.setIncludeAcceptedTaxa(false);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, false, true, true, null);
+        taxonNodeService.setPublishForSubtree(subTreeUuid, publish, false, true, true, null);
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals(true, taxonService.find(1).isPublish());

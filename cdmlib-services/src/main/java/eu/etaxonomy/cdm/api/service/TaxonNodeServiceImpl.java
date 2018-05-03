@@ -105,7 +105,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (recursive == true){
         	childNodes  = dao.listChildrenOf(taxonNode, null, null, null, recursive);
         }else{
-        	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
+        	childNodes = new ArrayList<>(taxonNode.getChildNodes());
         }
 
         HHH_9751_Util.removeAllNull(childNodes);
@@ -815,7 +815,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Transactional
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
-       // IProgressMonitor monitor = config.getMonitor();
         IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
