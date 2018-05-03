@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -123,40 +124,55 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param treeIndexSet set of taxon node tree indexes
      * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
-    Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
+    public Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
 
-    /**
-     * @param ref
-     * @return
-     */
-    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
 
-    /**
-     * @param ref
-     */
-    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail);
 
     /**
      * @param subTreeIndex
-     * @param publish
+     * @param newSec
+     * @param overwriteExistingAccepted
      * @param includeSharedTaxa
+     * @param emptySecundumDetail
      * @return
      */
-    public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa);
+    public int countSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExistingAccepted, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
     /**
      * @param subTreeIndex
-     * @param publish
+     * @param newSec
+     * @param overwriteExistingSynonyms
      * @param includeSharedTaxa
+     * @param emptySecundumDetail
      * @return
      */
+    public int countSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptySecundumDetail);
+
+    /**
+     * @param subTreeIndex
+     * @param newSec
+     * @param overwriteExisting
+     * @param includeSharedTaxa
+     * @param emptyDetail
+     * @param monitor
+     * @return
+     */
+    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa, IProgressMonitor monitor);
+
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
-            boolean includeSharedTaxa);
+            boolean includeSharedTaxa, IProgressMonitor monitor);
 
     /**
      * @param parent
      * @return
      */
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+
 
 }

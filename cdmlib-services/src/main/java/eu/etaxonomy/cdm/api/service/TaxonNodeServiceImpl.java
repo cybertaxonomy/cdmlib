@@ -825,13 +825,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (config.getNewSecundum() != null){
             newSec = refService.load(config.getNewSecundum().getUuid());
         }
-        if (subTree != null){
-            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
-            Long count = dao.countChildrenOf(subTree, subTree.getClassification(), true);
-            int intCount = count.intValue();
-            monitor.beginTask("Update Secundum Reference", intCount);
-        }
-
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -845,19 +838,24 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
+        }else{
+            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
+            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail()) :0;
+//          Long count = dao.countChildrenOf(subTree, subTree.getClassification(), true);
+            monitor.beginTask("Update Secundum Reference", count);
         }
-
 
         //Reference ref = config.getNewSecundum();
         if (config.isIncludeAcceptedTaxa()){
             monitor.subTask("Update Accepted Taxa");
 
-            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail());
+            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), monitor);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (config.isIncludeSynonyms()){
            monitor.subTask("Update Synonyms");
-           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail());
+           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
            result.addUpdatedObjects(updatedSynonyms);
         }
 
@@ -897,13 +895,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa);
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
 //            taxonService.saveOrUpdate(updatedTaxa);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
-            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa);
+            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
 //            taxonService.saveOrUpdate(updatedSynonyms);
             result.addUpdatedObjects(updatedSynonyms);
         }
