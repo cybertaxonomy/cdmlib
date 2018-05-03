@@ -114,7 +114,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             Comparator<TaxonNode> comparator = sortMode.newComparator();
         	Collections.sort(childNodes, comparator);
         }
-//        defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
+        defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
 
