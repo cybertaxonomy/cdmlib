@@ -162,7 +162,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<Reference> citations = new HashSet<Reference>();
+	private Set<Reference> citations = new HashSet<>();
 
 //	//should be calculated in case sequence is set
 //	@XmlElement (name = "DateSequenced", type= String.class)

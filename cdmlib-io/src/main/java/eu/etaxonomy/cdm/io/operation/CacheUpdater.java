@@ -65,7 +65,8 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 
 	private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> clazz) {
 		if (clazz.isAssignableFrom(IdentifiableEntity.class)){
-			List list = Arrays.asList(new Class[]{
+            @SuppressWarnings("rawtypes")
+            List list = Arrays.asList(new Class[]{
 					DescriptionBase.class, IdentifiableMediaEntity.class,
 					Media.class, Sequence.class,
 					TaxonBase.class, TaxonName.class,
@@ -73,10 +74,12 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 					});
 			handleClassList(list);
 		}else if (clazz.isAssignableFrom(IdentifiableMediaEntity.class)){
-			List list = Arrays.asList(new Class[]{AgentBase.class, Collection.class, Reference.class, SpecimenOrObservationBase.class});
+			@SuppressWarnings("rawtypes")
+            List list = Arrays.asList(new Class[]{AgentBase.class, Collection.class, Reference.class, SpecimenOrObservationBase.class});
 			handleClassList(list);
 		}else if (clazz.isAssignableFrom(TermBase.class)){
-			List list = Arrays.asList(new Class[]{DefinedTermBase.class, FeatureTree.class, TermVocabulary.class });
+			@SuppressWarnings("rawtypes")
+            List list = Arrays.asList(new Class[]{DefinedTermBase.class, FeatureTree.class, TermVocabulary.class });
 			handleClassList(list);
 		}else{
 			return false;
@@ -134,7 +137,6 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 				String warning = "Unknown identifable entity subclass + " + clazz == null ? "null" : clazz.getName();
 				logger.error(warning);
 				return false;
-				//getTaxonService().updateTitleCache((Class) clazz);
 			}
 			return true;
 		} catch (Exception e) {
