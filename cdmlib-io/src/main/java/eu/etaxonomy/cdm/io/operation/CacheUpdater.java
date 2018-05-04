@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -88,7 +89,10 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 	}
 
 	private boolean handleSingleTableClass(Class<? extends IdentifiableEntity> clazz) {
-		logger.warn("Updating class " + clazz.getSimpleName() + " ...");
+		if (clazz == null){
+		    return true;
+		}
+	    logger.info("Updating class " + clazz.getSimpleName() + " ...");
 		try {
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
@@ -119,11 +123,11 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
 				getOccurrenceService().updateTitleCache((Class) clazz, null, null, null);
 			}
-			//Sequence
-			else if (Sequence.class.isAssignableFrom(clazz)){
-				//TODO misuse TaxonServic for sequence update, use sequence service when it exists
-				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
-			}
+//			//Sequence  //currently not identifiable and therefore has not caches
+//			else if (Sequence.class.isAssignableFrom(clazz)){
+//				//TODO misuse TaxonService for sequence update, use sequence service when it exists
+//				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
+//			}
 			//TaxonName
 			else if (TaxonName.class.isAssignableFrom(clazz)){
 				getNameService().updateTitleCache((Class) clazz, null, null, null);
@@ -132,15 +136,19 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 			else if (Classification.class.isAssignableFrom(clazz)){
 				getClassificationService().updateTitleCache((Class) clazz, null, null, null);
 			}
+			//Polytomous Key
+            else if (PolytomousKey.class.isAssignableFrom(clazz)){
+                getPolytomousKeyService().updateTitleCache((Class) clazz, null, null, null);
+            }
 			//unknown class
 			else {
-				String warning = "Unknown identifable entity subclass + " + clazz == null ? "null" : clazz.getName();
+				String warning = "Unknown identifable entity subclass + " + clazz.getName();
 				logger.error(warning);
 				return false;
 			}
 			return true;
 		} catch (Exception e) {
-			String warning = "Exception occurred when trying to update class + " + clazz == null ? "null" : clazz.getName();
+			String warning = "Exception occurred when trying to update class + " + clazz.getName();
 			warning += " Exception was: " + e.getMessage();
 			logger.error(warning);
 			e.printStackTrace();
