@@ -19,6 +19,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class TypedEntityReference<T> extends EntityReference {
 
+
+    private Class<T> type;
+
     /**
      * @param uuid
      * @param label
@@ -33,23 +36,12 @@ public class TypedEntityReference<T> extends EntityReference {
         this.type = type;
     }
 
-    /**
-     * @return the type
-     */
     public Class<T> getType() {
         return type;
     }
-
-    /**
-     * @param type the type to set
-     */
     public void setType(Class<T> type) {
         this.type = type;
     }
-
-    private Class<T> type;
-
-
 
     /**
      * {@inheritDoc}

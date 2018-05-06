@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * @author a.kohlbecker
+ */
 public class EntityReference {
     UUID uuid;
     String label;

@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * The TypeDesignationSetManager also provides string representations of the whole ordered set of all
  * {@link TypeDesignationBase TypeDesignations} and of the TypeDesignationWorkingSets:
  * <ul>
- *  <li>{@link #print()})
+ *  <li>{@link #print()}
  *  <li>{@link #getOrderdTypeDesignationWorkingSets()} ... {@link TypeDesignationWorkingSet#getRepresentation()}
  * </ul>
  * Prior using the representations you need to trigger their generation by calling {@link #buildString()}
@@ -90,7 +90,7 @@ public class TypeDesignationSetManager {
 
     final NullTypeDesignationStatus NULL_STATUS = new NullTypeDesignationStatus();
 
-    private List<String> probelms = new ArrayList<>();
+    private List<String> problems = new ArrayList<>();
 
     private boolean printCitation = false;
 
@@ -140,8 +140,6 @@ public class TypeDesignationSetManager {
 
 
     /**
-     *
-     * @param containgEntity
      * @param byBaseEntityByTypeStatus
      * @param td
      */
@@ -164,7 +162,7 @@ public class TypeDesignationSetManager {
             typedesignationWorkingSet = byBaseEntityByTypeStatus.get(baseEntityReference);
             typedesignationWorkingSet.insert(status, typeDesignationEntityReference);
         } catch (DataIntegrityException e){
-            probelms.add(e.getMessage());
+            problems.add(e.getMessage());
         }
     }
 
@@ -346,7 +344,7 @@ public class TypeDesignationSetManager {
     }
 
     /**
-     * FIXME use the validation framework validators and to store the validation problems!!!
+     * FIXME use the validation framework validators to store the validation problems!!!
      *
      * @return
      * @throws RegistrationValidationException
@@ -653,7 +651,7 @@ public class TypeDesignationSetManager {
                 status = NULL_STATUS;
             }
             if(!containsKey(status)){
-                put(status, new ArrayList<EntityReference>());
+                put(status, new ArrayList<>());
             }
             get(status).add(typeDesignationEntityReference);
         }
