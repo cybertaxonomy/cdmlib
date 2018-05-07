@@ -31,10 +31,6 @@ import eu.etaxonomy.cdm.database.update.v47_49.SchemaUpdater_47_49;
 
 /**
  * @author a.mueller
- * @since 16.04.2016
- */
-/**
- * @author a.mueller
  * @since 09.05.2017
  *
  */
