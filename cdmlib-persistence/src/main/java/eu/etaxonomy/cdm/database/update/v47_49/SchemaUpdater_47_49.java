@@ -11,12 +11,15 @@ package eu.etaxonomy.cdm.database.update.v47_49;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
 
 /**
@@ -56,12 +59,19 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
-		//remove remaining PolytomousKeyNodes (#6705)
+		//#7109 nom. valid => nom. val.
+		stepName = "nom valid => nom. val. (abbrevLabel)";
+		UUID uuidTerm = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
+		UUID uuidLanguage = UUID.fromString("160a5b6c-87f5-4422-9bda-78cd404c179e");
+		step = TermRepresentationUpdater.NewInstance(stepName, uuidTerm,
+		        null, null, "nom. val.", uuidLanguage);
+		stepList.add(step);
 
-		//delete term version from CdmMetaData (#6699)
-
-		//make all microreferences OriginalSources (#6581) -  startet with TaxonName.nomRef
-
+		stepName = "nom valid => nom. val. (idInVocabulary)";
+        String query = "UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'nom. val.' WHERE uuid = '" + uuidTerm + "'";
+		tableName = "DefinedTermBase";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+		stepList.add(step);
 
 //        //#5149 remove unique index on Sequence_Reference.citations_id
 //        tableName = "Sequence_Reference";
