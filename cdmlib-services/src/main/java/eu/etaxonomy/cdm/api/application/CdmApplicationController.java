@@ -475,7 +475,12 @@ public class CdmApplicationController implements ICdmRepository {
 
 	@Override
 	public final ITaxonNodeService getTaxonNodeService(){
-		return configuration.getTaxonNodeService();
+	    try{
+	        return configuration.getTaxonNodeService();
+	    } catch (Exception e){
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
 

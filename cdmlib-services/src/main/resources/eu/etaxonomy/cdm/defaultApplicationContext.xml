@@ -13,6 +13,7 @@
 
   <context:component-scan base-package="eu/etaxonomy/cdm/api/config"/>
   <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
+  <context:component-scan base-package="eu/etaxonomy/cdm/api/longrunningService"/>
   <context:component-scan base-package="eu/etaxonomy/cdm/api/application">
   	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.application\.CdmApplicationRemoteConfiguration" /> 
   </context:component-scan>
