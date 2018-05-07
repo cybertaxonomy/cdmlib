@@ -369,11 +369,11 @@ public class RedmineRegistrationMessageService implements IRegistrationMessageSe
 
         Person person = HibernateProxyHelper.deproxyOrNull(user.getPerson());
         if(person != null){
-            if(StringUtils.isNoneEmpty(user.getPerson().getFirstname())){
-                redmineUser.setFirstName(user.getPerson().getFirstname());
+            if(StringUtils.isNoneEmpty(user.getPerson().getGivenName())){
+                redmineUser.setFirstName(user.getPerson().getGivenName());
             }
-            if(StringUtils.isNoneEmpty(user.getPerson().getLastname())){
-                redmineUser.setLastName(user.getPerson().getLastname());
+            if(StringUtils.isNoneEmpty(user.getPerson().getFamilyName())){
+                redmineUser.setLastName(user.getPerson().getFamilyName());
             }
             redmineUser.setFullName(StringUtils.trimToNull(user.getPerson().getFullTitle()));
         }

@@ -192,8 +192,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		person1 = Person.NewInstance();
 
 		person1.setUuid(UUID.fromString("646dad4b-0f0e-4f5a-b059-8099ad9a6125"));
-		person1.setFirstname("P1FN");
-		person1.setLastname("P1LN");
+		person1.setGivenName("P1FN");
+		person1.setFamilyName("P1LN");
 		person1.setPrefix("Dr1.");
 		person1.setSuffix("Suff1");
 		return person1;
@@ -204,8 +204,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		person2 = Person.NewInstance();
 		person2.setUuid(UUID.fromString("ca904533-2a70-49f3-9a0e-5e4bcc12c154"));
 		person2.setNomenclaturalTitle("P2NomT");
-		person2.setLastname("P2LN");
-		person2.setFirstname("P2FN");
+		person2.setFamilyName("P2LN");
+		person2.setGivenName("P2FN");
 		person2.setSuffix("P2Suff");
 		return person2;
 	}

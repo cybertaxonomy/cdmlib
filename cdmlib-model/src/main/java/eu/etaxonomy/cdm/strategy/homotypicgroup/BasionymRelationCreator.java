@@ -136,7 +136,7 @@ public class BasionymRelationCreator extends StrategyBase {
             TaxonName newCombinationCandidate) {
         if (basionymCandidate.isGenusOrSupraGeneric() || newCombinationCandidate.isGenusOrSupraGeneric()){
             return false;
-        }else if (matchLastNamePart(basionymCandidate, newCombinationCandidate)){
+        }else if (matchFamilyNamePart(basionymCandidate, newCombinationCandidate)){
             return true;
         }
         return false;
@@ -198,24 +198,24 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param newCombination
      * @return
      */
-    public static boolean matchLastNamePart(TaxonName name1, TaxonName name2) {
-        String lastNamePart1 = name1.getLastNamePart();
-        String lastNamePart2 = name2.getLastNamePart();
-        if (lastNamePart1 != null && lastNamePart2 != null){
-            lastNamePart1 = normalizeBasionymNamePart(lastNamePart1);
-            lastNamePart2 = normalizeBasionymNamePart(lastNamePart2);
-            return (lastNamePart1.equals(lastNamePart2));
+    public static boolean matchFamilyNamePart(TaxonName name1, TaxonName name2) {
+        String familyNamePart1 = name1.getFamilyNamePart();
+        String familyNamePart2 = name2.getFamilyNamePart();
+        if (familyNamePart1 != null && familyNamePart2 != null){
+            familyNamePart1 = normalizeBasionymNamePart(familyNamePart1);
+            familyNamePart2 = normalizeBasionymNamePart(familyNamePart2);
+            return (familyNamePart1.equals(familyNamePart2));
         }else{
             return false;
         }
     }
 
     /**
-     * @param lastNamePart1
+     * @param familyNamePart
      * @return
      */
-    private static  String normalizeBasionymNamePart(String lastNamePart) {
-        String namePart = lastNamePart.toLowerCase()
+    private static  String normalizeBasionymNamePart(String familyNamePart) {
+        String namePart = familyNamePart.toLowerCase()
                 .replaceAll("(um|us|a|is|e|os|on|or)$", "")
                 .replaceAll("er$", "r")    //e.g. ruber <-> rubra
                 .replaceAll("ese$", "s");  //e.g.  cayanensis <-> cayanenese

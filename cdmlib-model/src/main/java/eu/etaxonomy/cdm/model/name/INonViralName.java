@@ -242,7 +242,7 @@ public interface INonViralName extends ITaxonNameBase{
 
 
     /**
-     * Defines the last part of the name.
+     * Defines the family part of the name.
      * This is for infraspecific taxa, the infraspecific epithet,
      * for species the specific epithet, for infageneric taxa the infrageneric epithet
      * else the genusOrUninomial.
@@ -251,7 +251,7 @@ public interface INonViralName extends ITaxonNameBase{
      * considering the above order.
      * @return the first not blank name part in reverse order
      */
-    public String getLastNamePart();
+    public String getFamilyNamePart();
 
     /**
      * Returns or generates the nameCache (scientific name

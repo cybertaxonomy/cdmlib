@@ -105,10 +105,10 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         emp.setId(1);
         UUID uuid = emp.getUuid();
         // ERROR 1 (should be JOHN)
-        emp.setFirstName("john");
+        emp.setGivenName("john");
         // This is an error (should be SMITH), but it is a Level-3
         // validation error, so the error should be ignored
-        emp.setLastName("smith");
+        emp.setFamilyName("smith");
 
         // This is an @Valid bean on the Employee class, so Level-2
         // validation errors on the Company object should also be
@@ -135,7 +135,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
             }
         });
         assertEquals("Unexpected propertypath", list.get(0).getPropertyPath().toString(), "company.name");
-        assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "firstName");
+        assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "givenName");
 
     }
 
@@ -176,7 +176,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setCreated(created);
         error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425ba"));
         error.setSeverity(Severity.ERROR);
-        error.setPropertyPath("firstName");
+        error.setPropertyPath("givenName");
         error.setInvalidValue("Foo");
         error.setMessage("Garbage In Garbage Out");
         error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
@@ -221,7 +221,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setCreated(created);
         error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425ba"));
         error.setSeverity(Severity.ERROR);
-        error.setPropertyPath("firstName");
+        error.setPropertyPath("givenName");
 
         // Except for:
         error.setInvalidValue("Bar");
@@ -269,7 +269,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setCreated(created);
         error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425bb"));
         error.setSeverity(Severity.ERROR);
-        error.setPropertyPath("firstName");
+        error.setPropertyPath("givenName");
         error.setInvalidValue("Foo");
 
         error.setMessage("Garbage In Garbage Out");
@@ -315,7 +315,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setCreated(created);
         error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425ba"));
         error.setSeverity(Severity.ERROR);
-        error.setPropertyPath("firstName");
+        error.setPropertyPath("givenName");
         error.setInvalidValue("Foo");
         error.setMessage("Garbage In Garbage Out");
         error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
@@ -330,11 +330,11 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setCreated(created);
         error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425bb"));
         error.setSeverity(Severity.ERROR);
-        error.setPropertyPath("lastName");
+        error.setPropertyPath("familyName");
         error.setInvalidValue("Bar");
         error.setMessage("Garbage In Garbage Out");
         error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
-        error.setValidator("eu.etaxonomy.cdm.persistence.validation.LastNameValidator");
+        error.setValidator("eu.etaxonomy.cdm.persistence.validation.FamilyNameValidator");
         entityValidation.addEntityConstraintViolation(error);
 
 //        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);

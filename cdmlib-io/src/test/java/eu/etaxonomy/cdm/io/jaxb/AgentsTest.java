@@ -33,8 +33,8 @@ public class AgentsTest {
 		Person person = (Person)dataSet.getAgents().get(0);
 		assertNotNull("Persion should not be null",person);
 		assertEquals("Person.getNomenclaturalTitle should return \'Mill.\'","Mill.",person.getNomenclaturalTitle());
-		assertEquals("Person.getFirstName should return \'Philip\'","Philip",person.getFirstname());
-		assertEquals("Person.getLastName should return \'Miller\'","Miller",person.getLastname());
+		assertEquals("Person.getGivenName should return \'Philip\'","Philip",person.getGivenName());
+		assertEquals("Person.getFamilyName should return \'Miller\'","Miller",person.getFamilyName());
 		assertNotNull("Person.getLifespan should not be null",person.getLifespan());
 		assertNotNull("Person.getLifespan.getStart should not be null",person.getLifespan().getStart());
 		assertEquals("Person.getLifespan.getStart should equal 1691", person.getLifespan().getStart().get(DateTimeFieldType.year()),1691);

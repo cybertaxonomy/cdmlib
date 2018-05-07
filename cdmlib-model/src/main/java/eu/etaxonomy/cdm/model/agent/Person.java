@@ -61,9 +61,9 @@ import javassist.compiler.ast.Keyword;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {
 	    "prefix",
-	    "firstname",
+	    "familyname",
+	    "givenname",
 	    "initials",
-	    "lastname",
 	    "suffix",
 	    "lifespan",
 	    "institutionalMemberships"
@@ -85,25 +85,25 @@ public class Person extends TeamOrPersonBase<Person>{
     @Column(length=255)
 	private String prefix;
 
-    @XmlElement(name = "FirstName")
+    @XmlElement(name = "GivenName")
     @Field
   //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	private String firstname;
+	private String givenName;
 
-    @XmlElement(name = "FirstName")
+    @XmlElement(name = "Initials")
     @Field
     @NullOrNotEmpty
     @Column(length=80)
     private String initials;
 
-    @XmlElement(name = "LastName")
+    @XmlElement(name = "FamilyName")
     @Field
   //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	private String lastname;
+	private String familyName;
 
     @XmlElement(name = "Suffix")
     @Field
@@ -170,15 +170,15 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * For the abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
 	 * is used.
 	 *
-	 * @param  firstname     		the given name
-	 * @param  lastname      		the hereditary name
+	 * @param  givenname     		the given name
+	 * @param  familyname      		the hereditary name
 	 * @param  nomenclaturalTitel 	the abbreviated name
 	 * @see                  		#Person()
 	 * @see                  		#NewInstance()
 	 */
-	public Person(String firstname, String lastname, String nomenclaturalTitel) {
-		this.setFirstname(firstname);
-		this.setLastname(lastname);
+	public Person(String givenname, String familyname, String nomenclaturalTitel) {
+		this.setGivenName(givenname);
+		this.setFamilyName(familyname);
 		logger.debug("before - Set nomenclatural Title");
 		this.setNomenclaturalTitle(nomenclaturalTitel);
 		logger.debug("after - Set nomenclatural Title");
@@ -265,23 +265,23 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * "Other/given names" according to {@link https://www.w3.org/International/questions/qa-personal-names.en#fielddesign }.
 	 *
 	 * @see #getInitials()
-	 * @see #getLastname()
+	 * @see #getFamilyName()
 	 * @see https://www.w3.org/International/questions/qa-personal-names.en#fielddesign
 	 */
-	public String getFirstname(){
-		return this.firstname;
+	public String getGivenName(){
+		return this.givenName;
 	}
 	/**
-	 * @see  #getFirstname()
+	 * @see  #getGivenName()
 	 */
-	public void setFirstname(String firstname){
-		this.firstname = isBlank(firstname) ? null : firstname;
+	public void setGivenName(String givenName){
+		this.givenName = isBlank(givenName) ? null : givenName;
 	}
 
     /**
      * Returns the initials of this person as used in bibliographic
-     * references. Usually these are the first letters of each firstname
-     * followed by "." per firstname. For East Asian names it may
+     * references. Usually these are the first letters of each givenname
+     * followed by "." per givenname. For East Asian names it may
      * be the first 2 letters. Also dashes are kept.
      * @return the initials
      */
@@ -306,17 +306,17 @@ public class Person extends TeamOrPersonBase<Person>{
      * "Family name" according to {@link https://www.w3.org/International/questions/qa-personal-names.en#fielddesign }.
      *
      * @see #getInitials()
-     * @see #getLastname()
+     * @see #getGivenName()
      * @see https://www.w3.org/International/questions/qa-personal-names.en#fielddesign
 	 */
-	public String getLastname(){
-		return this.lastname;
+	public String getFamilyName(){
+		return this.familyName;
 	}
 	/**
-	 * @see  #getLastname()
+	 * @see  #getfamilyName()
 	 */
-	public void setLastname(String lastname){
-		this.lastname = isBlank(lastname) ? null : lastname;
+	public void setFamilyName(String familyName){
+		this.familyName = isBlank(familyName) ? null : familyName;
 	}
 
 
@@ -374,7 +374,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	public Object clone() {
 		try{
 			Person result = (Person)super.clone();
-			//no changes to firstname, lastname, lifespan, prefix, suffix
+			//no changes to givenname, familyname, lifespan, prefix, suffix
 			return result;
 		} catch (CloneNotSupportedException e){
 			logger.warn("Object does not implement cloneable");

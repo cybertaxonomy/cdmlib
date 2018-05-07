@@ -379,7 +379,7 @@ public class NonViralNameParserImpl
 	    }
 
 	    Reference nomRef;
-		if ( (nomRef = (Reference)nameToBeFilled.getNomenclaturalReference()) != null ){
+		if ( (nomRef = nameToBeFilled.getNomenclaturalReference()) != null ){
 			nomRef.setAuthorship(nameToBeFilled.getCombinationAuthorship());
 		}
 	}
@@ -933,23 +933,23 @@ public class NonViralNameParserImpl
 				     existingRelations.add(rel);
 				 }
 
-			     String firstNameString = "";
+			     String givenNameString = "";
 				 String secondNameString = "";
-				 boolean isFirstName = true;
+				 boolean isGivenName = true;
 				 for (String str : epi){
 					 if (str.matches(hybridSign)){
-						 isFirstName = false;
-					 }else if(isFirstName){
-						 firstNameString += " " + str;
+						 isGivenName = false;
+					 }else if(isGivenName){
+						 givenNameString += " " + str;
 					 }else {
 						 secondNameString += " " + str;
 					 }
 				 }
-				 firstNameString = firstNameString.trim();
+				 givenNameString = givenNameString.trim();
 				 secondNameString = secondNameString.trim();
 				 nameToBeFilled.setHybridFormula(true);
 				 NomenclaturalCode code = nameToBeFilled.getNomenclaturalCode();
-				 INonViralName firstName = this.parseFullName(firstNameString, code, rank);
+				 INonViralName firstName = this.parseFullName(givenNameString, code, rank);
 				 if (secondNameString.matches(abbrevHybridSecondPart)){
 				     secondNameString = extendSecondHybridPart(firstName, secondNameString);
 				 }
@@ -1029,22 +1029,22 @@ public class NonViralNameParserImpl
     }
 
     /**
-     * @param firstName
+     * @param givenName
      * @param secondNameString
      * @return
      */
-    private String extendSecondHybridPart(INonViralName firstName, String secondNameString) {
+    private String extendSecondHybridPart(INonViralName givenName, String secondNameString) {
         //first letter of genus given
         if (secondNameString.matches("^" + abbrevHybridGenus + ".*")){
-            if (StringUtils.isNotBlank(firstName.getGenusOrUninomial())){
-                if (secondNameString.substring(0,1).equals(firstName.getGenusOrUninomial().substring(0, 1))){
-                    secondNameString = secondNameString.replaceAll("^" + abbrevHybridGenus, firstName.getGenusOrUninomial() + " ");
+            if (StringUtils.isNotBlank(givenName.getGenusOrUninomial())){
+                if (secondNameString.substring(0,1).equals(givenName.getGenusOrUninomial().substring(0, 1))){
+                    secondNameString = secondNameString.replaceAll("^" + abbrevHybridGenus, givenName.getGenusOrUninomial() + " ");
                 }
             }
         }else if (secondNameString.matches(abbrevHybridSecondPartOnlyInfraSpecies)){
-            secondNameString = CdmUtils.concat(" " , firstName.getGenusOrUninomial(), firstName.getSpecificEpithet(), secondNameString);
+            secondNameString = CdmUtils.concat(" " , givenName.getGenusOrUninomial(), givenName.getSpecificEpithet(), secondNameString);
         }else if (true){  //there will be further alternatives in future maybe
-            secondNameString = CdmUtils.concat(" " , firstName.getGenusOrUninomial(), secondNameString);
+            secondNameString = CdmUtils.concat(" " , givenName.getGenusOrUninomial(), secondNameString);
         }
         return secondNameString;
     }
@@ -1528,7 +1528,7 @@ public class NonViralNameParserImpl
 
     /**
      * If <code>true</code> author names are parsed such that spaces after the abbreviated
-     * firstname are removed (IPNI style). see #7094
+     * givenname are removed (IPNI style). see #7094
      */
     public boolean isRemoveSpaceAfterDot() {
         return removeSpaceAfterDot;

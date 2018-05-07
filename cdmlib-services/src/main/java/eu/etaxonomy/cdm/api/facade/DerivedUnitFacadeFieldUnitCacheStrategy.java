@@ -186,10 +186,10 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	 * @return
 	 */
 	private String getMemberString(Person member) {
-		if (StringUtils.isNotBlank(member.getLastname()) && ! member.isProtectedTitleCache() ){
-			String result = member.getLastname();
-			if  (StringUtils.isNotBlank(member.getFirstname())){
-				result = member.getFirstname().substring(0,1) + ". " + result;
+		if (StringUtils.isNotBlank(member.getFamilyName()) && ! member.isProtectedTitleCache() ){
+			String result = member.getFamilyName();
+			if  (StringUtils.isNotBlank(member.getGivenName())){
+				result = member.getGivenName().substring(0,1) + ". " + result;
 			}
 			return result;
 		}else{

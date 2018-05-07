@@ -79,8 +79,8 @@ public interface IIpniService {
 	 * The amount of data added to each person depends on the format and the database connection (appConfig).
 	 * <BR/><BR/>
 	 * The {@link DelimitedFormat#MINIMAL minimal}  and {@link DelimitedFormat#SHORT short} format returns the
-	 * <i>standard form</i> as the nomenclatural title, the <i>default author forename</i> as the firstname and
-	 * the <i>default author surname</i> as the lastname of the returned {@link Person person} object.
+	 * <i>standard form</i> as the nomenclatural title, the <i>default author forename</i> as the givenname and
+	 * the <i>default author surname</i> as the family name of the returned {@link Person person} object.
 	 * The <i>id</i> and the <i>version</i> are added as {@link IdentifiableSource source} where the id is the id,
 	 * the namespace is "Author" and the microcitation is the <i>version</i>. If an a database connection is passed
 	 * (appConig is not <code>null</null>) the database is searched for an existing citation representing the IPNI

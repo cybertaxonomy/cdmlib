@@ -32,8 +32,8 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
       <xs:extension base="agent:TeamOrPersonBase">
         <xs:sequence>
           <xs:element name="Prefix" type="xs:string" minOccurs="0"/>
-          <xs:element name="FirstName" type="xs:string" minOccurs="0"/>
-          <xs:element name="LastName" type="xs:string" minOccurs="0"/>
+          <xs:element name="GivenName" type="xs:string" minOccurs="0"/>
+          <xs:element name="FamilyName" type="xs:string" minOccurs="0"/>
           <xs:element name="Suffix" type="xs:string" minOccurs="0"/>
           <xs:element name="Lifespan" type="common:TimePeriod" minOccurs="0"/>
           <xs:element name="InstitutionalMemberships" minOccurs="0" nillable="true">

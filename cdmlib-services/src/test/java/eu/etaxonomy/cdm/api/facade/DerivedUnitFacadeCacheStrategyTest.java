@@ -126,8 +126,8 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		primaryCollector = Person.NewTitledInstance("Kilian");
 		collector.addTeamMember(primaryCollector);
 		Person secondCollector = Person.NewInstance();
-		secondCollector.setFirstname("Andreas");
-		secondCollector.setLastname("Muller");
+		secondCollector.setGivenName("Andreas");
+		secondCollector.setFamilyName("Muller");
 		collector.addTeamMember(secondCollector);
 		Person thirdCollector = Person.NewTitledInstance("Kohlbecker");
 		collector.addTeamMember(thirdCollector);

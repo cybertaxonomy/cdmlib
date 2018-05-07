@@ -800,7 +800,7 @@ public class CdmLightClassificationExport
 
             csvLine[table.getIndex(CdmLightExportTable.AUTHOR_TEAM_STRING)] = name.getAuthorshipCache();
 
-            Reference nomRef = (Reference)name.getNomenclaturalReference();
+            Reference nomRef = name.getNomenclaturalReference();
 
             if (nomRef != null){
                 if (state.getReferenceFromStore(nomRef.getId()) == null){
@@ -955,7 +955,7 @@ public class CdmLightClassificationExport
     private String createCollatation(TaxonName name) {
         String collation = "";
         if (name.getNomenclaturalReference() != null){
-            Reference ref = (Reference) name.getNomenclaturalReference();
+            Reference ref = name.getNomenclaturalReference();
             collation = getVolume(ref);
         }
         if (name.getNomenclaturalMicroReference() != null){
@@ -1106,8 +1106,8 @@ public class CdmLightClassificationExport
             author = HibernateProxyHelper.deproxy(author);
             if (author instanceof Person){
                 Person authorPerson = (Person)author;
-                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FIRST_NAME)] = authorPerson.getFirstname();
-                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_LASTNAME)] = authorPerson.getLastname();
+                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_GIVEN_NAME)] = authorPerson.getGivenName();
+                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FAMILY_NAME)] = authorPerson.getFamilyName();
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_PREFIX)] = authorPerson.getPrefix();
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_SUFFIX)] = authorPerson.getSuffix();
             } else{
@@ -1128,8 +1128,8 @@ public class CdmLightClassificationExport
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, member);
                         csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member.getNomenclaturalTitle();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_TITLE)] = member.getTitleCache();
-                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_FIRST_NAME)] = member.getFirstname();
-                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_LASTNAME)] = member.getLastname();
+                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_GIVEN_NAME)] = member.getGivenName();
+                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_FAMILY_NAME)] = member.getFamilyName();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_PREFIX)] = member.getPrefix();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_SUFFIX)] = member.getSuffix();
                         state.getProcessor().put(table, member, csvLineMember);
@@ -1370,9 +1370,9 @@ public class CdmLightClassificationExport
             return nomAuthorString;
         }
 
-        if (teamMember.getFirstname() != null){
-            String firstNameString = teamMember.getFirstname().replaceAll("\\.", "\\. ");
-            splittedAuthorString = firstNameString.split("\\s");
+        if (teamMember.getGivenName() != null){
+            String givenNameString = teamMember.getGivenName().replaceAll("\\.", "\\. ");
+            splittedAuthorString = givenNameString.split("\\s");
             for (String split: splittedAuthorString){
                 if (!StringUtils.isBlank(split)){
                     nomAuthorString += split.substring(0, 1);
@@ -1380,9 +1380,9 @@ public class CdmLightClassificationExport
                 }
             }
         }
-        if (teamMember.getLastname() != null){
-            String lastNameString = teamMember.getLastname().replaceAll("\\.", "\\. ");
-            splittedAuthorString = lastNameString.split("\\s");
+        if (teamMember.getFamilyName() != null){
+            String familyNameString = teamMember.getFamilyName().replaceAll("\\.", "\\. ");
+            splittedAuthorString = familyNameString.split("\\s");
             for (String split: splittedAuthorString){
                 nomAuthorString += " " +split;
             }
@@ -1473,7 +1473,7 @@ public class CdmLightClassificationExport
             return null;
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
-        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getLastname();}
+        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getFamilyName();}
         else if (authorship instanceof Team){
 
             Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
@@ -1482,7 +1482,7 @@ public class CdmLightClassificationExport
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                shortCitation += concat + teamMember.getLastname();
+                shortCitation += concat + teamMember.getFamilyName();
             }
 
         }

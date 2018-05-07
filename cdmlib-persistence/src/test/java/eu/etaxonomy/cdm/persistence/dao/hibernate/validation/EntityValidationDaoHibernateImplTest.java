@@ -59,10 +59,10 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
         emp.setId(1);
         UUID uuid = emp.getUuid();
         // ERROR 1 (should be JOHN)
-        emp.setFirstName("john");
+        emp.setGivenName("john");
         // This is an error (should be SMITH), but it is a Level-3
         // validation error, so the error should be ignored
-        emp.setLastName("smith");
+        emp.setFamilyName("smith");
 
         // This is an @Valid bean on the Employee class, so Level-2
         // validation errors on the Company object should also be
@@ -88,7 +88,7 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
             }
         });
         assertEquals("Unexpected propertypath", list.get(0).getPropertyPath().toString(), "company.name");
-        assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "firstName");
+        assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "givenName");
     }
 
     @Test

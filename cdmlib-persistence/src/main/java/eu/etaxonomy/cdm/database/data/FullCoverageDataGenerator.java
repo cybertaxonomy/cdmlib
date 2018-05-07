@@ -220,8 +220,8 @@ public class FullCoverageDataGenerator {
 	private void createAgents(List<CdmBase> cdmBases) {
 		//Person
 		Person person = Person.NewTitledInstance("Person Title");
-		person.setFirstname("first name");
-		person.setLastname("last name");
+		person.setGivenName("first name");
+		person.setFamilyName("last name");
 		person.setLifespan(TimePeriodParser.parseString("1905-1995"));
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");

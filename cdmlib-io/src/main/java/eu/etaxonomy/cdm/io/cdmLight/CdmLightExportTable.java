@@ -131,8 +131,8 @@ public enum CdmLightExportTable {
     protected static final String AUTHOR_ID = "Author_ID";
     protected static final String ABBREV_AUTHOR = "AbbrevAuthor";
     protected static final String AUTHOR_TITLE = "AuthorTitle";
-    protected static final String AUTHOR_FIRST_NAME = "AuthorFirstName";
-    protected static final String AUTHOR_LASTNAME = "AuthorLastName";
+    protected static final String AUTHOR_GIVEN_NAME = "AuthorFirstName";
+    protected static final String AUTHOR_FAMILY_NAME = "AuthorLastName";
     protected static final String AUTHOR_PREFIX = "AuthorPrefix";
     protected static final String AUTHOR_SUFFIX = "AuthorSuffix";
 
@@ -243,7 +243,7 @@ public enum CdmLightExportTable {
 
     }
    final static String[] nomenclaturalAuthorColumns() {
-        return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_FIRST_NAME, AUTHOR_LASTNAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
+        return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_GIVEN_NAME, AUTHOR_FAMILY_NAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
     }
 
     final static String[] nomenclaturalAuthorTeamRelColumns() {

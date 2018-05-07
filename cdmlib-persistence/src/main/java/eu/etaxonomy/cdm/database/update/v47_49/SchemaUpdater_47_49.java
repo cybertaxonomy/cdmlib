@@ -147,6 +147,24 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepList.add(step);
 
 
+        //#7238 rename lastName and firstName
+        stepName = "rename lastName";
+        tableName = "AgentBase";
+        String oldColumnName = "lastname";
+        newColumnName = "familyName";
+        step = ColumnNameChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //... firstName
+        stepName = "rename firstName";
+        tableName = "AgentBase";
+        oldColumnName = "firstname";
+        newColumnName = "givenName";
+        step = ColumnNameChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+
+
         //7276  Make User.emailAddress a unique field
         //TODO H2 / PostGreSQL / SQL Server
         //User.email unique

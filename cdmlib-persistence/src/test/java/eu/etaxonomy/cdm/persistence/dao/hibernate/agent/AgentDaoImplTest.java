@@ -127,7 +127,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @ExpectedDataSet
     public void testSave() {
         Person person = Person.NewInstance();
-        person.setFirstname("ben");
+        person.setGivenName("ben");
         agentDao.save(person);
         commit();
     }
@@ -138,7 +138,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     public void testUpdate() {
         Person person = (Person)agentDao.findByUuid(personUuid);
         assert person != null : "person must exist";
-        person.setFirstname("Benjamin");
+        person.setGivenName("Benjamin");
         agentDao.update(person);
 //        commitAndStartNewTransaction(new String[]{"AGENTBASE_AUD","AGENTBASE"});
         commit();
@@ -148,7 +148,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("AgentDaoImplTest.testFind.xml")
     public void testFindInCurrentView() {
         Person person = (Person)agentDao.findByUuid(personUuid);
-        Assert.assertEquals("The person's firstname should be \'Benjamin\' in the current view", "Benjamin", person.getFirstname());
+        Assert.assertEquals("The person's givenname should be \'Benjamin\' in the current view", "Benjamin", person.getGivenName());
     }
 
     @Test
@@ -156,7 +156,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     public void testFindInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Person person = (Person)agentDao.findByUuid(personUuid);
-        Assert.assertEquals("The person's firstname should be \'Ben\' in the previous view",person.getFirstname(),"Ben");
+        Assert.assertEquals("The person's givenname should be \'Ben\' in the previous view",person.getGivenName(),"Ben");
     }
 
     @Test
@@ -267,17 +267,17 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         List<AgentBase>  personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() should return 5 Persons entities", 5, personResults.size());
 
-        Restriction<String> firstNameExact = new Restriction<>("firstname", MatchMode.EXACT);
-        restrictions.add(firstNameExact);
+        Restriction<String> givenNameExact = new Restriction<>("givenname", MatchMode.EXACT);
+        restrictions.add(givenNameExact);
 
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() empty value lists should be ignored", 5, personResults.size());
 
-        firstNameExact.addValue("Ben");
+        givenNameExact.addValue("Ben");
         restrictions.clear();
-        restrictions.add(firstNameExact);
+        restrictions.add(givenNameExact);
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
-        Assert.assertEquals("list() should return 1 AgentBase entity having the firstname 'Ben'", 1 ,personResults.size());
+        Assert.assertEquals("list() should return 1 AgentBase entity having the givenname 'Ben'", 1 ,personResults.size());
     }
 
     @Test
@@ -289,15 +289,15 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals("count() should return 5 Persons entities", 5, agentDao.count(Person.class, restrictions));
 
-        Restriction<String> firstNameExact = new Restriction<>("firstname", MatchMode.EXACT);
-        restrictions.add(firstNameExact);
+        Restriction<String> givenNameExact = new Restriction<>("givenname", MatchMode.EXACT);
+        restrictions.add(givenNameExact);
 
         Assert.assertEquals("count() empty value lists should be ignored", 5, agentDao.count(Person.class, restrictions));
 
-        firstNameExact.addValue("Ben");
+        givenNameExact.addValue("Ben");
         restrictions.clear();
-        restrictions.add(firstNameExact);
-        Assert.assertEquals("count() should return 1 Persons entity having the firstname 'Ben'", 1 , agentDao.count(Person.class, restrictions));
+        restrictions.add(givenNameExact);
+        Assert.assertEquals("count() should return 1 Persons entity having the givenname 'Ben'", 1 , agentDao.count(Person.class, restrictions));
     }
 
     @Test

@@ -136,13 +136,13 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			handleNotYetImplementedAttribute(attributes, LOST, parentEvent);
 		}
 
-		INonViralName firstName = null;
+		INonViralName givenName = null;
 		Set<TaxonName> names = homotypicalGroup.getTypifiedNames();
 		if (names.isEmpty()) {
 			String message = "There is no name in a homotypical group. Can't create the specimen type";
 			fireWarningEvent(message, parentEvent, 8);
 		} else {
-			firstName = CdmBase.deproxy(names.iterator().next());
+		    givenName = CdmBase.deproxy(names.iterator().next());
 		}
 
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
@@ -156,7 +156,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				if (! isFullType){
-					makeSpecimenType(state, facade, text, state.getCollectionAndType(), firstName, parentEvent);
+					makeSpecimenType(state, facade, text, state.getCollectionAndType(), givenName, parentEvent);
 				}
 				state.setSpecimenType(false);
 				state.resetCollectionAndType();

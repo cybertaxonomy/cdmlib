@@ -398,10 +398,10 @@ public class RisReferenceImport
         Person person = Person.NewInstance();
         String[] split = risValue.value.split(",");
         if (split.length >= 1){
-            person.setLastname(split[0].trim());
+            person.setFamilyName(split[0].trim());
         }
         if (split.length >= 2){
-            person.setFirstname(split[1].trim());
+            person.setGivenName(split[1].trim());
         }
         if (split.length >= 3){
             person.setSuffix(split[2].trim());

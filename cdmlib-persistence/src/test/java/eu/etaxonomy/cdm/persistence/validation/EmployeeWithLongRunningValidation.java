@@ -18,16 +18,16 @@ import eu.etaxonomy.cdm.validation.Level2;
 public class EmployeeWithLongRunningValidation extends CdmBase {
 
 	@LongRunningCheckCase(value = CaseMode.UPPER, groups = { Level2.class })
-	private String firstName;
+	private String givenName;
 
 
-	public String getFirstName(){
-		return firstName;
+	public String getGivenName(){
+		return givenName;
 	}
 
 
-	public void setFirstName(String firstName){
-		this.firstName = firstName;
+	public void setGivenName(String givenName){
+		this.givenName = givenName;
 	}
 
 

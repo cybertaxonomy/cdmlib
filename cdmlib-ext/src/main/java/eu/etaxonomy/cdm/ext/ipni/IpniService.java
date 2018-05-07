@@ -825,8 +825,8 @@ public class IpniService  implements IIpniService{
 		Person person = Person.NewInstance();
 
 		person.setNomenclaturalTitle(valueMap.get(STANDARD_FORM));
-		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
-		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
+		person.setGivenName(valueMap.get(DEFAULT_AUTHOR_FORENAME));
+		person.setFamilyName(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 
 		Reference citation = getIpniCitation(repository);
 

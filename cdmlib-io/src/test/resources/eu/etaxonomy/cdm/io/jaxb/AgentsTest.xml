@@ -68,8 +68,8 @@
         <common:TitleCache>Philip Miler</common:TitleCache>
         <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
         <agent:NomenclaturalTitle>Mill.</agent:NomenclaturalTitle>
-        <agent:FirstName>Philip</agent:FirstName>
-        <agent:LastName>Miller</agent:LastName>
+        <agent:GivenName>Philip</agent:GivenName>
+        <agent:FamilyName>Miller</agent:FamilyName>
         <agent:Lifespan>
           <common:Start>1691</common:Start>
           <common:End>1771</common:End>

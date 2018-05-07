@@ -52,10 +52,10 @@ public class EntityValidationTaskTest {
 		// This is the bean that is bean that is going to be tested
 		Employee emp = new Employee();
 		// ERROR 1 (should be JOHN)
-		emp.setFirstName("john");
+		emp.setGivenName("john");
 		// This is an error (should be SMITH), but it is a Level-3
 		// validation error, so the error should be ignored
-		emp.setLastName("smith");
+		emp.setFamilyName("smith");
 
 		// This is an @Valid bean on the Employee class, so Level-2
 		// validation errors on the Company object should also be
@@ -79,7 +79,7 @@ public class EntityValidationTaskTest {
 			paths[i++] = cv.getPropertyPath().toString();
 		}
 		Arrays.sort(paths);
-		Assert.assertArrayEquals(paths, new String[] { "company.name", "firstName" });
+		Assert.assertArrayEquals(paths, new String[] { "company.name", "givenName" });
 
 	}
 
@@ -90,9 +90,9 @@ public class EntityValidationTaskTest {
 		Employee one = new Employee();
 		// This is an error (should be JOHN), but it is a Level-2
 		// validation error, so the error should be ignored.
-		one.setFirstName("john");
+		one.setGivenName("john");
 		// ERROR 1 (should be SMITH)
-		one.setLastName("smith");
+		one.setFamilyName("smith");
 		Level3ValidationTask task = new Level3ValidationTask(one, null);
 		task.setValidator(factory.getValidator());
 		Set<ConstraintViolation<ICdmBase>> violations = task.validateWithErrorHandling();

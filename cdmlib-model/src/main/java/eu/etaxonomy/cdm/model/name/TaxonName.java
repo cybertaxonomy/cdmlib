@@ -3386,7 +3386,7 @@ public class TaxonName
      * @return the first not blank name part in reverse order
      */
     @Override
-    public String getLastNamePart() {
+    public String getFamilyNamePart() {
         String result =
                 StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
                     this.getInfraSpecificEpithet() :

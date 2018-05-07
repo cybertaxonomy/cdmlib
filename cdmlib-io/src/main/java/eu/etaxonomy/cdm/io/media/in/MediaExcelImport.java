@@ -319,11 +319,11 @@ public class MediaExcelImport
         Matcher matcherFull = Pattern.compile(regExFull).matcher(artist);
 
         if (matcherAbbrev.matches()){
-            person.setFirstname(matcherAbbrev.group(1).trim());
-            person.setLastname(matcherAbbrev.group(2).trim());
+            person.setGivenName(matcherAbbrev.group(1).trim());
+            person.setFamilyName(matcherAbbrev.group(2).trim());
         }else if (matcherFull.matches()){
-            person.setFirstname(matcherFull.group(1).trim());
-            person.setLastname(matcherFull.group(2).trim());
+            person.setGivenName(matcherFull.group(1).trim());
+            person.setFamilyName(matcherFull.group(2).trim());
         }else{
             person.setTitleCache(artist, true);
             String message = "A name of a person can not be atomized: %s";

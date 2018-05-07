@@ -68,15 +68,15 @@ public class TeamDefaultCacheStrategyTest {
 
 		person1 = Person.NewInstance();
 
-		person1.setFirstname("P1FN");
-		person1.setLastname("P1LN");
+		person1.setGivenName("P1FN");
+		person1.setFamilyName("P1LN");
 		person1.setPrefix("Dr1.");
 		person1.setSuffix("Suff1");
 
 		person2 = Person.NewInstance();
 		person2.setNomenclaturalTitle("P2NomT");
-		person2.setLastname("P2LN");
-		person2.setFirstname("P2FN");
+		person2.setFamilyName("P2LN");
+		person2.setGivenName("P2FN");
 		person2.setSuffix("P2Suff");
 
 		person3 = Person.NewInstance();
@@ -211,7 +211,7 @@ public class TeamDefaultCacheStrategyTest {
 		Assert.assertNotNull("team1 title cache must not to be null", team1.getTitleCache());
 		Assert.assertEquals("team1 title cache should be created by elements",
 		        "P1LN, P.", team1.getTitleCache());
-		person1.setFirstname("O.");
+		person1.setGivenName("O.");
 		Assert.assertEquals("team1 title cache should be P1LN, O.", "P1LN, O.", team1.getTitleCache());
 	}
 

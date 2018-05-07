@@ -17,7 +17,7 @@
   <!-- ********************* -->
   <ENTITYCONSTRAINTVIOLATION ID="38"
     CREATED="2014-01-01 00:00:00.0" UUID="358da71f-b646-4b79-b00e-dcb68b6425ba"
-    ENTITYVALIDATION_ID="1" PROPERTYPATH="firstName" INVALIDVALUE="Bar"
+    ENTITYVALIDATION_ID="1" PROPERTYPATH="givenName" INVALIDVALUE="Bar"
     SEVERITY="Error" MESSAGE="Garbage In Garbage Out"
     VALIDATIONGROUP="eu.etaxonomy.cdm.validation.Level2"
     VALIDATOR="eu.etaxonomy.cdm.persistence.validation.GarbageValidator" />

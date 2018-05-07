@@ -425,11 +425,11 @@ public class DwcaEmlExport extends DwcaExportBase {
 			Person person = member.getPerson();
 
 			elementName = "givenName";
-			text = person.getFirstname();
+			text = person.getGivenName();
 			writeTextElement(writer, elementName, text);
 
 			elementName = "surName";
-			text = person.getLastname();
+			text = person.getFamilyName();
 			writeTextElement(writer, elementName, text);
 
 		}

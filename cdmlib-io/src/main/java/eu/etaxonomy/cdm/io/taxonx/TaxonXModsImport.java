@@ -203,9 +203,9 @@ public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, Ta
 				if (elNamePart.getAttributeValue("type").equals("family")){
 					lastTeamMember = Person.NewInstance();
 					authorship.addTeamMember(lastTeamMember);
-					lastTeamMember.setLastname(elNamePart.getTextNormalize());
+					lastTeamMember.setFamilyName(elNamePart.getTextNormalize());
 				}else if (elNamePart.getAttributeValue("type").equals("given")){
-					lastTeamMember.setFirstname(elNamePart.getTextNormalize());
+					lastTeamMember.setGivenName(elNamePart.getTextNormalize());
 				}else{
 					logger.warn("Unsupport name part type");
 				}

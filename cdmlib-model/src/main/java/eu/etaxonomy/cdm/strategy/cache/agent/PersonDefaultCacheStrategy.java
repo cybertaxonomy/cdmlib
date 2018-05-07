@@ -59,8 +59,8 @@ public class PersonDefaultCacheStrategy
     @Override
     public String getTitleCache(Person person) {
         String result = "";
-        if (isNotBlank(person.getLastname() ) ){
-            result = person.getLastname();
+        if (isNotBlank(person.getFamilyName() ) ){
+            result = person.getFamilyName();
             result = addInitials(result, person);
             return result;
         }else{
@@ -86,7 +86,7 @@ public class PersonDefaultCacheStrategy
         String initials = person.getInitials();
         if (isBlank(initials)){
             boolean forceFirstLetter = false;
-            initials = getInitialsFromFirstname(person.getFirstname(), forceFirstLetter);
+            initials = getInitialsFromGivenName(person.getGivenName(), forceFirstLetter);
         }
         result = CdmUtils.concat(", ", result, initials);
         return result;
@@ -96,8 +96,8 @@ public class PersonDefaultCacheStrategy
     @Override
     public String getFullTitle(Person person) {
 		String result = "";
-		result = person.getLastname();
-		result = addFirstNamePrefixSuffix(result, person);
+		result = person.getFamilyName();
+		result = addGivenNamePrefixSuffix(result, person);
 		if (isNotBlank(result)){
 		    return result;
 		}
@@ -105,36 +105,36 @@ public class PersonDefaultCacheStrategy
 	    if (isNotBlank(result)){
 	        return result;
 	    }
-	    result = addFirstNamePrefixSuffix("", person);
+	    result = addGivenNamePrefixSuffix("", person);
 	    if (isNotBlank(result)){
 	        return result;
 		}
 		return person.toString();
 	}
 
-	private String addFirstNamePrefixSuffix(String oldString, Person person) {
+	private String addGivenNamePrefixSuffix(String oldString, Person person) {
 		String result = oldString;
-		result = CdmUtils.concat(" ", person.getFirstname(), result);
+		result = CdmUtils.concat(" ", person.getGivenName(), result);
 		result = CdmUtils.concat(" ", person.getPrefix(), result);
 		result = CdmUtils.concat(" ", result, person.getSuffix());
 		return result;
 	}
 
 
-    public String getInitialsFromFirstname(String firstname, boolean forceOnlyFirstLetter) {
-        if (firstname == null){
+    public String getInitialsFromGivenName(String givenname, boolean forceOnlyFirstLetter) {
+        if (givenname == null){
             return null;
-        }else if (StringUtils.isBlank(firstname)){
+        }else if (StringUtils.isBlank(givenname)){
             return "";
         }
         //remove brackets
         final String regex = "\\([^)]*\\)";
         final Pattern pattern = Pattern.compile(regex);
-        final Matcher matcher = pattern.matcher(firstname);
-        firstname = matcher.replaceAll("").replaceAll("\\s\\s", " ");
+        final Matcher matcher = pattern.matcher(givenname);
+        givenname = matcher.replaceAll("").replaceAll("\\s\\s", " ");
 
         String result = "";
-        String[] splits = firstname.split("((?<=\\.)|\\s+|(?=([\\-\u2013])))+"); // [\\-\u2013]? // (?!=\\s) wasn't successful to trim
+        String[] splits = givenname.split("((?<=\\.)|\\s+|(?=([\\-\u2013])))+"); // [\\-\u2013]? // (?!=\\s) wasn't successful to trim
         for (String split : splits){
             split = split.trim();
             if (StringUtils.isBlank(split) || split.matches("\\(.*\\)")){  //again checking brackets not really necessary
