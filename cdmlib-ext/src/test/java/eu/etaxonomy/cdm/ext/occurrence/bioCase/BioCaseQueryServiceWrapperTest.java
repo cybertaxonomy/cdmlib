@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -53,6 +54,7 @@ public class BioCaseQueryServiceWrapperTest {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(response));
                 String line = null;
                 int count = 0;
+                boolean isCorrectFormat = false;
                 do {
                     if(count>MAX_LINES_TO_READ){
                         fail("Service response did not include parameter to test.");
@@ -62,17 +64,18 @@ public class BioCaseQueryServiceWrapperTest {
                         if(logger.isTraceEnabled()){
                             System.out.println(line);
                         }
+                        //just check for recordCount attribute to see if a valid response was returned
                         String recordAttr = "recordCount=\"";
                         int index = line.indexOf(recordAttr);
                         if(index>-1){
-                            String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
-                            assertEquals("Incorrect number of occurrences", 2, Integer.parseInt(recordCount));
+                            isCorrectFormat = true;
                             break;
                         }
                     }
                     line = reader.readLine();
                     count++;
                 } while (line!=null);
+                assertTrue("BioCase response did not have the expected format", isCorrectFormat);
             } catch (NumberFormatException e) {
                 fail(e.getMessage());
             } catch (ClientProtocolException e) {
