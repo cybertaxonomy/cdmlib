@@ -927,7 +927,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly=false)
     public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
