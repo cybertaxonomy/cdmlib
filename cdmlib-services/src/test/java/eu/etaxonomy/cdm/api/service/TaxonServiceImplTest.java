@@ -1065,21 +1065,22 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("../../database/BlankDataSet.xml")
     public final void testTaxonDeletionConfig(){
-        final String[]tableNames = {
-                "Classification", "Classification_AUD",
-                "TaxonBase","TaxonBase_AUD",
-                "TaxonNode","TaxonNode_AUD",
-                "TaxonName","TaxonName_AUD",
-                "TaxonRelationship", "TaxonRelationship_AUD",
-                "TaxonDescription", "TaxonDescription_AUD",
-                "HomotypicalGroup","HomotypicalGroup_AUD",
-                "PolytomousKey","PolytomousKey_AUD",
-                "PolytomousKeyNode","PolytomousKeyNode_AUD",
-                "Media","Media_AUD",
-                "WorkingSet","WorkingSet_AUD",
-                "DescriptionElementBase","DescriptionElementBase_AUD",
-        		"DeterminationEvent","DeterminationEvent_AUD",
-        		"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD"};
+        final String[]tableNames = {}
+//                "Classification", "Classification_AUD",
+//                "TaxonBase","TaxonBase_AUD",
+//                "TaxonNode","TaxonNode_AUD",
+//                "TaxonName","TaxonName_AUD",
+//                "TaxonRelationship", "TaxonRelationship_AUD",
+//                "TaxonDescription", "TaxonDescription_AUD",
+//                "HomotypicalGroup","HomotypicalGroup_AUD",
+//                "PolytomousKey","PolytomousKey_AUD",
+//                "PolytomousKeyNode","PolytomousKeyNode_AUD",
+//                "Media","Media_AUD",
+//                "DescriptiveDataSet","DescriptiveDataSet_AUD",
+//                "DescriptionElementBase","DescriptionElementBase_AUD",
+//        		"DeterminationEvent","DeterminationEvent_AUD",
+//        		"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD"}
+        ;
 
         UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");

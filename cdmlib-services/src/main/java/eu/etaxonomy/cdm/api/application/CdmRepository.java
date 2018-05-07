@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
@@ -65,7 +66,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -192,7 +192,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private IService<CdmBase> mainService;
 
 	@Autowired
-	private IWorkingSetService workingSetService;
+	private IDescriptiveDataSetService descriptiveDataSetService;
 
 
 	//********************** CONSTRUCTOR *********************************************************/
@@ -413,8 +413,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     }
 
 	@Override
-	public IWorkingSetService getWorkingSetService(){
-		return workingSetService;
+	public IDescriptiveDataSetService getDescriptiveDataSetService(){
+		return descriptiveDataSetService;
 	}
 
 	@Override

@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -68,7 +69,6 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -422,11 +422,11 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(leaveLengthNode);
 
 
-		WorkingSet workingSet = WorkingSet.NewInstance();
-		workingSet.addDescription(taxonDescription);
-		workingSet.setLabel("My Workingset");
-		workingSet.getDescriptiveSystem();
-		handleAnnotatableEntity(workingSet);
+		DescriptiveDataSet descriptiveDataSet = DescriptiveDataSet.NewInstance();
+		descriptiveDataSet.addDescription(taxonDescription);
+		descriptiveDataSet.setLabel("My Descriptive Dataset");
+		descriptiveDataSet.getDescriptiveSystem();
+		handleAnnotatableEntity(descriptiveDataSet);
 
 
 		//polytomous keys

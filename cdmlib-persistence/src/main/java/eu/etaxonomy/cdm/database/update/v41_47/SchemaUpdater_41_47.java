@@ -500,7 +500,6 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
             step = ColumnNameChanger.NewIntegerInstance(stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
             stepList.add(step);
         }
-
     }
 
     /**

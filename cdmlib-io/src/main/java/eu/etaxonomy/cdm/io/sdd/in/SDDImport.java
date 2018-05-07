@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -70,7 +71,6 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -132,7 +132,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Reference sourceReference = null;
 
 	private Language datasetLanguage = null;
-	private WorkingSet workingSet = null;
+	private DescriptiveDataSet descriptiveDataSet = null;
 
 	private final Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
 
@@ -269,7 +269,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 		//new
 		Representation representation = Representation.NewInstance(detail, label, null, datasetLanguage);
-		workingSet.addRepresentation(representation);
+		descriptiveDataSet.addRepresentation(representation);
 
 
 		//old
@@ -569,7 +569,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	// imports the complete dataset information
 	protected void importDataset(Element elDataset, Namespace sddNamespace, SDDImportState state){			// <Dataset xml:lang="en-us">
 
-		workingSet = WorkingSet.NewInstance();
+	    descriptiveDataSet = DescriptiveDataSet.NewInstance();
 		importDatasetLanguage(elDataset,state);
 		importDatasetRepresentation(elDataset, sddNamespace);
 		importRevisionData(elDataset, sddNamespace);
@@ -678,7 +678,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		for (FeatureTree featureTree : featureTrees) {
 			getFeatureTreeService().save(featureTree);
 		}
-		getWorkingSetService().save(workingSet);
+		getDescriptiveDataSetService().save(descriptiveDataSet);
 		for (Classification classification : classifications) {
 			getClassificationService().save(classification);
 		}
@@ -1198,7 +1198,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				taxon.addDescription(taxonDescription);
 			}
 //
-			workingSet.addDescription(taxonDescription);
+			descriptiveDataSet.addDescription(taxonDescription);
 
 //OLD			taxonDescription.setDescriptiveSystem(featureSet);
 
@@ -1761,11 +1761,11 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						handleCharacterNodes(sddNamespace, root, elNodes);
 					}
 					featureTrees.add(featureTree);
-					if (workingSet.getDescriptiveSystem() != null){
+					if (descriptiveDataSet.getDescriptiveSystem() != null){
 						//TODO how to handle multiple
 						logger.warn("Multiple feature trees not yet supported");
 					}else{
-						workingSet.setDescriptiveSystem(featureTree);
+					    descriptiveDataSet.setDescriptiveSystem(featureTree);
 					}
 				}
 

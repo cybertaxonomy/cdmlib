@@ -203,7 +203,7 @@
         @MetaValue(value = "Primer", targetEntity = Primer.class),
         @MetaValue(value = "TaxonNode", targetEntity = TaxonNode.class),
         @MetaValue(value = "TaxonNodeAgentRelation", targetEntity = TaxonNodeAgentRelation.class),
-        @MetaValue(value = "WorkingSet", targetEntity = WorkingSet.class),
+        @MetaValue(value = "DescriptiveDataSet", targetEntity = DescriptiveDataSet.class),
         @MetaValue(value = "MultiAccessKey", targetEntity = MultiAccessKey.class),
 
         @MetaValue(value = "DescriptionElementSource", targetEntity = DescriptionElementSource.class),
@@ -229,6 +229,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -248,7 +249,6 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;

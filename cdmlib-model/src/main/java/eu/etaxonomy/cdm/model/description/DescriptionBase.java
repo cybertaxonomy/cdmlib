@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlType(name = "DescriptionBase", propOrder = {
     "describedSpecimenOrObservation",
     "descriptionSources",
-    "workingSets",
+    "descriptiveDataSets",
     "descriptionElements",
     "imageGallery",
     "isDefault"
@@ -106,13 +106,13 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @ManyToMany(fetch = FetchType.LAZY)  //FIXME what is the difference between this and IdentifiableEntity.sources
     private Set<Reference> descriptionSources = new HashSet<Reference>();
 
-    @XmlElementWrapper(name = "WorkingSets")
-    @XmlElement(name = "WorkingSet")
+    @XmlElementWrapper(name = "DescriptiveDataSets")
+    @XmlElement(name = "DescriptiveDataSet")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "descriptions")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<WorkingSet> workingSets = new HashSet<WorkingSet>();
+    private Set<DescriptiveDataSet> descriptiveDataSets = new HashSet<>();
 
     @XmlElementWrapper(name = "DescriptionElements")
     @XmlElements({
@@ -296,28 +296,28 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
 
 
-    public Set<WorkingSet> getWorkingSets() {
-        return workingSets;
+    public Set<DescriptiveDataSet> getDescriptiveDataSets() {
+        return descriptiveDataSets;
     }
 
-    public boolean addWorkingSet(WorkingSet workingSet){
-        boolean result = this.workingSets.add(workingSet);
-        if (! workingSet.getDescriptions().contains(this)){
-            workingSet.addDescription(this);
+    public boolean addDescriptiveDataSet(DescriptiveDataSet descriptiveDataSet){
+        boolean result = this.descriptiveDataSets.add(descriptiveDataSet);
+        if (! descriptiveDataSet.getDescriptions().contains(this)){
+            descriptiveDataSet.addDescription(this);
         }
         return result;
     }
 
-    public boolean removeWorkingSet(WorkingSet workingSet){
-        boolean result = this.workingSets.remove(workingSet);
-        if (workingSet.getDescriptions().contains(this)){
-            workingSet.addDescription(this);
+    public boolean removeDescriptiveDataSet(DescriptiveDataSet descriptiveDataSet){
+        boolean result = this.descriptiveDataSets.remove(descriptiveDataSet);
+        if (descriptiveDataSet.getDescriptions().contains(this)){
+            descriptiveDataSet.addDescription(this);
         }
         return result;
     }
 
-    protected void setWorkingSets(Set<WorkingSet> workingSets) {
-        this.workingSets = workingSets;
+    protected void setDescriptiveDataSet(Set<DescriptiveDataSet> descriptiveDataSets) {
+        this.descriptiveDataSets = descriptiveDataSets;
     }
 
 
@@ -358,9 +358,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             result = (DescriptionBase<?>)super.clone();
 
             //working set
-            result.workingSets = new HashSet<WorkingSet>();
-            for (WorkingSet workingSet : getWorkingSets()){
-                workingSet.addDescription(result);
+            result.descriptiveDataSets = new HashSet<DescriptiveDataSet>();
+            for (DescriptiveDataSet descriptiveDataSet : getDescriptiveDataSets()){
+                descriptiveDataSet.addDescription(result);
             }
 
             //descriptions

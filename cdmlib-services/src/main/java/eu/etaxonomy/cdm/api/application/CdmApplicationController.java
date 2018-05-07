@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.IWorkingSetService;
+import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -659,8 +659,8 @@ public class CdmApplicationController implements ICdmRepository {
 
 
 	@Override
-	public final IWorkingSetService getWorkingSetService(){
-		return configuration.getWorkingSetService();
+	public final IDescriptiveDataSetService getDescriptiveDataSetService(){
+		return configuration.getDescriptiveDataSetService();
 	}
 
 

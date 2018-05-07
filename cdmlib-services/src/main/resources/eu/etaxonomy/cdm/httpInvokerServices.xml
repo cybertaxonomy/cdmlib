@@ -339,10 +339,10 @@
   <bean id="httpWorkingService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
-      <ref bean="workingSetService" />
+      <ref bean="descriptiveDataSetService" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IWorkingSetService</value>
+      <value>eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService</value>
     </property>
   </bean>
 

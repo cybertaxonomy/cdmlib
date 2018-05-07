@@ -29,6 +29,7 @@ public enum CdmPermissionClass {
     DESCRIPTIONBASE,
     DESCRIPTIONELEMENTBASE,
     DESCRIPTIONELEMENTSOURCE,
+    DESCRIPTIVEDATASET,
     EXTENSION,
     EXTENSIONTYPE,
     FEATURE,
@@ -63,7 +64,6 @@ public enum CdmPermissionClass {
     TEAMORPERSONBASE,
     TERMVOCABULARY,
     USER,
-    WORKINGSET,
     ;
 
 

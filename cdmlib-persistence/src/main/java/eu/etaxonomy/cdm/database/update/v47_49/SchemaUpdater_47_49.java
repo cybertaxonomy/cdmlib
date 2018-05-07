@@ -17,10 +17,12 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
 
@@ -96,11 +98,38 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
         stepList.add(step);
 
+        //#7405 Rename WorkingSet to DescriptiveDataSet
+        String oldTableName = "WorkingSet";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
 
+        oldTableName = "WorkingSet_Annotation";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
+
+        oldTableName = "WorkingSet_DescriptionBase";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
+
+        oldTableName = "WorkingSet_Marker";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
+
+        oldTableName = "WorkingSet_NamedArea";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
+
+        oldTableName = "WorkingSet_Representation";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
+
+        oldTableName = "WorkingSet_TaxonNode";
+        changeSingleWorkingSetTableName(stepList, oldTableName);
+
+        stepName = "Update hibernate_sequences for WorkingSet renaming";
+        query = " UPDATE hibernate_sequences "
+                + " SET sequence_name = 'DescriptiveDataSet' "
+                + " WHERE sequence_name = WorkingSet";
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
 
         //#2335 Make WorkingSet IdentifiableEntity
-        stepName = "Make WorkingSet IdentifiableEntity";
-        tableName = "WorkingSet";
+        stepName = "Make DescriptiveDataSet IdentifiableEntity";
+        tableName = "DescriptiveDataSet";
         step = ClassBaseTypeUpdater.NewAnnotatableToIdentifiableInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
 
@@ -117,182 +146,25 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepList.add(step);
 
 
-
-//        //#5149 remove unique index on Sequence_Reference.citations_id
-//        tableName = "Sequence_Reference";
-//        String columnName = "citations_id";
-//        step = UniqueIndexDropper.NewInstance(tableName, columnName, !INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//
-//        //#6340 nom status invalid updater
-//        step = NomStatusInvalidUpdater.NewInstance();
-//        stepList.add(step);
-//
-//		//#6529
-//		//Extend WorkingSet to allow a more fine grained definiton of taxon set
-//		//min rank
-//        stepName = "Add minRank column";
-//        tableName = "WorkingSet";
-//        newColumnName = "minRank_id";
-//        String referencedTable = "DefinedTermBase";
-//        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-//        stepList.add(step);
-//
-//        //max rank
-//        stepName = "Add maxRank column";
-//        tableName = "WorkingSet";
-//        newColumnName = "maxRank_id";
-//        referencedTable = "DefinedTermBase";
-//        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-//        stepList.add(step);
-//
-//        //subtree filter
-//        stepName= "Add geo filter MN table to WorkingSet";
-//        String firstTableName = "WorkingSet";
-//        String secondTableAlias = "NamedArea";
-//        String secondTableName = "DefinedTermBase";
-//        String attributeName = "geoFilter";
-//        boolean isList = ! IS_LIST;
-//        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
-//        stepList.add(step);
-//
-//        //subtree filter
-//        stepName= "Add subtree filter MN table to WorkingSet";
-//        firstTableName = "WorkingSet";
-//        secondTableName = "TaxonNode";
-//        secondTableAlias = null;
-//        attributeName = "taxonSubtreeFilter";
-//        isList = ! IS_LIST;
-//        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
-//        stepList.add(step);
-//
-//        //#6258
-//        stepName = "Add Registration table";
-//        tableName = "Registration";
-//        String[] columnNames = new String[]{"identifier","specificIdentifier","registrationDate","status",
-//                "institution_id","name_id","submitter_id"};
-//        String[] referencedTables = new String[]{null, null, null, null,
-//                "AgentBase","TaxonNameBase","UserAccount"};
-//        String[] columnTypes = new String[]{"string_255","string_255","datetime","string_10","int","int","int"};
-//        step = TableCreator.NewAnnotatableInstance(stepName, tableName,
-//                columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        //add blockedBy_id
-//        stepName= "Add blockedBy_id to Registration";
-//        firstTableName = "Registration";
-//        secondTableName = "Registration";
-//        attributeName = "blockedBy";
-//        isList = ! IS_LIST;
-//        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
-//        stepList.add(step);
-//
-//        //add type designations
-//        stepName= "Add type designations to Registration";
-//        firstTableName = "Registration";
-//        String firstColumnName = "registrations";
-//        secondTableName = "TypeDesignationBase";
-//        attributeName = "typeDesignations";
-//        isList = false;
-//        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, firstColumnName, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
-//        stepList.add(step);
-//
-//        //#5258
-//        //Add "accessed" to Reference
-//        stepName = "Add 'accessed' to Reference";
-//        tableName = "Reference";
-//        newColumnName = "accessed";
-//        step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
-//        stepList.add(step);
-//
-//        //#6618 Add structure column to DefinedTermBase (Character)
-//        stepName = "Add structure column to DefinedTermBase (Character)";
-//        tableName = "DefinedTermBase";
-//        newColumnName = "structure_id";
-//        referencedTable = "FeatureNode";
-//        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-//        stepList.add(step);
-//
-//        //#6618 Add property column to DefinedTermBase (Character)
-//        stepName = "Add property column to DefinedTermBase (Character)";
-//        tableName = "DefinedTermBase";
-//        newColumnName = "property_id";
-//        referencedTable = "FeatureNode";
-//        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-//        stepList.add(step);
-//
-//        //##6661 Add initials to agent base
-//        stepName = "Add initials to AgentBase";
-//        tableName = "AgentBase";
-//        newColumnName = "initials";
-//        int length = 80;
-//        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        stepName = "Update initials and firstname";
-//        step = InitialsUpdater.NewInstance();
-//        stepList.add(step);
-//
-//        //#6663
-//        //Add "lastRetrieved" to Reference
-//        stepName = "Add 'lastRetrieved' to Reference";
-//        tableName = "Reference";
-//        newColumnName = "lastRetrieved";
-//        step = ColumnAdder.NewDateTimeInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
-//        stepList.add(step);
-//
-//        stepName = "Add externalId to Reference";
-//        tableName = "Reference";
-//        newColumnName = "externalId";
-//        length = 255;
-//        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        stepName = "Add externalLink to Reference";
-//        tableName = "Reference";
-//        newColumnName = "externalLink";
-//        step = ColumnAdder.NewClobInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        stepName = "Add authorityType to Reference";
-//        tableName = "Reference";
-//        newColumnName = "authorityType";
-//        length = 10;
-//        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        //#6472 add key to IntextReference
-//        stepName = "Add key to IntextReference";
-//        tableName = "IntextReference";
-//        newColumnName = "key_id";
-//        referencedTable = "PolytomousKey";
-//        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-//        stepList.add(step);
-//
-//        //#5817 rename relationshipTermBase_inverseRepresentation
-//        stepName = "Rename relationshipTermBase_inverseRepresentation";
-//        String oldName = "RelationshipTermBase_inverseRepresentation";
-//        String newName = "TermBase_inverseRepresentation";
-//        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        //#5817 rename TermBase_inverseRepresentation.relationshipTermBase_id
-//        stepName = "Rename relationshipTermBase_inverseRepresentation.relationshipTermBase_id";
-//        tableName = newName;
-//        String oldColumnName = "relationshipTermBase_id";
-//        newColumnName = "term_id";
-//        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-//        stepList.add(step);
-//
-//        //#6226 remove orphaned PolytomousKeyNodes
-//        stepName = "remove orphaned PolytomousKeyNodes";
-//        String query = " DELETE FROM @@PolytomousKeyNode@@ WHERE key_id NOT IN (SELECT id FROM @@PolytomousKey@@)";
-//        String aud_query = " DELETE FROM @@PolytomousKeyNode_AUD@@ WHERE key_id NOT IN (SELECT id FROM @@PolytomousKey_AUD@@)";
-//        step = SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepName, query, aud_query, -99);
-//        stepList.add(step);
-
         return stepList;
+    }
+
+    /**
+     * @param #6368
+     */
+    private void changeSingleWorkingSetTableName(List<ISchemaUpdaterStep> stepList, String oldTableName) {
+        String stepName = "Rename " +  oldTableName;
+        String newTableName = oldTableName.replace("WorkingSet", "DescriptiveDataSet");
+        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        if (oldTableName.contains("_")){
+            stepName = "Rename " +  oldTableName + ".workingSet_id";
+            String oldColumnName = "WorkingSet_id";
+            String newColumnName = "DescriptiveDataSet_id";
+            step = ColumnNameChanger.NewIntegerInstance(stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+            stepList.add(step);
+        }
     }
 
 
