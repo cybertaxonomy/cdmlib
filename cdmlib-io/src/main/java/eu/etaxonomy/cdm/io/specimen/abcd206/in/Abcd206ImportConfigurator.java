@@ -230,6 +230,10 @@ public String toString(){
       result.append(":");
       result.append(this.isOverwriteExistingSpecimens());
       result.append(";");
+      result.append("nomenclaturalCode");
+      result.append(":");
+      result.append(this.getNomenclaturalCode().getKey());
+      result.append(";");
 
 
     return result.toString();
