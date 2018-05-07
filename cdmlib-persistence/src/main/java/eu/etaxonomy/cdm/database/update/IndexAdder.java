@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
  *
  * @see {@link UsernameConstraintUpdater}
  * @author a.mueller
- * @since 16.09.2010
+ * @since 2016-10-18
  *
  */
 public class IndexAdder extends SchemaUpdaterStepBase {

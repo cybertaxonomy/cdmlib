@@ -24,8 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
  * @author a.mueller
- * @since 16.09.2010
- *
+ * @since 2014-06-25
  */
 public class UsernameConstraintUpdater
         extends SchemaUpdaterStepBase {

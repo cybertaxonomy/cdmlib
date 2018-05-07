@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.IndexAdder;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 /**
  * @author a.mueller
  * @since Jan 14, 2014
+ * @see IndexAdder
  */
 public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 
