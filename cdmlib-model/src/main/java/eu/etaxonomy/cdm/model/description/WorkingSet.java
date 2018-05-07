@@ -36,12 +36,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.description.WorkingSetDefaultCacheStrategy;
 
 /**
  *
@@ -66,7 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @XmlRootElement(name = "WorkingSet")
 @Entity
 @Audited
-public class WorkingSet extends AnnotatableEntity {
+public class WorkingSet extends IdentifiableEntity<WorkingSetDefaultCacheStrategy> {
 	private static final long serialVersionUID = 3256448866757415686L;
 	private static final Logger logger = Logger.getLogger(WorkingSet.class);
 
@@ -142,6 +143,7 @@ public class WorkingSet extends AnnotatableEntity {
 	 */
 	protected WorkingSet() {
 		super();
+		this.cacheStrategy = new WorkingSetDefaultCacheStrategy();
 	}
 
 // ******************** GETTER / SETTER ************************/

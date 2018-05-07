@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -96,6 +97,15 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepList.add(step);
 
 
+
+        //#2335 Make WorkingSet IdentifiableEntity
+        stepName = "Make WorkingSet IdentifiableEntity";
+        tableName = "WorkingSet";
+        step = ClassBaseTypeUpdater.NewAnnotatableToIdentifiableInstance(stepName, tableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //TODO add titleCache updater, but maybe not necessary as real data does not really exist
+        //except for Campanula test data, and it is easy to update via TaxEditor cache updater
 
 
 

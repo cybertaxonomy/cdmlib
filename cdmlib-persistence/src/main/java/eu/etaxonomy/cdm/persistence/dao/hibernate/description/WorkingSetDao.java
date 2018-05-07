@@ -24,12 +24,14 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 @Repository
 @Qualifier("workingSetDaoImpl")
-public class WorkingSetDao extends AnnotatableDaoImpl<WorkingSet> implements IWorkingSetDao {
+public class WorkingSetDao
+        extends IdentifiableDaoBase<WorkingSet>
+        implements IWorkingSetDao {
 	private static final Logger logger = Logger.getLogger(WorkingSetDao.class);
 
 	public WorkingSetDao() {

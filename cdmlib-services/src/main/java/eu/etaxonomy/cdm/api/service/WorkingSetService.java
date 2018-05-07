@@ -35,11 +35,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = false)
-public class WorkingSetService extends
-		AnnotatableServiceBase<WorkingSet, IWorkingSetDao> implements IWorkingSetService {
+public class WorkingSetService
+        extends IdentifiableServiceBase<WorkingSet, IWorkingSetDao>
+        implements IWorkingSetService {
 
     private static Logger logger = Logger.getLogger(WorkingSetService.class);
 
@@ -172,4 +174,15 @@ public class WorkingSetService extends
         }
         return new RowWrapperDTO(description, specimen, taxonNode, fieldUnit, identifier, country);
 	}
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateTitleCache(Class<? extends WorkingSet> clazz, Integer stepSize,
+            IIdentifiableEntityCacheStrategy<WorkingSet> cacheStrategy, IProgressMonitor monitor) {
+        if (clazz == null) {
+            clazz = WorkingSet.class;
+        }
+        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+    }
+
 }

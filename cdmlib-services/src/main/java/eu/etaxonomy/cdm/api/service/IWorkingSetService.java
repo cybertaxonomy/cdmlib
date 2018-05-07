@@ -18,9 +18,10 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
-public interface IWorkingSetService extends IAnnotatableService<WorkingSet> {
+public interface IWorkingSetService extends IIdentifiableEntityService<WorkingSet> {
 	/**
-	 * Returns a Map of descriptions each with the descriptionelements that match the supplied features (or all description elements if no features are supplied)
+	 * Returns a Map of descriptions each with the description elements that match
+	 * the supplied features (or all description elements if no features are supplied)
 	 *
 	 * @param workingSet the working set which the descriptions belong to
 	 * @param features restrict the returned description elements to those which have features in this set
