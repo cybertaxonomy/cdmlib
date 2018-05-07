@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -72,6 +73,16 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
 		tableName = "DefinedTermBase";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
 		stepList.add(step);
+
+		//#7096 Add second symbol attribute to DefinedTermBase
+		stepName = "Add second symbol to DefinedTermBase";
+		tableName = "DefinedTermBase";
+		newColumnName = "symbol2";
+		int length = 30;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+
+
 
 //        //#5149 remove unique index on Sequence_Reference.citations_id
 //        tableName = "Sequence_Reference";

@@ -177,6 +177,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     //empty string is explicitly allowed and should be distinguished from NULL!
     private String symbol;
 
+    @XmlElement(name = "symbol2")
+    @Column(length=30)
+    //the second symbol to be used in String representations for this term #7096
+    //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
+    //empty string is explicitly allowed and should be distinguished from NULL!
+    private String symbol2;
+
 //***************************** CONSTRUCTOR *******************************************/
 
     //for javassit only
