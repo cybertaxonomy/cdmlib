@@ -108,6 +108,14 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         //except for Campanula test data, and it is easy to update via TaxEditor cache updater
 
 
+        //#7374 Set titleCache of feature trees to protected
+        stepName = "Set titleCache of feature trees to protected";
+        query = "UPDATE @@FeatureTree@@ "
+                + " SET protectedTitleCache = @TRUE@ ";
+        tableName = "FeatureTree";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
 
 
 //        //#5149 remove unique index on Sequence_Reference.citations_id
