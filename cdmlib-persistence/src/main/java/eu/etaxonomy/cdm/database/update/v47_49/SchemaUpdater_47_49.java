@@ -186,6 +186,14 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
+        //#6916 Link IntextReference to OriginalSource
+        stepName = "Link IntextReference to OriginalSource";
+        tableName = "IntextReference";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
 
         //7276  Make User.emailAddress a unique field
         //TODO H2 / PostGreSQL / SQL Server

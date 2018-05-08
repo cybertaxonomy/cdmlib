@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
     "occurrence",
     "agent",
     "reference",
+    "source",
     "media",
     "key",
     "languageString",
@@ -90,6 +91,13 @@ public class IntextReference extends VersionableEntity {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Reference reference;
 
+    @XmlElement(name = "Source")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private OriginalSourceBase<?> source;
+
     @XmlElement(name = "Media")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -124,6 +132,7 @@ public class IntextReference extends VersionableEntity {
 
     public enum CDM_INTEXT_CLASS{
         REFERENCE("reference"),
+        SOURCE("source"),
         TAXONNAME("name"),
         AGENT("agent"),
         MEDIA("media"),
@@ -203,6 +212,8 @@ public class IntextReference extends VersionableEntity {
             return CDM_INTEXT_CLASS.TAXON;
         }else if (reference != null){
             return CDM_INTEXT_CLASS.REFERENCE;
+        }else if (source != null){
+            return CDM_INTEXT_CLASS.SOURCE;
         }else if (occurrence != null){
             return CDM_INTEXT_CLASS.OCCURRENCE;
         }else if (key != null){
@@ -231,6 +242,8 @@ public class IntextReference extends VersionableEntity {
            return taxon;
        }else if (reference != null){
            return reference;
+       }else if (source != null){
+           return source;
        }else if (occurrence != null){
            return occurrence;
        }else if (key != null){
@@ -255,6 +268,8 @@ public class IntextReference extends VersionableEntity {
             this.agent = (AgentBase<?>)target;
         }else if (target instanceof Reference){
             this.reference = (Reference)target;
+        }else if (target instanceof OriginalSourceBase){
+            this.source = (OriginalSourceBase<?>)target;
         }else if (target instanceof Media){
             this.media = (Media)target;
         }else if (target instanceof PolytomousKey){

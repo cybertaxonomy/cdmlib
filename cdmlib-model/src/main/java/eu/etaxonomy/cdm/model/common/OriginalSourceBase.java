@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * @see eu.etaxonomy.cdm.model.common.IOriginalSource
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:22
  */
 
@@ -51,7 +50,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="OriginalSourceBase")
-public abstract class OriginalSourceBase<T extends ISourceable> extends ReferencedEntityBase implements IOriginalSource<T>, Cloneable {
+public abstract class OriginalSourceBase<T extends ISourceable>
+        extends ReferencedEntityBase
+        implements IOriginalSource<T>, IIntextReferenceTarget,Cloneable {
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
