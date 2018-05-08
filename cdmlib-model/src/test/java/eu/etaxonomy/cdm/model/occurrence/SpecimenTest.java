@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -70,7 +69,6 @@ public class SpecimenTest {
 	public void testNewInstance() {
 		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		assertNotNull(specimen);
-		assertTrue(specimen instanceof DerivedUnit);
 		assertTrue(specimen.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen));
 	}
 
@@ -234,8 +232,8 @@ public class SpecimenTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
-		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
+//		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
+//		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
@@ -255,7 +253,7 @@ public class SpecimenTest {
 		extension.setValue("extension");
 		Marker marker = Marker.NewInstance(MarkerType.COMPLETE(), false);
 		Rights right = Rights.NewInstance("right", Language.DEFAULT());
-		Media media = Media.NewInstance();
+//		Media media = Media.NewInstance();
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance("12", "idNamespace");
 
 		specimen.setAccessionNumber(accessionNumber);

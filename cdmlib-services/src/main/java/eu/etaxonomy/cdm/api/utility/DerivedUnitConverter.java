@@ -120,45 +120,45 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
     /**
      * @param newInstance
      */
-    private void copyPropertiesTo(TARGET n) {
-        n.setAccessionNumber(source.getAccessionNumber());
-        n.setBarcode(source.getBarcode());
-        n.setCatalogNumber(source.getCatalogNumber());
-        n.setCollection(source.getCollection());
+    private void copyPropertiesTo(TARGET target) {
+        target.setAccessionNumber(source.getAccessionNumber());
+        target.setBarcode(source.getBarcode());
+        target.setCatalogNumber(source.getCatalogNumber());
+        target.setCollection(source.getCollection());
         DerivationEvent derivationEvent = source.getDerivedFrom();
         if(derivationEvent != null){
             derivationEvent.getDerivatives().remove(source);
         }
-        n.setDerivedFrom(source.getDerivedFrom());
+        target.setDerivedFrom(source.getDerivedFrom());
         source.setDerivedFrom(null);
-        n.setExsiccatum(source.getExsiccatum());
-        n.setIndividualCount(source.getIndividualCount());
-        n.setKindOfUnit(source.getKindOfUnit());
-        n.setLifeStage(source.getLifeStage());
-        n.setLsid(source.getLsid());
-        n.setOriginalLabelInfo(source.getOriginalLabelInfo());
-        n.setPreferredStableUri(source.getPreferredStableUri());
-        n.setPreservation(source.getPreservation());
-        n.setPublish(source.isPublish());
-        n.setProtectedIdentityCache(source.isProtectedIdentityCache());
-        n.setProtectedTitleCache(source.isProtectedTitleCache());
+        target.setExsiccatum(source.getExsiccatum());
+        target.setIndividualCount(source.getIndividualCount());
+        target.setKindOfUnit(source.getKindOfUnit());
+        target.setLifeStage(source.getLifeStage());
+        target.setLsid(source.getLsid());
+        target.setOriginalLabelInfo(source.getOriginalLabelInfo());
+        target.setPreferredStableUri(source.getPreferredStableUri());
+        target.setPreservation(source.getPreservation());
+        target.setPublish(source.isPublish());
+        target.setProtectedIdentityCache(source.isProtectedIdentityCache());
+        target.setProtectedTitleCache(source.isProtectedTitleCache());
         // n.setRecordBasis(source.getRecordBasis()); // not to copy, this it is set for the new instance explicitly
-        n.setSex(source.getSex());
-        n.setStoredUnder(source.getStoredUnder());
-        n.setTitleCache(source.getTitleCache(), n.isProtectedTitleCache());
-        source.getSources().forEach(s -> n.addSource(s));
-        source.getAnnotations().forEach(a -> n.addAnnotation(a));
-        source.getCredits().forEach(c -> n.addCredit(c));
-        source.getDerivationEvents().forEach(de -> n.addDerivationEvent(de));
+        target.setSex(source.getSex());
+        target.setStoredUnder(source.getStoredUnder());
+        target.setTitleCache(source.getTitleCache(), target.isProtectedTitleCache());
+        source.getSources().forEach(s -> target.addSource(s));
+        source.getAnnotations().forEach(a -> target.addAnnotation(a));
+        source.getCredits().forEach(c -> target.addCredit(c));
+        source.getDerivationEvents().forEach(de -> target.addDerivationEvent(de));
         source.getDerivationEvents().clear();
-        source.getDescriptions().forEach(d -> n.addDescription(d));
-        source.getDeterminations().forEach(det -> n.addDetermination(det));
+        source.getDescriptions().forEach(d -> target.addDescription(d));
+        source.getDeterminations().forEach(det -> target.addDetermination(det));
         source.getDeterminations().clear();
-        source.getExtensions().forEach(e -> n.addExtension(e));
-        source.getIdentifiers().forEach(i -> n.addIdentifier(i));
-        source.getMarkers().forEach(m -> n.addMarker(m));
-        source.getRights().forEach(r -> n.addRights(r));
-        n.addSources(source.getSources());
+        source.getExtensions().forEach(e -> target.addExtension(e));
+        source.getIdentifiers().forEach(i -> target.addIdentifier(i));
+        source.getMarkers().forEach(m -> target.addMarker(m));
+        source.getRights().forEach(r -> target.addRights(r));
+        target.addSources(source.getSources());
         // need to clone the SpecimenTypeDesignation, since the SpecimenTypeDesignations are being deleted by the hibernate delete cascade
         newSpecimenTypeDesignation = (SpecimenTypeDesignation) specimenTypeDesignation.clone();
         for(Registration reg : specimenTypeDesignation.getRegistrations()){
@@ -167,7 +167,7 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         for(TaxonName name : specimenTypeDesignation.getTypifiedNames()){
             name.removeTypeDesignation(specimenTypeDesignation);
         }
-        n.addSpecimenTypeDesignation(newSpecimenTypeDesignation);
+        target.addSpecimenTypeDesignation(newSpecimenTypeDesignation);
 
     }
 

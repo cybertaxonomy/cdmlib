@@ -290,421 +290,407 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
     }
 
 
-@Override
-protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
-        Object itemObject){
-    GbifResponse item;
-    if (itemObject instanceof GbifResponse){
-        item = (GbifResponse) itemObject;
-    } else{
-        logger.error("For Gbif Import the item has to be of type GbifResponse.");
+    @Override
+    protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
+            Object itemObject){
+        GbifResponse item;
+        if (itemObject instanceof GbifResponse){
+            item = (GbifResponse) itemObject;
+        } else{
+            logger.error("For Gbif Import the item has to be of type GbifResponse.");
+            return;
+        }
+        if (logger.isDebugEnabled()) {
+            logger.info("handleSingleUnit "+state.getRef());
+        }
+
+            ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
+            if(cdmAppController==null){
+                cdmAppController = this;
+            }
+            //check if unit already exists
+            DerivedUnitFacade derivedUnitFacade;
+            derivedUnitFacade = item.getDerivedUnitFacade();
+            state.setDerivedUnitBase(derivedUnitFacade.innerDerivedUnit());
+            TaxonName bestMatchingName =  findBestMatchingNames(item, state);
+            if (bestMatchingName == null){
+                bestMatchingName = item.getScientificName();
+            }
+            if (bestMatchingName != null){
+                Taxon taxon = getOrCreateTaxonForName(bestMatchingName, state);
+                if (state.getConfig().isAddIndividualsAssociationsSuchAsSpecimenAndObservations()) {
+                    //do not add IndividualsAssociation to non-preferred taxa
+                    if(logger.isDebugEnabled()){
+                        logger.info("isDoCreateIndividualsAssociations");
+                    }
+                    for (DeterminationEvent determinationEvent:derivedUnitFacade.getDeterminations()){
+                        makeIndividualsAssociation(state, taxon, determinationEvent);
+                    }
+
+                    save(state.getDerivedUnitBase(), state);
+                }
+            }
+
+
+
+            // handle collection data
+            handleCollectionData(state, derivedUnitFacade);
+            save(item.getDerivedUnitFacade().baseUnit(), state);
+            save(item.getDerivedUnitFacade().getFieldUnit(false), state);
+            importAssociatedUnits(state, item, derivedUnitFacade);
+            /*
+            if(state.getConfig().isIgnoreImportOfExistingSpecimens()){
+                String[] tripleId = item.getTripleID();
+                SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(tripleId[0], state);
+                DerivedUnitFacade derivedUnitFacade;
+                if(existingSpecimen!=null && existingSpecimen.isInstanceOf(DerivedUnit.class)){
+                    DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
+                    state.setDerivedUnitBase(derivedUnit);
+                    derivedUnitFacade = item.getDerivedUnitFacade();
+                    List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
+                    if (!names.isEmpty()){
+                        findBestMatchingName(names, item);
+                    }
+                    save(item.getDerivedUnitFacade().baseUnit(), state);
+                    importAssociatedUnits(state, item, derivedUnitFacade);
+                    state.getReport().addAlreadyExistingSpecimen(SpecimenImportUtility.getUnitID(derivedUnit, state.getConfig()), derivedUnit);
+                    return;
+                }
+            }
+
+            //import new specimen
+
+            // import DNA unit
+            //TODO!!!!
+            if(state.getDataHolder().getKindOfUnit()!=null && state.getDataHolder().getKindOfUnit().equalsIgnoreCase("dna")){
+                GbifDnaParser dnaParser = new GbifDnaParser(state.getPrefix(), state.getReport(), state.getCdmRepository());
+                DnaSample dnaSample = dnaParser.parse(item, state);
+                save(dnaSample, state);
+                //set dna as derived unit to avoid creating an extra specimen for this dna sample (instead just the field unit will be created)
+                state.setDerivedUnitBase(dnaSample);
+                derivedUnitFacade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
+            }
+            else{
+                // create facade
+                derivedUnitFacade = getFacade(state);
+                state.setDerivedUnitBase(derivedUnitFacade.innerDerivedUnit());
+         //   }
+
+            /**
+             * GATHERING EVENT
+
+            // gathering event
+            UnitsGatheringEvent<GbifImportConfigurator> unitsGatheringEvent =
+                   /* new UnitsGatheringEvent<GbifImportConfigurator>(cdmAppController.getTermService(),
+                    state.getDataHolder().locality, null, state.getDataHolder().decimalLongitude,
+                    state.getDataHolder().decimalLatitude, state.getDataHolder().getGatheringElevationText(),
+                    state.getDataHolder().getGatheringElevationMin(), state.getDataHolder().getGatheringElevationMax(),
+                    state.getDataHolder().getGatheringElevationUnit(), state.getDataHolder().getGatheringDateText(),
+                    state.getDataHolder().getGatheringNotes(), state.getTransformer().getReferenceSystemByKey(
+                            state.getDataHolder().getGatheringSpatialDatum()), state.getDataHolder().gatheringAgentList,
+                    state.getDataHolder().gatheringTeamList, state.getConfig());
+
+            // country
+            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
+            //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
+            unitsGatheringArea.setParams(state.getDataHolder().countryCode, state.getDataHolder().country, state.getConfig(), cdmAppController.getTermService(), cdmAppController.getOccurrenceService());
+
+            DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
+
+            // other areas
+            unitsGatheringArea = new UnitsGatheringArea();
+            //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
+            unitsGatheringArea.setAreas(state.getDataHolder().getNamedAreaList(),state.getConfig(), cdmAppController.getTermService(), cdmAppController.getVocabularyService());
+            ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
+            for (DefinedTermBase namedArea : nas) {
+                unitsGatheringEvent.addArea(namedArea);
+            }
+
+            // copy gathering event to facade
+            GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
+            derivedUnitFacade.setLocality(gatheringEvent.getLocality());
+            derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+            derivedUnitFacade.setCollector(gatheringEvent.getCollector());
+            derivedUnitFacade.setCountry((NamedArea)areaCountry);
+            derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
+            derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
+            derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
+            derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
+
+            for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
+                derivedUnitFacade.addCollectingArea((NamedArea) area);
+            }
+            //            derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+            // TODO exsiccatum
+
+            // add fieldNumber
+            derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().getFieldNumber()));
+
+            // add unitNotes
+            derivedUnitFacade.addAnnotation(Annotation.NewDefaultLanguageInstance(NB(state.getDataHolder().getUnitNotes())));
+
+            // //add Multimedia URLs
+            if (state.getDataHolder().getMultimediaObjects().size() != -1) {
+                for (String multimediaObject : state.getDataHolder().getMultimediaObjects()) {
+                    Media media;
+                    try {
+                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
+                        derivedUnitFacade.addDerivedUnitMedia(media);
+                        if(state.getConfig().isAddMediaAsMediaSpecimen()){
+                            //add media also as specimen scan
+                            MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
+                            mediaSpecimen.setMediaSpecimen(media);
+                            DefinedTermBase specimenScanTerm = getTermService().load(SPECIMEN_SCAN_TERM);
+                            if(specimenScanTerm instanceof DefinedTerm){
+                                mediaSpecimen.setKindOfUnit((DefinedTerm) specimenScanTerm);
+                            }
+                            DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.PREPARATION());
+                            derivationEvent.addDerivative(mediaSpecimen);
+                            derivedUnitFacade.innerDerivedUnit().addDerivationEvent(derivationEvent);
+                        }
+
+                    } catch (MalformedURLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            //          /*
+            //           * merge AND STORE DATA
+            //
+            //          getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
+            //
+            //          for (NamedArea area : otherAreas) {
+            //              getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
+            //          }
+
+            save(unitsGatheringEvent.getLocality(), state);
+
+            // handle collection data
+            setCollectionData(state, derivedUnitFacade);
+
+            //Reference stuff
+           // SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
+            Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
+
+            state.getDataHolder().docSources = new ArrayList<String>();
+            for (String[] fullReference : state.getDataHolder().referenceList) {
+                String strReference=fullReference[0];
+                String citationDetail = fullReference[1];
+                String citationURL = fullReference[2];
+
+                if (!citationURL.isEmpty()) {
+                    citationDetail+=", "+citationURL;
+                }
+
+                Reference reference;
+                if(strReference.equals(state.getRef().getTitleCache())){
+                    reference = state.getRef();
+                }
+                else{
+                    reference = ReferenceFactory.newGeneric();
+                    reference.setTitle(strReference);
+                }
+
+                IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
+
+                try{
+                    if (sour.getCitation() != null){
+                        if(StringUtils.isNotBlank(sour.getCitationMicroReference())) {
+                            state.getDataHolder().docSources.add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
+                        } else {
+                            state.getDataHolder().docSources.add(sour.getCitation().getTitleCache());
+                        }
+                    }
+                }catch(Exception e){
+                    logger.warn("oups");
+                }
+                reference.addSource(sour);
+                save(reference, state);
+            }
+            List<IdentifiableSource> issTmp = new ArrayList<IdentifiableSource>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
+            List<DescriptionElementSource> issTmp2 = new ArrayList<DescriptionElementSource>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
+
+            Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
+            if(issTmp2!=null) {
+                osbSet.addAll(issTmp2);
+            }
+            if(issTmp!=null) {
+                osbSet.addAll(issTmp);
+            }
+
+            addToSourceMap(sourceMap, osbSet);
+
+            if( state.getConfig().isInteractWithUser()){
+                List<OriginalSourceBase<?>>sources=null;
+                if(!state.isDerivedUnitSourcesSet()){
+                    sources= sui.askForSource(sourceMap, "the unit itself","",getReferenceService(), state.getDataHolder().docSources);
+                    state.setDerivedUnitSources(sources);
+                    state.setDerivedUnitSourcesSet(true);
+                }
+                else{
+                    sources=state.getDerivedUnitSources();
+                }
+    //          System.out.println("nb sources: "+sources.size());
+    //          System.out.println("derivedunitfacade : "+derivedUnitFacade.getTitleCache());
+                for (OriginalSourceBase<?> sour:sources){
+                    if(sour.isInstanceOf(IdentifiableSource.class)){
+                        if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
+    //                      System.out.println("add source to derivedunitfacade1 "+derivedUnitFacade.getTitleCache());
+                            derivedUnitFacade.addSource((IdentifiableSource)sour.clone());
+                        }
+                    }else{
+                        if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
+    //                      System.out.println("add source to derivedunitfacade2 "+derivedUnitFacade.getTitleCache());
+                            derivedUnitFacade.addSource(OriginalSourceType.Import,sour.getCitation(),sour.getCitationMicroReference(), ioName);
+                        }
+                    }
+                }
+            }else{
+                for (OriginalSourceBase<?> sr : sourceMap.values()){
+                    if(sr.isInstanceOf(IdentifiableSource.class)){
+                        if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
+    //                      System.out.println("add source to derivedunitfacade3 "+derivedUnitFacade.getTitleCache());
+                            derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
+                        }
+                    }else{
+                        if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
+    //                      System.out.println("add source to derivedunitfacade4 "+derivedUnitFacade.getTitleCache());
+                            derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(), ioName);
+                        }
+                    }
+                }
+            }
+
+            save(item, state);
+
+            if(DEBUG) {
+                logger.info("saved ABCD specimen ...");
+            }
+
+            // handle identifications
+            handleIdentifications(state, derivedUnitFacade);
+
+            //associatedUnits
+            importAssociatedUnits(state, item, derivedUnitFacade);
+
+
+
+        } catch (Exception e) {
+            String message = "Error when reading record!";
+            logger.warn(message);
+            state.getReport().addException(message, e);
+            e.printStackTrace();
+            state.setUnsuccessfull();
+        }
+    */
         return;
     }
-    if (logger.isDebugEnabled()) {
-        logger.info("handleSingleUnit "+state.getRef());
+
+
+    /**
+     * @param state
+     * @param derivedUnitFacade
+     */
+    private void handleCollectionData(
+            SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
+            DerivedUnitFacade derivedUnitFacade) {
+       eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnitFacade.getCollection();
+       if (collection != null) {
+           Institution institution = getInstitution(collection.getInstitute().getCode(), state);
+
+           collection = getCollection(institution, collection.getCode(), state);
+       }
+
     }
 
-        ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
-        if(cdmAppController==null){
-            cdmAppController = this;
+
+    /**
+     * @param state
+     * @param derivedUnitFacade
+     */
+    private void handleDeterminations(
+            SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
+            DerivedUnitFacade derivedUnitFacade) {
+        SpecimenImportConfiguratorBase config = state.getConfig();
+
+
+        String scientificName = "";
+        boolean preferredFlag = false;
+
+        if (state.getDataHolder().getNomenclatureCode() == ""){
+            state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().toString());
         }
-        //check if unit already exists
-        DerivedUnitFacade derivedUnitFacade;
-        derivedUnitFacade = item.getDerivedUnitFacade();
-        state.setDerivedUnitBase(derivedUnitFacade.innerDerivedUnit());
-        TaxonName bestMatchingName =  findBestMatchingNames(item, state);
-        if (bestMatchingName == null){
-            bestMatchingName = item.getScientificName();
-        }
-        if (bestMatchingName != null){
-            Taxon taxon = getOrCreateTaxonForName(bestMatchingName, state);
-            if (state.getConfig().isAddIndividualsAssociationsSuchAsSpecimenAndObservations()) {
-                //do not add IndividualsAssociation to non-preferred taxa
-                if(logger.isDebugEnabled()){
-                    logger.info("isDoCreateIndividualsAssociations");
-                }
-                for (DeterminationEvent determinationEvent:derivedUnitFacade.getDeterminations()){
-                    makeIndividualsAssociation(state, taxon, determinationEvent);
-                }
-
-                save(state.getDerivedUnitBase(), state);
-            }
-        }
-
-
-
-        // handle collection data
-        handleCollectionData(state, derivedUnitFacade);
-        save(item.getDerivedUnitFacade().baseUnit(), state);
-        save(item.getDerivedUnitFacade().getFieldUnit(false), state);
-        importAssociatedUnits(state, item, derivedUnitFacade);
-        /*
-        if(state.getConfig().isIgnoreImportOfExistingSpecimens()){
-            String[] tripleId = item.getTripleID();
-            SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(tripleId[0], state);
-            DerivedUnitFacade derivedUnitFacade;
-            if(existingSpecimen!=null && existingSpecimen.isInstanceOf(DerivedUnit.class)){
-                DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
-                state.setDerivedUnitBase(derivedUnit);
-                derivedUnitFacade = item.getDerivedUnitFacade();
-                List<NonViralName> names = findExistingNames(item.getScientificName().getNameCache(), state);
-                if (!names.isEmpty()){
-                    findBestMatchingName(names, item);
-                }
-                save(item.getDerivedUnitFacade().baseUnit(), state);
-                importAssociatedUnits(state, item, derivedUnitFacade);
-                state.getReport().addAlreadyExistingSpecimen(SpecimenImportUtility.getUnitID(derivedUnit, state.getConfig()), derivedUnit);
-                return;
-            }
-        }
-
-        //import new specimen
-
-        // import DNA unit
-        //TODO!!!!
-        if(state.getDataHolder().getKindOfUnit()!=null && state.getDataHolder().getKindOfUnit().equalsIgnoreCase("dna")){
-            GbifDnaParser dnaParser = new GbifDnaParser(state.getPrefix(), state.getReport(), state.getCdmRepository());
-            DnaSample dnaSample = dnaParser.parse(item, state);
-            save(dnaSample, state);
-            //set dna as derived unit to avoid creating an extra specimen for this dna sample (instead just the field unit will be created)
-            state.setDerivedUnitBase(dnaSample);
-            derivedUnitFacade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
-        }
-        else{
-            // create facade
-            derivedUnitFacade = getFacade(state);
-            state.setDerivedUnitBase(derivedUnitFacade.innerDerivedUnit());
-     //   }
-
-        /**
-         * GATHERING EVENT
-
-        // gathering event
-        UnitsGatheringEvent<GbifImportConfigurator> unitsGatheringEvent =
-               /* new UnitsGatheringEvent<GbifImportConfigurator>(cdmAppController.getTermService(),
-                state.getDataHolder().locality, null, state.getDataHolder().decimalLongitude,
-                state.getDataHolder().decimalLatitude, state.getDataHolder().getGatheringElevationText(),
-                state.getDataHolder().getGatheringElevationMin(), state.getDataHolder().getGatheringElevationMax(),
-                state.getDataHolder().getGatheringElevationUnit(), state.getDataHolder().getGatheringDateText(),
-                state.getDataHolder().getGatheringNotes(), state.getTransformer().getReferenceSystemByKey(
-                        state.getDataHolder().getGatheringSpatialDatum()), state.getDataHolder().gatheringAgentList,
-                state.getDataHolder().gatheringTeamList, state.getConfig());
-
-        // country
-        UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
-        //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-        unitsGatheringArea.setParams(state.getDataHolder().countryCode, state.getDataHolder().country, state.getConfig(), cdmAppController.getTermService(), cdmAppController.getOccurrenceService());
-
-        DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
-
-        // other areas
-        unitsGatheringArea = new UnitsGatheringArea();
-        //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
-        unitsGatheringArea.setAreas(state.getDataHolder().getNamedAreaList(),state.getConfig(), cdmAppController.getTermService(), cdmAppController.getVocabularyService());
-        ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
-        for (DefinedTermBase namedArea : nas) {
-            unitsGatheringEvent.addArea(namedArea);
-        }
-
-        // copy gathering event to facade
-        GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
-        derivedUnitFacade.setLocality(gatheringEvent.getLocality());
-        derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
-        derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-        derivedUnitFacade.setCountry((NamedArea)areaCountry);
-        derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
-        derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
-        derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
-        derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
-
-        for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
-            derivedUnitFacade.addCollectingArea((NamedArea) area);
-        }
-        //            derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
-        // TODO exsiccatum
-
-        // add fieldNumber
-        derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().getFieldNumber()));
-
-        // add unitNotes
-        derivedUnitFacade.addAnnotation(Annotation.NewDefaultLanguageInstance(NB(state.getDataHolder().getUnitNotes())));
-
-        // //add Multimedia URLs
-        if (state.getDataHolder().getMultimediaObjects().size() != -1) {
-            for (String multimediaObject : state.getDataHolder().getMultimediaObjects()) {
-                Media media;
-                try {
-                    media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
-                    derivedUnitFacade.addDerivedUnitMedia(media);
-                    if(state.getConfig().isAddMediaAsMediaSpecimen()){
-                        //add media also as specimen scan
-                        MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
-                        mediaSpecimen.setMediaSpecimen(media);
-                        DefinedTermBase specimenScanTerm = getTermService().load(SPECIMEN_SCAN_TERM);
-                        if(specimenScanTerm instanceof DefinedTerm){
-                            mediaSpecimen.setKindOfUnit((DefinedTerm) specimenScanTerm);
-                        }
-                        DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.PREPARATION());
-                        derivationEvent.addDerivative(mediaSpecimen);
-                        derivedUnitFacade.innerDerivedUnit().addDerivationEvent(derivationEvent);
-                    }
-
-                } catch (MalformedURLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-        //          /*
-        //           * merge AND STORE DATA
-        //
-        //          getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
-        //
-        //          for (NamedArea area : otherAreas) {
-        //              getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
-        //          }
-
-        save(unitsGatheringEvent.getLocality(), state);
-
-        // handle collection data
-        setCollectionData(state, derivedUnitFacade);
-
-        //Reference stuff
-       // SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
-        Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
-
-        state.getDataHolder().docSources = new ArrayList<String>();
-        for (String[] fullReference : state.getDataHolder().referenceList) {
-            String strReference=fullReference[0];
-            String citationDetail = fullReference[1];
-            String citationURL = fullReference[2];
-
-            if (!citationURL.isEmpty()) {
-                citationDetail+=", "+citationURL;
-            }
-
-            Reference reference;
-            if(strReference.equals(state.getRef().getTitleCache())){
-                reference = state.getRef();
-            }
-            else{
-                reference = ReferenceFactory.newGeneric();
-                reference.setTitle(strReference);
-            }
-
-            IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
-
-            try{
-                if (sour.getCitation() != null){
-                    if(StringUtils.isNotBlank(sour.getCitationMicroReference())) {
-                        state.getDataHolder().docSources.add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
-                    } else {
-                        state.getDataHolder().docSources.add(sour.getCitation().getTitleCache());
-                    }
-                }
-            }catch(Exception e){
-                logger.warn("oups");
-            }
-            reference.addSource(sour);
-            save(reference, state);
-        }
-        List<IdentifiableSource> issTmp = new ArrayList<IdentifiableSource>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
-        List<DescriptionElementSource> issTmp2 = new ArrayList<DescriptionElementSource>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
-
-        Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
-        if(issTmp2!=null) {
-            osbSet.addAll(issTmp2);
-        }
-        if(issTmp!=null) {
-            osbSet.addAll(issTmp);
-        }
-
-        addToSourceMap(sourceMap, osbSet);
-
-        if( state.getConfig().isInteractWithUser()){
-            List<OriginalSourceBase<?>>sources=null;
-            if(!state.isDerivedUnitSourcesSet()){
-                sources= sui.askForSource(sourceMap, "the unit itself","",getReferenceService(), state.getDataHolder().docSources);
-                state.setDerivedUnitSources(sources);
-                state.setDerivedUnitSourcesSet(true);
-            }
-            else{
-                sources=state.getDerivedUnitSources();
-            }
-//          System.out.println("nb sources: "+sources.size());
-//          System.out.println("derivedunitfacade : "+derivedUnitFacade.getTitleCache());
-            for (OriginalSourceBase<?> sour:sources){
-                if(sour.isInstanceOf(IdentifiableSource.class)){
-                    if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-//                      System.out.println("add source to derivedunitfacade1 "+derivedUnitFacade.getTitleCache());
-                        derivedUnitFacade.addSource((IdentifiableSource)sour.clone());
-                    }
-                }else{
-                    if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-//                      System.out.println("add source to derivedunitfacade2 "+derivedUnitFacade.getTitleCache());
-                        derivedUnitFacade.addSource(OriginalSourceType.Import,sour.getCitation(),sour.getCitationMicroReference(), ioName);
-                    }
+        Set<DeterminationEvent> determinations =  derivedUnitFacade.getDeterminations();
+        Iterator<DeterminationEvent> determinationIterator = determinations.iterator();
+        DeterminationEvent event;
+        Taxon taxon;
+        TaxonName name ;
+        while (determinationIterator.hasNext()) {
+            event = determinationIterator.next();
+            taxon = (Taxon)event.getTaxon();
+            if (taxon == null){
+                name = event.getTaxonName();
+                if (!name.getTaxa().isEmpty()){
+                    taxon = name.getTaxa().iterator().next();
                 }
             }
-        }else{
-            for (OriginalSourceBase<?> sr : sourceMap.values()){
-                if(sr.isInstanceOf(IdentifiableSource.class)){
-                    if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-//                      System.out.println("add source to derivedunitfacade3 "+derivedUnitFacade.getTitleCache());
-                        derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
-                    }
-                }else{
-                    if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-//                      System.out.println("add source to derivedunitfacade4 "+derivedUnitFacade.getTitleCache());
-                        derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(), ioName);
-                    }
-                }
+            if (taxon != null){
+                addTaxonNode(taxon, state,preferredFlag);
+                linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, null, null);
             }
         }
 
-        save(item, state);
-
-        if(DEBUG) {
-            logger.info("saved ABCD specimen ...");
-        }
-
-        // handle identifications
-        handleIdentifications(state, derivedUnitFacade);
-
-        //associatedUnits
-        importAssociatedUnits(state, item, derivedUnitFacade);
-
-
-
-    } catch (Exception e) {
-        String message = "Error when reading record!";
-        logger.warn(message);
-        state.getReport().addException(message, e);
-        e.printStackTrace();
-        state.setUnsuccessfull();
-    }
-*/
-    return;
-}
-
-
-/**
- * @param state
- * @param derivedUnitFacade
- */
-private void handleCollectionData(
-        SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
-        DerivedUnitFacade derivedUnitFacade) {
-   eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnitFacade.getCollection();
-   if (collection != null) {
-       Institution institution = getInstitution(collection.getInstitute().getCode(), state);
-
-       collection = getCollection(institution, collection.getCode(), state);
-   }
-
-}
-
-
-
-
-
-
-/**
- * @param state
- * @param derivedUnitFacade
- */
-private void handleDeterminations(
-        SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
-        DerivedUnitFacade derivedUnitFacade) {
-    SpecimenImportConfiguratorBase config = state.getConfig();
-
-
-    String scientificName = "";
-    boolean preferredFlag = false;
-
-    if (state.getDataHolder().getNomenclatureCode() == ""){
-        state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().toString());
-    }
-    Set<DeterminationEvent> determinations =  derivedUnitFacade.getDeterminations();
-    Iterator<DeterminationEvent> determinationIterator = determinations.iterator();
-    DeterminationEvent event;
-    Taxon taxon;
-    TaxonName name ;
-    while (determinationIterator.hasNext()) {
-        event = determinationIterator.next();
-        taxon = (Taxon)event.getTaxon();
-        if (taxon == null){
-            name = event.getTaxonName();
-            if (!name.getTaxa().isEmpty()){
-                taxon = (Taxon)name.getTaxa().iterator().next();
-            }
-        }
-        if (taxon != null){
-            addTaxonNode(taxon, state,preferredFlag);
-            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, null, null);
-        }
     }
 
-}
+    /**
+     * @param names
+     * @param item
+     */
+    private TaxonName findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
+       //TODO
+        if (item.getScientificName() != null){
 
-/**
- * @param names
- * @param item
- */
-private TaxonName findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
-   //TODO
-    if (item.getScientificName() != null){
-
-       List<TaxonName> names = findExistingNames(item.getScientificName().getNameCache(), state);
-       if (!names.isEmpty()){
-           TaxonName result = names.get(0);
-           Set<DeterminationEvent> detEvents = item.getDerivedUnitFacade().baseUnit().getDeterminations();
-           for (DeterminationEvent event:detEvents){
-               if(event.getTaxonName().getNameCache().equals(result.getNameCache()) ){
-                  event.setTaxonName(result);
-               } else{
-                   names = findExistingNames(event.getTaxonName().getNameCache(), state);
-                   if (!names.isEmpty()){
-                       event.setTaxonName(names.get(0));
+           List<TaxonName> names = findExistingNames(item.getScientificName().getNameCache(), state);
+           if (!names.isEmpty()){
+               TaxonName result = names.get(0);
+               Set<DeterminationEvent> detEvents = item.getDerivedUnitFacade().baseUnit().getDeterminations();
+               for (DeterminationEvent event:detEvents){
+                   if(event.getTaxonName().getNameCache().equals(result.getNameCache()) ){
+                      event.setTaxonName(result);
+                   } else{
+                       names = findExistingNames(event.getTaxonName().getNameCache(), state);
+                       if (!names.isEmpty()){
+                           event.setTaxonName(names.get(0));
+                       }
                    }
                }
+               return result;
            }
-           return result;
-       }
+        }
+       return null;
+
     }
-   return null;
-
-}
 
 
 
-/**
- * @param titleCache
- * @param state
- * @return
- */
-private List<TaxonName> findExistingNames(String nameCache, SpecimenImportStateBase state) {
-    return getNameService().findNamesByNameCache(nameCache, MatchMode.LIKE, null);
-}
+    /**
+     * @param titleCache
+     * @param state
+     * @return
+     */
+    private List<TaxonName> findExistingNames(String nameCache, SpecimenImportStateBase state) {
+        return getNameService().findNamesByNameCache(nameCache, MatchMode.LIKE, null);
+    }
 
 
 
-
-
-
-/* (non-Javadoc)
- * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
- */
-@Override
-protected boolean isIgnore(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state) {
-
-    return false;
-}
-
-
-
+    @Override
+    protected boolean isIgnore(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state) {
+        return false;
+    }
 
 
 

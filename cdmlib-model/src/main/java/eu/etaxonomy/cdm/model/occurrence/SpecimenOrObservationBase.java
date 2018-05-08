@@ -182,7 +182,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     private Integer individualCount;
 
     /**
-     * The preferred stable identifer (URI) as discussed in
+     * The preferred stable identifier (URI) as discussed in
      * {@link  http://dev.e-taxonomy.eu/trac/ticket/5606}
      */
     @XmlElement(name = "PreferredStableUri")
