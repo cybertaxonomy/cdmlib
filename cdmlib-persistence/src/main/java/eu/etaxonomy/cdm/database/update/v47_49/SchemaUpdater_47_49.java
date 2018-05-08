@@ -163,6 +163,13 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = ColumnNameChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
+        //#7210 Add salt field for User
+        stepName = "Add salt field for User";
+        tableName = "UserAccount";
+        newColumnName = "salt";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+        stepList.add(step);
+
 
 
         //7276  Make User.emailAddress a unique field
