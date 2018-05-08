@@ -35,21 +35,21 @@ public enum ExternalLinkType implements IEnumTerm<ExternalLinkType>{
      * Unknown link type is the type to be used if no information is available about the type.
      */
     @XmlEnumValue("Unknown")
-    Unknown(UUID.fromString(""), "Unknown Link Type","UNK", null),
+    Unknown(UUID.fromString("270c0fa7-8c11-4a66-a0d7-deb6592e7f40"), "Unknown Link Type","UNK", null),
 
     //1
     /**
      * Link type to represent a web site.
      */
     @XmlEnumValue("Language")
-    WebSite(UUID.fromString(""), "WebSite", "WS", null),
+    WebSite(UUID.fromString("40f128af-b953-4943-af91-9b2f6b030546"), "WebSite", "WS", null),
 
     //2
     /**
      * Link type to represent a file.
      */
     @XmlEnumValue("File")
-    File(UUID.fromString(""), "File", "FI", null),
+    File(UUID.fromString("6e7ee084-d8a1-4813-b45a-218414c8795b"), "File", "FI", null),
 
     ;
 
