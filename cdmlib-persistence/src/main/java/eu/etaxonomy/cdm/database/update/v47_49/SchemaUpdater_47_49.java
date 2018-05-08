@@ -211,6 +211,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = ColumnTypeChanger.NewInt2StringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT, null, !NOT_NULL);
         stepList.add(step);
 
+        updateSpecimenTypeDesignationStatusOrder(stepList);
 
         //7276  Make User.emailAddress a unique field
         //TODO H2 / PostGreSQL / SQL Server
@@ -222,6 +223,34 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepList.add(step);
 
         return stepList;
+    }
+
+    /**
+     * @param stepList
+     */
+    private void updateSpecimenTypeDesignationStatusOrder(List<ISchemaUpdaterStep> stepList) {
+        VocabularyOrderUpdater updater = VocabularyOrderUpdater.NewInstance(stepList);
+        updater.add("a407dbc7-e60c-46ff-be11-eddf4c5a970d", 1);
+        updater.add("05002d46-083e-4b27-8731-2e7c28a8825c", 2);
+        updater.add("93ef8257-0a08-47bb-9b36-542417ae7560", 3);
+        updater.add("7a1a8a53-78f4-4fc0-89f7-782e94992d08", 4);
+        updater.add("f3b60bdb-4638-4ca9-a0c7-36e77d8459bb", 5);
+        updater.add("052a5ff0-8e9a-4355-b24f-5e4bb6071f44", 6);
+        updater.add("26e13359-8f77-4e40-a85a-56c01782fce0", 7);
+        updater.add("7afc2f4f-f70a-4aa5-80a5-87764f746bde", 8);
+        updater.add("989a2715-71d5-4fbe-aa9a-db9168353744", 9);
+        updater.add("95b90696-e103-4bc0-b60b-c594983fb566", 10);
+        updater.add("eb7df2e5-d9a7-479d-970c-c6f2b0a761d7", 11);
+        updater.add("497137f3-b614-4183-8a22-97fcd6e2bdd8", 12);
+        updater.add("7244bc51-14d8-41a6-9524-7dc5303bba29", 13);
+        updater.add("0c39e2a5-2fe0-4d4f-819a-f609b5340339", 14);
+        updater.add("01d91053-7004-4984-aa0d-9f4de59d6205", 15);
+        updater.add("8d2fed1f-242e-4bcf-bbd7-e85133e479dc", 16);
+        updater.add("49c96cae-6be6-401e-9b36-1bc12d9dc8f9", 17);
+        updater.add("643513d0-32f5-46ba-840b-d9b9caf8160f", 18);
+        updater.add("b7807acc-f559-474e-ad4a-e7a41e085e34", 19);
+        updater.add("230fd762-b143-49de-ac2e-744bcc48a63b", 20);
+        updater.add("7194020b-a326-4b47-9bfe-9f31a30aba7f", 21);
     }
 
     /**
