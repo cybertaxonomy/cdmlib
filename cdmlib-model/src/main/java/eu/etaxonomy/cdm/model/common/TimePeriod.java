@@ -534,7 +534,7 @@ public class TimePeriod implements Cloneable, Serializable {
                     (start== null? 33: start.hashCode()) +
                     (end== null? 39: end.hashCode()) +
                     (freeText== null? 41: freeText.hashCode());
-        return super.hashCode();
+        return hashCode;
     }
 
 
