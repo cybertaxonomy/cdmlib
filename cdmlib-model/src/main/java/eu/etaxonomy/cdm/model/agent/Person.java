@@ -61,8 +61,8 @@ import javassist.compiler.ast.Keyword;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {
 	    "prefix",
-	    "familyname",
-	    "givenname",
+	    "familyName",
+	    "givenName",
 	    "initials",
 	    "suffix",
 	    "lifespan",
