@@ -46,7 +46,7 @@ public class OccurrenceSearch implements RemoteResponse {
     public OccurrenceSearchRequest getRequest() {
         return this.request;
     }
-    
+
     public class OccurrenceSearchRequest {
         private String taxonUuid;
         public OccurrenceSearchRequest() {
@@ -61,17 +61,17 @@ public class OccurrenceSearch implements RemoteResponse {
             return this.taxonUuid;
         }
     }
-    
+
     public void addToResponse(String acceptedTaxon,
     		String acceptedTaxonUuid,
     		DerivedUnitFacade duf) {
-    	
-    	OccurrenceSearch.OccurrenceSearchResponse osr = 
+
+    	OccurrenceSearch.OccurrenceSearchResponse osr =
     			new OccurrenceSearch.OccurrenceSearchResponse();
 
     	osr.setAcceptedTaxon(acceptedTaxon);
     	osr.setAcceptedTaxonUuid(acceptedTaxonUuid);
-    	
+
     	if(duf.getCollector() != null) {
     		osr.setCollector(duf.getCollector().getTitleCache());
     	}
@@ -81,23 +81,23 @@ public class OccurrenceSearch implements RemoteResponse {
     			osr.setInstitution(duf.getCollection().getInstitute().getName());
     		}
     	}
-    	
+
     	osr.setFieldNotes(duf.getFieldNotes());
     	if(duf.getType() != null) {
     		osr.setType(duf.getType().name());
     	}
     	osr.setUnitCount(duf.getIndividualCount());
-    	
+
     	if(duf.getKindOfUnit() != null) {
     		osr.setKindOfUnit(duf.getKindOfUnit().getLabel());
     	}
-    	
+
     	osr.setElevation(duf.getAbsoluteElevation());
     	osr.setMaxElevation(duf.getAbsoluteElevationMaximum());
-    	
+
     	osr.setDepth(duf.getDistanceToGround());
     	osr.setMaxDepth(duf.getDistanceToGroundMax());
-    	
+
     	if(duf.getGatheringPeriod() != null) {
     		TimePeriod tp = duf.getGatheringPeriod();
     		if(tp.getStart() != null) {
@@ -107,16 +107,16 @@ public class OccurrenceSearch implements RemoteResponse {
     			osr.setEndGatheringDate(tp.getEnd().toString());
     		}
     	}
-    	
-    	
-    	OccurrenceSearch.OccurrenceSearchResponse.Location loc = 
+
+
+    	OccurrenceSearch.OccurrenceSearchResponse.Location loc =
     			osr.getLocation();
-    	
+
     	Point exactLocation = duf.getExactLocation();
     	if(exactLocation != null) {
     		loc.setDecimalLatitude(exactLocation.getLatitude());
     		loc.setDecimalLongitude(exactLocation.getLongitude());
-    		loc.setErrorRadius(exactLocation.getErrorRadius());    		
+    		loc.setErrorRadius(exactLocation.getErrorRadius());
     		if(exactLocation.getReferenceSystem() != null) {
     			loc.setReferenceSystem(exactLocation.getReferenceSystem().getTitleCache());
     		}
@@ -125,21 +125,21 @@ public class OccurrenceSearch implements RemoteResponse {
     	if(duf.getCountry() != null) {
     		loc.setCountry(duf.getCountry().getTitleCache());
     	}
-    	
+
     	if(duf.getLocality() != null) {
     		loc.setLocality(duf.getLocality().getText());
     	}
-    	
+
     	osr.setFieldNumber(duf.getFieldNumber());
     	osr.setAccessionNumber(duf.getAccessionNumber());
     	osr.setCatalogNumber(duf.getCatalogNumber());
-    	
+
     	Set<IdentifiableSource> sources = duf.getSources();
     	boolean dateFound = false;
     	String datePublishedString = null;
     	List<String> sourceTitleList = new ArrayList<String>();
     	for (IdentifiableSource source:sources) {
-    		String citation = source.getCitation().getTitleCache();    
+    		String citation = source.getCitation().getTitleCache();
 
     		datePublishedString = source.getCitation().getDatePublishedString();
     		if (!dateFound && !StringUtils.isEmpty(datePublishedString)){
@@ -147,19 +147,19 @@ public class OccurrenceSearch implements RemoteResponse {
     			dateFound=true;
     		}
     		String  micro = source.getCitationMicroReference();
-    		
+
     		if(citation == null) {
     			citation = "";
-    		}    		
+    		}
     		if(micro == null) {
     			micro = "";
-    		}    		
+    		}
     		sourceTitleList.add(citation + " " + micro);
     	}
     	osr.setSources(sourceTitleList);
-    	
+
     	osr.setPublicationDate(datePublishedString);
-    	
+
     	List<String> rightsTextList = new ArrayList<String>();
     	Set<Rights> rightsSet = duf.innerDerivedUnit().getRights();
     	for(Rights rights : rightsSet) {
@@ -177,42 +177,42 @@ public class OccurrenceSearch implements RemoteResponse {
 
 
     public OccurrenceSearchResponse createResponse(DerivedUnitFacade duFacade) {
-    	OccurrenceSearch.OccurrenceSearchResponse osResponse = 
+    	OccurrenceSearch.OccurrenceSearchResponse osResponse =
     			new OccurrenceSearch.OccurrenceSearchResponse();
-    	
+
     	return osResponse;
     }
 
     public class OccurrenceSearchResponse {
-   
+
         private String acceptedTaxon;
         private String acceptedTaxonUuid;
-        
+
         private String collector;
         private String collection;
         private String institution;
-              
+
         private String fieldNotes;
-        
+
         //
         private String type;
-        private Object unitCount;
+        private String unitCount;
         private String kindOfUnit;
 
         //ELEVATION
         private Object elevation;
         private Object maxElevation;
-        
+
         //DEPTH
         private Object depth;
         private Object maxDepth;
 
         private String startGatherinDate;
         private String endGatheringDate;
-              
-        private Location location;        	
 
-        private String fieldNumber;        
+        private Location location;
+
+        private String fieldNumber;
         private String accessionNumber;
         private String catalogNumber;
         private String barcode;
@@ -221,20 +221,20 @@ public class OccurrenceSearch implements RemoteResponse {
 
 		private List<String> rights;
         private List<String> sources;
-        
+
         //FIXME: Ignoring the fields below for the moment
         //       Will come back to them when requested and
         //       when the model allows it properly
-        
+
 //      private String citation;
 
-        public OccurrenceSearchResponse() {             	        	
+        public OccurrenceSearchResponse() {
         	location = new Location();
         	rights = new ArrayList<String>();
         	sources = new ArrayList<String>();
 
         }
-        
+
         /**
          * @return the specimenOrObservationType
          */
@@ -310,7 +310,7 @@ public class OccurrenceSearch implements RemoteResponse {
         /**
          * @param accessionNumber the accessionNumber to set
          */
-   
+
         public void setAccessionNumber(String accessionNumber) {
             this.accessionNumber = accessionNumber;
         }
@@ -427,11 +427,11 @@ public class OccurrenceSearch implements RemoteResponse {
             this.barcode = barcode;
         }
 
-        
+
 		public String getPublicationDate() {
 			return publicationDate;
 		}
-		
+
 		public void setPublicationDate(String publicationDate) {
 			this.publicationDate = publicationDate;
 		}
@@ -575,9 +575,9 @@ public class OccurrenceSearch implements RemoteResponse {
 			private Object decimalLongitude;
         	private Object errorRadius;
         	private String country;
-        	private String locality;        	
+        	private String locality;
         	private String referenceSystem;
-        	
+
         	public Object getDecimalLatitude() {
 				return decimalLatitude;
 			}
@@ -618,5 +618,5 @@ public class OccurrenceSearch implements RemoteResponse {
         }
 
     }
-    
+
 }

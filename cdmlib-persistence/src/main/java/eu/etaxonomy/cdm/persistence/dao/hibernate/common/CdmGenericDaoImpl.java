@@ -582,7 +582,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 		Criteria criteria = session.createCriteria(matchClass);
 		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria);
-		logger.debug(criteria);
+		if (logger.isDebugEnabled()){logger.debug(criteria);}
 		//session.flush();
 		if (noMatch == false){
 			@SuppressWarnings("unchecked")
@@ -614,7 +614,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Criteria criteria) throws IllegalAccessException, MatchException {
 		Matching matching = matchStrategy.getMatching();
 		boolean noMatch = false;
-		Map<String, List<MatchMode>> replaceMatchers = new HashMap<String, List<MatchMode>>();
+		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
 			boolean cacheProtected = (Boolean)cacheMatcher.getProtectedField(matching).get(objectToMatch);
 			if (cacheProtected == true){
@@ -630,7 +630,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 						String propertyName = replacementMode.getFirstResult();
 						List<MatchMode> replaceMatcherList = replaceMatchers.get(propertyName);
 						if (replaceMatcherList == null){
-							replaceMatcherList = new ArrayList<MatchMode>();
+							replaceMatcherList = new ArrayList<>();
 							replaceMatchers.put(propertyName, replaceMatcherList);
 						}
 						replaceMatcherList.add(replacementMode.getSecondResult());
@@ -643,7 +643,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
 			Object value = fieldMatcher.getField().get(objectToMatch);
-			List<MatchMode> matchModes= new ArrayList<MatchMode>();
+			List<MatchMode> matchModes= new ArrayList<>();
 			matchModes.add(fieldMatcher.getMatchMode());
 			if (replaceMatchers.get(propertyName) != null){
 				matchModes.addAll(replaceMatchers.get(propertyName));

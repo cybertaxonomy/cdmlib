@@ -467,18 +467,6 @@ public class TimePeriod implements Cloneable, Serializable {
         }
     }
 
-    private void initStart(){
-        if (start == null){
-            start = new Partial();
-        }
-    }
-
-    private void initEnd(){
-        if (end == null){
-            end = new Partial();
-        }
-    }
-
 
 //**************************** to String ****************************************
 
@@ -491,11 +479,10 @@ public class TimePeriod implements Cloneable, Serializable {
     @Override
     public String toString(){
         String result = null;
-        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
+//        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         if ( StringUtils.isNotBlank(this.getFreeText())){
             result = this.getFreeText();
         }else{
-
             result = getTimePeriod();
         }
         return result;
@@ -518,10 +505,6 @@ public class TimePeriod implements Cloneable, Serializable {
 
 //*********** EQUALS **********************************/
 
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null){
@@ -544,9 +527,6 @@ public class TimePeriod implements Cloneable, Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         int hashCode = 7;
@@ -560,10 +540,6 @@ public class TimePeriod implements Cloneable, Serializable {
 
 //*********** CLONE **********************************/
 
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Object clone()  {
         try {

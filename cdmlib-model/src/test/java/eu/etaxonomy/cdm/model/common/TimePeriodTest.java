@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.common;
 
@@ -22,7 +22,6 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class TimePeriodTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TimePeriodTest.class);
-	
+
 	private TimePeriod onlyStartYear;
 	private TimePeriod onlyEndYear;
 	private TimePeriod startAndEndYear;
@@ -45,9 +44,6 @@ public class TimePeriodTest {
 	private static final Integer year = 1982;
 	private static final Integer month = 1;
 	private static final Integer day = 5;
-	
-		
-
 
 	/**
 	 * @throws java.lang.Exception
@@ -59,19 +55,11 @@ public class TimePeriodTest {
 		startAndEndYear = TimePeriod.NewInstance(1931, 1957);
 		Integer start = null;
 		Integer end = null;
-		noStartAndEndYear = TimePeriod.NewInstance(start, end);;
+		noStartAndEndYear = TimePeriod.NewInstance(start, end);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
+//************************ TESTS ******************************************
 
-	
-//************************ TESTS ******************************************	
-	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#NewInstance()}.
 	 */
@@ -173,7 +161,7 @@ public class TimePeriodTest {
 		TimePeriod tp = TimePeriod.NewInstance(readInst);
 		Assert.assertNotNull(tp);
 		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
-		Assert.assertEquals("Timeperiod's should not be empty", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), (Integer)tp.getStartDay());
+		Assert.assertEquals("Timeperiod's should not be empty", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
 	}
 
 	/**
@@ -185,7 +173,7 @@ public class TimePeriodTest {
 		ReadableInstant readInst2 = new MutableDateTime();
 		((MutableDateTime)readInst).addDays(5);
 		TimePeriod tp = TimePeriod.NewInstance(readInst, readInst2);
-		
+
 		Assert.assertNotNull(tp);
 		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
 		Assert.assertEquals("Timeperiod's day should not be equal to readable instant", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
@@ -239,7 +227,7 @@ public class TimePeriodTest {
 		tp.setStart(newStartDate);
 		String changedString = tp.toString();
 		Assert.assertTrue("Setting the partial should change the string representation of the TimePeriod", !startString.equals(changedString));
-		
+
 		//
 		tp = TimePeriodParser.parseString("1752");
 		assertNull("Freetext should be not set", tp.getFreeText());
@@ -256,14 +244,14 @@ public class TimePeriodTest {
 		changedString = tp.toString();
 		Assert.assertEquals("Setting a partial for a time period having the freetext set should not change the string representation of the TimePeriod	", startString, changedString);
 
-		
+
 		//
 //		tp = TimePeriodParser.parseString("15.12.1730"); //TODO currently not parsed
-//		
+//
 //		startString = tp.toString();
 //		tp.setStart(newStartDate);
 //		changedString = tp.toString();
-//				
+//
 //		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
 	}
 
@@ -279,7 +267,7 @@ public class TimePeriodTest {
 		onlyStartYear.setEndDay(14);
 		assertFalse(onlyStartYear.isPeriod());
 		onlyStartYear.setEndYear(1988);
-		assertTrue(onlyStartYear.isPeriod()); //may be discussed		
+		assertTrue(onlyStartYear.isPeriod()); //may be discussed
 	}
 
 	/**
@@ -318,10 +306,10 @@ public class TimePeriodTest {
 		tp.setEndYear(2002);
 		Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
 	}
-	
-	
+
+
 	/**
-	 * TODO should be partly moved to a test class for {@link TimePeriodPartialFormatter}	
+	 * TODO should be partly moved to a test class for {@link TimePeriodPartialFormatter}
 	 */
 	@Test
 	public void testToStringTimePeriod() {
@@ -333,7 +321,7 @@ public class TimePeriodTest {
 		tp1.setEndMonth(11);
 		Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
 	}
-	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
@@ -373,16 +361,16 @@ public class TimePeriodTest {
 		Integer endDay = 21;
 		Integer endYear = 1799;
 		String freeText = "A free period";
-		
+
 		TimePeriod tp1 = TimePeriod.NewInstance(startYear);
 		TimePeriod tpClone = (TimePeriod)tp1.clone();
 		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
-		
+
 		tp1.setStartMonth(startMonth);
 		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
 		tpClone = (TimePeriod)tp1.clone();
 		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
-		
+
 
 		tp1.setEndYear(endYear);
 		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
@@ -393,7 +381,7 @@ public class TimePeriodTest {
 		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
 		tpClone = (TimePeriod)tp1.clone();
 		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
-		
+
 		tp1.setFreeText(freeText);
 		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
 		tpClone = (TimePeriod)tp1.clone();
@@ -412,6 +400,6 @@ public class TimePeriodTest {
 		Assert.assertEquals("Tp2 must be equal", tp1, tp2);
 	}
 
-	
-	
+
+
 }
