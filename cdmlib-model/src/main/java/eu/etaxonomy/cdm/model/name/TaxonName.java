@@ -237,14 +237,15 @@ public class TaxonName
 //    @NullOrNotEmpty
     @Column(length=255)
     private String appendedPhrase;
-//
-//    @XmlElement(name = "NomenclaturalMicroReference")
-//    @Field
-//    @CacheUpdate(noUpdate ="titleCache")
-//    //TODO Val #3379
-////    @NullOrNotEmpty
-//    @Column(length=255)
-//    private String nomenclaturalMicroReference;
+
+    //#6581
+    @XmlElement(name = "NomenclaturalMicroReference")
+    @Field
+    @CacheUpdate(noUpdate ="titleCache")
+    //TODO Val #3379
+    //@NullOrNotEmpty
+    @Column(length=255)
+    private String nomenclaturalMicroReference;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
@@ -329,16 +330,18 @@ public class TaxonName
 //    @NotNull
     @IndexedEmbedded(depth=1)
     private Rank rank;
-//
-//    @XmlElement(name = "NomenclaturalReference")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//    @CacheUpdate(noUpdate ="titleCache")
-//    @IndexedEmbedded
-//    private Reference nomenclaturalReference;
 
+    //#6581
+    @XmlElement(name = "NomenclaturalReference")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @CacheUpdate(noUpdate ="titleCache")
+    @IndexedEmbedded
+    private Reference nomenclaturalReference;
+
+    //#6581
     @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -2273,10 +2276,12 @@ public class TaxonName
 
     @Override
     public Reference getNomenclaturalReference(){
-        if (this.nomenclaturalSource == null){
-            return null;
-        }
-        return this.nomenclaturalSource.getCitation();
+        //#6581
+        return this.nomenclaturalReference;
+//        if (this.nomenclaturalSource == null){
+//            return null;
+//        }
+//        return this.nomenclaturalSource.getCitation();
     }
 
     @Override
@@ -2307,19 +2312,17 @@ public class TaxonName
 
     @Override
     public void setNomenclaturalReference(Reference nomenclaturalReference){
-        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
-        checkNullSource();
+        //#6581
+        this.nomenclaturalReference = nomenclaturalReference;
+//        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
+//        checkNullSource();
     }
     @Override
     public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
         setNomenclaturalReference(CdmBase.deproxy(nomenclaturalReference, Reference.class));
     }
 
-
-
-    /**
-     *
-     */
+    //#6581
     private void checkNullSource() {
         if (this.nomenclaturalSource == null){
             return;
@@ -2372,18 +2375,22 @@ public class TaxonName
     //Details of the nomenclatural reference (protologue).
     @Override
     public String getNomenclaturalMicroReference(){
-        if (this.nomenclaturalSource == null){
-            return null;
-        }
-        return this.nomenclaturalSource.getCitationMicroReference();
+        //#6581
+        return this.nomenclaturalMicroReference;
+//        if (this.nomenclaturalSource == null){
+//            return null;
+//        }
+//        return this.nomenclaturalSource.getCitationMicroReference();
     }
     /**
      * @see  #getNomenclaturalMicroReference()
      */
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
-        checkNullSource();
+        //#6581
+        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+//        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+//        checkNullSource();
     }
 
     @Override
