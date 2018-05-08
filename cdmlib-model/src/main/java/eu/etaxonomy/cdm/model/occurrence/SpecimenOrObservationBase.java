@@ -27,7 +27,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,7 +51,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 
@@ -177,9 +175,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     @XmlElement(name = "IndividualCount")
     @Field(analyze = Analyze.NO)
-    @NumericField
-    @Min(0)
-    private Integer individualCount;
+    private String individualCount;
 
     /**
      * The preferred stable identifier (URI) as discussed in
@@ -486,11 +482,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         this.kindOfUnit = kindOfUnit;
     }
 
-    public Integer getIndividualCount() {
+    public String getIndividualCount() {
         return individualCount;
     }
 
-    public void setIndividualCount(Integer individualCount) {
+    public void setIndividualCount(String individualCount) {
         this.individualCount = individualCount;
     }
 

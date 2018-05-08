@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
+import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -202,13 +203,21 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
+        //#6720 Make individual count a string
+        stepName = "Make individual count a string";
+        tableName = "SpecimenOrObservationBase";
+        String columnName = "individualCount";
+        int size = 255;
+        step = ColumnTypeChanger.NewInt2StringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT, null, !NOT_NULL);
+        stepList.add(step);
+
 
         //7276  Make User.emailAddress a unique field
         //TODO H2 / PostGreSQL / SQL Server
         //User.email unique
         stepName = "Update User.emailAdress unique index";
         tableName = "UserAccount";
-        String columnName = "emailAddress";
+        columnName = "emailAddress";
         step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
         stepList.add(step);
 

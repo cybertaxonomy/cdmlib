@@ -1795,11 +1795,11 @@ public class DerivedUnitFacade {
 
 	// individual counts
 	@Transient
-	public Integer getIndividualCount() {
+	public String getIndividualCount() {
 		return (hasFieldUnit() ? getFieldUnit(true).getIndividualCount() : null);
 	}
 
-	public void setIndividualCount(Integer individualCount) {
+	public void setIndividualCount(String individualCount) {
 		getFieldUnit(true).setIndividualCount(individualCount);
 	}
 

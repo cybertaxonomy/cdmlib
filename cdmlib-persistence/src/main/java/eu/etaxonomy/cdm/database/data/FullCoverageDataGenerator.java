@@ -787,7 +787,7 @@ public class FullCoverageDataGenerator {
 		DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null);
 		cdmBases.add(kindOfUnit);
 		fieldUnit.setKindOfUnit(kindOfUnit);
-		fieldUnit.setIndividualCount(3);
+		fieldUnit.setIndividualCount("3");
 		fieldUnit.putDefinition(Language.ENGLISH(), "definition");
 		fieldUnit.setPublish(true);
 		handleIdentifiableEntity(fieldUnit);

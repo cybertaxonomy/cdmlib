@@ -96,7 +96,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
     private final String fieldNotes = "such a beautiful specimen";
     private Person primaryCollector;
 
-    private final Integer individualCount = 1;
+    private final String individualCount = "1";
 	private final DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
 	private final DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
 	private final NamedArea country = Country.GERMANY();

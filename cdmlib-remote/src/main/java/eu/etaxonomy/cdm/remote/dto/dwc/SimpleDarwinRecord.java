@@ -8,7 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.dto.dwc;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -251,8 +250,7 @@ public class SimpleDarwinRecord {
     @XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")
     protected String individualID;
     @XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")
-    @XmlSchemaType(name = "positiveInteger")
-    protected BigInteger individualCount;
+    protected String individualCount;
     @XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")
     protected String sex;
     @XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")
@@ -1125,10 +1123,10 @@ public class SimpleDarwinRecord {
      *
      * @return
      *     possible object is
-     *     {@link BigInteger }
-     *     
+     *     {@link String }
+     *
      */
-    public BigInteger getIndividualCount() {
+    public String getIndividualCount() {
         return individualCount;
     }
 
@@ -1137,10 +1135,10 @@ public class SimpleDarwinRecord {
      *
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *     {@link String }
+     *
      */
-    public void setIndividualCount(BigInteger value) {
+    public void setIndividualCount(String value) {
         this.individualCount = value;
     }
 

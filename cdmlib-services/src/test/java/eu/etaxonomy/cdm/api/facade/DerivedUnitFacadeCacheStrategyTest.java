@@ -67,7 +67,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	String fieldNotes = "such a beautiful specimen";
 	Person primaryCollector;
 
-	Integer individualCount = 1;
+	String individualCount = "1";
 	DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
 	DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());

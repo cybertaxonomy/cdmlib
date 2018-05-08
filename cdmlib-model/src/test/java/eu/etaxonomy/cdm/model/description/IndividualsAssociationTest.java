@@ -35,7 +35,7 @@ public class IndividualsAssociationTest {
         indAssociation = IndividualsAssociation.NewInstance();
 
         DerivedUnit associatedSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
-        associatedSpecimen.setIndividualCount(2);
+        associatedSpecimen.setIndividualCount("2");
         indAssociation.setAssociatedSpecimenOrObservation(associatedSpecimen);
 
         LanguageString langString = LanguageString.NewInstance("Test", Language.ENGLISH());

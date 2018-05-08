@@ -115,7 +115,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     String fieldNumber = "15p23B";
     String fieldNotes = "such a beautiful specimen";
 
-    Integer individualCount = 1;
+    String individualCount = "1";
     DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
     DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
     LanguageString locality = LanguageString.NewInstance("My locality",
@@ -1217,10 +1217,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     public void testGetSetIndividualCount() {
         assertEquals("Individual count must be same", individualCount,
                 specimenFacade.getIndividualCount());
-        specimenFacade.setIndividualCount(4);
-        assertEquals("New individual count must be '4'",
-                Integer.valueOf(4), specimenFacade.getIndividualCount());
-
+        specimenFacade.setIndividualCount("4");
+        assertEquals("New individual count must be '4'", "4", specimenFacade.getIndividualCount());
     }
 
     /**

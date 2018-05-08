@@ -223,7 +223,7 @@ public class SpecimenTest {
 		Person createdBy = Person.NewTitledInstance("creator");
 		DerivationEvent derivedFrom = DerivationEvent.NewInstance(null);
 		int id = 22;
-		int individualCount = 25;
+		String individualCount = "25";
 		DefinedTerm lifeStage = DefinedTerm.NewStageInstance(null, null, null);
 		LSID lsid = null;
 		try {
