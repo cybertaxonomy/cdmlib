@@ -115,7 +115,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
      *
      */
     @XmlEnumValue("Nomenclatural Reference")
-    NomenclaturalReference(UUID.fromString(""), "Nomenclatural Reference", "NOR", null),
+    NomenclaturalReference(UUID.fromString("67650daf-d4aa-48da-aa41-18d2763383aa"), "Nomenclatural Reference", "NOR", null),
 
 
 	//7
