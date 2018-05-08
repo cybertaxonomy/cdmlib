@@ -93,8 +93,6 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
