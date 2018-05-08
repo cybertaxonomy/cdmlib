@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 
 public abstract class StrategyBase implements IStrategy, Serializable {
@@ -80,7 +81,8 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 	 */
 	protected boolean isUserType(Class<?> fieldType) {
 		if (	fieldType == TimePeriod.class ||
-				fieldType == DateTime.class ||
+		        fieldType == VerbatimTimePeriod.class ||
+                fieldType == DateTime.class ||
 				fieldType == LSID.class ||
 				fieldType == Contact.class ||
 				fieldType == URI.class ||

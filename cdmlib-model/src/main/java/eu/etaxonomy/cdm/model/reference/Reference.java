@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
@@ -295,7 +296,7 @@ public class Reference
 	@XmlElement(name ="DatePublished" )
 	@Embedded
 	@IndexedEmbedded
-	private TimePeriod datePublished = TimePeriod.NewInstance();
+	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     //#5258
     @XmlElement (name = "Accessed", type= String.class)
@@ -698,16 +699,21 @@ public class Reference
 	 * <i>this</i> reference.
 	 */
 	@Override
-    public TimePeriod getDatePublished(){
+    public VerbatimTimePeriod getDatePublished(){
 		return this.datePublished;
 	}
 	/**
 	 * @see 	#getDatePublished()
 	 */
 	@Override
-    public void setDatePublished(TimePeriod datePublished){
+    public void setDatePublished(VerbatimTimePeriod datePublished){
 		this.datePublished = datePublished;
 	}
+    @Override
+    @Transient
+    public void setDatePublished(TimePeriod datePublished){
+        setDatePublished(VerbatimTimePeriod.toVerbatim(datePublished));
+    }
 
 	public boolean hasDatePublished(){
 		boolean result =  ! ( (this.datePublished == null) || StringUtils.isBlank(datePublished.toString()));

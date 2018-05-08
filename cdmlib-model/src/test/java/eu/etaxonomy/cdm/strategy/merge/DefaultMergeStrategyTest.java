@@ -264,7 +264,7 @@ public class DefaultMergeStrategyTest {
 		Assert.assertSame("Created must be created2", created2, book1.getCreated());
 		//TODO updated should have the actual date if any value has changed
 		Assert.assertSame("Created must be created2", null, book1.getUpdated());
-		Assert.assertSame("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
+		Assert.assertEquals("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
 		//TODO this may not be correct
 		Assert.assertSame("LSID must be LSID2", lsid2, book1.getLsid());
 

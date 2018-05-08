@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 })
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
+@MappedSuperclass
 public class TimePeriod implements Cloneable, Serializable {
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = Logger.getLogger(TimePeriod.class);
@@ -89,7 +91,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(){
+    public static final TimePeriod NewInstance(){
         return new TimePeriod();
     }
 
@@ -98,7 +100,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(Partial startDate){
+    public static final TimePeriod NewInstance(Partial startDate){
         return new TimePeriod(startDate);
     }
 
@@ -107,7 +109,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(Partial startDate, Partial endDate){
+    public static final TimePeriod NewInstance(Partial startDate, Partial endDate){
         return new TimePeriod(startDate, endDate);
     }
 
@@ -116,7 +118,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(Integer year){
+    public static final TimePeriod NewInstance(Integer year){
         Integer endYear = null;
         return NewInstance(year, endYear);
     }
@@ -125,7 +127,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method
      * @return
      */
-    public static TimePeriod NewInstance(Integer startYear, Integer endYear){
+    public static final TimePeriod NewInstance(Integer startYear, Integer endYear){
         Partial startDate = null;
         Partial endDate = null;
         if (startYear != null){
@@ -143,7 +145,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method to create a TimePeriod from a <code>Calendar</code>. The Calendar is stored as the starting instant.
      * @return
      */
-    public static TimePeriod NewInstance(Calendar startCalendar){
+    public static final TimePeriod NewInstance(Calendar startCalendar){
         return NewInstance(startCalendar, null);
     }
 
@@ -152,7 +154,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * The <code>ReadableInstant</code> is stored as the starting instant.
      * @return
      */
-    public static TimePeriod NewInstance(ReadableInstant readableInstant){
+    public static final TimePeriod NewInstance(ReadableInstant readableInstant){
         return NewInstance(readableInstant, null);
     }
 
@@ -160,7 +162,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
      * @return
      */
-    public static TimePeriod NewInstance(Calendar startCalendar, Calendar endCalendar){
+    public static final TimePeriod NewInstance(Calendar startCalendar, Calendar endCalendar){
         Partial startDate = null;
         Partial endDate = null;
         if (startCalendar != null){
@@ -176,7 +178,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method to create a TimePeriod from a starting and an ending <code>Date</code>
      * @return TimePeriod
      */
-    public static TimePeriod NewInstance(Date startDate, Date endDate){
+    public static final TimePeriod NewInstance(Date startDate, Date endDate){
         //TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
         Calendar calStart = null;
         Calendar calEnd = null;
@@ -196,7 +198,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * Factory method to create a TimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
      * @return
      */
-    public static TimePeriod NewInstance(ReadableInstant startInstant, ReadableInstant endInstant){
+    public static final TimePeriod NewInstance(ReadableInstant startInstant, ReadableInstant endInstant){
         Partial startDate = null;
         Partial endDate = null;
         if (startInstant != null){
@@ -492,7 +494,6 @@ public class TimePeriod implements Cloneable, Serializable {
      * Returns the concatenation of <code>start</code> and <code>end</code>
      *
      */
-
     public String getTimePeriod(){
         String result = null;
         DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
@@ -524,6 +525,14 @@ public class TimePeriod implements Cloneable, Serializable {
         if (! CdmUtils.nullSafeEqual(this.freeText, that.freeText)){
             return false;
         }
+        //see comment in verbatimTimePeriod#equals
+        String thisVerbatimDate = (this instanceof VerbatimTimePeriod)?
+                ((VerbatimTimePeriod)this).getVerbatimDate():null;
+        String thatVerbatimDate = (obj instanceof VerbatimTimePeriod)?
+                ((VerbatimTimePeriod)obj).getVerbatimDate():null;
+        if (! CdmUtils.nullSafeEqual(thisVerbatimDate, thatVerbatimDate)){
+            return false;
+        }
         return true;
     }
 
@@ -544,14 +553,22 @@ public class TimePeriod implements Cloneable, Serializable {
     public Object clone()  {
         try {
             TimePeriod result = (TimePeriod)super.clone();
-            result.setStart(this.start);   //DateTime is immutable
-            result.setEnd(this.end);
-            result.setFreeText(this.freeText);
+            copyCloned(this, result);
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Clone not supported exception. Should never occurr !!");
             return null;
         }
+    }
+
+
+    /**
+     * @param result
+     */
+    protected static void copyCloned(TimePeriod origin, TimePeriod target) {
+        target.setStart(origin.start);   //DateTime is immutable
+        target.setEnd(origin.end);
+        target.setFreeText(origin.freeText);
     }
 
 
