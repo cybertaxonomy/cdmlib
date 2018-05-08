@@ -74,7 +74,8 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     "media",
     "vocabulary",
     "idInVocabulary",
-    "symbol"
+    "symbol",
+    "symbol2",
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
