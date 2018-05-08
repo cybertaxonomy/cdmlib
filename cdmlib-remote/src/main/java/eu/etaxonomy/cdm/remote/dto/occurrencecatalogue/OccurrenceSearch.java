@@ -402,14 +402,14 @@ public class OccurrenceSearch implements RemoteResponse {
         /**
          * @return the unitCount
          */
-        public Object getUnitCount() {
+        public String getUnitCount() {
             return unitCount;
         }
 
         /**
          * @param unitCount the unitCount to set
          */
-        public void setUnitCount(Integer unitCount) {
+        public void setUnitCount(String unitCount) {
             this.unitCount = unitCount;
         }
 
