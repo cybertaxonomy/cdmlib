@@ -24,7 +24,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -169,6 +168,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "breed",
     "publicationYear",
     "originalPublicationYear",
+    "inCombinationAuthorship",
+    "inBasionymAuthorship",
 
     "anamorphic",
 
@@ -414,49 +415,61 @@ public class TaxonName
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
 
-    @XmlElement(name = "CombinationAuthorship", type = TeamOrPersonBase.class)
+    @XmlElement(name = "CombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="combinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorship;
 
-    @XmlElement(name = "ExCombinationAuthorship", type = TeamOrPersonBase.class)
+    @XmlElement(name = "ExCombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="exCombinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exCombinationAuthorship;
 
-    @XmlElement(name = "BasionymAuthorship", type = TeamOrPersonBase.class)
+    //#6943
+    @XmlElement(name = "InCombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="basionymAuthorship_id")
+    @CacheUpdate("authorshipCache")
+    @IndexedEmbedded
+    private TeamOrPersonBase<?> inCombinationAuthorship;
+
+    @XmlElement(name = "BasionymAuthorship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> basionymAuthorship;
 
-    @XmlElement(name = "ExBasionymAuthorship", type = TeamOrPersonBase.class)
+    @XmlElement(name = "ExBasionymAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="exBasionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exBasionymAuthorship;
+
+    //#6943
+    @XmlElement(name = "InBasionymAuthorship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @CacheUpdate("authorshipCache")
+    @IndexedEmbedded
+    private TeamOrPersonBase<?> inBasionymAuthorship;
 
     @XmlElement(name = "AuthorshipCache")
     @Fields({
@@ -974,13 +987,21 @@ public class TaxonName
     public TeamOrPersonBase<?> getExCombinationAuthorship(){
         return this.exCombinationAuthorship;
     }
-
     /**
      * @see  #getExCombinationAuthorship()
      */
     @Override
     public void setExCombinationAuthorship(TeamOrPersonBase<?> exCombinationAuthorship){
         this.exCombinationAuthorship = exCombinationAuthorship;
+    }
+
+    @Override
+    public TeamOrPersonBase<?> getInCombinationAuthorship(){
+        return this.inCombinationAuthorship;
+    }
+    @Override
+    public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship) {
+        this.inCombinationAuthorship = inCombinationAuthorship;
     }
 
     /**
@@ -1034,6 +1055,15 @@ public class TaxonName
     @Override
     public void setExBasionymAuthorship(TeamOrPersonBase<?> exBasionymAuthorship) {
         this.exBasionymAuthorship = exBasionymAuthorship;
+    }
+
+    @Override
+    public TeamOrPersonBase<?> getInBasionymAuthorship(){
+        return this.inBasionymAuthorship;
+    }
+    @Override
+    public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship) {
+        this.inBasionymAuthorship = inBasionymAuthorship;
     }
 
     /**

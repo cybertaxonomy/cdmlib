@@ -170,6 +170,21 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
         stepList.add(step);
 
+        //#6943 Add combination 'in'-author
+        stepName = "Add combination 'in'-author";
+        tableName = "TaxonName";
+        newColumnName = "inCombinationAuthorship_id";
+        String referencedTable = "AgentBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
+        //#6943 Add basionym 'in'-author
+        stepName = "Add basionym 'in'-author";
+        tableName = "TaxonName";
+        newColumnName = "inBasionymAuthorship_id";
+        referencedTable = "AgentBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
 
 
         //7276  Make User.emailAddress a unique field
