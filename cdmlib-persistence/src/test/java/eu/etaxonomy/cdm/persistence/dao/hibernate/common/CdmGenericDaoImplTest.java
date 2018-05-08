@@ -192,9 +192,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IReferenceDao referenceDao;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {}
 

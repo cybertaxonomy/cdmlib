@@ -127,7 +127,11 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 //*********************** CONSTRUCTOR ******************************/
 
 	//for hibernate use only
-	private DescriptionElementSource(){
+	/**
+	 * @deprecated for internal use only
+	 */
+	@Deprecated
+	protected DescriptionElementSource(){
 		super();
 	}
 

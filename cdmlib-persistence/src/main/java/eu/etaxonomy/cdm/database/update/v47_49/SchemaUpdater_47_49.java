@@ -65,6 +65,14 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+        //#6581 make nomenclatural reference and OriginalSource
+        stepName = "Make nomenclatural reference and OriginalSource";
+        tableName = "TaxonName";
+        newColumnName = "nomenclaturalSource_id";
+        String referencedTable = "OriginalSourceBase";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+        stepList.add(step);
+
 		//#7109 nom. valid => nom. val.
 		stepName = "nom valid => nom. val. (abbrevLabel)";
 		UUID uuidTerm = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
@@ -174,7 +182,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepName = "Add combination 'in'-author";
         tableName = "TaxonName";
         newColumnName = "inCombinationAuthorship_id";
-        String referencedTable = "AgentBase";
+        referencedTable = "AgentBase";
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
