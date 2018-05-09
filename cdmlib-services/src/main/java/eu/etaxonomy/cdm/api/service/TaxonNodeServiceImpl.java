@@ -604,6 +604,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	   for (Object child: children){
     	       childNode = (TaxonNode) child;
     	       parent.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference());
+
     	   }
     	}else{
     	    result.includeResult(deleteTaxonNodes(node.getChildNodes(), config));

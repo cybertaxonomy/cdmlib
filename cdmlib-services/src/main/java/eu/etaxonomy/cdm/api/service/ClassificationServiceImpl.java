@@ -416,23 +416,23 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern, searchForClassifications);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification,  Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification,  Integer limit, String pattern, boolean searchForClassifications) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, pattern, searchForClassifications);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid ) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, boolean searchForClassifications ) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), null, null, searchForClassifications);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification ) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, boolean searchForClassifications ) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null, searchForClassifications);
     }
 
     @Override
@@ -983,6 +983,42 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         if (parentNode != null){
             handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classificationUuid, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, Integer limit, String pattern) {
+        return  getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classificationUuid,  limit, pattern, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, Integer limit, String pattern) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, false);
     }
 
 

@@ -707,6 +707,93 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return queryStr;
     }
 
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern, boolean searchForClassifications) {
+        int classificationId = classification.getId();
+        // StringBuffer excludeUuids = new StringBuffer();
+   //, taxon.name.rank
+         String queryString = "SELECT nodes.uuid, nodes.id,  taxon.titleCache, taxon.name.rank FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
+         if (pattern != null){
+             if (pattern.equals("?")){
+                 limit = null;
+             } else{
+                 if (!pattern.endsWith("*")){
+                     pattern += "%";
+                 }
+                 pattern = pattern.replace("*", "%");
+                 pattern = pattern.replace("?", "%");
+                 queryString = queryString + " AND taxon.titleCache like (:pattern) " ;
+             }
+         }
+
+
+
+         Query query = getSession().createQuery(queryString);
+
+
+         if (limit != null){
+             query.setMaxResults(limit);
+         }
+
+         if (pattern != null && !pattern.equals("?")){
+             query.setParameter("pattern", pattern);
+         }
+         @SuppressWarnings("unchecked")
+         List<Object[]> result = query.list();
+
+         if (searchForClassifications){
+             queryString = "SELECT nodes.uuid, nodes.id,  nodes.classification.titleCache, NULLIF(1,1) FROM TaxonNode AS nodes WHERE nodes.classification.id = " + classificationId + " AND nodes.taxon IS NULL";
+             if (pattern != null){
+                 if (pattern.equals("?")){
+                     limit = null;
+                 } else{
+                     if (!pattern.endsWith("*")){
+                         pattern += "%";
+                     }
+                     pattern = pattern.replace("*", "%");
+                     pattern = pattern.replace("?", "%");
+                     queryString = queryString + " AND nodes.classification.titleCache like (:pattern) " ;
+                 }
+             }
+              query = getSession().createQuery(queryString);
+
+
+             if (limit != null){
+                 query.setMaxResults(limit);
+             }
+
+             if (pattern != null && !pattern.equals("?")){
+                 query.setParameter("pattern", pattern);
+             }
+             List<Object[]> resultClassifications = query.list();
+
+             result.addAll(resultClassifications);
+         }
+
+         if(result.size() == 0){
+             return null;
+         }else{
+             List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<UuidAndTitleCache<TaxonNode>>(result.size());
+             if (result != null && !result.isEmpty()){
+                 if (result.iterator().next().length == 4){
+                     Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
+                 }
+             }
+             for (Object object : result){
+
+                 Object[] objectArray = (Object[]) object;
+
+                 UUID uuid = (UUID)objectArray[0];
+                 Integer id = (Integer) objectArray[1];
+                 String titleCache = (String) objectArray[2];
+
+                 list.add(new UuidAndTitleCache<TaxonNode>(TaxonNode.class, uuid, id, titleCache));
+             }
+
+             return list;
+         }
+    }
+
 
 
 

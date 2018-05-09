@@ -34,9 +34,14 @@ public class UuidAndTitleCacheTaxonComparator implements Serializable, Comparato
         }
 
         //Rank
-        Rank rankTax1 = (Rank)o1[3];
-        Rank rankTax2 = (Rank)o2[3];
-
+        Rank rankTax1 = null;
+        if (o1[3] != null){
+            rankTax1 = (Rank)o1[3];
+        }
+        Rank rankTax2 = null;
+        if (o1[3] != null){
+            rankTax2 = (Rank)o2[3];
+        }
         String titleCache1 = (String)o1[2];
         String titleCache2 = (String)o2[2];
         //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null

@@ -444,15 +444,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
             Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-    /**
-     * @param classification
-     * @param excludeUuid
-     * @param limit
-     * @param pattern
-     * @return
-     */
-	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, Integer limit, String pattern);
 
     /**
      * @param types

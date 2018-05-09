@@ -362,6 +362,42 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public UUID saveClassification(Classification classification);
 
+    /**
+     * @param classificationUuid
+     * @param limit
+     * @param pattern
+     * @param searchForClassifications
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications);
+
+    /**
+     * @param classification
+     * @param limit
+     * @param pattern
+     * @param searchForClassifications
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, Integer limit, String pattern, boolean searchForClassifications);
+
+    /**
+     * @param classificationUuid
+     * @param searchForClassifications
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, boolean searchForClassifications);
+
+    /**
+     * @param classification
+     * @param searchForClassifications
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, boolean searchForClassifications);
+
 
 
 }

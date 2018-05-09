@@ -188,6 +188,15 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
 
+    /**
+     * @param classification
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, Integer limit, String pattern, boolean searchForClassifications);
+
 
 
 
