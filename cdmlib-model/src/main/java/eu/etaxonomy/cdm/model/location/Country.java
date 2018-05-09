@@ -636,6 +636,7 @@ public class Country extends NamedArea {
 			String text = csvLine.get(3).trim();
 			String abbreviatedLabel = csvLine.get(2);
 			newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
+			newInstance.setLevel(NamedAreaLevel.COUNTRY());
 
 			// iso codes extra
 			newInstance.setIso3166_A2(csvLine.get(4).trim());
