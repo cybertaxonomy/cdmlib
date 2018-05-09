@@ -336,7 +336,7 @@
     </property>
   </bean>
 
-  <bean id="httpWorkingService"
+  <bean id="httpDescriptiveDataSetService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="descriptiveDataSetService" />
