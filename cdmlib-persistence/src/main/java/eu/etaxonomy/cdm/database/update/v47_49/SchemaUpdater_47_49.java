@@ -104,8 +104,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET uuid='1739df71-bf73-4dc6-8320-aaaf72cb555f', name='Admin' "
                 + " WHERE  name='admin' or name='Admin'";
-        tableName = "PermissionGroup";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
 
         //#7405 Rename WorkingSet to DescriptiveDataSet
