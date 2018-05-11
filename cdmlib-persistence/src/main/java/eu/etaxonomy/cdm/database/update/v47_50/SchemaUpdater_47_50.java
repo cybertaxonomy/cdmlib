@@ -240,6 +240,15 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         step = MnTableCreator.NewDescriptionInstance(stepName, firstTableName, null, attributeName, INCLUDE_AUDIT);
         stepList.add(step);
 
+        //#6588 add link to sources
+        stepName= "Add external link to sources";
+        firstTableName = "OriginalSourceBase";
+        String secondTableName = "ExternalLink";
+        attributeName = "links";
+        boolean isList = false;
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_1_TO_M);
+        stepList.add(step);
+
 
 //        //7276  Make User.emailAddress a unique field
 //        //TODO H2 / PostGreSQL / SQL Server
