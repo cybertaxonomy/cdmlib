@@ -22,12 +22,15 @@ public class MnTableCreator extends TableCreator {
 	private String secondTableAlias;
     private String secondColumnName;
 	//is the MN table used for a list, if yes, a sortIndex column is needed
-    //and the and the sortindex column needs to be in the key instead of second table column.
+    //and the sortindex column needs to be in the key instead of second table column.
 	private boolean isList;
 	private boolean is1toM;
+	private String sortIndexOrMapkeyColName;
 
 	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String secondTableName, boolean includeAudTable, boolean isList, boolean is1toM){
-		MnTableCreator result = new MnTableCreator(stepName, firstTableName, null, null, secondTableName, null, null, new String[]{}, new String[]{}, null, null, includeAudTable, isList, is1toM, false, false, false);
+		MnTableCreator result = new MnTableCreator(stepName, firstTableName, null, null,
+		        secondTableName, null, null, new String[]{}, new String[]{}, null, null,
+		        includeAudTable, isList, is1toM, false, false, false, null);
 		return result;
 	}
 
@@ -50,9 +53,16 @@ public class MnTableCreator extends TableCreator {
 	        boolean includeAudTable, boolean isList, boolean is1toM){
 		MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, null, secondTableName, secondTableAlias, attributeName,
 		        new String[]{}, new String[]{}, null, null,
-		        includeAudTable, isList, is1toM, false, false, false);
+		        includeAudTable, isList, is1toM, false, false, false, null);
 		return result;
 	}
+    public static MnTableCreator NewDescriptionInstance(String stepName, String firstTableName, String firstTableAlias,
+            String attributeName, boolean includeAudTable){
+        MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, null, "LanguageString", null, attributeName,
+                new String[]{}, new String[]{}, null, null,
+                includeAudTable, true, true, false, false, false, attributeName + "_mapkey_id");
+        return result;
+    }
 
 	   /**
     *
@@ -66,8 +76,8 @@ public class MnTableCreator extends TableCreator {
     * @param secondColumnName The name of the attribute pointing to the second table (this is used for the column name for the
     *    column pointing to the second table)
     * @param includeAudTable <code>true</code> if also the Audit (_AUD) table should be created
-    * @param hasSortIndex by default <code>false</code> but true for {@link Map maps} (or maybe user defined MN-tables)
-    * @param secondTableInKey should the column that links to the second table also be in the key? This is by default
+    * @param isList by default <code>false</code> but true for {@link Map maps} (or maybe user defined MN-tables)
+    * @param is1ToM should the column that links to the second table also be in the key? This is by default
     * <code>true</code> but for {@link List lists} should be <code>false</code>.
     * @return
     */
@@ -75,16 +85,18 @@ public class MnTableCreator extends TableCreator {
            boolean includeAudTable, boolean isList, boolean is1toM){
        MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, firstColumnName, secondTableName, secondTableAlias, secondColumnName,
                new String[]{}, new String[]{}, null, null,
-               includeAudTable, isList, is1toM, false, false, false);
+               includeAudTable, isList, is1toM, false, false, false, null);
        return result;
    }
 
 // ****************************** CONSTRUCTOR *********************************/
 
-	protected MnTableCreator(String stepName, String firstTableName, String firstTableAlias, String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
+	protected MnTableCreator(String stepName, String firstTableName, String firstTableAlias,
+	        String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
 	        String[] columnNames, String[] columnTypes, List<Object> defaultValues, List<Boolean> isNull,
 	        boolean includeAudTable, boolean isList, boolean is1toM,
-	        boolean includeCdmBaseAttributes, boolean includeAnnotatableEntity, boolean includeIdentifiableEntity) {
+	        boolean includeCdmBaseAttributes, boolean includeAnnotatableEntity, boolean includeIdentifiableEntity,
+	        String description_mapkey_id) {
 		super(stepName, makeAlias(firstTableName, firstTableAlias) + "_" + makeAlias(secondTableName, secondTableAlias),
 		        Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues,
 		        isNull,	new ArrayList<>(), includeAudTable,
@@ -97,6 +109,7 @@ public class MnTableCreator extends TableCreator {
         this.secondColumnName = (secondColumnName !=  null) ? secondColumnName : this.secondTableAlias;
         this.isList = isList;
         this.is1toM = is1toM;
+        this.sortIndexOrMapkeyColName = (description_mapkey_id == null) ? "sortIndex" : description_mapkey_id;
 		addMyColumns();
 	}
 
@@ -117,7 +130,7 @@ public class MnTableCreator extends TableCreator {
 //		secondColAdder.addIndex(tableName+"_"+getSecondIdColumn(), null);
 		this.columnAdders.add(secondColAdder);
 		if (this.isList){
-			this.columnAdders.add(ColumnAdder.NewIntegerInstance(stepName, tableName, "sortIndex", false, true, null));
+			this.columnAdders.add(ColumnAdder.NewIntegerInstance(stepName, tableName, this.sortIndexOrMapkeyColName, false, true, null));
 		}
 	}
 
@@ -126,7 +139,7 @@ public class MnTableCreator extends TableCreator {
 		String result = "";
 		if (! isAudit){
 			result = getFirstIdColumn() + ",";
-			result += (isList ? "sortIndex" : getSecondIdColumn());
+			result += (isList ? sortIndexOrMapkeyColName : getSecondIdColumn());
 		}else{
 			result = "REV, " + primaryKey(false);
 			//for AUDIT also the second table column is in PK

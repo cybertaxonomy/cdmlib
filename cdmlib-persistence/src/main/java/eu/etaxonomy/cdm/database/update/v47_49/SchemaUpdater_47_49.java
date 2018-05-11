@@ -21,8 +21,10 @@ import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
@@ -214,6 +216,22 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
 
+        //#6588
+        stepName = "Add ExternalLink table";
+        tableName = "ExternalLink";
+        String[] columnNames = new String[]{"linkType","uri","size"};
+        String[] referencedTables = new String[]{null, null, null};
+        String[] columnTypes = new String[]{"string_10","clob","int"};
+        step = TableCreator.NewVersionableInstance(stepName, tableName,
+                columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //add i18n description
+        stepName= "Add i18n description to ExternalLink";
+        String firstTableName = "ExternalLink";
+        String attributeName = "description";
+        step = MnTableCreator.NewDescriptionInstance(stepName, firstTableName, null, attributeName, INCLUDE_AUDIT);
+        stepList.add(step);
 
 
 //        //7276  Make User.emailAddress a unique field

@@ -71,7 +71,7 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
      * The {@link ExternalLinkType type} of this link.
      */
     @XmlAttribute(name ="ExternalLinkType")
-    @Column(name="linkType")
+    @Column(name="linkType", length=10)
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.media.ExternalLinkType")}
