@@ -215,7 +215,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         //#7144 Set Country area level
         stepName = "Set Country area level";
         query = " UPDATE @@DefinedTermBase@@ " +
-                " SET level_id = (SELECT id FROM DefinedTermBase WHERE uuid = '79db63a4-1563-461e-8e41-48f5722feca4') " +
+                " SET level_id = ( SELECT id FROM (SELECT id FROM DefinedTermBase WHERE uuid = '79db63a4-1563-461e-8e41-48f5722feca4') as drv) " +
                 " WHERE DTYPE = 'Country' ";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
