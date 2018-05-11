@@ -395,8 +395,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         newInstance.setUuid(UUID.fromString(csvLine.get(0)));
         newInstance.setUri( URI.create(csvLine.get(1)));
         String label = csvLine.get(2).trim();
-        String description = csvLine.get(3);
-        String abbreviatedLabel = csvLine.get(4);
+        String description = CdmUtils.Ne(csvLine.get(3).trim());
+        String abbreviatedLabel = CdmUtils.Ne(csvLine.get(4).trim());
         if (CdmUtils.isBlank(abbreviatedLabel)){
             abbreviatedLabel = null;
         }
