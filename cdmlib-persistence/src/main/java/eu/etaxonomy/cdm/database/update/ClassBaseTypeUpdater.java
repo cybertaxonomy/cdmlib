@@ -98,9 +98,6 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 			newColumnName = "protectedTitleCache";
 			adder = ColumnAdder.NewBooleanInstance(innerStepName, tableName, newColumnName,
 					SchemaUpdaterBase.INCLUDE_AUDIT, false);
-
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
-					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 			this.columnAdderStepList.add(adder);
 
 			//title cache
