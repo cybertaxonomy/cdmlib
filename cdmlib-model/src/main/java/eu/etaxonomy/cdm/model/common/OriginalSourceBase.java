@@ -10,26 +10,37 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}.
@@ -77,6 +88,13 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
+
+    @XmlElementWrapper(name = "Links", nillable = true)
+    @XmlElement(name = "Link")
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Merge(MergeMode.ADD_CLONE)
+	private Set<ExternalLink> links = new HashSet<>();
 
 //***************** CONSTRUCTOR ***********************/
 
@@ -129,6 +147,21 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		this.type = type;
 	}
 
+//********************** External Links **********************************************
+
+    public Set<ExternalLink> getLinks(){
+        return this.links;
+    }
+    public void addLink(ExternalLink link){
+        if (link != null){
+            links.add(link);
+        }
+    }
+    public void removeLink(ExternalLink link){
+        if(links.contains(link)) {
+            links.remove(link);
+        }
+    }
 
 //********************** CLONE ************************************************/
 
