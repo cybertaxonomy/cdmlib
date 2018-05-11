@@ -129,13 +129,6 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         oldTableName = "WorkingSet_TaxonNode";
         changeSingleWorkingSetTableName(stepList, oldTableName);
 
-        stepName = "Update hibernate_sequences for WorkingSet renaming";
-        query = " UPDATE hibernate_sequences "
-                + " SET sequence_name = 'DescriptiveDataSet' "
-                + " WHERE sequence_name = 'WorkingSet'";
-        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-        stepList.add(step);
-
         //#2335 Make WorkingSet IdentifiableEntity
         stepName = "Make DescriptiveDataSet IdentifiableEntity";
         tableName = "DescriptiveDataSet";
