@@ -204,6 +204,12 @@ public class Registration extends AnnotatableEntity {
     public Set<Registration> getBlockedBy() {return blockedBy;}
     @SuppressWarnings("unused")
     private void setBlockedBy(Set<Registration> blockedBy) {this.blockedBy = blockedBy;}
+    public void addBlockedBy(Registration blockingRegistration) {
+        this.blockedBy.add(blockingRegistration);
+    }
+    public void removeBlockedBy(Registration blockingRegistration) {
+        this.blockedBy.remove(blockingRegistration);
+    }
 
     public Set<TypeDesignationBase> getTypeDesignations() {return typeDesignations;}
     public void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
