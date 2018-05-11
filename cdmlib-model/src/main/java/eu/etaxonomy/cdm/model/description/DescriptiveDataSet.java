@@ -222,7 +222,10 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 	 * @return
 	 */
 	public Representation getPreferredRepresentation(Language language) {
-		Representation repr = getRepresentation(language);
+		if (representations.size() == 0){
+		    return null;
+		}
+	    Representation repr = getRepresentation(language);
 		if(repr == null){
 			repr = getRepresentation(Language.DEFAULT());
 		}
