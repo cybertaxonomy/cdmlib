@@ -130,7 +130,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         oldTableName = "WorkingSet_TaxonNode";
         changeSingleWorkingSetTableName(stepList, oldTableName);
 
-        //#2335 Make WorkingSet IdentifiableEntity
+        //#2335 Make DescriptiveDataSet IdentifiableEntity
         stepName = "Make DescriptiveDataSet IdentifiableEntity";
         tableName = "DescriptiveDataSet";
         step = ClassBaseTypeUpdater.NewAnnotatableToIdentifiableInstance(stepName, tableName, INCLUDE_AUDIT);
