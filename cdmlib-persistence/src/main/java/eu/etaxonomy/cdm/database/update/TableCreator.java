@@ -198,7 +198,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			//Rights
 			stepName= "Add @tableName rights";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "RightsInfo", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
 			mnTablesStepList.add(tableCreator);
 		}
 	}
