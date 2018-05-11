@@ -32,7 +32,8 @@ public class ColumnNameChanger
 	private enum Datatype{
 		integer,
 		clob,
-		varchar
+		varchar,
+		date
 	}
 
 	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
@@ -47,6 +48,12 @@ public class ColumnNameChanger
     public static ColumnNameChanger NewVarCharInstance(String stepName, String tableName, String oldColumnName,
             String newColumnName, int size, boolean includeAudTable){
         return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.varchar, size);
+    }
+
+
+    public static ColumnNameChanger NewDateTimeInstance(String stepName, String tableName, String oldColumnName,
+            String newColumnName, boolean includeAudTable){
+        return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.date, null);
     }
 
 // **************************************** Constructor ***************************************/
@@ -110,6 +117,8 @@ public class ColumnNameChanger
 			return "longtext";
 		}else if (this.datatype == Datatype.varchar){
             return "nvarchar("+size+")";
+		}else if (this.datatype == Datatype.date){
+            return "datetime";
         }else{
 			throw new RuntimeException("Definition type not supported");
 		}

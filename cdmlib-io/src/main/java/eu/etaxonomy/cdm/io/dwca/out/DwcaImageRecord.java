@@ -14,10 +14,10 @@ import java.net.URISyntaxException;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
 
@@ -39,7 +39,7 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	private Point coordinates;
 	private String format;
 	private Set<Rights> license;
-	private DateTime created;
+	private TimePeriod created;
 	private AgentBase<?> creator;
 	private AgentBase<?> contributor;
 	private AgentBase<?> publisher;
@@ -102,7 +102,7 @@ public class DwcaImageRecord extends DwcaRecordBase{
 		print(spatial, writer, IS_NOT_FIRST, TermUri.DC_SPATIAL);
 		print(coordinates, writer, IS_NOT_FIRST, TermUri.GEO_WGS84_LATITUDE, TermUri.GEO_WGS84_LONGITUDE);
 		print(license, writer, IS_NOT_FIRST, TermUri.DC_LICENSE);
-		print(getDate(created), writer, IS_NOT_FIRST, TermUri.DC_CREATED);
+		print(getTimePeriod(created), writer, IS_NOT_FIRST, TermUri.DC_CREATED);
 		print(creator, writer, IS_NOT_FIRST, TermUri.DC_CREATOR);
 		print(contributor, writer, IS_NOT_FIRST, TermUri.DC_CONTRIBUTOR);
 		print(publisher, writer, IS_NOT_FIRST, TermUri.DC_PUBLISHER);
@@ -167,11 +167,11 @@ public class DwcaImageRecord extends DwcaRecordBase{
 		this.license = set;
 	}
 
-	public DateTime getCreated() {
+	public TimePeriod getCreated() {
 		return created;
 	}
 
-	public void setCreated(DateTime created) {
+	public void setCreated(TimePeriod created) {
 		this.created = created;
 	}
 

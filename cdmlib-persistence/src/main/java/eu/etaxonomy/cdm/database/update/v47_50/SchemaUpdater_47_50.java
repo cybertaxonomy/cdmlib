@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -91,6 +92,9 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		tableName = "DefinedTermBase";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
 		stepList.add(step);
+
+		//#7074 change type for Media.mediaCreated
+		changeTypeMediaCreated(stepList);
 
 		//#6752 add Reference.datePublished_verbatimDate
 	    stepName = "Add Reference.datePublished_verbatimDate";
@@ -260,6 +264,54 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 //        stepList.add(step);
 
         return stepList;
+    }
+
+    /**
+     * @param stepList
+     */
+    private void changeTypeMediaCreated(List<ISchemaUpdaterStep> stepList) {
+        //rename old column
+        String stepName = "Rename Media.mediaCreated";
+        String tableName = "Media";
+        String oldColumnName = "mediaCreated";
+        String newColumnName = "mediaCreatedOld";
+        ISchemaUpdaterStep step = ColumnNameChanger.NewDateTimeInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //add timeperiod columns
+        stepName = "Add mediaCreated_start";
+        tableName = "Media";
+        newColumnName = "mediaCreated_start";
+        int size = 50;
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Add mediaCreated_end";
+        newColumnName = "mediaCreated_end";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Add mediaCreated_freetext";
+        newColumnName = "mediaCreated_freetext";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //move data
+        stepName = "Copy mediaCreated to new columns";
+        String query = "UPDATE @@Media@@ "
+                + " SET mediaCreated_start = Left(Replace(Replace(Replace(mediaCreatedOld, '-', ''), ':', ''), ' ', '_'), 13)"
+                + " WHERE mediaCreatedOld IS NOT NULL ";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //delete old column
+        stepName = "Remove old mediaCreated";
+        String columnName = "mediaCreatedOld";
+        ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+
+
     }
 
     /**

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.media;
 import java.net.URI;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -24,6 +23,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 /**
  * @author a.mueller
@@ -78,7 +78,7 @@ public class MediaTest {
         media1 = Media.NewInstance();
         team1 = Team.NewInstance();
         media1.setArtist(team1);
-        media1.setMediaCreated(new DateTime(2002, 1,1,0,0,0,0));
+        media1.setMediaCreated(TimePeriod.NewInstance(2002));
         languageString1 = LanguageString.NewInstance("media1Desc", Language.DEFAULT());
         media1.addDescription(languageString1);
         media1.putDescription(Language.GERMAN(), "media1Desc2");
@@ -129,7 +129,7 @@ public class MediaTest {
             Assert.assertTrue("Clone must have a german description", mediaClone.getAllDescriptions().containsKey(Language.GERMAN()));
             Assert.assertEquals("German description must equal media1Desc2", germanDescription, mediaClone.getAllDescriptions().get(Language.GERMAN()).getText() );
 
-            Assert.assertEquals("Media created year must be 2002", 2002, mediaClone.getMediaCreated().getYear());
+            Assert.assertEquals("Media created year must be 2002", "2002", mediaClone.getMediaCreated().getYear());
             Assert.assertEquals("Number of media representations must be 2", 2, mediaClone.getRepresentations().size());
             Assert.assertNotSame("Only media representation must not be mediaRepresentation1", mediaRepresentation1, mediaClone.getRepresentations().iterator().next());
             Assert.assertEquals("Only meda representation must have same MimeType as mediaRepresentation1", mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType());
@@ -216,7 +216,7 @@ public class MediaTest {
      */
     @Test
     public void testGetMediaCreated() {
-        Assert.assertEquals("Media created year must be 2002", 2002, media1.getMediaCreated().getYear());
+        Assert.assertEquals("Media created year must be 2002", "2002", media1.getMediaCreated().getYear());
 
     }
 

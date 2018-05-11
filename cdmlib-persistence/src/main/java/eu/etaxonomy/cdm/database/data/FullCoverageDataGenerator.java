@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -506,7 +507,7 @@ public class FullCoverageDataGenerator {
 		media.addRepresentation(mediaRepresentation);
 
 		media.putTitle(Language.ENGLISH(), "Media title");
-		media.setMediaCreated(DateTime.now());
+		media.setMediaCreated(TimePeriod.NewInstance(DateTime.now()));
 		media.putDescription(Language.ENGLISH(), "Media description");
 		handleIdentifiableEntity(media);
 

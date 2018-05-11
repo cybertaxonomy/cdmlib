@@ -142,7 +142,7 @@ public class MediaExcelImport
 
             Partial start = timePeriod.getStart();
             DateTime dateTime = toDateTime(state, start, dateStr, line);
-            media.setMediaCreated(dateTime);
+            media.setMediaCreated(TimePeriod.NewInstance(dateTime));
         }
 
         //URLs

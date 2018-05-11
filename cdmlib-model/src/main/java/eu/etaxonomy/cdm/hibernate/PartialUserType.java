@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,10 +26,10 @@ import org.joda.time.Partial;
 /**
  * Persist {@link org.joda.time.Partial} via hibernate.
  * This is a preliminary implementation that fulfills the needs of CDM but does not fully store a Partial.
- * Only year, month and day is stored
+ * Only year, month and day is stored. Since 5.0 also hour and minute is supported.
+ *
  * @author a.mueller
  * @since 11.11.2008
- * @version 2.0
  */
 public class PartialUserType extends AbstractUserType implements UserType /* extends AbstractSingleColumnUserType<Partial, String, ColumnMapper<Partial,String>> implements UserType */ {
 	private static final long serialVersionUID = -5323104403077597869L;
@@ -45,17 +45,25 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 
 
 	@Override
-	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
+	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		String partial = (String)StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
-		Partial result = new Partial(); 
-		if (partial == null || partial.length() != 8) {
+		Partial result = new Partial();
+		if (partial == null) {
 			return null;
+		}else if (partial.length() != 8 &&  partial.length() != 13){
+		    throw new HibernateException("Format for Partial not supported. Length mus be 8 or 13: " + partial);
 		}
 		Integer year = Integer.valueOf(partial.substring(0,4));
 		Integer month = Integer.valueOf(partial.substring(4,6));
 		Integer day = Integer.valueOf(partial.substring(6,8));
-		
+		Integer hour = null;
+		Integer minute = null;
+		if (partial.length() == 13){
+	        hour = Integer.valueOf(partial.substring(9,11));
+            minute = Integer.valueOf(partial.substring(11,13));
+		}
+
 		if (year != 0){
 			result = result.with(DateTimeFieldType.year(), year);
 		}
@@ -65,6 +73,12 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 		if (day != 0){
 			result = result.with(DateTimeFieldType.dayOfMonth(), day);
 		}
+	    if (hour != null){
+	        result = result.with(DateTimeFieldType.hourOfDay(), hour);
+	    }
+        if (minute != null){
+            result = result.with(DateTimeFieldType.minuteOfHour(), minute);
+        }
 		return result;
 	}
 
@@ -85,16 +99,31 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 	 */
 	public static String partialToString(Partial p) {
 		//FIXME reduce code by use org.joda.time.format.ISODateTimeFormat.basicDate() instead ?
-		//      for a date with unknown day this will produce e.g. 195712?? 
-		// 		
+		//      for a date with unknown day this will produce e.g. 195712??
+		//
 		String strYear = getNullFilledString(p, DateTimeFieldType.year(),4);
 		String strMonth = getNullFilledString(p, DateTimeFieldType.monthOfYear(),2);
 		String strDay = getNullFilledString(p, DateTimeFieldType.dayOfMonth(),2);
-		String result = strYear + strMonth + strDay;
-		return result;
+		String strHour = getNullFilledString(p, DateTimeFieldType.hourOfDay(),2);
+		String strMinute = getNullFilledString(p, DateTimeFieldType.minuteOfHour(),2);
+		boolean timeExists = timeExists(p);
+        String result = strYear + strMonth + strDay;
+        if (timeExists) {
+            result = result + "_" + strHour + strMinute;
+        }
+        return result;
 	}
-	
-	private static String getNullFilledString(Partial partial, DateTimeFieldType type, int count){
+
+	/**
+     * @param p
+     * @return
+     */
+    private static boolean timeExists(Partial partial) {
+        return partial.isSupported(DateTimeFieldType.hourOfDay()) ||
+                partial.isSupported(DateTimeFieldType.minuteOfHour());
+    }
+
+    private static String getNullFilledString(Partial partial, DateTimeFieldType type, int count){
 		String nul = "0000000000";
 		if (! partial.isSupported(type)){
 			return nul.substring(0, count);
@@ -111,25 +140,24 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 		}
 	}
 
+    @Override
     public Object deepCopy(Object value) throws HibernateException {
         if (value == null) {
             return null;
         }
 
-        return new Partial((Partial)value);
+        return value;
     }
 
 	@Override
 	public int[] sqlTypes() {
-		// TODO Auto-generated method stub
 		return SQL_TYPES;
 	}
 
 	@Override
 	public Class returnedClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}	
+		return Partial.class;
+	}
 
 }
 

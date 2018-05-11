@@ -64,6 +64,8 @@ public class TimePeriod implements Cloneable, Serializable {
     public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
     public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
     public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
+    public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
+    public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -231,7 +233,9 @@ public class TimePeriod implements Cloneable, Serializable {
     public static Partial readableInstantToPartial(ReadableInstant readableInstant){
         DateTime dt = readableInstant.toInstant().toDateTime();
         LocalDate ld = dt.toLocalDate();
-        Partial partial = new Partial(ld);
+        int hour = dt.hourOfDay().get();
+        int minute = dt.minuteOfHour().get();
+        Partial partial = new Partial(ld).with(HOUR_TYPE, hour).with(MINUTE_TYPE, minute);
         return partial;
     }
 

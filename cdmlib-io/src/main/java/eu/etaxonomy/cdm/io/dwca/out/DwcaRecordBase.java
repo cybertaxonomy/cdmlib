@@ -315,7 +315,7 @@ public abstract class DwcaRecordBase {
 		if (date == null){
 			return "";
 		}else{
-			//TODO
+		    //TODO
 			return date.toString();
 		}
 	}
@@ -433,7 +433,6 @@ public abstract class DwcaRecordBase {
 		if (period == null){
 			return "";
 		}else{
-			//TODO
 			return period.toString();
 		}
 	}
