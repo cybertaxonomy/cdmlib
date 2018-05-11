@@ -153,7 +153,8 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         tableName = "AgentBase";
         String oldColumnName = "lastname";
         newColumnName = "familyName";
-        step = ColumnNameChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        int size = 255;
+        step = ColumnNameChanger.NewVarCharInstance(stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
         stepList.add(step);
 
         //... firstName
@@ -161,7 +162,8 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         tableName = "AgentBase";
         oldColumnName = "firstname";
         newColumnName = "givenName";
-        step = ColumnNameChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        size = 255;
+        step = ColumnNameChanger.NewVarCharInstance(stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#7210 Add salt field for User
@@ -199,7 +201,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepName = "Make individual count a string";
         tableName = "SpecimenOrObservationBase";
         String columnName = "individualCount";
-        int size = 255;
+        size = 255;
         step = ColumnTypeChanger.NewInt2StringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT, null, !NOT_NULL);
         stepList.add(step);
 

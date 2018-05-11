@@ -24,30 +24,40 @@ public class ColumnNameChanger
 
     private static final Logger logger = Logger.getLogger(ColumnNameChanger.class);
 
-	private final String newColumnName;
-	private final String oldColumnName;
-	private final Datatype datatype; //TODO make enum
+	private String newColumnName;
+	private String oldColumnName;
+	private Datatype datatype;
+	private Integer size;  //only required for MySQL
 
 	private enum Datatype{
 		integer,
-		clob
+		clob,
+		varchar
 	}
 
 	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer);
+		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer, null);
 	}
 
 	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName,
 	        String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob);
+		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob, null);
 	}
 
+    public static ColumnNameChanger NewVarCharInstance(String stepName, String tableName, String oldColumnName,
+            String newColumnName, int size, boolean includeAudTable){
+        return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.varchar, size);
+    }
+
+// **************************************** Constructor ***************************************/
+
 	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName,
-	        String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype) {
+	        String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype, Integer size) {
 		super(stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
 		this.datatype = datatype;
+		this.size = size;
 	}
 
     @Override
@@ -98,7 +108,9 @@ public class ColumnNameChanger
 			return "integer";
 		}else if (this.datatype == Datatype.clob){
 			return "longtext";
-		}else{
+		}else if (this.datatype == Datatype.varchar){
+            return "nvarchar("+size+")";
+        }else{
 			throw new RuntimeException("Definition type not supported");
 		}
 	}
