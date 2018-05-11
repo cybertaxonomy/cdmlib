@@ -132,7 +132,7 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
         stepName = "Update hibernate_sequences for WorkingSet renaming";
         query = " UPDATE hibernate_sequences "
                 + " SET sequence_name = 'DescriptiveDataSet' "
-                + " WHERE sequence_name = WorkingSet";
+                + " WHERE sequence_name = 'WorkingSet'";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
 
@@ -275,6 +275,10 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
             stepName = "Rename " +  oldTableName + ".workingSet_id";
             String oldColumnName = "WorkingSet_id";
             String newColumnName = "DescriptiveDataSet_id";
+            if ("WorkingSet_DescriptionBase".equals(oldTableName)){
+                oldColumnName = "WorkingSets_id";
+                newColumnName = "DescriptiveDataSets_id";
+            }
             step = ColumnNameChanger.NewIntegerInstance(stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
             stepList.add(step);
         }
