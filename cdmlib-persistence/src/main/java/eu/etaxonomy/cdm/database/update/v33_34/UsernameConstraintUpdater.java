@@ -60,7 +60,7 @@ public class UsernameConstraintUpdater
 	private void removeDuplicates(ICdmDataSource datasource, CaseType caseType,
 	        SchemaUpdateResult result) {
 		try {
-			Set<String> existing = new HashSet<String>();
+			Set<String> existing = new HashSet<>();
 			String sql = " SELECT id, columnName as uniquecol FROM tableName ";
 			sql = sql.replace("columnName", columnName).replace("tableName", caseType.transformTo(tableName));
 			ResultSet rs = datasource.executeQuery(sql);

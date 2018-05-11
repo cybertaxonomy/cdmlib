@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
-import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
 import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
 
 /**
@@ -217,14 +216,14 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
 
 
 
-        //7276  Make User.emailAddress a unique field
-        //TODO H2 / PostGreSQL / SQL Server
-        //User.email unique
-        stepName = "Update User.emailAdress unique index";
-        tableName = "UserAccount";
-        columnName = "emailAddress";
-        step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
-        stepList.add(step);
+//        //7276  Make User.emailAddress a unique field
+//        //TODO H2 / PostGreSQL / SQL Server
+//        //User.email unique
+//        stepName = "Update User.emailAdress unique index";
+//        tableName = "UserAccount";
+//        columnName = "emailAddress";
+//        step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
+//        stepList.add(step);
 
         return stepList;
     }
