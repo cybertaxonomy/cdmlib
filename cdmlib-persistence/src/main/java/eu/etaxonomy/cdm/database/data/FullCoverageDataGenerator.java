@@ -103,6 +103,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -126,6 +127,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -150,7 +152,7 @@ public class FullCoverageDataGenerator {
 
 
 	public void fillWithData(Session session){
-		List<CdmBase> cdmBases = new ArrayList<CdmBase>();
+		List<CdmBase> cdmBases = new ArrayList<>();
 
 		createAgents(cdmBases);
 
@@ -422,11 +424,20 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(leaveLengthNode);
 
 
+		//DescriptiveDataSet
 		DescriptiveDataSet descriptiveDataSet = DescriptiveDataSet.NewInstance();
 		descriptiveDataSet.addDescription(taxonDescription);
 		descriptiveDataSet.setLabel("My Descriptive Dataset");
 		descriptiveDataSet.getDescriptiveSystem();
 		handleAnnotatableEntity(descriptiveDataSet);
+		descriptiveDataSet.addGeoFilterArea(Country.GERMANY());
+		Classification classification = Classification.NewInstance("DescriptiveDataSet subtree classification");
+		Taxon subTreeTaxon = getTaxon();
+        TaxonNode subtree = classification.addChildTaxon(subTreeTaxon, null, null);
+		descriptiveDataSet.addTaxonSubtree(subtree);
+
+		cdmBases.add(classification);
+		cdmBases.add(subtree);
 
 
 		//polytomous keys
@@ -647,10 +658,14 @@ public class FullCoverageDataGenerator {
 		classification.addGeoScope(Country.GERMANY());
 		classification.putDescription(Language.ENGLISH(), "An interesting classification");
 
-
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
+		node.putExcludedNote(Language.DEFAULT(), "Excluded note");
+		DefinedTerm agentRelationType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance(null, "agentRelation", "ar");
+		Person agent = Person.NewTitledInstance("Related agent");
+		TaxonNodeAgentRelation agentRelation = node.addAgentRelation(agentRelationType, agent);
+		handleAnnotatableEntity(agentRelation);
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
@@ -661,6 +676,7 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(concept);
 		cdmBases.add(childTaxon);
 		cdmBases.add(classification);
+		cdmBases.add(agentRelationType);
 
 
 	}
@@ -863,11 +879,23 @@ public class FullCoverageDataGenerator {
 		viralName.setAcronym("acronym");
 		handleIdentifiableEntity(viralName);
 
+		//Registration
+		Registration registration = Registration.NewInstance("registration identifier",
+		        "specificIdentifier", speciesZooName, null);
+		registration.addTypeDesignation(specimenDesig);
+		registration.setRegistrationDate(DateTime.now());
+		Registration blockingRegistration = Registration.NewInstance();
+		registration.addBlockedBy(blockingRegistration);
+		registration.setInstitution(Institution.NewInstance());
+		User submitter = User.NewInstance("submitter", "12345");
+		registration.setSubmitter(submitter);
 
+		cdmBases.add(submitter);
 		cdmBases.add(bacName);
 		cdmBases.add(botName);
 		cdmBases.add(viralName);
 		cdmBases.add(zooName);
+		cdmBases.add(botName2);
 	}
 
 	private void handleEventBase(EventBase event){
