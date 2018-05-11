@@ -118,7 +118,7 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
             //EntityAuthority
             }else if (clazz.equals(AuthorityType.class)){
                 return AuthorityType.getByKey(val);
-              //ExternalLinkType
+            //ExternalLinkType
             }else if (clazz.equals(ExternalLinkType.class)){
                 return ExternalLinkType.getByKey(val);
             }else{

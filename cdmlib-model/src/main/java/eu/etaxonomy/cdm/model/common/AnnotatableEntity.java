@@ -52,14 +52,14 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
     @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
-	protected Set<Marker> markers = new HashSet<Marker>();
+	protected Set<Marker> markers = new HashSet<>();
 
 	@XmlElementWrapper(name = "Annotations", nillable = true)
 	@XmlElement(name = "Annotation")
     @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
-	protected Set<Annotation> annotations = new HashSet<Annotation>();
+	protected Set<Annotation> annotations = new HashSet<>();
 
 	protected AnnotatableEntity() {
 		super();
@@ -131,14 +131,14 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 		AnnotatableEntity result = (AnnotatableEntity)super.clone();
 
 		//Annotations
-		result.annotations = new HashSet<Annotation>();
+		result.annotations = new HashSet<>();
 		for (Annotation annotation : getAnnotations()){
 			Annotation newAnnotation = (Annotation)annotation.clone();
 			result.addAnnotation(newAnnotation);
 		}
 
 		//Markers
-		result.markers = new HashSet<Marker>();
+		result.markers = new HashSet<>();
 		for (Marker marker : getMarkers()){
 			Marker newMarker = (Marker)marker.clone();
 			result.addMarker(newMarker);
