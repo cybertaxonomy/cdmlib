@@ -67,7 +67,11 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 	        CaseType caseType, SchemaUpdateResult result) {
 		try {
 		    String constraintName = StringUtils.uncapitalize(tableName) + columnName + "Index";
-			String updateQuery = getCreateQuery(datasource, caseType, tableName, constraintName, columnName);
+			if(constraintName.length()>64){
+			    //MySQL has problems with index names > 64,  https://stackoverflow.com/questions/28615903/error-1059-identifier-name-too-long-on-foreign-key-constraints-from-existing-ta
+			    constraintName = constraintName.replace("Base", "");
+			}
+		    String updateQuery = getCreateQuery(datasource, caseType, tableName, constraintName, columnName);
 			datasource.executeUpdate(updateQuery);
 			return;
 		} catch (Exception e) {
