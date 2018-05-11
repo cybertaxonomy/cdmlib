@@ -41,7 +41,7 @@ public enum ExternalLinkType implements IEnumTerm<ExternalLinkType>{
     /**
      * Link type to represent a web site.
      */
-    @XmlEnumValue("Language")
+    @XmlEnumValue("WebSite")
     WebSite(UUID.fromString("40f128af-b953-4943-af91-9b2f6b030546"), "WebSite", "WS", null),
 
     //2
