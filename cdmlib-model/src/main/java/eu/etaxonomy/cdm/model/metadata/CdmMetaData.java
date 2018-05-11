@@ -60,7 +60,7 @@ public class CdmMetaData extends CdmBase{
 	 */
 //	private static final String dbSchemaVersion = "4.1.0.0.201607300000";
 //  private static final String dbSchemaVersion = "4.7.0.0.201710040000";
-     private static final String dbSchemaVersion = "4.9.0.0.20170710";
+     private static final String dbSchemaVersion = "5.0.0.0.20180514";
 
 
 	/* END OF CONFUSION */

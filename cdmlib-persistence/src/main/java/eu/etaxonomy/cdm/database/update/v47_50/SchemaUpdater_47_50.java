@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.database.update.v47_49;
+package eu.etaxonomy.cdm.database.update.v47_50;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,24 +35,24 @@ import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
  * @date 09.06.2017
  *
  */
-public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
+public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_47_49.class);
-	private static final String endSchemaVersion = "4.9.0.0.20170710";
+	private static final Logger logger = Logger.getLogger(SchemaUpdater_47_50.class);
+	private static final String endSchemaVersion = "5.0.0.0.20180514";
 	private static final String startSchemaVersion = "4.7.0.0.201710040000";
 
 	// ********************** FACTORY METHOD *************************************
 
-	public static SchemaUpdater_47_49 NewInstance() {
-		return new SchemaUpdater_47_49();
+	public static SchemaUpdater_47_50 NewInstance() {
+		return new SchemaUpdater_47_50();
 	}
 
 	/**
 	 * @param startSchemaVersion
 	 * @param endSchemaVersion
 	 */
-	protected SchemaUpdater_47_49() {
+	protected SchemaUpdater_47_50() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
 
