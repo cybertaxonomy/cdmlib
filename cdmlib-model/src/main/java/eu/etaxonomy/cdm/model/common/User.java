@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @XmlType(name = "User", propOrder = {
     "username",
     "password",
-    "salt",
     "emailAddress",
     "grantedAuthorities",
     "groups",
@@ -116,18 +115,7 @@ public class User extends CdmBase implements UserDetails {
     @NotAudited
     protected String password;
 
-
-    /**
-     * The salt for password hashing.
-     * @see https://dev.e-taxonomy.eu/redmine/issues/7210
-     * @see https://code-bude.net/2015/03/30/grundlagen-sicheres-passwort-hashing-mit-salts/
-     */
-    @XmlElement(name = "Salt")
-    @NotAudited
-    protected String salt;
-
     @XmlElement(name = "EmailAddress")
-    @Column(unique = true)
     protected String emailAddress;
 
     @XmlElementWrapper(name = "GrantedAuthorities")
