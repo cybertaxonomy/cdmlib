@@ -92,6 +92,13 @@ public class SchemaUpdater_47_49 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
 		stepList.add(step);
 
+		//#6752 add Reference.datePublished_verbatimDate
+	    stepName = "Add Reference.datePublished_verbatimDate";
+	    tableName = "Reference";
+	    newColumnName = "datePublished_verbatimDate";
+	    step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+	    stepList.add(step);
+
 		//#7096 Add second symbol attribute to DefinedTermBase
 		stepName = "Add second symbol to DefinedTermBase";
 		tableName = "DefinedTermBase";
