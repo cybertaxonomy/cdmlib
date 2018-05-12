@@ -27,7 +27,8 @@ public class MnTableCreator extends TableCreator {
 	private boolean is1toM;
 	private String sortIndexOrMapkeyColName;
 
-	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String secondTableName, boolean includeAudTable, boolean isList, boolean is1toM){
+	public static MnTableCreator NewMnInstance(String stepName, String firstTableName,
+	        String secondTableName, boolean includeAudTable, boolean isList, boolean is1toM){
 		MnTableCreator result = new MnTableCreator(stepName, firstTableName, null, null,
 		        secondTableName, null, null, new String[]{}, new String[]{}, null, null,
 		        includeAudTable, isList, is1toM, false, false, false, null);
@@ -49,7 +50,8 @@ public class MnTableCreator extends TableCreator {
 	 * <code>true</code> but for {@link List lists} should be <code>false</code>.
 	 * @return
 	 */
-	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String attributeName,
+	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String firstTableAlias,
+	        String secondTableName, String secondTableAlias, String attributeName,
 	        boolean includeAudTable, boolean isList, boolean is1toM){
 		MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, null, secondTableName, secondTableAlias, attributeName,
 		        new String[]{}, new String[]{}, null, null,

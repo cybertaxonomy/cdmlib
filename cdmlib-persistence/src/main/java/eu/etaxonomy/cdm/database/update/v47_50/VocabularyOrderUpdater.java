@@ -26,9 +26,10 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * Updates the CdmPreference NomenclaturalCode  #3658
  *
  * @author a.mueller
- * @since 13.10.2016
+ * @since 05.05.2018
  */
 public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(VocabularyOrderUpdater.class);
 
 	private static final String stepName = "Update vocabulary order";
