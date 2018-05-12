@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ImageFile", propOrder = {
+@XmlType(name = "ExternalLink", propOrder = {
     "uri",
     "size",
     "description"

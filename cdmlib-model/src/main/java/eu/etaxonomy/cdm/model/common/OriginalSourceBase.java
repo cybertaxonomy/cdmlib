@@ -54,7 +54,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @XmlType(name = "OriginalSource", propOrder = {
     "type",
 	"idInSource",
-    "idNamespace"
+    "idNamespace",
+    "links"
 })
 @XmlRootElement(name = "OriginalSource")
 @Entity
