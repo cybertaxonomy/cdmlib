@@ -253,6 +253,9 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_1_TO_M);
         stepList.add(step);
 
+        //#7334 Make pro parte/partial concept relationships
+        step = ProParteSynonymUpdater.NewInstance(stepList);
+
 
 //        //7276  Make User.emailAddress a unique field
 //        //TODO H2 / PostGreSQL / SQL Server

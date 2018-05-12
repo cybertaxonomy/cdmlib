@@ -68,8 +68,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 	private static final UUID uuidProParteMisappliedNameFor = UUID.fromString("b59b4bd2-11ff-45d1-bae2-146efdeee206");
 	private static final UUID uuidPartialMisappliedNameFor = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
-	private static final UUID uuidProParteSynonymFor = UUID.fromString("8a896603-0fa3-44c6-9cd7-df2d8792e577");
-	private static final UUID uuidPartialSynonymFor = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
+	public static final UUID uuidProParteSynonymFor = UUID.fromString("8a896603-0fa3-44c6-9cd7-df2d8792e577");
+	public static final UUID uuidPartialSynonymFor = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
 	private static final UUID uuidInvalidDesignationFor = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
 
 	private static final UUID uuidContradiction = UUID.fromString("a8f03491-2ad6-4fae-a04c-2a4c117a2e9b");
