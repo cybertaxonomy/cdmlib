@@ -97,11 +97,11 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
-        //subtree filter
+        //geo filter
         stepName= "Add geo filter MN table to WorkingSet";
         String firstTableName = "WorkingSet";
-        String secondTableAlias = "NamedArea";
         String secondTableName = "DefinedTermBase";
+        String secondTableAlias = "NamedArea";
         String attributeName = "geoFilter";
         boolean isList = ! IS_LIST;
         step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
