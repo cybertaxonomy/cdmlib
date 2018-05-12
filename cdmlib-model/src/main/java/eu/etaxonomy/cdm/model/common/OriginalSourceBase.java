@@ -153,6 +153,9 @@ public abstract class OriginalSourceBase<T extends ISourceable>
     public Set<ExternalLink> getLinks(){
         return this.links;
     }
+    public void setLinks(Set<ExternalLink> links){
+        this.links = links;
+    }
     public void addLink(ExternalLink link){
         if (link != null){
             links.add(link);
@@ -169,6 +172,12 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		OriginalSourceBase<?> result = (OriginalSourceBase<?>)super.clone();
+
+		Set<ExternalLink> links = new HashSet<>();
+		result.setLinks(links);
+		for(ExternalLink link : this.links){
+		    result.addLink((ExternalLink)link.clone());
+		}
 
 		//no changes to: idInSource
 		return result;
