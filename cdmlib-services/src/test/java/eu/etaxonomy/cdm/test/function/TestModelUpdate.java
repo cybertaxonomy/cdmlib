@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -20,10 +22,19 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
  * for running in maven.
+ *
+ * For testing
+ *
+ * 1. First run with CREATE first against H2, than MySQL, PostGreSQL, (SQLServer)
+ * 2. Save old schema databases
+ * 3. Run with VALIDATE
+ *
  *
  * @author a.mueller
  * @since 22.05.2015
@@ -37,11 +48,10 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.H2;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm41" : "cdm47");
-//		database = "cdm36";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm47" : "cdm50");
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
 
@@ -73,6 +83,18 @@ public class TestModelUpdate {
     		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		}
+    		List<Media> medias = appCtr.getMediaService().list(null, null, null, null, null);
+    		for (Media media: medias){
+    		    if (media.getMediaCreated() != null){
+    		        System.out.println(media.getMediaCreated().toString());
+    		    }
+    		}
+    		List<Reference> references = appCtr.getReferenceService().list(null, null, null, null, null);
+            for (Reference reference: references){
+                if (reference.getDatePublished() != null){
+                    System.out.println(reference.getDatePublished().toString());
+                }
+            }
 
 
     		appCtr.close();
