@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -22,8 +20,6 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
@@ -83,18 +79,6 @@ public class TestModelUpdate {
     		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		}
-    		List<Media> medias = appCtr.getMediaService().list(null, null, null, null, null);
-    		for (Media media: medias){
-    		    if (media.getMediaCreated() != null){
-    		        System.out.println(media.getMediaCreated().toString());
-    		    }
-    		}
-    		List<Reference> references = appCtr.getReferenceService().list(null, null, null, null, null);
-            for (Reference reference: references){
-                if (reference.getDatePublished() != null){
-                    System.out.println(reference.getDatePublished().toString());
-                }
-            }
 
 
     		appCtr.close();
