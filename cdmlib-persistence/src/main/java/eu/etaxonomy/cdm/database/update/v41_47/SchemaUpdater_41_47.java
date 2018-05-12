@@ -477,7 +477,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
         //LSIDAuthority_namespaces for taxonnamebase
         stepName = "Upate LSIDAuthority_namespaces for TaxonNameBase";
-        query = "UPDATE LSIDAuthority_namespaces " +
+        query = "UPDATE @@LSIDAuthority_namespaces@@ " +
                 " SET namespaces_element = Replace (namespaces_element, 'TaxonNameBase','TaxonName') " +
                 " WHERE namespaces_element like '%TaxonNameBase%' ";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);

@@ -68,6 +68,15 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		//
+		stepName = "Update taxonName LSID authority namespaces";
+		query = "UPDATE @@LSIDAuthority_namespaces@@ "
+		        + " SET namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonName' "
+		        + " WHERE namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonNameBase'";
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+		stepList.add(step);
+
+
         //#6581 make nomenclatural reference and OriginalSource
         stepName = "Make nomenclatural reference and OriginalSource";
         tableName = "TaxonName";
