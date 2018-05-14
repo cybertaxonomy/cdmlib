@@ -7,13 +7,13 @@ import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProvid
 import eu.etaxonomy.cdm.database.CdmDataSource;
 
 /**
- * This is a very preliminary class to get the model cache running. Need to better understand how 
+ * This is a very preliminary class to get the model cache running. Need to better understand how
  * the datasource works with hibernate service registry before implementing the correct way.
 
  * Or use a running source.
- * 
- * When changing this class please also adapt https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions 
- * 
+ *
+ * When changing this class please also adapt https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
+ *
  * @author a.mueller
  *
  */
@@ -26,13 +26,13 @@ public class CdmModelCacherConnectionProvider extends DatasourceConnectionProvid
 	}
 
 	private DataSource getDataSourcePreliminary() {
-		String database = "xyz";
+		String database = "modelCacher";
 		String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
         String username = "sa";
         CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
         return dataSource;
 	}
-	
-	
+
+
 
 }
