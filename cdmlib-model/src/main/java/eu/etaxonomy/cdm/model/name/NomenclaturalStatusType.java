@@ -861,8 +861,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
      * @return
      */
     private static String normalizeStatusAbbrev(String statusAbbreviation) {
+        //#7109 should not happen anymore
         if (statusAbbreviation.equalsIgnoreCase("nom. valid")){
-            statusAbbreviation = "nom. val.";  //#7109
+            statusAbbreviation = "nom. val.";
         }
         return statusAbbreviation;
     }
