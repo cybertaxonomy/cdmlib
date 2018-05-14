@@ -125,17 +125,11 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
             return;
 		}
 
-		Integer termId;
-		String sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("DefinedTermBase");
-		rs = datasource.executeQuery(sqlMaxId);
-		if (rs.next()){
-			termId = rs.getInt("maxId");
-		}else{
-			String message = "No defined terms do exist yet. Can't update terms!";
-			monitor.warning(message);
-			result.addError(message, getStepName() + ", SingleTermUpdater.invoke");
+		String sqlMaxId;
+        Integer termId = getMaxId(datasource, monitor, caseType, result);
+        if (termId == null){
             return;
-		}
+        }
 
 		String id = Integer.toString(termId);
 		String created = getNowString();
@@ -209,6 +203,39 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 
 		return;
 	}
+
+    /**
+     * @param datasource
+     * @param monitor
+     * @param caseType
+     * @param result
+     * @return
+     * @throws SQLException
+     */
+    protected Integer getMaxId(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
+            SchemaUpdateResult result) throws SQLException {
+
+//       For some very strange reason max(id) gave back a wrong result when
+//        executed here while updateing remote-webapp H2 test database, therefore
+//        we took this workaround which worked. Can be removed when it does not
+//        appear anymore
+
+//        String sqlMaxId = " SELECT max(id)+1 as maxId"
+//                + " FROM " + caseType.transformTo("DefinedTermBase");
+        String sqlMaxId = " SELECT id  as maxId"
+                + " FROM " + caseType.transformTo("DefinedTermBase") +
+                 " ORDER BY id DESC ";
+		ResultSet rs = datasource.executeQuery(sqlMaxId);
+		while (rs.next()){
+		    Integer termId = rs.getInt("maxId");
+		    System.out.println(termId);
+		    return termId +1;
+		}
+		String message = "No defined terms do exist yet. Can't update terms!";
+		monitor.warning(message);
+		result.addError(message, getStepName() + ", SingleTermUpdater.invoke");
+        return null;
+    }
 
 	private String nullSafeStr(String str) {
 		if (str == null){
