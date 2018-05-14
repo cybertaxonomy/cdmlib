@@ -150,6 +150,8 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         oldTableName = "WorkingSet_TaxonNode";
         changeSingleWorkingSetTableName(stepList, oldTableName);
 
+
+
         //#2335 Make DescriptiveDataSet IdentifiableEntity
         stepName = "Make DescriptiveDataSet IdentifiableEntity";
         tableName = "DescriptiveDataSet";
@@ -360,7 +362,10 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
     private void changeSingleWorkingSetTableName(List<ISchemaUpdaterStep> stepList, String oldTableName) {
         String stepName = "Rename " +  oldTableName;
         String newTableName = oldTableName.replace("WorkingSet", "DescriptiveDataSet");
-        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        boolean includeDtype = !oldTableName.contains("_");
+
+        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, oldTableName,
+                newTableName, INCLUDE_AUDIT, includeDtype);
         stepList.add(step);
 
         if (oldTableName.contains("_")){

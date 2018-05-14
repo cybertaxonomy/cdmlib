@@ -29,36 +29,44 @@ public class TableNameChanger
 	private String oldName;
 	private String newName;
 	private boolean includeAudTable;
+	private boolean includeDtype;
 
 	public static final TableNameChanger NewInstance(String stepName, String oldName, String newName, boolean includeAudTable){
-		return new TableNameChanger(stepName, oldName, newName, includeAudTable);
+		return new TableNameChanger(stepName, oldName, newName, includeAudTable, false);
 	}
 
-	protected TableNameChanger(String stepName, String oldName, String newName, boolean includeAudTable) {
+	public static final TableNameChanger NewInstance(String stepName, String oldName, String newName, boolean includeAudTable, boolean includeDtype){
+	    return new TableNameChanger(stepName, oldName, newName, includeAudTable, includeDtype);
+	}
+
+	protected TableNameChanger(String stepName, String oldName, String newName, boolean includeAudTable, boolean includeDtype) {
 		super(stepName);
 		this.oldName = oldName;
 		this.newName = newName;
 		this.includeAudTable = includeAudTable;
+		this.includeDtype = includeDtype;
 	}
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result) throws SQLException {
-		invokeOnTable(caseType.transformTo(oldName), caseType.transformTo(newName),
-		        datasource, monitor, result);
+		invokeOnTable(oldName, newName,
+		        datasource, monitor, result, caseType);
 		updateHibernateSequence(datasource, monitor, newName, oldName); //no result&= as hibernateSequence problems may not lead to a complete fail
 		if (includeAudTable){
 			String aud = "_AUD";
-			invokeOnTable(caseType.transformTo(oldName + aud), caseType.transformTo(newName + aud),
-			        datasource, monitor, result);
+			invokeOnTable(oldName + aud, newName + aud,
+			        datasource, monitor, result, caseType);
 		}
 		return;
 	}
 
 	//does not support AuditedSchemaUpdaterStepBase signature
-	private void invokeOnTable(String oldName, String newName, ICdmDataSource datasource,
-	        IProgressMonitor monitor, SchemaUpdateResult result) {
-		DatabaseTypeEnum type = datasource.getDatabaseType();
+	private void invokeOnTable(String oldNameOrig, String newNameOrig, ICdmDataSource datasource,
+	        IProgressMonitor monitor, SchemaUpdateResult result, CaseType caseType) {
+		String oldName = caseType.transformTo(oldNameOrig);
+		String newName = caseType.transformTo(newNameOrig);
+        DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.MySQL)){
 			//MySQL allows both syntaxes
@@ -85,6 +93,9 @@ public class TableNameChanger
 			result.addException(e, message, getStepName() + ", TableNameChanger.invokeOnTable");
 			return;
 		}
+		if(includeDtype){
+		    updateDtype(datasource, monitor, caseType, newNameOrig, oldNameOrig);
+		}
 		return;
 	}
 
@@ -110,5 +121,19 @@ public class TableNameChanger
 		}
 
 	}
+
+    private boolean updateDtype(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType, String newNameOrig, String oldNameOrig){
+        try{
+            String sql = " UPDATE %s SET dtype = '%s' WHERE dtype = '%s'";
+            sql =  String.format(sql, caseType.transformTo(newNameOrig), newNameOrig ,oldNameOrig);
+            datasource.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            String message = "Exception occurred when trying to update DTYPE for table " + this.newName + ": " + e.getMessage();
+            monitor.warning(message, e);
+            logger.error(message);
+            return false;
+        }
+    }
 
 }
