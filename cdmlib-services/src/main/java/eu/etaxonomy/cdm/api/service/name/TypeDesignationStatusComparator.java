@@ -18,10 +18,9 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
  * @since May 3, 2018
  *
  */
-public class TypeDesignationStatusComparator implements Comparator<TypeDesignationStatusBase> {
-    @SuppressWarnings("unchecked")
+public class TypeDesignationStatusComparator <T extends TypeDesignationStatusBase<T>>  implements Comparator<T> {
     @Override
-    public int compare(TypeDesignationStatusBase o1, TypeDesignationStatusBase o2) {
+    public int compare(T o1, T o2) {
         // fix inverted order of cdm terms by -1*
         if(o1 == null && o2 == null || o1 instanceof NullTypeDesignationStatus && o2 instanceof NullTypeDesignationStatus){
             return 0;
