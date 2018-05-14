@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -747,6 +748,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (newTaxon.getName().getId() != 0){
             TaxonName name = nameService.load(newTaxon.getName().getUuid());
             newTaxon.setName(name);
+        }else{
+            for (HybridRelationship rel : newTaxon.getName().getHybridChildRelations()){
+                if (!rel.getHybridName().isPersited()) {
+                    nameService.save(rel.getHybridName());
+                }
+                if (!rel.getParentName().isPersited()) {
+                    nameService.save(rel.getParentName());
+                }
+            }
         }
         UUID taxonUUID = taxonService.saveOrUpdate(newTaxon);
         newTaxon = (Taxon) taxonService.load(taxonUUID);

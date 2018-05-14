@@ -949,6 +949,16 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
 
+    /**
+     * @param acceptedTaxonUuid
+     * @param newName
+     * @param type
+     * @return
+     */
+    UpdateResult createSynonym(UUID acceptedTaxonUuid, Synonym synonym);
+
+
+
 
 
 }
