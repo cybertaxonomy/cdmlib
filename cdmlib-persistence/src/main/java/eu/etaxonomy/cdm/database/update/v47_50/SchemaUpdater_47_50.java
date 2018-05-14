@@ -76,6 +76,11 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
 		stepList.add(step);
 
+		//#6699 delete term version
+		stepName = "Delete term version";
+		query = "DELETE FROM @@CdmMetaData@@ WHERE propertyName = 'TERM_VERSION'";
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
 
         //#6581 make nomenclatural reference and OriginalSource
         stepName = "Make nomenclatural reference and OriginalSource";
