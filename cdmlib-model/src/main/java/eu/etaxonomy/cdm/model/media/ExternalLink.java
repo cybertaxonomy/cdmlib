@@ -99,7 +99,7 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
  // *********************************** FACTORY ******************************/
 
     public static ExternalLink NewInstance(ExternalLinkType type, URI uri){
-        return NewInstance(type, uri, null, null);
+        return NewInstance(type, uri, (String)null, null);
     }
 
 	public static ExternalLink NewInstance(ExternalLinkType type, URI uri, Map<Language,LanguageString> description){
@@ -110,8 +110,23 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
         return new ExternalLink(type, uri, description, size);
     }
 
+	/**
+	 * New default language instance
+	 * @param type
+	 * @param uri
+	 * @param description
+	 * @param size
+	 * @return
+	 */
+	public static ExternalLink NewInstance(ExternalLinkType type, URI uri, String description, Integer size){
+	    Map<Language, LanguageString> descMap = new HashMap<>();
+	    Language language = Language.DEFAULT();
+	    descMap.put(language, LanguageString.NewInstance(description, language));
+	    return new ExternalLink(type, uri, descMap, size);
+	}
+
     public static ExternalLink NewWebSiteInstance(URI uri){
-        return NewInstance(ExternalLinkType.WebSite, uri, null, null);
+        return NewInstance(ExternalLinkType.WebSite, uri, (String)null, null);
     }
 
     public static ExternalLink NewWebSiteInstance(URI uri, Map<Language,LanguageString> description, Integer size){

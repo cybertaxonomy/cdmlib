@@ -75,6 +75,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.AudioFile;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -388,6 +390,9 @@ public class FullCoverageDataGenerator {
 		Reference ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()));
+		ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
+		        URI.create("http://wwww.abd.de"), "Somehow useful link", 445);
+		source.addLink(link);
 		handleAnnotatableEntity(source);
 
 		taxonDescription.addDescriptionSource(ref);
