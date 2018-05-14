@@ -51,7 +51,8 @@ import eu.etaxonomy.cdm.model.common.TermType;
 })
 @Entity
 @Audited
-public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<T>> extends OrderedTermBase<T> {
+public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<T>>
+        extends OrderedTermBase<T> {
 	private static final long serialVersionUID = -7204587330204725285L;
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
