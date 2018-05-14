@@ -39,7 +39,7 @@ public class UuidAndTitleCacheTaxonComparator implements Serializable, Comparato
             rankTax1 = (Rank)o1[3];
         }
         Rank rankTax2 = null;
-        if (o1[3] != null){
+        if (o2[3] != null){
             rankTax2 = (Rank)o2[3];
         }
         String titleCache1 = (String)o1[2];
