@@ -285,9 +285,9 @@ public class Reference
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @IndexedEmbedded
+//  @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-   // @InReference(groups=Level2.class)
+//  @InReference(groups=Level2.class)
    	protected Reference inReference;
 
 //********************************************************/
