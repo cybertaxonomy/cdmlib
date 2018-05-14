@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -271,6 +272,19 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName child = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         child.setTitleCache("child", true);
 
+        TaxonName hybrid = TaxonNameFactory.PARSED_BOTANICAL("Abies alba x Pinus beta");
+
+        Set<HybridRelationship> childRelations = hybrid.getHybridChildRelations();
+       for (HybridRelationship rel : childRelations){
+           TaxonName name = rel.getHybridName();
+           TaxonName parentName = rel.getParentName();
+           nameService.save(rel.getHybridName());
+           nameService.save(rel.getParentName());
+       }
+
+
+
+        commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
         HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
         name1.addHybridParent(parent, relType, null);
         nameService.save(name1);

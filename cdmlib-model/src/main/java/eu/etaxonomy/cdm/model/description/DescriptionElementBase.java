@@ -501,7 +501,10 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         DescriptionElementBase result = (DescriptionElementBase)super.clone();
 
         //inDescription
-        result.inDescription = null;
+        if (result.inDescription != null){
+            result.inDescription.removeElement(this);
+            result.inDescription = null;
+        }
 
         //Sources
         result.sources = new HashSet<DescriptionElementSource>();
