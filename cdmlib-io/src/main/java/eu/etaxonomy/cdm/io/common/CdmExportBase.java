@@ -184,4 +184,14 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
                 || config.getTaxonNodeFilter().isIncludeUnpublished());
     }
 
+
+    /**
+     * <code>true</code> if neither pro parte synonym or misapplied name has state publish nor
+     * taxon node filter includes unpublished taxa.
+     */
+    protected boolean isUnpublished(CONFIG config, Taxon relatedSynonymOrMisappliedName) {
+        return ! (relatedSynonymOrMisappliedName.isPublish()
+                || config.getTaxonNodeFilter().isIncludeUnpublished());
+    }
+
 }
