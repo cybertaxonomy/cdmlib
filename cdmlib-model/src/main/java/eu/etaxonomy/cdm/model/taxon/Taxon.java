@@ -827,6 +827,33 @@ public class Taxon
     }
 
     /**
+     * Returns the boolean value indicating whether <i>this</i> taxon is a misapplication
+     * (misapplied name) for at least one other taxon.
+     */
+    // TODO cache as for #hasTaxonomicChildren
+    @Transient
+    public boolean isProparteSynonym(){
+        return computeProparteSynonymRelations() > 0;
+    }
+
+    /**
+     * Counts the number of misapplied name relationships (including pro parte misapplied
+     * names) where this taxon represents the
+     * misapplied name for another taxon.
+     * @return
+     */
+    private int computeProparteSynonymRelations(){
+        int count = 0;
+        for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
+            if (rel.getType().equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())
+                    || rel.getType().equals(TaxonRelationshipType.PARTIAL_SYNONYM_FOR())){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Returns the boolean value indicating whether <i>this</i> taxon is a related
      * concept for at least one other taxon.
      */
@@ -964,6 +991,32 @@ public class Taxon
         }
         return taxa;
     }
+
+    /*
+     * PRO PARTE SYNONYMS
+     */
+    /**
+     * Returns the set of taxa playing the source role in {@link TaxonRelationship taxon relationships}
+     * (with {@link TaxonRelationshipType taxon relationship type} "Pro Parte Synonym for") where
+     * <i>this</i> taxon plays the target role.
+     *
+     * @see  #getTaxonRelations()
+     * @see  #getRelationsToThisTaxon()
+
+     */
+    @Transient
+    public Set<Taxon> getProParteSynonyms(){
+        Set<Taxon> taxa = new HashSet<>();
+        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+        for (TaxonRelationship rel: rels){
+            TaxonRelationshipType relType = rel.getType();
+            if ( relType.equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())){
+                taxa.add(rel.getFromTaxon());
+            }
+        }
+        return taxa;
+    }
+
 
 
     /*
