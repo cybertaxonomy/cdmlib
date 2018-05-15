@@ -96,7 +96,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -291,26 +290,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         result.addUpdatedObject(acceptedTaxon);
         result.setCdmEntity(newNode);
         return result;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult createSynonym(UUID acceptedTaxonUuid,
-            Synonym newSynonym)  {
-        UpdateResult result = new UpdateResult();
-        for (HybridRelationship rel : newSynonym.getName().getHybridChildRelations()){
-            if (!rel.getHybridName().isPersited()) {
-                nameService.save(rel.getHybridName());
-            }
-            if (!rel.getParentName().isPersited()) {
-                nameService.save(rel.getParentName());
-            }
-        }
-        Taxon acceptedTaxon = (Taxon)load(acceptedTaxonUuid);
-        acceptedTaxon.addSynonym(newSynonym, newSynonym.getType());
-        result.addUpdatedObject(acceptedTaxon);
-        return result;
-
     }
 
 
