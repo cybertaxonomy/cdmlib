@@ -48,9 +48,10 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
 
 
     /**
-     * Creates, saves and adds the specified feature as a child node to the given feature node
+     * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
+     * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, Feature)
      * @param parentNode the feature node where the new feature should be added
-     * @param featureChild the feature which should be added to the given feature node
+     * @param featureChild the feature which should be <b>saved</b> and added to the given feature node
      * @return the result of the operation
      */
     public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild);

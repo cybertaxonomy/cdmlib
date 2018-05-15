@@ -23,9 +23,9 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 	 * Returns a Map of descriptions each with the description elements that match
 	 * the supplied features (or all description elements if no features are supplied)
 	 *
-	 * @param descriptiveDataSet the working set which the descriptions belong to
+	 * @param descriptiveDataSet the data set which the descriptions belong to
 	 * @param features restrict the returned description elements to those which have features in this set
-	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions that belong to the working set)
+	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions that belong to the data set)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based,
 	 *                   can be null, equivalent of starting at the beginning of the recordset). Descriptions are sorted by titleCache
 	 * @param propertyPaths properties to be initialized (applied to the descriptionElements)
@@ -36,9 +36,10 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID descriptiveDataSetUuid, DescriptiveSystemRole role);
 
     /**
+     * Returns a list of {@link UuidAndTitleCache} elements for all {@link DescriptiveDataSet}s in the data base
      * @param limitOfInitialElements
      * @param pattern
-     * @return
+     * @return a list of UuidAndTitleCache element
      */
     public List<UuidAndTitleCache<DescriptiveDataSet>> getDescriptiveDataSetUuidAndTitleCache(Integer limitOfInitialElements, String pattern);
 
@@ -68,18 +69,17 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     /**
      * Creates a row wrapper object for the given specimen
-     * @param specimen
-     * @param descriptiveDataSet
-     * @return
+     * @param specimen the specimen for which the wrapper should be created
+     * @param descriptiveDataSet the data set it should be used in
+     * @return the created row wrapper
      */
     public RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptiveDataSet descriptiveDataSet);
 
     /**
      * Creates a row wrapper object for the given description
-     * @param specimen
-     * @param description
-     * @param descriptiveDataSet
-     * @return
+     * @param description the description for which the wrapper should be created
+     * @param descriptiveDataSet the data set it should be used in
+     * @return the created row wrapper
      */
     public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet);
 
