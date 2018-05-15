@@ -46,6 +46,15 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
      */
     public UpdateResult addChildFeatureNode(FeatureNode parentNode, Feature featureChild);
 
+
+    /**
+     * Creates, saves and adds the specified feature as a child node to the given feature node
+     * @param parentNode the feature node where the new feature should be added
+     * @param featureChild the feature which should be added to the given feature node
+     * @return the result of the operation
+     */
+    public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild);
+
     /**
      * Adds the specified feature as a child node to the given feature node
      * @param parentNodeUUID the UUID of the feature node where the new feature should be added
