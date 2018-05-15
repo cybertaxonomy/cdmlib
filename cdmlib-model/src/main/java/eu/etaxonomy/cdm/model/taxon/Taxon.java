@@ -992,6 +992,8 @@ public class Taxon
         return taxa;
     }
 
+//***************************** Synonyms ******************************************************/
+
     /*
      * PRO PARTE SYNONYMS
      */
@@ -1019,27 +1021,43 @@ public class Taxon
 
 
 
-    /*
-     * DEALING WITH SYNONYMS
-     */
     /**
-     * Returns the set of all {@link Synonym synonyms} of <i>this</i> ("accepted/valid") taxon
-     * sorted by the different {@link SynonymType categories}.
-      *
-     * @see    #getSynonyms()
-     * @see    #getSynonymNames()
-     * @see    #addSynonym(Synonym, SynonymType)
-     * @see    #addSynonym(Synonym, SynonymType, Reference, String)
-     * @see    #removeSynonym(Synonym)
-     * @deprecated not yet implemented
+     * Returns the set of pro parte or partial synonym relationships in which this taxon
+     * plays the role of the "correctly" accepted taxon (target).
+     *
+     * @see #getProParteAndPartialSynonyms()
+     * @see #getMisappliedNameRelations()
      */
     @Transient
-    @Deprecated
-    public Set<Synonym> getSynonymsSortedByType(){
-        // FIXME: need to sort synonyms according to type!!!
-        logger.warn("getSynonymsSortedByType() not yet implemented");
-        return getSynonyms();
+    public Set<TaxonRelationship> getProParteAndPartialSynonymRelations(){
+        Set<TaxonRelationship> result = new HashSet<>();
+        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+        for (TaxonRelationship rel: rels){
+            TaxonRelationshipType relType = rel.getType();
+            if (relType.isAnySynonym()){
+                result.add(rel);
+            }
+        }
+        return result;
     }
+
+    /**
+     * Returns the set of pro parte or partial synonyms in which this taxon
+     * plays the role of the "correctly" accepted taxon (target).
+     *
+     * @see #getProParteAndPartialSynonymRelations()
+     * @see #getMisappliedNames(boolean)
+     */
+    @Transient
+    public Set<Taxon> getProParteAndPartialSynonyms(){
+        Set<Taxon> synonyms = new HashSet<>();
+        Set<TaxonRelationship> rels = this.getProParteAndPartialSynonymRelations();
+        for (TaxonRelationship rel: rels){
+            synonyms.add(rel.getFromTaxon());
+        }
+        return synonyms;
+    }
+
     /**
      * Returns the set of all {@link TaxonName taxon names} used as {@link Synonym synonyms}
      * of <i>this</i> ("accepted/valid") taxon.

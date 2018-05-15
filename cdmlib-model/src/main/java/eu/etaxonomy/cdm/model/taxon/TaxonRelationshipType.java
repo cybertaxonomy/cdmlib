@@ -188,6 +188,38 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         return (allMisappliedNameTypes().contains(this));
     }
 
+
+    /**
+     * <code>true</code> if this relationship type is any
+     * of the pro parte or partial synonym relationship types
+     * {@link #PRO_PARTE_SYNONYM_FOR()} or {@link #PARTIAL_SYNONYM_FOR()}
+     *
+     * @see #isAnyMisappliedName()
+     */
+    public boolean isAnySynonym(){
+        return (allSynonymTypes().contains(this));
+    }
+
+    /**
+     * <code>true</code> if this relationship type is either
+     * a pro parte synonym or a pro parte misapplied name relationship type
+     * {@link #PRO_PARTE_SYNONYM_FOR()} or {@link #PRO_PARTE_MISAPPLIED_NAME_FOR}
+     */
+    public boolean isProParte(){
+        return (allProParteTypes().contains(this));
+    }
+
+    /**
+     * <code>true</code> if this relationship type is either
+     * a partial synonym or a partial misapplied name relationship type
+     * {@link #PARTIAL_SYNONYM_FOR()} or {@link #PARTIAL_MISAPPLIED_NAME_FOR}
+     *
+     * @see #isProParte()
+     */
+    public boolean isPartial(){
+        return (allPartialTypes().contains(this));
+    }
+
     /**
      * Returns a list of all misapplied name relationship
      * types such as "misapplied name for" and
@@ -200,9 +232,30 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         Set<TaxonRelationshipType> result = new HashSet<>();
         result.add(MISAPPLIED_NAME_FOR());
         result.add(PRO_PARTE_MISAPPLIED_NAME_FOR());
+        result.add(PARTIAL_MISAPPLIED_NAME_FOR());
         return result;
     }
 
+    public static Set<TaxonRelationshipType> allSynonymTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(PRO_PARTE_SYNONYM_FOR());
+        result.add(PARTIAL_SYNONYM_FOR());
+        return result;
+    }
+
+    public static Set<TaxonRelationshipType> allProParteTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(PRO_PARTE_SYNONYM_FOR());
+        result.add(PRO_PARTE_MISAPPLIED_NAME_FOR());
+        return result;
+    }
+
+    public static Set<TaxonRelationshipType> allPartialTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(PARTIAL_SYNONYM_FOR());
+        result.add(PARTIAL_MISAPPLIED_NAME_FOR());
+        return result;
+    }
 
 
 	/**
