@@ -994,30 +994,27 @@ public class Taxon
 
 //***************************** Synonyms ******************************************************/
 
-    /*
-     * PRO PARTE SYNONYMS
-     */
-    /**
-     * Returns the set of taxa playing the source role in {@link TaxonRelationship taxon relationships}
-     * (with {@link TaxonRelationshipType taxon relationship type} "Pro Parte Synonym for") where
-     * <i>this</i> taxon plays the target role.
-     *
-     * @see  #getTaxonRelations()
-     * @see  #getRelationsToThisTaxon()
-
-     */
-    @Transient
-    public Set<Taxon> getProParteSynonyms(){
-        Set<Taxon> taxa = new HashSet<>();
-        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
-        for (TaxonRelationship rel: rels){
-            TaxonRelationshipType relType = rel.getType();
-            if ( relType.equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())){
-                taxa.add(rel.getFromTaxon());
-            }
-        }
-        return taxa;
-    }
+//    /**
+//     * Returns the set of taxa playing the source role in {@link TaxonRelationship taxon relationships}
+//     * (with {@link TaxonRelationshipType taxon relationship type} "Pro Parte Synonym for") where
+//     * <i>this</i> taxon plays the target role.
+//     *
+//     * @see  #getTaxonRelations()
+//     * @see  #getRelationsToThisTaxon()
+//
+//     */
+//    @Transient
+//    public Set<Taxon> getProParteSynonyms(){
+//        Set<Taxon> taxa = new HashSet<>();
+//        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+//        for (TaxonRelationship rel: rels){
+//            TaxonRelationshipType relType = rel.getType();
+//            if ( relType.equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())){
+//                taxa.add(rel.getFromTaxon());
+//            }
+//        }
+//        return taxa;
+//    }
 
 
 
