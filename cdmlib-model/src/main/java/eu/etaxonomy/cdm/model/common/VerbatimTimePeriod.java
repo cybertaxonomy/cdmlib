@@ -24,6 +24,8 @@ import org.apache.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 /**
  * @author a.mueller
  * @since 08.05.2018
@@ -257,6 +259,22 @@ public class VerbatimTimePeriod extends TimePeriod {
     }
 
 
+//**************************** to String ****************************************
+
+    /**
+     * Returns the {@link #getFreeText()} value if free text is not <code>null</code>.
+     * Otherwise the concatenation of <code>start</code> and <code>end</code> is returned.
+     *
+     * @see java.lang.Object#toString()
+     */
+      @Override
+      public String toString(){
+         String result = super.toString();
+         if (StringUtils.isNotBlank(this.verbatimDate)){
+             result = CdmUtils.concat(" ", result, "[\""+this.verbatimDate+"\"]");
+         }
+         return result;
+    }
 
 //*********** CLONE **********************************/
 
