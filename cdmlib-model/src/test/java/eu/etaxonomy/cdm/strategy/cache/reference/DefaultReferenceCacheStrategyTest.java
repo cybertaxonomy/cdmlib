@@ -23,6 +23,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -366,7 +367,7 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(TimePeriod.NewInstance(1975));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1975", bookSection1.getTitleCache());
-        book1.setDatePublished(null);
+        book1.setDatePublished((VerbatimTimePeriod)null);
         bookSection1.setDatePublished(TimePeriod.NewInstance(1976));
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
@@ -401,7 +402,7 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(TimePeriod.NewInstance(1975));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1975", bookSection1.getTitleCache());
-        book1.setDatePublished(null);
+        book1.setDatePublished((VerbatimTimePeriod)null);
         bookSection1.setDatePublished(TimePeriod.NewInstance(1976));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
         book1.setDatePublished(TimePeriod.NewInstance(1977));
@@ -542,7 +543,7 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected abbrev title cache.", "My prot. abb. tit. in a bk.", generic1.getAbbrevTitleCache());
         Assert.assertEquals("Unexpected title cache.", "Part Title in Authorteam, My book title. 1987", generic1.getTitleCache());
 
-        generic1.setDatePublished(null);
+        generic1.setDatePublished((VerbatimTimePeriod)null);
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(null));
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(""));
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44", generic1.getNomenclaturalCitation("pp. 44"));

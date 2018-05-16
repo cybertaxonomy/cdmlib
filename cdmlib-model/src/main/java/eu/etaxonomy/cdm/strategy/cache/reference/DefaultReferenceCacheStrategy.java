@@ -19,7 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -326,7 +326,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if (reference.getDatePublished() != null && ! reference.getDatePublished().isEmpty()){
             String thisRefDate = reference.getDatePublished().toString();
             if (hasInRef && reference.getInBook().getDatePublished() != null){
-                TimePeriod inRefDate = reference.getInReference().getDatePublished();
+                VerbatimTimePeriod inRefDate = reference.getInReference().getDatePublished();
                 String inRefDateString = inRefDate.getYear();
                 if (isNotBlank(inRefDateString)){
                     int pos = StringUtils.lastIndexOf(result, inRefDateString);

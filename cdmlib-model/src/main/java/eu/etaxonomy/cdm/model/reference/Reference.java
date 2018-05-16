@@ -858,7 +858,7 @@ public class Reference
 	@Override
     @Transient
 	public String getYear(){
-		TimePeriod datePublished = this.getDatePublished();
+		VerbatimTimePeriod datePublished = this.getDatePublished();
 		if (datePublished != null ){
 			String result = getDatePublished().getYear();
 			return result;
@@ -875,7 +875,7 @@ public class Reference
 	 */
 	@Transient
 	public String getDatePublishedString(){
-		TimePeriod datePublished = this.getDatePublished();
+		VerbatimTimePeriod datePublished = this.getDatePublished();
 		if (datePublished != null ){
 			return getDatePublished().toString();
 		}else{
@@ -891,7 +891,7 @@ public class Reference
      */
     @Transient
     public String getTimePeriodPublishedString(){
-        TimePeriod datePublished = this.getDatePublished();
+        VerbatimTimePeriod datePublished = this.getDatePublished();
         if (datePublished != null ){
             return getDatePublished().getTimePeriod();
         }else{
@@ -1165,7 +1165,7 @@ public class Reference
 	public Object clone() {
 		try {
 			Reference result = (Reference)super.clone();
-			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
+			result.setDatePublished(datePublished != null? (VerbatimTimePeriod)datePublished.clone(): null);
 			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;
 		} catch (CloneNotSupportedException e) {

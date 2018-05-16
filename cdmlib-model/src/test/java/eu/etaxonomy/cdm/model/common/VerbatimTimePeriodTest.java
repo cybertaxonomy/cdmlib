@@ -51,7 +51,7 @@ public class VerbatimTimePeriodTest {
     @Before
     public void setUp() throws Exception {
         onlyStartYear = VerbatimTimePeriod.NewVerbatimInstance(1922);
-        onlyEndYear = VerbatimTimePeriod.NewVerbatimInstance(null, 1857);;
+        onlyEndYear = VerbatimTimePeriod.NewVerbatimInstance(null, 1857);
         startAndEndYear = VerbatimTimePeriod.NewVerbatimInstance(1931, 1957);
         Integer start = null;
         Integer end = null;

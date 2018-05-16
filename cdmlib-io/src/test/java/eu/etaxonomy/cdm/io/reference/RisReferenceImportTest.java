@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -114,7 +114,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 		        Assert.assertEquals("Jongkind" ,person.getFamilyName());
 		        Assert.assertEquals("Carel C. H." ,person.getGivenName());
 		        //date
-		        TimePeriod date = ref.getDatePublished();
+		        VerbatimTimePeriod date = ref.getDatePublished();
 		        Assert.assertEquals(Integer.valueOf(2017) ,date.getStartYear());
 		        //vol
 		        Assert.assertEquals("47(1)" ,ref.getVolume());

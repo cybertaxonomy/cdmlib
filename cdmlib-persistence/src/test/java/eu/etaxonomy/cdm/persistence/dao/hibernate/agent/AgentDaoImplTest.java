@@ -50,7 +50,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     private IAgentDao agentDao;
 
     @SpringBeanByType
-	IReferenceDao referenceDao;
+	private IReferenceDao referenceDao;
 
     private UUID uuid;
     private UUID personUuid;
