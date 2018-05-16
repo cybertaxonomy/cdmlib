@@ -23,7 +23,7 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.TypeDesignationWorkingSet;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -73,7 +73,7 @@ public class RegistrationDTO{
          }
 
         if(hasName(reg)){
-            citation = (Reference) reg.getName().getNomenclaturalReference();
+            citation = reg.getName().getNomenclaturalReference();
             citationDetail = reg.getName().getNomenclaturalMicroReference();
             name = new EntityReference(reg.getName().getUuid(), reg.getName().getTitleCache());
         }
@@ -209,7 +209,7 @@ public class RegistrationDTO{
     /**
      * @return the registrationDate
      */
-    public TimePeriod getDatePublished() {
+    public VerbatimTimePeriod getDatePublished() {
         return citation == null ? null : citation.getDatePublished();
     }
 
