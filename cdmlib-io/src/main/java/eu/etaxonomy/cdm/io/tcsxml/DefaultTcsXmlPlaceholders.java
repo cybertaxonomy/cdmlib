@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,18 +26,19 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 	private static final Logger logger = Logger.getLogger(DefaultTcsXmlPlaceholders.class);
-	
+
 	/* (non-Javadoc)
 	 * @see tcsxml.ITcsXmlPlaceholderClass#makeMetaDataDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element)
 	 */
-	public boolean makeMetaDataDetailed(TcsXmlImportConfigurator tcsConfig, Element elMetaDataDetailed){
+	@Override
+    public boolean makeMetaDataDetailed(TcsXmlImportConfigurator tcsConfig, Element elMetaDataDetailed){
 		if (tcsConfig == null){
 			return false;
 		}
 		if (elMetaDataDetailed == null){
 			return true;
 		}
-		
+
 		//Do nothing
 		//TODO implement EDIT TcsMetaData extension
 		logger.info("MetaDataElement found: " +  elMetaDataDetailed.getName());
@@ -47,7 +48,8 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 	/* (non-Javadoc)
 	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.Reference)
 	 */
-	public boolean makePublicationDetailed(TcsXmlImportConfigurator config, Element elPublicationDetailed, Reference publication){
+	@Override
+    public boolean makePublicationDetailed(TcsXmlImportConfigurator config, Element elPublicationDetailed, Reference publication){
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		if (config == null){
 			return false;
@@ -57,13 +59,13 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 		}else{
 			publication.setProtectedTitleCache(false);
 		}
-		
+
 		String childName;
 		Namespace tcsNs = config.getTcsXmlNamespace();
 		for (Object o : elPublicationDetailed.getChildren()){
 			Element element = (Element)o;
 			String value = element.getTextNormalize();
-			
+
 			childName = "Title";
 			if (element.getName().equalsIgnoreCase(childName) && element.getNamespace().equals(tcsNs)){
 				publication.setTitle(value);
@@ -76,9 +78,9 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 				publication.setDatePublished(datePublished);
 				continue;
 			}
-			
+
 			logger.warn("Unhandled Publication Detailed child element: " +  element.getName());
-	
+
 		}
 //		String childName = "Title";
 //		boolean obligatory = false;
@@ -97,15 +99,15 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 //			TimePeriod datePublished = TimePeriodParser.parseString(strDatePublished);
 //			publication.setDatePublished(datePublished);
 //		}
-		
+
 		//Do nothing
 		//TODO implement EDIT TcsMetaData extension
 		if (logger.isDebugEnabled()){logger.debug("PublicationDetailed element found: " +  elPublicationDetailed.getName());}
 		return success.getValue();
 	}
-	
-	
- 
-	
+
+
+
+
 
 }

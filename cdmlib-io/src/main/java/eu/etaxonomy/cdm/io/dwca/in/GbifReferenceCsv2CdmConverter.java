@@ -103,7 +103,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		Reference inRef = handleInRef(strSource);
 		if (inRef != null){
 			reference.setInReference(inRef);
-			resultList.add(new MappedCdmBase<CdmBase>(inRef));
+			resultList.add(new MappedCdmBase<>(inRef));
 		}
 
 		//URI

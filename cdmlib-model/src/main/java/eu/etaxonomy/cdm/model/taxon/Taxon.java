@@ -810,8 +810,8 @@ public class Taxon
     }
 
     /**
-     * Counts the number of misapplied name relationships (including pro parte misapplied
-     * names) where this taxon represents the
+     * Counts the number of misapplied name relationships (including pro parte and partial
+     * misapplied names) where this taxon represents the
      * misapplied name for another taxon.
      * @return
      */
