@@ -422,6 +422,9 @@ public class TimePeriodParser {
      * @return
      */
     private static String parseVerbatimPart(VerbatimTimePeriod timePeriod, String strPeriod) {
+        if (strPeriod == null){
+            return null;
+        }
         //very first implementation, only for years and following 1 format
         String regEx = "(.*)(\\[\"\\d{4}\"\\])";
         Pattern pattern = Pattern.compile(regEx);
