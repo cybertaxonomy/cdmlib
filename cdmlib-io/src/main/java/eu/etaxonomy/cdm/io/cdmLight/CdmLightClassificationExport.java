@@ -747,16 +747,16 @@ public class CdmLightClassificationExport
             //As we currently do have only 1 reference column in CDM light the synonym relationship
             //reference is used here. This is according to how pro parte synonyms were mapped to
             //concept relationships in #7334
-            Reference secRef = rel.getCitation();
-            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
-            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
-
-//            Reference secRef = ppSyonym.getSec();
+//            Reference secRef = rel.getCitation();
 //            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
 //            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
-//            Reference synSecRef = rel.getCitation();
-//            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, secRef);
-//            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(secRef);
+
+            Reference secRef = ppSyonym.getSec();
+            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
+            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
+            Reference synSecRef = rel.getCitation();
+            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, secRef);
+            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(secRef);
 
             //pro parte type
             TaxonRelationshipType type = rel.getType();
