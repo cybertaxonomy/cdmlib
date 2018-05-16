@@ -410,12 +410,31 @@ public class TimePeriodParser {
 
 	public static VerbatimTimePeriod parseStringVerbatim(String strPeriod) {
 	    VerbatimTimePeriod timePeriod = VerbatimTimePeriod.NewVerbatimInstance();
+	    strPeriod = parseVerbatimPart(timePeriod, strPeriod);
 	    return parseString(timePeriod, strPeriod);
 	}
 
 
 
-	protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
+	/**
+     * @param timePeriod
+	 * @param strPeriod
+     * @return
+     */
+    private static String parseVerbatimPart(VerbatimTimePeriod timePeriod, String strPeriod) {
+        //very first implementation, only for years and following 1 format
+        String regEx = "(.*)(\\[\"\\d{4}\"\\])";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(strPeriod);
+        if (matcher.matches()){
+            String verbatimDate = matcher.group(2).substring(2, 6);
+            timePeriod.setVerbatimDate(verbatimDate);
+            strPeriod = matcher.group(1).trim();
+        }
+        return strPeriod;
+    }
+
+    protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
 		//FIXME until now only quick and dirty and incomplete
 		Partial partial =  new Partial();
 		singleDateString = singleDateString.trim();

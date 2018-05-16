@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 /**
  * @author a.mueller
@@ -266,6 +267,22 @@ public class TimePeriodParserTest {
         Assert.assertEquals(null, tp.getStartDay());
 
 	}
+
+
+    @Test
+    public void testParseVerbatim() {
+        String strDate = "1957 [\"1958\"]";
+        VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals(strDate, tp.toString());
+        Assert.assertEquals("1957", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+//        Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
+//        Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
+        Assert.assertEquals("1958", tp.getVerbatimDate());
+
+    }
+
 
 
 }
