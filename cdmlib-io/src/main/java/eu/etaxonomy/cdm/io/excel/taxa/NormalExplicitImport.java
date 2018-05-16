@@ -644,7 +644,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
 						}else if (type.equals(SourceType.Year)) {
-							ref.setDatePublished(TimePeriodParser.parseString(value));
+							ref.setDatePublished(TimePeriodParser.parseStringVerbatim(value));
 						}else if (type.equals(SourceType.RefExtension)) {
 							ExtensionType extensionType = getExtensionType(state, uuidRefExtension, "RefExtension", "Reference Extension", "RefExt.");
 							Extension extension = Extension.NewInstance(ref, value, extensionType);

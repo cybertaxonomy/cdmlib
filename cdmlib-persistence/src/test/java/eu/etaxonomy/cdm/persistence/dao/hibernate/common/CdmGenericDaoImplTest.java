@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -1048,15 +1049,15 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
 
-			book1.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+			book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999, 2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
 
-			book3.setDatePublished(TimePeriod.NewInstance(1999));
+			book3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
 
-			book3.setDatePublished(TimePeriod.NewInstance(1999,2002));
+			book3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999,2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));

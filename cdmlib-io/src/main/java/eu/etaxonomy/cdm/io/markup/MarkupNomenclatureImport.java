@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -757,7 +757,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 
 		//year
-		TimePeriod timeperiod = TimePeriodParser.parseString(year);
+		VerbatimTimePeriod timeperiod = TimePeriodParser.parseStringVerbatim(year);
 		if (reference.getType().equals(ReferenceType.BookSection)){
 			reference.getInBook().setDatePublished(timeperiod);
 		}

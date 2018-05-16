@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -95,7 +95,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		TeamOrPersonBase<?> author = handleCreator(strCreator);
 		reference.setAuthorship(author);
 		//date
-		TimePeriod publicationDate = handleDate(strDate);
+		VerbatimTimePeriod publicationDate = handleDate(strDate);
 		reference.setDatePublished(publicationDate);
 		//title
 		reference.setTitle(strTitle);
@@ -232,8 +232,8 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	}
 
 
-	private TimePeriod handleDate(String strDate) {
-		TimePeriod tp = TimePeriodParser.parseString(strDate);
+	private VerbatimTimePeriod handleDate(String strDate) {
+	    VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(strDate);
 		return tp;
 	}
 

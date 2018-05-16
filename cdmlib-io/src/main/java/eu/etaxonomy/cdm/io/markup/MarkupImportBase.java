@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -2147,7 +2147,7 @@ public abstract class MarkupImportBase  {
                     titleCache, volume, issue, edition, editors, pubName, appendix, pages, parentEvent);
 
         //year
-        TimePeriod timeperiod = TimePeriodParser.parseString(year);
+        VerbatimTimePeriod timeperiod = TimePeriodParser.parseStringVerbatim(year);
         if (reference.getType().equals(ReferenceType.BookSection)){
             reference.getInBook().setDatePublished(timeperiod);
         }

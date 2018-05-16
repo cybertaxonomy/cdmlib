@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -131,7 +131,7 @@ public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, Ta
 			String dateIssued = elDateIssued.getTextNormalize();
 			contentList.remove(elDateIssued);
 
-			TimePeriod datePublished = TimePeriodParser.parseString(dateIssued);
+			VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim(dateIssued);
 			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setDatePublished(datePublished );
 			}else{

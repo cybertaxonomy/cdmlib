@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -109,7 +109,7 @@ public class MarkupModsImport extends MarkupImportBase {
 				if (modsRef.getDatePublished() != null && ! modsRef.getDatePublished().isEmpty()){
 					fireWarningEvent("Multiple publish date infos given. I overwrite older information. Please check manually ;", next, 4);
 				}
-				TimePeriod timePeriod = TimePeriodParser.parseString(dateIssued);
+				VerbatimTimePeriod timePeriod = TimePeriodParser.parseStringVerbatim(dateIssued);
 				modsRef.setDatePublished(timePeriod);
 			}else if (isStartingElement(next, MODS_PLACE)) {
 				String place = this.getCData(state, reader, next);

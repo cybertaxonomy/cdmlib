@@ -22,7 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -84,9 +84,9 @@ public class HomotypicGroupTaxonComparatorTest {
         cal2.set(1943, 3, 2);
         cal3.set(1945, 3, 2);
 
-        ref1.setDatePublished(TimePeriod.NewInstance(cal1));
-        ref2.setDatePublished(TimePeriod.NewInstance(cal2));
-        ref3.setDatePublished(TimePeriod.NewInstance(cal3));
+        ref1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal1));
+        ref2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal2));
+        ref3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal3));
 
         botName1 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botName2 =  TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

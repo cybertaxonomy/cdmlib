@@ -29,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -264,8 +264,8 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 							try {
 								startYear = Integer.valueOf(trimmedText.substring(0, 4));
 								endYear = Integer.valueOf(trimmedText.substring(5));
-								reference.setDatePublished(TimePeriod.NewInstance(startYear, endYear));
-							} catch (NumberFormatException e) {	
+								reference.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(startYear, endYear));
+							} catch (NumberFormatException e) {
 								logger.error("date can not be parsed: "+ trimmedText);
 							}
 						} else if(trimmedText.length() == 4) {
@@ -274,7 +274,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 							} catch (NumberFormatException e) {
 								logger.error("date can not be parsed: "+ trimmedText);
 							}
-							reference.setDatePublished(TimePeriod.NewInstance(startYear));
+							reference.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(startYear));
 						}
 					}
 					if(elementNameToStore.equals(VOLUME)){

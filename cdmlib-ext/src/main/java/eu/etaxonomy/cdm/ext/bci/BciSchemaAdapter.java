@@ -166,7 +166,7 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 					reference.setTitleCache(text, true);
 				}
 				if(dcFieldName.equals(DC_DATE)){
-					reference.setDatePublished(TimePeriodParser.parseString(text));
+					reference.setDatePublished(TimePeriodParser.parseStringVerbatim(text));
 				}
 				if(dcFieldName.equals(DC_PUBLISHER)){
 					reference.setPublisher(text);

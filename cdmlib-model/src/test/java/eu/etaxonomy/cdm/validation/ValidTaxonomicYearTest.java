@@ -61,10 +61,10 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 		name.setTitleCache("Aus aus L.", true);
 
 		beforeLineeRef = ReferenceFactory.newBook();
-		beforeLineeRef.setDatePublished(TimePeriodParser.parseString("1752"));
+		beforeLineeRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1752"));
 
 	    afterLineeRef = ReferenceFactory.newBook();
-	    afterLineeRef.setDatePublished(TimePeriodParser.parseString("1754"));
+	    afterLineeRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1754"));
 
 	}
 

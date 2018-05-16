@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -240,14 +240,14 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         //date
         if (titlePageYear != null){
             if (yearPublished == null){
-                TimePeriod tp = TimePeriodParser.parseString(titlePageYear);
+                VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(titlePageYear);
                 reference.setDatePublished(tp);
             }else{
-                TimePeriod tp = TimePeriodParser.parseString(yearPublished);
+                VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(yearPublished);
                 reference.setDatePublished(tp);
             }
         }else if (yearPublished != null){
-            TimePeriod tp = TimePeriodParser.parseString(yearPublished);
+            VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(yearPublished);
             reference.setDatePublished(tp);
         }
 

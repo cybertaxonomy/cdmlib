@@ -201,28 +201,6 @@ public class VerbatimTimePeriod extends TimePeriod {
         this.verbatimDate = verbatimDate;
     }
 
-//****************** CONVERTERS ******************/
-
-    public static TimePeriod fromVerbatim(VerbatimTimePeriod verbatimTimePeriod){
-        if (verbatimTimePeriod == null){
-            return null;
-        }
-        TimePeriod result = TimePeriod.NewInstance();
-        copyCloned(verbatimTimePeriod, result);
-        if (StringUtils.isNotBlank(verbatimTimePeriod.verbatimDate) &&
-                StringUtils.isBlank(result.getFreeText())){
-            result.setFreeText(verbatimTimePeriod.toString());
-        }
-        return result;
-    }
-    public static VerbatimTimePeriod toVerbatim(TimePeriod timePeriod){
-        if (timePeriod == null){
-            return null;
-        }
-        VerbatimTimePeriod result = VerbatimTimePeriod.NewVerbatimInstance();
-        copyCloned(timePeriod, result);
-        return result;
-    }
 
 
 

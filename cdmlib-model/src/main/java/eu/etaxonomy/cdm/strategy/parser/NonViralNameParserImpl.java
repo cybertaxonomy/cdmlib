@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -467,7 +467,7 @@ public class NonViralNameParserImpl
 				//continue
 			}else{
 				ref = makeDetailYearUnparsable(nameToBeFilled,strReference);
-				ref.setDatePublished(TimePeriodParser.parseString(yearPart));
+				ref.setDatePublished(TimePeriodParser.parseStringVerbatim(yearPart));
 				return;
 			}
 		}
@@ -615,7 +615,7 @@ public class NonViralNameParserImpl
 		if ("".equals(year.trim())){
 			return true;
 		}
-		TimePeriod datePublished = TimePeriodParser.parseString(year);
+		VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim(year);
 
 		if (nomRef.getType().equals(ReferenceType.BookSection)){
 			handleBookSectionYear((IBookSection)nomRef, datePublished);
@@ -723,7 +723,7 @@ public class NonViralNameParserImpl
 	 * @param bookSection
 	 * @param datePublished
 	 */
-	private void handleBookSectionYear(IBookSection bookSection, TimePeriod datePublished){
+	private void handleBookSectionYear(IBookSection bookSection, VerbatimTimePeriod datePublished){
 		if (datePublished == null || datePublished.getStart() == null || bookSection == null){
 			return;
 		}

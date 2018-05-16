@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -234,7 +234,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		article1.setUuid(UUID.fromString("eb090fbc-5895-405c-aba5-cac287efb128"));
 		article1.setAbbrevTitle("M. Art.");
 		article1.setVolume("1");
-		article1.setDatePublished(TimePeriod.NewInstance(1972));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1972));
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleAuthor);
 		article1.getAbbrevTitleCache();

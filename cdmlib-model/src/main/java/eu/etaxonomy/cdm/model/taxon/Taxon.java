@@ -818,8 +818,7 @@ public class Taxon
     private int computeMisapliedNameRelations(){
         int count = 0;
         for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())
-                    || rel.getType().equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR()) || rel.getType().equals(TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR())){
+            if (rel.getType().isAnyMisappliedName()){
                 count++;
             }
         }
@@ -845,8 +844,7 @@ public class Taxon
     private int computeProparteSynonymRelations(){
         int count = 0;
         for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())
-                    || rel.getType().equals(TaxonRelationshipType.PARTIAL_SYNONYM_FOR())){
+            if (rel.getType().isAnySynonym()){
                 count++;
             }
         }

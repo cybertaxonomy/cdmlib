@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -57,7 +57,7 @@ public class DefaultMatchStrategyTest {
 	private IPrintSeries printSeries1;
 	private Annotation annotation1;
 	private String title1 = "Title1";
-	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
+	private VerbatimTimePeriod datePublished1 = VerbatimTimePeriod.NewVerbatimInstance(2000);
 	private int hasProblem1 = 1;
 	private LSID lsid1;
 
@@ -70,7 +70,7 @@ public class DefaultMatchStrategyTest {
 	private String annotationString2;
 	private String title2 = "Title2";
 	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
-	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
+	private VerbatimTimePeriod datePublished2 = VerbatimTimePeriod.NewVerbatimInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
 
@@ -278,13 +278,13 @@ public class DefaultMatchStrategyTest {
 		//Time period
 		bookTitle1.setTitle(title);
 		bookTitle2.setTitle(title);
-		bookTitle1.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+		bookTitle1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999, 2002));
 		Assert.assertFalse("Books with differing publication dates should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
-		bookTitle2.setDatePublished(TimePeriod.NewInstance(1998));
+		bookTitle2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1998));
 		Assert.assertFalse("Books with differing publication dates should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
-		bookTitle2.setDatePublished(TimePeriod.NewInstance(1999));
+		bookTitle2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999));
 		Assert.assertFalse("Books with differing publication dates should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
-		bookTitle2.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+		bookTitle2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999, 2002));
 		Assert.assertTrue("Books with same publication dates should match", matchStrategy.invoke(bookTitle1, bookTitle2));
 
 		//BookSection

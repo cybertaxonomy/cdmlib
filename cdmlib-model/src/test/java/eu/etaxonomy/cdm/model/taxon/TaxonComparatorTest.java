@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -94,9 +94,9 @@ public class TaxonComparatorTest {
         cal2.set(1856, 3, 2);
         cal3.set(1943, 3, 2);
 
-        ref1.setDatePublished(TimePeriod.NewInstance(cal1));
+        ref1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal1));
 //		ref2.setDatePublished(TimePeriod.NewInstance(cal2));
-        ref3.setDatePublished(TimePeriod.NewInstance(cal3));
+        ref3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal3));
 
         Person author1 = Person.NewTitledInstance("Rehder");
         author1.setNomenclaturalTitle("Rehder");

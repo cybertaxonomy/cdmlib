@@ -15,7 +15,7 @@ import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -74,7 +74,7 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 
 			childName = "DatePublished";
 			if (element.getName().equalsIgnoreCase(childName) && element.getNamespace().equals(tcsNs)){
-				TimePeriod datePublished = TimePeriodParser.parseString(value);
+			    VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim(value);
 				publication.setDatePublished(datePublished);
 				continue;
 			}

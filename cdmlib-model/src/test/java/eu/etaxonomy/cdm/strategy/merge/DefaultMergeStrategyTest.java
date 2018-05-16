@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -66,7 +67,7 @@ public class DefaultMergeStrategyTest {
 	private Reference printSeries1;
 	private Annotation annotation1;
 	private String title1 = "Title1";
-	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
+	private VerbatimTimePeriod datePublished1 = VerbatimTimePeriod.NewVerbatimInstance(2000);
 	private int hasProblem1 = 1;
 	private LSID lsid1;
 
@@ -79,7 +80,7 @@ public class DefaultMergeStrategyTest {
 	private String annotationString2;
 	private String title2 = "Title2";
 	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
-	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
+	private VerbatimTimePeriod datePublished2 = VerbatimTimePeriod.NewVerbatimInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
 

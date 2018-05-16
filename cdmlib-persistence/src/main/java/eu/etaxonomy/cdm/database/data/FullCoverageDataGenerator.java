@@ -696,7 +696,7 @@ public class FullCoverageDataGenerator {
 		reference.setAuthorship(author);
 		reference.setTitle("ref title");
 		reference.setAbbrevTitle("abbrev title");
-		reference.setDatePublished(TimePeriodParser.parseString("1999"));
+		reference.setDatePublished(TimePeriodParser.parseStringVerbatim("1999"));
 		reference.setEdition("edition");
 		reference.setEditor("editor");
 		Institution institution = Institution.NewInstance();
