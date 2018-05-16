@@ -158,48 +158,56 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
     private void invokeSingle(boolean isPartial, int typeId, ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result) throws SQLException {
 
-        //get maxId from taxonRelationship
-        Integer maxId = 0;
-        String query = "SELECT max(id) id FROM @@TaxonRelationship@@";
-        query = doReplacements(query, caseType, datasource);
-        ResultSet rs = datasource.executeQuery(query);
-        if (rs.next()){
-            maxId = rs.getInt("id");
-        }
+        try {
+            //get maxId from taxonRelationship
+            Integer maxId = 0;
+            String query = "SELECT max(id) id FROM @@TaxonRelationship@@";
+            query = doReplacements(query, caseType, datasource);
+            ResultSet rs = datasource.executeQuery(query);
+            if (rs.next()){
+                maxId = rs.getInt("id");
+            }
 
-        //
-        String attributeName = isPartial? "partial" : "proParte";
-        query = " SELECT tb.id synId, titleCache " +
-                " FROM @@TaxonBase@@ tb  " +
-                " WHERE tb.%s = @TRUE@ ";
-        query = String.format(query, attributeName);
-        query = doReplacements(query, caseType, datasource);
-        rs = datasource.executeQuery(query);
-        while (rs.next()){
-            maxId++;
-            Integer synId = rs.getInt("synId");
-            String insert = "INSERT INTO @@TaxonRelationship@@ (id, uuid, relatedFrom_id, relatedTo_id, "
-                    +       " doubtful, citation_id, citationMicroReference, type_id, "
-                    +       " created, updated, createdBy_id, updatedBy_id )"
-                    + " SELECT %d, '%s', syn.id, acceptedTaxon_id,  "
-                    +       " syn.doubtful, syn.sec_id secId, syn.secMicroReference, %d, "
-                    +       " syn.created, syn.updated, syn.createdBy_id, syn.updatedBy_id "
-                    + " FROM TaxonBase syn "
-                    + " WHERE syn.id = %d ";
-            insert = String.format(insert, maxId, UUID.randomUUID(), typeId, synId );
-            insert = doReplacements(insert, caseType, datasource);
-            datasource.executeUpdate(insert);
+            //SELECT all record IDs
+            String attributeName = isPartial? "partial" : "proParte";
+            query = " SELECT tb.id synId, titleCache " +
+                    " FROM @@TaxonBase@@ tb  " +
+                    " WHERE tb.%s = @TRUE@ ";
+            query = String.format(query, attributeName);
+            query = doReplacements(query, caseType, datasource);
+            rs = datasource.executeQuery(query);
 
-            String titleCache = rs.getString("titleCache");
-            titleCache = normalizeTitleCache(titleCache);
-            String update = "UPDATE @@TaxonBase@@ "
-                    + " SET DTYPE = 'Taxon', sec_id = null, secMicroReference = null,"
-                    + "     %s = null, titleCache = '%s', taxonStatusUnknown = @FALSE@,"
-                    + "     doubtful = @FALSE@, acceptedTaxon_id = null, type_id = null "
-                    + " WHERE id = %d ";
-            update = String.format(update, attributeName, titleCache, synId);
-            update = doReplacements(update, caseType, datasource);
-            datasource.executeUpdate(update);
+            while (rs.next()){
+                maxId++;
+                Integer synId = rs.getInt("synId");
+                //insert record in TaxonRelationship
+                String insert = "INSERT INTO @@TaxonRelationship@@ (id, uuid, relatedFrom_id, relatedTo_id, "
+                        +       " doubtful, citation_id, citationMicroReference, type_id, "
+                        +       " created, updated, createdBy_id, updatedBy_id )"
+                        + " SELECT %d, '%s', syn.id, acceptedTaxon_id,  "
+                        +       " syn.doubtful, syn.sec_id secId, syn.secMicroReference, %d, "
+                        +       " syn.created, syn.updated, syn.createdBy_id, syn.updatedBy_id "
+                        + " FROM TaxonBase syn "
+                        + " WHERE syn.id = %d ";
+                insert = String.format(insert, maxId, UUID.randomUUID(), typeId, synId );
+                insert = doReplacements(insert, caseType, datasource);
+                datasource.executeUpdate(insert);
+
+                //update Synonym record
+                String titleCache = rs.getString("titleCache");
+                titleCache = normalizeTitleCache(titleCache);
+                String update = "UPDATE @@TaxonBase@@ "
+                        + " SET DTYPE = 'Taxon', sec_id = null, secMicroReference = null,"
+                        + "     %s = null, titleCache = '%s', taxonStatusUnknown = @FALSE@,"
+                        + "     doubtful = @FALSE@, acceptedTaxon_id = null, type_id = null "
+                        + " WHERE id = %d ";
+                update = String.format(update, attributeName, titleCache, synId);
+                update = doReplacements(update, caseType, datasource);
+                datasource.executeUpdate(update);
+            }
+        } catch (Exception e) {
+            result.addException(e, "Error occurred when trying to update proParte/partial synonyms",
+                    this, "invokeSingle");
         }
 
     }
